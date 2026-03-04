@@ -1,0 +1,14 @@
+import { Layout } from '@/components/Layout';
+
+export function AuthenticationGenericPage() {
+  return (
+    <Layout title="Authentication">
+      <section className="section">
+        <div className="container-custom">
+          <h1 className="text-3xl font-bold mb-4">Authentication</h1>
+          <p className="text-gray-600">This is a generic module page.</p>
+        </div>
+      </section>
+    </Layout>
+  );
+}

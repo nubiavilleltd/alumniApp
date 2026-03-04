@@ -1,0 +1,62 @@
+{
+  "name": "open-alumns-portal",
+  "version": "0.0.1",
+  "description": "A production-ready, open-source alumni portal theme built with React and Vite",
+  "author": "Nepal Open Source Klub (NOSK)",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
+    "@iconify/react": "^5.2.1",
+    "@tanstack/react-query": "^5.90.21",
+    "js-yaml": "^4.1.0",
+    "marked": "^15.0.7",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-hook-form": "^7.71.2",
+    "react-router-dom": "^7.2.0",
+    "tailwindcss": "^3.4.19",
+    "typescript": "^5.0.0",
+    "zod": "^4.3.6",
+    "zustand": "^5.0.11"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.0",
+    "@types/node": "^20.0.0",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.27",
+    "husky": "^9.1.7",
+    "postcss": "^8.5.8",
+    "prettier": "^3.8.1",
+    "vite": "^6.2.0"
+  },
+  "keywords": [
+    "react",
+    "vite",
+    "alumni",
+    "portal",
+    "theme",
+    "education",
+    "community",
+    "nosk"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nepalopensource/open-alumns-portal.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nepalopensource/open-alumns-portal/issues"
+  },
+  "homepage": "https://github.com/nepalopensource/open-alumns-portal#readme"
+}
