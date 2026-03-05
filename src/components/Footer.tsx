@@ -7,13 +7,6 @@ export function Footer() {
   const config = getSiteConfig();
   const currentYear = new Date().getFullYear();
 
-  const onNewsletterSubmit = (event: FormEvent<HTMLFormElement>): void => {
-    event.preventDefault();
-    window.alert(
-      'This work is yet to be implemented. We would love if you could send a merge request to implement this feature.',
-    );
-    event.currentTarget.reset();
-  };
 
   return (
     <footer className="bg-accent-900 text-white">
@@ -115,33 +108,7 @@ export function Footer() {
           </div>
         </div>
 
-        {config.features.newsletter && (
-          <div className="border-t border-accent-800 pt-8 mb-8">
-            <div className="max-w-2xl mx-auto text-center">
-              <h4 className="text-xl font-semibold mb-4 text-white">Stay Connected</h4>
-              <p className="text-accent-300 mb-6">
-                Subscribe to our newsletter for the latest updates, events, and alumni news.
-              </p>
-              <form
-                className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto"
-                onSubmit={onNewsletterSubmit}
-              >
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="flex-1 px-4 py-3 rounded-lg bg-accent-800 border border-accent-700 text-white placeholder-accent-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
-                  required
-                />
-                <button
-                  type="submit"
-                  className="btn btn-primary px-6 py-3 rounded-lg whitespace-nowrap"
-                >
-                  Subscribe
-                </button>
-              </form>
-            </div>
-          </div>
-        )}
+   
 
         <div className="border-t border-accent-800 pt-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
@@ -149,17 +116,7 @@ export function Footer() {
               <p>
                 © {currentYear} {config.organization.name}. All rights reserved.
               </p>
-              <p className="mt-1">
-                Built with ❤️ by{' '}
-                <AppLink
-                  href="https://nosk.org.np"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary-400 hover:text-primary-300 transition-colors duration-200"
-                >
-                  NOSK
-                </AppLink>
-              </p>
+     
             </div>
 
             <div className="flex items-center space-x-6 text-sm">

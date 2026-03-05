@@ -3,7 +3,8 @@ import { useMemo, useState } from 'react';
 import { AppLink } from '@/components/AppLink';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { Layout } from '@/components/Layout';
-import { getAlumni, getSiteConfig } from '@/data/content';
+import { getSiteConfig } from '@/data/content';
+import { getAlumni } from '@/data/site-data';
 
 type SortMode = 'name' | 'year';
 
@@ -17,7 +18,7 @@ export function ProfilesPage() {
   const [currentPage, setCurrentPage] = useState(1);
 
   const years = useMemo(
-    () => [...new Set(alumni.map((entry) => entry.data.year))].sort((a, b) => b - a),
+    () => [...new Set(alumni.map((entry) => entry.year))].sort((a, b) => b - a),
     [alumni],
   );
 
@@ -28,17 +29,17 @@ export function ProfilesPage() {
       .filter((entry) => {
         const matchesSearch =
           !normalizedSearch ||
-          entry.data.name.toLowerCase().includes(normalizedSearch) ||
-          entry.data.short_bio.toLowerCase().includes(normalizedSearch);
-        const matchesYear = !yearFilter || entry.data.year.toString() === yearFilter;
+          entry.name.toLowerCase().includes(normalizedSearch) ||
+          entry.short_bio.toLowerCase().includes(normalizedSearch);
+        const matchesYear = !yearFilter || entry.year.toString() === yearFilter;
 
         return matchesSearch && matchesYear;
       })
       .sort((a, b) => {
         if (sortBy === 'year') {
-          return b.data.year - a.data.year;
+          return b.year - a.year;
         }
-        return a.data.name.localeCompare(b.data.name);
+        return a.name.localeCompare(b.name);
       });
   }, [alumni, searchTerm, sortBy, yearFilter]);
 
@@ -167,7 +168,7 @@ export function ProfilesPage() {
 
           <div className="grid-responsive-lg mb-8">
             {pagedAlumni.map((entry) => {
-              const initials = entry.data.name
+              const initials = entry.name
                 .split(' ')
                 .map((segment) => segment[0])
                 .join('')
@@ -176,10 +177,10 @@ export function ProfilesPage() {
               return (
                 <div className="profile-card" key={entry.slug}>
                   <div className="relative">
-                    {entry.data.photo ? (
+                    {entry.photo ? (
                       <img
-                        src={entry.data.photo}
-                        alt={entry.data.name}
+                        src={entry.photo}
+                        alt={entry.name}
                         className="profile-avatar"
                         loading="lazy"
                       />
@@ -188,13 +189,13 @@ export function ProfilesPage() {
                     )}
                   </div>
 
-                  <h3 className="text-xl font-semibold text-accent-900 mb-2">{entry.data.name}</h3>
-                  <p className="text-accent-600 mb-3">{entry.data.short_bio}</p>
+                  <h3 className="text-xl font-semibold text-accent-900 mb-2">{entry.name}</h3>
+                  <p className="text-accent-600 mb-3">{entry.short_bio}</p>
 
                   <div className="flex items-center justify-between text-sm text-accent-500">
-                    <span>Class of {entry.data.year}</span>
+                    <span>Class of {entry.year}</span>
                     <AppLink
-                      href={`/alumni/profiles/${entry.data.slug}`}
+                      href={`/alumni/profiles/${entry.slug}`}
                       className="text-primary-600 hover:text-primary-700 font-medium"
                     >
                       View Profile →

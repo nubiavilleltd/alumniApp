@@ -147,6 +147,11 @@ export function Navigation() {
                 )}
               </div>
             ))}
+
+            <AppLink href="/alumni/profiles" className="btn btn-primary btn-sm">
+              Login 
+              <Icon icon="mdi:login" className="w-6 h-6 mr-2" />
+            </AppLink>
           </div>
 
           <button
@@ -178,9 +183,8 @@ export function Navigation() {
                         <span className="font-medium">{item.label}</span>
                         <Icon
                           icon="mdi:chevron-down"
-                          className={`w-5 h-5 transition-transform duration-200 ${
-                            sectionOpen ? 'rotate-180' : ''
-                          }`}
+                          className={`w-5 h-5 transition-transform duration-200 ${sectionOpen ? 'rotate-180' : ''
+                            }`}
                         />
                       </button>
 

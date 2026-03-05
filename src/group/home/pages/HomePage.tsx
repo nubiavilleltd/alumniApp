@@ -1,13 +1,20 @@
 import { Icon } from '@iconify/react';
 import { AppLink } from '@/components/AppLink';
 import { Layout } from '@/components/Layout';
-import { getAlumni, getBlogPosts, getEvents, getSiteConfig } from '@/data/content';
+import { getBlogPosts, getEvents, getSiteConfig } from '@/data/content';
+import { getAlumni } from '@/data/site-data';
 
 export function HomePage() {
   const config = getSiteConfig();
-  const alumni = getAlumni();
   const events = getEvents();
   const blogPosts = getBlogPosts();
+  
+  const alumni = getAlumni();
+
+
+
+
+
 
   const featuredAlumni = alumni.slice(0, config.content.featured_alumni_count ?? 3);
 
@@ -27,7 +34,7 @@ export function HomePage() {
             <div className="text-center lg:text-left">
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-accent-900 mb-6 leading-tight">
                 Connect with Your{' '}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-secondary-600">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-primary-900">
                   Alumni Network
                 </span>
               </h1>
@@ -49,7 +56,7 @@ export function HomePage() {
 
             <div className="relative">
               <div className="relative z-10">
-                <div className="bg-gradient-to-br from-primary-500 to-secondary-500 rounded-3xl p-8 md:p-12 shadow-2xl">
+                <div className="bg-gradient-to-br from-primary-400 to-primary-900 rounded-3xl p-8 md:p-12 shadow-2xl">
                   <div className="text-center text-white">
                     <Icon
                       icon="mdi:account-group"
@@ -59,7 +66,7 @@ export function HomePage() {
                     <p className="text-lg mb-6 opacity-90">
                       Connect with {alumni.length}+ alumni from {config.organization.name}
                     </p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    {/* <div className="flex flex-col sm:flex-row gap-4 justify-center">
                       <AppLink
                         href="/alumni"
                         className="btn btn-secondary btn-lg text-white hover:bg-secondary-600"
@@ -84,7 +91,7 @@ export function HomePage() {
                         <Icon icon="mdi:account-plus" className="w-6 h-6 mr-2" />
                         Join Now
                       </AppLink>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>
@@ -205,7 +212,7 @@ export function HomePage() {
 
           <div className="grid-responsive mb-12">
             {featuredAlumni.map((alum) => {
-              const initials = alum.data.name
+              const initials = alum.name
                 .split(' ')
                 .map((name) => name[0])
                 .join('')
@@ -214,10 +221,10 @@ export function HomePage() {
               return (
                 <div className="profile-card text-center group" key={alum.slug}>
                   <div className="relative mb-6">
-                    {alum.data.photo ? (
+                    {alum.photo ? (
                       <img
-                        src={alum.data.photo}
-                        alt={alum.data.name}
+                        src={alum.photo}
+                        alt={alum.name}
                         className="profile-avatar group-hover:scale-105 transition-transform duration-300"
                         loading="lazy"
                       />
@@ -228,13 +235,13 @@ export function HomePage() {
                     )}
                   </div>
 
-                  <h3 className="text-xl font-semibold text-accent-900 mb-2">{alum.data.name}</h3>
-                  <p className="text-accent-600 mb-4 line-clamp-3">{alum.data.short_bio}</p>
+                  <h3 className="text-xl font-semibold text-accent-900 mb-2">{alum.name}</h3>
+                  <p className="text-accent-600 mb-4 line-clamp-3">{alum.short_bio}</p>
 
                   <div className="flex items-center justify-center space-x-2 mb-4">
-                    {alum.data.social?.linkedin && (
+                    {alum.social?.linkedin && (
                       <AppLink
-                        href={alum.data.social.linkedin}
+                        href={alum.social.linkedin}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-accent-400 hover:text-primary-600 transition-colors duration-200"
@@ -242,9 +249,9 @@ export function HomePage() {
                         <Icon icon="mdi:linkedin" className="w-5 h-5" />
                       </AppLink>
                     )}
-                    {alum.data.social?.twitter && (
+                    {alum.social?.twitter && (
                       <AppLink
-                        href={alum.data.social.twitter}
+                        href={alum.social.twitter}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-accent-400 hover:text-primary-600 transition-colors duration-200"
@@ -252,9 +259,9 @@ export function HomePage() {
                         <Icon icon="mdi:twitter" className="w-5 h-5" />
                       </AppLink>
                     )}
-                    {alum.data.social?.github && (
+                    {alum.social?.github && (
                       <AppLink
-                        href={alum.data.social.github}
+                        href={alum.social.github}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-accent-400 hover:text-primary-600 transition-colors duration-200"
@@ -264,10 +271,10 @@ export function HomePage() {
                     )}
                   </div>
 
-                  <div className="text-sm text-accent-500 mb-4">Class of {alum.data.year}</div>
+                  <div className="text-sm text-accent-500 mb-4">Class of {alum.year}</div>
 
                   <AppLink
-                    href={`/alumni/profiles/${alum.data.slug}`}
+                    href={`/alumni/profiles/${alum.slug}`}
                     className="btn btn-primary btn-sm w-full"
                   >
                     View Profile
@@ -354,7 +361,7 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="section bg-gradient-to-br from-primary-600 to-secondary-600">
+      <section className="section bg-gradient-to-br from-primary-400 to-primary-900">
         <div className="container-custom text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Ready to Connect?</h2>
           <p className="text-xl text-white/90 mb-8 max-w-3xl mx-auto">
@@ -364,7 +371,7 @@ export function HomePage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <AppLink
               href="/alumni"
-              className="btn btn-secondary btn-lg text-white hover:bg-secondary-600 transition-colors duration-200"
+              className="btn btn-primary btn-lg text-white hover:bg-primary-700 transition-colors duration-200"
             >
               <Icon icon="mdi:account-plus" className="w-6 h-6 mr-2" />
               Join the Network
@@ -372,7 +379,7 @@ export function HomePage() {
 
             <AppLink
               href="/about"
-              className="btn btn-primary btn-lg text-white hover:bg-primary-700 transition-colors duration-200"
+              className="btn border border-primary-200 bg-white btn-lg text-primary-700 hover:bg-primary-700 hover:text-white transition-colors duration-200"
             >
               <Icon icon="mdi:information" className="w-6 h-6 mr-2" />
               Learn More
