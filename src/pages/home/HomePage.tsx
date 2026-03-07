@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react';
-import { getBlogPosts, getEvents, getSiteConfig } from '@/data/content';
-import { getAlumni } from '@/data/site-data';
+import { getBlogPosts, getSiteConfig } from '@/data/content';
+import { getAlumni, getEvents } from '@/data/site-data';
 import { Layout } from '@/shared/components/layout/Layout';
 import { AppLink } from '@/shared/components/ui/AppLink';
 
@@ -14,11 +14,11 @@ export function HomePage() {
   const featuredAlumni = alumni.slice(0, config.content.featured_alumni_count ?? 3);
 
   const latestEvents = [...events]
-    .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, config.content.latest_events_count ?? 4);
 
   const latestBlogPosts = [...blogPosts]
-    .sort((a, b) => new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime())
+    .sort((a, b) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime())
     .slice(0, 3);
 
   return (
@@ -144,10 +144,10 @@ export function HomePage() {
             {latestEvents.map((event) => (
               <div className="event-card group" key={event.slug}>
                 <div className="relative mb-4">
-                  {event.data.image ? (
+                  {event.image ? (
                     <img
-                      src={event.data.image}
-                      alt={event.data.title}
+                      src={event.image}
+                      alt={event.title}
                       className="w-full h-48 object-cover rounded-xl group-hover:scale-105 transition-transform duration-300"
                       loading="lazy"
                     />
@@ -158,7 +158,7 @@ export function HomePage() {
                   )}
                   <div className="absolute top-4 right-4">
                     <span className="badge badge-primary">
-                      {new Date(event.data.date).toLocaleDateString('en-US', {
+                      {new Date(event.date).toLocaleDateString('en-US', {
                         month: 'short',
                         day: 'numeric',
                       })}
@@ -167,17 +167,17 @@ export function HomePage() {
                 </div>
 
                 <h3 className="text-xl font-semibold text-accent-900 mb-2 group-hover:text-primary-600 transition-colors duration-200">
-                  {event.data.title}
+                  {event.title}
                 </h3>
-                <p className="text-accent-600 mb-4 line-clamp-2">{event.data.description}</p>
+                <p className="text-accent-600 mb-4 line-clamp-2">{event.description}</p>
 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2 text-sm text-accent-500">
                     <Icon icon="mdi:map-marker" className="w-4 h-4" />
-                    <span>{event.data.location}</span>
+                    <span>{event.location}</span>
                   </div>
                   <AppLink
-                    href={`/events/${event.data.slug}`}
+                    href={`/events/${event.slug}`}
                     className="text-primary-600 hover:text-primary-700 font-medium"
                   >
                     Learn More →

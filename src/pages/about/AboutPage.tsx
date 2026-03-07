@@ -1,4 +1,3 @@
-
 import { getSiteConfig } from '@/data/content';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { Layout } from '@/shared/components/layout/Layout';
