@@ -54,8 +54,6 @@ organization:
 #     800: '#262626'
 #     900: '#171717'
 
-
-
 colors:
   primary:
     50: '#eff6ff'
@@ -97,27 +95,19 @@ colors:
 navigation:
   - label: 'Home'
     url: '/'
-    icon: 'home'
+    # icon: 'home'
   - label: 'Alumni Directory'
     url: '/alumni/profiles'
-    icon: 'users'
-    mega_menu: true
-    submenu:
-      - label: 'By Year'
-        url: '/alumni/years'
-        icon: 'calendar'
-      - label: 'By Chapter'
-        url: '/alumni/chapters'
-        icon: 'graduation-cap'
+    # icon: 'users'
   - label: 'Events'
     url: '/events'
-    icon: 'calendar'
+    # icon: 'calendar'
   - label: 'Blog'
     url: '/blog'
-    icon: 'newspaper'
+    # icon: 'newspaper'
   - label: 'About'
     url: '/about'
-    icon: 'info-circle'
+    # icon: 'info-circle'
 
 # Chapter Configuration
 chapters:
