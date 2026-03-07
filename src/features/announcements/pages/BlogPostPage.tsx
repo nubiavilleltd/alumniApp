@@ -7,11 +7,11 @@ import { AppLink } from '@/shared/components/ui/AppLink';
 import { getBlogPostBySlug } from '@/data/site-data';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { renderMarkdown } from '@/shared/utils/markdown';
+import { SEO } from '@/shared/common/SEO';
 
 export function BlogPostPage() {
   const { slug = '' } = useParams();
   const post = getBlogPostBySlug(slug);
-  console.log("post", post)
 
   if (!post) {
     return (
@@ -37,7 +37,8 @@ export function BlogPostPage() {
   ];
 
   return (
-    <Layout title={post.title} description={post.description} image={post.image}>
+    <>
+      <SEO title={post.title} description={post.description} image={post.image} />
       <Breadcrumbs items={breadcrumbItems} />
       <section className="section">
         <div className="container-custom">
@@ -48,6 +49,6 @@ export function BlogPostPage() {
           </article>
         </div>
       </section>
-    </Layout>
+    </>
   );
 }
