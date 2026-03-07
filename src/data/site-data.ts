@@ -1,4 +1,8 @@
-import { AlumniEntry } from "@/group/shared/types/alumni";
+// import { AlumniEntry } from '@/group/shared/types/alumni';
+
+import { Alumni } from "@/features/alumni/types/alumni.types";
+import { BlogPost } from "@/features/announcements/types/announcement.types";
+import { Event } from "@/features/events/types/event.types";
 
 const alumni = [
   {
@@ -260,10 +264,286 @@ const alumni = [
   },
 ];
 
-export function getAlumni() {
+
+
+const events = [
+  {
+    title: "Annual Alumni Meet 2024",
+    slug: "annual-alumni-meet-2024",
+    date: "2024-12-15",
+    description:
+      "Join us for our most anticipated event of the year! The Annual Alumni Meet brings together graduates from all batches for an evening of networking, celebration, and inspiration.",
+    content: `# Annual Alumni Meet 2024
+
+Join us for our most anticipated event of the year! The Annual Alumni Meet brings together graduates from all batches for an evening of networking, celebration, and inspiration.
+
+## Event Details
+
+- **Date**: December 15, 2024
+- **Time**: 6:00 PM - 10:00 PM
+- **Location**: Main Campus Auditorium, NCIT
+- **Theme**: Building Bridges: Connecting Past, Present, and Future
+
+## What to Expect
+
+- Networking sessions with fellow alumni
+- Keynote speeches from industry leaders
+- Career development workshops
+- Cultural performances and entertainment
+- Delicious dinner and refreshments
+
+## Registration
+
+[Register Now](https://forms.gle/alumni-meet-2024)
+
+## Contact
+
+For more information: events@ncit.edu.np`,
+    location: "Main Campus Auditorium, NCIT",
+    registration_url: "https://forms.gle/alumni-meet-2024",
+    image: "/images/events/default-event-banner.svg",
+    category: "Networking",
+    tags: ["networking", "celebration", "alumni", "annual"],
+    featured: true,
+  },
+  {
+    title: "Startup Pitch Competition 2024",
+    slug: "startup-pitch-competition",
+    date: "2024-04-20",
+    description:
+      "Annual startup pitch competition showcasing innovative ideas from our alumni community",
+    content: `Calling all entrepreneurs and innovators! The annual Startup Pitch Competition is back with bigger prizes and more opportunities.
+
+## What to Expect
+
+- **Pitch Presentations** from 20 selected startups
+- **Expert Judges** including successful alumni entrepreneurs
+- **Networking** with investors and mentors
+- **Prizes** worth over $50,000 in cash and services
+
+## Competition Categories
+
+- **Technology Innovation** - Software, AI, IoT solutions
+- **Social Impact** - Solutions for community challenges
+- **Sustainability** - Green tech and environmental solutions
+- **Healthcare** - Medical technology and wellness
+
+## Prizes
+
+- **1st Place**: $25,000 + 6 months mentorship
+- **2nd Place**: $15,000 + 3 months mentorship
+- **3rd Place**: $10,000 + 1 month mentorship
+- **People's Choice**: $5,000
+
+## How to Apply
+
+Submit your startup idea by March 31st, 2024.
+
+[Apply Now](https://pitch.example.com)
+
+## Judging Criteria
+
+- Innovation and creativity (25%)
+- Market potential (25%)
+- Feasibility (20%)
+- Presentation skills (15%)
+- Social impact (15%)
+
+## Contact
+
+For questions: pitch@alumni.example.com`,
+    location: "Innovation Hub, University Campus",
+    registration_url: "https://pitch.example.com",
+    image: "/images/events/default-event-banner.svg",
+    category: "Entrepreneurship",
+    tags: ["startup", "pitch", "innovation", "entrepreneurship", "competition"],
+    featured: true,
+  },
+  {
+    title: "Tech Career Fair 2024",
+    slug: "tech-career-fair-2024",
+    date: "2024-03-15",
+    description:
+      "Annual technology career fair connecting alumni with top tech companies",
+    content: `Join us for the biggest tech career fair of the year! This event brings together:
+
+- **50+ Tech Companies** including Google, Microsoft, Amazon, and local startups
+- **Networking Sessions** with industry leaders and alumni
+- **Resume Workshops** and interview preparation sessions
+- **Job Opportunities** for all experience levels
+
+## Schedule
+
+- **9:00 AM** - Registration and Welcome
+- **10:00 AM** - Company Presentations
+- **11:30 AM** - Networking Lunch
+- **1:00 PM** - Career Workshops
+- **3:00 PM** - One-on-One Sessions
+- **5:00 PM** - Closing Reception
+
+## Registration
+
+Early bird registration is now open! Alumni get priority access.
+
+[Register Now](https://careerfair.example.com)
+
+## Sponsors
+
+This event is proudly sponsored by our alumni network and partner companies.
+
+## Contact
+
+For more information, contact: careers@alumni.example.com`,
+    location: "Convention Center, Downtown",
+    registration_url: "https://careerfair.example.com",
+    image: "/images/events/default-event-banner.svg",
+    category: "Career Development",
+    tags: ["career", "networking", "tech", "jobs", "workshops"],
+    featured: true,
+  },
+];
+
+
+
+
+
+const blogPosts = [
+  {
+    id: "blog-1",
+    title: "Building Strong Alumni Networks: A Guide to Meaningful Connections",
+    slug: "building-strong-alumni-networks",
+    description:
+      "Discover effective strategies for creating and maintaining strong alumni networks that benefit both graduates and institutions. Learn from successful examples and practical tips.",
+    author: "NCIT Alumni Team",
+    author_photo: "/team/alumni-team.jpg",
+    author_bio:
+      "Dedicated team working to strengthen our alumni community and foster meaningful connections.",
+    publishDate: "2024-01-15",
+    image: "/images/blog/default-blog-banner.svg",
+    category: "Community",
+    tags: ["networking", "alumni", "community", "professional-development"],
+    featured: true,
+    draft: false,
+    excerpt:
+      "Learn how to build and maintain strong alumni networks that create lasting value for graduates and institutions alike.",
+    readingTime: 8,
+    content: `# Building Strong Alumni Networks: A Guide to Meaningful Connections
+
+Alumni networks are more than just a list of graduates—they're living, breathing communities that can provide immense value to both individuals and institutions.
+
+## Why Alumni Networks Matter
+
+Strong alumni networks offer numerous benefits:
+
+- **Professional Opportunities**: Job referrals, business partnerships, and career advice
+- **Mentorship**: Guidance from experienced professionals in your field
+- **Knowledge Sharing**: Access to industry insights and best practices
+- **Institutional Support**: Alumni can contribute to their alma mater's growth
+- **Lifelong Learning**: Continuous education through workshops and events
+
+## Key Strategies for Building Strong Networks
+
+### 1. Regular Communication
+
+Maintaining regular communication is crucial for keeping alumni engaged.
+
+### 2. Meaningful Events
+
+Events should provide real value to participants.
+
+### 3. Digital Platforms
+
+Leverage technology to maintain connections.
+
+## Conclusion
+
+Building strong alumni networks requires commitment, creativity, and consistent effort.`,
+  },
+  {
+    id: "blog-2",
+    title: "The Future of Remote Work: Insights from Alumni Leaders",
+    slug: "future-of-remote-work",
+    description:
+      "How remote work is reshaping the tech industry and what it means for our alumni community.",
+    author: "Alumni Editorial Team",
+    author_photo: "/team/editorial-team.jpg",
+    author_bio:
+      "The editorial team curates insights, trends, and expert perspectives from across the alumni community.",
+    publishDate: "2024-01-15",
+    image: "/images/blog/default-blog-banner.svg",
+    category: "Career Development",
+    tags: ["remote work", "career", "technology", "workplace", "future"],
+    featured: false,
+    draft: false,
+    excerpt:
+      "Remote work is transforming the global workforce. Discover insights from alumni leaders on how this shift is shaping careers and industries.",
+    readingTime: 6,
+    content: `# The Future of Remote Work: Insights from Alumni Leaders
+
+The landscape of work has undergone a dramatic transformation in recent years, with remote work becoming a fundamental shift in how we approach our careers.
+
+## The New Normal
+
+According to our alumni survey:
+
+- **78% of tech professionals** work remotely at least part-time
+- **45% work fully remote**
+
+## Benefits for Alumni
+
+### Geographic Flexibility
+
+- Work for companies regardless of location
+- Maintain connections with family and community
+
+### Career Growth
+
+- Access to global job markets
+- Reduced commuting time
+
+### Cost Savings
+
+- No daily commute expenses
+- Reduced need for expensive city housing
+
+## Looking Ahead
+
+The future of work is hybrid and flexible, creating new opportunities for alumni worldwide.`,
+  },
+];
+
+
+
+
+export function getEvents(): Event[] {
+  return events
+}
+
+export function getEventBySlug(slug: string): Event | undefined {
+  return events.find((entry) => entry.slug === slug);
+}
+
+
+
+
+export function getAlumni(): Alumni[] {
   return alumni;
 }
 
-export function getAlumnusBySlug(slug: string): AlumniEntry | undefined {
-  return alumni.find((entry) => entry.slug === slug || entry.slug === slug);
+export function getAlumnusBySlug(slug: string): Alumni | undefined {
+  return alumni.find((entry) => entry.slug === slug);
 }
+
+
+export function getBlogPosts(): BlogPost[] {
+  return [...blogPosts].filter((post) => !post.draft);
+}
+
+
+export function getBlogPostBySlug(slug: string): BlogPost | undefined {
+  return blogPosts.find((entry) => entry.slug === slug);
+}
+
+
+
+

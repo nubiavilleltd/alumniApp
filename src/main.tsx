@@ -6,7 +6,7 @@ import { applyConfigColors } from '@/data/content';
 import '@/global.css';
 import { QueryProvider } from './lib/react-query/QueryProvider';
 
-applyConfigColors();
+// applyConfigColors();
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>

@@ -25,7 +25,7 @@ export function AlumniProfilePage() {
     );
   }
 
-  const alum = {...alumnus};
+  const alum = { ...alumnus };
   const socials = alum.social ?? {};
 
   const breadcrumbItems = [

@@ -1,6 +1,5 @@
-import { Layout } from "@/shared/components/layout/Layout";
-import { AppLink } from "@/shared/components/ui/AppLink";
-
+import { Layout } from '@/shared/components/layout/Layout';
+import { AppLink } from '@/shared/components/ui/AppLink';
 
 export function NotFoundPage() {
   return (

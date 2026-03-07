@@ -1,12 +1,11 @@
-
-import { getBlogPosts } from '@/data/content';
+import { getBlogPosts } from '@/data/site-data';
 import { Layout } from '@/shared/components/layout/Layout';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 
 export function BlogIndexPage() {
   const posts = getBlogPosts().sort(
-    (a, b) => new Date(b.data.publishDate).getTime() - new Date(a.data.publishDate).getTime(),
+    (a, b) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime(),
   );
 
   const breadcrumbItems = [{ label: 'Home', href: '/' }, { label: 'Blog' }];
@@ -25,10 +24,10 @@ export function BlogIndexPage() {
                 key={post.slug}
               >
                 <div className="p-6">
-                  <h3 className="text-xl font-semibold mb-2">{post.data.title}</h3>
-                  <p className="text-gray-600 mb-4">{post.data.description}</p>
+                  <h3 className="text-xl font-semibold mb-2">{post.title}</h3>
+                  <p className="text-gray-600 mb-4">{post.description}</p>
                   <p className="text-sm text-gray-500">
-                    {new Date(post.data.publishDate).toDateString()}
+                    {new Date(post.publishDate).toDateString()}
                   </p>
                 </div>
               </AppLink>

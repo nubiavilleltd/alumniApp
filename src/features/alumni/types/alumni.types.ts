@@ -24,7 +24,7 @@ type SocialLinks = {
   github?: string;
 };
 
-export type AlumniEntry = {
+export type Alumni = {
   name: string;
   slug: string;
   chapter: string;

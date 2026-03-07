@@ -1,13 +1,17 @@
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { getBlogPostBySlug, renderMarkdown } from '@/data/content';
+// import { renderMarkdown } from '@/data/content';
 import { Layout } from '@/shared/components/layout/Layout';
 import { AppLink } from '@/shared/components/ui/AppLink';
+import { getBlogPostBySlug } from '@/data/site-data';
+import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
+import { renderMarkdown } from '@/shared/utils/markdown';
 
 export function BlogPostPage() {
   const { slug = '' } = useParams();
   const post = getBlogPostBySlug(slug);
+  console.log("post", post)
 
   if (!post) {
     return (
@@ -29,17 +33,17 @@ export function BlogPostPage() {
   const breadcrumbItems = [
     { label: 'Home', href: '/' },
     { label: 'Blog', href: '/blog' },
-    { label: post.data.title },
+    { label: post.title },
   ];
 
   return (
-    <Layout title={post.data.title} description={post.data.description} image={post.data.image}>
+    <Layout title={post.title} description={post.description} image={post.image}>
       <Breadcrumbs items={breadcrumbItems} />
       <section className="section">
         <div className="container-custom">
           <article className="prose max-w-none prose-headings:text-accent-900 prose-a:text-primary-600">
-            <h1 className="mb-2">{post.data.title}</h1>
-            <p className="text-gray-500 mb-6">{new Date(post.data.publishDate).toDateString()}</p>
+            <h1 className="mb-2">{post.title}</h1>
+            <p className="text-gray-500 mb-6">{new Date(post.publishDate).toDateString()}</p>
             <div dangerouslySetInnerHTML={{ __html: html }} />
           </article>
         </div>
