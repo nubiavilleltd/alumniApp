@@ -3,6 +3,7 @@ import { getBlogPosts, getSiteConfig } from '@/data/content';
 import { getAlumni, getEvents } from '@/data/site-data';
 import { Layout } from '@/shared/components/layout/Layout';
 import { AppLink } from '@/shared/components/ui/AppLink';
+import { SEO } from '@/shared/common/SEO';
 
 export function HomePage() {
   const config = getSiteConfig();
@@ -22,7 +23,9 @@ export function HomePage() {
     .slice(0, 3);
 
   return (
-    <Layout title={config.site.name} description={config.site.description}>
+    // <Layout title={config.site.name} description={config.site.description}>
+    <>
+      <SEO title={config.site.name} description={config.site.description} />
       <section className="hero section-sm">
         <div className="container-custom">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -382,6 +385,6 @@ export function HomePage() {
           </div>
         </div>
       </section>
-    </Layout>
+    </>
   );
 }

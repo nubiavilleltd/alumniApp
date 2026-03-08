@@ -3,8 +3,9 @@ import { useParams } from 'react-router-dom';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { Layout } from '@/shared/components/layout/Layout';
-import {  renderMarkdown } from '@/data/content';
+import { renderMarkdown } from '@/data/content';
 import { getEventBySlug } from '@/data/site-data';
+import { SEO } from '@/shared/common/SEO';
 
 export function EventDetailPage() {
   const { slug = '' } = useParams();
@@ -34,7 +35,8 @@ export function EventDetailPage() {
   ];
 
   return (
-    <Layout title={event.title} description={event.description}>
+    <>
+      <SEO title={event.title} description={event.description} />
       <Breadcrumbs items={breadcrumbItems} />
       <section className="section">
         <div className="container-custom">
@@ -42,9 +44,7 @@ export function EventDetailPage() {
             <div className="lg:col-span-2 card p-6">
               <h1 className="text-3xl font-bold mb-2">{event.title}</h1>
               <p className="text-gray-600 mb-4">{event.description}</p>
-              {event.image && (
-                <img src={event.image} alt={event.title} className="rounded mb-4" />
-              )}
+              {event.image && <img src={event.image} alt={event.title} className="rounded mb-4" />}
               <div
                 className="prose max-w-none prose-headings:text-accent-900 prose-a:text-primary-600"
                 dangerouslySetInnerHTML={{ __html: markdown }}
@@ -77,6 +77,6 @@ export function EventDetailPage() {
           </div>
         </div>
       </section>
-    </Layout>
+    </>
   );
 }

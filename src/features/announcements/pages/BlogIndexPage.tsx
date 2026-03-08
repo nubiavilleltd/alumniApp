@@ -1,5 +1,5 @@
 import { getBlogPosts } from '@/data/site-data';
-import { Layout } from '@/shared/components/layout/Layout';
+import { SEO } from '@/shared/common/SEO';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 
@@ -11,7 +11,8 @@ export function BlogIndexPage() {
   const breadcrumbItems = [{ label: 'Home', href: '/' }, { label: 'Blog' }];
 
   return (
-    <Layout title="Blog">
+    <>
+      <SEO title="Blog" />
       <Breadcrumbs items={breadcrumbItems} />
       <section className="section">
         <div className="container-custom">
@@ -35,6 +36,6 @@ export function BlogIndexPage() {
           </div>
         </div>
       </section>
-    </Layout>
+    </>
   );
 }
