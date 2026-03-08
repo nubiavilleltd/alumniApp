@@ -1,9 +1,8 @@
 import { useMemo, useState } from 'react';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
-import { Layout } from '@/shared/components/layout/Layout';
 import { getEvents } from '@/data/site-data';
-// import { getEvents } from '@/data/content';
+import { SEO } from '@/shared/common/SEO';
 
 export function EventsPage() {
   const [activeTab, setActiveTab] = useState<'upcoming' | 'past'>('upcoming');
@@ -29,7 +28,8 @@ export function EventsPage() {
   const activeList = isUpcoming ? upcoming : past;
 
   return (
-    <Layout title="Events">
+    <>
+      <SEO title="Events" />
       <Breadcrumbs items={breadcrumbItems} />
       <section className="section">
         <div className="container-custom">
@@ -71,15 +71,13 @@ export function EventsPage() {
                   </div>
                   <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
                   <p className="text-gray-600 mb-4">{event.description}</p>
-                  {event.location && (
-                    <p className="text-sm text-gray-500">{event.location}</p>
-                  )}
+                  {event.location && <p className="text-sm text-gray-500">{event.location}</p>}
                 </div>
               </AppLink>
             ))}
           </div>
         </div>
       </section>
-    </Layout>
+    </>
   );
 }

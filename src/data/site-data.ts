@@ -1,8 +1,8 @@
 // import { AlumniEntry } from '@/group/shared/types/alumni';
 
-import { Alumni } from "@/features/alumni/types/alumni.types";
-import { BlogPost } from "@/features/announcements/types/announcement.types";
-import { Event } from "@/features/events/types/event.types";
+import { Alumni } from '@/features/alumni/types/alumni.types';
+import { BlogPost } from '@/features/announcements/types/announcement.types';
+import { Event } from '@/features/events/types/event.types';
 
 const alumni = [
   {
@@ -264,15 +264,13 @@ const alumni = [
   },
 ];
 
-
-
 const events = [
   {
-    title: "Annual Alumni Meet 2024",
-    slug: "annual-alumni-meet-2024",
-    date: "2024-12-15",
+    title: 'Annual Alumni Meet 2024',
+    slug: 'annual-alumni-meet-2024',
+    date: '2024-12-15',
     description:
-      "Join us for our most anticipated event of the year! The Annual Alumni Meet brings together graduates from all batches for an evening of networking, celebration, and inspiration.",
+      'Join us for our most anticipated event of the year! The Annual Alumni Meet brings together graduates from all batches for an evening of networking, celebration, and inspiration.',
     content: `# Annual Alumni Meet 2024
 
 Join us for our most anticipated event of the year! The Annual Alumni Meet brings together graduates from all batches for an evening of networking, celebration, and inspiration.
@@ -299,19 +297,19 @@ Join us for our most anticipated event of the year! The Annual Alumni Meet bring
 ## Contact
 
 For more information: events@ncit.edu.np`,
-    location: "Main Campus Auditorium, NCIT",
-    registration_url: "https://forms.gle/alumni-meet-2024",
-    image: "/images/events/default-event-banner.svg",
-    category: "Networking",
-    tags: ["networking", "celebration", "alumni", "annual"],
+    location: 'Main Campus Auditorium, NCIT',
+    registration_url: 'https://forms.gle/alumni-meet-2024',
+    image: '/images/events/default-event-banner.svg',
+    category: 'Networking',
+    tags: ['networking', 'celebration', 'alumni', 'annual'],
     featured: true,
   },
   {
-    title: "Startup Pitch Competition 2024",
-    slug: "startup-pitch-competition",
-    date: "2024-04-20",
+    title: 'Startup Pitch Competition 2024',
+    slug: 'startup-pitch-competition',
+    date: '2024-04-20',
     description:
-      "Annual startup pitch competition showcasing innovative ideas from our alumni community",
+      'Annual startup pitch competition showcasing innovative ideas from our alumni community',
     content: `Calling all entrepreneurs and innovators! The annual Startup Pitch Competition is back with bigger prizes and more opportunities.
 
 ## What to Expect
@@ -352,19 +350,18 @@ Submit your startup idea by March 31st, 2024.
 ## Contact
 
 For questions: pitch@alumni.example.com`,
-    location: "Innovation Hub, University Campus",
-    registration_url: "https://pitch.example.com",
-    image: "/images/events/default-event-banner.svg",
-    category: "Entrepreneurship",
-    tags: ["startup", "pitch", "innovation", "entrepreneurship", "competition"],
+    location: 'Innovation Hub, University Campus',
+    registration_url: 'https://pitch.example.com',
+    image: '/images/events/default-event-banner.svg',
+    category: 'Entrepreneurship',
+    tags: ['startup', 'pitch', 'innovation', 'entrepreneurship', 'competition'],
     featured: true,
   },
   {
-    title: "Tech Career Fair 2024",
-    slug: "tech-career-fair-2024",
-    date: "2024-03-15",
-    description:
-      "Annual technology career fair connecting alumni with top tech companies",
+    title: 'Tech Career Fair 2024',
+    slug: 'tech-career-fair-2024',
+    date: '2024-03-15',
+    description: 'Annual technology career fair connecting alumni with top tech companies',
     content: `Join us for the biggest tech career fair of the year! This event brings together:
 
 - **50+ Tech Companies** including Google, Microsoft, Amazon, and local startups
@@ -394,38 +391,34 @@ This event is proudly sponsored by our alumni network and partner companies.
 ## Contact
 
 For more information, contact: careers@alumni.example.com`,
-    location: "Convention Center, Downtown",
-    registration_url: "https://careerfair.example.com",
-    image: "/images/events/default-event-banner.svg",
-    category: "Career Development",
-    tags: ["career", "networking", "tech", "jobs", "workshops"],
+    location: 'Convention Center, Downtown',
+    registration_url: 'https://careerfair.example.com',
+    image: '/images/events/default-event-banner.svg',
+    category: 'Career Development',
+    tags: ['career', 'networking', 'tech', 'jobs', 'workshops'],
     featured: true,
   },
 ];
 
-
-
-
-
 const blogPosts = [
   {
-    id: "blog-1",
-    title: "Building Strong Alumni Networks: A Guide to Meaningful Connections",
-    slug: "building-strong-alumni-networks",
+    id: 'blog-1',
+    title: 'Building Strong Alumni Networks: A Guide to Meaningful Connections',
+    slug: 'building-strong-alumni-networks',
     description:
-      "Discover effective strategies for creating and maintaining strong alumni networks that benefit both graduates and institutions. Learn from successful examples and practical tips.",
-    author: "NCIT Alumni Team",
-    author_photo: "/team/alumni-team.jpg",
+      'Discover effective strategies for creating and maintaining strong alumni networks that benefit both graduates and institutions. Learn from successful examples and practical tips.',
+    author: 'NCIT Alumni Team',
+    author_photo: '/team/alumni-team.jpg',
     author_bio:
-      "Dedicated team working to strengthen our alumni community and foster meaningful connections.",
-    publishDate: "2024-01-15",
-    image: "/images/blog/default-blog-banner.svg",
-    category: "Community",
-    tags: ["networking", "alumni", "community", "professional-development"],
+      'Dedicated team working to strengthen our alumni community and foster meaningful connections.',
+    publishDate: '2024-01-15',
+    image: '/images/blog/default-blog-banner.svg',
+    category: 'Community',
+    tags: ['networking', 'alumni', 'community', 'professional-development'],
     featured: true,
     draft: false,
     excerpt:
-      "Learn how to build and maintain strong alumni networks that create lasting value for graduates and institutions alike.",
+      'Learn how to build and maintain strong alumni networks that create lasting value for graduates and institutions alike.',
     readingTime: 8,
     content: `# Building Strong Alumni Networks: A Guide to Meaningful Connections
 
@@ -460,23 +453,23 @@ Leverage technology to maintain connections.
 Building strong alumni networks requires commitment, creativity, and consistent effort.`,
   },
   {
-    id: "blog-2",
-    title: "The Future of Remote Work: Insights from Alumni Leaders",
-    slug: "future-of-remote-work",
+    id: 'blog-2',
+    title: 'The Future of Remote Work: Insights from Alumni Leaders',
+    slug: 'future-of-remote-work',
     description:
-      "How remote work is reshaping the tech industry and what it means for our alumni community.",
-    author: "Alumni Editorial Team",
-    author_photo: "/team/editorial-team.jpg",
+      'How remote work is reshaping the tech industry and what it means for our alumni community.',
+    author: 'Alumni Editorial Team',
+    author_photo: '/team/editorial-team.jpg',
     author_bio:
-      "The editorial team curates insights, trends, and expert perspectives from across the alumni community.",
-    publishDate: "2024-01-15",
-    image: "/images/blog/default-blog-banner.svg",
-    category: "Career Development",
-    tags: ["remote work", "career", "technology", "workplace", "future"],
+      'The editorial team curates insights, trends, and expert perspectives from across the alumni community.',
+    publishDate: '2024-01-15',
+    image: '/images/blog/default-blog-banner.svg',
+    category: 'Career Development',
+    tags: ['remote work', 'career', 'technology', 'workplace', 'future'],
     featured: false,
     draft: false,
     excerpt:
-      "Remote work is transforming the global workforce. Discover insights from alumni leaders on how this shift is shaping careers and industries.",
+      'Remote work is transforming the global workforce. Discover insights from alumni leaders on how this shift is shaping careers and industries.',
     readingTime: 6,
     content: `# The Future of Remote Work: Insights from Alumni Leaders
 
@@ -512,19 +505,13 @@ The future of work is hybrid and flexible, creating new opportunities for alumni
   },
 ];
 
-
-
-
 export function getEvents(): Event[] {
-  return events
+  return events;
 }
 
 export function getEventBySlug(slug: string): Event | undefined {
   return events.find((entry) => entry.slug === slug);
 }
-
-
-
 
 export function getAlumni(): Alumni[] {
   return alumni;
@@ -534,16 +521,10 @@ export function getAlumnusBySlug(slug: string): Alumni | undefined {
   return alumni.find((entry) => entry.slug === slug);
 }
 
-
 export function getBlogPosts(): BlogPost[] {
   return [...blogPosts].filter((post) => !post.draft);
 }
 
-
 export function getBlogPostBySlug(slug: string): BlogPost | undefined {
   return blogPosts.find((entry) => entry.slug === slug);
 }
-
-
-
-

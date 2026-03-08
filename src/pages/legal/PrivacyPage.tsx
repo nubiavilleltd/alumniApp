@@ -1,10 +1,9 @@
-// import { Layout } from '@/components/Layout';
-
-import { Layout } from '@/shared/components/layout/Layout';
+import { SEO } from '@/shared/common/SEO';
 
 export function PrivacyPage() {
   return (
-    <Layout title="Privacy Policy">
+    <>
+      <SEO title="Privacy Policy" />
       <section className="section">
         <div className="container-custom">
           <h1 className="text-3xl font-bold mb-4">Privacy Policy</h1>
@@ -13,6 +12,6 @@ export function PrivacyPage() {
           </p>
         </div>
       </section>
-    </Layout>
+    </>
   );
 }
