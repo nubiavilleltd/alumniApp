@@ -1,6 +1,6 @@
 import { getSiteConfig } from '@/data/content';
 import { AppLink } from '@/shared/components/ui/AppLink';
-import { Layout } from '@/shared/components/layout/Layout';
+import { SEO } from '@/shared/common/SEO';
 
 const values = [
   {
@@ -99,10 +99,11 @@ export function AboutPage() {
   const config = getSiteConfig();
 
   return (
-    <Layout
-      title="About"
-      description="Learn about our alumni network, mission, and the team behind the Open Alumns Portal."
-    >
+    <>
+      <SEO
+        title="About"
+        description="Learn about our alumni network, mission, and the team behind the Open Alumns Portal."
+      />
       <section className="bg-gradient-to-r from-primary-600 to-primary-700 text-white py-16">
         <div className="container-custom text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">About Our Alumni Network</h1>
@@ -295,6 +296,6 @@ export function AboutPage() {
           </div>
         </div>
       </section>
-    </Layout>
+    </>
   );
 }

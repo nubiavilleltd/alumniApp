@@ -1,10 +1,12 @@
 // import { Layout } from '@/components/Layout';
 
+import { SEO } from '@/shared/common/SEO';
 import { Layout } from '@/shared/components/layout/Layout';
 
 export function TermsPage() {
   return (
-    <Layout title="Terms of Service">
+    <>
+      <SEO title="Terms of Service" />
       <section className="section">
         <div className="container-custom">
           <h1 className="text-3xl font-bold mb-4">Terms of Service</h1>
@@ -13,6 +15,6 @@ export function TermsPage() {
           </p>
         </div>
       </section>
-    </Layout>
+    </>
   );
 }

@@ -3,9 +3,9 @@ import { useMemo, useState } from 'react';
 
 import { getSiteConfig } from '@/data/content';
 import { getAlumni } from '@/data/site-data';
-import { Layout } from '@/shared/components/layout/Layout';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { AppLink } from '@/shared/components/ui/AppLink';
+import { SEO } from '@/shared/common/SEO';
 
 type SortMode = 'name' | 'year';
 
@@ -66,7 +66,8 @@ export function AlumniDirectoryPage() {
   const visiblePage = Math.min(currentPage, totalPages);
 
   return (
-    <Layout title="Alumni Directory" description="Browse alumni by year and search.">
+    <>
+      <SEO title="Alumni Directory" description="Browse alumni by year and search." />
       <Breadcrumbs items={breadcrumbItems} />
 
       <section className="section">
@@ -247,6 +248,6 @@ export function AlumniDirectoryPage() {
           </div>
         </div>
       </section>
-    </Layout>
+    </>
   );
 }

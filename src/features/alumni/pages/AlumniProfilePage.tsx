@@ -6,6 +6,7 @@ import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { Layout } from '@/shared/components/layout/Layout';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
+import { SEO } from '@/shared/common/SEO';
 
 export function AlumniProfilePage() {
   const { slug = '' } = useParams();
@@ -38,7 +39,8 @@ export function AlumniProfilePage() {
   ];
 
   return (
-    <Layout title={alum.name} description={alum.short_bio}>
+    <>
+      <SEO title={alum.name} description={alum.short_bio} />
       <Breadcrumbs items={breadcrumbItems} />
 
       <section className="section py-12">
@@ -257,6 +259,6 @@ export function AlumniProfilePage() {
           </div>
         </div>
       </section>
-    </Layout>
+    </>
   );
 }
