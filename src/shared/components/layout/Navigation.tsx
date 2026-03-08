@@ -1,10 +1,15 @@
 import { Icon } from '@iconify/react';
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getSiteConfig } from '@/data/content';
+import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { AppLink } from '../ui/AppLink';
 
 export function Navigation() {
   const config = getSiteConfig();
+  const navigate = useNavigate();
+  const currentUser = useAuthStore((state) => state.user);
+  const clearSession = useAuthStore((state) => state.clearSession);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openMobileSections, setOpenMobileSections] = useState<Record<string, boolean>>({});
   const mobileMenuRef = useRef<HTMLDivElement>(null);
@@ -45,6 +50,12 @@ export function Navigation() {
       ...prev,
       [sectionId]: !prev[sectionId],
     }));
+  };
+
+  const handleLogout = () => {
+    clearSession();
+    setMobileMenuOpen(false);
+    navigate('/', { replace: true });
   };
 
   return (
@@ -148,10 +159,34 @@ export function Navigation() {
               </div>
             ))}
 
-            <AppLink href="/alumni/profiles" className="btn btn-primary btn-sm">
-              Login
-              <Icon icon="mdi:login" className="w-6 h-6 mr-2" />
-            </AppLink>
+            {currentUser ? (
+              <div className="flex items-center gap-3">
+                <AppLink
+                  href="/dashboard"
+                  className="flex items-center gap-3 rounded-2xl border border-accent-200 bg-accent-50 px-3 py-2 transition-colors duration-200 hover:border-primary-200 hover:bg-primary-50"
+                >
+                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-500 to-primary-700 text-sm font-bold text-white shadow-sm">
+                    {currentUser.avatarInitials}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold text-accent-900">
+                      {currentUser.fullName}
+                    </p>
+                    <p className="text-xs text-accent-500">Dashboard</p>
+                  </div>
+                </AppLink>
+
+                <button className="btn btn-outline btn-sm" type="button" onClick={handleLogout}>
+                  <Icon icon="mdi:logout" className="mr-2 h-4 w-4" />
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <AppLink href="/auth/login" className="btn btn-primary btn-sm">
+                <Icon icon="mdi:login" className="mr-2 h-5 w-5" />
+                Login
+              </AppLink>
+            )}
           </div>
 
           <button
@@ -231,6 +266,40 @@ export function Navigation() {
                 </div>
               );
             })}
+
+            {currentUser ? (
+              <div className="space-y-3 px-4 pt-4">
+                <AppLink
+                  href="/dashboard"
+                  className="flex items-center gap-3 rounded-2xl border border-accent-200 bg-accent-50 px-4 py-3"
+                >
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-500 to-primary-700 text-sm font-bold text-white shadow-sm">
+                    {currentUser.avatarInitials}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="truncate font-semibold text-accent-900">{currentUser.fullName}</p>
+                    <p className="text-sm text-accent-500">Open dashboard</p>
+                  </div>
+                </AppLink>
+
+                <button className="btn btn-outline btn-sm w-full justify-center" type="button" onClick={handleLogout}>
+                  <Icon icon="mdi:logout" className="mr-2 h-4 w-4" />
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-3 px-4 pt-4">
+                <AppLink href="/auth/login" className="btn btn-outline btn-sm w-full justify-center">
+                  Login
+                </AppLink>
+                <AppLink
+                  href="/auth/register"
+                  className="btn btn-primary btn-sm w-full justify-center"
+                >
+                  Register
+                </AppLink>
+              </div>
+            )}
           </div>
         </div>
       </div>

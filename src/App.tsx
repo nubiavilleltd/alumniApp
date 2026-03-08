@@ -8,6 +8,8 @@ import { AlumniDirectoryPage } from './features/alumni/pages/AlumniDirectoryPage
 import { AlumniProfilePage } from './features/alumni/pages/AlumniProfilePage';
 import { BlogIndexPage } from './features/announcements/pages/BlogIndexPage';
 import { BlogPostPage } from './features/announcements/pages/BlogPostPage';
+import { AuthPage } from './features/authentication/pages/AuthPage';
+import { UserDashboardPage } from './features/dashboard/pages/UserDashboardPage';
 import { EventsPage } from './features/events/pages/EventsPage';
 import { EventDetailPage } from './features/events/pages/EventDetailPage';
 import { NotFoundPage } from './pages/errors/NotFoundPage';
@@ -43,6 +45,13 @@ export default function App() {
 
       <Route path="/events" element={<EventsPage />} />
       <Route path="/events/:slug" element={<EventDetailPage />} />
+
+      <Route path="/auth" element={<Navigate to="/auth/login" replace />} />
+      <Route path="/auth/login" element={<AuthPage mode="login" />} />
+      <Route path="/auth/register" element={<AuthPage mode="register" />} />
+      <Route path="/auth/forgot-password" element={<AuthPage mode="forgot-password" />} />
+      <Route path="/auth/reset-password" element={<AuthPage mode="reset-password" />} />
+      <Route path="/dashboard" element={<UserDashboardPage />} />
 
       <Route path="/home" element={<Navigate to="/" replace />} />
       <Route path="*" element={<NotFoundPage />} />
