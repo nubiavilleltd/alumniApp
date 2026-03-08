@@ -2,6 +2,7 @@ import { Icon } from '@iconify/react';
 import { useParams } from 'react-router-dom';
 
 import { getAlumnusBySlug } from '@/data/site-data';
+import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { Layout } from '@/shared/components/layout/Layout';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
@@ -9,6 +10,8 @@ import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 export function AlumniProfilePage() {
   const { slug = '' } = useParams();
   const alumnus = getAlumnusBySlug(slug);
+  const currentUser = useAuthStore((state) => state.user);
+  const isSignedIn = !!currentUser;
 
   if (!alumnus) {
     return (
@@ -50,176 +53,204 @@ export function AlumniProfilePage() {
               <h1 className="text-2xl font-bold">{alum.name}</h1>
               <p className="text-primary-600 mt-1">Class of {alum.year}</p>
 
-              <div className="mt-4 space-y-2 text-sm text-gray-700">
-                {alum.position && (
-                  <p>
-                    <strong>Position:</strong> {alum.position}
-                  </p>
-                )}
-                {alum.company && (
-                  <p>
-                    <strong>Company:</strong> {alum.company}
-                  </p>
-                )}
-                {alum.location && (
-                  <p>
-                    <strong>Location:</strong> {alum.location}
-                  </p>
-                )}
-                {alum.email && (
-                  <p>
-                    <strong>Email:</strong>{' '}
-                    <AppLink
-                      href={`mailto:${alum.email}`}
-                      className="text-primary-600 hover:underline ml-1"
-                    >
-                      {alum.email}
-                    </AppLink>
-                  </p>
-                )}
-              </div>
+              {isSignedIn ? (
+                <>
+                  <div className="mt-4 space-y-2 text-sm text-gray-700">
+                    {alum.position && (
+                      <p>
+                        <strong>Position:</strong> {alum.position}
+                      </p>
+                    )}
+                    {alum.company && (
+                      <p>
+                        <strong>Company:</strong> {alum.company}
+                      </p>
+                    )}
+                    {alum.location && (
+                      <p>
+                        <strong>Location:</strong> {alum.location}
+                      </p>
+                    )}
+                    {alum.email && (
+                      <p>
+                        <strong>Email:</strong>{' '}
+                        <AppLink
+                          href={`mailto:${alum.email}`}
+                          className="text-primary-600 hover:underline ml-1"
+                        >
+                          {alum.email}
+                        </AppLink>
+                      </p>
+                    )}
+                  </div>
 
-              {(socials.linkedin || socials.github || socials.twitter || socials.portfolio) && (
-                <div className="mt-6 flex justify-center gap-5 text-gray-600">
-                  {socials.linkedin && (
-                    <AppLink
-                      href={socials.linkedin}
-                      target="_blank"
-                      className="hover:text-primary-600"
-                    >
-                      <Icon icon="mdi:linkedin" className="w-6 h-6" />
-                    </AppLink>
+                  {(socials.linkedin || socials.github || socials.twitter || socials.portfolio) && (
+                    <div className="mt-6 flex justify-center gap-5 text-gray-600">
+                      {socials.linkedin && (
+                        <AppLink
+                          href={socials.linkedin}
+                          target="_blank"
+                          className="hover:text-primary-600"
+                        >
+                          <Icon icon="mdi:linkedin" className="w-6 h-6" />
+                        </AppLink>
+                      )}
+                      {socials.github && (
+                        <AppLink
+                          href={socials.github}
+                          target="_blank"
+                          className="hover:text-primary-600"
+                        >
+                          <Icon icon="mdi:github" className="w-6 h-6" />
+                        </AppLink>
+                      )}
+                      {socials.twitter && (
+                        <AppLink
+                          href={socials.twitter}
+                          target="_blank"
+                          className="hover:text-primary-600"
+                        >
+                          <Icon icon="mdi:twitter" className="w-6 h-6" />
+                        </AppLink>
+                      )}
+                      {socials.portfolio && (
+                        <AppLink
+                          href={socials.portfolio}
+                          target="_blank"
+                          className="hover:text-primary-600"
+                        >
+                          <Icon icon="mdi:web" className="w-6 h-6" />
+                        </AppLink>
+                      )}
+                    </div>
                   )}
-                  {socials.github && (
-                    <AppLink
-                      href={socials.github}
-                      target="_blank"
-                      className="hover:text-primary-600"
-                    >
-                      <Icon icon="mdi:github" className="w-6 h-6" />
-                    </AppLink>
-                  )}
-                  {socials.twitter && (
-                    <AppLink
-                      href={socials.twitter}
-                      target="_blank"
-                      className="hover:text-primary-600"
-                    >
-                      <Icon icon="mdi:twitter" className="w-6 h-6" />
-                    </AppLink>
-                  )}
-                  {socials.portfolio && (
-                    <AppLink
-                      href={socials.portfolio}
-                      target="_blank"
-                      className="hover:text-primary-600"
-                    >
-                      <Icon icon="mdi:web" className="w-6 h-6" />
-                    </AppLink>
-                  )}
+                </>
+              ) : (
+                <div className="mt-6 rounded-2xl border border-primary-200 bg-primary-50 p-4 text-left">
+                  <p className="text-sm font-semibold text-primary-900">Member-only profile</p>
+                  <p className="mt-2 text-sm leading-6 text-primary-900/80">
+                    Sign in to view this alumnus&apos;s biography, work details, contact
+                    information, and full profile sections.
+                  </p>
+                  <AppLink href="/auth/login" className="btn btn-primary btn-sm mt-4 w-full justify-center">
+                    Sign in to continue
+                  </AppLink>
                 </div>
               )}
             </aside>
 
             <main className="lg:col-span-2 space-y-8">
-              <section className="bg-white shadow-md rounded-2xl p-6">
-                <h2 className="text-xl font-semibold mb-3">About</h2>
-                <p className="text-gray-700">{alum.long_bio}</p>
-              </section>
+              {isSignedIn ? (
+                <>
+                  <section className="bg-white shadow-md rounded-2xl p-6">
+                    <h2 className="text-xl font-semibold mb-3">About</h2>
+                    <p className="text-gray-700">{alum.long_bio}</p>
+                  </section>
 
-              {alum.skills && alum.skills.length > 0 && (
-                <section className="bg-white shadow-md rounded-2xl p-6">
-                  <h2 className="text-xl font-semibold mb-3">Skills</h2>
-                  <div className="flex flex-wrap gap-2">
-                    {alum.skills.map((skill) => (
-                      <span className="badge badge-primary" key={skill}>
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                </section>
-              )}
-
-              {alum.projects && alum.projects.length > 0 && (
-                <section className="bg-white shadow-md rounded-2xl p-6">
-                  <h2 className="text-xl font-semibold mb-3">Projects</h2>
-                  <div className="space-y-4">
-                    {alum.projects.map((project) => (
-                      <div key={project.name}>
-                        <h3 className="font-semibold">{project.name}</h3>
-                        <p className="text-gray-700 text-sm">{project.description}</p>
-                        {project.url && (
-                          <AppLink
-                            href={project.url}
-                            target="_blank"
-                            className="text-primary-600 text-sm hover:underline"
-                          >
-                            View Project
-                          </AppLink>
-                        )}
+                  {alum.skills && alum.skills.length > 0 && (
+                    <section className="bg-white shadow-md rounded-2xl p-6">
+                      <h2 className="text-xl font-semibold mb-3">Skills</h2>
+                      <div className="flex flex-wrap gap-2">
+                        {alum.skills.map((skill) => (
+                          <span className="badge badge-primary" key={skill}>
+                            {skill}
+                          </span>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                </section>
-              )}
+                    </section>
+                  )}
 
-              {alum.work_experience && alum.work_experience.length > 0 && (
-                <section className="bg-white shadow-md rounded-2xl p-6">
-                  <h2 className="text-xl font-semibold mb-3">Work Experience</h2>
-                  <div className="space-y-4">
-                    {alum.work_experience.map((experience) => (
-                      <div key={`${experience.company}-${experience.position}`}>
-                        <h3 className="font-semibold">
-                          {experience.position} - {experience.company}
-                        </h3>
-                        <p className="text-gray-500 text-sm">{experience.duration}</p>
-                        <p className="text-gray-700 text-sm">{experience.description}</p>
+                  {alum.projects && alum.projects.length > 0 && (
+                    <section className="bg-white shadow-md rounded-2xl p-6">
+                      <h2 className="text-xl font-semibold mb-3">Projects</h2>
+                      <div className="space-y-4">
+                        {alum.projects.map((project) => (
+                          <div key={project.name}>
+                            <h3 className="font-semibold">{project.name}</h3>
+                            <p className="text-gray-700 text-sm">{project.description}</p>
+                            {project.url && (
+                              <AppLink
+                                href={project.url}
+                                target="_blank"
+                                className="text-primary-600 text-sm hover:underline"
+                              >
+                                View Project
+                              </AppLink>
+                            )}
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                </section>
-              )}
+                    </section>
+                  )}
 
-              {alum.education && alum.education.length > 0 && (
-                <section className="bg-white shadow-md rounded-2xl p-6">
-                  <h2 className="text-xl font-semibold mb-3">Education</h2>
-                  <div className="space-y-4">
-                    {alum.education.map((education) => (
-                      <div key={`${education.degree}-${education.year}`}>
-                        <h3 className="font-semibold">{education.degree}</h3>
-                        <p className="text-gray-700 text-sm">
-                          {education.institution} ({education.year})
-                        </p>
-                        {education.gpa && (
-                          <p className="text-gray-500 text-sm">GPA: {education.gpa}</p>
-                        )}
+                  {alum.work_experience && alum.work_experience.length > 0 && (
+                    <section className="bg-white shadow-md rounded-2xl p-6">
+                      <h2 className="text-xl font-semibold mb-3">Work Experience</h2>
+                      <div className="space-y-4">
+                        {alum.work_experience.map((experience) => (
+                          <div key={`${experience.company}-${experience.position}`}>
+                            <h3 className="font-semibold">
+                              {experience.position} - {experience.company}
+                            </h3>
+                            <p className="text-gray-500 text-sm">{experience.duration}</p>
+                            <p className="text-gray-700 text-sm">{experience.description}</p>
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                </section>
-              )}
+                    </section>
+                  )}
 
-              {alum.achievements && alum.achievements.length > 0 && (
-                <section className="bg-white shadow-md rounded-2xl p-6">
-                  <h2 className="text-xl font-semibold mb-3">Achievements</h2>
-                  <ul className="list-disc list-inside text-gray-700">
-                    {alum.achievements.map((achievement) => (
-                      <li key={achievement}>{achievement}</li>
-                    ))}
-                  </ul>
-                </section>
-              )}
+                  {alum.education && alum.education.length > 0 && (
+                    <section className="bg-white shadow-md rounded-2xl p-6">
+                      <h2 className="text-xl font-semibold mb-3">Education</h2>
+                      <div className="space-y-4">
+                        {alum.education.map((education) => (
+                          <div key={`${education.degree}-${education.year}`}>
+                            <h3 className="font-semibold">{education.degree}</h3>
+                            <p className="text-gray-700 text-sm">
+                              {education.institution} ({education.year})
+                            </p>
+                            {education.gpa && (
+                              <p className="text-gray-500 text-sm">GPA: {education.gpa}</p>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </section>
+                  )}
 
-              {alum.interests && alum.interests.length > 0 && (
+                  {alum.achievements && alum.achievements.length > 0 && (
+                    <section className="bg-white shadow-md rounded-2xl p-6">
+                      <h2 className="text-xl font-semibold mb-3">Achievements</h2>
+                      <ul className="list-disc list-inside text-gray-700">
+                        {alum.achievements.map((achievement) => (
+                          <li key={achievement}>{achievement}</li>
+                        ))}
+                      </ul>
+                    </section>
+                  )}
+
+                  {alum.interests && alum.interests.length > 0 && (
+                    <section className="bg-white shadow-md rounded-2xl p-6">
+                      <h2 className="text-xl font-semibold mb-3">Interests</h2>
+                      <div className="flex flex-wrap gap-2">
+                        {alum.interests.map((interest) => (
+                          <span className="badge badge-secondary" key={interest}>
+                            {interest}
+                          </span>
+                        ))}
+                      </div>
+                    </section>
+                  )}
+                </>
+              ) : (
                 <section className="bg-white shadow-md rounded-2xl p-6">
-                  <h2 className="text-xl font-semibold mb-3">Interests</h2>
-                  <div className="flex flex-wrap gap-2">
-                    {alum.interests.map((interest) => (
-                      <span className="badge badge-secondary" key={interest}>
-                        {interest}
-                      </span>
-                    ))}
-                  </div>
+                  <h2 className="text-xl font-semibold mb-3">Profile access limited</h2>
+                  <p className="text-gray-700 leading-7">
+                    Visitors can view only the most basic alumni information. Sign in with a member
+                    session to unlock biography, professional background, education history,
+                    projects, achievements, interests, and contact details.
+                  </p>
                 </section>
               )}
             </main>
