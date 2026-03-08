@@ -285,7 +285,8 @@ export function RegisterForm() {
                 />
               </div>
               <p className="mt-2 text-sm text-accent-500">
-                Enter the number without the country code. Example: {selectedPhoneCountry.placeholder}
+                Enter the number without the country code. Example:{' '}
+                {selectedPhoneCountry.placeholder}
               </p>
               {detailForm.formState.errors.phoneNumber && (
                 <p className="mt-2 text-sm text-secondary-700">

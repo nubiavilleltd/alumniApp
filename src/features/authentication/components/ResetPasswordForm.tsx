@@ -50,8 +50,7 @@ export function ResetPasswordForm() {
     } catch (error) {
       form.setError('password', {
         type: 'manual',
-        message:
-          error instanceof Error ? error.message : 'Password reset could not be completed',
+        message: error instanceof Error ? error.message : 'Password reset could not be completed',
       });
     }
   });
@@ -131,7 +130,10 @@ export function ResetPasswordForm() {
               aria-label={showPassword ? 'Hide password' : 'Show password'}
               onClick={() => setShowPassword((value) => !value)}
             >
-              <Icon icon={showPassword ? 'mdi:eye-off-outline' : 'mdi:eye-outline'} className="h-5 w-5" />
+              <Icon
+                icon={showPassword ? 'mdi:eye-off-outline' : 'mdi:eye-outline'}
+                className="h-5 w-5"
+              />
             </button>
           </div>
           {form.formState.errors.password && (
@@ -174,7 +176,9 @@ export function ResetPasswordForm() {
               {form.formState.errors.confirmPassword.message}
             </p>
           ) : confirmPasswordValue ? (
-            <p className={`mt-2 text-sm ${passwordsMatch ? 'text-primary-700' : 'text-accent-500'}`}>
+            <p
+              className={`mt-2 text-sm ${passwordsMatch ? 'text-primary-700' : 'text-accent-500'}`}
+            >
               {passwordsMatch ? 'Passwords match.' : 'Passwords must match exactly.'}
             </p>
           ) : null}
@@ -182,7 +186,11 @@ export function ResetPasswordForm() {
 
         {passwordValue ? <PasswordStrengthMeter password={passwordValue} /> : null}
 
-        <button className="btn btn-primary w-full" type="submit" disabled={form.formState.isSubmitting}>
+        <button
+          className="btn btn-primary w-full"
+          type="submit"
+          disabled={form.formState.isSubmitting}
+        >
           {form.formState.isSubmitting ? 'Updating password...' : 'Save new password'}
         </button>
 
@@ -193,7 +201,10 @@ export function ResetPasswordForm() {
           >
             Request another link
           </AppLink>
-          <AppLink href="/auth/login" className="font-medium text-primary-600 hover:text-primary-700">
+          <AppLink
+            href="/auth/login"
+            className="font-medium text-primary-600 hover:text-primary-700"
+          >
             Back to login
           </AppLink>
         </div>

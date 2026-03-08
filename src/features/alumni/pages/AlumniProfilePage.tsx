@@ -134,7 +134,10 @@ export function AlumniProfilePage() {
                     Sign in to view this alumnus&apos;s biography, work details, contact
                     information, and full profile sections.
                   </p>
-                  <AppLink href="/auth/login" className="btn btn-primary btn-sm mt-4 w-full justify-center">
+                  <AppLink
+                    href="/auth/login"
+                    className="btn btn-primary btn-sm mt-4 w-full justify-center"
+                  >
                     Sign in to continue
                   </AppLink>
                 </div>

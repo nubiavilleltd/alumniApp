@@ -1,8 +1,5 @@
 import { z } from 'zod';
-import {
-  phoneCountryOptions,
-  validateNationalPhoneNumber,
-} from '../constants/phoneCountries';
+import { phoneCountryOptions, validateNationalPhoneNumber } from '../constants/phoneCountries';
 
 const currentYear = new Date().getFullYear();
 const supportedPhoneCountries = phoneCountryOptions.map((option) => option.code) as [

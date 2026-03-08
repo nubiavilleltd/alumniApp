@@ -52,9 +52,7 @@ export const authApi = {
     };
   },
 
-  async requestPasswordReset(
-    values: ForgotPasswordFormValues,
-  ): Promise<ForgotPasswordResponse> {
+  async requestPasswordReset(values: ForgotPasswordFormValues): Promise<ForgotPasswordResponse> {
     await wait();
     const account = findMockAccountByEmail(values.email);
     const token = `reset-${Math.random().toString(36).slice(2, 12)}`;

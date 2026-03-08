@@ -21,7 +21,5 @@ export function AuthPage({ mode }: AuthPageProps) {
       <ResetPasswordForm />
     );
 
-  return (
-    <AuthPageShell mode={mode}>{content}</AuthPageShell>
-  );
+  return <AuthPageShell mode={mode}>{content}</AuthPageShell>;
 }

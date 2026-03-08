@@ -53,8 +53,8 @@ export function ForgotPasswordForm() {
             <div className="rounded-2xl border border-primary-200/80 bg-white/80 p-4">
               <p className="text-sm font-semibold text-accent-900">Frontend-only reset link</p>
               <p className="mt-1 text-sm leading-6 text-accent-600">
-                In production, the user would receive this by email. For now, open the link below
-                to continue the reset flow.
+                In production, the user would receive this by email. For now, open the link below to
+                continue the reset flow.
               </p>
               <AppLink href={result.resetLink} className="btn btn-primary mt-4 w-full">
                 Open password reset link
@@ -84,7 +84,9 @@ export function ForgotPasswordForm() {
             placeholder="you@example.com"
             {...register('email')}
           />
-          {errors.email && <p className="mt-2 text-sm text-secondary-700">{errors.email.message}</p>}
+          {errors.email && (
+            <p className="mt-2 text-sm text-secondary-700">{errors.email.message}</p>
+          )}
         </div>
 
         <button className="btn btn-primary w-full" type="submit" disabled={isSubmitting}>
@@ -92,7 +94,10 @@ export function ForgotPasswordForm() {
         </button>
 
         <div className="flex items-center justify-between gap-3 text-sm">
-          <AppLink href="/auth/login" className="font-medium text-primary-600 hover:text-primary-700">
+          <AppLink
+            href="/auth/login"
+            className="font-medium text-primary-600 hover:text-primary-700"
+          >
             Back to login
           </AppLink>
           <AppLink

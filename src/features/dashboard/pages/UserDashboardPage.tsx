@@ -14,9 +14,7 @@ const statToneClass: Record<DashboardStat['tone'], string> = {
 
 function StatCard({ stat }: { stat: DashboardStat }) {
   return (
-    <div
-      className={`rounded-[1.5rem] bg-gradient-to-br p-5 shadow-lg ${statToneClass[stat.tone]}`}
-    >
+    <div className={`rounded-[1.5rem] bg-gradient-to-br p-5 shadow-lg ${statToneClass[stat.tone]}`}>
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-sm font-medium text-white/80">{stat.label}</p>
@@ -181,7 +179,11 @@ export function UserDashboardPage() {
                 {error || 'Something went wrong while loading your dashboard.'}
               </p>
               <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
-                <button className="btn btn-primary" type="button" onClick={() => window.location.reload()}>
+                <button
+                  className="btn btn-primary"
+                  type="button"
+                  onClick={() => window.location.reload()}
+                >
                   Try again
                 </button>
                 <AppLink href="/auth/login" className="btn btn-outline">
@@ -208,7 +210,9 @@ export function UserDashboardPage() {
                 </p>
                 <h1 className="mt-3 text-3xl font-bold md:text-4xl">{dashboard.user.name}</h1>
                 <div className="mt-5 inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm text-white/85">
-                  <span className="font-semibold">{dashboard.user.profileCompletion}% complete</span>
+                  <span className="font-semibold">
+                    {dashboard.user.profileCompletion}% complete
+                  </span>
                   <span className="h-1 w-16 overflow-hidden rounded-full bg-white/10">
                     <span
                       className="block h-full rounded-full bg-primary-200"
@@ -248,7 +252,10 @@ export function UserDashboardPage() {
               <SectionCard
                 title="Announcements / News"
                 action={
-                  <AppLink href="/blog" className="text-sm font-semibold text-primary-600 hover:text-primary-700">
+                  <AppLink
+                    href="/blog"
+                    className="text-sm font-semibold text-primary-600 hover:text-primary-700"
+                  >
                     View all
                   </AppLink>
                 }
@@ -275,7 +282,10 @@ export function UserDashboardPage() {
               <SectionCard
                 title="Upcoming Events"
                 action={
-                  <AppLink href="/events" className="text-sm font-semibold text-primary-600 hover:text-primary-700">
+                  <AppLink
+                    href="/events"
+                    className="text-sm font-semibold text-primary-600 hover:text-primary-700"
+                  >
                     Calendar
                   </AppLink>
                 }
@@ -324,7 +334,10 @@ export function UserDashboardPage() {
                 <div className="mt-4 space-y-3">
                   {dashboard.profileTasks.map((task) => (
                     <div className="flex items-center gap-3 text-sm text-accent-700" key={task}>
-                      <Icon icon="mdi:checkbox-blank-circle-outline" className="h-4 w-4 text-primary-500" />
+                      <Icon
+                        icon="mdi:checkbox-blank-circle-outline"
+                        className="h-4 w-4 text-primary-500"
+                      />
                       <span>{task}</span>
                     </div>
                   ))}

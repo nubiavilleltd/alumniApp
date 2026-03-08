@@ -92,7 +92,9 @@ function buildDashboardData(userEmail?: string): DashboardData {
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
   );
   const today = new Date();
-  const upcomingEvents = allEvents.filter((event) => new Date(event.date).getTime() >= today.getTime());
+  const upcomingEvents = allEvents.filter(
+    (event) => new Date(event.date).getTime() >= today.getTime(),
+  );
   const dashboardEvents = (upcomingEvents.length > 0 ? upcomingEvents : allEvents).slice(0, 3);
   const matchedUser = alumni.find((alumnus) => alumnus.email.toLowerCase() === normalizedEmail);
   const userName = matchedUser?.name ?? formatDisplayName(normalizedEmail);

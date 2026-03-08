@@ -282,14 +282,21 @@ export function Navigation() {
                   </div>
                 </AppLink>
 
-                <button className="btn btn-outline btn-sm w-full justify-center" type="button" onClick={handleLogout}>
+                <button
+                  className="btn btn-outline btn-sm w-full justify-center"
+                  type="button"
+                  onClick={handleLogout}
+                >
                   <Icon icon="mdi:logout" className="mr-2 h-4 w-4" />
                   Logout
                 </button>
               </div>
             ) : (
               <div className="grid grid-cols-2 gap-3 px-4 pt-4">
-                <AppLink href="/auth/login" className="btn btn-outline btn-sm w-full justify-center">
+                <AppLink
+                  href="/auth/login"
+                  className="btn btn-outline btn-sm w-full justify-center"
+                >
                   Login
                 </AppLink>
                 <AppLink

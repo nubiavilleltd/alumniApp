@@ -55,8 +55,8 @@ export function LoginForm() {
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-accent-900">Sign in</h2>
         <p className="mt-2 text-sm leading-6 text-accent-500">
-          Use one of the stored demo accounts below. Session state is kept in the browser session
-          so the signed-in navbar and dashboard flow behave like a lightweight session-based auth
+          Use one of the stored demo accounts below. Session state is kept in the browser session so
+          the signed-in navbar and dashboard flow behave like a lightweight session-based auth
           setup.
         </p>
       </div>
@@ -69,8 +69,9 @@ export function LoginForm() {
           <div className="min-w-0">
             <p className="font-semibold text-primary-900">Dummy accounts</p>
             <p className="mt-1 text-sm leading-6 text-primary-900/80">
-              Default password for these accounts is <span className="font-semibold">Alumni123!</span>.
-              If you reset one account later, that account will start using the new password you set.
+              Default password for these accounts is{' '}
+              <span className="font-semibold">Alumni123!</span>. If you reset one account later,
+              that account will start using the new password you set.
             </p>
             <div className="mt-4 grid gap-3">
               {defaultMockAccounts.map((account) => (
@@ -140,7 +141,10 @@ export function LoginForm() {
               aria-label={showPassword ? 'Hide password' : 'Show password'}
               onClick={() => setShowPassword((value) => !value)}
             >
-              <Icon icon={showPassword ? 'mdi:eye-off-outline' : 'mdi:eye-outline'} className="h-5 w-5" />
+              <Icon
+                icon={showPassword ? 'mdi:eye-off-outline' : 'mdi:eye-outline'}
+                className="h-5 w-5"
+              />
             </button>
           </div>
           {errors.password && (
