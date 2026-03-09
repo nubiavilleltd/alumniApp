@@ -4,102 +4,108 @@ import { SEO } from '@/shared/common/SEO';
 import OurStory from '../home/components/OurStory';
 import CoreValues from './CoreValues';
 import Leadership from '../home/components/Leadership';
+import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 
-const values = [
-  {
-    title: 'Community First',
-    description:
-      'We prioritize the well-being and success of our community members, fostering an environment of mutual support and collaboration.',
-    icon: (
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-      />
-    ),
-    iconBg: 'bg-primary-100',
-    iconColor: 'text-primary-600',
-  },
-  {
-    title: 'Excellence',
-    description:
-      'We strive for excellence in everything we do, encouraging our members to pursue their passions and achieve their highest potential.',
-    icon: (
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-      />
-    ),
-    iconBg: 'bg-secondary-100',
-    iconColor: 'text-secondary-600',
-  },
-  {
-    title: 'Innovation',
-    description:
-      "We embrace innovation and creativity, supporting our members in developing new ideas and pushing the boundaries of what's possible.",
-    icon: (
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        d="M13 10V3L4 14h7v7l9-11h-7z"
-      />
-    ),
-    iconBg: 'bg-accent-100',
-    iconColor: 'text-accent-600',
-  },
-  {
-    title: 'Inclusivity',
-    description:
-      'We celebrate diversity and create an inclusive environment where all members feel welcome, valued, and empowered to contribute.',
-    icon: (
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-      />
-    ),
-    iconBg: 'bg-primary-100',
-    iconColor: 'text-primary-600',
-  },
-  {
-    title: 'Lifelong Learning',
-    description:
-      "We believe in the power of continuous learning and personal development, providing opportunities for growth throughout our members' careers.",
-    icon: (
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-      />
-    ),
-    iconBg: 'bg-secondary-100',
-    iconColor: 'text-secondary-600',
-  },
-  {
-    title: 'Global Impact',
-    description:
-      'We aim to make a positive impact on the world through the collective efforts and achievements of our global alumni community.',
-    icon: (
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9"
-      />
-    ),
-    iconBg: 'bg-accent-100',
-    iconColor: 'text-accent-600',
-  },
-];
+// const values = [
+//   {
+//     title: 'Community First',
+//     description:
+//       'We prioritize the well-being and success of our community members, fostering an environment of mutual support and collaboration.',
+//     icon: (
+//       <path
+//         strokeLinecap="round"
+//         strokeLinejoin="round"
+//         strokeWidth="2"
+//         d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+//       />
+//     ),
+//     iconBg: 'bg-primary-100',
+//     iconColor: 'text-primary-600',
+//   },
+//   {
+//     title: 'Excellence',
+//     description:
+//       'We strive for excellence in everything we do, encouraging our members to pursue their passions and achieve their highest potential.',
+//     icon: (
+//       <path
+//         strokeLinecap="round"
+//         strokeLinejoin="round"
+//         strokeWidth="2"
+//         d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+//       />
+//     ),
+//     iconBg: 'bg-secondary-100',
+//     iconColor: 'text-secondary-600',
+//   },
+//   {
+//     title: 'Innovation',
+//     description:
+//       "We embrace innovation and creativity, supporting our members in developing new ideas and pushing the boundaries of what's possible.",
+//     icon: (
+//       <path
+//         strokeLinecap="round"
+//         strokeLinejoin="round"
+//         strokeWidth="2"
+//         d="M13 10V3L4 14h7v7l9-11h-7z"
+//       />
+//     ),
+//     iconBg: 'bg-accent-100',
+//     iconColor: 'text-accent-600',
+//   },
+//   {
+//     title: 'Inclusivity',
+//     description:
+//       'We celebrate diversity and create an inclusive environment where all members feel welcome, valued, and empowered to contribute.',
+//     icon: (
+//       <path
+//         strokeLinecap="round"
+//         strokeLinejoin="round"
+//         strokeWidth="2"
+//         d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+//       />
+//     ),
+//     iconBg: 'bg-primary-100',
+//     iconColor: 'text-primary-600',
+//   },
+//   {
+//     title: 'Lifelong Learning',
+//     description:
+//       "We believe in the power of continuous learning and personal development, providing opportunities for growth throughout our members' careers.",
+//     icon: (
+//       <path
+//         strokeLinecap="round"
+//         strokeLinejoin="round"
+//         strokeWidth="2"
+//         d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+//       />
+//     ),
+//     iconBg: 'bg-secondary-100',
+//     iconColor: 'text-secondary-600',
+//   },
+//   {
+//     title: 'Global Impact',
+//     description:
+//       'We aim to make a positive impact on the world through the collective efforts and achievements of our global alumni community.',
+//     icon: (
+//       <path
+//         strokeLinecap="round"
+//         strokeLinejoin="round"
+//         strokeWidth="2"
+//         d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9"
+//       />
+//     ),
+//     iconBg: 'bg-accent-100',
+//     iconColor: 'text-accent-600',
+//   },
+// ];
 
 export function AboutPage() {
-  const config = getSiteConfig();
+  // const config = getSiteConfig();
+
+    const breadcrumbItems = [
+    { label: 'Home', href: '/' },
+    { label: 'About Us'},
+  ];
 
   return (
     <>
@@ -109,41 +115,17 @@ export function AboutPage() {
       />
       {/* <section className="bg-gradient-to-r from-primary-600 to-primary-700 text-white py-16">
         <div className="container-custom text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">About Our Alumni Network</h1>
-          <p className="text-xl text-gray-100 max-w-3xl mx-auto">
-            Building bridges between past, present, and future generations of graduates
-          </p>
+        <h1 className="text-4xl md:text-5xl font-bold mb-4">About Our Alumni Network</h1>
+        <p className="text-xl text-gray-100 max-w-3xl mx-auto">
+        Building bridges between past, present, and future generations of graduates
+        </p>
         </div>
-      </section> */}
+        </section> */}
 
-      <section className="bg-gray-50 py-4">
-        <div className="container-custom">
-          <nav className="flex" aria-label="Breadcrumb">
-            <ol className="flex items-center space-x-2">
-              <li>
-                <AppLink
-                  href="/"
-                  className="text-gray-500 hover:text-primary-600 transition-colors"
-                >
-                  Home
-                </AppLink>
-              </li>
-              <li className="flex items-center">
-                <svg className="w-4 h-4 text-gray-400 mx-2" fill="currentColor" viewBox="0 0 20 20">
-                  <path
-                    fillRule="evenodd"
-                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="text-gray-900 font-medium">About</span>
-              </li>
-            </ol>
-          </nav>
-        </div>
-      </section>
+        <Breadcrumbs items={breadcrumbItems} />
+  
 
-{/* 
+      {/* 
       <section className="section">
         <div className="container-custom">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
