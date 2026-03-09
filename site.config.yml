@@ -96,6 +96,8 @@ navigation:
   - label: 'Home'
     url: '/'
     # icon: 'home'
+  - label: 'About Us'
+    url: '/about'
   - label: 'Alumni Directory'
     url: '/alumni/profiles'
     # icon: 'users'

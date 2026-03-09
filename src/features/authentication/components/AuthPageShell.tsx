@@ -72,9 +72,8 @@ export function AuthPageShell({ mode, children }: AuthPageShellProps) {
           : 'Reset Password';
 
   return (
-    
     <>
-    <SEO title={pageTitle} description={pageContent.description} />
+      <SEO title={pageTitle} description={pageContent.description} />
       <section className="section bg-[radial-gradient(circle_at_top_left,_rgba(59,130,246,0.16),_transparent_34%),radial-gradient(circle_at_bottom_right,_rgba(239,68,68,0.14),_transparent_28%),linear-gradient(180deg,_#ffffff,_#f1f5f9)]">
         <div className="container-custom">
           <div className="grid items-start gap-8 lg:grid-cols-[1.08fr_0.92fr]">

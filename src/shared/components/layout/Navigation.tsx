@@ -5,6 +5,52 @@ import { getSiteConfig } from '@/data/content';
 import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { AppLink } from '../ui/AppLink';
 
+
+interface NavigationItem {
+  label: string;
+  url: string;
+  icon?: string;
+}
+
+const navigation: NavigationItem[] = [
+  {
+    label: 'Home',
+    url: '/',
+    // icon: 'home'
+  },
+  {
+    label: 'About Us',
+    url: '/about',
+  },
+  {
+    label: 'Alumnae Directory',
+    url: '/alumni/profiles',
+    // icon: 'users'
+  },
+  {
+    label: 'Alumnae Connect',
+    url: '/alumni/profiles',
+    // icon: 'users'
+  },
+  {
+    label: 'Events',
+    url: '/events',
+    // icon: 'calendar'
+  },
+  {
+    label: 'Market Place',
+    url: '/events',
+    // icon: 'calendar'
+  },
+  {
+    label: 'Projects',
+    url: '/blog',
+    // icon: 'newspaper'
+  },
+
+];
+
+
 export function Navigation() {
   const config = getSiteConfig();
   const navigate = useNavigate();
@@ -59,7 +105,8 @@ export function Navigation() {
   };
 
   return (
-    <nav className="bg-white/95 backdrop-blur border-b border-accent-100 sticky top-0 z-50">
+    // <nav className="bg-white/95 backdrop-blur border-b border-accent-100 sticky top-0 z-50">
+    <nav className="bg-primary-700 backdrop-blur border-b border-accent-100 sticky top-0 z-50 text-white">
       <div className="container-custom">
         <div className="flex items-center justify-between h-16 lg:h-20">
           <div className="flex items-center">
@@ -76,86 +123,23 @@ export function Navigation() {
                 )}
               </div>
               <div>
-                <h1 className="text-xl lg:text-2xl font-bold text-accent-900 group-hover:text-primary-600 transition-colors duration-200">
+                <h1 className="text-xl lg:text-2xl font-bold text-white group-hover:text-primary-600 transition-colors duration-200">
                   {config.site.name}
                 </h1>
-                <p className="text-xs text-accent-500 hidden sm:block">Alumni Network</p>
+                <p className="text-xs text-white hidden sm:block">Alumni Network</p>
               </div>
             </AppLink>
           </div>
 
-          <div className="hidden lg:flex items-center space-x-8">
-            {config.navigation.map((item) => (
+          <div className="hidden lg:flex items-center space-x-5">
+            {navigation.map((item) => (
               <div className="relative group" key={item.label}>
-                {item.mega_menu ? (
-                  <div className="relative">
-                    <button className="nav-link flex items-center space-x-1 py-2" type="button">
-                      <span>{item.label}</span>
-                      <Icon
-                        icon="mdi:chevron-down"
-                        className="w-4 h-4 transition-transform duration-200 group-hover:rotate-180"
-                      />
-                    </button>
-
-                    <div className="mega-menu">
-                      <div className="mega-menu-content">
-                        <div className="grid grid-cols-1 gap-6 xl:gap-8">
-                          <div className="mega-menu-section">
-                            <h3 className="mega-menu-title">Browse by Year</h3>
-                            <div className="mega-menu-links max-h-64 overflow-y-auto scrollbar-hide">
-                              <div className="grid grid-cols-2 xl:grid-cols-1 gap-2">
-                                {years.map((year) => (
-                                  <AppLink
-                                    href={`/alumni/years/${year}`}
-                                    key={year}
-                                    className="mega-menu-link flex items-center space-x-2 hover:bg-accent-50 px-3 py-2 rounded-lg -mx-3 -my-2"
-                                  >
-                                    <Icon
-                                      icon="mdi:calendar"
-                                      className="w-4 h-4 text-accent-400 flex-shrink-0"
-                                    />
-                                    <span className="truncate">{year}</span>
-                                    <span className="text-xs text-accent-400 ml-auto hidden xl:inline">
-                                      {config.content.alumni_per_page} alumni
-                                    </span>
-                                  </AppLink>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="mt-6 xl:mt-8 pt-4 xl:pt-6 border-t border-accent-100">
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <AppLink
-                              href="/alumni/profiles"
-                              className="btn btn-primary btn-sm w-full justify-center"
-                            >
-                              <Icon icon="mdi:account-search" className="w-4 h-4 mr-2" />
-                              <span className="hidden sm:inline">View All Alumni</span>
-                              <span className="sm:hidden">All Alumni</span>
-                            </AppLink>
-                            <AppLink
-                              href="/alumni/years"
-                              className="btn btn-outline btn-sm w-full justify-center"
-                            >
-                              <Icon icon="mdi:calendar-multiple" className="w-4 h-4 mr-2" />
-                              <span className="hidden sm:inline">Browse by Year</span>
-                              <span className="sm:hidden">By Year</span>
-                            </AppLink>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <AppLink href={item.url} className="nav-link py-2">
+             <AppLink href={item.url} className="nav-link py-2">
                     {item.icon && (
                       <Icon icon={`mdi:${item.icon}`} className="w-4 h-4 mr-2 inline-block" />
                     )}
                     {item.label}
                   </AppLink>
-                )}
               </div>
             ))}
 
@@ -182,8 +166,8 @@ export function Navigation() {
                 </button>
               </div>
             ) : (
-              <AppLink href="/auth/login" className="btn btn-primary btn-sm">
-                <Icon icon="mdi:login" className="mr-2 h-5 w-5" />
+              <AppLink href="/auth/login" className="btn bg-white text-primary-700">
+                {/* <Icon icon="mdi:login" className="mr-2 h-5 w-5" /> */}
                 Login
               </AppLink>
             )}
