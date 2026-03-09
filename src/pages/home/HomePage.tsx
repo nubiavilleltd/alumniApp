@@ -4,6 +4,15 @@ import { getAlumni, getEvents } from '@/data/site-data';
 import { Layout } from '@/shared/components/layout/Layout';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { SEO } from '@/shared/common/SEO';
+import Button from '@/shared/components/ui/Button';
+import HeroBg from '../../../public/hero-bg.png';
+import OurStory from './components/OurStory';
+import NewsAndStories from './components/NewsAndStories';
+import Leadership from './components/Leadership';
+import OurProjects from './components/OurProjects';
+import UpcomingEvents from './components/UpcomingEvents';
+import HomeStats from './components/HomeStats';
+import HeroSection from './components/HeroSection';
 
 export function HomePage() {
   const config = getSiteConfig();
@@ -26,114 +35,18 @@ export function HomePage() {
     // <Layout title={config.site.name} description={config.site.description}>
     <>
       <SEO title={config.site.name} description={config.site.description} />
-      <section className="hero section-sm">
-        <div className="container-custom">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="text-center lg:text-left">
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-accent-900 mb-6 leading-tight">
-                Connect with Your{' '}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-primary-900">
-                  Alumni Network
-                </span>
-              </h1>
-              <p className="text-xl md:text-2xl text-accent-600 mb-8 leading-relaxed">
-                Stay connected with fellow graduates, discover opportunities, and build lasting
-                professional relationships.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <AppLink href="/alumni/profiles" className="btn btn-primary btn-lg">
-                  <Icon icon="mdi:account-search" className="w-6 h-6 mr-2" />
-                  Browse Alumni
-                </AppLink>
-                <AppLink href="/about" className="btn btn-outline btn-lg">
-                  <Icon icon="mdi:information" className="w-6 h-6 mr-2" />
-                  Learn More
-                </AppLink>
-              </div>
-            </div>
 
-            <div className="relative">
-              <div className="relative z-10">
-                <div className="bg-gradient-to-br from-primary-400 to-primary-900 rounded-3xl p-8 md:p-12 shadow-2xl">
-                  <div className="text-center text-white">
-                    <Icon
-                      icon="mdi:account-group"
-                      className="w-24 h-24 md:w-32 md:h-32 mx-auto mb-6"
-                    />
-                    <h3 className="text-2xl md:text-3xl font-bold mb-4">Join Our Network</h3>
-                    <p className="text-lg mb-6 opacity-90">
-                      Connect with {alumni.length}+ alumni from {config.organization.name}
-                    </p>
-                    {/* <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                      <AppLink
-                        href="/alumni"
-                        className="btn btn-secondary btn-lg text-white hover:bg-secondary-600"
-                      >
-                        <Icon icon="mdi:search" className="w-6 h-6 mr-2" />
-                        Browse Network
-                      </AppLink>
-                      <AppLink
-                        href={
-                          config.features.alumni_registration.enabled
-                            ? config.features.alumni_registration.url
-                            : '#'
-                        }
-                        className="btn btn-white btn-lg text-secondary-600 hover:bg-secondary-50"
-                        target={config.features.alumni_registration.enabled ? '_blank' : undefined}
-                        rel={
-                          config.features.alumni_registration.enabled
-                            ? 'noopener noreferrer'
-                            : undefined
-                        }
-                      >
-                        <Icon icon="mdi:account-plus" className="w-6 h-6 mr-2" />
-                        Join Now
-                      </AppLink>
-                    </div> */}
-                  </div>
-                </div>
-              </div>
+      <HeroSection />
 
-              <div className="absolute -top-4 -right-4 w-24 h-24 bg-secondary-200 rounded-full opacity-50 animate-pulse" />
-              <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-primary-200 rounded-full opacity-50 animate-pulse animation-delay-1000" />
-            </div>
-          </div>
-        </div>
-      </section>
+      <HomeStats />
 
-      <section className="section-sm bg-gradient-to-r from-accent-50 to-accent-100">
-        <div className="container-custom">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-primary-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                <Icon icon="mdi:account-group" className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-3xl font-bold text-primary-900 mb-2">{alumni.length}+</h3>
-              <p className="text-accent-700 font-medium">Alumni</p>
-            </div>
+      <OurStory />
 
-            <div className="text-center">
-              <div className="w-16 h-16 bg-accent-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                <Icon icon="mdi:calendar" className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-3xl font-bold text-accent-900 mb-2">
-                {config.years.end - config.years.start + 1}
-              </h3>
-              <p className="text-accent-700 font-medium">Years</p>
-            </div>
+      <OurProjects />
 
-            <div className="text-center">
-              <div className="w-16 h-16 bg-primary-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                <Icon icon="mdi:map-marker" className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-3xl font-bold text-primary-900 mb-2">Global</h3>
-              <p className="text-accent-700 font-medium">Network</p>
-            </div>
-          </div>
-        </div>
-      </section>
+      <UpcomingEvents />
 
-      <section className="section">
+      {/* <section className="section">
         <div className="container-custom">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold text-accent-900 mb-4">Upcoming Events</h2>
@@ -197,9 +110,9 @@ export function HomePage() {
             </AppLink>
           </div>
         </div>
-      </section>
+      </section> */}
 
-      <section className="section bg-gradient-to-br from-accent-50 to-primary-50">
+      {/* <section className="section bg-gradient-to-br from-accent-50 to-primary-50">
         <div className="container-custom">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold text-accent-900 mb-4">Featured Alumni</h2>
@@ -289,9 +202,9 @@ export function HomePage() {
             </AppLink>
           </div>
         </div>
-      </section>
+      </section> */}
 
-      <section className="section">
+      {/* <section className="section">
         <div className="container-custom">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold text-accent-900 mb-4">
@@ -357,9 +270,13 @@ export function HomePage() {
             </AppLink>
           </div>
         </div>
-      </section>
+      </section> */}
 
-      <section className="section bg-gradient-to-br from-primary-400 to-primary-900">
+      <NewsAndStories />
+
+      <Leadership />
+
+      {/* <section className="section bg-gradient-to-br from-primary-400 to-primary-900">
         <div className="container-custom text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Ready to Connect?</h2>
           <p className="text-xl text-white/90 mb-8 max-w-3xl mx-auto">
@@ -384,7 +301,7 @@ export function HomePage() {
             </AppLink>
           </div>
         </div>
-      </section>
+      </section> */}
     </>
   );
 }

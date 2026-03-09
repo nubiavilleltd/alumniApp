@@ -4,21 +4,19 @@
 @tailwind components;
 @tailwind utilities;
 
-
 :root {
   /* Primary (Blue – exact header/nav color from screenshot) */
-  --color-primary-50: #f0f9ff;
-  --color-primary-100: #e0f2fe;
-  --color-primary-200: #bae6fd;
-  --color-primary-300: #7dd3fc;
-  --color-primary-400: #38bdf8;
-  --color-primary-500: #0ea5e9;
-  --color-primary-600: #0284c7;   /* Main header blue - THIS IS IT */
-  --color-primary-700: #0369a1;   /* Hover state */
-  --color-primary-800: #075985;
-  --color-primary-900: #0c4a6e;
-  --color-primary-950: #082f49;
-
+  --color-primary-50: #f0f8ff;
+  --color-primary-100: #d9efff;
+  --color-primary-200: #bfe4ff;
+  --color-primary-300: #8fd1ff;
+  --color-primary-400: #4fb6ff;
+  --color-primary-500: #0077cc; /* Main brand color */
+  --color-primary-600: #0066b3; /* Hover */
+  --color-primary-700: #005599;
+  --color-primary-800: #00447a;
+  --color-primary-900: #00345c;
+  --color-primary-950: #001f38;
   /* Secondary (Light Blue – "Excellence" accent text) */
   --color-secondary-50: #f0f9ff;
   --color-secondary-100: #e0f2fe;
@@ -124,7 +122,8 @@
 }
 
 .section {
-  @apply py-16 md:py-20 lg:py-24;
+  /* @apply py-16 md:py-20 lg:py-24; */
+  @apply py-4 md:py-8 lg:py-12;
 }
 
 .section-sm {

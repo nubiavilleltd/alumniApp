@@ -15,6 +15,9 @@ import { NotFoundPage } from './pages/errors/NotFoundPage';
 import { HomePage } from './pages/home/HomePage';
 import { PrivacyPage } from './pages/legal/PrivacyPage';
 import { TermsPage } from './pages/legal/TermsPage';
+import ProjectsPage from './features/projects/pages/ProjectsPage';
+import LeadershipPage from './features/leadership/pages/LeadershipPage';
+import MarketPlacePage from './features/marketplace/pages/MarketPlacePage';
 
 export default function App() {
   return (
@@ -24,6 +27,9 @@ export default function App() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/terms" element={<TermsPage />} />
+        <Route path="/projects" element={<ProjectsPage />} />
+        <Route path="/leadership" element={<LeadershipPage />} />
+        <Route path="/marketplace" element={<MarketPlacePage />} />
 
         <Route path="/alumni" element={<AlumniRedirectPage />} />
         <Route path="/alumni/profiles" element={<AlumniDirectoryPage />} />
