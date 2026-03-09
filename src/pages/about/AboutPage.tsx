@@ -1,6 +1,9 @@
 import { getSiteConfig } from '@/data/content';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { SEO } from '@/shared/common/SEO';
+import OurStory from '../home/components/OurStory';
+import CoreValues from './CoreValues';
+import Leadership from '../home/components/Leadership';
 
 const values = [
   {
@@ -104,14 +107,14 @@ export function AboutPage() {
         title="About"
         description="Learn about our alumni network, mission, and the team behind the Open Alumns Portal."
       />
-      <section className="bg-gradient-to-r from-primary-600 to-primary-700 text-white py-16">
+      {/* <section className="bg-gradient-to-r from-primary-600 to-primary-700 text-white py-16">
         <div className="container-custom text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">About Our Alumni Network</h1>
           <p className="text-xl text-gray-100 max-w-3xl mx-auto">
             Building bridges between past, present, and future generations of graduates
           </p>
         </div>
-      </section>
+      </section> */}
 
       <section className="bg-gray-50 py-4">
         <div className="container-custom">
@@ -140,6 +143,7 @@ export function AboutPage() {
         </div>
       </section>
 
+{/* 
       <section className="section">
         <div className="container-custom">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -218,9 +222,9 @@ export function AboutPage() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
-      <section className="section bg-gray-50">
+      {/* <section className="section bg-gray-50">
         <div className="container-custom">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Core Values</h2>
@@ -250,9 +254,9 @@ export function AboutPage() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
-      <section className="section bg-gradient-to-r from-primary-600 to-primary-700 text-white">
+      {/* <section className="section bg-gradient-to-r from-primary-600 to-primary-700 text-white">
         <div className="container-custom text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">Get Involved</h2>
           <p className="text-xl mb-8 max-w-3xl mx-auto">
@@ -295,7 +299,11 @@ export function AboutPage() {
             </AppLink>
           </div>
         </div>
-      </section>
+      </section> */}
+
+      <OurStory />
+      <CoreValues />
+      <Leadership />
     </>
   );
 }
