@@ -1,8 +1,9 @@
 import React from 'react';
 
-import Project1 from "../../../../public/project-1.png"
-import Project2 from "../../../../public/project-2.png"
-import Project3 from "../../../../public/project-3.png"
+import Project1 from '../../../../public/project-1.png';
+import Project2 from '../../../../public/project-2.png';
+import Project3 from '../../../../public/project-3.png';
+import { AppLink } from '@/shared/components/ui/AppLink';
 
 interface Project {
   id: number;
@@ -75,12 +76,12 @@ export default function OurProjects() {
           ))}
         </div>
         <div className="mt-6 text-right">
-          <a
-            href="#"
+          <AppLink
+            href="/projects"
             className="text-primary-500 text-sm font-semibold hover:underline inline-flex items-center gap-1"
           >
-            See More <span>→</span>
-          </a>
+            See More
+          </AppLink>
         </div>
       </div>
     </section>

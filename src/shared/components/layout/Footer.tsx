@@ -143,9 +143,6 @@
 //   );
 // }
 
-
-
-
 import { Icon } from '@iconify/react';
 import { getSiteConfig } from '@/data/content';
 import { AppLink } from '../ui/AppLink';
@@ -157,10 +154,8 @@ export function Footer() {
   return (
     <footer className="bg-[#0077B6] text-white">
       <div className="container-custom py-10">
-
         {/* Top row: Logo + Contact */}
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-8 mb-8">
-
           {/* Left: Logo + description */}
           <div className="max-w-sm">
             <div className="flex items-center gap-3 mb-3">
@@ -180,9 +175,7 @@ export function Footer() {
                 <p className="text-blue-100 text-xs leading-tight">{config.organization.name}</p>
               </div>
             </div>
-            <p className="text-blue-100 text-sm leading-relaxed">
-              {config.site.description}
-            </p>
+            <p className="text-blue-100 text-sm leading-relaxed">{config.site.description}</p>
           </div>
 
           {/* Right: Contact Us */}
@@ -239,7 +232,6 @@ export function Footer() {
             ))}
           </div>
         </div>
-
       </div>
     </footer>
   );

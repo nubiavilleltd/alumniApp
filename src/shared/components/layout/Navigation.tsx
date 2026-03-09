@@ -38,12 +38,12 @@ const navigation: NavigationItem[] = [
   },
   {
     label: 'Market Place',
-    url: '/events',
+    url: '/marketplace',
     // icon: 'calendar'
   },
   {
     label: 'Projects',
-    url: '/blog',
+    url: '/projects',
     // icon: 'newspaper'
   },
 ];
@@ -125,7 +125,9 @@ export function Navigation() {
                 <h1 className="text-lg font-bold text-white group-hover:text-primary-200 transition-colors duration-200">
                   {config.site.name}
                 </h1>
-                <p className="text-xs text-gray-50 hidden sm:block">Federal Government Girls College</p>
+                <p className="text-xs text-gray-50 hidden sm:block">
+                  Federal Government Girls College
+                </p>
               </div>
             </AppLink>
           </div>

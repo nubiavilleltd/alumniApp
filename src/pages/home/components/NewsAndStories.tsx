@@ -1,9 +1,9 @@
-import React from "react";
-import News1 from "../../../../public/news-1.png"
-import News2 from "../../../../public/news-2.png"
-import News3 from "../../../../public/news-3.png"
-import News4 from "../../../../public/news-4.png"
-import News5 from "../../../../public/news-5.png"
+import React from 'react';
+import News1 from '../../../../public/news-1.png';
+import News2 from '../../../../public/news-2.png';
+import News3 from '../../../../public/news-3.png';
+import News4 from '../../../../public/news-4.png';
+import News5 from '../../../../public/news-5.png';
 
 interface NewsItem {
   id: number;
@@ -18,36 +18,36 @@ interface NewsItem {
 const newsItems: NewsItem[] = [
   {
     id: 1,
-    title: "Association Awards ₦45M in Scholarships — Largest in Our History",
-    date: "March 1, 2026",
+    title: 'Association Awards ₦45M in Scholarships — Largest in Our History',
+    date: 'March 1, 2026',
     image: News1,
-    tag: "SCHOLARSHIP",
+    tag: 'SCHOLARSHIP',
     excerpt:
-      "In an emotional prize-giving ceremony held at FGGC Abuja, the Alumnae Association announced its highest-ever scholarship disbursement — directly supporting 180 students across three arms of the school, with special focus on STEM and the Arts.",
+      'In an emotional prize-giving ceremony held at FGGC Abuja, the Alumnae Association announced its highest-ever scholarship disbursement — directly supporting 180 students across three arms of the school, with special focus on STEM and the Arts.',
     featured: true,
   },
   {
     id: 2,
-    title: "Houston Chapter Officially Launched — Our 32nd Global Chapter",
-    date: "March 1, 2026",
+    title: 'Houston Chapter Officially Launched — Our 32nd Global Chapter',
+    date: 'March 1, 2026',
     image: News2,
   },
   {
     id: 3,
-    title: "New Science Laboratory Wing Commissioned at FGGC Calabar",
-    date: "March 1, 2026",
+    title: 'New Science Laboratory Wing Commissioned at FGGC Calabar',
+    date: 'March 1, 2026',
     image: News3,
   },
   {
     id: 4,
-    title: "Alumna of the Year 2025 — Dr. Chiamaka Obi Honoured in Abuja",
-    date: "March 1, 2026",
+    title: 'Alumna of the Year 2025 — Dr. Chiamaka Obi Honoured in Abuja',
+    date: 'March 1, 2026',
     image: News4,
   },
   {
     id: 5,
     title: "Digital Yearbook Archive Now Live — Access Your Set's Photos",
-    date: "March 1, 2026",
+    date: 'March 1, 2026',
     image: News5,
   },
 ];
@@ -90,12 +90,8 @@ export default function NewsAndStories() {
                 <h3 className="text-gray-900 font-bold text-lg leading-snug mb-3">
                   {featured.title}
                 </h3>
-                <p className="text-gray-500 text-sm leading-relaxed flex-1">
-                  {featured.excerpt}
-                </p>
-                <p className="text-primary-500 text-xs font-semibold mt-4">
-                  {featured.date}
-                </p>
+                <p className="text-gray-500 text-sm leading-relaxed flex-1">{featured.excerpt}</p>
+                <p className="text-primary-500 text-xs font-semibold mt-4">{featured.date}</p>
               </div>
             </div>
           )}

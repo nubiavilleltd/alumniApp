@@ -35,12 +35,10 @@ export function HomePage() {
     // <Layout title={config.site.name} description={config.site.description}>
     <>
       <SEO title={config.site.name} description={config.site.description} />
-  
-    <HeroSection />
+
+      <HeroSection />
 
       <HomeStats />
-
- 
 
       <OurStory />
 

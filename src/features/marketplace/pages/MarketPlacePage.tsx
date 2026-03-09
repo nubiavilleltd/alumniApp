@@ -1,9 +1,5 @@
-import React from 'react'
+import React from 'react';
 
 export default function MarketPlacePage() {
-  return (
-    <div>
-      This is the markeplace
-    </div>
-  )
+  return <div>This is the markeplace</div>;
 }

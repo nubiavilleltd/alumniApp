@@ -300,18 +300,15 @@
 //   );
 // }
 
-
-
-
-
-import React from "react";
-import Leadership1 from "../../../../public/leadership-1.png"
-import Leadership2 from "../../../../public/leadership-2.png"
-import Leadership3 from "../../../../public/leadership-3.png"
-import Leadership4 from "../../../../public/leadership-4.png"
-import Leadership5 from "../../../../public/leadership-5.png"
-import Leadership6 from "../../../../public/leadership-6.png"
-import Leadership7 from "../../../../public/leadership-7.png"
+import React from 'react';
+import Leadership1 from '../../../../public/leadership-1.png';
+import Leadership2 from '../../../../public/leadership-2.png';
+import Leadership3 from '../../../../public/leadership-3.png';
+import Leadership4 from '../../../../public/leadership-4.png';
+import Leadership5 from '../../../../public/leadership-5.png';
+import Leadership6 from '../../../../public/leadership-6.png';
+import Leadership7 from '../../../../public/leadership-7.png';
+import { AppLink } from '@/shared/components/ui/AppLink';
 
 interface LeadershipMember {
   id: number;
@@ -325,46 +322,46 @@ interface LeadershipMember {
 const members: LeadershipMember[] = [
   {
     id: 1,
-    name: "Mrs. Stella Alochi",
-    role: "President, Federal Government Girls Collage (FGGC) Alumnae Association.",
+    name: 'Mrs. Stella Alochi',
+    role: 'President, Federal Government Girls Collage (FGGC) Alumnae Association.',
     image: Leadership1,
     featured: true,
     bio: `Welcome to the official website of the Federal Government Girls Collage (FGGC) Alumnae Association. We are more than graduates—we are the fire forged in shared halls, the quiet strength that shatters ceilings, and the unstoppable force lifting the next generation.\n\nFrom boardrooms to classrooms, from startups to policy tables, our alumnae prove every day: education here didn't just open doors—it built empires, healed communities, and changed nations.\n\nAs your Alumnae President, I see you: the doctors saving lives, the entrepreneurs building legacies, the mothers raising revolutionaries, the leaders shaping tomorrow.`,
   },
   {
     id: 2,
-    name: "Mrs. Abigal Ojo",
-    role: "Vice President, Federal Government Girls Collage (FGGC) Alumnae Association.",
+    name: 'Mrs. Abigal Ojo',
+    role: 'Vice President, Federal Government Girls Collage (FGGC) Alumnae Association.',
     image: Leadership2,
   },
   {
     id: 3,
-    name: "Mrs. Josephine Adeka",
-    role: "P.R.O, Federal Government Girls Collage (FGGC) Alumnae Association.",
+    name: 'Mrs. Josephine Adeka',
+    role: 'P.R.O, Federal Government Girls Collage (FGGC) Alumnae Association.',
     image: Leadership3,
   },
   {
     id: 4,
-    name: "Mrs. Favour Adah",
-    role: "Secretary, Federal Government Girls Collage (FGGC) Alumnae Association.",
+    name: 'Mrs. Favour Adah',
+    role: 'Secretary, Federal Government Girls Collage (FGGC) Alumnae Association.',
     image: Leadership4,
   },
   {
     id: 5,
-    name: "Mrs. Lilian Ojo",
-    role: "Secretary Gen, Federal Government Girls Collage (FGGC) Alumnae Association.",
+    name: 'Mrs. Lilian Ojo',
+    role: 'Secretary Gen, Federal Government Girls Collage (FGGC) Alumnae Association.',
     image: Leadership5,
   },
   {
     id: 6,
-    name: "Mrs. Goodness Adeka",
-    role: "Cashier, Federal Government Girls Collage (FGGC) Alumnae Association.",
+    name: 'Mrs. Goodness Adeka',
+    role: 'Cashier, Federal Government Girls Collage (FGGC) Alumnae Association.',
     image: Leadership6,
   },
   {
     id: 7,
-    name: "Mrs. Bella Adah",
-    role: "Event Planner, Federal Government Girls Collage (FGGC) Alumnae Association.",
+    name: 'Mrs. Bella Adah',
+    role: 'Event Planner, Federal Government Girls Collage (FGGC) Alumnae Association.',
     image: Leadership7,
   },
 ];
@@ -392,7 +389,6 @@ export default function Leadership() {
   return (
     <section className="section">
       <div className="container-custom">
-
         {/* Header tag */}
         <p className="text-primary-500 text-sm font-semibold uppercase tracking-widest mb-8 flex items-center gap-2">
           <span className="inline-block w-6 h-px bg-primary-500" />
@@ -405,10 +401,10 @@ export default function Leadership() {
             {/* Text */}
             <div>
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight mb-5">
-                From the{" "}
-                <span className="text-primary-500 italic">President</span> of the Association.
+                From the <span className="text-primary-500 italic">President</span> of the
+                Association.
               </h2>
-              {president.bio?.split("\n\n").map((para, i) => (
+              {president.bio?.split('\n\n').map((para, i) => (
                 <p key={i} className="text-gray-600 text-sm leading-relaxed mb-3">
                   {para}
                 </p>
@@ -442,14 +438,13 @@ export default function Leadership() {
         </div>
 
         <div className="mt-8 text-right">
-          <a
-            href="#"
+          <AppLink
+            href="/leadership"
             className="text-primary-500 text-sm font-semibold hover:underline inline-flex items-center gap-1"
           >
-            See More <span>→</span>
-          </a>
+            See More
+          </AppLink>
         </div>
-
       </div>
     </section>
   );
