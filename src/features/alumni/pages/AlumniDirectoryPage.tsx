@@ -252,11 +252,6 @@
 // //   );
 // // }
 
-
-
-
-
-
 // import { Icon } from '@iconify/react';
 // import { useMemo, useState } from 'react';
 // import { getSiteConfig } from '@/data/content';
@@ -510,11 +505,6 @@
 //   );
 // }
 
-
-
-
-
-
 import { Icon } from '@iconify/react';
 import { useMemo, useState } from 'react';
 import { getSiteConfig } from '@/data/content';
@@ -533,7 +523,12 @@ interface SearchInputProps {
   label?: string;
 }
 
-function SearchInput({ value, onChange, placeholder = 'Search by Name or Set', label }: SearchInputProps) {
+function SearchInput({
+  value,
+  onChange,
+  placeholder = 'Search by Name or Set',
+  label,
+}: SearchInputProps) {
   return (
     <div className="flex-1">
       {label && <label className="block text-xs font-medium text-gray-600 mb-1">{label}</label>}
@@ -579,10 +574,15 @@ function YearDropdown({ value, onChange, years, label }: YearDropdownProps) {
         >
           <option value="">All Years</option>
           {years.map((year) => (
-            <option key={year} value={year}>{year}</option>
+            <option key={year} value={year}>
+              {year}
+            </option>
           ))}
         </select>
-        <Icon icon="mdi:chevron-down" className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+        <Icon
+          icon="mdi:chevron-down"
+          className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"
+        />
       </div>
     </div>
   );
@@ -688,7 +688,8 @@ export function AlumniDirectoryPage() {
   const filteredAlumni = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
     return alumni.filter((e) => {
-      const matchesSearch = !q || e.name.toLowerCase().includes(q) || e.short_bio.toLowerCase().includes(q);
+      const matchesSearch =
+        !q || e.name.toLowerCase().includes(q) || e.short_bio.toLowerCase().includes(q);
       const matchesYear = !yearFilter || e.year.toString() === yearFilter;
       return matchesSearch && matchesYear;
     });
@@ -710,19 +711,22 @@ export function AlumniDirectoryPage() {
 
   return (
     <>
-      <SEO title="Alumnae Directory" description="Find your classmates, connect with fellow alumnae from your state, or discover women across every profession worldwide." />
+      <SEO
+        title="Alumnae Directory"
+        description="Find your classmates, connect with fellow alumnae from your state, or discover women across every profession worldwide."
+      />
       <Breadcrumbs items={breadcrumbItems} />
 
       <section className="section">
         <div className="container-custom">
-
           {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-3xl md:text-4xl font-bold italic mb-2">
               Alumnae <span className="text-primary-500">Directory</span>
             </h1>
             <p className="text-gray-500 text-sm max-w-md mx-auto">
-              Find your classmates, connect with fellow alumnae from your state, or discover women across every profession worldwide.
+              Find your classmates, connect with fellow alumnae from your state, or discover women
+              across every profession worldwide.
             </p>
           </div>
 
@@ -767,7 +771,6 @@ export function AlumniDirectoryPage() {
               </button>
             </div>
           )}
-
         </div>
       </section>
     </>

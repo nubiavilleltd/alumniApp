@@ -4,12 +4,11 @@ import { Alumni } from '@/features/alumni/types/alumni.types';
 import { BlogPost } from '@/features/announcements/types/announcement.types';
 import { Event } from '@/features/events/types/event.types';
 
-
-import Image2 from "../../public/leadership-2.png"
-import Image3 from "../../public/leadership-3.png"
-import Image4 from "../../public/leadership-4.png"
-import Image5 from "../../public/leadership-5.png"
-import Image6 from "../../public/leadership-6.png"
+import Image2 from '../../public/leadership-2.png';
+import Image3 from '../../public/leadership-3.png';
+import Image4 from '../../public/leadership-4.png';
+import Image5 from '../../public/leadership-5.png';
+import Image6 from '../../public/leadership-6.png';
 
 // const alumni = [
 //   {
@@ -271,7 +270,6 @@ import Image6 from "../../public/leadership-6.png"
 //   },
 // ];
 
-
 export const alumni = [
   {
     name: 'Abigal Ojo',
@@ -279,7 +277,8 @@ export const alumni = [
     chapter: 'Arts & Design',
     year: 1990,
     short_bio: 'Creative Director & Visual Artist',
-    long_bio: 'Abigal is a celebrated creative director and visual artist whose work spans brand identity, editorial design, and fine art exhibitions across Nigeria and beyond.',
+    long_bio:
+      'Abigal is a celebrated creative director and visual artist whose work spans brand identity, editorial design, and fine art exhibitions across Nigeria and beyond.',
     photo: Image2,
     email: 'abigal.ojo@email.com',
     location: 'Lagos, Nigeria',
@@ -288,9 +287,21 @@ export const alumni = [
     skills: ['Brand Identity', 'Visual Art', 'Illustration', 'Art Direction', 'Typography'],
     projects: [],
     work_experience: [
-      { company: 'Studio Ojo Creative', position: 'Creative Director', duration: '2015 - Present', description: 'Leading creative strategy and visual identity for top Nigerian brands.' },
+      {
+        company: 'Studio Ojo Creative',
+        position: 'Creative Director',
+        duration: '2015 - Present',
+        description: 'Leading creative strategy and visual identity for top Nigerian brands.',
+      },
     ],
-    education: [{ degree: 'Bachelor of Arts in Fine & Applied Arts', institution: 'University of Lagos', year: 1990, gpa: '' }],
+    education: [
+      {
+        degree: 'Bachelor of Arts in Fine & Applied Arts',
+        institution: 'University of Lagos',
+        year: 1990,
+        gpa: '',
+      },
+    ],
     achievements: [],
     interests: ['Visual Art', 'Design', 'Culture', 'Fashion'],
     social: { linkedin: '', twitter: '' },
@@ -301,7 +312,8 @@ export const alumni = [
     chapter: 'Business & Finance',
     year: 1990,
     short_bio: 'Banker',
-    long_bio: 'Precious is a seasoned banking professional with over two decades of experience in commercial and retail banking across Nigeria.',
+    long_bio:
+      'Precious is a seasoned banking professional with over two decades of experience in commercial and retail banking across Nigeria.',
     photo: Image3,
     email: 'precious.ojeka@email.com',
     location: 'Lagos, Nigeria',
@@ -310,9 +322,21 @@ export const alumni = [
     skills: ['Banking', 'Finance', 'Customer Relations', 'Credit Analysis', 'Risk Management'],
     projects: [],
     work_experience: [
-      { company: 'First Bank of Nigeria', position: 'Senior Relationship Manager', duration: '2010 - Present', description: 'Managing high-value client portfolios and corporate banking relationships.' },
+      {
+        company: 'First Bank of Nigeria',
+        position: 'Senior Relationship Manager',
+        duration: '2010 - Present',
+        description: 'Managing high-value client portfolios and corporate banking relationships.',
+      },
     ],
-    education: [{ degree: 'Bachelor of Science in Banking & Finance', institution: 'University of Benin', year: 1990, gpa: '' }],
+    education: [
+      {
+        degree: 'Bachelor of Science in Banking & Finance',
+        institution: 'University of Benin',
+        year: 1990,
+        gpa: '',
+      },
+    ],
     achievements: [],
     interests: ['Finance', 'Investment', 'Mentorship', 'Travel'],
     social: { linkedin: '' },
@@ -323,7 +347,8 @@ export const alumni = [
     chapter: 'Health Sciences',
     year: 1990,
     short_bio: 'Nurse',
-    long_bio: 'Theresa is a dedicated registered nurse specialising in maternal and child health, serving communities across Lagos State.',
+    long_bio:
+      'Theresa is a dedicated registered nurse specialising in maternal and child health, serving communities across Lagos State.',
     photo: Image4,
     email: 'theresa.ojo@email.com',
     location: 'Lagos, Nigeria',
@@ -332,9 +357,21 @@ export const alumni = [
     skills: ['Patient Care', 'Maternal Health', 'Paediatrics', 'Community Health', 'First Aid'],
     projects: [],
     work_experience: [
-      { company: 'Lagos University Teaching Hospital', position: 'Registered Nurse', duration: '2005 - Present', description: 'Providing specialist maternal and child healthcare services.' },
+      {
+        company: 'Lagos University Teaching Hospital',
+        position: 'Registered Nurse',
+        duration: '2005 - Present',
+        description: 'Providing specialist maternal and child healthcare services.',
+      },
     ],
-    education: [{ degree: 'Bachelor of Nursing Science', institution: 'University of Lagos', year: 1990, gpa: '' }],
+    education: [
+      {
+        degree: 'Bachelor of Nursing Science',
+        institution: 'University of Lagos',
+        year: 1990,
+        gpa: '',
+      },
+    ],
     achievements: [],
     interests: ['Healthcare', 'Community Service', 'Public Health', 'Wellness'],
     social: { linkedin: '' },
@@ -345,7 +382,8 @@ export const alumni = [
     chapter: 'Fashion & Entrepreneurship',
     year: 1990,
     short_bio: "C.E.O Abi's stitches",
-    long_bio: "Founder and CEO of Abi's Stitches, a leading Nigerian fashion label known for contemporary African-inspired designs.",
+    long_bio:
+      "Founder and CEO of Abi's Stitches, a leading Nigerian fashion label known for contemporary African-inspired designs.",
     photo: Image5,
     email: 'abigal.ceo@email.com',
     location: 'Lagos, Nigeria',
@@ -354,9 +392,21 @@ export const alumni = [
     skills: ['Fashion Design', 'Entrepreneurship', 'Textile Arts', 'Brand Building', 'Tailoring'],
     projects: [],
     work_experience: [
-      { company: "Abi's Stitches", position: 'CEO & Fashion Designer', duration: '2012 - Present', description: 'Building a premium African fashion brand with nationwide reach.' },
+      {
+        company: "Abi's Stitches",
+        position: 'CEO & Fashion Designer',
+        duration: '2012 - Present',
+        description: 'Building a premium African fashion brand with nationwide reach.',
+      },
     ],
-    education: [{ degree: 'Diploma in Fashion Design', institution: 'Yaba College of Technology', year: 1990, gpa: '' }],
+    education: [
+      {
+        degree: 'Diploma in Fashion Design',
+        institution: 'Yaba College of Technology',
+        year: 1990,
+        gpa: '',
+      },
+    ],
     achievements: [],
     interests: ['Fashion', 'Entrepreneurship', 'African Culture', 'Design'],
     social: { linkedin: '' },
@@ -367,7 +417,8 @@ export const alumni = [
     chapter: 'Technology',
     year: 1990,
     short_bio: 'Web developer',
-    long_bio: 'A skilled front-end web developer building digital products for Nigerian startups and SMEs.',
+    long_bio:
+      'A skilled front-end web developer building digital products for Nigerian startups and SMEs.',
     photo: Image2,
     email: 'abigal.dev@email.com',
     location: 'Lagos, Nigeria',
@@ -376,9 +427,21 @@ export const alumni = [
     skills: ['HTML', 'CSS', 'JavaScript', 'React', 'UI Design'],
     projects: [],
     work_experience: [
-      { company: 'Freelance', position: 'Web Developer', duration: '2018 - Present', description: 'Building responsive websites and web applications for clients.' },
+      {
+        company: 'Freelance',
+        position: 'Web Developer',
+        duration: '2018 - Present',
+        description: 'Building responsive websites and web applications for clients.',
+      },
     ],
-    education: [{ degree: 'Bachelor of Science in Computer Science', institution: 'University of Lagos', year: 1990, gpa: '' }],
+    education: [
+      {
+        degree: 'Bachelor of Science in Computer Science',
+        institution: 'University of Lagos',
+        year: 1990,
+        gpa: '',
+      },
+    ],
     achievements: [],
     interests: ['Technology', 'Web Design', 'Open Source', 'Innovation'],
     social: { linkedin: '', github: '' },
@@ -389,7 +452,8 @@ export const alumni = [
     chapter: 'Culinary Arts',
     year: 1990,
     short_bio: 'Chef',
-    long_bio: 'A renowned chef celebrated for her fusion of traditional Nigerian cuisine with contemporary cooking techniques.',
+    long_bio:
+      'A renowned chef celebrated for her fusion of traditional Nigerian cuisine with contemporary cooking techniques.',
     photo: Image4,
     email: 'abigal.chef@email.com',
     location: 'Lagos, Nigeria',
@@ -398,9 +462,21 @@ export const alumni = [
     skills: ['Culinary Arts', 'Menu Development', 'Food Styling', 'Catering', 'Nutrition'],
     projects: [],
     work_experience: [
-      { company: 'The Pepper Soup Kitchen', position: 'Executive Chef', duration: '2016 - Present', description: 'Creating signature Nigerian fusion dishes and leading kitchen operations.' },
+      {
+        company: 'The Pepper Soup Kitchen',
+        position: 'Executive Chef',
+        duration: '2016 - Present',
+        description: 'Creating signature Nigerian fusion dishes and leading kitchen operations.',
+      },
     ],
-    education: [{ degree: 'Diploma in Culinary Arts', institution: 'Lagos Culinary Academy', year: 1990, gpa: '' }],
+    education: [
+      {
+        degree: 'Diploma in Culinary Arts',
+        institution: 'Lagos Culinary Academy',
+        year: 1990,
+        gpa: '',
+      },
+    ],
     achievements: [],
     interests: ['Cooking', 'Food Culture', 'Travel', 'Wellness'],
     social: { linkedin: '' },
@@ -411,7 +487,8 @@ export const alumni = [
     chapter: 'Arts & Design',
     year: 1990,
     short_bio: 'Creative Director & Visual Artist',
-    long_bio: 'A multidisciplinary visual artist working across photography, painting, and digital media.',
+    long_bio:
+      'A multidisciplinary visual artist working across photography, painting, and digital media.',
     photo: Image5,
     email: 'abigal.artist2@email.com',
     location: 'Lagos, Nigeria',
@@ -420,9 +497,21 @@ export const alumni = [
     skills: ['Photography', 'Painting', 'Digital Art', 'Creative Direction', 'Storytelling'],
     projects: [],
     work_experience: [
-      { company: 'Self-employed', position: 'Visual Artist', duration: '2014 - Present', description: 'Creating and exhibiting visual art locally and internationally.' },
+      {
+        company: 'Self-employed',
+        position: 'Visual Artist',
+        duration: '2014 - Present',
+        description: 'Creating and exhibiting visual art locally and internationally.',
+      },
     ],
-    education: [{ degree: 'Bachelor of Arts in Fine Arts', institution: 'Obafemi Awolowo University', year: 1990, gpa: '' }],
+    education: [
+      {
+        degree: 'Bachelor of Arts in Fine Arts',
+        institution: 'Obafemi Awolowo University',
+        year: 1990,
+        gpa: '',
+      },
+    ],
     achievements: [],
     interests: ['Art', 'Photography', 'Culture', 'Travel'],
     social: { linkedin: '' },
@@ -433,18 +522,37 @@ export const alumni = [
     chapter: 'Arts & Design',
     year: 1990,
     short_bio: 'Creative Director & Visual Artist',
-    long_bio: 'Creative director with a focus on visual storytelling for NGOs and social impact organisations across West Africa.',
+    long_bio:
+      'Creative director with a focus on visual storytelling for NGOs and social impact organisations across West Africa.',
     photo: Image3,
     email: 'abigal.artist3@email.com',
     location: 'Lagos, Nigeria',
     company: 'Impact Creatives',
     position: 'Creative Director',
-    skills: ['Visual Storytelling', 'NGO Communication', 'Graphic Design', 'Branding', 'Video Production'],
+    skills: [
+      'Visual Storytelling',
+      'NGO Communication',
+      'Graphic Design',
+      'Branding',
+      'Video Production',
+    ],
     projects: [],
     work_experience: [
-      { company: 'Impact Creatives', position: 'Creative Director', duration: '2017 - Present', description: 'Leading creative campaigns for social impact and nonprofit organisations.' },
+      {
+        company: 'Impact Creatives',
+        position: 'Creative Director',
+        duration: '2017 - Present',
+        description: 'Leading creative campaigns for social impact and nonprofit organisations.',
+      },
     ],
-    education: [{ degree: 'Bachelor of Arts in Mass Communication', institution: 'University of Nigeria, Nsukka', year: 1990, gpa: '' }],
+    education: [
+      {
+        degree: 'Bachelor of Arts in Mass Communication',
+        institution: 'University of Nigeria, Nsukka',
+        year: 1990,
+        gpa: '',
+      },
+    ],
     achievements: [],
     interests: ['Social Impact', 'Design', 'Media', 'Community'],
     social: { linkedin: '' },
@@ -455,7 +563,8 @@ export const alumni = [
     chapter: 'Arts & Design',
     year: 1990,
     short_bio: 'Creative Director & Visual Artist',
-    long_bio: 'Award-winning creative director known for her bold visual identity work for fashion and lifestyle brands.',
+    long_bio:
+      'Award-winning creative director known for her bold visual identity work for fashion and lifestyle brands.',
     photo: Image6,
     email: 'abigal.artist4@email.com',
     location: 'Lagos, Nigeria',
@@ -464,9 +573,21 @@ export const alumni = [
     skills: ['Art Direction', 'Brand Strategy', 'Photography', 'Fashion', 'Campaign Design'],
     projects: [],
     work_experience: [
-      { company: 'Bold Studio', position: 'Creative Director', duration: '2019 - Present', description: 'Directing visual identity and campaign strategy for fashion brands.' },
+      {
+        company: 'Bold Studio',
+        position: 'Creative Director',
+        duration: '2019 - Present',
+        description: 'Directing visual identity and campaign strategy for fashion brands.',
+      },
     ],
-    education: [{ degree: 'Bachelor of Arts in Visual Communication', institution: 'Covenant University', year: 1990, gpa: '' }],
+    education: [
+      {
+        degree: 'Bachelor of Arts in Visual Communication',
+        institution: 'Covenant University',
+        year: 1990,
+        gpa: '',
+      },
+    ],
     achievements: [],
     interests: ['Fashion', 'Photography', 'Branding', 'Lifestyle'],
     social: { linkedin: '' },
@@ -477,18 +598,37 @@ export const alumni = [
     chapter: 'Arts & Design',
     year: 1990,
     short_bio: 'Creative Director & Visual Artist',
-    long_bio: 'A creative director with expertise in digital media, content strategy, and visual communications for tech companies.',
+    long_bio:
+      'A creative director with expertise in digital media, content strategy, and visual communications for tech companies.',
     photo: Image3,
     email: 'abigal.artist5@email.com',
     location: 'Lagos, Nigeria',
     company: 'TechMedia Lagos',
     position: 'Creative Director',
-    skills: ['Digital Media', 'Content Strategy', 'UX Design', 'Visual Communication', 'Social Media'],
+    skills: [
+      'Digital Media',
+      'Content Strategy',
+      'UX Design',
+      'Visual Communication',
+      'Social Media',
+    ],
     projects: [],
     work_experience: [
-      { company: 'TechMedia Lagos', position: 'Creative Director', duration: '2021 - Present', description: 'Leading digital creative strategy for a fast-growing tech media company.' },
+      {
+        company: 'TechMedia Lagos',
+        position: 'Creative Director',
+        duration: '2021 - Present',
+        description: 'Leading digital creative strategy for a fast-growing tech media company.',
+      },
     ],
-    education: [{ degree: 'Bachelor of Science in Information Technology', institution: 'Babcock University', year: 1990, gpa: '' }],
+    education: [
+      {
+        degree: 'Bachelor of Science in Information Technology',
+        institution: 'Babcock University',
+        year: 1990,
+        gpa: '',
+      },
+    ],
     achievements: [],
     interests: ['Tech', 'Media', 'Design', 'Innovation'],
     social: { linkedin: '' },
@@ -499,7 +639,8 @@ export const alumni = [
     chapter: 'Arts & Design',
     year: 1990,
     short_bio: 'Creative Director & Visual Artist',
-    long_bio: 'Passionate visual artist and creative educator dedicated to nurturing the next generation of Nigerian artists.',
+    long_bio:
+      'Passionate visual artist and creative educator dedicated to nurturing the next generation of Nigerian artists.',
     photo: Image4,
     email: 'abigal.artist6@email.com',
     location: 'Lagos, Nigeria',
@@ -508,9 +649,21 @@ export const alumni = [
     skills: ['Art Education', 'Creative Direction', 'Curriculum Design', 'Painting', 'Drawing'],
     projects: [],
     work_experience: [
-      { company: 'Lagos Art Academy', position: 'Art Educator & Creative Director', duration: '2016 - Present', description: 'Teaching visual arts and directing the creative curriculum.' },
+      {
+        company: 'Lagos Art Academy',
+        position: 'Art Educator & Creative Director',
+        duration: '2016 - Present',
+        description: 'Teaching visual arts and directing the creative curriculum.',
+      },
     ],
-    education: [{ degree: 'Bachelor of Education in Fine Arts', institution: 'Lagos State University', year: 1990, gpa: '' }],
+    education: [
+      {
+        degree: 'Bachelor of Education in Fine Arts',
+        institution: 'Lagos State University',
+        year: 1990,
+        gpa: '',
+      },
+    ],
     achievements: [],
     interests: ['Education', 'Art', 'Youth Development', 'Culture'],
     social: { linkedin: '' },
@@ -521,7 +674,8 @@ export const alumni = [
     chapter: 'Arts & Design',
     year: 1990,
     short_bio: 'Creative Director & Visual Artist',
-    long_bio: 'A visual artist and creative consultant helping brands find their unique visual voice through strategy and design.',
+    long_bio:
+      'A visual artist and creative consultant helping brands find their unique visual voice through strategy and design.',
     photo: Image6,
     email: 'abigal.artist7@email.com',
     location: 'Lagos, Nigeria',
@@ -530,9 +684,21 @@ export const alumni = [
     skills: ['Consulting', 'Brand Design', 'Visual Arts', 'Strategy', 'Mentorship'],
     projects: [],
     work_experience: [
-      { company: 'Freelance', position: 'Creative Consultant', duration: '2020 - Present', description: 'Providing creative direction and brand consultancy services.' },
+      {
+        company: 'Freelance',
+        position: 'Creative Consultant',
+        duration: '2020 - Present',
+        description: 'Providing creative direction and brand consultancy services.',
+      },
     ],
-    education: [{ degree: 'Bachelor of Arts in Fine Arts', institution: 'University of Ibadan', year: 1990, gpa: '' }],
+    education: [
+      {
+        degree: 'Bachelor of Arts in Fine Arts',
+        institution: 'University of Ibadan',
+        year: 1990,
+        gpa: '',
+      },
+    ],
     achievements: [],
     interests: ['Art', 'Strategy', 'Mentorship', 'Design'],
     social: { linkedin: '' },
@@ -779,6 +945,157 @@ According to our alumni survey:
 The future of work is hybrid and flexible, creating new opportunities for alumni worldwide.`,
   },
 ];
+
+
+export const businesses = [
+  {
+    slug: 'ngozis-catering-service',
+    name: "Ngozi's Catering Service",
+    category: 'Food & Beverages',
+    description: 'Premium catering services for weddings, corporate events, and private parties. Specialising in local and continental dishes.',
+    images: [
+      '/images/marketplace/ngozi-catering-1.jpg',
+      '/images/marketplace/ngozi-catering-2.jpg',
+    ],
+    location: 'Lagos, Lagos',
+    phone: '+234 801 123 5678',
+    website: 'www.ngozycatering.com',
+    owner: 'Ngozi Okafor',
+    slug_owner: 'ngozi-okafor',
+  },
+  {
+    slug: 'johnnys-tech-limited',
+    name: "Johnny's Tech Limited",
+    category: 'Technology',
+    description: 'Premium catering services for weddings, corporate events, and private parties. Specialising in local and continental dishes.',
+    images: [
+      '/images/marketplace/johnnys-tech-1.jpg',
+      '/images/marketplace/johnnys-tech-2.jpg',
+    ],
+    location: 'Lagos, Lagos',
+    phone: '+234 801 123 5654',
+    website: 'www.agottech.com',
+    owner: 'Johnny Adaeze',
+    slug_owner: 'johnny-adaeze',
+  },
+  {
+    slug: 'obes-phones-limited-1',
+    name: "Obe's Phones Limited",
+    category: 'Technology',
+    description: 'Premium catering services for weddings, corporate events, and private parties. Specialising in local and continental dishes.',
+    images: [
+      '/images/marketplace/obes-phones-1.jpg',
+      '/images/marketplace/obes-phones-2.jpg',
+    ],
+    location: 'Lagos, Lagos',
+    phone: '+234 801 123 6878',
+    website: 'www.obes.com',
+    owner: 'Obe Chioma',
+    slug_owner: 'obe-chioma',
+  },
+  {
+    slug: 'obes-phones-limited-2',
+    name: "Obe's Phones Limited",
+    category: 'Technology',
+    description: 'Premium catering services for weddings, corporate events, and private parties. Specialising in local and continental dishes.',
+    images: [
+      '/images/marketplace/obes-phones-3.jpg',
+      '/images/marketplace/obes-phones-4.jpg',
+    ],
+    location: 'Lagos, Lagos',
+    phone: '+234 802 341 5679',
+    website: 'www.agottech.com',
+    owner: 'Obe Chioma',
+    slug_owner: 'obe-chioma-2',
+  },
+  {
+    slug: 'ngozis-consulting-service',
+    name: "Ngozi's Consulting Service",
+    category: 'Consulting',
+    description: 'Premium catering services for weddings, corporate events, and private parties. Specialising in local and continental dishes.',
+    images: [
+      '/images/marketplace/ngozi-consulting-1.jpg',
+      '/images/marketplace/ngozi-consulting-2.jpg',
+    ],
+    location: 'Lagos, Lagos',
+    phone: '+234 803 234 5679',
+    website: 'www.ngozitech.com',
+    owner: 'Ngozi Adaeze',
+    slug_owner: 'ngozi-adaeze',
+  },
+  {
+    slug: 'johnnys-tech-limited-2',
+    name: "Johnny's Tech Limited",
+    category: 'Technology',
+    description: 'Premium catering services for weddings, corporate events, and private parties. Specialising in local and continental dishes.',
+    images: [
+      '/images/marketplace/johnnys-tech-3.jpg',
+      '/images/marketplace/johnnys-tech-4.jpg',
+    ],
+    location: 'Lagos, Lagos',
+    phone: '+234 801 234 5679',
+    website: 'www.agottech.com',
+    owner: 'Johnny Adaeze',
+    slug_owner: 'johnny-adaeze-2',
+  },
+  {
+    slug: 'obes-phones-limited-3',
+    name: "Obe's Phones Limited",
+    category: 'Technology',
+    description: 'Premium catering services for weddings, corporate events, and private parties. Specialising in local and continental dishes.',
+    images: [
+      '/images/marketplace/obes-phones-5.jpg',
+      '/images/marketplace/obes-phones-6.jpg',
+    ],
+    location: 'Lagos, Lagos',
+    phone: '+234 802 345 6789',
+    website: 'www.agottech.com',
+    owner: 'Obe Chioma',
+    slug_owner: 'obe-chioma-3',
+  },
+  {
+    slug: 'ngozis-consulting-service-2',
+    name: "Ngozi's Consulting Service",
+    category: 'Consulting',
+    description: 'Premium catering services for weddings, corporate events, and private parties. Specialising in local and continental dishes.',
+    images: [
+      '/images/marketplace/ngozi-consulting-3.jpg',
+      '/images/marketplace/ngozi-consulting-4.jpg',
+    ],
+    location: 'Lagos, Lagos',
+    phone: '+234 803 456 7890',
+    website: 'www.ngozitech.com',
+    owner: 'Ngozi Adaeze',
+    slug_owner: 'ngozi-adaeze-2',
+  },
+  {
+    slug: 'johnnys-tech-limited-3',
+    name: "Johnny's Tech Limited",
+    category: 'Technology',
+    description: 'Premium catering services for weddings, corporate events, and private parties. Specialising in local and continental dishes.',
+    images: [
+      '/images/marketplace/johnnys-tech-5.jpg',
+      '/images/marketplace/johnnys-tech-6.jpg',
+    ],
+    location: 'Lagos, Lagos',
+    phone: '+234 801 567 8901',
+    website: 'www.agottech.com',
+    owner: 'Johnny Adaeze',
+    slug_owner: 'johnny-adaeze-3',
+  },
+];
+
+export const categories = [
+  'Food & Beverages',
+  'Technology',
+  'Consulting',
+  'Fashion & Beauty',
+  'Health & Wellness',
+  'Education',
+  'Real Estate',
+  'Events & Entertainment',
+];
+
 
 export function getEvents(): Event[] {
   return events;
