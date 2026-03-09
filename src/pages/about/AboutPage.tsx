@@ -102,10 +102,7 @@ import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 export function AboutPage() {
   // const config = getSiteConfig();
 
-    const breadcrumbItems = [
-    { label: 'Home', href: '/' },
-    { label: 'About Us'},
-  ];
+  const breadcrumbItems = [{ label: 'Home', href: '/' }, { label: 'About Us' }];
 
   return (
     <>
@@ -122,8 +119,7 @@ export function AboutPage() {
         </div>
         </section> */}
 
-        <Breadcrumbs items={breadcrumbItems} />
-  
+      <Breadcrumbs items={breadcrumbItems} />
 
       {/* 
       <section className="section">
