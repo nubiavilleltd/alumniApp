@@ -5,7 +5,6 @@ import { getSiteConfig } from '@/data/content';
 import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { AppLink } from '../ui/AppLink';
 
-
 interface NavigationItem {
   label: string;
   url: string;
@@ -47,9 +46,7 @@ const navigation: NavigationItem[] = [
     url: '/blog',
     // icon: 'newspaper'
   },
-
 ];
-
 
 export function Navigation() {
   const config = getSiteConfig();
@@ -106,27 +103,29 @@ export function Navigation() {
 
   return (
     // <nav className="bg-white/95 backdrop-blur border-b border-accent-100 sticky top-0 z-50">
-    <nav className="bg-primary-700 backdrop-blur border-b border-accent-100 sticky top-0 z-50 text-white">
+    <nav className="bg-primary-500 backdrop-blur border-b border-accent-100 sticky top-0 z-50 text-white">
       <div className="container-custom">
         <div className="flex items-center justify-between h-16 lg:h-20">
           <div className="flex items-center">
             <AppLink href="/" className="flex items-center space-x-3 group">
-              <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl flex items-center justify-center shadow-lg overflow-hidden transition-transform duration-300 group-hover:scale-105">
+              {/* <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl flex items-center justify-center shadow-lg overflow-hidden transition-transform duration-300 group-hover:scale-105"> */}
+              <div className="w-10 h-10 lg:w-12 lg:h-12">
                 {config.site.logo ? (
                   <img
                     src={config.site.logo}
                     alt={`${config.site.name} logo`}
-                    className="w-full h-full object-contain"
+                    className="w-full h-full object-contain duration-300 hover:scale-105"
                   />
                 ) : (
                   <Icon icon="mdi:account-group" className="w-7 h-7 text-white" />
                 )}
               </div>
               <div>
-                <h1 className="text-xl lg:text-2xl font-bold text-white group-hover:text-primary-600 transition-colors duration-200">
+                {/* <h1 className="text-sm lg:text-2xl font-bold text-white group-hover:text-primary-200 transition-colors duration-200"> */}
+                <h1 className="text-lg font-bold text-white group-hover:text-primary-200 transition-colors duration-200">
                   {config.site.name}
                 </h1>
-                <p className="text-xs text-white hidden sm:block">Alumni Network</p>
+                <p className="text-xs text-gray-50 hidden sm:block">Federal Government Girls College</p>
               </div>
             </AppLink>
           </div>
@@ -134,12 +133,12 @@ export function Navigation() {
           <div className="hidden lg:flex items-center space-x-5">
             {navigation.map((item) => (
               <div className="relative group" key={item.label}>
-             <AppLink href={item.url} className="nav-link py-2">
-                    {item.icon && (
-                      <Icon icon={`mdi:${item.icon}`} className="w-4 h-4 mr-2 inline-block" />
-                    )}
-                    {item.label}
-                  </AppLink>
+                <AppLink href={item.url} className="nav-link py-2">
+                  {item.icon && (
+                    <Icon icon={`mdi:${item.icon}`} className="w-4 h-4 mr-2 inline-block" />
+                  )}
+                  {item.label}
+                </AppLink>
               </div>
             ))}
 

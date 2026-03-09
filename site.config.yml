@@ -4,18 +4,18 @@
 
 # Site Information
 site:
-  name: 'FGGC Owerri Alumni'
-  description: 'An open-source alumni portal designed for colleges and communities for community building and engagement'
+  name: 'FGGC Owerri Alumnae Association'
+  description: 'Connecting generations of extraordinary women since 1966. A global sisterhood built on excellence, integrity, and service to Nigeria and beyond.'
   url: 'https://open-alumns-portal.vercel.app'
-  logo: '/logo-no-bg.png'
+  logo: '/logo.png'
   favicon: '/favicon.ico'
-  hero_image: '/hero-bg.jpg'
+  hero_image: '/hero-bg.png'
 
 # Organization Details
 organization:
-  name: 'FGGC Owerri Alumni'
+  name: 'Federal Government Girls College'
   website: 'loremipsum.com'
-  email: 'lorem_ipsum@gmail.com'
+  email: 'info@fggcowerrilagos.org'
   address: 'Lagos, Nigeria'
 
 # Color Scheme (CSS Variables)
