@@ -445,14 +445,12 @@ export const alumni = [
   },
 ];
 
-
-
-
 export const events = [
   {
     slug: 'annual-homecoming-weekend-gala',
     title: 'Annual Homecoming Weekend & Grand Gala',
-    description: 'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
+    description:
+      'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
     image: 'https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?w=700&q=80',
     location: 'Transcorp Hilton, Abuja',
     attire: 'Formal Attire',
@@ -463,7 +461,8 @@ export const events = [
   {
     slug: 'diaspora-virtual-networking-night',
     title: 'Diaspora Virtual Networking Night',
-    description: 'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
+    description:
+      'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
     image: 'https://images.unsplash.com/photo-1588196749597-9ff075ee6b5b?w=700&q=80',
     location: 'Zoom, Global',
     attire: '',
@@ -474,7 +473,8 @@ export const events = [
   {
     slug: 'child-birth-of-one-us',
     title: 'Child Birth Of One Us',
-    description: 'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
+    description:
+      'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
     image: 'https://images.unsplash.com/photo-1519689680058-324335c77eba?w=700&q=80',
     location: 'Transcorp Hilton, Abuja',
     attire: 'Formal Attire',
@@ -485,7 +485,8 @@ export const events = [
   {
     slug: 'donation-for-project',
     title: 'Donation For Project',
-    description: 'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
+    description:
+      'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
     image: 'https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=700&q=80',
     location: 'Zoom, Global',
     attire: '',
@@ -496,7 +497,8 @@ export const events = [
   {
     slug: 'school-opening',
     title: 'School Opening',
-    description: 'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
+    description:
+      'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
     image: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=700&q=80',
     location: 'Transcorp Hilton, Abuja',
     attire: 'Formal Attire',
@@ -507,7 +509,8 @@ export const events = [
   {
     slug: 'night-party',
     title: 'Night Party',
-    description: 'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
+    description:
+      'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
     image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=700&q=80',
     location: 'Zoom, Global',
     attire: '',
@@ -519,7 +522,8 @@ export const events = [
   {
     slug: 'annual-alumni-meet-2024',
     title: 'Annual Alumni Meet 2024',
-    description: 'Join us for our most anticipated event of the year! The Annual Alumni Meet brings together graduates from all batches for an evening of networking, celebration, and inspiration.',
+    description:
+      'Join us for our most anticipated event of the year! The Annual Alumni Meet brings together graduates from all batches for an evening of networking, celebration, and inspiration.',
     image: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=700&q=80',
     location: 'Main Campus Auditorium, NCIT',
     attire: 'Smart Casual',
@@ -530,7 +534,8 @@ export const events = [
   {
     slug: 'startup-pitch-competition-2024',
     title: 'Startup Pitch Competition 2024',
-    description: 'Annual startup pitch competition showcasing innovative ideas from our alumni community.',
+    description:
+      'Annual startup pitch competition showcasing innovative ideas from our alumni community.',
     image: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=700&q=80',
     location: 'Innovation Hub, University Campus',
     attire: 'Business Casual',
@@ -552,7 +557,8 @@ export const events = [
   {
     slug: 'scholarship-award-night-2024',
     title: 'Scholarship Award Night 2024',
-    description: 'Celebrating our brightest students with the annual scholarship award ceremony, honouring academic excellence and community service.',
+    description:
+      'Celebrating our brightest students with the annual scholarship award ceremony, honouring academic excellence and community service.',
     image: 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=700&q=80',
     location: 'Grand Ballroom, Eko Hotel, Lagos',
     attire: 'Black Tie',
@@ -563,7 +569,8 @@ export const events = [
   {
     slug: 'virtual-mentorship-summit-2023',
     title: 'Virtual Mentorship Summit 2023',
-    description: 'A virtual summit connecting senior alumnae mentors with recent graduates to share career guidance and life lessons.',
+    description:
+      'A virtual summit connecting senior alumnae mentors with recent graduates to share career guidance and life lessons.',
     image: 'https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=700&q=80',
     location: 'Zoom, Global',
     attire: '',
@@ -574,7 +581,8 @@ export const events = [
   {
     slug: 'cultural-day-celebration-2023',
     title: 'Cultural Day Celebration 2023',
-    description: 'A vibrant celebration of Nigerian culture, heritage, and the bonds that unite FGGC alumnae across generations.',
+    description:
+      'A vibrant celebration of Nigerian culture, heritage, and the bonds that unite FGGC alumnae across generations.',
     image: 'https://images.unsplash.com/photo-1504609773096-104ff2c73ba4?w=700&q=80',
     location: 'National Arts Theatre, Lagos',
     attire: 'Traditional Attire',
@@ -583,14 +591,6 @@ export const events = [
     isVirtual: false,
   },
 ];
-
-
-
-
-
-
-
-
 
 // const events = [
 //   {

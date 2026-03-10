@@ -82,11 +82,6 @@
 //   );
 // }
 
-
-
-
-
-
 import { Icon } from '@iconify/react';
 import { useState, useMemo } from 'react';
 import { AppLink } from '@/shared/components/ui/AppLink';
@@ -104,7 +99,12 @@ interface SearchInputProps {
   label?: string;
 }
 
-function SearchInput({ value, onChange, placeholder = 'Search events...', label }: SearchInputProps) {
+function SearchInput({
+  value,
+  onChange,
+  placeholder = 'Search events...',
+  label,
+}: SearchInputProps) {
   return (
     <div className="flex-1">
       {label && <label className="block text-xs font-medium text-gray-600 mb-1">{label}</label>}
@@ -133,7 +133,13 @@ interface FilterDropdownProps {
   placeholder?: string;
 }
 
-function FilterDropdown({ value, onChange, options, label, placeholder = 'All' }: FilterDropdownProps) {
+function FilterDropdown({
+  value,
+  onChange,
+  options,
+  label,
+  placeholder = 'All',
+}: FilterDropdownProps) {
   return (
     <div className="w-full sm:w-48">
       {label && <label className="block text-xs font-medium text-gray-600 mb-1">{label}</label>}
@@ -145,10 +151,15 @@ function FilterDropdown({ value, onChange, options, label, placeholder = 'All' }
         >
           <option value="">{placeholder}</option>
           {options.map((opt) => (
-            <option key={opt.value} value={opt.value}>{opt.label}</option>
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
           ))}
         </select>
-        <Icon icon="mdi:chevron-down" className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+        <Icon
+          icon="mdi:chevron-down"
+          className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"
+        />
       </div>
     </div>
   );
@@ -213,7 +224,9 @@ function EventCard({ event, isPast }: { event: AlumnaeEvent; isPast: boolean }) 
         </div>
 
         {/* Description */}
-        <p className="text-gray-500 text-[11px] leading-relaxed line-clamp-3">{event.description}</p>
+        <p className="text-gray-500 text-[11px] leading-relaxed line-clamp-3">
+          {event.description}
+        </p>
 
         {/* Action */}
         <div className="mt-auto pt-2">
@@ -277,9 +290,7 @@ export function EventsPage() {
     const q = searchTerm.trim().toLowerCase();
     return activeList.filter((e) => {
       const matchesSearch =
-        !q ||
-        e.title.toLowerCase().includes(q) ||
-        e.description.toLowerCase().includes(q);
+        !q || e.title.toLowerCase().includes(q) || e.description.toLowerCase().includes(q);
       const matchesLocation = !locationFilter || e.location === locationFilter;
       return matchesSearch && matchesLocation;
     });
@@ -300,24 +311,24 @@ export function EventsPage() {
     setVisibleCount(ITEMS_PER_PAGE);
   };
 
-  const breadcrumbItems = [
-    { label: 'Home', href: '/' },
-    { label: 'Events' },
-  ];
+  const breadcrumbItems = [{ label: 'Home', href: '/' }, { label: 'Events' }];
 
   return (
     <>
-      <SEO title="Events" description="Through the generosity of our alumni, we continue to support and improve our beloved school." />
+      <SEO
+        title="Events"
+        description="Through the generosity of our alumni, we continue to support and improve our beloved school."
+      />
       <Breadcrumbs items={breadcrumbItems} />
 
       <section className="section">
         <div className="container-custom">
-
           {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-3xl md:text-4xl font-bold italic mb-2">Events</h1>
             <p className="text-gray-500 text-sm max-w-md mx-auto">
-              Through the generosity of our alumni, we continue to support and improve our beloved school
+              Through the generosity of our alumni, we continue to support and improve our beloved
+              school
             </p>
           </div>
 
@@ -373,7 +384,10 @@ export function EventsPage() {
             </div>
           ) : (
             <div className="text-center py-20 text-gray-400">
-              <Icon icon="mdi:calendar-blank-outline" className="w-12 h-12 mx-auto mb-3 opacity-40" />
+              <Icon
+                icon="mdi:calendar-blank-outline"
+                className="w-12 h-12 mx-auto mb-3 opacity-40"
+              />
               <p className="text-sm">No {tab} events found.</p>
             </div>
           )}
@@ -390,7 +404,6 @@ export function EventsPage() {
               </button>
             </div>
           )}
-
         </div>
       </section>
     </>

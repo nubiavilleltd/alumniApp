@@ -15,7 +15,6 @@ const navigation: NavigationItem[] = [
   {
     label: 'Home',
     url: '/',
-    // icon: 'home'
   },
   {
     label: 'About Us',
@@ -24,28 +23,20 @@ const navigation: NavigationItem[] = [
   {
     label: 'Alumnae Directory',
     url: '/alumni/profiles',
-    // icon: 'users'
   },
   {
     label: 'Alumnae Connect',
     url: '/alumni/profiles',
-    // icon: 'users'
   },
   {
     label: 'Events',
     url: '/events',
-    // icon: 'calendar'
   },
   {
     label: 'Market Place',
     url: '/marketplace',
-    // icon: 'calendar'
   },
-  {
-    label: 'Projects',
-    url: '/projects',
-    // icon: 'newspaper'
-  },
+
 ];
 
 export function Navigation() {
