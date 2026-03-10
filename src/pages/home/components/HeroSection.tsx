@@ -28,7 +28,7 @@ export default function HeroSection() {
                      Learn More
                    </AppLink> */}
               <AppLink href="/auth/register">
-                <Button styles="py-3 px-12"> Join Us</Button>
+                <Button className="py-3 px-12" size='lg'> Join Us</Button>
               </AppLink>
             </div>
           </div>

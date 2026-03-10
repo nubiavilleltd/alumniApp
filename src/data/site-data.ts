@@ -1,4 +1,3 @@
-// import { AlumniEntry } from '@/group/shared/types/alumni';
 
 import { Alumni } from '@/features/alumni/types/alumni.types';
 import { BlogPost } from '@/features/announcements/types/announcement.types';
@@ -457,6 +456,36 @@ export const events = [
     date: '2026-12-12',
     type: 'upcoming',
     isVirtual: false,
+    category: 'Reunion',
+    tags: ['reunion', 'gala', 'networking', 'homecoming'],
+    featured: true,
+    content: `# Annual Homecoming Weekend & Grand Gala
+
+A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.
+
+## Event Details
+
+- **Date**: December 12, 2026
+- **Time**: 5:00 PM - 11:00 PM
+- **Location**: Transcorp Hilton, Abuja
+- **Attire**: Formal Attire
+- **Theme**: Celebrating Excellence: Decades of Sisterhood
+
+## What to Expect
+
+- Grand gala dinner and awards ceremony
+- Cultural night performances
+- Networking sessions across all sets
+- Recognition of outstanding alumnae
+- Live entertainment and dancing
+
+## Registration
+
+Register early to secure your spot at this landmark event.
+
+## Contact
+
+For more information: events@fggcalumnae.org`,
   },
   {
     slug: 'diaspora-virtual-networking-night',
@@ -469,6 +498,35 @@ export const events = [
     date: '2026-12-12',
     type: 'upcoming',
     isVirtual: true,
+    category: 'Networking',
+    tags: ['diaspora', 'virtual', 'networking', 'global'],
+    featured: false,
+    content: `# Diaspora Virtual Networking Night
+
+Connect with fellow FGGC alumnae across the globe from the comfort of your home. An evening of meaningful conversations, shared stories, and new connections.
+
+## Event Details
+
+- **Date**: December 12, 2026
+- **Time**: 7:00 PM WAT / 2:00 PM EST / 7:00 PM GMT
+- **Platform**: Zoom, Global
+- **Attire**: Smart Casual (Virtual)
+
+## What to Expect
+
+- Breakout rooms by graduation set and region
+- Speed networking sessions
+- Guest speaker from the diaspora community
+- Open forum and Q&A
+- Virtual cultural showcase
+
+## Registration
+
+Register to receive your Zoom link before the event.
+
+## Contact
+
+For more information: diaspora@fggcalumnae.org`,
   },
   {
     slug: 'child-birth-of-one-us',
@@ -481,6 +539,35 @@ export const events = [
     date: '2028-12-12',
     type: 'upcoming',
     isVirtual: false,
+    category: 'Celebration',
+    tags: ['celebration', 'community', 'maternal', 'support'],
+    featured: false,
+    content: `# Child Birth Of One Us
+
+A warm and joyful celebration honouring alumnae who have recently welcomed new life. We come together as sisters to celebrate new beginnings and offer community support.
+
+## Event Details
+
+- **Date**: December 12, 2028
+- **Time**: 2:00 PM - 6:00 PM
+- **Location**: Transcorp Hilton, Abuja
+- **Attire**: Formal Attire
+
+## What to Expect
+
+- Celebratory reception and refreshments
+- Gift presentations to new mothers
+- Wellness talks for new and expecting mothers
+- Community support network introductions
+- Photo sessions and keepsakes
+
+## Registration
+
+RSVP to help us plan appropriately for this special occasion.
+
+## Contact
+
+For more information: community@fggcalumnae.org`,
   },
   {
     slug: 'donation-for-project',
@@ -493,6 +580,35 @@ export const events = [
     date: '2026-12-12',
     type: 'upcoming',
     isVirtual: true,
+    category: 'Fundraising',
+    tags: ['donation', 'fundraising', 'project', 'giveback'],
+    featured: false,
+    content: `# Donation For Project
+
+A virtual fundraising drive to support ongoing infrastructure and welfare projects at Federal Government Girls College. Every contribution makes a difference.
+
+## Event Details
+
+- **Date**: December 12, 2026
+- **Time**: 6:00 PM WAT
+- **Platform**: Zoom, Global
+- **Attire**: N/A (Virtual)
+
+## What to Expect
+
+- Project presentations and progress updates
+- Pledge drive and live donation tracking
+- Testimonials from current students
+- Recognition of top contributors
+- Q&A with the projects committee
+
+## How to Contribute
+
+Donations can be made online before, during, or after the event.
+
+## Contact
+
+For more information: projects@fggcalumnae.org`,
   },
   {
     slug: 'school-opening',
@@ -505,6 +621,35 @@ export const events = [
     date: '2026-12-12',
     type: 'upcoming',
     isVirtual: false,
+    category: 'Education',
+    tags: ['education', 'school', 'opening', 'ceremony'],
+    featured: false,
+    content: `# School Opening
+
+A commemorative event marking the beginning of a new academic session at FGGC. Alumnae are invited to witness and support the next generation of FGGC daughters.
+
+## Event Details
+
+- **Date**: December 12, 2026
+- **Time**: 9:00 AM - 1:00 PM
+- **Location**: Transcorp Hilton, Abuja
+- **Attire**: Formal Attire
+
+## What to Expect
+
+- Opening ceremony and address
+- Alumnae mentorship pairings with new students
+- School tour and facility showcase
+- Scholarship presentations
+- Lunch reception
+
+## Registration
+
+Register to confirm your attendance at this prestigious ceremony.
+
+## Contact
+
+For more information: education@fggcalumnae.org`,
   },
   {
     slug: 'night-party',
@@ -517,8 +662,36 @@ export const events = [
     date: '2026-12-12',
     type: 'upcoming',
     isVirtual: true,
+    category: 'Social',
+    tags: ['party', 'social', 'virtual', 'fun'],
+    featured: false,
+    content: `# Night Party
+
+Let your hair down and celebrate with sisters from across the world in this fun-filled virtual night party. Music, games, and great company await.
+
+## Event Details
+
+- **Date**: December 12, 2026
+- **Time**: 8:00 PM WAT / 3:00 PM EST
+- **Platform**: Zoom, Global
+- **Attire**: Party Wear (Virtual)
+
+## What to Expect
+
+- Live DJ and music sets
+- Virtual party games and contests
+- Trivia night with prizes
+- Open mic for alumnae
+- Photo booth and virtual backgrounds
+
+## Registration
+
+Register to receive your Zoom link and party pack details.
+
+## Contact
+
+For more information: social@fggcalumnae.org`,
   },
-  // Past events
   {
     slug: 'annual-alumni-meet-2024',
     title: 'Annual Alumni Meet 2024',
@@ -530,6 +703,36 @@ export const events = [
     date: '2024-12-15',
     type: 'past',
     isVirtual: false,
+    category: 'Reunion',
+    tags: ['reunion', 'networking', 'annual', 'alumni'],
+    featured: false,
+    content: `# Annual Alumni Meet 2024
+
+Join us for our most anticipated event of the year! The Annual Alumni Meet brings together graduates from all batches for an evening of networking, celebration, and inspiration.
+
+## Event Details
+
+- **Date**: December 15, 2024
+- **Time**: 6:00 PM - 10:00 PM
+- **Location**: Main Campus Auditorium, NCIT
+- **Attire**: Smart Casual
+- **Theme**: Building Bridges: Connecting Past, Present, and Future
+
+## What to Expect
+
+- Networking sessions with fellow alumni
+- Keynote speeches from industry leaders
+- Career development workshops
+- Cultural performances and entertainment
+- Delicious dinner and refreshments
+
+## Registration
+
+[Register Now](https://forms.gle/alumni-meet-2024)
+
+## Contact
+
+For more information: events@ncit.edu.np`,
   },
   {
     slug: 'startup-pitch-competition-2024',
@@ -542,6 +745,35 @@ export const events = [
     date: '2024-04-20',
     type: 'past',
     isVirtual: false,
+    category: 'Entrepreneurship',
+    tags: ['startup', 'pitch', 'entrepreneurship', 'innovation'],
+    featured: false,
+    content: `# Startup Pitch Competition 2024
+
+Annual startup pitch competition showcasing innovative ideas from our alumni community. Finalists compete for funding and mentorship opportunities.
+
+## Event Details
+
+- **Date**: April 20, 2024
+- **Time**: 10:00 AM - 4:00 PM
+- **Location**: Innovation Hub, University Campus
+- **Attire**: Business Casual
+
+## What to Expect
+
+- 10 finalist startup pitches
+- Judging panel of investors and industry experts
+- Networking lunch with entrepreneurs
+- Prize presentation and mentorship matching
+- Exhibitor showcase
+
+## Registration
+
+[Register Now](https://forms.gle/startup-pitch-2024)
+
+## Contact
+
+For more information: entrepreneurship@fggcalumnae.org`,
   },
   {
     slug: 'tech-career-fair-2024',
@@ -553,6 +785,35 @@ export const events = [
     date: '2024-03-15',
     type: 'past',
     isVirtual: false,
+    category: 'Career',
+    tags: ['career', 'technology', 'jobs', 'networking'],
+    featured: false,
+    content: `# Tech Career Fair 2024
+
+Annual technology career fair connecting alumni with top tech companies. Explore job opportunities, internships, and career development resources.
+
+## Event Details
+
+- **Date**: March 15, 2024
+- **Time**: 9:00 AM - 3:00 PM
+- **Location**: Convention Center, Downtown
+- **Attire**: Business Formal
+
+## What to Expect
+
+- 30+ top tech companies in attendance
+- CV review and interview prep workshops
+- Panel discussion: Women in Tech
+- On-the-spot interviews
+- Career coaching sessions
+
+## Registration
+
+[Register Now](https://forms.gle/tech-career-fair-2024)
+
+## Contact
+
+For more information: careers@fggcalumnae.org`,
   },
   {
     slug: 'scholarship-award-night-2024',
@@ -565,6 +826,35 @@ export const events = [
     date: '2024-02-10',
     type: 'past',
     isVirtual: false,
+    category: 'Education',
+    tags: ['scholarship', 'awards', 'education', 'excellence'],
+    featured: true,
+    content: `# Scholarship Award Night 2024
+
+Celebrating our brightest students with the annual scholarship award ceremony, honouring academic excellence and community service.
+
+## Event Details
+
+- **Date**: February 10, 2024
+- **Time**: 6:00 PM - 9:00 PM
+- **Location**: Grand Ballroom, Eko Hotel, Lagos
+- **Attire**: Black Tie
+
+## What to Expect
+
+- Scholarship presentations to 180+ students
+- Keynote address by distinguished alumna
+- Recognition of top-performing sets
+- Gala dinner and entertainment
+- Alumnae giving tribute
+
+## Registration
+
+[Register Now](https://forms.gle/scholarship-award-2024)
+
+## Contact
+
+For more information: scholarships@fggcalumnae.org`,
   },
   {
     slug: 'virtual-mentorship-summit-2023',
@@ -577,6 +867,35 @@ export const events = [
     date: '2023-11-05',
     type: 'past',
     isVirtual: true,
+    category: 'Mentorship',
+    tags: ['mentorship', 'virtual', 'career', 'guidance'],
+    featured: false,
+    content: `# Virtual Mentorship Summit 2023
+
+A virtual summit connecting senior alumnae mentors with recent graduates to share career guidance and life lessons.
+
+## Event Details
+
+- **Date**: November 5, 2023
+- **Time**: 3:00 PM WAT / 10:00 AM EST
+- **Platform**: Zoom, Global
+- **Attire**: N/A (Virtual)
+
+## What to Expect
+
+- One-on-one mentor matching sessions
+- Panel: Navigating Your Career as a Nigerian Woman
+- Workshops on leadership, finance, and wellness
+- Open Q&A with senior alumnae
+- Mentorship programme sign-up
+
+## Registration
+
+[Register Now](https://forms.gle/mentorship-summit-2023)
+
+## Contact
+
+For more information: mentorship@fggcalumnae.org`,
   },
   {
     slug: 'cultural-day-celebration-2023',
@@ -589,144 +908,40 @@ export const events = [
     date: '2023-10-01',
     type: 'past',
     isVirtual: false,
+    category: 'Networking',
+    tags: ['networking', 'celebration', 'alumni', 'annual'],
+    featured: true,
+    content: `# Cultural Day Celebration 2023
+
+A vibrant celebration of Nigerian culture, heritage, and the bonds that unite FGGC alumnae across generations.
+
+## Event Details
+
+- **Date**: October 1, 2023
+- **Time**: 12:00 PM - 8:00 PM
+- **Location**: National Arts Theatre, Lagos
+- **Attire**: Traditional Attire
+- **Theme**: Roots & Wings: Honouring Where We Come From
+
+## What to Expect
+
+- Traditional music and dance performances
+- Cultural food festival from all Nigerian regions
+- Art and craft exhibition by alumnae
+- Storytelling and heritage talks
+- Photography and fashion showcase
+
+## Registration
+
+Registration is free for all FGGC alumnae.
+
+## Contact
+
+For more information: events@fggcalumnae.org`,
   },
 ];
 
-// const events = [
-//   {
-//     title: 'Annual Alumni Meet 2024',
-//     slug: 'annual-alumni-meet-2024',
-//     date: '2024-12-15',
-//     description:
-//       'Join us for our most anticipated event of the year! The Annual Alumni Meet brings together graduates from all batches for an evening of networking, celebration, and inspiration.',
-//     content: `# Annual Alumni Meet 2024
 
-// Join us for our most anticipated event of the year! The Annual Alumni Meet brings together graduates from all batches for an evening of networking, celebration, and inspiration.
-
-// ## Event Details
-
-// - **Date**: December 15, 2024
-// - **Time**: 6:00 PM - 10:00 PM
-// - **Location**: Main Campus Auditorium, NCIT
-// - **Theme**: Building Bridges: Connecting Past, Present, and Future
-
-// ## What to Expect
-
-// - Networking sessions with fellow alumni
-// - Keynote speeches from industry leaders
-// - Career development workshops
-// - Cultural performances and entertainment
-// - Delicious dinner and refreshments
-
-// ## Registration
-
-// [Register Now](https://forms.gle/alumni-meet-2024)
-
-// ## Contact
-
-// For more information: events@ncit.edu.np`,
-//     location: 'Main Campus Auditorium, NCIT',
-//     registration_url: 'https://forms.gle/alumni-meet-2024',
-//     image: '/images/events/default-event-banner.svg',
-//     category: 'Networking',
-//     tags: ['networking', 'celebration', 'alumni', 'annual'],
-//     featured: true,
-//   },
-//   {
-//     title: 'Startup Pitch Competition 2024',
-//     slug: 'startup-pitch-competition',
-//     date: '2024-04-20',
-//     description:
-//       'Annual startup pitch competition showcasing innovative ideas from our alumni community',
-//     content: `Calling all entrepreneurs and innovators! The annual Startup Pitch Competition is back with bigger prizes and more opportunities.
-
-// ## What to Expect
-
-// - **Pitch Presentations** from 20 selected startups
-// - **Expert Judges** including successful alumni entrepreneurs
-// - **Networking** with investors and mentors
-// - **Prizes** worth over $50,000 in cash and services
-
-// ## Competition Categories
-
-// - **Technology Innovation** - Software, AI, IoT solutions
-// - **Social Impact** - Solutions for community challenges
-// - **Sustainability** - Green tech and environmental solutions
-// - **Healthcare** - Medical technology and wellness
-
-// ## Prizes
-
-// - **1st Place**: $25,000 + 6 months mentorship
-// - **2nd Place**: $15,000 + 3 months mentorship
-// - **3rd Place**: $10,000 + 1 month mentorship
-// - **People's Choice**: $5,000
-
-// ## How to Apply
-
-// Submit your startup idea by March 31st, 2024.
-
-// [Apply Now](https://pitch.example.com)
-
-// ## Judging Criteria
-
-// - Innovation and creativity (25%)
-// - Market potential (25%)
-// - Feasibility (20%)
-// - Presentation skills (15%)
-// - Social impact (15%)
-
-// ## Contact
-
-// For questions: pitch@alumni.example.com`,
-//     location: 'Innovation Hub, University Campus',
-//     registration_url: 'https://pitch.example.com',
-//     image: '/images/events/default-event-banner.svg',
-//     category: 'Entrepreneurship',
-//     tags: ['startup', 'pitch', 'innovation', 'entrepreneurship', 'competition'],
-//     featured: true,
-//   },
-//   {
-//     title: 'Tech Career Fair 2024',
-//     slug: 'tech-career-fair-2024',
-//     date: '2024-03-15',
-//     description: 'Annual technology career fair connecting alumni with top tech companies',
-//     content: `Join us for the biggest tech career fair of the year! This event brings together:
-
-// - **50+ Tech Companies** including Google, Microsoft, Amazon, and local startups
-// - **Networking Sessions** with industry leaders and alumni
-// - **Resume Workshops** and interview preparation sessions
-// - **Job Opportunities** for all experience levels
-
-// ## Schedule
-
-// - **9:00 AM** - Registration and Welcome
-// - **10:00 AM** - Company Presentations
-// - **11:30 AM** - Networking Lunch
-// - **1:00 PM** - Career Workshops
-// - **3:00 PM** - One-on-One Sessions
-// - **5:00 PM** - Closing Reception
-
-// ## Registration
-
-// Early bird registration is now open! Alumni get priority access.
-
-// [Register Now](https://careerfair.example.com)
-
-// ## Sponsors
-
-// This event is proudly sponsored by our alumni network and partner companies.
-
-// ## Contact
-
-// For more information, contact: careers@alumni.example.com`,
-//     location: 'Convention Center, Downtown',
-//     registration_url: 'https://careerfair.example.com',
-//     image: '/images/events/default-event-banner.svg',
-//     category: 'Career Development',
-//     tags: ['career', 'networking', 'tech', 'jobs', 'workshops'],
-//     featured: true,
-//   },
-// ];
 
 const blogPosts = [
   {

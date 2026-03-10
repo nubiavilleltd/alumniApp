@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { Icon } from '@iconify/react';
 
 // ─── Reusable Modal Shell ─────────────────────────────────────────────────────
 interface ModalProps {

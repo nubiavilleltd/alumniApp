@@ -1,83 +1,13 @@
 import { Icon } from '@iconify/react';
 import { useState, useMemo } from 'react';
-import { AppLink } from '@/shared/components/ui/AppLink';
 import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { businesses, categories } from '@/data/site-data';
 
 import { PostBusinessModal } from '../components/PostYourBusinessModal';
+import { SearchInput } from '@/shared/components/ui/input/SearchInput';
+import { FilterDropdown } from '@/shared/components/ui/FilterDropdown';
 
-// ─── Reusable Search Input ────────────────────────────────────────────────────
-interface SearchInputProps {
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
-  label?: string;
-}
-
-function SearchInput({
-  value,
-  onChange,
-  placeholder = 'Search for service, product, or business',
-  label,
-}: SearchInputProps) {
-  return (
-    <div className="flex-1">
-      {label && <label className="block text-xs font-medium text-gray-600 mb-1">{label}</label>}
-      <div className="flex items-center bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-        <div className="pl-3 text-gray-400">
-          <Icon icon="mdi:magnify" className="w-4 h-4" />
-        </div>
-        <input
-          type="text"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={placeholder}
-          className="flex-1 px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 outline-none bg-transparent"
-        />
-        {/* <button
-          type="button"
-          className="bg-primary-500 hover:bg-primary-600 text-white text-sm font-medium px-5 py-2.5 transition-colors"
-        >
-          Search
-        </button> */}
-      </div>
-    </div>
-  );
-}
-
-// ─── Reusable Category Dropdown ───────────────────────────────────────────────
-interface CategoryDropdownProps {
-  value: string;
-  onChange: (value: string) => void;
-  label?: string;
-}
-
-function CategoryDropdown({ value, onChange, label }: CategoryDropdownProps) {
-  return (
-    <div className="w-full sm:w-52">
-      {label && <label className="block text-xs font-medium text-gray-600 mb-1">{label}</label>}
-      <div className="relative">
-        <select
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          className="w-full appearance-none bg-white border border-gray-200 rounded-lg px-4 py-2.5 pr-9 text-sm text-gray-700 shadow-sm outline-none focus:border-primary-400 cursor-pointer"
-        >
-          <option value="">Select Category</option>
-          {categories.map((cat) => (
-            <option key={cat} value={cat}>
-              {cat}
-            </option>
-          ))}
-        </select>
-        <Icon
-          icon="mdi:chevron-down"
-          className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"
-        />
-      </div>
-    </div>
-  );
-}
 
 // ─── Business Card ────────────────────────────────────────────────────────────
 interface Business {
@@ -238,12 +168,16 @@ export default function MarketPlacePage() {
             <SearchInput
               label="Search"
               value={searchTerm}
-              onChange={handleFilterChange(setSearchTerm)}
+              onValueChange={handleFilterChange(setSearchTerm)}
+              placeholder = 'Search for service, product, or business'
+              className="flex-1"
             />
-            <CategoryDropdown
+            <FilterDropdown
               label="Select Category"
               value={category}
               onChange={handleFilterChange(setCategory)}
+              options={categories.map((cat) => ({ label: cat, value: cat }))}
+            //   options={categories}
             />
           </div>
 

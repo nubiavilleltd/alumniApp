@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { getSiteConfig } from '@/data/content';
 import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { AppLink } from '../ui/AppLink';
+import Button from '../ui/Button';
 
 interface NavigationItem {
   label: string;
@@ -157,9 +158,10 @@ export function Navigation() {
                 </button>
               </div>
             ) : (
-              <AppLink href="/auth/login" className="btn bg-white text-primary-500">
+              <AppLink href="/auth/login">
                 {/* <Icon icon="mdi:login" className="mr-2 h-5 w-5" /> */}
-                Login
+
+                <Button variant='white'>Login</Button>
               </AppLink>
             )}
           </div>
@@ -177,67 +179,21 @@ export function Navigation() {
 
         <div ref={mobileMenuRef} className={`lg:hidden ${mobileMenuOpen ? 'block' : 'hidden'}`}>
           <div className="py-4 space-y-2 border-t border-accent-100">
-            {config.navigation.map((item) => {
+            {navigation.map((item) => {
               const sectionId = `mobile-mega-${item.label.toLowerCase().replace(/\s+/g, '-')}`;
               const sectionOpen = !!openMobileSections[sectionId];
 
               return (
                 <div className="space-y-2" key={item.label}>
-                  {item.mega_menu ? (
-                    <div className="space-y-2">
-                      <button
-                        className="w-full text-left px-4 py-3 text-accent-700 hover:text-primary-600 hover:bg-accent-50 rounded-lg transition-colors duration-200 flex items-center justify-between"
-                        type="button"
-                        onClick={() => toggleMobileSection(sectionId)}
-                      >
-                        <span className="font-medium">{item.label}</span>
-                        <Icon
-                          icon="mdi:chevron-down"
-                          className={`w-5 h-5 transition-transform duration-200 ${
-                            sectionOpen ? 'rotate-180' : ''
-                          }`}
-                        />
-                      </button>
-
-                      <div className={`${sectionOpen ? 'block' : 'hidden'} pl-4 space-y-2`}>
-                        <div className="space-y-2">
-                          <h4 className="text-sm font-semibold text-accent-900 uppercase tracking-wider px-4 py-2">
-                            By Year
-                          </h4>
-                          <div className="grid grid-cols-2 gap-2 px-4">
-                            {years.slice(0, 6).map((year) => (
-                              <AppLink
-                                href={`/alumni/years/${year}`}
-                                key={year}
-                                className="text-sm text-accent-600 hover:text-primary-600 px-3 py-2 rounded-lg hover:bg-accent-50 transition-colors duration-200"
-                              >
-                                {year}
-                              </AppLink>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className="pt-4 border-t border-accent-100 mt-4 px-4">
-                          <AppLink
-                            href="/alumni/profiles"
-                            className="block w-full text-center btn btn-primary btn-sm"
-                          >
-                            View All Alumni
-                          </AppLink>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <AppLink
-                      href={item.url}
-                      className="block px-4 py-3 text-accent-700 hover:text-primary-600 hover:bg-accent-50 rounded-lg transition-colors duration-200"
-                    >
-                      {item.icon && (
-                        <Icon icon={`mdi:${item.icon}`} className="w-4 h-4 mr-3 inline" />
-                      )}
-                      {item.label}
-                    </AppLink>
-                  )}
+                  <AppLink
+                    href={item.url}
+                    className="block px-4 py-3 text-accent-700 hover:text-primary-600 hover:bg-accent-50 rounded-lg transition-colors duration-200"
+                  >
+                    {item.icon && (
+                      <Icon icon={`mdi:${item.icon}`} className="w-4 h-4 mr-3 inline" />
+                    )}
+                    {item.label}
+                  </AppLink>
                 </div>
               );
             })}

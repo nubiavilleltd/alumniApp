@@ -86,7 +86,7 @@ export default function OurStory() {
             continues to produce Nigeria's finest daughters.
           </p>
           <AppLink href="/about" className="w-fit inline-block">
-            <Button styles="py-3 px-12">Learn More</Button>
+            <Button className="py-3 px-12" size='lg'>Learn More</Button>
           </AppLink>
         </div>
 

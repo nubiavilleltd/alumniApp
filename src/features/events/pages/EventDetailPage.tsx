@@ -63,15 +63,13 @@ export function EventDetailPage() {
                     </li>
                   )}
                 </ul>
-                {event.registration_url && (
-                  <AppLink
-                    href={event.registration_url}
+                   <AppLink
+                    href="#"
                     target="_blank"
                     className="btn btn-primary btn-sm mt-4 w-full"
                   >
                     Register
                   </AppLink>
-                )}
               </div>
             </div>
           </div>

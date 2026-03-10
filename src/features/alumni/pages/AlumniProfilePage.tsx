@@ -86,7 +86,7 @@ export function AlumniProfilePage() {
                     )}
                   </div>
 
-                  {(socials.linkedin || socials.github || socials.twitter || socials.portfolio) && (
+                  {(socials.linkedin || socials.github || socials.twitter) && (
                     <div className="mt-6 flex justify-center gap-5 text-gray-600">
                       {socials.linkedin && (
                         <AppLink
@@ -115,15 +115,7 @@ export function AlumniProfilePage() {
                           <Icon icon="mdi:twitter" className="w-6 h-6" />
                         </AppLink>
                       )}
-                      {socials.portfolio && (
-                        <AppLink
-                          href={socials.portfolio}
-                          target="_blank"
-                          className="hover:text-primary-600"
-                        >
-                          <Icon icon="mdi:web" className="w-6 h-6" />
-                        </AppLink>
-                      )}
+              
                     </div>
                   )}
                 </>
