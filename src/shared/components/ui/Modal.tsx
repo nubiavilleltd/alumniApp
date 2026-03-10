@@ -17,7 +17,9 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
     } else {
       document.body.style.overflow = '';
     }
-    return () => { document.body.style.overflow = ''; };
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [isOpen]);
 
   if (!isOpen) return null;
@@ -47,9 +49,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
         </div>
 
         {/* Content */}
-        <div className="px-6 py-5">
-          {children}
-        </div>
+        <div className="px-6 py-5">{children}</div>
       </div>
     </div>
   );

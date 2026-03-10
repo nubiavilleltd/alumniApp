@@ -10,265 +10,6 @@ import Image4 from '../../public/leadership-4.png';
 import Image5 from '../../public/leadership-5.png';
 import Image6 from '../../public/leadership-6.png';
 
-// const alumni = [
-//   {
-//     name: 'Emma Rodriguez',
-//     slug: 'emma-rodriguez',
-//     chapter: 'Civil Engineering',
-//     year: 2023,
-//     short_bio: 'Civil engineer focused on sustainable infrastructure and green building design',
-//     long_bio:
-//       'Emma is a passionate civil engineer dedicated to creating sustainable infrastructure solutions. She specializes in green building design and environmental impact assessment.',
-//     photo: '/images/avatars/default-avatar.svg',
-//     email: 'emma.rodriguez@email.com',
-//     location: 'Portland, OR',
-//     company: 'GreenBuild Engineering',
-//     position: 'Sustainability Engineer',
-//     skills: [
-//       'Structural Design',
-//       'Sustainability',
-//       'LEED Certification',
-//       'AutoCAD',
-//       'Environmental Assessment',
-//     ],
-//     projects: [
-//       {
-//         name: 'Eco-Friendly Office Complex',
-//         description: 'LEED Platinum certified office building with sustainable features',
-//         url: 'https://greenbuild.com/office-complex',
-//       },
-//       {
-//         name: 'Green Bridge Design',
-//         description: 'Sustainable bridge design incorporating renewable materials',
-//         url: 'https://greenbuild.com/bridge',
-//       },
-//     ],
-//     work_experience: [
-//       {
-//         company: 'GreenBuild Engineering',
-//         position: 'Sustainability Engineer',
-//         duration: '2023 - Present',
-//         description: 'Leading sustainable design projects and LEED certification',
-//       },
-//       {
-//         company: 'City Planning Department',
-//         position: 'Civil Engineer Intern',
-//         duration: '2022 - 2023',
-//         description: 'Assisted in urban planning and infrastructure projects',
-//       },
-//     ],
-//     education: [
-//       {
-//         degree: 'Bachelor of Engineering in Civil Engineering',
-//         institution: 'University of Technology',
-//         year: 2023,
-//         gpa: '3.7/4.0',
-//       },
-//     ],
-//     achievements: [
-//       'LEED Green Associate Certification',
-//       'Environmental Engineering Excellence Award',
-//       'Student Leadership Award',
-//     ],
-//     interests: ['Sustainability', 'Green Building', 'Urban Planning', 'Environmental Conservation'],
-//     social: {
-//       linkedin: 'https://linkedin.com/in/emma-rodriguez',
-//       twitter: 'https://twitter.com/emmarodriguez',
-//       github: 'https://github.com/emmarodriguez',
-//     },
-//   },
-//   {
-//     name: 'John Doe',
-//     slug: 'john-doe',
-//     chapter: 'Software Engineering',
-//     year: 2020,
-//     short_bio: 'Senior Software Engineer at TechCorp, specializing in AI and cloud solutions',
-//     long_bio:
-//       'John is a passionate software engineer with expertise in full-stack development, machine learning, and cloud technologies. He graduated with honors and has been working on innovative projects that solve real-world problems.',
-//     photo: '/logo.png',
-//     email: 'john.doe@email.com',
-//     location: 'San Francisco, CA',
-//     company: 'TechCorp',
-//     position: 'Senior Software Engineer',
-//     skills: [
-//       'JavaScript',
-//       'Python',
-//       'React',
-//       'Node.js',
-//       'AWS',
-//       'Machine Learning',
-//       'Docker',
-//       'Kubernetes',
-//     ],
-//     projects: [
-//       {
-//         name: 'AI-Powered Chatbot',
-//         description: 'Developed an intelligent chatbot using natural language processing',
-//         url: 'https://github.com/johndoe/ai-chatbot',
-//       },
-//       {
-//         name: 'Cloud Migration Tool',
-//         description: 'Built a tool to automate cloud infrastructure migration',
-//         url: 'https://github.com/johndoe/cloud-migrator',
-//       },
-//     ],
-//     work_experience: [
-//       {
-//         company: 'TechCorp',
-//         position: 'Senior Software Engineer',
-//         duration: '2022 - Present',
-//         description: 'Leading development of cloud-native applications and AI solutions',
-//       },
-//       {
-//         company: 'StartupXYZ',
-//         position: 'Software Engineer',
-//         duration: '2020 - 2022',
-//         description: 'Full-stack development and DevOps practices implementation',
-//       },
-//     ],
-//     education: [
-//       {
-//         degree: 'Bachelor of Engineering in Software Engineering',
-//         institution: 'Nepal College of Information Technology',
-//         year: 2020,
-//         gpa: '3.9/4.0',
-//       },
-//     ],
-//     achievements: [
-//       'Graduated with First Class Honors',
-//       'Best Final Year Project Award',
-//       'Microsoft Student Partner',
-//       'Published 3 research papers',
-//     ],
-//     interests: ['AI/ML', 'Cloud Computing', 'Open Source', 'Research'],
-//     social: {
-//       linkedin: 'https://linkedin.com/in/john-doe',
-//       twitter: 'https://twitter.com/johndoe',
-//       github: 'https://github.com/johndoe',
-//     },
-//   },
-//   {
-//     name: 'Michael Chen',
-//     slug: 'michael-chen',
-//     chapter: 'Electronics Engineering',
-//     year: 2021,
-//     short_bio: 'Electronics engineer specializing in IoT and embedded systems',
-//     long_bio:
-//       'Michael is an innovative electronics engineer with deep expertise in IoT devices, embedded systems, and hardware design. He has successfully launched several IoT products in the market.',
-//     photo: '/images/avatars/default-avatar.svg',
-//     email: 'michael.chen@email.com',
-//     location: 'Austin, TX',
-//     company: 'IoT Solutions Inc.',
-//     position: 'Lead Hardware Engineer',
-//     skills: ['IoT', 'Embedded Systems', 'PCB Design', 'C/C++', 'Python', 'Arduino'],
-//     projects: [
-//       {
-//         name: 'Smart Home Hub',
-//         description: 'Centralized IoT hub for smart home automation',
-//         url: 'https://github.com/michaelchen/smarthome',
-//       },
-//       {
-//         name: 'Environmental Monitor',
-//         description: 'IoT device for monitoring air quality and temperature',
-//         url: 'https://github.com/michaelchen/envmonitor',
-//       },
-//     ],
-//     work_experience: [
-//       {
-//         company: 'IoT Solutions Inc.',
-//         position: 'Lead Hardware Engineer',
-//         duration: '2021 - Present',
-//         description: 'Leading hardware design and development for IoT products',
-//       },
-//       {
-//         company: 'TechStart',
-//         position: 'Electronics Engineer',
-//         duration: '2019 - 2021',
-//         description: 'Designed and prototyped various electronic devices',
-//       },
-//     ],
-//     education: [
-//       {
-//         degree: 'Bachelor of Engineering in Electronics Engineering',
-//         institution: 'University of Technology',
-//         year: 2021,
-//         gpa: '3.9/4.0',
-//       },
-//     ],
-//     achievements: [
-//       'Innovation Award for IoT Product Design',
-//       'Patent for Smart Sensor Technology',
-//       'Best Graduate Student Award',
-//     ],
-//     interests: ['IoT', 'Hardware Hacking', 'Electronics', 'Innovation'],
-//     social: {
-//       portfolio: 'https://michaelchen.io',
-//       linkedin: 'https://linkedin.com/in/michael-chen',
-//       twitter: 'https://twitter.com/michaelchen',
-//       github: 'https://github.com/michaelchen',
-//     },
-//   },
-//   {
-//     name: 'Sarah Johnson',
-//     slug: 'sarah-johnson',
-//     chapter: 'Computer Engineering',
-//     year: 2022,
-//     short_bio: 'Full-stack developer passionate about creating user-friendly web applications',
-//     long_bio:
-//       'Sarah is a talented full-stack developer with expertise in React, Node.js, and cloud technologies. She loves solving complex problems and mentoring junior developers.',
-//     photo: '/images/avatars/default-avatar.svg',
-//     email: 'sarah.johnson@email.com',
-//     location: 'San Francisco, CA',
-//     company: 'TechCorp',
-//     position: 'Senior Software Engineer',
-//     skills: ['React', 'Node.js', 'AWS', 'TypeScript', 'MongoDB'],
-//     projects: [
-//       {
-//         name: 'E-commerce Platform',
-//         description: 'Built a scalable e-commerce solution using React and Node.js',
-//         url: 'https://github.com/sarahjohnson/ecommerce',
-//       },
-//       {
-//         name: 'Task Management App',
-//         description: 'Collaborative task management application with real-time updates',
-//         url: 'https://github.com/sarahjohnson/taskapp',
-//       },
-//     ],
-//     work_experience: [
-//       {
-//         company: 'TechCorp',
-//         position: 'Senior Software Engineer',
-//         duration: '2022 - Present',
-//         description: 'Leading development of web applications and mentoring junior developers',
-//       },
-//       {
-//         company: 'StartupXYZ',
-//         position: 'Full-stack Developer',
-//         duration: '2020 - 2022',
-//         description: 'Built and maintained multiple web applications using modern technologies',
-//       },
-//     ],
-//     education: [
-//       {
-//         degree: 'Bachelor of Engineering in Computer Engineering',
-//         institution: 'University of Technology',
-//         year: 2022,
-//         gpa: '3.8/4.0',
-//       },
-//     ],
-//     achievements: [
-//       'Best Final Year Project Award',
-//       "Dean's List for 3 consecutive years",
-//       'Hackathon Winner - Tech Innovation Challenge',
-//     ],
-//     interests: ['Web Development', 'Open Source', 'Tech Meetups', 'Reading'],
-//     social: {
-//       linkedin: 'https://linkedin.com/in/sarah-johnson',
-//       twitter: 'https://twitter.com/sarahjohnson',
-//       github: 'https://github.com/sarahjohnson',
-//     },
-//   },
-// ];
 
 export const alumni = [
   {
@@ -947,17 +688,19 @@ The future of work is hybrid and flexible, creating new opportunities for alumni
 ];
 
 
+
 export const businesses = [
   {
     slug: 'ngozis-catering-service',
     name: "Ngozi's Catering Service",
     category: 'Food & Beverages',
-    description: 'Premium catering services for weddings, corporate events, and private parties. Specialising in local and continental dishes.',
+    description:
+      'Premium catering services for weddings, corporate events, and private parties. Specialising in local and continental dishes.',
     images: [
-      '/images/marketplace/ngozi-catering-1.jpg',
-      '/images/marketplace/ngozi-catering-2.jpg',
+      'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&q=80', // jollof rice / food spread
+      'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=80', // food buffet
     ],
-    location: 'Lagos, Lagos',
+    location: 'Lekki, Lagos',
     phone: '+234 801 123 5678',
     website: 'www.ngozycatering.com',
     owner: 'Ngozi Okafor',
@@ -967,12 +710,13 @@ export const businesses = [
     slug: 'johnnys-tech-limited',
     name: "Johnny's Tech Limited",
     category: 'Technology',
-    description: 'Premium catering services for weddings, corporate events, and private parties. Specialising in local and continental dishes.',
+    description:
+      'Leading provider of IT solutions, phone sales, repairs, and software services for businesses and individuals across Lagos.',
     images: [
-      '/images/marketplace/johnnys-tech-1.jpg',
-      '/images/marketplace/johnnys-tech-2.jpg',
+      'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=600&q=80', // tech laptops
+      'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&q=80', // coding screen
     ],
-    location: 'Lagos, Lagos',
+    location: 'Lekki, Lagos',
     phone: '+234 801 123 5654',
     website: 'www.agottech.com',
     owner: 'Johnny Adaeze',
@@ -982,12 +726,13 @@ export const businesses = [
     slug: 'obes-phones-limited-1',
     name: "Obe's Phones Limited",
     category: 'Technology',
-    description: 'Premium catering services for weddings, corporate events, and private parties. Specialising in local and continental dishes.',
+    description:
+      'Your one-stop shop for the latest smartphones, accessories, and expert phone repair services in Lagos.',
     images: [
-      '/images/marketplace/obes-phones-1.jpg',
-      '/images/marketplace/obes-phones-2.jpg',
+      'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&q=80', // phones
+      'https://images.unsplash.com/photo-1574920162043-b872873f19bc?w=600&q=80', // phone store
     ],
-    location: 'Lagos, Lagos',
+    location: 'Lekki, Lagos',
     phone: '+234 801 123 6878',
     website: 'www.obes.com',
     owner: 'Obe Chioma',
@@ -997,12 +742,13 @@ export const businesses = [
     slug: 'obes-phones-limited-2',
     name: "Obe's Phones Limited",
     category: 'Technology',
-    description: 'Premium catering services for weddings, corporate events, and private parties. Specialising in local and continental dishes.',
+    description:
+      'Your one-stop shop for the latest smartphones, accessories, and expert phone repair services in Lagos.',
     images: [
-      '/images/marketplace/obes-phones-3.jpg',
-      '/images/marketplace/obes-phones-4.jpg',
+      'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=600&q=80', // samsung phone
+      'https://images.unsplash.com/photo-1565849904461-04a58ad377e0?w=600&q=80', // phone accessories
     ],
-    location: 'Lagos, Lagos',
+    location: 'Lekki, Lagos',
     phone: '+234 802 341 5679',
     website: 'www.agottech.com',
     owner: 'Obe Chioma',
@@ -1012,12 +758,13 @@ export const businesses = [
     slug: 'ngozis-consulting-service',
     name: "Ngozi's Consulting Service",
     category: 'Consulting',
-    description: 'Premium catering services for weddings, corporate events, and private parties. Specialising in local and continental dishes.',
+    description:
+      'Professional business consulting, strategy development, and management advisory services for SMEs and corporates.',
     images: [
-      '/images/marketplace/ngozi-consulting-1.jpg',
-      '/images/marketplace/ngozi-consulting-2.jpg',
+      'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80', // business meeting
+      'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&q=80', // woman consulting
     ],
-    location: 'Lagos, Lagos',
+    location: 'Lekki, Lagos',
     phone: '+234 803 234 5679',
     website: 'www.ngozitech.com',
     owner: 'Ngozi Adaeze',
@@ -1027,12 +774,13 @@ export const businesses = [
     slug: 'johnnys-tech-limited-2',
     name: "Johnny's Tech Limited",
     category: 'Technology',
-    description: 'Premium catering services for weddings, corporate events, and private parties. Specialising in local and continental dishes.',
+    description:
+      'Leading provider of IT solutions, phone sales, repairs, and software services for businesses and individuals across Lagos.',
     images: [
-      '/images/marketplace/johnnys-tech-3.jpg',
-      '/images/marketplace/johnnys-tech-4.jpg',
+      'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&q=80', // laptop work
+      'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&q=80', // tech woman
     ],
-    location: 'Lagos, Lagos',
+    location: 'Lekki, Lagos',
     phone: '+234 801 234 5679',
     website: 'www.agottech.com',
     owner: 'Johnny Adaeze',
@@ -1042,12 +790,13 @@ export const businesses = [
     slug: 'obes-phones-limited-3',
     name: "Obe's Phones Limited",
     category: 'Technology',
-    description: 'Premium catering services for weddings, corporate events, and private parties. Specialising in local and continental dishes.',
+    description:
+      'Your one-stop shop for the latest smartphones, accessories, and expert phone repair services in Lagos.',
     images: [
-      '/images/marketplace/obes-phones-5.jpg',
-      '/images/marketplace/obes-phones-6.jpg',
+      'https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=600&q=80', // phones display
+      'https://images.unsplash.com/photo-1580910051074-3eb694886505?w=600&q=80', // phone repair
     ],
-    location: 'Lagos, Lagos',
+    location: 'Lekki, Lagos',
     phone: '+234 802 345 6789',
     website: 'www.agottech.com',
     owner: 'Obe Chioma',
@@ -1057,12 +806,13 @@ export const businesses = [
     slug: 'ngozis-consulting-service-2',
     name: "Ngozi's Consulting Service",
     category: 'Consulting',
-    description: 'Premium catering services for weddings, corporate events, and private parties. Specialising in local and continental dishes.',
+    description:
+      'Professional business consulting, strategy development, and management advisory services for SMEs and corporates.',
     images: [
-      '/images/marketplace/ngozi-consulting-3.jpg',
-      '/images/marketplace/ngozi-consulting-4.jpg',
+      'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&q=80', // board meeting
+      'https://images.unsplash.com/photo-1556761175-4b46a572b786?w=600&q=80', // office consulting
     ],
-    location: 'Lagos, Lagos',
+    location: 'Lekki, Lagos',
     phone: '+234 803 456 7890',
     website: 'www.ngozitech.com',
     owner: 'Ngozi Adaeze',
@@ -1072,18 +822,21 @@ export const businesses = [
     slug: 'johnnys-tech-limited-3',
     name: "Johnny's Tech Limited",
     category: 'Technology',
-    description: 'Premium catering services for weddings, corporate events, and private parties. Specialising in local and continental dishes.',
+    description:
+      'Leading provider of IT solutions, phone sales, repairs, and software services for businesses and individuals across Lagos.',
     images: [
-      '/images/marketplace/johnnys-tech-5.jpg',
-      '/images/marketplace/johnnys-tech-6.jpg',
+      'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&q=80', // coding
+      'https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=600&q=80', // tech setup
     ],
-    location: 'Lagos, Lagos',
+    location: 'Lekki, Lagos',
     phone: '+234 801 567 8901',
     website: 'www.agottech.com',
     owner: 'Johnny Adaeze',
     slug_owner: 'johnny-adaeze-3',
   },
 ];
+
+
 
 export const categories = [
   'Food & Beverages',
@@ -1095,7 +848,6 @@ export const categories = [
   'Real Estate',
   'Events & Entertainment',
 ];
-
 
 export function getEvents(): Event[] {
   return events;

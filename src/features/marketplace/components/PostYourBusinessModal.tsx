@@ -3,8 +3,6 @@ import { Icon } from '@iconify/react';
 import { Modal } from '@/shared/components/ui/Modal';
 import { categories } from '@/data/site-data';
 
-
-
 interface PostBusinessForm {
   name: string;
   category: string;
@@ -35,9 +33,10 @@ export function PostBusinessModal({ isOpen, onClose }: PostBusinessModalProps) {
   const [previews, setPreviews] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const set = (field: keyof PostBusinessForm) => (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => setForm((prev) => ({ ...prev, [field]: e.target.value }));
+  const set =
+    (field: keyof PostBusinessForm) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+      setForm((prev) => ({ ...prev, [field]: e.target.value }));
 
   const handleImages = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
@@ -60,7 +59,6 @@ export function PostBusinessModal({ isOpen, onClose }: PostBusinessModalProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Post Your Business">
       <div className="flex flex-col gap-5">
-
         {/* Business Name */}
         <div>
           <label className="block text-sm font-semibold text-gray-800 mb-1.5">Business Name</label>
@@ -84,7 +82,9 @@ export function PostBusinessModal({ isOpen, onClose }: PostBusinessModalProps) {
             >
               <option value="">Food &amp; Beverage</option>
               {categories.map((cat) => (
-                <option key={cat} value={cat}>{cat}</option>
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
               ))}
             </select>
             <Icon
@@ -190,7 +190,6 @@ export function PostBusinessModal({ isOpen, onClose }: PostBusinessModalProps) {
         >
           Post Business
         </button>
-
       </div>
     </Modal>
   );

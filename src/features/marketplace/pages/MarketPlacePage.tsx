@@ -15,7 +15,12 @@ interface SearchInputProps {
   label?: string;
 }
 
-function SearchInput({ value, onChange, placeholder = 'Search for service, product, or business', label }: SearchInputProps) {
+function SearchInput({
+  value,
+  onChange,
+  placeholder = 'Search for service, product, or business',
+  label,
+}: SearchInputProps) {
   return (
     <div className="flex-1">
       {label && <label className="block text-xs font-medium text-gray-600 mb-1">{label}</label>}
@@ -60,10 +65,15 @@ function CategoryDropdown({ value, onChange, label }: CategoryDropdownProps) {
         >
           <option value="">Select Category</option>
           {categories.map((cat) => (
-            <option key={cat} value={cat}>{cat}</option>
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
           ))}
         </select>
-        <Icon icon="mdi:chevron-down" className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+        <Icon
+          icon="mdi:chevron-down"
+          className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"
+        />
       </div>
     </div>
   );
@@ -134,7 +144,9 @@ function BusinessCard({ business }: { business: Business }) {
       {/* Info */}
       <div className="p-3 flex flex-col gap-1.5 flex-1">
         <h3 className="text-gray-900 font-bold text-sm leading-tight">{business.name}</h3>
-        <p className="text-gray-500 text-[11px] leading-relaxed line-clamp-3">{business.description}</p>
+        <p className="text-gray-500 text-[11px] leading-relaxed line-clamp-3">
+          {business.description}
+        </p>
 
         <div className="flex flex-col gap-1 mt-1">
           <span className="flex items-center gap-1 text-gray-400 text-[11px]">
@@ -174,7 +186,8 @@ export default function MarketPlacePage() {
   const filtered = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
     return businesses.filter((b) => {
-      const matchesSearch = !q || b.name.toLowerCase().includes(q) || b.description.toLowerCase().includes(q);
+      const matchesSearch =
+        !q || b.name.toLowerCase().includes(q) || b.description.toLowerCase().includes(q);
       const matchesCategory = !category || b.category === category;
       return matchesSearch && matchesCategory;
     });
@@ -188,26 +201,27 @@ export default function MarketPlacePage() {
     setVisibleCount(ITEMS_PER_PAGE);
   };
 
-  const breadcrumbItems = [
-    { label: 'Home', href: '/' },
-    { label: 'Marketplace' },
-  ];
+  const breadcrumbItems = [{ label: 'Home', href: '/' }, { label: 'Marketplace' }];
 
   return (
     <>
-      <SEO title="Marketplace" description="Discover and support businesses owned by Our Sisters." />
+      <SEO
+        title="Marketplace"
+        description="Discover and support businesses owned by Our Sisters."
+      />
       <Breadcrumbs items={breadcrumbItems} />
 
       <section className="section">
         <div className="container-custom">
-
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div className="text-center flex-1">
               <h1 className="text-3xl md:text-4xl font-bold italic mb-1">
                 Market <span className="text-primary-500">Place</span>
               </h1>
-              <p className="text-gray-500 text-sm">Discover and support businesses owned by Our Sisters.</p>
+              <p className="text-gray-500 text-sm">
+                Discover and support businesses owned by Our Sisters.
+              </p>
             </div>
             <button
               type="button"
@@ -259,7 +273,6 @@ export default function MarketPlacePage() {
               </button>
             </div>
           )}
-
         </div>
       </section>
 
