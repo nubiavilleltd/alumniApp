@@ -36,7 +36,6 @@ const navigation: NavigationItem[] = [
     label: 'Market Place',
     url: '/marketplace',
   },
-
 ];
 
 export function Navigation() {
