@@ -10,7 +10,6 @@ import Image4 from '../../public/leadership-4.png';
 import Image5 from '../../public/leadership-5.png';
 import Image6 from '../../public/leadership-6.png';
 
-
 export const alumni = [
   {
     name: 'Abigal Ojo',
@@ -446,141 +445,288 @@ export const alumni = [
   },
 ];
 
-const events = [
+
+
+
+export const events = [
   {
-    title: 'Annual Alumni Meet 2024',
+    slug: 'annual-homecoming-weekend-gala',
+    title: 'Annual Homecoming Weekend & Grand Gala',
+    description: 'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
+    image: 'https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?w=700&q=80',
+    location: 'Transcorp Hilton, Abuja',
+    attire: 'Formal Attire',
+    date: '2026-12-12',
+    type: 'upcoming',
+    isVirtual: false,
+  },
+  {
+    slug: 'diaspora-virtual-networking-night',
+    title: 'Diaspora Virtual Networking Night',
+    description: 'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
+    image: 'https://images.unsplash.com/photo-1588196749597-9ff075ee6b5b?w=700&q=80',
+    location: 'Zoom, Global',
+    attire: '',
+    date: '2026-12-12',
+    type: 'upcoming',
+    isVirtual: true,
+  },
+  {
+    slug: 'child-birth-of-one-us',
+    title: 'Child Birth Of One Us',
+    description: 'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
+    image: 'https://images.unsplash.com/photo-1519689680058-324335c77eba?w=700&q=80',
+    location: 'Transcorp Hilton, Abuja',
+    attire: 'Formal Attire',
+    date: '2028-12-12',
+    type: 'upcoming',
+    isVirtual: false,
+  },
+  {
+    slug: 'donation-for-project',
+    title: 'Donation For Project',
+    description: 'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
+    image: 'https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=700&q=80',
+    location: 'Zoom, Global',
+    attire: '',
+    date: '2026-12-12',
+    type: 'upcoming',
+    isVirtual: true,
+  },
+  {
+    slug: 'school-opening',
+    title: 'School Opening',
+    description: 'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
+    image: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=700&q=80',
+    location: 'Transcorp Hilton, Abuja',
+    attire: 'Formal Attire',
+    date: '2026-12-12',
+    type: 'upcoming',
+    isVirtual: false,
+  },
+  {
+    slug: 'night-party',
+    title: 'Night Party',
+    description: 'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
+    image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=700&q=80',
+    location: 'Zoom, Global',
+    attire: '',
+    date: '2026-12-12',
+    type: 'upcoming',
+    isVirtual: true,
+  },
+  // Past events
+  {
     slug: 'annual-alumni-meet-2024',
-    date: '2024-12-15',
-    description:
-      'Join us for our most anticipated event of the year! The Annual Alumni Meet brings together graduates from all batches for an evening of networking, celebration, and inspiration.',
-    content: `# Annual Alumni Meet 2024
-
-Join us for our most anticipated event of the year! The Annual Alumni Meet brings together graduates from all batches for an evening of networking, celebration, and inspiration.
-
-## Event Details
-
-- **Date**: December 15, 2024
-- **Time**: 6:00 PM - 10:00 PM
-- **Location**: Main Campus Auditorium, NCIT
-- **Theme**: Building Bridges: Connecting Past, Present, and Future
-
-## What to Expect
-
-- Networking sessions with fellow alumni
-- Keynote speeches from industry leaders
-- Career development workshops
-- Cultural performances and entertainment
-- Delicious dinner and refreshments
-
-## Registration
-
-[Register Now](https://forms.gle/alumni-meet-2024)
-
-## Contact
-
-For more information: events@ncit.edu.np`,
+    title: 'Annual Alumni Meet 2024',
+    description: 'Join us for our most anticipated event of the year! The Annual Alumni Meet brings together graduates from all batches for an evening of networking, celebration, and inspiration.',
+    image: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=700&q=80',
     location: 'Main Campus Auditorium, NCIT',
-    registration_url: 'https://forms.gle/alumni-meet-2024',
-    image: '/images/events/default-event-banner.svg',
-    category: 'Networking',
-    tags: ['networking', 'celebration', 'alumni', 'annual'],
-    featured: true,
+    attire: 'Smart Casual',
+    date: '2024-12-15',
+    type: 'past',
+    isVirtual: false,
   },
   {
+    slug: 'startup-pitch-competition-2024',
     title: 'Startup Pitch Competition 2024',
-    slug: 'startup-pitch-competition',
-    date: '2024-04-20',
-    description:
-      'Annual startup pitch competition showcasing innovative ideas from our alumni community',
-    content: `Calling all entrepreneurs and innovators! The annual Startup Pitch Competition is back with bigger prizes and more opportunities.
-
-## What to Expect
-
-- **Pitch Presentations** from 20 selected startups
-- **Expert Judges** including successful alumni entrepreneurs
-- **Networking** with investors and mentors
-- **Prizes** worth over $50,000 in cash and services
-
-## Competition Categories
-
-- **Technology Innovation** - Software, AI, IoT solutions
-- **Social Impact** - Solutions for community challenges
-- **Sustainability** - Green tech and environmental solutions
-- **Healthcare** - Medical technology and wellness
-
-## Prizes
-
-- **1st Place**: $25,000 + 6 months mentorship
-- **2nd Place**: $15,000 + 3 months mentorship
-- **3rd Place**: $10,000 + 1 month mentorship
-- **People's Choice**: $5,000
-
-## How to Apply
-
-Submit your startup idea by March 31st, 2024.
-
-[Apply Now](https://pitch.example.com)
-
-## Judging Criteria
-
-- Innovation and creativity (25%)
-- Market potential (25%)
-- Feasibility (20%)
-- Presentation skills (15%)
-- Social impact (15%)
-
-## Contact
-
-For questions: pitch@alumni.example.com`,
+    description: 'Annual startup pitch competition showcasing innovative ideas from our alumni community.',
+    image: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=700&q=80',
     location: 'Innovation Hub, University Campus',
-    registration_url: 'https://pitch.example.com',
-    image: '/images/events/default-event-banner.svg',
-    category: 'Entrepreneurship',
-    tags: ['startup', 'pitch', 'innovation', 'entrepreneurship', 'competition'],
-    featured: true,
+    attire: 'Business Casual',
+    date: '2024-04-20',
+    type: 'past',
+    isVirtual: false,
   },
   {
-    title: 'Tech Career Fair 2024',
     slug: 'tech-career-fair-2024',
-    date: '2024-03-15',
-    description: 'Annual technology career fair connecting alumni with top tech companies',
-    content: `Join us for the biggest tech career fair of the year! This event brings together:
-
-- **50+ Tech Companies** including Google, Microsoft, Amazon, and local startups
-- **Networking Sessions** with industry leaders and alumni
-- **Resume Workshops** and interview preparation sessions
-- **Job Opportunities** for all experience levels
-
-## Schedule
-
-- **9:00 AM** - Registration and Welcome
-- **10:00 AM** - Company Presentations
-- **11:30 AM** - Networking Lunch
-- **1:00 PM** - Career Workshops
-- **3:00 PM** - One-on-One Sessions
-- **5:00 PM** - Closing Reception
-
-## Registration
-
-Early bird registration is now open! Alumni get priority access.
-
-[Register Now](https://careerfair.example.com)
-
-## Sponsors
-
-This event is proudly sponsored by our alumni network and partner companies.
-
-## Contact
-
-For more information, contact: careers@alumni.example.com`,
+    title: 'Tech Career Fair 2024',
+    description: 'Annual technology career fair connecting alumni with top tech companies.',
+    image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=700&q=80',
     location: 'Convention Center, Downtown',
-    registration_url: 'https://careerfair.example.com',
-    image: '/images/events/default-event-banner.svg',
-    category: 'Career Development',
-    tags: ['career', 'networking', 'tech', 'jobs', 'workshops'],
-    featured: true,
+    attire: 'Business Formal',
+    date: '2024-03-15',
+    type: 'past',
+    isVirtual: false,
+  },
+  {
+    slug: 'scholarship-award-night-2024',
+    title: 'Scholarship Award Night 2024',
+    description: 'Celebrating our brightest students with the annual scholarship award ceremony, honouring academic excellence and community service.',
+    image: 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=700&q=80',
+    location: 'Grand Ballroom, Eko Hotel, Lagos',
+    attire: 'Black Tie',
+    date: '2024-02-10',
+    type: 'past',
+    isVirtual: false,
+  },
+  {
+    slug: 'virtual-mentorship-summit-2023',
+    title: 'Virtual Mentorship Summit 2023',
+    description: 'A virtual summit connecting senior alumnae mentors with recent graduates to share career guidance and life lessons.',
+    image: 'https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=700&q=80',
+    location: 'Zoom, Global',
+    attire: '',
+    date: '2023-11-05',
+    type: 'past',
+    isVirtual: true,
+  },
+  {
+    slug: 'cultural-day-celebration-2023',
+    title: 'Cultural Day Celebration 2023',
+    description: 'A vibrant celebration of Nigerian culture, heritage, and the bonds that unite FGGC alumnae across generations.',
+    image: 'https://images.unsplash.com/photo-1504609773096-104ff2c73ba4?w=700&q=80',
+    location: 'National Arts Theatre, Lagos',
+    attire: 'Traditional Attire',
+    date: '2023-10-01',
+    type: 'past',
+    isVirtual: false,
   },
 ];
+
+
+
+
+
+
+
+
+
+// const events = [
+//   {
+//     title: 'Annual Alumni Meet 2024',
+//     slug: 'annual-alumni-meet-2024',
+//     date: '2024-12-15',
+//     description:
+//       'Join us for our most anticipated event of the year! The Annual Alumni Meet brings together graduates from all batches for an evening of networking, celebration, and inspiration.',
+//     content: `# Annual Alumni Meet 2024
+
+// Join us for our most anticipated event of the year! The Annual Alumni Meet brings together graduates from all batches for an evening of networking, celebration, and inspiration.
+
+// ## Event Details
+
+// - **Date**: December 15, 2024
+// - **Time**: 6:00 PM - 10:00 PM
+// - **Location**: Main Campus Auditorium, NCIT
+// - **Theme**: Building Bridges: Connecting Past, Present, and Future
+
+// ## What to Expect
+
+// - Networking sessions with fellow alumni
+// - Keynote speeches from industry leaders
+// - Career development workshops
+// - Cultural performances and entertainment
+// - Delicious dinner and refreshments
+
+// ## Registration
+
+// [Register Now](https://forms.gle/alumni-meet-2024)
+
+// ## Contact
+
+// For more information: events@ncit.edu.np`,
+//     location: 'Main Campus Auditorium, NCIT',
+//     registration_url: 'https://forms.gle/alumni-meet-2024',
+//     image: '/images/events/default-event-banner.svg',
+//     category: 'Networking',
+//     tags: ['networking', 'celebration', 'alumni', 'annual'],
+//     featured: true,
+//   },
+//   {
+//     title: 'Startup Pitch Competition 2024',
+//     slug: 'startup-pitch-competition',
+//     date: '2024-04-20',
+//     description:
+//       'Annual startup pitch competition showcasing innovative ideas from our alumni community',
+//     content: `Calling all entrepreneurs and innovators! The annual Startup Pitch Competition is back with bigger prizes and more opportunities.
+
+// ## What to Expect
+
+// - **Pitch Presentations** from 20 selected startups
+// - **Expert Judges** including successful alumni entrepreneurs
+// - **Networking** with investors and mentors
+// - **Prizes** worth over $50,000 in cash and services
+
+// ## Competition Categories
+
+// - **Technology Innovation** - Software, AI, IoT solutions
+// - **Social Impact** - Solutions for community challenges
+// - **Sustainability** - Green tech and environmental solutions
+// - **Healthcare** - Medical technology and wellness
+
+// ## Prizes
+
+// - **1st Place**: $25,000 + 6 months mentorship
+// - **2nd Place**: $15,000 + 3 months mentorship
+// - **3rd Place**: $10,000 + 1 month mentorship
+// - **People's Choice**: $5,000
+
+// ## How to Apply
+
+// Submit your startup idea by March 31st, 2024.
+
+// [Apply Now](https://pitch.example.com)
+
+// ## Judging Criteria
+
+// - Innovation and creativity (25%)
+// - Market potential (25%)
+// - Feasibility (20%)
+// - Presentation skills (15%)
+// - Social impact (15%)
+
+// ## Contact
+
+// For questions: pitch@alumni.example.com`,
+//     location: 'Innovation Hub, University Campus',
+//     registration_url: 'https://pitch.example.com',
+//     image: '/images/events/default-event-banner.svg',
+//     category: 'Entrepreneurship',
+//     tags: ['startup', 'pitch', 'innovation', 'entrepreneurship', 'competition'],
+//     featured: true,
+//   },
+//   {
+//     title: 'Tech Career Fair 2024',
+//     slug: 'tech-career-fair-2024',
+//     date: '2024-03-15',
+//     description: 'Annual technology career fair connecting alumni with top tech companies',
+//     content: `Join us for the biggest tech career fair of the year! This event brings together:
+
+// - **50+ Tech Companies** including Google, Microsoft, Amazon, and local startups
+// - **Networking Sessions** with industry leaders and alumni
+// - **Resume Workshops** and interview preparation sessions
+// - **Job Opportunities** for all experience levels
+
+// ## Schedule
+
+// - **9:00 AM** - Registration and Welcome
+// - **10:00 AM** - Company Presentations
+// - **11:30 AM** - Networking Lunch
+// - **1:00 PM** - Career Workshops
+// - **3:00 PM** - One-on-One Sessions
+// - **5:00 PM** - Closing Reception
+
+// ## Registration
+
+// Early bird registration is now open! Alumni get priority access.
+
+// [Register Now](https://careerfair.example.com)
+
+// ## Sponsors
+
+// This event is proudly sponsored by our alumni network and partner companies.
+
+// ## Contact
+
+// For more information, contact: careers@alumni.example.com`,
+//     location: 'Convention Center, Downtown',
+//     registration_url: 'https://careerfair.example.com',
+//     image: '/images/events/default-event-banner.svg',
+//     category: 'Career Development',
+//     tags: ['career', 'networking', 'tech', 'jobs', 'workshops'],
+//     featured: true,
+//   },
+// ];
 
 const blogPosts = [
   {
@@ -686,8 +832,6 @@ According to our alumni survey:
 The future of work is hybrid and flexible, creating new opportunities for alumni worldwide.`,
   },
 ];
-
-
 
 export const businesses = [
   {
@@ -835,8 +979,6 @@ export const businesses = [
     slug_owner: 'johnny-adaeze-3',
   },
 ];
-
-
 
 export const categories = [
   'Food & Beverages',
