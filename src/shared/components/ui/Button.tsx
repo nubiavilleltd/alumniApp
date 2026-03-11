@@ -27,10 +27,6 @@
 
 // // export default Button;
 
-
-
-
-
 // import { forwardRef } from 'react';
 // import { Icon } from '@iconify/react';
 // import clsx from 'clsx';
@@ -118,10 +114,6 @@
 
 // export default Button;
 
-
-
-
-
 import { forwardRef } from 'react';
 import { Icon } from '@iconify/react';
 import { clsx } from 'clsx';
@@ -142,9 +134,9 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 const variantStyles: Record<ButtonVariant, string> = {
   primary: 'bg-primary-500 text-white hover:bg-primary-600 border border-transparent',
   outline: 'border border-primary-500 text-primary-500 hover:bg-primary-50 bg-transparent',
-  ghost:   'border border-transparent text-primary-500 hover:bg-primary-50 bg-transparent',
-  danger:  'bg-red-500 text-white hover:bg-red-600 border border-transparent',
-  white:   'bg-white text-primary-500',
+  ghost: 'border border-transparent text-primary-500 hover:bg-primary-50 bg-transparent',
+  danger: 'bg-red-500 text-white hover:bg-red-600 border border-transparent',
+  white: 'bg-white text-primary-500',
 };
 
 const sizeStyles: Record<ButtonSize, string> = {

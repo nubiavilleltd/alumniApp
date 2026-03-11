@@ -161,7 +161,7 @@ export function Navigation() {
               <AppLink href="/auth/login">
                 {/* <Icon icon="mdi:login" className="mr-2 h-5 w-5" /> */}
 
-                <Button variant='white'>Login</Button>
+                <Button variant="white">Login</Button>
               </AppLink>
             )}
           </div>

@@ -9,11 +9,7 @@ export type Event = {
   category: string;
   tags: string[];
   featured: boolean;
-  isVirtual:boolean;
-  attire:string;
-  type?:string
+  isVirtual: boolean;
+  attire: string;
+  type?: string;
 };
-
-
-
-

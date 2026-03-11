@@ -1,5 +1,3 @@
-
-
 import { Icon } from '@iconify/react';
 import { useMemo, useState } from 'react';
 import { getSiteConfig } from '@/data/content';
@@ -11,10 +9,6 @@ import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { FilterDropdown } from '@/shared/components/ui/FilterDropdown';
 
 type SortMode = 'name' | 'year';
-
-
-
-
 
 // ─── Alumnae Card ────────────────────────────────────────────────────────────
 interface AlumnaeCardProps {
@@ -164,7 +158,7 @@ export function AlumniDirectoryPage() {
               label="Search Alumnae"
               value={searchTerm}
               onValueChange={handleFilterChange(setSearchTerm)}
-              placeholder='Search by Name or Set'
+              placeholder="Search by Name or Set"
               className="flex-1"
             />
             <FilterDropdown

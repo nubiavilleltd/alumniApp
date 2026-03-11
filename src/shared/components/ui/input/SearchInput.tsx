@@ -32,11 +32,8 @@
 //   );
 // }
 
-
-
-
 import { Icon } from '@iconify/react';
-import { BaseInput, type BaseInputProps } from "./BaseInput";
+import { BaseInput, type BaseInputProps } from './BaseInput';
 
 interface SearchInputProps extends Omit<BaseInputProps, 'leadingSlot' | 'trailingSlot' | 'type'> {
   onSearch?: () => void;

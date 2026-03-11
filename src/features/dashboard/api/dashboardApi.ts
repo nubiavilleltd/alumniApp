@@ -1,4 +1,4 @@
-import { getAlumni, getBlogPosts, getEvents } from '@/data/site-data';
+import { getAlumni, getAnnouncements, getEvents } from '@/data/site-data';
 
 const MOCK_DELAY_MS = 1200;
 const FALLBACK_USER_EMAIL = 'john.doe@email.com';

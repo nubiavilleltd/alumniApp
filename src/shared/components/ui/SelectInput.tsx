@@ -16,7 +16,19 @@ interface SelectInputProps extends React.SelectHTMLAttributes<HTMLSelectElement>
 
 export const SelectInput = forwardRef<HTMLSelectElement, SelectInputProps>(
   (
-    { label, error, hint, options, placeholder = 'Select an option', id, name, required, disabled, className = '', ...rest },
+    {
+      label,
+      error,
+      hint,
+      options,
+      placeholder = 'Select an option',
+      id,
+      name,
+      required,
+      disabled,
+      className = '',
+      ...rest
+    },
     ref,
   ) => {
     const inputId = id ?? name;

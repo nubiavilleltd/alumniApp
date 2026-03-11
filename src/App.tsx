@@ -1,8 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { RootLayout } from './shared/components/layout/RootLayout';
 
-import { BlogIndexPage } from './features/announcements/pages/BlogIndexPage';
-import { BlogPostPage } from './features/announcements/pages/BlogPostPage';
+
 import { AlumniDirectoryPage } from './features/alumni/pages/AlumniDirectoryPage';
 import { AlumniProfilePage } from './features/alumni/pages/AlumniProfilePage';
 import { AlumniRedirectPage } from './features/alumni/pages/AlumniRedirectPage';
@@ -35,8 +34,8 @@ export default function App() {
         <Route path="/alumni/profiles" element={<AlumniDirectoryPage />} />
         <Route path="/alumni/profiles/:slug" element={<AlumniProfilePage />} />
 
-        <Route path="/blog" element={<BlogIndexPage />} />
-        <Route path="/blog/:slug" element={<BlogPostPage />} />
+        {/* <Route path="/blog" element={<BlogIndexPage />} /> */}
+        {/* <Route path="/blog/:slug" element={<BlogPostPage />} /> */}
 
         <Route path="/events" element={<EventsPage />} />
         <Route path="/events/:slug" element={<EventDetailPage />} />

@@ -63,13 +63,9 @@ export function EventDetailPage() {
                     </li>
                   )}
                 </ul>
-                   <AppLink
-                    href="#"
-                    target="_blank"
-                    className="btn btn-primary btn-sm mt-4 w-full"
-                  >
-                    Register
-                  </AppLink>
+                <AppLink href="#" target="_blank" className="btn btn-primary btn-sm mt-4 w-full">
+                  Register
+                </AppLink>
               </div>
             </div>
           </div>

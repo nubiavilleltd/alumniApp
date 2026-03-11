@@ -115,7 +115,6 @@ export function AlumniProfilePage() {
                           <Icon icon="mdi:twitter" className="w-6 h-6" />
                         </AppLink>
                       )}
-              
                     </div>
                   )}
                 </>

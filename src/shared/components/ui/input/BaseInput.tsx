@@ -65,9 +65,6 @@
 
 // BaseInput.displayName = 'BaseInput';
 
-
-
-
 import { forwardRef } from 'react';
 import { Icon } from '@iconify/react';
 
@@ -75,17 +72,34 @@ export interface BaseInputProps extends React.InputHTMLAttributes<HTMLInputEleme
   label?: string;
   error?: string;
   hint?: string;
-  leadingSlot?: React.ReactNode;  // icon, prefix text, etc.
+  leadingSlot?: React.ReactNode; // icon, prefix text, etc.
   trailingSlot?: React.ReactNode; // eye toggle, search button, etc.
   onValueChange?: (value: string) => void; // simple controlled usage outside RHF
 }
 
 export const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>(
-  ({ label, error, hint, leadingSlot, trailingSlot, id, name, required, disabled, className = '', onValueChange, onChange, ...rest }, ref) => {
+  (
+    {
+      label,
+      error,
+      hint,
+      leadingSlot,
+      trailingSlot,
+      id,
+      name,
+      required,
+      disabled,
+      className = '',
+      onValueChange,
+      onChange,
+      ...rest
+    },
+    ref,
+  ) => {
     const inputId = id ?? name;
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      onChange?.(e);              // RHF / native handler
+      onChange?.(e); // RHF / native handler
       onValueChange?.(e.target.value); // simple controlled usage
     };
 
@@ -106,9 +120,7 @@ export const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>(
             ${disabled ? 'opacity-50 bg-gray-50 cursor-not-allowed' : ''}
           `}
         >
-          {leadingSlot && (
-            <div className="pl-3 text-gray-400 flex-shrink-0">{leadingSlot}</div>
-          )}
+          {leadingSlot && <div className="pl-3 text-gray-400 flex-shrink-0">{leadingSlot}</div>}
 
           <input
             ref={ref}
@@ -121,9 +133,7 @@ export const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>(
             {...rest}
           />
 
-          {trailingSlot && (
-            <div className="flex-shrink-0">{trailingSlot}</div>
-          )}
+          {trailingSlot && <div className="flex-shrink-0">{trailingSlot}</div>}
         </div>
 
         {/* Error or hint */}

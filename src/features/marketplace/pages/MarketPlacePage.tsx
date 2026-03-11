@@ -8,7 +8,6 @@ import { PostBusinessModal } from '../components/PostYourBusinessModal';
 import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { FilterDropdown } from '@/shared/components/ui/FilterDropdown';
 
-
 // ─── Business Card ────────────────────────────────────────────────────────────
 interface Business {
   slug: string;
@@ -169,7 +168,7 @@ export default function MarketPlacePage() {
               label="Search"
               value={searchTerm}
               onValueChange={handleFilterChange(setSearchTerm)}
-              placeholder = 'Search for service, product, or business'
+              placeholder="Search for service, product, or business"
               className="flex-1"
             />
             <FilterDropdown
@@ -177,7 +176,7 @@ export default function MarketPlacePage() {
               value={category}
               onChange={handleFilterChange(setCategory)}
               options={categories.map((cat) => ({ label: cat, value: cat }))}
-            //   options={categories}
+              //   options={categories}
             />
           </div>
 

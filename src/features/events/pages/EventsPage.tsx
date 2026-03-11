@@ -9,10 +9,7 @@ import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { FilterDropdown } from '@/shared/components/ui/FilterDropdown';
 import Button from '@/shared/components/ui/Button';
 
-
-
 type Tab = 'upcoming' | 'past';
-
 
 // ─── Event Card ───────────────────────────────────────────────────────────────
 interface AlumnaeEvent {
@@ -193,24 +190,21 @@ export function EventsPage() {
 
           {/* Tab toggle */}
           <div className="flex items-center gap-2 mb-6">
-
             <Button
-              variant={`${tab == "upcoming" ? "primary" : "outline"}`}
+              variant={`${tab == 'upcoming' ? 'primary' : 'outline'}`}
               onClick={() => handleTabChange('upcoming')}
               className={`px-5 py-2 rounded-lg text-sm`}
             >
               Upcoming
             </Button>
 
-
             <Button
-              variant={`${tab == "past" ? "primary" : "outline"}`}
+              variant={`${tab == 'past' ? 'primary' : 'outline'}`}
               onClick={() => handleTabChange('past')}
               className={`px-5 py-2 rounded-lg text-sm`}
             >
               Past
             </Button>
-
           </div>
 
           {/* Filters */}

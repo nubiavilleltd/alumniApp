@@ -18,17 +18,12 @@ export default function HeroSection() {
               memories, driven by purpose, and committed to lifting the next generation.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              {/* <AppLink href="/alumni/profiles" className="btn btn-primary btn-lg">
-                     <Icon icon="mdi:account-search" className="w-6 h-6 mr-2" />
-                     Browse Alumni
-                   </AppLink> */}
-
-              {/* <AppLink href="/about" className="btn btn-outline btn-lg">
-                     <Icon icon="mdi:information" className="w-6 h-6 mr-2" />
-                     Learn More
-                   </AppLink> */}
+           
               <AppLink href="/auth/register">
-                <Button className="py-3 px-12" size='lg'> Join Us</Button>
+                <Button className="py-3 px-12" size="lg">
+                  {' '}
+                  Join Us
+                </Button>
               </AppLink>
             </div>
           </div>

@@ -1,13 +1,17 @@
 
 import { Alumni } from '@/features/alumni/types/alumni.types';
-import { BlogPost } from '@/features/announcements/types/announcement.types';
 import { Event } from '@/features/events/types/event.types';
+import { LeadershipMember } from '@/features/leadership/types/leadership.types';
+import { Project } from '@/features/projects/types/project.types';
+import { NewsItem } from '@/features/announcements/types/announcement.types';
+
 
 import Image2 from '../../public/leadership-2.png';
 import Image3 from '../../public/leadership-3.png';
 import Image4 from '../../public/leadership-4.png';
 import Image5 from '../../public/leadership-5.png';
 import Image6 from '../../public/leadership-6.png';
+
 
 export const alumni = [
   {
@@ -444,12 +448,94 @@ export const alumni = [
   },
 ];
 
-export const events = [
+import Leadership1 from '../../public/leadership-1.png'
+import Leadership2 from '../../public/leadership-2.png';
+import Leadership3 from '../../public/leadership-3.png';
+import Leadership4 from '../../public/leadership-4.png';
+import Leadership5 from '../../public/leadership-5.png';
+import Leadership6 from '../../public/leadership-6.png';
+import Leadership7 from '../../public/leadership-7.png';
+
+
+
+const leadership: LeadershipMember[] = [
+  {
+    id: 1,
+    name: 'Mrs. Stella Alochi',
+    role: 'President',
+    image: Leadership1,
+    featured: true,
+    bio: `Welcome to the official website of the Federal Government Girls Collage (FGGC) Alumnae Association. We are more than graduates—we are the fire forged in shared halls, the quiet strength that shatters ceilings, and the unstoppable force lifting the next generation.\n\nFrom boardrooms to classrooms, from startups to policy tables, our alumnae prove every day: education here didn't just open doors—it built empires, healed communities, and changed nations.\n\nAs your Alumnae President, I see you: the doctors saving lives, the entrepreneurs building legacies, the mothers raising revolutionaries, the leaders shaping tomorrow.`,
+  },
+  {
+    id: 2,
+    name: 'Mrs. Abigal Ojo',
+    role: 'Vice President',
+    image: Leadership2,
+  },
+  {
+    id: 3,
+    name: 'Mrs. Josephine Adeka',
+    role: 'P.R.O',
+    image: Leadership3,
+  },
+  {
+    id: 4,
+    name: 'Mrs. Favour Adah',
+    role: 'Secretary',
+    image: Leadership4,
+  },
+  {
+    id: 5,
+    name: 'Mrs. Lilian Ojo',
+    role: 'Secretary Gen',
+    image: Leadership5,
+  },
+  {
+    id: 6,
+    name: 'Mrs. Goodness Adeka',
+    role: 'Cashier',
+    image: Leadership6,
+  },
+  {
+    id: 7,
+    name: 'Mrs. Bella Adah',
+    role: 'Event Planner',
+    image: Leadership7,
+  },
+];
+
+// ─── Projects ─────────────────────────────────────────────────────────────────
+export const projects: Project[] = [
+  {
+    id: '1',
+    title: 'Computer Donation 2025',
+    description: '87/88 Set donated computer sets to support digital learning',
+    budget: '₦897,908.00',
+    image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=700&q=80', // computers / tech lab
+  },
+  {
+    id: '2',
+    title: 'Whiteboards & Markers',
+    description: 'Complete classroom whiteboard installation for better learning',
+    budget: '₦993,200.00',
+    image: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=700&q=80', // classroom with whiteboard
+  },
+  {
+    id: '3',
+    title: 'School Perimeter Fencing',
+    description: 'Enhanced security through comprehensive perimeter fencing project',
+    budget: '₦698,090.00',
+    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=700&q=80', // perimeter fence / security
+  },
+];
+
+// ─── Events ───────────────────────────────────────────────────────────────────
+export const events: Event[] = [
   {
     slug: 'annual-homecoming-weekend-gala',
     title: 'Annual Homecoming Weekend & Grand Gala',
-    description:
-      'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
+    description: 'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
     image: 'https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?w=700&q=80',
     location: 'Transcorp Hilton, Abuja',
     attire: 'Formal Attire',
@@ -459,39 +545,12 @@ export const events = [
     category: 'Reunion',
     tags: ['reunion', 'gala', 'networking', 'homecoming'],
     featured: true,
-    content: `# Annual Homecoming Weekend & Grand Gala
-
-A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.
-
-## Event Details
-
-- **Date**: December 12, 2026
-- **Time**: 5:00 PM - 11:00 PM
-- **Location**: Transcorp Hilton, Abuja
-- **Attire**: Formal Attire
-- **Theme**: Celebrating Excellence: Decades of Sisterhood
-
-## What to Expect
-
-- Grand gala dinner and awards ceremony
-- Cultural night performances
-- Networking sessions across all sets
-- Recognition of outstanding alumnae
-- Live entertainment and dancing
-
-## Registration
-
-Register early to secure your spot at this landmark event.
-
-## Contact
-
-For more information: events@fggcalumnae.org`,
+    content: `# Annual Homecoming Weekend & Grand Gala\n\nA spectacular reunion bringing together alumnae from every set and every corner of the world.`,
   },
   {
     slug: 'diaspora-virtual-networking-night',
     title: 'Diaspora Virtual Networking Night',
-    description:
-      'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
+    description: 'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
     image: 'https://images.unsplash.com/photo-1588196749597-9ff075ee6b5b?w=700&q=80',
     location: 'Zoom, Global',
     attire: '',
@@ -501,38 +560,12 @@ For more information: events@fggcalumnae.org`,
     category: 'Networking',
     tags: ['diaspora', 'virtual', 'networking', 'global'],
     featured: false,
-    content: `# Diaspora Virtual Networking Night
-
-Connect with fellow FGGC alumnae across the globe from the comfort of your home. An evening of meaningful conversations, shared stories, and new connections.
-
-## Event Details
-
-- **Date**: December 12, 2026
-- **Time**: 7:00 PM WAT / 2:00 PM EST / 7:00 PM GMT
-- **Platform**: Zoom, Global
-- **Attire**: Smart Casual (Virtual)
-
-## What to Expect
-
-- Breakout rooms by graduation set and region
-- Speed networking sessions
-- Guest speaker from the diaspora community
-- Open forum and Q&A
-- Virtual cultural showcase
-
-## Registration
-
-Register to receive your Zoom link before the event.
-
-## Contact
-
-For more information: diaspora@fggcalumnae.org`,
+    content: '',
   },
   {
     slug: 'child-birth-of-one-us',
     title: 'Child Birth Of One Us',
-    description:
-      'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
+    description: 'A spectacular reunion bringing together alumnae from every set and every corner of the world.',
     image: 'https://images.unsplash.com/photo-1519689680058-324335c77eba?w=700&q=80',
     location: 'Transcorp Hilton, Abuja',
     attire: 'Formal Attire',
@@ -542,38 +575,12 @@ For more information: diaspora@fggcalumnae.org`,
     category: 'Celebration',
     tags: ['celebration', 'community', 'maternal', 'support'],
     featured: false,
-    content: `# Child Birth Of One Us
-
-A warm and joyful celebration honouring alumnae who have recently welcomed new life. We come together as sisters to celebrate new beginnings and offer community support.
-
-## Event Details
-
-- **Date**: December 12, 2028
-- **Time**: 2:00 PM - 6:00 PM
-- **Location**: Transcorp Hilton, Abuja
-- **Attire**: Formal Attire
-
-## What to Expect
-
-- Celebratory reception and refreshments
-- Gift presentations to new mothers
-- Wellness talks for new and expecting mothers
-- Community support network introductions
-- Photo sessions and keepsakes
-
-## Registration
-
-RSVP to help us plan appropriately for this special occasion.
-
-## Contact
-
-For more information: community@fggcalumnae.org`,
+    content: '',
   },
   {
     slug: 'donation-for-project',
     title: 'Donation For Project',
-    description:
-      'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
+    description: 'A spectacular reunion bringing together alumnae from every set and every corner of the world.',
     image: 'https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=700&q=80',
     location: 'Zoom, Global',
     attire: '',
@@ -583,38 +590,12 @@ For more information: community@fggcalumnae.org`,
     category: 'Fundraising',
     tags: ['donation', 'fundraising', 'project', 'giveback'],
     featured: false,
-    content: `# Donation For Project
-
-A virtual fundraising drive to support ongoing infrastructure and welfare projects at Federal Government Girls College. Every contribution makes a difference.
-
-## Event Details
-
-- **Date**: December 12, 2026
-- **Time**: 6:00 PM WAT
-- **Platform**: Zoom, Global
-- **Attire**: N/A (Virtual)
-
-## What to Expect
-
-- Project presentations and progress updates
-- Pledge drive and live donation tracking
-- Testimonials from current students
-- Recognition of top contributors
-- Q&A with the projects committee
-
-## How to Contribute
-
-Donations can be made online before, during, or after the event.
-
-## Contact
-
-For more information: projects@fggcalumnae.org`,
+    content: '',
   },
   {
     slug: 'school-opening',
     title: 'School Opening',
-    description:
-      'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
+    description: 'A spectacular reunion bringing together alumnae from every set and every corner of the world.',
     image: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=700&q=80',
     location: 'Transcorp Hilton, Abuja',
     attire: 'Formal Attire',
@@ -624,38 +605,12 @@ For more information: projects@fggcalumnae.org`,
     category: 'Education',
     tags: ['education', 'school', 'opening', 'ceremony'],
     featured: false,
-    content: `# School Opening
-
-A commemorative event marking the beginning of a new academic session at FGGC. Alumnae are invited to witness and support the next generation of FGGC daughters.
-
-## Event Details
-
-- **Date**: December 12, 2026
-- **Time**: 9:00 AM - 1:00 PM
-- **Location**: Transcorp Hilton, Abuja
-- **Attire**: Formal Attire
-
-## What to Expect
-
-- Opening ceremony and address
-- Alumnae mentorship pairings with new students
-- School tour and facility showcase
-- Scholarship presentations
-- Lunch reception
-
-## Registration
-
-Register to confirm your attendance at this prestigious ceremony.
-
-## Contact
-
-For more information: education@fggcalumnae.org`,
+    content: '',
   },
   {
     slug: 'night-party',
     title: 'Night Party',
-    description:
-      'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
+    description: 'A spectacular reunion bringing together alumnae from every set and every corner of the world.',
     image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=700&q=80',
     location: 'Zoom, Global',
     attire: '',
@@ -665,38 +620,12 @@ For more information: education@fggcalumnae.org`,
     category: 'Social',
     tags: ['party', 'social', 'virtual', 'fun'],
     featured: false,
-    content: `# Night Party
-
-Let your hair down and celebrate with sisters from across the world in this fun-filled virtual night party. Music, games, and great company await.
-
-## Event Details
-
-- **Date**: December 12, 2026
-- **Time**: 8:00 PM WAT / 3:00 PM EST
-- **Platform**: Zoom, Global
-- **Attire**: Party Wear (Virtual)
-
-## What to Expect
-
-- Live DJ and music sets
-- Virtual party games and contests
-- Trivia night with prizes
-- Open mic for alumnae
-- Photo booth and virtual backgrounds
-
-## Registration
-
-Register to receive your Zoom link and party pack details.
-
-## Contact
-
-For more information: social@fggcalumnae.org`,
+    content: '',
   },
   {
     slug: 'annual-alumni-meet-2024',
     title: 'Annual Alumni Meet 2024',
-    description:
-      'Join us for our most anticipated event of the year! The Annual Alumni Meet brings together graduates from all batches for an evening of networking, celebration, and inspiration.',
+    description: 'Join us for our most anticipated event of the year! The Annual Alumni Meet brings together graduates from all batches for an evening of networking, celebration, and inspiration.',
     image: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=700&q=80',
     location: 'Main Campus Auditorium, NCIT',
     attire: 'Smart Casual',
@@ -706,39 +635,12 @@ For more information: social@fggcalumnae.org`,
     category: 'Reunion',
     tags: ['reunion', 'networking', 'annual', 'alumni'],
     featured: false,
-    content: `# Annual Alumni Meet 2024
-
-Join us for our most anticipated event of the year! The Annual Alumni Meet brings together graduates from all batches for an evening of networking, celebration, and inspiration.
-
-## Event Details
-
-- **Date**: December 15, 2024
-- **Time**: 6:00 PM - 10:00 PM
-- **Location**: Main Campus Auditorium, NCIT
-- **Attire**: Smart Casual
-- **Theme**: Building Bridges: Connecting Past, Present, and Future
-
-## What to Expect
-
-- Networking sessions with fellow alumni
-- Keynote speeches from industry leaders
-- Career development workshops
-- Cultural performances and entertainment
-- Delicious dinner and refreshments
-
-## Registration
-
-[Register Now](https://forms.gle/alumni-meet-2024)
-
-## Contact
-
-For more information: events@ncit.edu.np`,
+    content: '',
   },
   {
     slug: 'startup-pitch-competition-2024',
     title: 'Startup Pitch Competition 2024',
-    description:
-      'Annual startup pitch competition showcasing innovative ideas from our alumni community.',
+    description: 'Annual startup pitch competition showcasing innovative ideas from our alumni community.',
     image: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=700&q=80',
     location: 'Innovation Hub, University Campus',
     attire: 'Business Casual',
@@ -748,32 +650,7 @@ For more information: events@ncit.edu.np`,
     category: 'Entrepreneurship',
     tags: ['startup', 'pitch', 'entrepreneurship', 'innovation'],
     featured: false,
-    content: `# Startup Pitch Competition 2024
-
-Annual startup pitch competition showcasing innovative ideas from our alumni community. Finalists compete for funding and mentorship opportunities.
-
-## Event Details
-
-- **Date**: April 20, 2024
-- **Time**: 10:00 AM - 4:00 PM
-- **Location**: Innovation Hub, University Campus
-- **Attire**: Business Casual
-
-## What to Expect
-
-- 10 finalist startup pitches
-- Judging panel of investors and industry experts
-- Networking lunch with entrepreneurs
-- Prize presentation and mentorship matching
-- Exhibitor showcase
-
-## Registration
-
-[Register Now](https://forms.gle/startup-pitch-2024)
-
-## Contact
-
-For more information: entrepreneurship@fggcalumnae.org`,
+    content: '',
   },
   {
     slug: 'tech-career-fair-2024',
@@ -788,38 +665,12 @@ For more information: entrepreneurship@fggcalumnae.org`,
     category: 'Career',
     tags: ['career', 'technology', 'jobs', 'networking'],
     featured: false,
-    content: `# Tech Career Fair 2024
-
-Annual technology career fair connecting alumni with top tech companies. Explore job opportunities, internships, and career development resources.
-
-## Event Details
-
-- **Date**: March 15, 2024
-- **Time**: 9:00 AM - 3:00 PM
-- **Location**: Convention Center, Downtown
-- **Attire**: Business Formal
-
-## What to Expect
-
-- 30+ top tech companies in attendance
-- CV review and interview prep workshops
-- Panel discussion: Women in Tech
-- On-the-spot interviews
-- Career coaching sessions
-
-## Registration
-
-[Register Now](https://forms.gle/tech-career-fair-2024)
-
-## Contact
-
-For more information: careers@fggcalumnae.org`,
+    content: '',
   },
   {
     slug: 'scholarship-award-night-2024',
     title: 'Scholarship Award Night 2024',
-    description:
-      'Celebrating our brightest students with the annual scholarship award ceremony, honouring academic excellence and community service.',
+    description: 'Celebrating our brightest students with the annual scholarship award ceremony, honouring academic excellence and community service.',
     image: 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=700&q=80',
     location: 'Grand Ballroom, Eko Hotel, Lagos',
     attire: 'Black Tie',
@@ -829,38 +680,12 @@ For more information: careers@fggcalumnae.org`,
     category: 'Education',
     tags: ['scholarship', 'awards', 'education', 'excellence'],
     featured: true,
-    content: `# Scholarship Award Night 2024
-
-Celebrating our brightest students with the annual scholarship award ceremony, honouring academic excellence and community service.
-
-## Event Details
-
-- **Date**: February 10, 2024
-- **Time**: 6:00 PM - 9:00 PM
-- **Location**: Grand Ballroom, Eko Hotel, Lagos
-- **Attire**: Black Tie
-
-## What to Expect
-
-- Scholarship presentations to 180+ students
-- Keynote address by distinguished alumna
-- Recognition of top-performing sets
-- Gala dinner and entertainment
-- Alumnae giving tribute
-
-## Registration
-
-[Register Now](https://forms.gle/scholarship-award-2024)
-
-## Contact
-
-For more information: scholarships@fggcalumnae.org`,
+    content: '',
   },
   {
     slug: 'virtual-mentorship-summit-2023',
     title: 'Virtual Mentorship Summit 2023',
-    description:
-      'A virtual summit connecting senior alumnae mentors with recent graduates to share career guidance and life lessons.',
+    description: 'A virtual summit connecting senior alumnae mentors with recent graduates to share career guidance and life lessons.',
     image: 'https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=700&q=80',
     location: 'Zoom, Global',
     attire: '',
@@ -870,38 +695,12 @@ For more information: scholarships@fggcalumnae.org`,
     category: 'Mentorship',
     tags: ['mentorship', 'virtual', 'career', 'guidance'],
     featured: false,
-    content: `# Virtual Mentorship Summit 2023
-
-A virtual summit connecting senior alumnae mentors with recent graduates to share career guidance and life lessons.
-
-## Event Details
-
-- **Date**: November 5, 2023
-- **Time**: 3:00 PM WAT / 10:00 AM EST
-- **Platform**: Zoom, Global
-- **Attire**: N/A (Virtual)
-
-## What to Expect
-
-- One-on-one mentor matching sessions
-- Panel: Navigating Your Career as a Nigerian Woman
-- Workshops on leadership, finance, and wellness
-- Open Q&A with senior alumnae
-- Mentorship programme sign-up
-
-## Registration
-
-[Register Now](https://forms.gle/mentorship-summit-2023)
-
-## Contact
-
-For more information: mentorship@fggcalumnae.org`,
+    content: '',
   },
   {
     slug: 'cultural-day-celebration-2023',
     title: 'Cultural Day Celebration 2023',
-    description:
-      'A vibrant celebration of Nigerian culture, heritage, and the bonds that unite FGGC alumnae across generations.',
+    description: 'A vibrant celebration of Nigerian culture, heritage, and the bonds that unite FGGC alumnae across generations.',
     image: 'https://images.unsplash.com/photo-1504609773096-104ff2c73ba4?w=700&q=80',
     location: 'National Arts Theatre, Lagos',
     attire: 'Traditional Attire',
@@ -911,288 +710,21 @@ For more information: mentorship@fggcalumnae.org`,
     category: 'Networking',
     tags: ['networking', 'celebration', 'alumni', 'annual'],
     featured: true,
-    content: `# Cultural Day Celebration 2023
-
-A vibrant celebration of Nigerian culture, heritage, and the bonds that unite FGGC alumnae across generations.
-
-## Event Details
-
-- **Date**: October 1, 2023
-- **Time**: 12:00 PM - 8:00 PM
-- **Location**: National Arts Theatre, Lagos
-- **Attire**: Traditional Attire
-- **Theme**: Roots & Wings: Honouring Where We Come From
-
-## What to Expect
-
-- Traditional music and dance performances
-- Cultural food festival from all Nigerian regions
-- Art and craft exhibition by alumnae
-- Storytelling and heritage talks
-- Photography and fashion showcase
-
-## Registration
-
-Registration is free for all FGGC alumnae.
-
-## Contact
-
-For more information: events@fggcalumnae.org`,
+    content: '',
   },
 ];
 
-
-
-const blogPosts = [
-  {
-    id: 'blog-1',
-    title: 'Building Strong Alumni Networks: A Guide to Meaningful Connections',
-    slug: 'building-strong-alumni-networks',
-    description:
-      'Discover effective strategies for creating and maintaining strong alumni networks that benefit both graduates and institutions. Learn from successful examples and practical tips.',
-    author: 'NCIT Alumni Team',
-    author_photo: '/team/alumni-team.jpg',
-    author_bio:
-      'Dedicated team working to strengthen our alumni community and foster meaningful connections.',
-    publishDate: '2024-01-15',
-    image: '/images/blog/default-blog-banner.svg',
-    category: 'Community',
-    tags: ['networking', 'alumni', 'community', 'professional-development'],
-    featured: true,
-    draft: false,
-    excerpt:
-      'Learn how to build and maintain strong alumni networks that create lasting value for graduates and institutions alike.',
-    readingTime: 8,
-    content: `# Building Strong Alumni Networks: A Guide to Meaningful Connections
-
-Alumni networks are more than just a list of graduates—they're living, breathing communities that can provide immense value to both individuals and institutions.
-
-## Why Alumni Networks Matter
-
-Strong alumni networks offer numerous benefits:
-
-- **Professional Opportunities**: Job referrals, business partnerships, and career advice
-- **Mentorship**: Guidance from experienced professionals in your field
-- **Knowledge Sharing**: Access to industry insights and best practices
-- **Institutional Support**: Alumni can contribute to their alma mater's growth
-- **Lifelong Learning**: Continuous education through workshops and events
-
-## Key Strategies for Building Strong Networks
-
-### 1. Regular Communication
-
-Maintaining regular communication is crucial for keeping alumni engaged.
-
-### 2. Meaningful Events
-
-Events should provide real value to participants.
-
-### 3. Digital Platforms
-
-Leverage technology to maintain connections.
-
-## Conclusion
-
-Building strong alumni networks requires commitment, creativity, and consistent effort.`,
-  },
-  {
-    id: 'blog-2',
-    title: 'The Future of Remote Work: Insights from Alumni Leaders',
-    slug: 'future-of-remote-work',
-    description:
-      'How remote work is reshaping the tech industry and what it means for our alumni community.',
-    author: 'Alumni Editorial Team',
-    author_photo: '/team/editorial-team.jpg',
-    author_bio:
-      'The editorial team curates insights, trends, and expert perspectives from across the alumni community.',
-    publishDate: '2024-01-15',
-    image: '/images/blog/default-blog-banner.svg',
-    category: 'Career Development',
-    tags: ['remote work', 'career', 'technology', 'workplace', 'future'],
-    featured: false,
-    draft: false,
-    excerpt:
-      'Remote work is transforming the global workforce. Discover insights from alumni leaders on how this shift is shaping careers and industries.',
-    readingTime: 6,
-    content: `# The Future of Remote Work: Insights from Alumni Leaders
-
-The landscape of work has undergone a dramatic transformation in recent years, with remote work becoming a fundamental shift in how we approach our careers.
-
-## The New Normal
-
-According to our alumni survey:
-
-- **78% of tech professionals** work remotely at least part-time
-- **45% work fully remote**
-
-## Benefits for Alumni
-
-### Geographic Flexibility
-
-- Work for companies regardless of location
-- Maintain connections with family and community
-
-### Career Growth
-
-- Access to global job markets
-- Reduced commuting time
-
-### Cost Savings
-
-- No daily commute expenses
-- Reduced need for expensive city housing
-
-## Looking Ahead
-
-The future of work is hybrid and flexible, creating new opportunities for alumni worldwide.`,
-  },
-];
-
+// ─── Businesses ───────────────────────────────────────────────────────────────
 export const businesses = [
-  {
-    slug: 'ngozis-catering-service',
-    name: "Ngozi's Catering Service",
-    category: 'Food & Beverages',
-    description:
-      'Premium catering services for weddings, corporate events, and private parties. Specialising in local and continental dishes.',
-    images: [
-      'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&q=80', // jollof rice / food spread
-      'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=80', // food buffet
-    ],
-    location: 'Lekki, Lagos',
-    phone: '+234 801 123 5678',
-    website: 'www.ngozycatering.com',
-    owner: 'Ngozi Okafor',
-    slug_owner: 'ngozi-okafor',
-  },
-  {
-    slug: 'johnnys-tech-limited',
-    name: "Johnny's Tech Limited",
-    category: 'Technology',
-    description:
-      'Leading provider of IT solutions, phone sales, repairs, and software services for businesses and individuals across Lagos.',
-    images: [
-      'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=600&q=80', // tech laptops
-      'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&q=80', // coding screen
-    ],
-    location: 'Lekki, Lagos',
-    phone: '+234 801 123 5654',
-    website: 'www.agottech.com',
-    owner: 'Johnny Adaeze',
-    slug_owner: 'johnny-adaeze',
-  },
-  {
-    slug: 'obes-phones-limited-1',
-    name: "Obe's Phones Limited",
-    category: 'Technology',
-    description:
-      'Your one-stop shop for the latest smartphones, accessories, and expert phone repair services in Lagos.',
-    images: [
-      'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&q=80', // phones
-      'https://images.unsplash.com/photo-1574920162043-b872873f19bc?w=600&q=80', // phone store
-    ],
-    location: 'Lekki, Lagos',
-    phone: '+234 801 123 6878',
-    website: 'www.obes.com',
-    owner: 'Obe Chioma',
-    slug_owner: 'obe-chioma',
-  },
-  {
-    slug: 'obes-phones-limited-2',
-    name: "Obe's Phones Limited",
-    category: 'Technology',
-    description:
-      'Your one-stop shop for the latest smartphones, accessories, and expert phone repair services in Lagos.',
-    images: [
-      'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=600&q=80', // samsung phone
-      'https://images.unsplash.com/photo-1565849904461-04a58ad377e0?w=600&q=80', // phone accessories
-    ],
-    location: 'Lekki, Lagos',
-    phone: '+234 802 341 5679',
-    website: 'www.agottech.com',
-    owner: 'Obe Chioma',
-    slug_owner: 'obe-chioma-2',
-  },
-  {
-    slug: 'ngozis-consulting-service',
-    name: "Ngozi's Consulting Service",
-    category: 'Consulting',
-    description:
-      'Professional business consulting, strategy development, and management advisory services for SMEs and corporates.',
-    images: [
-      'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80', // business meeting
-      'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&q=80', // woman consulting
-    ],
-    location: 'Lekki, Lagos',
-    phone: '+234 803 234 5679',
-    website: 'www.ngozitech.com',
-    owner: 'Ngozi Adaeze',
-    slug_owner: 'ngozi-adaeze',
-  },
-  {
-    slug: 'johnnys-tech-limited-2',
-    name: "Johnny's Tech Limited",
-    category: 'Technology',
-    description:
-      'Leading provider of IT solutions, phone sales, repairs, and software services for businesses and individuals across Lagos.',
-    images: [
-      'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&q=80', // laptop work
-      'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&q=80', // tech woman
-    ],
-    location: 'Lekki, Lagos',
-    phone: '+234 801 234 5679',
-    website: 'www.agottech.com',
-    owner: 'Johnny Adaeze',
-    slug_owner: 'johnny-adaeze-2',
-  },
-  {
-    slug: 'obes-phones-limited-3',
-    name: "Obe's Phones Limited",
-    category: 'Technology',
-    description:
-      'Your one-stop shop for the latest smartphones, accessories, and expert phone repair services in Lagos.',
-    images: [
-      'https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=600&q=80', // phones display
-      'https://images.unsplash.com/photo-1580910051074-3eb694886505?w=600&q=80', // phone repair
-    ],
-    location: 'Lekki, Lagos',
-    phone: '+234 802 345 6789',
-    website: 'www.agottech.com',
-    owner: 'Obe Chioma',
-    slug_owner: 'obe-chioma-3',
-  },
-  {
-    slug: 'ngozis-consulting-service-2',
-    name: "Ngozi's Consulting Service",
-    category: 'Consulting',
-    description:
-      'Professional business consulting, strategy development, and management advisory services for SMEs and corporates.',
-    images: [
-      'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&q=80', // board meeting
-      'https://images.unsplash.com/photo-1556761175-4b46a572b786?w=600&q=80', // office consulting
-    ],
-    location: 'Lekki, Lagos',
-    phone: '+234 803 456 7890',
-    website: 'www.ngozitech.com',
-    owner: 'Ngozi Adaeze',
-    slug_owner: 'ngozi-adaeze-2',
-  },
-  {
-    slug: 'johnnys-tech-limited-3',
-    name: "Johnny's Tech Limited",
-    category: 'Technology',
-    description:
-      'Leading provider of IT solutions, phone sales, repairs, and software services for businesses and individuals across Lagos.',
-    images: [
-      'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&q=80', // coding
-      'https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=600&q=80', // tech setup
-    ],
-    location: 'Lekki, Lagos',
-    phone: '+234 801 567 8901',
-    website: 'www.agottech.com',
-    owner: 'Johnny Adaeze',
-    slug_owner: 'johnny-adaeze-3',
-  },
+  { slug: 'ngozis-catering-service', name: "Ngozi's Catering Service", category: 'Food & Beverages', description: 'Premium catering services for weddings, corporate events, and private parties. Specialising in local and continental dishes.', images: ['https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&q=80', 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=80'], location: 'Lekki, Lagos', phone: '+234 801 123 5678', website: 'www.ngozycatering.com', owner: 'Ngozi Okafor', slug_owner: 'ngozi-okafor' },
+  { slug: 'johnnys-tech-limited', name: "Johnny's Tech Limited", category: 'Technology', description: 'Leading provider of IT solutions, phone sales, repairs, and software services for businesses and individuals across Lagos.', images: ['https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=600&q=80', 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&q=80'], location: 'Lekki, Lagos', phone: '+234 801 123 5654', website: 'www.agottech.com', owner: 'Johnny Adaeze', slug_owner: 'johnny-adaeze' },
+  { slug: 'obes-phones-limited-1', name: "Obe's Phones Limited", category: 'Technology', description: 'Your one-stop shop for the latest smartphones, accessories, and expert phone repair services in Lagos.', images: ['https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&q=80', 'https://images.unsplash.com/photo-1574920162043-b872873f19bc?w=600&q=80'], location: 'Lekki, Lagos', phone: '+234 801 123 6878', website: 'www.obes.com', owner: 'Obe Chioma', slug_owner: 'obe-chioma' },
+  { slug: 'obes-phones-limited-2', name: "Obe's Phones Limited", category: 'Technology', description: 'Your one-stop shop for the latest smartphones, accessories, and expert phone repair services in Lagos.', images: ['https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=600&q=80', 'https://images.unsplash.com/photo-1565849904461-04a58ad377e0?w=600&q=80'], location: 'Lekki, Lagos', phone: '+234 802 341 5679', website: 'www.agottech.com', owner: 'Obe Chioma', slug_owner: 'obe-chioma-2' },
+  { slug: 'ngozis-consulting-service', name: "Ngozi's Consulting Service", category: 'Consulting', description: 'Professional business consulting, strategy development, and management advisory services for SMEs and corporates.', images: ['https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80', 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&q=80'], location: 'Lekki, Lagos', phone: '+234 803 234 5679', website: 'www.ngozitech.com', owner: 'Ngozi Adaeze', slug_owner: 'ngozi-adaeze' },
+  { slug: 'johnnys-tech-limited-2', name: "Johnny's Tech Limited", category: 'Technology', description: 'Leading provider of IT solutions, phone sales, repairs, and software services for businesses and individuals across Lagos.', images: ['https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&q=80', 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&q=80'], location: 'Lekki, Lagos', phone: '+234 801 234 5679', website: 'www.agottech.com', owner: 'Johnny Adaeze', slug_owner: 'johnny-adaeze-2' },
+  { slug: 'obes-phones-limited-3', name: "Obe's Phones Limited", category: 'Technology', description: 'Your one-stop shop for the latest smartphones, accessories, and expert phone repair services in Lagos.', images: ['https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=600&q=80', 'https://images.unsplash.com/photo-1580910051074-3eb694886505?w=600&q=80'], location: 'Lekki, Lagos', phone: '+234 802 345 6789', website: 'www.agottech.com', owner: 'Obe Chioma', slug_owner: 'obe-chioma-3' },
+  { slug: 'ngozis-consulting-service-2', name: "Ngozi's Consulting Service", category: 'Consulting', description: 'Professional business consulting, strategy development, and management advisory services for SMEs and corporates.', images: ['https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&q=80', 'https://images.unsplash.com/photo-1556761175-4b46a572b786?w=600&q=80'], location: 'Lekki, Lagos', phone: '+234 803 456 7890', website: 'www.ngozitech.com', owner: 'Ngozi Adaeze', slug_owner: 'ngozi-adaeze-2' },
+  { slug: 'johnnys-tech-limited-3', name: "Johnny's Tech Limited", category: 'Technology', description: 'Leading provider of IT solutions, phone sales, repairs, and software services for businesses and individuals across Lagos.', images: ['https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&q=80', 'https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=600&q=80'], location: 'Lekki, Lagos', phone: '+234 801 567 8901', website: 'www.agottech.com', owner: 'Johnny Adaeze', slug_owner: 'johnny-adaeze-3' },
 ];
 
 export const categories = [
@@ -1206,26 +738,66 @@ export const categories = [
   'Events & Entertainment',
 ];
 
-export function getEvents(): Event[] {
-  return events;
-}
 
-export function getEventBySlug(slug: string): Event | undefined {
-  return events.find((entry) => entry.slug === slug);
-}
+// ─── Announcements ────────────────────────────────────────────────────────────
+const newsItems: NewsItem[] = [
+  {
+    id: 1,
+    slug: 'association-awards-45m-scholarships',
+    title: 'Association Awards ₦45M in Scholarships — Largest in Our History',
+    date: 'March 1, 2026',
+    image: 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=700&q=80', // scholarship award ceremony
+    tag: 'SCHOLARSHIP',
+    excerpt:
+      'In an emotional prize-giving ceremony held at FGGC Abuja, the Alumnae Association announced its highest-ever scholarship disbursement — directly supporting 180 students across three arms of the school, with special focus on STEM and the Arts.',
+    featured: true,
+  },
+  {
+    id: 2,
+    slug: 'houston-chapter-officially-launched',
+    title: 'Houston Chapter Officially Launched — Our 32nd Global Chapter',
+    date: 'March 1, 2026',
+    image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=700&q=80', // group of women celebrating
+  },
+  {
+    id: 3,
+    slug: 'new-science-laboratory-wing-commissioned',
+    title: 'New Science Laboratory Wing Commissioned at FGGC Calabar',
+    date: 'March 1, 2026',
+    image: 'https://images.unsplash.com/photo-1562774053-701939374585?w=700&q=80', // school/university building exterior
+  },
+  {
+    id: 4,
+    slug: 'alumna-of-the-year-2025-dr-chiamaka-obi',
+    title: 'Alumna of the Year 2025 — Dr. Chiamaka Obi Honoured in Abuja',
+    date: 'March 1, 2026',
+    image: 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?w=700&q=80', // woman being honoured / award
+  },
+  {
+    id: 5,
+    slug: 'digital-yearbook-archive-now-live',
+    title: "Digital Yearbook Archive Now Live — Access Your Set's Photos",
+    date: 'March 1, 2026',
+    image: 'https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?w=700&q=80', // people looking at old photos / memories
+  },
+];
 
-export function getAlumni(): Alumni[] {
-  return alumni;
-}
 
-export function getAlumnusBySlug(slug: string): Alumni | undefined {
-  return alumni.find((entry) => entry.slug === slug);
-}
+// ─── Getters ──────────────────────────────────────────────────────────────────
 
-export function getBlogPosts(): BlogPost[] {
-  return [...blogPosts].filter((post) => !post.draft);
-}
 
-export function getBlogPostBySlug(slug: string): BlogPost | undefined {
-  return blogPosts.find((entry) => entry.slug === slug);
-}
+export function getEvents(): Event[] { return events; }
+export function getEventBySlug(slug: string): Event | undefined { return events.find((e) => e.slug === slug); }
+
+export function getAlumni(): Alumni[] { return alumni; }
+export function getAlumnusBySlug(slug: string): Alumni | undefined { return alumni.find((a) => a.slug === slug); }
+
+export function getLeadership(): LeadershipMember[] { return leadership; }
+export function getLeaderById(id: number): LeadershipMember | undefined { return leadership.find((m) => m.id === id); }
+
+export function getProjects(): Project[] { return projects; }
+export function getProjectById(id: string): Project | undefined { return projects.find((p) => p.id === id); }
+
+// export function getBlogPosts(): NewsItem[]                              { return [...newsItems].filter((p) => !p.draft); }
+export function getAnnouncements(): NewsItem[] { return newsItems; }
+export function getAnnouncementBySlug(slug: string): NewsItem | undefined { return newsItems.find((n) => n.slug === slug); }

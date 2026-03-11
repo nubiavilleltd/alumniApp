@@ -36,9 +36,7 @@ export function ImageUpload({
 
   return (
     <div className="flex flex-col gap-1">
-      {label && (
-        <label className="block text-sm font-medium text-gray-700">{label}</label>
-      )}
+      {label && <label className="block text-sm font-medium text-gray-700">{label}</label>}
 
       {/* Drop zone */}
       <button
