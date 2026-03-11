@@ -1,14 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import {
-  alumniService,
-  type GetAlumniParams,
-} from '@/features/alumni/services/alumni.service';
+import { alumniService, type GetAlumniParams } from '@/features/alumni/services/alumni.service';
 
 // ─── Query Keys ───────────────────────────────────────────────────────────────
 export const alumniKeys = {
-  all:    ['alumni'] as const,
-  list:   (params?: object) => [...alumniKeys.all, 'list', params] as const,
-  detail: (slug: string)    => [...alumniKeys.all, 'detail', slug] as const,
+  all: ['alumni'] as const,
+  list: (params?: object) => [...alumniKeys.all, 'list', params] as const,
+  detail: (slug: string) => [...alumniKeys.all, 'detail', slug] as const,
 };
 
 // ─── Queries ──────────────────────────────────────────────────────────────────
@@ -17,7 +14,7 @@ export const alumniKeys = {
 export function useAlumni(params?: GetAlumniParams) {
   return useQuery({
     queryKey: alumniKeys.list(params),
-    queryFn:  () => alumniService.getAll(params),
+    queryFn: () => alumniService.getAll(params),
     staleTime: 1000 * 60 * 5,
   });
 }
@@ -26,8 +23,8 @@ export function useAlumni(params?: GetAlumniParams) {
 export function useAlumnus(slug: string) {
   return useQuery({
     queryKey: alumniKeys.detail(slug),
-    queryFn:  () => alumniService.getBySlug(slug),
-    enabled:  !!slug,
+    queryFn: () => alumniService.getBySlug(slug),
+    enabled: !!slug,
     staleTime: 1000 * 60 * 5,
   });
 }
@@ -36,7 +33,7 @@ export function useAlumnus(slug: string) {
 export function useFeaturedAlumni(count = 3) {
   return useQuery({
     queryKey: alumniKeys.list(),
-    queryFn:  () => alumniService.getAll(),
+    queryFn: () => alumniService.getAll(),
     staleTime: 1000 * 60 * 5,
     select: (data) => data.slice(0, count),
   });
@@ -46,8 +43,8 @@ export function useFeaturedAlumni(count = 3) {
 export function useAlumniByYear(year: string) {
   return useQuery({
     queryKey: alumniKeys.list({ year }),
-    queryFn:  () => alumniService.getAll({ year }),
-    enabled:  !!year,
+    queryFn: () => alumniService.getAll({ year }),
+    enabled: !!year,
     staleTime: 1000 * 60 * 5,
   });
 }

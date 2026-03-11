@@ -1,7 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { RootLayout } from './shared/components/layout/RootLayout';
 
-
 import { AlumniDirectoryPage } from './features/alumni/pages/AlumniDirectoryPage';
 import { AlumniProfilePage } from './features/alumni/pages/AlumniProfilePage';
 import { AlumniRedirectPage } from './features/alumni/pages/AlumniRedirectPage';

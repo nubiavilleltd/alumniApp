@@ -7,9 +7,9 @@ import {
 
 // ─── Query Keys ───────────────────────────────────────────────────────────────
 export const eventKeys = {
-  all:    ['events'] as const,
-  list:   (params?: object) => [...eventKeys.all, 'list', params] as const,
-  detail: (slug: string)    => [...eventKeys.all, 'detail', slug] as const,
+  all: ['events'] as const,
+  list: (params?: object) => [...eventKeys.all, 'list', params] as const,
+  detail: (slug: string) => [...eventKeys.all, 'detail', slug] as const,
 };
 
 // ─── Queries ──────────────────────────────────────────────────────────────────
@@ -18,7 +18,7 @@ export const eventKeys = {
 export function useEvents(params?: GetEventsParams) {
   return useQuery({
     queryKey: eventKeys.list(params),
-    queryFn:  () => eventsService.getAll(params),
+    queryFn: () => eventsService.getAll(params),
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 }
@@ -27,8 +27,8 @@ export function useEvents(params?: GetEventsParams) {
 export function useEvent(slug: string) {
   return useQuery({
     queryKey: eventKeys.detail(slug),
-    queryFn:  () => eventsService.getBySlug(slug),
-    enabled:  !!slug,
+    queryFn: () => eventsService.getBySlug(slug),
+    enabled: !!slug,
     staleTime: 1000 * 60 * 5,
   });
 }
@@ -37,7 +37,7 @@ export function useEvent(slug: string) {
 export function useUpcomingEvents() {
   return useQuery({
     queryKey: eventKeys.list(),
-    queryFn:  () => eventsService.getAll(),
+    queryFn: () => eventsService.getAll(),
     staleTime: 1000 * 60 * 5,
     select: (data) =>
       [...data]
@@ -50,7 +50,7 @@ export function useUpcomingEvents() {
 export function usePastEvents() {
   return useQuery({
     queryKey: eventKeys.list(),
-    queryFn:  () => eventsService.getAll(),
+    queryFn: () => eventsService.getAll(),
     staleTime: 1000 * 60 * 5,
     select: (data) =>
       [...data]
@@ -63,7 +63,7 @@ export function usePastEvents() {
 export function useLatestEvents(count = 4) {
   return useQuery({
     queryKey: eventKeys.list(),
-    queryFn:  () => eventsService.getAll(),
+    queryFn: () => eventsService.getAll(),
     staleTime: 1000 * 60 * 5,
     select: (data) =>
       [...data]

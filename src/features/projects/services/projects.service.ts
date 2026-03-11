@@ -3,8 +3,6 @@ import { API_ENDPOINTS } from '@/lib/api/endpoints';
 import { getProjects, getProjectById } from '@/data/site-data';
 import type { DonatePayload, Project } from '@/features/projects/types/project.types';
 
-
-
 export const projectsService = {
   getAll: async (): Promise<Project[]> => {
     // 🔴 TODO: replace with real API call

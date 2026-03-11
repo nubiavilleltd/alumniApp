@@ -6,7 +6,6 @@ import CoreValues from './CoreValues';
 import Leadership from '../home/components/Leadership';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 
-
 export function AboutPage() {
   // const config = getSiteConfig();
 

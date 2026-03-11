@@ -6,10 +6,10 @@ import {
 
 // ─── Query Keys ───────────────────────────────────────────────────────────────
 export const marketplaceKeys = {
-  all:        ['marketplace'] as const,
-  list:       (params?: object) => [...marketplaceKeys.all, 'list', params] as const,
-  detail:     (id: string)      => [...marketplaceKeys.all, 'detail', id] as const,
-  categories: ()                => [...marketplaceKeys.all, 'categories'] as const,
+  all: ['marketplace'] as const,
+  list: (params?: object) => [...marketplaceKeys.all, 'list', params] as const,
+  detail: (id: string) => [...marketplaceKeys.all, 'detail', id] as const,
+  categories: () => [...marketplaceKeys.all, 'categories'] as const,
 };
 
 // ─── Queries ──────────────────────────────────────────────────────────────────
@@ -18,7 +18,7 @@ export const marketplaceKeys = {
 export function useMarketplace(params?: GetMarketplaceParams) {
   return useQuery({
     queryKey: marketplaceKeys.list(params),
-    queryFn:  () => marketplaceService.getAll(params),
+    queryFn: () => marketplaceService.getAll(params),
     staleTime: 1000 * 60 * 5,
   });
 }
@@ -27,8 +27,8 @@ export function useMarketplace(params?: GetMarketplaceParams) {
 export function useMarketplaceListing(id: string) {
   return useQuery({
     queryKey: marketplaceKeys.detail(id),
-    queryFn:  () => marketplaceService.getById(id),
-    enabled:  !!id,
+    queryFn: () => marketplaceService.getById(id),
+    enabled: !!id,
     staleTime: 1000 * 60 * 5,
   });
 }
@@ -37,7 +37,7 @@ export function useMarketplaceListing(id: string) {
 export function useMarketplaceCategories() {
   return useQuery({
     queryKey: marketplaceKeys.categories(),
-    queryFn:  marketplaceService.getCategories,
+    queryFn: marketplaceService.getCategories,
     staleTime: Infinity,
   });
 }
@@ -46,7 +46,7 @@ export function useMarketplaceCategories() {
 export function useLatestListings(count = 6) {
   return useQuery({
     queryKey: marketplaceKeys.list(),
-    queryFn:  () => marketplaceService.getAll(),
+    queryFn: () => marketplaceService.getAll(),
     staleTime: 1000 * 60 * 5,
     select: (data) => data.slice(0, count),
   });

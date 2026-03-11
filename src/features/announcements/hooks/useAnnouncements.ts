@@ -1,4 +1,3 @@
-
 import { useQuery } from '@tanstack/react-query';
 import {
   announcementService,
@@ -7,9 +6,9 @@ import {
 
 // ─── Query Keys ───────────────────────────────────────────────────────────────
 export const announcementKeys = {
-  all:    ['announcements'] as const,
-  list:   (params?: object) => [...announcementKeys.all, 'list', params] as const,
-  detail: (slug: string)    => [...announcementKeys.all, 'detail', slug] as const,
+  all: ['announcements'] as const,
+  list: (params?: object) => [...announcementKeys.all, 'list', params] as const,
+  detail: (slug: string) => [...announcementKeys.all, 'detail', slug] as const,
 };
 
 // ─── Queries ──────────────────────────────────────────────────────────────────
@@ -18,7 +17,7 @@ export const announcementKeys = {
 export function useAnnouncements(params?: GetAnnouncementsParams) {
   return useQuery({
     queryKey: announcementKeys.list(params),
-    queryFn:  () => announcementService.getAll(params),
+    queryFn: () => announcementService.getAll(params),
     staleTime: 1000 * 60 * 5,
   });
 }
@@ -27,8 +26,8 @@ export function useAnnouncements(params?: GetAnnouncementsParams) {
 export function useAnnouncement(slug: string) {
   return useQuery({
     queryKey: announcementKeys.detail(slug),
-    queryFn:  () => announcementService.getBySlug(slug),
-    enabled:  !!slug,
+    queryFn: () => announcementService.getBySlug(slug),
+    enabled: !!slug,
     staleTime: 1000 * 60 * 5,
   });
 }
@@ -37,7 +36,7 @@ export function useAnnouncement(slug: string) {
 export function useLatestAnnouncements(count = 5) {
   return useQuery({
     queryKey: announcementKeys.list(),
-    queryFn:  () => announcementService.getAll(),
+    queryFn: () => announcementService.getAll(),
     staleTime: 1000 * 60 * 5,
     select: (data) =>
       [...data]

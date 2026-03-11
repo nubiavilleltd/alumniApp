@@ -1,5 +1,3 @@
-
-
 import { useState } from 'react';
 import { Modal } from '@/shared/components/ui/Modal';
 import { SelectInput } from '@/shared/components/ui/SelectInput';

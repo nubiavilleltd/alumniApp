@@ -1,4 +1,3 @@
-
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { useLatestAnnouncements } from '@/features/announcements/hooks/useAnnouncements';
 import type { NewsItem } from '@/features/announcements/types/announcement.types';
@@ -83,7 +82,7 @@ export default function NewsAndStories() {
   const { data: items = [], isLoading } = useLatestAnnouncements(5);
 
   const featured = items.find((n) => n.featured) ?? items[0];
-  const sidebar  = items.filter((n) => n.id !== featured?.id);
+  const sidebar = items.filter((n) => n.id !== featured?.id);
 
   return (
     <section className="section">
@@ -101,14 +100,18 @@ export default function NewsAndStories() {
             <>
               <FeaturedSkeleton />
               <div className="lg:col-span-2 flex flex-col gap-4">
-                {Array.from({ length: 4 }).map((_, i) => <SidebarSkeleton key={i} />)}
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <SidebarSkeleton key={i} />
+                ))}
               </div>
             </>
           ) : (
             <>
               {featured && <FeaturedCard item={featured} />}
               <div className="lg:col-span-2 flex flex-col gap-4">
-                {sidebar.map((item) => <SidebarCard key={item.id} item={item} />)}
+                {sidebar.map((item) => (
+                  <SidebarCard key={item.id} item={item} />
+                ))}
               </div>
             </>
           )}
@@ -117,19 +120,3 @@ export default function NewsAndStories() {
     </section>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -53,17 +53,8 @@
 //   );
 // }
 
-
-
-
-
-import React from 'react'
+import React from 'react';
 
 export default function BlogPostPage() {
-  return (
-    <div>
-      This is blog post page
-    </div>
-  )
+  return <div>This is blog post page</div>;
 }
-

@@ -1,5 +1,3 @@
-
-
 import { apiClient } from '@/lib/api/client';
 import { API_ENDPOINTS } from '@/lib/api/endpoints';
 import { getAnnouncements, getAnnouncementBySlug } from '@/data/site-data';

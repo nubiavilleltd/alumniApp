@@ -1,4 +1,3 @@
-
 import { AppLink } from '@/shared/components/ui/AppLink';
 
 import { useProjects } from '@/features/projects/hooks/useProjects';
@@ -57,7 +56,9 @@ export default function OurProjects() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {isLoading
             ? Array.from({ length: 3 }).map((_, i) => <ProjectCardSkeleton key={i} />)
-            : projects.slice(0, 3).map((project) => <ProjectCard key={project.id} project={project} />)}
+            : projects
+                .slice(0, 3)
+                .map((project) => <ProjectCard key={project.id} project={project} />)}
         </div>
 
         <div className="mt-6 text-right">

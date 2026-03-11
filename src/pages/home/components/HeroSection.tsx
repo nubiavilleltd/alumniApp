@@ -18,7 +18,6 @@ export default function HeroSection() {
               memories, driven by purpose, and committed to lifting the next generation.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-           
               <AppLink href="/auth/register">
                 <Button className="py-3 px-12" size="lg">
                   {' '}

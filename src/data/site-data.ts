@@ -1,17 +1,14 @@
-
 import { Alumni } from '@/features/alumni/types/alumni.types';
 import { Event } from '@/features/events/types/event.types';
 import { LeadershipMember } from '@/features/leadership/types/leadership.types';
 import { Project } from '@/features/projects/types/project.types';
 import { NewsItem } from '@/features/announcements/types/announcement.types';
 
-
 import Image2 from '../../public/leadership-2.png';
 import Image3 from '../../public/leadership-3.png';
 import Image4 from '../../public/leadership-4.png';
 import Image5 from '../../public/leadership-5.png';
 import Image6 from '../../public/leadership-6.png';
-
 
 export const alumni = [
   {
@@ -448,15 +445,13 @@ export const alumni = [
   },
 ];
 
-import Leadership1 from '../../public/leadership-1.png'
+import Leadership1 from '../../public/leadership-1.png';
 import Leadership2 from '../../public/leadership-2.png';
 import Leadership3 from '../../public/leadership-3.png';
 import Leadership4 from '../../public/leadership-4.png';
 import Leadership5 from '../../public/leadership-5.png';
 import Leadership6 from '../../public/leadership-6.png';
 import Leadership7 from '../../public/leadership-7.png';
-
-
 
 const leadership: LeadershipMember[] = [
   {
@@ -535,7 +530,8 @@ export const events: Event[] = [
   {
     slug: 'annual-homecoming-weekend-gala',
     title: 'Annual Homecoming Weekend & Grand Gala',
-    description: 'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
+    description:
+      'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
     image: 'https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?w=700&q=80',
     location: 'Transcorp Hilton, Abuja',
     attire: 'Formal Attire',
@@ -550,7 +546,8 @@ export const events: Event[] = [
   {
     slug: 'diaspora-virtual-networking-night',
     title: 'Diaspora Virtual Networking Night',
-    description: 'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
+    description:
+      'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
     image: 'https://images.unsplash.com/photo-1588196749597-9ff075ee6b5b?w=700&q=80',
     location: 'Zoom, Global',
     attire: '',
@@ -565,7 +562,8 @@ export const events: Event[] = [
   {
     slug: 'child-birth-of-one-us',
     title: 'Child Birth Of One Us',
-    description: 'A spectacular reunion bringing together alumnae from every set and every corner of the world.',
+    description:
+      'A spectacular reunion bringing together alumnae from every set and every corner of the world.',
     image: 'https://images.unsplash.com/photo-1519689680058-324335c77eba?w=700&q=80',
     location: 'Transcorp Hilton, Abuja',
     attire: 'Formal Attire',
@@ -580,7 +578,8 @@ export const events: Event[] = [
   {
     slug: 'donation-for-project',
     title: 'Donation For Project',
-    description: 'A spectacular reunion bringing together alumnae from every set and every corner of the world.',
+    description:
+      'A spectacular reunion bringing together alumnae from every set and every corner of the world.',
     image: 'https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=700&q=80',
     location: 'Zoom, Global',
     attire: '',
@@ -595,7 +594,8 @@ export const events: Event[] = [
   {
     slug: 'school-opening',
     title: 'School Opening',
-    description: 'A spectacular reunion bringing together alumnae from every set and every corner of the world.',
+    description:
+      'A spectacular reunion bringing together alumnae from every set and every corner of the world.',
     image: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=700&q=80',
     location: 'Transcorp Hilton, Abuja',
     attire: 'Formal Attire',
@@ -610,7 +610,8 @@ export const events: Event[] = [
   {
     slug: 'night-party',
     title: 'Night Party',
-    description: 'A spectacular reunion bringing together alumnae from every set and every corner of the world.',
+    description:
+      'A spectacular reunion bringing together alumnae from every set and every corner of the world.',
     image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=700&q=80',
     location: 'Zoom, Global',
     attire: '',
@@ -625,7 +626,8 @@ export const events: Event[] = [
   {
     slug: 'annual-alumni-meet-2024',
     title: 'Annual Alumni Meet 2024',
-    description: 'Join us for our most anticipated event of the year! The Annual Alumni Meet brings together graduates from all batches for an evening of networking, celebration, and inspiration.',
+    description:
+      'Join us for our most anticipated event of the year! The Annual Alumni Meet brings together graduates from all batches for an evening of networking, celebration, and inspiration.',
     image: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=700&q=80',
     location: 'Main Campus Auditorium, NCIT',
     attire: 'Smart Casual',
@@ -640,7 +642,8 @@ export const events: Event[] = [
   {
     slug: 'startup-pitch-competition-2024',
     title: 'Startup Pitch Competition 2024',
-    description: 'Annual startup pitch competition showcasing innovative ideas from our alumni community.',
+    description:
+      'Annual startup pitch competition showcasing innovative ideas from our alumni community.',
     image: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=700&q=80',
     location: 'Innovation Hub, University Campus',
     attire: 'Business Casual',
@@ -670,7 +673,8 @@ export const events: Event[] = [
   {
     slug: 'scholarship-award-night-2024',
     title: 'Scholarship Award Night 2024',
-    description: 'Celebrating our brightest students with the annual scholarship award ceremony, honouring academic excellence and community service.',
+    description:
+      'Celebrating our brightest students with the annual scholarship award ceremony, honouring academic excellence and community service.',
     image: 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=700&q=80',
     location: 'Grand Ballroom, Eko Hotel, Lagos',
     attire: 'Black Tie',
@@ -685,7 +689,8 @@ export const events: Event[] = [
   {
     slug: 'virtual-mentorship-summit-2023',
     title: 'Virtual Mentorship Summit 2023',
-    description: 'A virtual summit connecting senior alumnae mentors with recent graduates to share career guidance and life lessons.',
+    description:
+      'A virtual summit connecting senior alumnae mentors with recent graduates to share career guidance and life lessons.',
     image: 'https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=700&q=80',
     location: 'Zoom, Global',
     attire: '',
@@ -700,7 +705,8 @@ export const events: Event[] = [
   {
     slug: 'cultural-day-celebration-2023',
     title: 'Cultural Day Celebration 2023',
-    description: 'A vibrant celebration of Nigerian culture, heritage, and the bonds that unite FGGC alumnae across generations.',
+    description:
+      'A vibrant celebration of Nigerian culture, heritage, and the bonds that unite FGGC alumnae across generations.',
     image: 'https://images.unsplash.com/photo-1504609773096-104ff2c73ba4?w=700&q=80',
     location: 'National Arts Theatre, Lagos',
     attire: 'Traditional Attire',
@@ -716,15 +722,150 @@ export const events: Event[] = [
 
 // ─── Businesses ───────────────────────────────────────────────────────────────
 export const businesses = [
-  { slug: 'ngozis-catering-service', name: "Ngozi's Catering Service", category: 'Food & Beverages', description: 'Premium catering services for weddings, corporate events, and private parties. Specialising in local and continental dishes.', images: ['https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&q=80', 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=80'], location: 'Lekki, Lagos', phone: '+234 801 123 5678', website: 'www.ngozycatering.com', owner: 'Ngozi Okafor', slug_owner: 'ngozi-okafor' },
-  { slug: 'johnnys-tech-limited', name: "Johnny's Tech Limited", category: 'Technology', description: 'Leading provider of IT solutions, phone sales, repairs, and software services for businesses and individuals across Lagos.', images: ['https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=600&q=80', 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&q=80'], location: 'Lekki, Lagos', phone: '+234 801 123 5654', website: 'www.agottech.com', owner: 'Johnny Adaeze', slug_owner: 'johnny-adaeze' },
-  { slug: 'obes-phones-limited-1', name: "Obe's Phones Limited", category: 'Technology', description: 'Your one-stop shop for the latest smartphones, accessories, and expert phone repair services in Lagos.', images: ['https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&q=80', 'https://images.unsplash.com/photo-1574920162043-b872873f19bc?w=600&q=80'], location: 'Lekki, Lagos', phone: '+234 801 123 6878', website: 'www.obes.com', owner: 'Obe Chioma', slug_owner: 'obe-chioma' },
-  { slug: 'obes-phones-limited-2', name: "Obe's Phones Limited", category: 'Technology', description: 'Your one-stop shop for the latest smartphones, accessories, and expert phone repair services in Lagos.', images: ['https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=600&q=80', 'https://images.unsplash.com/photo-1565849904461-04a58ad377e0?w=600&q=80'], location: 'Lekki, Lagos', phone: '+234 802 341 5679', website: 'www.agottech.com', owner: 'Obe Chioma', slug_owner: 'obe-chioma-2' },
-  { slug: 'ngozis-consulting-service', name: "Ngozi's Consulting Service", category: 'Consulting', description: 'Professional business consulting, strategy development, and management advisory services for SMEs and corporates.', images: ['https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80', 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&q=80'], location: 'Lekki, Lagos', phone: '+234 803 234 5679', website: 'www.ngozitech.com', owner: 'Ngozi Adaeze', slug_owner: 'ngozi-adaeze' },
-  { slug: 'johnnys-tech-limited-2', name: "Johnny's Tech Limited", category: 'Technology', description: 'Leading provider of IT solutions, phone sales, repairs, and software services for businesses and individuals across Lagos.', images: ['https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&q=80', 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&q=80'], location: 'Lekki, Lagos', phone: '+234 801 234 5679', website: 'www.agottech.com', owner: 'Johnny Adaeze', slug_owner: 'johnny-adaeze-2' },
-  { slug: 'obes-phones-limited-3', name: "Obe's Phones Limited", category: 'Technology', description: 'Your one-stop shop for the latest smartphones, accessories, and expert phone repair services in Lagos.', images: ['https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=600&q=80', 'https://images.unsplash.com/photo-1580910051074-3eb694886505?w=600&q=80'], location: 'Lekki, Lagos', phone: '+234 802 345 6789', website: 'www.agottech.com', owner: 'Obe Chioma', slug_owner: 'obe-chioma-3' },
-  { slug: 'ngozis-consulting-service-2', name: "Ngozi's Consulting Service", category: 'Consulting', description: 'Professional business consulting, strategy development, and management advisory services for SMEs and corporates.', images: ['https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&q=80', 'https://images.unsplash.com/photo-1556761175-4b46a572b786?w=600&q=80'], location: 'Lekki, Lagos', phone: '+234 803 456 7890', website: 'www.ngozitech.com', owner: 'Ngozi Adaeze', slug_owner: 'ngozi-adaeze-2' },
-  { slug: 'johnnys-tech-limited-3', name: "Johnny's Tech Limited", category: 'Technology', description: 'Leading provider of IT solutions, phone sales, repairs, and software services for businesses and individuals across Lagos.', images: ['https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&q=80', 'https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=600&q=80'], location: 'Lekki, Lagos', phone: '+234 801 567 8901', website: 'www.agottech.com', owner: 'Johnny Adaeze', slug_owner: 'johnny-adaeze-3' },
+  {
+    slug: 'ngozis-catering-service',
+    name: "Ngozi's Catering Service",
+    category: 'Food & Beverages',
+    description:
+      'Premium catering services for weddings, corporate events, and private parties. Specialising in local and continental dishes.',
+    images: [
+      'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&q=80',
+      'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=80',
+    ],
+    location: 'Lekki, Lagos',
+    phone: '+234 801 123 5678',
+    website: 'www.ngozycatering.com',
+    owner: 'Ngozi Okafor',
+    slug_owner: 'ngozi-okafor',
+  },
+  {
+    slug: 'johnnys-tech-limited',
+    name: "Johnny's Tech Limited",
+    category: 'Technology',
+    description:
+      'Leading provider of IT solutions, phone sales, repairs, and software services for businesses and individuals across Lagos.',
+    images: [
+      'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=600&q=80',
+      'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&q=80',
+    ],
+    location: 'Lekki, Lagos',
+    phone: '+234 801 123 5654',
+    website: 'www.agottech.com',
+    owner: 'Johnny Adaeze',
+    slug_owner: 'johnny-adaeze',
+  },
+  {
+    slug: 'obes-phones-limited-1',
+    name: "Obe's Phones Limited",
+    category: 'Technology',
+    description:
+      'Your one-stop shop for the latest smartphones, accessories, and expert phone repair services in Lagos.',
+    images: [
+      'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&q=80',
+      'https://images.unsplash.com/photo-1574920162043-b872873f19bc?w=600&q=80',
+    ],
+    location: 'Lekki, Lagos',
+    phone: '+234 801 123 6878',
+    website: 'www.obes.com',
+    owner: 'Obe Chioma',
+    slug_owner: 'obe-chioma',
+  },
+  {
+    slug: 'obes-phones-limited-2',
+    name: "Obe's Phones Limited",
+    category: 'Technology',
+    description:
+      'Your one-stop shop for the latest smartphones, accessories, and expert phone repair services in Lagos.',
+    images: [
+      'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=600&q=80',
+      'https://images.unsplash.com/photo-1565849904461-04a58ad377e0?w=600&q=80',
+    ],
+    location: 'Lekki, Lagos',
+    phone: '+234 802 341 5679',
+    website: 'www.agottech.com',
+    owner: 'Obe Chioma',
+    slug_owner: 'obe-chioma-2',
+  },
+  {
+    slug: 'ngozis-consulting-service',
+    name: "Ngozi's Consulting Service",
+    category: 'Consulting',
+    description:
+      'Professional business consulting, strategy development, and management advisory services for SMEs and corporates.',
+    images: [
+      'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80',
+      'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&q=80',
+    ],
+    location: 'Lekki, Lagos',
+    phone: '+234 803 234 5679',
+    website: 'www.ngozitech.com',
+    owner: 'Ngozi Adaeze',
+    slug_owner: 'ngozi-adaeze',
+  },
+  {
+    slug: 'johnnys-tech-limited-2',
+    name: "Johnny's Tech Limited",
+    category: 'Technology',
+    description:
+      'Leading provider of IT solutions, phone sales, repairs, and software services for businesses and individuals across Lagos.',
+    images: [
+      'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&q=80',
+      'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&q=80',
+    ],
+    location: 'Lekki, Lagos',
+    phone: '+234 801 234 5679',
+    website: 'www.agottech.com',
+    owner: 'Johnny Adaeze',
+    slug_owner: 'johnny-adaeze-2',
+  },
+  {
+    slug: 'obes-phones-limited-3',
+    name: "Obe's Phones Limited",
+    category: 'Technology',
+    description:
+      'Your one-stop shop for the latest smartphones, accessories, and expert phone repair services in Lagos.',
+    images: [
+      'https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=600&q=80',
+      'https://images.unsplash.com/photo-1580910051074-3eb694886505?w=600&q=80',
+    ],
+    location: 'Lekki, Lagos',
+    phone: '+234 802 345 6789',
+    website: 'www.agottech.com',
+    owner: 'Obe Chioma',
+    slug_owner: 'obe-chioma-3',
+  },
+  {
+    slug: 'ngozis-consulting-service-2',
+    name: "Ngozi's Consulting Service",
+    category: 'Consulting',
+    description:
+      'Professional business consulting, strategy development, and management advisory services for SMEs and corporates.',
+    images: [
+      'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&q=80',
+      'https://images.unsplash.com/photo-1556761175-4b46a572b786?w=600&q=80',
+    ],
+    location: 'Lekki, Lagos',
+    phone: '+234 803 456 7890',
+    website: 'www.ngozitech.com',
+    owner: 'Ngozi Adaeze',
+    slug_owner: 'ngozi-adaeze-2',
+  },
+  {
+    slug: 'johnnys-tech-limited-3',
+    name: "Johnny's Tech Limited",
+    category: 'Technology',
+    description:
+      'Leading provider of IT solutions, phone sales, repairs, and software services for businesses and individuals across Lagos.',
+    images: [
+      'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&q=80',
+      'https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=600&q=80',
+    ],
+    location: 'Lekki, Lagos',
+    phone: '+234 801 567 8901',
+    website: 'www.agottech.com',
+    owner: 'Johnny Adaeze',
+    slug_owner: 'johnny-adaeze-3',
+  },
 ];
 
 export const categories = [
@@ -737,7 +878,6 @@ export const categories = [
   'Real Estate',
   'Events & Entertainment',
 ];
-
 
 // ─── Announcements ────────────────────────────────────────────────────────────
 const newsItems: NewsItem[] = [
@@ -782,22 +922,40 @@ const newsItems: NewsItem[] = [
   },
 ];
 
-
 // ─── Getters ──────────────────────────────────────────────────────────────────
 
+export function getEvents(): Event[] {
+  return events;
+}
+export function getEventBySlug(slug: string): Event | undefined {
+  return events.find((e) => e.slug === slug);
+}
 
-export function getEvents(): Event[] { return events; }
-export function getEventBySlug(slug: string): Event | undefined { return events.find((e) => e.slug === slug); }
+export function getAlumni(): Alumni[] {
+  return alumni;
+}
+export function getAlumnusBySlug(slug: string): Alumni | undefined {
+  return alumni.find((a) => a.slug === slug);
+}
 
-export function getAlumni(): Alumni[] { return alumni; }
-export function getAlumnusBySlug(slug: string): Alumni | undefined { return alumni.find((a) => a.slug === slug); }
+export function getLeadership(): LeadershipMember[] {
+  return leadership;
+}
+export function getLeaderById(id: number): LeadershipMember | undefined {
+  return leadership.find((m) => m.id === id);
+}
 
-export function getLeadership(): LeadershipMember[] { return leadership; }
-export function getLeaderById(id: number): LeadershipMember | undefined { return leadership.find((m) => m.id === id); }
-
-export function getProjects(): Project[] { return projects; }
-export function getProjectById(id: string): Project | undefined { return projects.find((p) => p.id === id); }
+export function getProjects(): Project[] {
+  return projects;
+}
+export function getProjectById(id: string): Project | undefined {
+  return projects.find((p) => p.id === id);
+}
 
 // export function getBlogPosts(): NewsItem[]                              { return [...newsItems].filter((p) => !p.draft); }
-export function getAnnouncements(): NewsItem[] { return newsItems; }
-export function getAnnouncementBySlug(slug: string): NewsItem | undefined { return newsItems.find((n) => n.slug === slug); }
+export function getAnnouncements(): NewsItem[] {
+  return newsItems;
+}
+export function getAnnouncementBySlug(slug: string): NewsItem | undefined {
+  return newsItems.find((n) => n.slug === slug);
+}

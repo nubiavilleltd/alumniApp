@@ -1,4 +1,3 @@
-
 import { AppLink } from '@/shared/components/ui/AppLink';
 
 import { useLeadership } from '@/features/leadership/hooks/useLeadership';
