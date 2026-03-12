@@ -71,7 +71,7 @@ function ProjectCard({ project }: { project: Project }) {
 const ITEMS_PER_PAGE = 9;
 
 export default function ProjectsPage() {
-  const [searchTerm, setSearchTerm]     = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
 
   // ── Hook ───────────────────────────────────────────────────────────────────
@@ -82,9 +82,7 @@ export default function ProjectsPage() {
     const q = searchTerm.trim().toLowerCase();
     if (!q) return projects;
     return projects.filter(
-      (p) =>
-        p.title.toLowerCase().includes(q) ||
-        p.description.toLowerCase().includes(q),
+      (p) => p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q),
     );
   }, [projects, searchTerm]);
 
