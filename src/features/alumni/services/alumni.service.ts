@@ -16,7 +16,6 @@ export const alumniService = {
     // const { data } = await apiClient.get(API_ENDPOINTS.ALUMNI.LIST, { params });
     // return data;
 
-
     // 🟢 MOCK — delete when API is ready
     return getAlumni();
   },

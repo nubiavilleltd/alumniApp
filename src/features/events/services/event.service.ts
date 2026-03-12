@@ -24,7 +24,6 @@ export const eventsService = {
     // const { data } = await apiClient.get(API_ENDPOINTS.EVENTS.LIST, { params });
     // return data;
 
-
     // 🟢 MOCK — delete when API is ready
     return getEvents();
   },

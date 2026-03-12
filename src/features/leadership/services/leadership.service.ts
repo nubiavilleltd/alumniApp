@@ -9,7 +9,6 @@ export const leadershipService = {
     // const { data } = await apiClient.get(API_ENDPOINTS.LEADERSHIP.LIST);
     // return data;
 
-
     // 🟢 MOCK — delete when API is ready
     return getLeadership();
   },
