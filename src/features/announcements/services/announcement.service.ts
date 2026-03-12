@@ -16,7 +16,6 @@ export const announcementService = {
     // const { data } = await apiClient.get(API_ENDPOINTS.ANNOUNCEMENTS.LIST, { params });
     // return data;
 
-    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     // 🟢 MOCK — delete when API is ready
     return getAnnouncements();
@@ -27,7 +26,6 @@ export const announcementService = {
     // const { data } = await apiClient.get(API_ENDPOINTS.ANNOUNCEMENTS.DETAIL(slug));
     // return data;
 
-    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     // 🟢 MOCK — delete when API is ready
     return getAnnouncementBySlug(slug);

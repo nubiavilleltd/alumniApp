@@ -9,7 +9,6 @@ export const leadershipService = {
     // const { data } = await apiClient.get(API_ENDPOINTS.LEADERSHIP.LIST);
     // return data;
 
-    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     // 🟢 MOCK — delete when API is ready
     return getLeadership();
