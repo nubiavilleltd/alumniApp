@@ -103,7 +103,7 @@ export default function Leadership() {
             href="/leadership"
             className="text-primary-500 text-sm font-semibold hover:underline inline-flex items-center gap-1"
           >
-            See More
+            See More → 
           </AppLink>
         </div>
       </div>

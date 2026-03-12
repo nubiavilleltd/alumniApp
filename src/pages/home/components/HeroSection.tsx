@@ -38,9 +38,6 @@
 //   );
 // }
 
-
-
-
 // import { AppLink } from '@/shared/components/ui/AppLink';
 // import Button from '@/shared/components/ui/Button';
 // import HeroBg from '/hero-bg.png';
@@ -90,12 +87,6 @@
 //   );
 // }
 
-
-
-
-
-
-
 import { useState, useEffect } from 'react';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import Button from '@/shared/components/ui/Button';
@@ -129,11 +120,7 @@ export default function HeroSection() {
             i === current ? 'opacity-100' : 'opacity-0'
           }`}
         >
-          <img
-            src={src}
-            alt=""
-            className="w-full h-full object-cover object-center"
-          />
+          <img src={src} alt="" className="w-full h-full object-cover object-center" />
         </div>
       ))}
 
@@ -154,8 +141,8 @@ export default function HeroSection() {
           Welcome Home.
         </h1>
         <p className="text-lg md:text-xl text-white/85 mb-10 leading-relaxed max-w-2xl mx-auto">
-          A global sisterhood of Federal Government Girls' College alumnae connected by
-          shared memories, driven by purpose, and committed to lifting the next generation.
+          A global sisterhood of Federal Government Girls' College alumnae connected by shared
+          memories, driven by purpose, and committed to lifting the next generation.
         </p>
         <AppLink href="/auth/register">
           <Button size="lg" className="px-14 py-3.5 rounded-full font-bold text-base shadow-lg">
@@ -172,9 +159,7 @@ export default function HeroSection() {
             type="button"
             onClick={() => setCurrent(i)}
             className={`rounded-full transition-all duration-300 ${
-              i === current
-                ? 'w-6 h-2 bg-white'
-                : 'w-2 h-2 bg-white/40 hover:bg-white/70'
+              i === current ? 'w-6 h-2 bg-white' : 'w-2 h-2 bg-white/40 hover:bg-white/70'
             }`}
           />
         ))}
