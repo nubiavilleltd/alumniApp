@@ -16,6 +16,8 @@ export const alumniService = {
     // const { data } = await apiClient.get(API_ENDPOINTS.ALUMNI.LIST, { params });
     // return data;
 
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
     // 🟢 MOCK — delete when API is ready
     return getAlumni();
   },
@@ -25,6 +27,7 @@ export const alumniService = {
     // const { data } = await apiClient.get(API_ENDPOINTS.ALUMNI.DETAIL(slug));
     // return data;
 
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     // 🟢 MOCK — delete when API is ready
     return getAlumnusBySlug(slug);
   },

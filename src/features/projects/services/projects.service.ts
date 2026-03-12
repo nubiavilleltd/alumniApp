@@ -8,6 +8,7 @@ export const projectsService = {
     // 🔴 TODO: replace with real API call
     // const { data } = await apiClient.get(API_ENDPOINTS.PROJECTS.LIST);
     // return data;
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     // 🟢 MOCK — delete when API is ready
     return getProjects();
@@ -17,6 +18,8 @@ export const projectsService = {
     // 🔴 TODO: replace with real API call
     // const { data } = await apiClient.get(API_ENDPOINTS.PROJECTS.DETAIL(id));
     // return data;
+
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     // 🟢 MOCK — delete when API is ready
     return getProjectById(id);
