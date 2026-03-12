@@ -28,7 +28,7 @@ export function AppLink({
   rel,
   children,
   endAdornment,
-  onClick
+  onClick,
 }: AppLinkProps) {
   const content = (
     <>

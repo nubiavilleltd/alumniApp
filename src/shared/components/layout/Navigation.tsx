@@ -245,16 +245,6 @@
 //   );
 // }
 
-
-
-
-
-
-
-
-
-
-
 import { Icon } from '@iconify/react';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -369,7 +359,9 @@ export function Navigation() {
   const { pathname } = useLocation();
 
   // Close mobile menu on route change
-  useEffect(() => { setMobileOpen(false); }, [pathname]);
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
 
   // Close mobile menu on outside click or resize
   useEffect(() => {
@@ -378,7 +370,9 @@ export function Navigation() {
       const inButton = mobileButtonRef.current?.contains(e.target as Node);
       if (!inMenu && !inButton) setMobileOpen(false);
     };
-    const onResize = () => { if (window.innerWidth >= 1024) setMobileOpen(false); };
+    const onResize = () => {
+      if (window.innerWidth >= 1024) setMobileOpen(false);
+    };
     document.addEventListener('click', onOutsideClick);
     window.addEventListener('resize', onResize);
     return () => {
@@ -397,7 +391,6 @@ export function Navigation() {
     <nav className="bg-primary-500 sticky top-0 z-50 text-white shadow-sm">
       <div className="container-custom">
         <div className="flex items-center justify-between h-16 lg:h-20">
-
           {/* ── Logo ─────────────────────────────────────────────────────── */}
           <AppLink href="/" className="flex items-center gap-3 group flex-shrink-0">
             <div className="w-10 h-10">
@@ -415,7 +408,9 @@ export function Navigation() {
               <h1 className="text-lg font-bold text-white group-hover:text-white/80 transition-colors">
                 {config.site.name}
               </h1>
-              <p className="text-xs text-white/70 hidden sm:block">Federal Government Girls College</p>
+              <p className="text-xs text-white/70 hidden sm:block">
+                Federal Government Girls College
+              </p>
             </div>
           </AppLink>
 
@@ -442,7 +437,9 @@ export function Navigation() {
                     {currentUser.avatarInitials}
                   </div>
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold text-white">{currentUser.fullName}</p>
+                    <p className="truncate text-sm font-semibold text-white">
+                      {currentUser.fullName}
+                    </p>
                     <p className="text-xs text-white/60">Dashboard</p>
                   </div>
                 </AppLink>
@@ -491,9 +488,11 @@ export function Navigation() {
                       key={child.url}
                       href={child.url}
                       className={`flex items-center gap-2.5 px-6 py-2.5 text-sm transition-colors
-                        ${pathname.startsWith(child.url)
-                          ? 'text-white font-semibold'
-                          : 'text-white/80 hover:text-white'}`}
+                        ${
+                          pathname.startsWith(child.url)
+                            ? 'text-white font-semibold'
+                            : 'text-white/80 hover:text-white'
+                        }`}
                     >
                       {child.icon && <Icon icon={child.icon} className="w-4 h-4" />}
                       {child.label}
@@ -505,9 +504,11 @@ export function Navigation() {
                   key={item.label}
                   href={item.url}
                   className={`block px-4 py-2.5 text-sm rounded-lg transition-colors
-                    ${(item.url === '/' ? pathname === '/' : pathname.startsWith(item.url))
-                      ? 'bg-white/20 text-white font-semibold'
-                      : 'text-white/80 hover:bg-white/10 hover:text-white'}`}
+                    ${
+                      (item.url === '/' ? pathname === '/' : pathname.startsWith(item.url))
+                        ? 'bg-white/20 text-white font-semibold'
+                        : 'text-white/80 hover:bg-white/10 hover:text-white'
+                    }`}
                 >
                   {item.label}
                 </AppLink>
@@ -540,10 +541,16 @@ export function Navigation() {
               </div>
             ) : (
               <div className="grid grid-cols-2 gap-3 px-4 pt-4 border-t border-white/20 mt-2">
-                <AppLink href="/auth/login" className="btn btn-outline btn-sm w-full justify-center text-white border-white hover:bg-white hover:text-primary-600">
+                <AppLink
+                  href="/auth/login"
+                  className="btn btn-outline btn-sm w-full justify-center text-white border-white hover:bg-white hover:text-primary-600"
+                >
                   Login
                 </AppLink>
-                <AppLink href="/auth/register" className="btn btn-sm w-full justify-center bg-white text-primary-600 hover:bg-white/90">
+                <AppLink
+                  href="/auth/register"
+                  className="btn btn-sm w-full justify-center bg-white text-primary-600 hover:bg-white/90"
+                >
                   Register
                 </AppLink>
               </div>
