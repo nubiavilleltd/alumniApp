@@ -7,8 +7,7 @@ export default function HomeStats() {
   const { data: alumni = [] } = useAlumni();
 
   return (
-    // <section className="section-sm bg-gradient-to-r from-accent-50 to-accent-100">
-    <section className="section-sm">
+    <section className="section-sm bg-gradient-to-r from-accent-50 to-accent-100">
       <div className="container-custom">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="text-center">

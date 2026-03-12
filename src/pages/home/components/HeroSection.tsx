@@ -141,8 +141,7 @@ export default function HeroSection() {
           Welcome Home.
         </h1>
         <p className="text-lg md:text-xl text-white/85 mb-10 leading-relaxed max-w-2xl mx-auto">
-          A global sisterhood of Federal Government Girls' College alumnae connected by shared
-          memories, driven by purpose, and committed to lifting the next generation.
+          The Connection is Real. Own Your Journey. Reconnect with your sisters, expand your network, and give back to the community that shaped us.
         </p>
         <AppLink href="/auth/register">
           <Button size="lg" className="px-14 py-3.5 rounded-full font-bold text-base shadow-lg">
