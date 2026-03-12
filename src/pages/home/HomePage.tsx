@@ -25,7 +25,6 @@
 //   );
 // }
 
-
 import { SEO } from '@/shared/common/SEO';
 import { getSiteConfig } from '@/data/content';
 import { SectionErrorBoundary } from '@/shared/components/ui/ErrorBoundary';

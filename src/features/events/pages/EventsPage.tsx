@@ -266,10 +266,6 @@
 //   );
 // }
 
-
-
-
-
 import { Icon } from '@iconify/react';
 import { useState, useMemo } from 'react';
 import { AppLink } from '@/shared/components/ui/AppLink';
@@ -381,15 +377,15 @@ function EventCard({
 export function EventsPage() {
   const [tab, setTab] = useState<Tab>('upcoming');
   const [registerEvent, setRegisterEvent] = useState<RegisterEventModalEvent | null>(null);
-  const [searchTerm, setSearchTerm]       = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   const [locationFilter, setLocationFilter] = useState('');
-  const [visibleCount, setVisibleCount]   = useState(ITEMS_PER_PAGE);
+  const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
 
   // ── Hooks — share same React Query cache, one network request ─────────────
   const { data: upcoming = [], isLoading: upcomingLoading } = useUpcomingEvents();
-  const { data: past = [],     isLoading: pastLoading }     = usePastEvents();
+  const { data: past = [], isLoading: pastLoading } = usePastEvents();
 
-  const isLoading  = tab === 'upcoming' ? upcomingLoading : pastLoading;
+  const isLoading = tab === 'upcoming' ? upcomingLoading : pastLoading;
   const activeList = tab === 'upcoming' ? upcoming : past;
 
   // ── Client-side filtering ──────────────────────────────────────────────────
@@ -500,7 +496,10 @@ export function EventsPage() {
             </div>
           ) : (
             <div className="text-center py-20 text-gray-400">
-              <Icon icon="mdi:calendar-blank-outline" className="w-12 h-12 mx-auto mb-3 opacity-40" />
+              <Icon
+                icon="mdi:calendar-blank-outline"
+                className="w-12 h-12 mx-auto mb-3 opacity-40"
+              />
               <p className="text-sm">No {tab} events found.</p>
             </div>
           )}

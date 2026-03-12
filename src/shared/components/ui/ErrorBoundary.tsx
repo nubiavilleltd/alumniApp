@@ -4,7 +4,7 @@ import { type ReactNode } from 'react';
 
 // ─── Default Fallback UI ──────────────────────────────────────────────────────
 function DefaultFallback({ error, resetErrorBoundary }: FallbackProps) {
-    const err = error as Error;
+  const err = error as Error;
   return (
     <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
       <div className="w-16 h-16 rounded-2xl bg-red-50 flex items-center justify-center mb-4">
@@ -69,9 +69,5 @@ export function ErrorBoundary({ children }: { children: ReactNode }) {
 
 // ─── Section-level Error Boundary ────────────────────────────────────────────
 export function SectionErrorBoundary({ children }: { children: ReactNode }) {
-  return (
-    <ReactErrorBoundary FallbackComponent={SectionFallback}>
-      {children}
-    </ReactErrorBoundary>
-  );
+  return <ReactErrorBoundary FallbackComponent={SectionFallback}>{children}</ReactErrorBoundary>;
 }

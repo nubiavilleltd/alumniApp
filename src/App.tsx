@@ -53,9 +53,6 @@
 //   );
 // }
 
-
-
-
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { RootLayout } from './shared/components/layout/RootLayout';
 import { AlumniDirectoryPage } from './features/alumni/pages/AlumniDirectoryPage';
@@ -81,21 +78,97 @@ export default function App() {
     <ErrorBoundary>
       <Routes>
         <Route element={<RootLayout />}>
-
-          <Route path="/" element={<ErrorBoundary><HomePage /></ErrorBoundary>} />
-          <Route path="/about" element={<ErrorBoundary><AboutPage /></ErrorBoundary>} />
-          <Route path="/privacy" element={<ErrorBoundary><PrivacyPage /></ErrorBoundary>} />
-          <Route path="/terms" element={<ErrorBoundary><TermsPage /></ErrorBoundary>} />
-          <Route path="/projects" element={<ErrorBoundary><ProjectsPage /></ErrorBoundary>} />
-          <Route path="/leadership" element={<ErrorBoundary><LeadershipPage /></ErrorBoundary>} />
-          <Route path="/marketplace" element={<ErrorBoundary><MarketPlacePage /></ErrorBoundary>} />
+          <Route
+            path="/"
+            element={
+              <ErrorBoundary>
+                <HomePage />
+              </ErrorBoundary>
+            }
+          />
+          <Route
+            path="/about"
+            element={
+              <ErrorBoundary>
+                <AboutPage />
+              </ErrorBoundary>
+            }
+          />
+          <Route
+            path="/privacy"
+            element={
+              <ErrorBoundary>
+                <PrivacyPage />
+              </ErrorBoundary>
+            }
+          />
+          <Route
+            path="/terms"
+            element={
+              <ErrorBoundary>
+                <TermsPage />
+              </ErrorBoundary>
+            }
+          />
+          <Route
+            path="/projects"
+            element={
+              <ErrorBoundary>
+                <ProjectsPage />
+              </ErrorBoundary>
+            }
+          />
+          <Route
+            path="/leadership"
+            element={
+              <ErrorBoundary>
+                <LeadershipPage />
+              </ErrorBoundary>
+            }
+          />
+          <Route
+            path="/marketplace"
+            element={
+              <ErrorBoundary>
+                <MarketPlacePage />
+              </ErrorBoundary>
+            }
+          />
 
           <Route path="/alumni" element={<AlumniRedirectPage />} />
-          <Route path="/alumni/profiles" element={<ErrorBoundary><AlumniDirectoryPage /></ErrorBoundary>} />
-          <Route path="/alumni/profiles/:slug" element={<ErrorBoundary><AlumniProfilePage /></ErrorBoundary>} />
+          <Route
+            path="/alumni/profiles"
+            element={
+              <ErrorBoundary>
+                <AlumniDirectoryPage />
+              </ErrorBoundary>
+            }
+          />
+          <Route
+            path="/alumni/profiles/:slug"
+            element={
+              <ErrorBoundary>
+                <AlumniProfilePage />
+              </ErrorBoundary>
+            }
+          />
 
-          <Route path="/events" element={<ErrorBoundary><EventsPage /></ErrorBoundary>} />
-          <Route path="/events/:slug" element={<ErrorBoundary><EventDetailPage /></ErrorBoundary>} />
+          <Route
+            path="/events"
+            element={
+              <ErrorBoundary>
+                <EventsPage />
+              </ErrorBoundary>
+            }
+          />
+          <Route
+            path="/events/:slug"
+            element={
+              <ErrorBoundary>
+                <EventDetailPage />
+              </ErrorBoundary>
+            }
+          />
 
           {/* Auth pages — no boundary needed, static forms */}
           <Route path="/auth" element={<Navigate to="/auth/login" replace />} />
@@ -104,10 +177,16 @@ export default function App() {
           <Route path="/auth/forgot-password" element={<AuthPage mode="forgot-password" />} />
           <Route path="/auth/reset-password" element={<AuthPage mode="reset-password" />} />
 
-          <Route path="/dashboard" element={<ErrorBoundary><UserDashboardPage /></ErrorBoundary>} />
+          <Route
+            path="/dashboard"
+            element={
+              <ErrorBoundary>
+                <UserDashboardPage />
+              </ErrorBoundary>
+            }
+          />
           <Route path="/home" element={<Navigate to="/" replace />} />
           <Route path="*" element={<NotFoundPage />} />
-
         </Route>
       </Routes>
     </ErrorBoundary>

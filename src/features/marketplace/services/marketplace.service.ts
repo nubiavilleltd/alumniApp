@@ -24,6 +24,9 @@ export const marketplaceService = {
     // const { data } = await apiClient.get(API_ENDPOINTS.MARKETPLACE.LIST, { params });
     // return data;
 
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+
     // 🟢 MOCK — delete when API is ready
     return businesses;
   },
