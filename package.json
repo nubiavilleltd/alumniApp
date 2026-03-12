@@ -1,8 +1,8 @@
 {
-  "name": "open-alumns-portal",
+  "name": "alumni-portal",
   "version": "0.0.1",
-  "description": "A production-ready, open-source alumni portal theme built with React and Vite",
-  "author": "Nepal Open Source Klub (NOSK)",
+  "description": "An alumni portal built with React and Vite",
+  "author": "Federal Government Girls College",
   "license": "MIT",
   "type": "module",
   "scripts": {
@@ -49,17 +49,13 @@
     "vite",
     "alumni",
     "portal",
-    "theme",
     "education",
     "community",
-    "nosk"
+    "fggc"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/nepalopensource/open-alumns-portal.git"
+    "url": "https://github.com/nubiavilleltd/alumniApp.git"
   },
-  "bugs": {
-    "url": "https://github.com/nepalopensource/open-alumns-portal/issues"
-  },
-  "homepage": "https://github.com/nepalopensource/open-alumns-portal#readme"
+  "homepage": "https://github.com/nubiavilleltd/alumniApp#readme"
 }

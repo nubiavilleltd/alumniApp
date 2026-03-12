@@ -8,8 +8,7 @@ export const apiClient = axios.create({
 
 // ─── Attach auth token to every request ───────────────────────────────────────
 apiClient.interceptors.request.use((config) => {
-
-//   const token = localStorage.getItem('auth_token');
+  //   const token = localStorage.getItem('auth_token');
   const token = import.meta.env.VITE_API_TOKEN;
 
   if (token) {
@@ -17,7 +16,9 @@ apiClient.interceptors.request.use((config) => {
 
     if (config.method === 'post') {
       const existing = config.data
-        ? (typeof config.data === 'string' ? JSON.parse(config.data) : config.data)
+        ? typeof config.data === 'string'
+          ? JSON.parse(config.data)
+          : config.data
         : {};
       config.data = { ...existing, token };
     }
@@ -31,7 +32,7 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-    //   localStorage.removeItem('auth_token');
+      //   localStorage.removeItem('auth_token');
       window.location.href = '/login';
     }
     return Promise.reject(error);

@@ -100,12 +100,12 @@ export function Navigation() {
           <div className="flex items-center">
             <AppLink href="/" className="flex items-center space-x-3 group">
               {/* <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl flex items-center justify-center shadow-lg overflow-hidden transition-transform duration-300 group-hover:scale-105"> */}
-              <div className="w-10 h-10 lg:w-12 lg:h-12">
+              <div className="w-10 h-10 lg:w-10 lg:h-10">
                 {config.site.logo ? (
                   <img
                     src={config.site.logo}
                     alt={`${config.site.name} logo`}
-                    className="w-full h-full object-contain duration-300 hover:scale-105"
+                    className="w-full h-full object-cover rounded-full border border-2 border-white duration-300 hover:scale-105"
                   />
                 ) : (
                   <Icon icon="mdi:account-group" className="w-7 h-7 text-white" />

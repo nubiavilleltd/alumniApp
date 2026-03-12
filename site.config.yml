@@ -1,4 +1,4 @@
-# Open Alumns Portal - Site Configuration
+#  Alumnni Portal - Site Configuration
 # This file contains all configurable options for your alumni portal
 # Modify these values to customize your portal without touching code
 
@@ -6,8 +6,8 @@
 site:
   name: 'FGGC Owerri Alumnae Association'
   description: 'Connecting generations of extraordinary women since 1966. A global sisterhood built on excellence, integrity, and service to Nigeria and beyond.'
-  url: 'https://open-alumns-portal.vercel.app'
-  logo: '/logo.png'
+  # url: 'https://open-alumns-portal.vercel.app'
+  logo: '/fggc-logo.jpeg'
   favicon: '/favicon.ico'
   hero_image: '/hero-bg.png'
 
@@ -18,41 +18,7 @@ organization:
   email: 'info@fggcowerrilagos.org'
   address: 'Lagos, Nigeria'
 
-# Color Scheme (CSS Variables)
-# colors:
-#   primary:
-#     50: '#f0fdf4'
-#     100: '#dcfce7'
-#     200: '#bbf7d0'
-#     300: '#86efac'
-#     400: '#4ade80'
-#     500: '#22c55e'
-#     600: '#16a34a'
-#     700: '#15803d'
-#     800: '#166534'
-#     900: '#14532d'
-#   secondary:
-#     50: '#fefce8'
-#     100: '#fef9c3'
-#     200: '#fef08a'
-#     300: '#fde047'
-#     400: '#facc15'
-#     500: '#eab308'
-#     600: '#ca8a04'
-#     700: '#a16207'
-#     800: '#854d0e'
-#     900: '#713f12'
-#   accent:
-#     50: '#fafafa'
-#     100: '#f5f5f5'
-#     200: '#e5e5e5'
-#     300: '#d4d4d4'
-#     400: '#a3a3a3'
-#     500: '#737373'
-#     600: '#525252'
-#     700: '#404040'
-#     800: '#262626'
-#     900: '#171717'
+
 
 colors:
   primary:
@@ -91,53 +57,8 @@ colors:
     800: '#1e293b'
     900: '#0f172a'
 
-# Navigation Menu
-navigation:
-  - label: 'Home'
-    url: '/'
-    # icon: 'home'
-  - label: 'About Us'
-    url: '/about'
-  - label: 'Alumni Directory'
-    url: '/alumni/profiles'
-    # icon: 'users'
-  - label: 'Events'
-    url: '/events'
-    # icon: 'calendar'
-  - label: 'Blog'
-    url: '/blog'
-    # icon: 'newspaper'
-  - label: 'About'
-    url: '/about'
-    # icon: 'info-circle'
 
-# Chapter Configuration
-chapters:
-  - name: 'Software Engineering'
-    slug: 'software'
-    description: 'Computer Science and Software Engineering graduates'
-    icon: 'code'
-    color: '#22c55e'
-  - name: 'Computer Engineering'
-    slug: 'computer'
-    description: 'Computer Engineering and IT graduates'
-    icon: 'microchip'
-    color: '#3b82f6'
-  - name: 'Electronics Engineering'
-    slug: 'electronics'
-    description: 'Electronics and Communication Engineering graduates'
-    icon: 'bolt'
-    color: '#f59e0b'
-  - name: 'Civil Engineering'
-    slug: 'civil'
-    description: 'Civil and Infrastructure Engineering graduates'
-    icon: 'building'
-    color: '#8b5cf6'
-  - name: 'Mechanical Engineering'
-    slug: 'mechanical'
-    description: 'Mechanical and Industrial Engineering graduates'
-    icon: 'cog'
-    color: '#ef4444'
+
 
 # Year Range Configuration
 years:
@@ -147,20 +68,16 @@ years:
 
 # Social Media Links
 social_links:
-  - name: 'GitHub'
-    url: 'https://github.com/noskofficial/open-alumns'
-    icon: 'github'
-    color: '#171515'
   - name: 'LinkedIn'
-    url: 'https://linkedin.com/company/officialnosk'
+    url: 'https://linkedin.com/'
     icon: 'linkedin'
     color: '#0077b5'
   - name: 'Twitter'
-    url: 'https://twitter.com/officialnosk'
+    url: 'https://twitter.com/'
     icon: 'twitter'
     color: '#1da1f2'
   - name: 'Facebook'
-    url: 'https://facebook.com/nosklub'
+    url: 'https://facebook.com/'
     icon: 'facebook'
     color: '#1877f2'
 
@@ -169,7 +86,7 @@ seo:
   title_template: '%s | FGGC Owerri Alumni'
   default_description: 'Connect with alumni from your institution. Join our network and stay updated with events, news, and opportunities.'
   keywords: ['alumni', 'portal', 'network', 'community', 'education', 'graduates']
-  author: 'Nepal Open Source Klub (NOSK)'
+  author: 'Federal Government Girls College Alumnae Association'
   og_image: '/og-image.jpg'
   twitter_card: 'summary_large_image'
 

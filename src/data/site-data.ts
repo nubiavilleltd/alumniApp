@@ -10,7 +10,6 @@ import Image4 from '/leadership-4.png';
 import Image5 from '/leadership-5.png';
 import Image6 from '/leadership-6.png';
 
-
 import Leadership1 from '/leadership-1.png';
 import Leadership2 from '/leadership-2.png';
 import Leadership3 from '/leadership-3.png';
@@ -453,8 +452,6 @@ export const alumni = [
     social: { linkedin: '' },
   },
 ];
-
-
 
 const leadership: LeadershipMember[] = [
   {
