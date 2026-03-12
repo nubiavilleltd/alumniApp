@@ -1,6 +1,6 @@
 import { AppLink } from '@/shared/components/ui/AppLink';
 import Button from '@/shared/components/ui/Button';
-import OurStoryImg from '../../../../public/our-story.png';
+import OurStoryImg from '/our-story.png';
 
 export default function OurStory() {
   return (

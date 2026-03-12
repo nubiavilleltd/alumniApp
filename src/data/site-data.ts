@@ -4,11 +4,20 @@ import { LeadershipMember } from '@/features/leadership/types/leadership.types';
 import { Project } from '@/features/projects/types/project.types';
 import { NewsItem } from '@/features/announcements/types/announcement.types';
 
-import Image2 from '../../public/leadership-2.png';
-import Image3 from '../../public/leadership-3.png';
-import Image4 from '../../public/leadership-4.png';
-import Image5 from '../../public/leadership-5.png';
-import Image6 from '../../public/leadership-6.png';
+import Image2 from '/leadership-2.png';
+import Image3 from '/leadership-3.png';
+import Image4 from '/leadership-4.png';
+import Image5 from '/leadership-5.png';
+import Image6 from '/leadership-6.png';
+
+
+import Leadership1 from '/leadership-1.png';
+import Leadership2 from '/leadership-2.png';
+import Leadership3 from '/leadership-3.png';
+import Leadership4 from '/leadership-4.png';
+import Leadership5 from '/leadership-5.png';
+import Leadership6 from '/leadership-6.png';
+import Leadership7 from '/leadership-7.png';
 
 export const alumni = [
   {
@@ -445,13 +454,7 @@ export const alumni = [
   },
 ];
 
-import Leadership1 from '../../public/leadership-1.png';
-import Leadership2 from '../../public/leadership-2.png';
-import Leadership3 from '../../public/leadership-3.png';
-import Leadership4 from '../../public/leadership-4.png';
-import Leadership5 from '../../public/leadership-5.png';
-import Leadership6 from '../../public/leadership-6.png';
-import Leadership7 from '../../public/leadership-7.png';
+
 
 const leadership: LeadershipMember[] = [
   {

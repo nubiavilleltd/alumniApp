@@ -22,6 +22,13 @@ export function useEvents(params?: GetEventsParams) {
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 }
+// export function useSomeEvents(params?: GetEventsParams) {
+//   return useQuery({
+//     queryKey: [...eventKeys.all, 'some-events'],
+//     queryFn: () => eventsService.getSomeEvents(),
+//     staleTime: 1000 * 60 * 5, // 5 minutes
+//   });
+// }
 
 /** Single event by slug */
 export function useEvent(slug: string) {

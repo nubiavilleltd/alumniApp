@@ -1,6 +1,6 @@
 import { AppLink } from '@/shared/components/ui/AppLink';
 import Button from '@/shared/components/ui/Button';
-import HeroBg from '../../../../public/hero-bg.png';
+import HeroBg from '/hero-bg.png';
 
 export default function HeroSection() {
   return (

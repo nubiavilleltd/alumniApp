@@ -113,29 +113,7 @@ export function applyConfigColors(): void {
   });
 }
 
-export function getAlumni(): AlumniEntry[] {
-  return [...alumniEntries];
-}
 
-export function getEvents(): EventEntry[] {
-  return [...eventEntries];
-}
-
-export function getBlogPosts(): BlogEntry[] {
-  return [...blogEntries].filter((post) => !post.data.draft);
-}
-
-export function getAlumnusBySlug(slug: string): AlumniEntry | undefined {
-  return alumniEntries.find((entry) => entry.slug === slug || entry.data.slug === slug);
-}
-
-export function getEventBySlug(slug: string): EventEntry | undefined {
-  return eventEntries.find((entry) => entry.slug === slug || entry.data.slug === slug);
-}
-
-export function getBlogPostBySlug(slug: string): BlogEntry | undefined {
-  return blogEntries.find((entry) => entry.slug === slug);
-}
 
 export function renderMarkdown(markdown: string): string {
   return marked.parse(markdown) as string;

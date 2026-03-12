@@ -63,6 +63,9 @@ function EventCardSkeleton() {
 
 export default function UpcomingEvents() {
   const { data: events = [], isLoading } = useLatestEvents(4);
+  // const { data: someEvents = [], } = useSomeEvents();
+
+  // console.log("someEvents", {someEvents})
 
   return (
     <section className="section">

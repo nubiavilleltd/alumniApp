@@ -7,6 +7,7 @@ export interface GetEventsParams {
   search?: string;
   location?: string;
   type?: 'upcoming' | 'past';
+  token?:string
 }
 
 export interface EventRegistrationPayload {
@@ -26,6 +27,17 @@ export const eventsService = {
     // 🟢 MOCK — delete when API is ready
     return getEvents();
   },
+
+  //This is just to test API integration. I will take it out
+// getSomeEvents: async (): Promise<Event[]> => {
+//   console.log("getting from DB...");
+//   const { data } = await apiClient.post("/get_events");
+
+//   console.log("data from DB", { data });
+//   return data;
+// },
+
+
 
   getBySlug: async (slug: string): Promise<Event | undefined> => {
     // 🔴 TODO: replace with real API call
