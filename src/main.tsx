@@ -5,7 +5,6 @@ import App from '@/App';
 import '@/globals.css';
 import { QueryProvider } from './lib/react-query/QueryProvider';
 
-
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <QueryProvider>

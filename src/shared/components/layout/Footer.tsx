@@ -7,7 +7,7 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-[#0077B6] text-white">
+    <footer className="bg-primary-500 text-white">
       <div className="container-custom py-10">
         {/* Top row: Logo + Contact */}
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-8 mb-8">
@@ -22,39 +22,39 @@ export function Footer() {
                     className="w-full h-full object-contain"
                   />
                 ) : (
-                  <Icon icon="mdi:account-group" className="w-5 h-5 text-[#0077B6]" />
+                  <Icon icon="mdi:account-group" className="w-5 h-5 text-primary-500" />
                 )}
               </div>
               <div>
                 <p className="text-white font-bold text-sm leading-tight">{config.site.name}</p>
-                <p className="text-blue-100 text-xs leading-tight">{config.organization.name}</p>
+                <p className="text-primary-100 text-xs leading-tight">{config.organization.name}</p>
               </div>
             </div>
-            <p className="text-blue-100 text-sm leading-relaxed">{config.site.description}</p>
+            <p className="text-primary-100 text-sm leading-relaxed">{config.site.description}</p>
           </div>
 
           {/* Right: Contact Us */}
           <div className="min-w-[220px]">
             <h4 className="text-white font-semibold text-sm mb-4">Contact Us</h4>
             <div className="space-y-3">
-              <div className="flex items-center gap-2 text-blue-100 text-sm">
+              <div className="flex items-center gap-2 text-primary-100 text-sm">
                 <Icon icon="mdi:map-marker" className="w-4 h-4 flex-shrink-0" />
                 <span>{config.organization.address}</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
-                <Icon icon="mdi:email-outline" className="w-4 h-4 flex-shrink-0 text-blue-100" />
+                <Icon icon="mdi:email-outline" className="w-4 h-4 flex-shrink-0 text-primary-100" />
                 <AppLink
                   href={`mailto:${config.contact.email}`}
-                  className="text-blue-100 hover:text-white transition-colors duration-200"
+                  className="text-primary-100 hover:text-white transition-colors duration-200"
                 >
                   {config.contact.email}
                 </AppLink>
               </div>
               <div className="flex items-center gap-2 text-sm">
-                <Icon icon="mdi:phone" className="w-4 h-4 flex-shrink-0 text-blue-100" />
+                <Icon icon="mdi:phone" className="w-4 h-4 flex-shrink-0 text-peimary-900" />
                 <AppLink
                   href={`tel:${config.contact.phone}`}
-                  className="text-blue-100 hover:text-white transition-colors duration-200"
+                  className="text-primary-100 hover:text-white transition-colors duration-200"
                 >
                   {config.contact.phone}
                 </AppLink>
@@ -64,11 +64,11 @@ export function Footer() {
         </div>
 
         {/* Divider */}
-        <div className="border-t border-blue-400/40" />
+        <div className="border-t border-primary-500/40" />
 
         {/* Bottom row: Copyright + Social icons */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-6">
-          <p className="text-blue-100 text-xs text-center md:text-left">
+          <p className="text-primary-100 text-xs text-center md:text-left">
             © {currentYear} FGGC Owerri Alumni Association, Lagos Chapter. All rights reserved.
           </p>
 

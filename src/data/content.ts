@@ -25,18 +25,7 @@ function parseFrontmatter(raw: string): { data: Record<string, unknown>; content
   };
 }
 
-
-
-
-
 const siteConfig = yaml.load(siteConfigRaw) as SiteConfig;
-
-
-
-
-
-
-
 
 // const eventEntries: EventEntry[] = sortByDateDesc(
 //   Object.entries(eventFiles).map(([path, raw]) => {
@@ -49,12 +38,9 @@ const siteConfig = yaml.load(siteConfigRaw) as SiteConfig;
 //   'date',
 // );
 
-
-
 export function getSiteConfig(): SiteConfig {
   return siteConfig;
 }
-
 
 export function renderMarkdown(markdown: string): string {
   return marked.parse(markdown) as string;
