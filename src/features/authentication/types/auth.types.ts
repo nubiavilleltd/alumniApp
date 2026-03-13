@@ -8,6 +8,7 @@ export interface AuthSessionUser {
   email: string;
   avatarInitials: string;
   profileHref: string;
+  photo:string;
 }
 
 export interface LoginFormValues {

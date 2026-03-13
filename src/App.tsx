@@ -16,6 +16,7 @@ import ProjectsPage from './features/projects/pages/ProjectsPage';
 import LeadershipPage from './features/leadership/pages/LeadershipPage';
 import MarketPlacePage from './features/marketplace/pages/MarketPlacePage';
 import { ErrorBoundary } from '@/shared/components/ui/ErrorBoundary';
+import UserProfilePage from './features/user/pages/UserProfilePage';
 
 export default function App() {
   return (
@@ -120,6 +121,20 @@ export default function App() {
           <Route path="/auth/register" element={<AuthPage mode="register" />} />
           <Route path="/auth/forgot-password" element={<AuthPage mode="forgot-password" />} />
           <Route path="/auth/reset-password" element={<AuthPage mode="reset-password" />} />
+
+
+          {/* Users */}
+
+          <Route
+            path="/user/profile"
+            element={
+              <ErrorBoundary>
+                <UserProfilePage />
+              </ErrorBoundary>
+            }
+          />
+
+
 
           <Route
             path="/dashboard"
