@@ -17,6 +17,7 @@ import LeadershipPage from './features/leadership/pages/LeadershipPage';
 import MarketPlacePage from './features/marketplace/pages/MarketPlacePage';
 import { ErrorBoundary } from '@/shared/components/ui/ErrorBoundary';
 import UserProfilePage from './features/user/pages/UserProfilePage';
+import MyBusinessPage from './features/marketplace/pages/MyBusinessPage';
 
 export default function App() {
   return (
@@ -79,6 +80,14 @@ export default function App() {
               </ErrorBoundary>
             }
           />
+          <Route
+            path="/marketplace/my-business"
+            element={
+              <ErrorBoundary>
+                <MyBusinessPage />
+              </ErrorBoundary>
+            }
+          />
 
           <Route path="/alumni" element={<AlumniRedirectPage />} />
           <Route
@@ -122,7 +131,6 @@ export default function App() {
           <Route path="/auth/forgot-password" element={<AuthPage mode="forgot-password" />} />
           <Route path="/auth/reset-password" element={<AuthPage mode="reset-password" />} />
 
-
           {/* Users */}
 
           <Route
@@ -133,8 +141,6 @@ export default function App() {
               </ErrorBoundary>
             }
           />
-
-
 
           <Route
             path="/dashboard"

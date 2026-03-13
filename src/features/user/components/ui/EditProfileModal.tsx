@@ -30,35 +30,35 @@ interface Props {
 
 export default function EditProfileModal({ isOpen, onClose, currentUser }: Props) {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
-  const [isSaving, setIsSaving]         = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const [form, setForm] = useState({
-    fullName:        currentUser?.fullName  ?? '',
-    email:           currentUser?.email    ?? '',
-    phone:           currentUser?.phone    ?? '',
-    position:        currentUser?.position ?? '',
-    company:         currentUser?.company  ?? '',
-    location:        currentUser?.location ?? '',
-    bio:             currentUser?.bio      ?? '',
-    linkedin:        currentUser?.social?.linkedin ?? '',
-    twitter:         currentUser?.social?.twitter  ?? '',
-    github:          currentUser?.social?.github   ?? '',
+    fullName: currentUser?.fullName ?? '',
+    email: currentUser?.email ?? '',
+    phone: currentUser?.phone ?? '',
+    position: currentUser?.position ?? '',
+    company: currentUser?.company ?? '',
+    location: currentUser?.location ?? '',
+    bio: currentUser?.bio ?? '',
+    linkedin: currentUser?.social?.linkedin ?? '',
+    twitter: currentUser?.social?.twitter ?? '',
+    github: currentUser?.social?.github ?? '',
   });
 
   // Sync form when currentUser changes
   useEffect(() => {
     if (currentUser) {
       setForm({
-        fullName:  currentUser.fullName  ?? '',
-        email:     currentUser.email    ?? '',
-        phone:     currentUser.phone    ?? '',
-        position:  currentUser.position ?? '',
-        company:   currentUser.company  ?? '',
-        location:  currentUser.location ?? '',
-        bio:       currentUser.bio      ?? '',
-        linkedin:  currentUser.social?.linkedin ?? '',
-        twitter:   currentUser.social?.twitter  ?? '',
-        github:    currentUser.social?.github   ?? '',
+        fullName: currentUser.fullName ?? '',
+        email: currentUser.email ?? '',
+        phone: currentUser.phone ?? '',
+        position: currentUser.position ?? '',
+        company: currentUser.company ?? '',
+        location: currentUser.location ?? '',
+        bio: currentUser.bio ?? '',
+        linkedin: currentUser.social?.linkedin ?? '',
+        twitter: currentUser.social?.twitter ?? '',
+        github: currentUser.social?.github ?? '',
       });
     }
   }, [currentUser]);
@@ -101,7 +101,6 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
   return (
     <Modal isOpen={isOpen} onClose={handleClose} title="Edit Profile">
       <div className="flex flex-col gap-6">
-
         {/* ── Photo ──────────────────────────────────────────────────────── */}
         <div className="flex items-center gap-4">
           <div className="relative">
@@ -255,7 +254,6 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
             Cancel
           </Button>
         </div>
-
       </div>
     </Modal>
   );

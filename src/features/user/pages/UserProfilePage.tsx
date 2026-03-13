@@ -6,7 +6,7 @@ import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import EditProfileModal from '../components/ui/EditProfileModal';
 
 export default function UserProfilePage() {
-  const currentUser     = useAuthStore((state) => state.user);
+  const currentUser = useAuthStore((state) => state.user);
   const [showEdit, setShowEdit] = useState(false);
 
   const initials = (currentUser?.fullName ?? 'U')
@@ -17,24 +17,24 @@ export default function UserProfilePage() {
     .slice(0, 2);
 
   const breadcrumbItems = [
-    { label: 'Home',      href: '/' },
+    { label: 'Home', href: '/' },
     { label: 'Dashboard', href: '/dashboard' },
     { label: 'My Profile' },
   ];
 
   const fields = [
-    { label: 'Full Name',    value: currentUser?.fullName,  icon: 'mdi:account-outline' },
-    { label: 'Email',        value: currentUser?.email,     icon: 'mdi:email-outline' },
-    { label: 'Phone',        value: currentUser?.phone,     icon: 'mdi:phone-outline' },
-    { label: 'Position',     value: currentUser?.position,  icon: 'mdi:briefcase-outline' },
-    { label: 'Company',      value: currentUser?.company,   icon: 'mdi:office-building-outline' },
-    { label: 'Location',     value: currentUser?.location,  icon: 'mdi:map-marker-outline' },
+    { label: 'Full Name', value: currentUser?.fullName, icon: 'mdi:account-outline' },
+    { label: 'Email', value: currentUser?.email, icon: 'mdi:email-outline' },
+    { label: 'Phone', value: currentUser?.phone, icon: 'mdi:phone-outline' },
+    { label: 'Position', value: currentUser?.position, icon: 'mdi:briefcase-outline' },
+    { label: 'Company', value: currentUser?.company, icon: 'mdi:office-building-outline' },
+    { label: 'Location', value: currentUser?.location, icon: 'mdi:map-marker-outline' },
   ];
 
   const socials = [
     { label: 'LinkedIn', value: currentUser?.social?.linkedin, icon: 'mdi:linkedin' },
-    { label: 'Twitter',  value: currentUser?.social?.twitter,  icon: 'mdi:twitter' },
-    { label: 'GitHub',   value: currentUser?.social?.github,   icon: 'mdi:github' },
+    { label: 'Twitter', value: currentUser?.social?.twitter, icon: 'mdi:twitter' },
+    { label: 'GitHub', value: currentUser?.social?.github, icon: 'mdi:github' },
   ].filter((s) => s.value);
 
   return (
@@ -45,7 +45,6 @@ export default function UserProfilePage() {
       <section className="section py-12">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
             {/* ── Sidebar ──────────────────────────────────────────────────── */}
             <aside className="lg:col-span-1 h-fit space-y-4">
               {/* Profile card */}
@@ -53,15 +52,22 @@ export default function UserProfilePage() {
                 {/* Avatar */}
                 <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-primary-100 bg-primary-50 flex items-center justify-center mb-4">
                   {currentUser?.photo ? (
-                    <img src={currentUser.photo} alt={currentUser.fullName} className="w-full h-full object-cover" />
+                    <img
+                      src={currentUser.photo}
+                      alt={currentUser.fullName}
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
                     <span className="text-3xl font-bold text-primary-400">{initials}</span>
                   )}
                 </div>
 
-                <h1 className="text-lg font-bold text-gray-800">{currentUser?.fullName ?? 'Your Name'}</h1>
+                <h1 className="text-lg font-bold text-gray-800">
+                  {currentUser?.fullName ?? 'Your Name'}
+                </h1>
                 <p className="text-sm text-primary-500 mt-0.5">
-                  {[currentUser?.position, currentUser?.company].filter(Boolean).join(' at ') || 'Add your role'}
+                  {[currentUser?.position, currentUser?.company].filter(Boolean).join(' at ') ||
+                    'Add your role'}
                 </p>
                 {currentUser?.location && (
                   <p className="text-xs text-gray-400 mt-1 flex items-center gap-1">
@@ -130,7 +136,9 @@ export default function UserProfilePage() {
                         <Icon icon={icon} className="w-4 h-4" />
                         {label}
                       </div>
-                      <p className={`text-sm font-medium ${value ? 'text-gray-700' : 'text-gray-300 italic'}`}>
+                      <p
+                        className={`text-sm font-medium ${value ? 'text-gray-700' : 'text-gray-300 italic'}`}
+                      >
                         {value || 'Not added'}
                       </p>
                     </div>
@@ -154,7 +162,9 @@ export default function UserProfilePage() {
                     Edit
                   </button>
                 </div>
-                <p className={`text-sm leading-relaxed ${currentUser?.bio ? 'text-gray-700' : 'text-gray-300 italic'}`}>
+                <p
+                  className={`text-sm leading-relaxed ${currentUser?.bio ? 'text-gray-700' : 'text-gray-300 italic'}`}
+                >
                   {currentUser?.bio || 'No bio added yet. Tell your fellow alumnae about yourself.'}
                 </p>
               </section>

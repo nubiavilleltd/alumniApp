@@ -562,15 +562,6 @@
 //   );
 // }
 
-
-
-
-
-
-
-
-
-
 import { Icon } from '@iconify/react';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -703,7 +694,11 @@ function UserDropdown({
         {/* Avatar */}
         <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-white flex-shrink-0">
           {currentUser.photo ? (
-            <img src={currentUser.photo} alt={currentUser.fullName} className="w-full h-full object-cover" />
+            <img
+              src={currentUser.photo}
+              alt={currentUser.fullName}
+              className="w-full h-full object-cover"
+            />
           ) : (
             <div className="w-full h-full bg-white flex items-center justify-center text-primary-600 text-xs font-bold">
               {currentUser.avatarInitials}
@@ -750,7 +745,10 @@ function UserDropdown({
           <div className="border-t border-gray-100 py-1">
             <button
               type="button"
-              onClick={() => { setOpen(false); onLogout(); }}
+              onClick={() => {
+                setOpen(false);
+                onLogout();
+              }}
               className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors"
             >
               <Icon icon="mdi:logout" className="w-4 h-4" />
@@ -774,7 +772,9 @@ export function Navigation() {
   const mobileButtonRef = useRef<HTMLButtonElement>(null);
   const { pathname } = useLocation();
 
-  useEffect(() => { setMobileOpen(false); }, [pathname]);
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     const onOutsideClick = (e: MouseEvent) => {
@@ -782,7 +782,9 @@ export function Navigation() {
       const inButton = mobileButtonRef.current?.contains(e.target as Node);
       if (!inMenu && !inButton) setMobileOpen(false);
     };
-    const onResize = () => { if (window.innerWidth >= 1024) setMobileOpen(false); };
+    const onResize = () => {
+      if (window.innerWidth >= 1024) setMobileOpen(false);
+    };
     document.addEventListener('click', onOutsideClick);
     window.addEventListener('resize', onResize);
     return () => {
@@ -797,7 +799,6 @@ export function Navigation() {
     navigate('/', { replace: true });
   };
 
-
   const mockUser = {
     fullName: 'Stella Alochi',
     avatarInitials: 'SA',
@@ -808,7 +809,6 @@ export function Navigation() {
     <nav className="bg-primary-500 sticky top-0 z-50 text-white shadow-sm">
       <div className="container-custom">
         <div className="flex items-center justify-between h-16 lg:h-20">
-
           {/* ── Logo ─────────────────────────────────────────────────────── */}
           <AppLink href="/" className="flex items-center gap-3 group flex-shrink-0">
             <div className="w-10 h-10">
@@ -826,7 +826,9 @@ export function Navigation() {
               <h1 className="text-lg font-bold text-white group-hover:text-white/80 transition-colors">
                 {config.site.name}
               </h1>
-              <p className="text-xs text-white/70 hidden sm:block">Federal Government Girls College</p>
+              <p className="text-xs text-white/70 hidden sm:block">
+                Federal Government Girls College
+              </p>
             </div>
           </AppLink>
 
@@ -843,7 +845,6 @@ export function Navigation() {
 
           {/* ── Desktop Auth ──────────────────────────────────────────────── */}
           <div className="hidden lg:flex items-center gap-3">
-
             <UserDropdown currentUser={currentUser ?? mockUser} onLogout={handleLogout} />
 
             {/* Uncomment this back !!!!!. This is the actual implementation */}
@@ -897,9 +898,11 @@ export function Navigation() {
                   key={item.label}
                   href={item.url}
                   className={`block px-4 py-2.5 text-sm rounded-lg transition-colors
-                    ${(item.url === '/' ? pathname === '/' : pathname.startsWith(item.url))
-                      ? 'bg-white/20 text-white font-semibold'
-                      : 'text-white/80 hover:bg-white/10 hover:text-white'}`}
+                    ${
+                      (item.url === '/' ? pathname === '/' : pathname.startsWith(item.url))
+                        ? 'bg-white/20 text-white font-semibold'
+                        : 'text-white/80 hover:bg-white/10 hover:text-white'
+                    }`}
                 >
                   {item.label}
                 </AppLink>
@@ -913,7 +916,11 @@ export function Navigation() {
                 <div className="flex items-center gap-3 px-2 py-2 mb-2">
                   <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white flex-shrink-0">
                     {currentUser.photo ? (
-                      <img src={currentUser.photo} alt={currentUser.fullName} className="w-full h-full object-cover" />
+                      <img
+                        src={currentUser.photo}
+                        alt={currentUser.fullName}
+                        className="w-full h-full object-cover"
+                      />
                     ) : (
                       <div className="w-full h-full bg-white flex items-center justify-center text-primary-600 text-sm font-bold">
                         {currentUser.avatarInitials}
@@ -925,11 +932,17 @@ export function Navigation() {
                     <p className="text-xs text-white/60">Member</p>
                   </div>
                 </div>
-                <AppLink href="/dashboard" className="flex items-center gap-2.5 px-3 py-2.5 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors">
+                <AppLink
+                  href="/dashboard"
+                  className="flex items-center gap-2.5 px-3 py-2.5 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                >
                   <Icon icon="mdi:account-outline" className="w-4 h-4" />
                   View Profile
                 </AppLink>
-                <AppLink href="/marketplace/my-business" className="flex items-center gap-2.5 px-3 py-2.5 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors">
+                <AppLink
+                  href="/marketplace/my-business"
+                  className="flex items-center gap-2.5 px-3 py-2.5 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                >
                   <Icon icon="mdi:storefront-outline" className="w-4 h-4" />
                   My Business
                 </AppLink>
@@ -944,10 +957,16 @@ export function Navigation() {
               </div>
             ) : (
               <div className="grid grid-cols-2 gap-3 px-4 pt-4 border-t border-white/20 mt-2">
-                <AppLink href="/auth/login" className="btn btn-outline btn-sm w-full justify-center text-white border-white hover:bg-white hover:text-primary-600">
+                <AppLink
+                  href="/auth/login"
+                  className="btn btn-outline btn-sm w-full justify-center text-white border-white hover:bg-white hover:text-primary-600"
+                >
                   Login
                 </AppLink>
-                <AppLink href="/auth/register" className="btn btn-sm w-full justify-center bg-white text-primary-600 hover:bg-white/90">
+                <AppLink
+                  href="/auth/register"
+                  className="btn btn-sm w-full justify-center bg-white text-primary-600 hover:bg-white/90"
+                >
                   Register
                 </AppLink>
               </div>
