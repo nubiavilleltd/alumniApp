@@ -10,7 +10,7 @@ interface SelectInputProps extends React.SelectHTMLAttributes<HTMLSelectElement>
   label?: string;
   error?: string;
   hint?: string;
-  options: SelectOption[];
+  options: readonly SelectOption[];
   placeholder?: string;
 }
 

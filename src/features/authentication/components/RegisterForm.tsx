@@ -589,10 +589,6 @@
 // //   );
 // // }
 
-
-
-
-
 // // import { zodResolver } from '@hookform/resolvers/zod';
 // // import { Icon } from '@iconify/react';
 // // import { useState } from 'react';
@@ -1123,19 +1119,6 @@
 // //   );
 // // }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 // import { zodResolver } from '@hookform/resolvers/zod';
 // import { Icon } from '@iconify/react';
 // import { useState } from 'react';
@@ -1542,13 +1525,6 @@
 //   );
 // }
 
-
-
-
-
-
-
-
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Icon } from '@iconify/react';
 import { useState } from 'react';
@@ -1588,10 +1564,10 @@ const stepMeta: Record<RegistrationStep, { step: string; label: string }> = {
 export function RegisterForm() {
   const currentYear = new Date().getFullYear();
 
-  const graduationYearOptions = Array.from(
-    { length: currentYear - 1966 + 1 },
-    (_, i) => ({ label: String(currentYear - i), value: String(currentYear - i) }),
-  );
+  const graduationYearOptions = Array.from({ length: currentYear - 1966 + 1 }, (_, i) => ({
+    label: String(currentYear - i),
+    value: String(currentYear - i),
+  }));
 
   const phoneCountrySelectOptions = phoneCountryOptions.map((o) => ({
     label: `${o.dialCode} (${o.label})`,
@@ -1600,7 +1576,9 @@ export function RegisterForm() {
 
   const [step, setStep] = useState<RegistrationStep>('details');
   const [draft, setDraft] = useState<RegisterDetailsFormValues | null>(null);
-  const [verificationState, setVerificationState] = useState<StartRegistrationResponse | null>(null);
+  const [verificationState, setVerificationState] = useState<StartRegistrationResponse | null>(
+    null,
+  );
   const [completionState, setCompletionState] = useState<CompleteRegistrationResponse | null>(null);
   const [resendMessage, setResendMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -1609,9 +1587,15 @@ export function RegisterForm() {
   const detailForm = useForm<RegisterDetailsFormValues>({
     resolver: zodResolver(registerDetailsSchema),
     defaultValues: {
-      surname: '', otherNames: '', nameInSchool: '',
-      email: '', phoneCountry: defaultPhoneCountry, whatsappPhone: '',
-      graduationYear: currentYear, password: '', confirmPassword: '',
+      surname: '',
+      otherNames: '',
+      nameInSchool: '',
+      email: '',
+      phoneCountry: defaultPhoneCountry,
+      whatsappPhone: '',
+      graduationYear: currentYear,
+      password: '',
+      confirmPassword: '',
     },
   });
 
@@ -1675,9 +1659,15 @@ export function RegisterForm() {
 
   const resetFlow = () => {
     detailForm.reset({
-      surname: '', otherNames: '', nameInSchool: '',
-      email: '', phoneCountry: defaultPhoneCountry, whatsappPhone: '',
-      graduationYear: currentYear, password: '', confirmPassword: '',
+      surname: '',
+      otherNames: '',
+      nameInSchool: '',
+      email: '',
+      phoneCountry: defaultPhoneCountry,
+      whatsappPhone: '',
+      graduationYear: currentYear,
+      password: '',
+      confirmPassword: '',
     });
     verificationForm.reset({ code: '' });
     setDraft(null);
@@ -1692,7 +1682,6 @@ export function RegisterForm() {
 
   return (
     <AuthCard title="Sign" titleAccent="Up" subtitle="Join your Sisters">
-
       {/* ── Step indicator ────────────────────────────────────────────────── */}
       <div className="flex items-center justify-between mb-6 pb-5 border-b border-gray-100">
         <div>
@@ -1705,12 +1694,13 @@ export function RegisterForm() {
           {STEPS.map((s, i) => (
             <div
               key={s}
-              className={`rounded-full transition-all duration-300 ${s === step
+              className={`rounded-full transition-all duration-300 ${
+                s === step
                   ? 'w-5 h-2 bg-primary-500'
                   : i < activeIndex
                     ? 'w-2 h-2 bg-primary-300'
                     : 'w-2 h-2 bg-gray-200'
-                }`}
+              }`}
             />
           ))}
         </div>
@@ -1719,7 +1709,6 @@ export function RegisterForm() {
       {/* ── Step 1: Details ──────────────────────────────────────────────── */}
       {step === 'details' && (
         <form className="space-y-4" onSubmit={submitDetails}>
-
           <div className="grid grid-cols-2 gap-3">
             <FormInput
               label="Surname"
@@ -1804,17 +1793,24 @@ export function RegisterForm() {
                 onClick={() => setShowPassword((v) => !v)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
               >
-                <Icon icon={showPassword ? 'mdi:eye-off-outline' : 'mdi:eye-outline'} className="w-4 h-4" />
+                <Icon
+                  icon={showPassword ? 'mdi:eye-off-outline' : 'mdi:eye-outline'}
+                  className="w-4 h-4"
+                />
               </button>
             </div>
             {detailForm.formState.errors.password && (
-              <p className="mt-1 text-xs text-red-500">{detailForm.formState.errors.password.message}</p>
+              <p className="mt-1 text-xs text-red-500">
+                {detailForm.formState.errors.password.message}
+              </p>
             )}
           </div>
 
           {/* Confirm Password */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Confirm Password</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              Confirm Password
+            </label>
             <div className="relative">
               <input
                 type={showConfirmPassword ? 'text' : 'password'}
@@ -1827,7 +1823,10 @@ export function RegisterForm() {
                 onClick={() => setShowConfirmPassword((v) => !v)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
               >
-                <Icon icon={showConfirmPassword ? 'mdi:eye-off-outline' : 'mdi:eye-outline'} className="w-4 h-4" />
+                <Icon
+                  icon={showConfirmPassword ? 'mdi:eye-off-outline' : 'mdi:eye-outline'}
+                  className="w-4 h-4"
+                />
               </button>
             </div>
             {detailForm.formState.errors.confirmPassword ? (
@@ -1835,7 +1834,9 @@ export function RegisterForm() {
                 {detailForm.formState.errors.confirmPassword.message}
               </p>
             ) : confirmPasswordValue ? (
-              <p className={`mt-1 text-xs ${passwordsMatch ? 'text-primary-600' : 'text-gray-400'}`}>
+              <p
+                className={`mt-1 text-xs ${passwordsMatch ? 'text-primary-600' : 'text-gray-400'}`}
+              >
                 {passwordsMatch ? '✓ Passwords match' : 'Passwords must match exactly'}
               </p>
             ) : null}
@@ -1849,19 +1850,26 @@ export function RegisterForm() {
             className="btn btn-primary w-full flex items-center justify-center gap-2 mt-2"
           >
             {detailForm.formState.isSubmitting ? (
-              <><Icon icon="mdi:loading" className="w-4 h-4 animate-spin" />Checking...</>
+              <>
+                <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" />
+                Checking...
+              </>
             ) : (
-              <>Sign up <Icon icon="mdi:arrow-right" className="w-4 h-4" /></>
+              <>
+                Sign up <Icon icon="mdi:arrow-right" className="w-4 h-4" />
+              </>
             )}
           </button>
 
           <p className="text-center text-sm text-gray-500">
             Already have an account?{' '}
-            <AppLink href="/auth/login" className="font-semibold text-primary-500 hover:text-primary-600">
+            <AppLink
+              href="/auth/login"
+              className="font-semibold text-primary-500 hover:text-primary-600"
+            >
               Login
             </AppLink>
           </p>
-
         </form>
       )}
 
@@ -1879,12 +1887,17 @@ export function RegisterForm() {
               { label: 'Full name', value: `${draft.otherNames} ${draft.surname}` },
               { label: 'Name in school', value: draft.nameInSchool },
               { label: 'Email', value: draft.email },
-              { label: 'WhatsApp', value: formatPhoneNumberWithCountryCode(draft.phoneCountry, draft.whatsappPhone) },
+              {
+                label: 'WhatsApp',
+                value: formatPhoneNumberWithCountryCode(draft.phoneCountry, draft.whatsappPhone),
+              },
               { label: 'Graduation year', value: String(draft.graduationYear) },
             ].map(({ label, value }) => (
               <div key={label} className="flex justify-between items-center">
                 <span className="text-gray-500">{label}</span>
-                <span className="font-medium text-gray-800 text-right max-w-[60%] truncate">{value}</span>
+                <span className="font-medium text-gray-800 text-right max-w-[60%] truncate">
+                  {value}
+                </span>
               </div>
             ))}
             <button
@@ -1923,8 +1936,13 @@ export function RegisterForm() {
                 className="btn btn-primary flex-1 flex items-center justify-center gap-2"
               >
                 {verificationForm.formState.isSubmitting ? (
-                  <><Icon icon="mdi:loading" className="w-4 h-4 animate-spin" />Verifying...</>
-                ) : 'Verify email'}
+                  <>
+                    <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" />
+                    Verifying...
+                  </>
+                ) : (
+                  'Verify email'
+                )}
               </button>
               <button type="button" onClick={resendCode} className="btn btn-outline flex-1">
                 Resend code
@@ -1948,7 +1966,10 @@ export function RegisterForm() {
             {[
               { icon: 'mdi:check-circle-outline', text: 'Your email has been verified.' },
               { icon: 'mdi:clock-outline', text: 'Your account is awaiting admin approval.' },
-              { icon: 'mdi:email-outline', text: 'You will be notified once your account is approved.' },
+              {
+                icon: 'mdi:email-outline',
+                text: 'You will be notified once your account is approved.',
+              },
             ].map(({ icon, text }) => (
               <li key={text} className="flex items-start gap-2">
                 <Icon icon={icon} className="w-4 h-4 text-primary-500 mt-0.5 flex-shrink-0" />
@@ -1966,7 +1987,6 @@ export function RegisterForm() {
           </div>
         </div>
       )}
-
     </AuthCard>
   );
 }

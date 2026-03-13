@@ -12,7 +12,7 @@ import type { AuthSessionUser } from '../types/auth.types';
  */
 export function getInitials(surname: string, otherNames: string): string {
   const first = otherNames.trim().split(' ')[0]?.[0]?.toUpperCase() ?? '';
-  const last  = surname.trim()[0]?.toUpperCase() ?? '';
+  const last = surname.trim()[0]?.toUpperCase() ?? '';
   return `${first}${last}`;
 }
 
@@ -29,35 +29,35 @@ export function toAuthSessionUser(account: MockAuthAccount): AuthSessionUser {
 
   return {
     // ── System ──────────────────────────────────────────────────────────────
-    id:             account.id,
-    slug:           account.slug,
+    id: account.id,
+    slug: account.slug,
     avatarInitials: getInitials(account.surname, account.otherNames),
-    profileHref:    `/alumni/profiles/${account.slug}`,
-    createdAt:      account.createdAt,
-    role:           account.role,
+    profileHref: `/alumni/profiles/${account.slug}`,
+    createdAt: account.createdAt,
+    role: account.role,
 
     // ── Registration fields (always present) ────────────────────────────────
-    surname:        account.surname,
-    otherNames:     account.otherNames,
+    surname: account.surname,
+    otherNames: account.otherNames,
     fullName,
-    nameInSchool:   account.nameInSchool,
-    email:          account.email,
-    whatsappPhone:  account.whatsappPhone,
+    nameInSchool: account.nameInSchool,
+    email: account.email,
+    whatsappPhone: account.whatsappPhone,
     graduationYear: account.graduationYear,
 
     // ── Profile fields (optional, filled after registration) ────────────────
-    photo:              account.photo,
-    alternativePhone:   account.alternativePhone,
-    birthDate:          account.birthDate,
-    houseColor:         account.houseColor,
+    photo: account.photo,
+    alternativePhone: account.alternativePhone,
+    birthDate: account.birthDate,
+    houseColor: account.houseColor,
     isClassCoordinator: account.isClassCoordinator,
     residentialAddress: account.residentialAddress,
-    area:               account.area,
-    city:               account.city,
-    employmentStatus:   account.employmentStatus,
-    occupations:        account.occupations,
-    industrySectors:    account.industrySectors,
-    yearsOfExperience:  account.yearsOfExperience,
-    isVolunteer:        account.isVolunteer,
+    area: account.area,
+    city: account.city,
+    employmentStatus: account.employmentStatus,
+    occupations: account.occupations,
+    industrySectors: account.industrySectors,
+    yearsOfExperience: account.yearsOfExperience,
+    isVolunteer: account.isVolunteer,
   };
 }

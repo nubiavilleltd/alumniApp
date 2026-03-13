@@ -13,13 +13,14 @@ import {
   type AdminStat,
   type PendingMember,
 } from '../api/adminDashboardApi';
+import { SEO } from '@/shared/common/SEO';
 
 // ── Tone map ──────────────────────────────────────────────────────────────────
 const statToneClass: Record<AdminStat['tone'], string> = {
-  primary:   'from-primary-500 to-primary-700 text-white',
-  accent:    'from-accent-800 to-accent-950 text-white',
+  primary: 'from-primary-500 to-primary-700 text-white',
+  accent: 'from-accent-800 to-accent-950 text-white',
   secondary: 'from-secondary-500 to-secondary-700 text-white',
-  warning:   'from-amber-500 to-orange-600 text-white',
+  warning: 'from-amber-500 to-orange-600 text-white',
 };
 
 // ── Sub-components ────────────────────────────────────────────────────────────
@@ -86,7 +87,8 @@ function PendingMemberRow({
         <p className="mt-0.5 text-xs text-accent-500">
           Name in school: <span className="font-medium text-accent-700">{member.nameInSchool}</span>
           {' · '}Class of {member.graduationYear}
-          {' · '}{member.email}
+          {' · '}
+          {member.email}
         </p>
       </div>
       <div className="flex gap-2 flex-shrink-0">
@@ -139,10 +141,10 @@ function AdminSkeleton() {
 // ── Page ──────────────────────────────────────────────────────────────────────
 export function AdminDashboardPage() {
   const currentUser = useAuthStore((state) => state.user);
-  const [dashboard, setDashboard]   = useState<AdminDashboardData | null>(null);
-  const [pending, setPending]        = useState<PendingMember[]>([]);
-  const [isLoading, setIsLoading]   = useState(true);
-  const [error, setError]           = useState('');
+  const [dashboard, setDashboard] = useState<AdminDashboardData | null>(null);
+  const [pending, setPending] = useState<PendingMember[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     let cancelled = false;
@@ -162,11 +164,13 @@ export function AdminDashboardPage() {
       }
     }
     void load();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const handleApprove = (id: string) => setPending((prev) => prev.filter((m) => m.id !== id));
-  const handleReject  = (id: string) => setPending((prev) => prev.filter((m) => m.id !== id));
+  const handleReject = (id: string) => setPending((prev) => prev.filter((m) => m.id !== id));
 
   if (isLoading) return <AdminSkeleton />;
 
@@ -176,7 +180,10 @@ export function AdminDashboardPage() {
         <section className="section">
           <div className="container-custom">
             <div className="mx-auto max-w-2xl rounded-[2rem] border border-secondary-200 bg-white p-8 text-center shadow-sm">
-              <Icon icon="mdi:alert-circle-outline" className="h-10 w-10 text-secondary-500 mx-auto" />
+              <Icon
+                icon="mdi:alert-circle-outline"
+                className="h-10 w-10 text-secondary-500 mx-auto"
+              />
               <h1 className="mt-4 text-2xl font-bold text-accent-900">Dashboard unavailable</h1>
               <p className="mt-2 text-sm text-accent-600">{error || 'Something went wrong.'}</p>
               <button
@@ -194,10 +201,10 @@ export function AdminDashboardPage() {
   }
 
   return (
-    <Layout title="Admin Dashboard" description="Admin dashboard">
+      <>
+    <SEO title="Admin Dashboard" description="Admin dashboard" />
       <section className="section bg-[radial-gradient(circle_at_top_left,_rgba(59,130,246,0.1),_transparent_30%),linear-gradient(180deg,_#f8fafc,_#ffffff)]">
         <div className="container-custom space-y-6">
-
           {/* ── Banner ────────────────────────────────────────────────────── */}
           <section className="relative overflow-hidden rounded-[2rem] bg-[linear-gradient(135deg,_#0f172a_0%,_#1e293b_60%,_#1d4ed8_100%)] p-6 text-white shadow-2xl md:p-8">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.08),_transparent_30%)]" />
@@ -240,7 +247,6 @@ export function AdminDashboardPage() {
 
           {/* ── Main grid ─────────────────────────────────────────────────── */}
           <section className="grid gap-6 xl:grid-cols-[1.3fr_0.7fr]">
-
             {/* Left: pending approvals */}
             <div className="space-y-6">
               <SectionCard
@@ -252,7 +258,9 @@ export function AdminDashboardPage() {
                       <Icon icon="mdi:check-all" className="w-6 h-6 text-primary-500" />
                     </div>
                     <p className="font-medium text-accent-800">All caught up!</p>
-                    <p className="mt-1 text-sm text-accent-500">No registrations awaiting approval.</p>
+                    <p className="mt-1 text-sm text-accent-500">
+                      No registrations awaiting approval.
+                    </p>
                   </div>
                 ) : (
                   <div className="space-y-3">
@@ -272,7 +280,10 @@ export function AdminDashboardPage() {
               <SectionCard
                 title="Recent Members"
                 action={
-                  <AppLink href="/admin/members" className="text-sm font-semibold text-primary-600 hover:text-primary-700">
+                  <AppLink
+                    href="/admin/members"
+                    className="text-sm font-semibold text-primary-600 hover:text-primary-700"
+                  >
                     View all
                   </AppLink>
                 }
@@ -284,7 +295,11 @@ export function AdminDashboardPage() {
                       className="flex items-center gap-3 rounded-2xl border border-accent-100 px-4 py-3"
                     >
                       <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-accent-100 text-sm font-semibold text-accent-700">
-                        {m.name.split(' ').slice(0, 2).map((p) => p[0]).join('')}
+                        {m.name
+                          .split(' ')
+                          .slice(0, 2)
+                          .map((p) => p[0])
+                          .join('')}
                       </div>
                       <div className="min-w-0 flex-1">
                         <p className="font-medium text-accent-900 truncate">{m.name}</p>
@@ -302,7 +317,10 @@ export function AdminDashboardPage() {
               <SectionCard
                 title="Upcoming Events"
                 action={
-                  <AppLink href="/events" className="text-sm font-semibold text-primary-600 hover:text-primary-700">
+                  <AppLink
+                    href="/events"
+                    className="text-sm font-semibold text-primary-600 hover:text-primary-700"
+                  >
                     Manage
                   </AppLink>
                 }
@@ -327,11 +345,23 @@ export function AdminDashboardPage() {
               <SectionCard title="Quick Actions">
                 <div className="space-y-2">
                   {[
-                    { label: 'Manage Members',    href: '/admin/members',          icon: 'mdi:account-group-outline' },
-                    { label: 'Create Event',      href: '/events/create',          icon: 'mdi:calendar-plus-outline' },
-                    { label: 'Post Announcement', href: '/admin/announcements',    icon: 'mdi:bullhorn-outline' },
-                    { label: 'View Marketplace',  href: '/marketplace',            icon: 'mdi:store-outline' },
-                    { label: 'Site Settings',     href: '/admin/settings',         icon: 'mdi:cog-outline' },
+                    {
+                      label: 'Manage Members',
+                      href: '/admin/members',
+                      icon: 'mdi:account-group-outline',
+                    },
+                    {
+                      label: 'Create Event',
+                      href: '/events/create',
+                      icon: 'mdi:calendar-plus-outline',
+                    },
+                    {
+                      label: 'Post Announcement',
+                      href: '/admin/announcements',
+                      icon: 'mdi:bullhorn-outline',
+                    },
+                    { label: 'View Marketplace', href: '/marketplace', icon: 'mdi:store-outline' },
+                    { label: 'Site Settings', href: '/admin/settings', icon: 'mdi:cog-outline' },
                   ].map((link) => (
                     <AppLink
                       href={link.href}
@@ -347,10 +377,9 @@ export function AdminDashboardPage() {
                 </div>
               </SectionCard>
             </div>
-
           </section>
         </div>
       </section>
-    </Layout>
+    </>
   );
 }

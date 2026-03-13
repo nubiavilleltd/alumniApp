@@ -14,7 +14,7 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const user     = useAuthStore((state) => state.user);
+  const user = useAuthStore((state) => state.user);
   const location = useLocation();
 
   if (!user) {

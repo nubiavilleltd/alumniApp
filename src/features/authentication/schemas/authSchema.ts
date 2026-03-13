@@ -77,10 +77,6 @@
 //     message: 'Passwords do not match',
 //   });
 
-
-
-
-
 import { z } from 'zod';
 import { phoneCountryOptions, validateNationalPhoneNumber } from '../constants/phoneCountries';
 
@@ -99,8 +95,8 @@ const passwordSchema = z
   .regex(/[^A-Za-z0-9]/, 'Password must include at least one special character');
 
 export const loginSchema = z.object({
-  email:      z.string().trim().email('Please enter a valid email address'),
-  password:   z.string().min(1, 'Password is required'),
+  email: z.string().trim().email('Please enter a valid email address'),
+  password: z.string().min(1, 'Password is required'),
   rememberMe: z.boolean().default(false),
 });
 
@@ -143,7 +139,7 @@ export const registerDetailsSchema = z
       .min(1966, 'FGGC Owerri was established in 1966')
       .max(currentYear, `Graduation year cannot be later than ${currentYear}`),
 
-    password:        passwordSchema,
+    password: passwordSchema,
     confirmPassword: z.string().min(1, 'Please confirm your password'),
   })
   .superRefine((data, ctx) => {
@@ -166,7 +162,7 @@ export const emailVerificationSchema = z.object({
 
 export const resetPasswordSchema = z
   .object({
-    password:        passwordSchema,
+    password: passwordSchema,
     confirmPassword: z.string().min(1, 'Please confirm your password'),
   })
   .refine((data) => data.password === data.confirmPassword, {

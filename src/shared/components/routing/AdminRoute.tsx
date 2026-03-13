@@ -14,7 +14,7 @@ interface AdminRouteProps {
 }
 
 export function AdminRoute({ children }: AdminRouteProps) {
-  const user     = useAuthStore((state) => state.user);
+  const user = useAuthStore((state) => state.user);
   const location = useLocation();
 
   if (!user) {

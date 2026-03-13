@@ -30,12 +30,6 @@
 //   },
 // ] as const;
 
-
-
-
-
-
-
 import type { AuthSessionUser } from '../types/auth.types';
 
 export interface MockAuthAccount {

@@ -14,7 +14,6 @@ export function AuthCard({ title, titleAccent, subtitle, children }: AuthCardPro
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-blue-50 flex flex-col items-center justify-center px-4 py-12">
-
       {/* Logo + site name */}
       <AppLink href="/" className="flex items-center gap-3 mb-8 group">
         {config.site.logo ? (
@@ -32,18 +31,12 @@ export function AuthCard({ title, titleAccent, subtitle, children }: AuthCardPro
 
       {/* Card */}
       <div className="w-full max-w-md bg-white rounded-3xl shadow-xl border border-gray-100 p-8">
-
         {/* Heading */}
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-gray-900">
-            {title}{' '}
-            {titleAccent && (
-              <span className="text-primary-500 italic">{titleAccent}</span>
-            )}
+            {title} {titleAccent && <span className="text-primary-500 italic">{titleAccent}</span>}
           </h1>
-          {subtitle && (
-            <p className="mt-2 text-sm text-gray-500 leading-relaxed">{subtitle}</p>
-          )}
+          {subtitle && <p className="mt-2 text-sm text-gray-500 leading-relaxed">{subtitle}</p>}
         </div>
 
         {children}

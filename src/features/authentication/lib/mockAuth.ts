@@ -103,12 +103,6 @@
 // //   };
 // // }
 
-
-
-
-
-
-
 // import { defaultMockAccounts, type MockAuthAccount } from '../constants/mockAccounts';
 // import type { AuthSessionUser } from '../types/auth.types';
 
@@ -219,17 +213,6 @@
 //   };
 // }
 
-
-
-
-
-
-
-
-
-
-
-
 import { defaultMockAccounts, type MockAuthAccount } from '../constants/mockAccounts';
 export { toAuthSessionUser } from '../utils/authUtils';
 
@@ -270,8 +253,7 @@ export function authenticateMockAccount(email: string, password: string) {
   const normalizedEmail = email.trim().toLowerCase();
   return readStoredAccounts().find(
     (account) =>
-      account.email.trim().toLowerCase() === normalizedEmail &&
-      account.password === password,
+      account.email.trim().toLowerCase() === normalizedEmail && account.password === password,
   );
 }
 

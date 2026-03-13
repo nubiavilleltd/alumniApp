@@ -169,10 +169,6 @@
 // //   );
 // // }
 
-
-
-
-
 // import { zodResolver } from '@hookform/resolvers/zod';
 // import { Icon } from '@iconify/react';
 // import { useState } from 'react';
@@ -296,17 +292,6 @@
 //   );
 // }
 
-
-
-
-
-
-
-
-
-
-
-
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Icon } from '@iconify/react';
 import { useState } from 'react';
@@ -321,8 +306,8 @@ import type { LoginFormValues } from '../types/auth.types';
 import { AuthCard } from './AuthCard';
 
 export function LoginForm() {
-  const navigate   = useNavigate();
-  const location   = useLocation();
+  const navigate = useNavigate();
+  const location = useLocation();
   const setSession = useAuthStore((state) => state.setSession);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -360,7 +345,6 @@ export function LoginForm() {
       subtitle="Sign in to your alumni account to continue."
     >
       <form className="space-y-4" onSubmit={onSubmit}>
-
         <FormInput
           label="Email Address"
           id="email"
@@ -374,8 +358,10 @@ export function LoginForm() {
         <div>
           <div className="flex items-center justify-between mb-1.5">
             <label className="block text-sm font-medium text-gray-700">Password</label>
-            <AppLink href="/auth/forgot-password"
-              className="text-xs font-medium text-primary-500 hover:text-primary-600">
+            <AppLink
+              href="/auth/forgot-password"
+              className="text-xs font-medium text-primary-500 hover:text-primary-600"
+            >
               Forgot password?
             </AppLink>
           </div>
@@ -387,29 +373,46 @@ export function LoginForm() {
               className={`input pr-10 ${errors.password ? 'border-red-400' : ''}`}
               {...register('password')}
             />
-            <button type="button" onClick={() => setShowPassword((v) => !v)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
-              <Icon icon={showPassword ? 'mdi:eye-off-outline' : 'mdi:eye-outline'} className="w-4 h-4" />
+            <button
+              type="button"
+              onClick={() => setShowPassword((v) => !v)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            >
+              <Icon
+                icon={showPassword ? 'mdi:eye-off-outline' : 'mdi:eye-outline'}
+                className="w-4 h-4"
+              />
             </button>
           </div>
-          {errors.password && <p className="mt-1.5 text-xs text-red-500">{errors.password.message}</p>}
+          {errors.password && (
+            <p className="mt-1.5 text-xs text-red-500">{errors.password.message}</p>
+          )}
         </div>
 
         {/* Remember me */}
         <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
-          <input type="checkbox"
+          <input
+            type="checkbox"
             className="w-4 h-4 rounded border-gray-300 text-primary-500 focus:ring-primary-400"
             {...register('rememberMe')}
           />
           Remember me
         </label>
 
-        <button type="submit" disabled={isSubmitting}
-          className="btn btn-primary w-full flex items-center justify-center gap-2">
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="btn btn-primary w-full flex items-center justify-center gap-2"
+        >
           {isSubmitting ? (
-            <><Icon icon="mdi:loading" className="w-4 h-4 animate-spin" />Signing in...</>
+            <>
+              <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" />
+              Signing in...
+            </>
           ) : (
-            <>Login <Icon icon="mdi:arrow-right" className="w-4 h-4" /></>
+            <>
+              Login <Icon icon="mdi:arrow-right" className="w-4 h-4" />
+            </>
           )}
         </button>
 
@@ -424,12 +427,13 @@ export function LoginForm() {
 
         <p className="text-center text-sm text-gray-500">
           Don't have an account?{' '}
-          <AppLink href="/auth/register"
-            className="font-semibold text-primary-500 hover:text-primary-600">
+          <AppLink
+            href="/auth/register"
+            className="font-semibold text-primary-500 hover:text-primary-600"
+          >
             Sign up
           </AppLink>
         </p>
-
       </form>
     </AuthCard>
   );
