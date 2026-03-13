@@ -180,16 +180,14 @@ function MyBusinessCard({
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function MyBusinessPage() {
-  const currentUser                     = useAuthStore((state) => state.user);
+  const currentUser = useAuthStore((state) => state.user);
   const [showPostModal, setShowPostModal] = useState(false);
-  const [editBusiness, setEditBusiness]   = useState<Business | null>(null);
+  const [editBusiness, setEditBusiness] = useState<Business | null>(null);
 
   const { data: allBusinesses = [], isLoading } = useMarketplace();
 
   // Filter to only current user's businesses
-  const myBusinesses = allBusinesses.filter(
-    (b) => b.slug_owner === currentUser?.slug,
-  );
+  const myBusinesses = allBusinesses.filter((b) => b.slug_owner === currentUser?.slug);
 
   const handleEdit = (business: Business) => {
     setEditBusiness(business);
@@ -207,7 +205,7 @@ export default function MyBusinessPage() {
   };
 
   const breadcrumbItems = [
-    { label: 'Home',        href: '/' },
+    { label: 'Home', href: '/' },
     { label: 'Marketplace', href: '/marketplace' },
     { label: 'My Business' },
   ];

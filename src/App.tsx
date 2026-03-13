@@ -1,157 +1,270 @@
+// import { Navigate, Route, Routes } from 'react-router-dom';
+// import { RootLayout } from './shared/components/layout/RootLayout';
+// import { AlumniDirectoryPage } from './features/alumni/pages/AlumniDirectoryPage';
+// import { AlumniProfilePage } from './features/alumni/pages/AlumniProfilePage';
+// import { AlumniRedirectPage } from './features/alumni/pages/AlumniRedirectPage';
+// import { AuthPage } from './features/authentication/pages/AuthPage';
+// import { UserDashboardPage } from './features/user/pages/UserDashboardPage';
+// import { EventDetailPage } from './features/events/pages/EventDetailPage';
+// import { EventsPage } from './features/events/pages/EventsPage';
+// import { AboutPage } from './pages/about/AboutPage';
+// import { NotFoundPage } from './pages/errors/NotFoundPage';
+// import { HomePage } from './pages/home/HomePage';
+// import { PrivacyPage } from './pages/legal/PrivacyPage';
+// import { TermsPage } from './pages/legal/TermsPage';
+// import ProjectsPage from './features/projects/pages/ProjectsPage';
+// import LeadershipPage from './features/leadership/pages/LeadershipPage';
+// import MarketPlacePage from './features/marketplace/pages/MarketPlacePage';
+// import { ErrorBoundary } from '@/shared/components/ui/ErrorBoundary';
+// import UserProfilePage from './features/user/pages/UserProfilePage';
+// import MyBusinessPage from './features/marketplace/pages/MyBusinessPage';
+
+// export default function App() {
+//   return (
+//     <ErrorBoundary>
+//       <Routes>
+//         <Route element={<RootLayout />}>
+//           <Route
+//             path="/"
+//             element={
+//               <ErrorBoundary>
+//                 <HomePage />
+//               </ErrorBoundary>
+//             }
+//           />
+//           <Route
+//             path="/about"
+//             element={
+//               <ErrorBoundary>
+//                 <AboutPage />
+//               </ErrorBoundary>
+//             }
+//           />
+//           <Route
+//             path="/privacy"
+//             element={
+//               <ErrorBoundary>
+//                 <PrivacyPage />
+//               </ErrorBoundary>
+//             }
+//           />
+//           <Route
+//             path="/terms"
+//             element={
+//               <ErrorBoundary>
+//                 <TermsPage />
+//               </ErrorBoundary>
+//             }
+//           />
+//           <Route
+//             path="/projects"
+//             element={
+//               <ErrorBoundary>
+//                 <ProjectsPage />
+//               </ErrorBoundary>
+//             }
+//           />
+//           <Route
+//             path="/leadership"
+//             element={
+//               <ErrorBoundary>
+//                 <LeadershipPage />
+//               </ErrorBoundary>
+//             }
+//           />
+//           <Route
+//             path="/marketplace"
+//             element={
+//               <ErrorBoundary>
+//                 <MarketPlacePage />
+//               </ErrorBoundary>
+//             }
+//           />
+//           <Route
+//             path="/marketplace/my-business"
+//             element={
+//               <ErrorBoundary>
+//                 <MyBusinessPage />
+//               </ErrorBoundary>
+//             }
+//           />
+
+//           <Route path="/alumni" element={<AlumniRedirectPage />} />
+//           <Route
+//             path="/alumni/profiles"
+//             element={
+//               <ErrorBoundary>
+//                 <AlumniDirectoryPage />
+//               </ErrorBoundary>
+//             }
+//           />
+//           <Route
+//             path="/alumni/profiles/:slug"
+//             element={
+//               <ErrorBoundary>
+//                 <AlumniProfilePage />
+//               </ErrorBoundary>
+//             }
+//           />
+
+//           <Route
+//             path="/events"
+//             element={
+//               <ErrorBoundary>
+//                 <EventsPage />
+//               </ErrorBoundary>
+//             }
+//           />
+//           <Route
+//             path="/events/:slug"
+//             element={
+//               <ErrorBoundary>
+//                 <EventDetailPage />
+//               </ErrorBoundary>
+//             }
+//           />
+
+//           {/* Auth pages — no boundary needed, static forms */}
+//           <Route path="/auth" element={<Navigate to="/auth/login" replace />} />
+//           <Route path="/auth/login" element={<AuthPage mode="login" />} />
+//           <Route path="/auth/register" element={<AuthPage mode="register" />} />
+//           <Route path="/auth/forgot-password" element={<AuthPage mode="forgot-password" />} />
+//           <Route path="/auth/reset-password" element={<AuthPage mode="reset-password" />} />
+
+//           {/* Users */}
+
+//           <Route
+//             path="/user/profile"
+//             element={
+//               <ErrorBoundary>
+//                 <UserProfilePage />
+//               </ErrorBoundary>
+//             }
+//           />
+
+//           <Route
+//             path="/dashboard"
+//             element={
+//               <ErrorBoundary>
+//                 <UserDashboardPage />
+//               </ErrorBoundary>
+//             }
+//           />
+//           <Route path="/home" element={<Navigate to="/" replace />} />
+//           <Route path="*" element={<NotFoundPage />} />
+//         </Route>
+//       </Routes>
+//     </ErrorBoundary>
+//   );
+// }
+
+
+
+
+
+
+// src/App.tsx
+
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { RootLayout } from './shared/components/layout/RootLayout';
-import { AlumniDirectoryPage } from './features/alumni/pages/AlumniDirectoryPage';
-import { AlumniProfilePage } from './features/alumni/pages/AlumniProfilePage';
-import { AlumniRedirectPage } from './features/alumni/pages/AlumniRedirectPage';
-import { AuthPage } from './features/authentication/pages/AuthPage';
-import { UserDashboardPage } from './features/dashboard/pages/UserDashboardPage';
-import { EventDetailPage } from './features/events/pages/EventDetailPage';
-import { EventsPage } from './features/events/pages/EventsPage';
-import { AboutPage } from './pages/about/AboutPage';
-import { NotFoundPage } from './pages/errors/NotFoundPage';
-import { HomePage } from './pages/home/HomePage';
-import { PrivacyPage } from './pages/legal/PrivacyPage';
-import { TermsPage } from './pages/legal/TermsPage';
-import ProjectsPage from './features/projects/pages/ProjectsPage';
-import LeadershipPage from './features/leadership/pages/LeadershipPage';
-import MarketPlacePage from './features/marketplace/pages/MarketPlacePage';
-import { ErrorBoundary } from '@/shared/components/ui/ErrorBoundary';
-import UserProfilePage from './features/user/pages/UserProfilePage';
-import MyBusinessPage from './features/marketplace/pages/MyBusinessPage';
+import { ErrorBoundary } from './shared/components/ui/ErrorBoundary';
+import { ProtectedRoute } from './shared/components/routing/ProtectedRoute';
+import { AdminRoute } from './shared/components/routing/AdminRoute';
+
+// ── Public pages ──────────────────────────────────────────────────────────────
+import { HomePage }             from './pages/home/HomePage';
+import { AboutPage }            from './pages/about/AboutPage';
+import { PrivacyPage }          from './pages/legal/PrivacyPage';
+import { TermsPage }            from './pages/legal/TermsPage';
+import { NotFoundPage }         from './pages/errors/NotFoundPage';
+import ProjectsPage             from './features/projects/pages/ProjectsPage';
+import LeadershipPage           from './features/leadership/pages/LeadershipPage';
+
+// ── Auth pages (no guard — public) ───────────────────────────────────────────
+import { AuthPage }             from './features/authentication/pages/AuthPage';
+
+// ── Alumni (public) ───────────────────────────────────────────────────────────
+import { AlumniRedirectPage }   from './features/alumni/pages/AlumniRedirectPage';
+import { AlumniDirectoryPage }  from './features/alumni/pages/AlumniDirectoryPage';
+import { AlumniProfilePage }    from './features/alumni/pages/AlumniProfilePage';
+
+// ── Events (public) ───────────────────────────────────────────────────────────
+import { EventsPage }           from './features/events/pages/EventsPage';
+import { EventDetailPage }      from './features/events/pages/EventDetailPage';
+
+// ── Marketplace (public browse, protected actions) ────────────────────────────
+import MarketPlacePage          from './features/marketplace/pages/MarketPlacePage';
+import MyBusinessPage       from './features/marketplace/pages/MyBusinessPage';
+
+// ── User (protected) ─────────────────────────────────────────────────────────
+import { UserDashboardPage }    from './features/user/pages/UserDashboardPage';
+import UserProfilePage      from './features/user/pages/UserProfilePage';
+
+// ── Admin (admin only) ────────────────────────────────────────────────────────
+import { AdminDashboardPage }   from './features/admin/pages/AdminDashboardPage';
 
 export default function App() {
   return (
+    // App-level safety net — catches anything not caught by a page boundary below
     <ErrorBoundary>
       <Routes>
         <Route element={<RootLayout />}>
-          <Route
-            path="/"
-            element={
-              <ErrorBoundary>
-                <HomePage />
-              </ErrorBoundary>
-            }
-          />
-          <Route
-            path="/about"
-            element={
-              <ErrorBoundary>
-                <AboutPage />
-              </ErrorBoundary>
-            }
-          />
-          <Route
-            path="/privacy"
-            element={
-              <ErrorBoundary>
-                <PrivacyPage />
-              </ErrorBoundary>
-            }
-          />
-          <Route
-            path="/terms"
-            element={
-              <ErrorBoundary>
-                <TermsPage />
-              </ErrorBoundary>
-            }
-          />
-          <Route
-            path="/projects"
-            element={
-              <ErrorBoundary>
-                <ProjectsPage />
-              </ErrorBoundary>
-            }
-          />
-          <Route
-            path="/leadership"
-            element={
-              <ErrorBoundary>
-                <LeadershipPage />
-              </ErrorBoundary>
-            }
-          />
-          <Route
-            path="/marketplace"
-            element={
-              <ErrorBoundary>
-                <MarketPlacePage />
-              </ErrorBoundary>
-            }
-          />
-          <Route
-            path="/marketplace/my-business"
-            element={
-              <ErrorBoundary>
-                <MyBusinessPage />
-              </ErrorBoundary>
-            }
-          />
 
-          <Route path="/alumni" element={<AlumniRedirectPage />} />
-          <Route
-            path="/alumni/profiles"
-            element={
-              <ErrorBoundary>
-                <AlumniDirectoryPage />
-              </ErrorBoundary>
-            }
-          />
-          <Route
-            path="/alumni/profiles/:slug"
-            element={
-              <ErrorBoundary>
-                <AlumniProfilePage />
-              </ErrorBoundary>
-            }
-          />
+          {/* ── Public ─────────────────────────────────────────────────── */}
+          <Route path="/"           element={<ErrorBoundary><HomePage /></ErrorBoundary>} />
+          <Route path="/about"      element={<ErrorBoundary><AboutPage /></ErrorBoundary>} />
+          <Route path="/privacy"    element={<ErrorBoundary><PrivacyPage /></ErrorBoundary>} />
+          <Route path="/terms"      element={<ErrorBoundary><TermsPage /></ErrorBoundary>} />
+          <Route path="/projects"   element={<ErrorBoundary><ProjectsPage /></ErrorBoundary>} />
+          <Route path="/leadership" element={<ErrorBoundary><LeadershipPage /></ErrorBoundary>} />
 
-          <Route
-            path="/events"
-            element={
-              <ErrorBoundary>
-                <EventsPage />
-              </ErrorBoundary>
-            }
-          />
-          <Route
-            path="/events/:slug"
-            element={
-              <ErrorBoundary>
-                <EventDetailPage />
-              </ErrorBoundary>
-            }
-          />
+          {/* ── Alumni ─────────────────────────────────────────────────── */}
+          <Route path="/alumni"                  element={<AlumniRedirectPage />} />
+          <Route path="/alumni/profiles"         element={<ErrorBoundary><AlumniDirectoryPage /></ErrorBoundary>} />
+          <Route path="/alumni/profiles/:slug"   element={<ErrorBoundary><AlumniProfilePage /></ErrorBoundary>} />
 
-          {/* Auth pages — no boundary needed, static forms */}
-          <Route path="/auth" element={<Navigate to="/auth/login" replace />} />
-          <Route path="/auth/login" element={<AuthPage mode="login" />} />
-          <Route path="/auth/register" element={<AuthPage mode="register" />} />
-          <Route path="/auth/forgot-password" element={<AuthPage mode="forgot-password" />} />
-          <Route path="/auth/reset-password" element={<AuthPage mode="reset-password" />} />
+          {/* ── Events ─────────────────────────────────────────────────── */}
+          <Route path="/events"        element={<ErrorBoundary><EventsPage /></ErrorBoundary>} />
+          <Route path="/events/:slug"  element={<ErrorBoundary><EventDetailPage /></ErrorBoundary>} />
 
-          {/* Users */}
+          {/* ── Marketplace ────────────────────────────────────────────── */}
+          <Route path="/marketplace"   element={<ErrorBoundary><MarketPlacePage /></ErrorBoundary>} />
+          <Route path="/marketplace/my-business" element={
+            <ProtectedRoute>
+              <ErrorBoundary><MyBusinessPage /></ErrorBoundary>
+            </ProtectedRoute>
+          } />
 
-          <Route
-            path="/user/profile"
-            element={
-              <ErrorBoundary>
-                <UserProfilePage />
-              </ErrorBoundary>
-            }
-          />
+          {/* ── Auth ───────────────────────────────────────────────────── */}
+          <Route path="/auth"                  element={<Navigate to="/auth/login" replace />} />
+          <Route path="/auth/login"            element={<AuthPage mode="login" />} />
+          <Route path="/auth/register"         element={<AuthPage mode="register" />} />
+          <Route path="/auth/forgot-password"  element={<AuthPage mode="forgot-password" />} />
+          <Route path="/auth/reset-password"   element={<AuthPage mode="reset-password" />} />
 
-          <Route
-            path="/dashboard"
-            element={
-              <ErrorBoundary>
-                <UserDashboardPage />
-              </ErrorBoundary>
-            }
-          />
+          {/* ── User (protected) ───────────────────────────────────────── */}
+          <Route path="/dashboard" element={
+            <ProtectedRoute>
+              <ErrorBoundary><UserDashboardPage /></ErrorBoundary>
+            </ProtectedRoute>
+          } />
+          <Route path="/user/profile" element={
+            <ProtectedRoute>
+              <ErrorBoundary><UserProfilePage /></ErrorBoundary>
+            </ProtectedRoute>
+          } />
+
+          {/* ── Admin (admin only) ─────────────────────────────────────── */}
+          <Route path="/admin/dashboard" element={
+            <AdminRoute>
+              <ErrorBoundary><AdminDashboardPage /></ErrorBoundary>
+            </AdminRoute>
+          } />
+
+          {/* ── Redirects & fallback ───────────────────────────────────── */}
           <Route path="/home" element={<Navigate to="/" replace />} />
-          <Route path="*" element={<NotFoundPage />} />
+          <Route path="*"     element={<NotFoundPage />} />
+
         </Route>
       </Routes>
     </ErrorBoundary>

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Layout } from '@/shared/components/layout/Layout';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
-import { dashboardApi, type DashboardData, type DashboardStat } from '../api/dashboardApi';
+import { dashboardApi, type DashboardData, type DashboardStat } from '../../dashboard/api/dashboardApi';
 
 const statToneClass: Record<DashboardStat['tone'], string> = {
   primary: 'from-primary-500 to-primary-700 text-white',
@@ -110,7 +110,7 @@ export function UserDashboardPage() {
       setError('');
 
       try {
-        const response = await dashboardApi.getDashboard(currentUser.email);
+        const response = await dashboardApi.getDashboard(currentUser?.email);
 
         if (!isCancelled) {
           setDashboard(response);
