@@ -1,69 +1,32 @@
 import { Icon } from '@iconify/react';
 import { useState, useMemo } from 'react';
-import { AppLink } from '@/shared/components/ui/AppLink';
 import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
-import { businesses, categories } from '@/data/site-data';
-
 import { PostBusinessModal } from '../components/PostYourBusinessModal';
+import { SearchInput } from '@/shared/components/ui/input/SearchInput';
+import { FilterDropdown } from '@/shared/components/ui/FilterDropdown';
+import EmptyState from '@/shared/components/ui/EmptyState';
+import {
+  useMarketplace,
+  useMarketplaceCategories,
+} from '@/features/marketplace/hooks/useMarketplace';
 
-// ─── Reusable Search Input ────────────────────────────────────────────────────
-interface SearchInputProps {
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
-  label?: string;
-}
-
-function SearchInput({ value, onChange, placeholder = 'Search for service, product, or business', label }: SearchInputProps) {
+// ─── Skeleton ─────────────────────────────────────────────────────────────────
+function BusinessCardSkeleton() {
   return (
-    <div className="flex-1">
-      {label && <label className="block text-xs font-medium text-gray-600 mb-1">{label}</label>}
-      <div className="flex items-center bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-        <div className="pl-3 text-gray-400">
-          <Icon icon="mdi:magnify" className="w-4 h-4" />
+    <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 animate-pulse flex flex-col">
+      <div className="h-44 w-full bg-gray-200" />
+      <div className="p-3 flex flex-col gap-2">
+        <div className="h-4 bg-gray-200 rounded w-3/4" />
+        <div className="h-3 bg-gray-200 rounded w-full" />
+        <div className="h-3 bg-gray-200 rounded w-5/6" />
+        <div className="h-3 bg-gray-200 rounded w-full" />
+        <div className="flex flex-col gap-1.5 mt-1">
+          <div className="h-3 bg-gray-200 rounded w-2/3" />
+          <div className="h-3 bg-gray-200 rounded w-1/2" />
+          <div className="h-3 bg-gray-200 rounded w-1/2" />
         </div>
-        <input
-          type="text"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={placeholder}
-          className="flex-1 px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 outline-none bg-transparent"
-        />
-        {/* <button
-          type="button"
-          className="bg-primary-500 hover:bg-primary-600 text-white text-sm font-medium px-5 py-2.5 transition-colors"
-        >
-          Search
-        </button> */}
-      </div>
-    </div>
-  );
-}
-
-// ─── Reusable Category Dropdown ───────────────────────────────────────────────
-interface CategoryDropdownProps {
-  value: string;
-  onChange: (value: string) => void;
-  label?: string;
-}
-
-function CategoryDropdown({ value, onChange, label }: CategoryDropdownProps) {
-  return (
-    <div className="w-full sm:w-52">
-      {label && <label className="block text-xs font-medium text-gray-600 mb-1">{label}</label>}
-      <div className="relative">
-        <select
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          className="w-full appearance-none bg-white border border-gray-200 rounded-lg px-4 py-2.5 pr-9 text-sm text-gray-700 shadow-sm outline-none focus:border-primary-400 cursor-pointer"
-        >
-          <option value="">Select Category</option>
-          {categories.map((cat) => (
-            <option key={cat} value={cat}>{cat}</option>
-          ))}
-        </select>
-        <Icon icon="mdi:chevron-down" className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+        <div className="h-7 bg-gray-200 rounded w-full mt-1" />
       </div>
     </div>
   );
@@ -106,8 +69,6 @@ function BusinessCard({ business }: { business: Business }) {
           className="w-full h-full object-cover transition-all duration-300"
           loading="lazy"
         />
-
-        {/* Carousel arrows */}
         {business.images.length > 1 && (
           <>
             <button
@@ -124,8 +85,6 @@ function BusinessCard({ business }: { business: Business }) {
             </button>
           </>
         )}
-
-        {/* Category tag */}
         <span className="absolute top-2 left-2 bg-primary-500 text-white text-[10px] font-semibold px-2 py-0.5 rounded">
           {business.category}
         </span>
@@ -134,8 +93,9 @@ function BusinessCard({ business }: { business: Business }) {
       {/* Info */}
       <div className="p-3 flex flex-col gap-1.5 flex-1">
         <h3 className="text-gray-900 font-bold text-sm leading-tight">{business.name}</h3>
-        <p className="text-gray-500 text-[11px] leading-relaxed line-clamp-3">{business.description}</p>
-
+        <p className="text-gray-500 text-[11px] leading-relaxed line-clamp-3">
+          {business.description}
+        </p>
         <div className="flex flex-col gap-1 mt-1">
           <span className="flex items-center gap-1 text-gray-400 text-[11px]">
             <Icon icon="mdi:map-marker-outline" className="w-3 h-3 flex-shrink-0" />
@@ -150,7 +110,6 @@ function BusinessCard({ business }: { business: Business }) {
             {business.website}
           </span>
         </div>
-
         <button
           type="button"
           className="mt-2 w-full bg-primary-500 hover:bg-primary-600 text-white text-[11px] font-medium py-1.5 rounded transition-colors"
@@ -171,14 +130,20 @@ export default function MarketPlacePage() {
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
   const [showPostModal, setShowPostModal] = useState(false);
 
+  // ── Hooks ──────────────────────────────────────────────────────────────────
+  const { data: businesses = [], isLoading } = useMarketplace();
+  const { data: categoriesList = [] } = useMarketplaceCategories();
+
+  // ── Client-side filtering ──────────────────────────────────────────────────
   const filtered = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
     return businesses.filter((b) => {
-      const matchesSearch = !q || b.name.toLowerCase().includes(q) || b.description.toLowerCase().includes(q);
+      const matchesSearch =
+        !q || b.name.toLowerCase().includes(q) || b.description.toLowerCase().includes(q);
       const matchesCategory = !category || b.category === category;
       return matchesSearch && matchesCategory;
     });
-  }, [searchTerm, category]);
+  }, [businesses, searchTerm, category]);
 
   const visible = filtered.slice(0, visibleCount);
   const hasMore = visibleCount < filtered.length;
@@ -188,26 +153,27 @@ export default function MarketPlacePage() {
     setVisibleCount(ITEMS_PER_PAGE);
   };
 
-  const breadcrumbItems = [
-    { label: 'Home', href: '/' },
-    { label: 'Marketplace' },
-  ];
+  const breadcrumbItems = [{ label: 'Home', href: '/' }, { label: 'Marketplace' }];
 
   return (
     <>
-      <SEO title="Marketplace" description="Discover and support businesses owned by Our Sisters." />
+      <SEO
+        title="Marketplace"
+        description="Discover and support businesses owned by Our Sisters."
+      />
       <Breadcrumbs items={breadcrumbItems} />
 
       <section className="section">
         <div className="container-custom">
-
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div className="text-center flex-1">
               <h1 className="text-3xl md:text-4xl font-bold italic mb-1">
                 Market <span className="text-primary-500">Place</span>
               </h1>
-              <p className="text-gray-500 text-sm">Discover and support businesses owned by Our Sisters.</p>
+              <p className="text-gray-500 text-sm">
+                Discover and support businesses owned by Our Sisters.
+              </p>
             </div>
             <button
               type="button"
@@ -224,31 +190,43 @@ export default function MarketPlacePage() {
             <SearchInput
               label="Search"
               value={searchTerm}
-              onChange={handleFilterChange(setSearchTerm)}
+              onValueChange={handleFilterChange(setSearchTerm)}
+              placeholder="Search for service, product, or business"
+              className="flex-1"
             />
-            <CategoryDropdown
+            <FilterDropdown
               label="Select Category"
               value={category}
               onChange={handleFilterChange(setCategory)}
+              options={categoriesList.map((cat) => ({ label: cat, value: cat }))}
             />
           </div>
 
           {/* Grid */}
-          {visible.length > 0 ? (
+          {isLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
+              {Array.from({ length: ITEMS_PER_PAGE }).map((_, i) => (
+                <BusinessCardSkeleton key={i} />
+              ))}
+            </div>
+          ) : visible.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
               {visible.map((business) => (
                 <BusinessCard key={business.slug} business={business} />
               ))}
             </div>
           ) : (
-            <div className="text-center py-20 text-gray-400">
-              <Icon icon="mdi:store-search" className="w-12 h-12 mx-auto mb-3 opacity-40" />
-              <p className="text-sm">No businesses found matching your search.</p>
-            </div>
+            <EmptyState
+              icon="mdi:storefront-outline"
+              title="No businesses found"
+              description="Try adjusting your search or be the first to list your business."
+              actionLabel="Post Your Business"
+              onAction={() => setShowPostModal(true)}
+            />
           )}
 
           {/* Load More */}
-          {hasMore && (
+          {hasMore && !isLoading && (
             <div className="text-center">
               <button
                 type="button"
@@ -259,7 +237,6 @@ export default function MarketPlacePage() {
               </button>
             </div>
           )}
-
         </div>
       </section>
 

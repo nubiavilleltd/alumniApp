@@ -1,3 +1,5 @@
+
+
 import { API_ENDPOINTS } from '@/lib/api/endpoints';
 import { formatPhoneNumberWithCountryCode } from '../constants/phoneCountries';
 import {
@@ -7,6 +9,7 @@ import {
   updateMockAccountPassword,
 } from '../lib/mockAuth';
 import type {
+  AuthUserSummary,
   CompleteRegistrationResponse,
   ForgotPasswordFormValues,
   ForgotPasswordResponse,
@@ -27,12 +30,12 @@ function wait(duration = MOCK_DELAY_MS): Promise<void> {
   });
 }
 
-function toUserSummary(values: RegisterDetailsFormValues) {
+function toUserSummary(values: RegisterDetailsFormValues): AuthUserSummary {
   return {
-    fullName: values.fullName,
+    fullName: `${values.otherNames} ${values.surname}`.trim(),
     email: values.email,
-    phoneNumber: formatPhoneNumberWithCountryCode(values.phoneCountry, values.phoneNumber),
-    graduationYear: values.graduationYear,
+    phoneNumber: formatPhoneNumberWithCountryCode(values.phoneCountry, values.whatsappPhone),
+    graduationYear: Number(values.graduationYear),
   };
 }
 
@@ -40,14 +43,12 @@ export const authApi = {
   async login(values: LoginFormValues): Promise<LoginResponse> {
     await wait();
     const account = authenticateMockAccount(values.email, values.password);
-
     if (!account) {
       throw new Error('Invalid email or password');
     }
-
     return {
       status: 'success',
-      message: `Login request validated. Replace this mock with a POST to ${API_ENDPOINTS.LOGIN} when the API is available.`,
+      message: `Login request validated. Replace this mock with a POST to ${API_ENDPOINTS.AUTH.LOGIN} when the API is available.`,
       user: toAuthSessionUser(account),
     };
   },
@@ -59,10 +60,9 @@ export const authApi = {
     const resetLink = account
       ? `/auth/reset-password?token=${encodeURIComponent(token)}&email=${encodeURIComponent(values.email)}`
       : undefined;
-
     return {
       status: 'email_sent',
-      message: `If an account exists for ${values.email}, a password reset email has been simulated. Replace this mock with a POST to ${API_ENDPOINTS.FORGOT_PASSWORD} when the API is available.`,
+      message: `If an account exists for ${values.email}, a password reset email has been simulated. Replace this mock with a POST to ${API_ENDPOINTS.AUTH.FORGOT_PASSWORD} when the API is available.`,
       email: values.email,
       expiresInMinutes: 30,
       resetLink,
@@ -71,10 +71,9 @@ export const authApi = {
 
   async startRegistration(values: RegisterDetailsFormValues): Promise<StartRegistrationResponse> {
     await wait();
-
     return {
       status: 'verification_required',
-      message: `A verification step is ready for ${values.email}. Replace this mock with a POST to ${API_ENDPOINTS.REGISTER} or a dedicated verification-start endpoint later.`,
+      message: `A verification step is ready for ${values.email}. Replace this mock with a POST to ${API_ENDPOINTS.AUTH.REGISTER} or a dedicated verification-start endpoint later.`,
       expiresInMinutes: 10,
       draft: toUserSummary(values),
     };
@@ -84,7 +83,6 @@ export const authApi = {
     values: VerifyRegistrationRequest,
   ): Promise<CompleteRegistrationResponse> {
     await wait();
-
     return {
       status: 'pending_admin_approval',
       message:
@@ -98,14 +96,12 @@ export const authApi = {
     const updatedAccount = values.email
       ? updateMockAccountPassword(values.email, values.password)
       : null;
-
     if (!updatedAccount) {
       throw new Error('Password reset failed for this account');
     }
-
     return {
       status: 'success',
-      message: `Password reset validated for ${updatedAccount.email}. Replace this mock with a POST to ${API_ENDPOINTS.RESET_PASSWORD} when the API is available.`,
+      message: `Password reset validated for ${updatedAccount.email}. Replace this mock with a POST to ${API_ENDPOINTS.AUTH.RESET_PASSWORD} when the API is available.`,
       email: updatedAccount.email,
     };
   },

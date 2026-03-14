@@ -8,6 +8,7 @@ interface AppLinkProps extends PropsWithChildren {
   target?: string;
   rel?: string;
   endAdornment?: ReactNode;
+  onClick?: () => void;
 }
 
 function isExternal(href: string): boolean {
@@ -27,6 +28,7 @@ export function AppLink({
   rel,
   children,
   endAdornment,
+  onClick,
 }: AppLinkProps) {
   const content = (
     <>
@@ -44,7 +46,7 @@ export function AppLink({
   }
 
   return (
-    <Link to={href} className={className} aria-label={ariaLabel}>
+    <Link to={href} className={className} onClick={onClick} aria-label={ariaLabel}>
       {content}
     </Link>
   );

@@ -5,9 +5,11 @@ export type Event = {
   description: string;
   content: string;
   location: string;
-  registration_url: string;
   image: string;
   category: string;
   tags: string[];
   featured: boolean;
+  isVirtual: boolean;
+  attire: string;
+  type?: string;
 };

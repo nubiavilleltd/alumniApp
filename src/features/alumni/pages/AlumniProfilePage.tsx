@@ -1,19 +1,59 @@
 import { Icon } from '@iconify/react';
 import { useParams } from 'react-router-dom';
-
-import { getAlumnusBySlug } from '@/data/site-data';
+import { useAlumnus } from '@/features/alumni/hooks/useAlumni';
 import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { Layout } from '@/shared/components/layout/Layout';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { SEO } from '@/shared/common/SEO';
 
+// ─── Skeleton ─────────────────────────────────────────────────────────────────
+function ProfileSkeleton() {
+  return (
+    <section className="section py-12">
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-pulse">
+          {/* Sidebar */}
+          <aside className="lg:col-span-1 bg-white shadow-md rounded-2xl p-6 flex flex-col items-center gap-3">
+            <div className="w-36 h-36 rounded-full bg-gray-200" />
+            <div className="h-5 bg-gray-200 rounded w-2/3" />
+            <div className="h-4 bg-gray-200 rounded w-1/3" />
+            <div className="w-full mt-2 space-y-2">
+              <div className="h-3 bg-gray-200 rounded w-full" />
+              <div className="h-3 bg-gray-200 rounded w-5/6" />
+              <div className="h-3 bg-gray-200 rounded w-4/6" />
+            </div>
+          </aside>
+
+          {/* Main content */}
+          <main className="lg:col-span-2 space-y-6">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="bg-white shadow-md rounded-2xl p-6 space-y-3">
+                <div className="h-5 bg-gray-200 rounded w-1/4" />
+                <div className="h-3 bg-gray-200 rounded w-full" />
+                <div className="h-3 bg-gray-200 rounded w-full" />
+                <div className="h-3 bg-gray-200 rounded w-3/4" />
+              </div>
+            ))}
+          </main>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Main Page ────────────────────────────────────────────────────────────────
 export function AlumniProfilePage() {
   const { slug = '' } = useParams();
-  const alumnus = getAlumnusBySlug(slug);
   const currentUser = useAuthStore((state) => state.user);
   const isSignedIn = !!currentUser;
 
+  const { data: alumnus, isLoading } = useAlumnus(slug);
+
+  // ── Loading ────────────────────────────────────────────────────────────────
+  if (isLoading) return <ProfileSkeleton />;
+
+  // ── Not found ──────────────────────────────────────────────────────────────
   if (!alumnus) {
     return (
       <Layout title="Profile Not Found">
@@ -46,6 +86,7 @@ export function AlumniProfilePage() {
       <section className="section py-12">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* ── Sidebar ─────────────────────────────────────────────────── */}
             <aside className="lg:col-span-1 bg-white shadow-md rounded-2xl p-6 text-center">
               <img
                 src={alum.photo || '/logo.svg'}
@@ -86,7 +127,7 @@ export function AlumniProfilePage() {
                     )}
                   </div>
 
-                  {(socials.linkedin || socials.github || socials.twitter || socials.portfolio) && (
+                  {(socials.linkedin || socials.github || socials.twitter) && (
                     <div className="mt-6 flex justify-center gap-5 text-gray-600">
                       {socials.linkedin && (
                         <AppLink
@@ -115,15 +156,6 @@ export function AlumniProfilePage() {
                           <Icon icon="mdi:twitter" className="w-6 h-6" />
                         </AppLink>
                       )}
-                      {socials.portfolio && (
-                        <AppLink
-                          href={socials.portfolio}
-                          target="_blank"
-                          className="hover:text-primary-600"
-                        >
-                          <Icon icon="mdi:web" className="w-6 h-6" />
-                        </AppLink>
-                      )}
                     </div>
                   )}
                 </>
@@ -131,8 +163,8 @@ export function AlumniProfilePage() {
                 <div className="mt-6 rounded-2xl border border-primary-200 bg-primary-50 p-4 text-left">
                   <p className="text-sm font-semibold text-primary-900">Member-only profile</p>
                   <p className="mt-2 text-sm leading-6 text-primary-900/80">
-                    Sign in to view this alumnus&apos;s biography, work details, contact
-                    information, and full profile sections.
+                    Sign in to view this alumnus's biography, work details, contact information, and
+                    full profile sections.
                   </p>
                   <AppLink
                     href="/auth/login"
@@ -144,6 +176,7 @@ export function AlumniProfilePage() {
               )}
             </aside>
 
+            {/* ── Main Content ─────────────────────────────────────────────── */}
             <main className="lg:col-span-2 space-y-8">
               {isSignedIn ? (
                 <>
