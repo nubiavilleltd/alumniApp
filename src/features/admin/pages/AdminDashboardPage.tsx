@@ -201,8 +201,8 @@ export function AdminDashboardPage() {
   }
 
   return (
-      <>
-    <SEO title="Admin Dashboard" description="Admin dashboard" />
+    <>
+      <SEO title="Admin Dashboard" description="Admin dashboard" />
       <section className="section bg-[radial-gradient(circle_at_top_left,_rgba(59,130,246,0.1),_transparent_30%),linear-gradient(180deg,_#f8fafc,_#ffffff)]">
         <div className="container-custom space-y-6">
           {/* ── Banner ────────────────────────────────────────────────────── */}
