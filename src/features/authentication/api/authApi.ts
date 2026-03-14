@@ -1,5 +1,3 @@
-
-
 import { API_ENDPOINTS } from '@/lib/api/endpoints';
 import { formatPhoneNumberWithCountryCode } from '../constants/phoneCountries';
 import {
