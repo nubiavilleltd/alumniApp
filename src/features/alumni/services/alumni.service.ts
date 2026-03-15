@@ -6,15 +6,13 @@ import type { Alumni } from '@/features/alumni/types/alumni.types';
 
 export interface GetAlumniParams {
   search?: string;
-  year?:   string;
-  page?:   number;
-  limit?:  number;
+  year?: string;
+  page?: number;
+  limit?: number;
 }
 
 // Build a fast lookup: memberId → accountStatus
-const accountStatusMap = new Map(
-  defaultMockAccounts.map((a) => [a.memberId, a.accountStatus]),
-);
+const accountStatusMap = new Map(defaultMockAccounts.map((a) => [a.memberId, a.accountStatus]));
 
 function isActiveAccount(memberId: string): boolean {
   const status = accountStatusMap.get(memberId);

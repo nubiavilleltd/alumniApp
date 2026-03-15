@@ -38,8 +38,7 @@ export function authenticateMockAccount(email: string, password: string) {
   const normalizedEmail = email.trim().toLowerCase();
   return readStoredAccounts().find(
     (account) =>
-      account.email.trim().toLowerCase() === normalizedEmail &&
-      account.password === password,
+      account.email.trim().toLowerCase() === normalizedEmail && account.password === password,
   );
 }
 

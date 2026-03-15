@@ -13,7 +13,7 @@ import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { authenticateMockAccount } from '@/features/authentication/lib/mockAuth';
 
 const breadcrumbItems = [
-  { label: 'Home',      href: '/' },
+  { label: 'Home', href: '/' },
   { label: 'Dashboard', href: '/dashboard' },
   { label: 'Settings' },
 ];
@@ -21,22 +21,22 @@ const breadcrumbItems = [
 // ─── Schemas ──────────────────────────────────────────────────────────────────
 const changePasswordSchema = z
   .object({
-    currentPassword:  z.string().min(1, 'Current password is required'),
+    currentPassword: z.string().min(1, 'Current password is required'),
     newPassword: z
       .string()
       .min(8, 'Password must be at least 8 characters')
       .regex(/[a-z]/, 'Must include a lowercase letter')
       .regex(/[A-Z]/, 'Must include an uppercase letter')
-      .regex(/\d/,   'Must include a number')
+      .regex(/\d/, 'Must include a number')
       .regex(/[^A-Za-z0-9]/, 'Must include a special character'),
     confirmPassword: z.string().min(1, 'Please confirm your new password'),
   })
   .refine((d) => d.newPassword === d.confirmPassword, {
-    path:    ['confirmPassword'],
+    path: ['confirmPassword'],
     message: 'Passwords do not match',
   })
   .refine((d) => d.currentPassword !== d.newPassword, {
-    path:    ['newPassword'],
+    path: ['newPassword'],
     message: 'New password must be different from your current password',
   });
 
@@ -45,10 +45,10 @@ type ChangePasswordValues = z.infer<typeof changePasswordSchema>;
 // ─── Change Password section ──────────────────────────────────────────────────
 function ChangePasswordSection() {
   const currentUser = useAuthStore((state) => state.user);
-  const [showCurrent, setShowCurrent]   = useState(false);
-  const [showNew, setShowNew]           = useState(false);
-  const [showConfirm, setShowConfirm]   = useState(false);
-  const [success, setSuccess]           = useState(false);
+  const [showCurrent, setShowCurrent] = useState(false);
+  const [showNew, setShowNew] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const {
     register,
@@ -62,14 +62,11 @@ function ChangePasswordSection() {
 
   const onSubmit = handleSubmit(async (values) => {
     // Verify current password against mock accounts
-    const account = authenticateMockAccount(
-      currentUser?.email ?? '',
-      values.currentPassword,
-    );
+    const account = authenticateMockAccount(currentUser?.email ?? '', values.currentPassword);
 
     if (!account) {
       setError('currentPassword', {
-        type:    'manual',
+        type: 'manual',
         message: 'Current password is incorrect',
       });
       return;
@@ -104,12 +101,9 @@ function ChangePasswordSection() {
       )}
 
       <form onSubmit={onSubmit} className="space-y-4 max-w-md">
-
         {/* Current password */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            Current Password
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">Current Password</label>
           <div className="relative">
             <input
               type={showCurrent ? 'text' : 'password'}
@@ -123,7 +117,10 @@ function ChangePasswordSection() {
               onClick={() => setShowCurrent((v) => !v)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
             >
-              <Icon icon={showCurrent ? 'mdi:eye-off-outline' : 'mdi:eye-outline'} className="w-4 h-4" />
+              <Icon
+                icon={showCurrent ? 'mdi:eye-off-outline' : 'mdi:eye-outline'}
+                className="w-4 h-4"
+              />
             </button>
           </div>
           {errors.currentPassword && (
@@ -133,9 +130,7 @@ function ChangePasswordSection() {
 
         {/* New password */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            New Password
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">New Password</label>
           <div className="relative">
             <input
               type={showNew ? 'text' : 'password'}
@@ -149,7 +144,10 @@ function ChangePasswordSection() {
               onClick={() => setShowNew((v) => !v)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
             >
-              <Icon icon={showNew ? 'mdi:eye-off-outline' : 'mdi:eye-outline'} className="w-4 h-4" />
+              <Icon
+                icon={showNew ? 'mdi:eye-off-outline' : 'mdi:eye-outline'}
+                className="w-4 h-4"
+              />
             </button>
           </div>
           {errors.newPassword && (
@@ -175,7 +173,10 @@ function ChangePasswordSection() {
               onClick={() => setShowConfirm((v) => !v)}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
             >
-              <Icon icon={showConfirm ? 'mdi:eye-off-outline' : 'mdi:eye-outline'} className="w-4 h-4" />
+              <Icon
+                icon={showConfirm ? 'mdi:eye-off-outline' : 'mdi:eye-outline'}
+                className="w-4 h-4"
+              />
             </button>
           </div>
           {errors.confirmPassword && (
@@ -189,10 +190,14 @@ function ChangePasswordSection() {
           className="btn btn-primary flex items-center gap-2"
         >
           {isSubmitting ? (
-            <><Icon icon="mdi:loading" className="w-4 h-4 animate-spin" />Updating...</>
-          ) : 'Update Password'}
+            <>
+              <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" />
+              Updating...
+            </>
+          ) : (
+            'Update Password'
+          )}
         </button>
-
       </form>
     </section>
   );
@@ -200,10 +205,10 @@ function ChangePasswordSection() {
 
 // ─── Danger Zone section ──────────────────────────────────────────────────────
 function DangerZoneSection() {
-  const currentUser  = useAuthStore((state) => state.user);
+  const currentUser = useAuthStore((state) => state.user);
   const clearSession = useAuthStore((state) => state.clearSession);
-  const navigate     = useNavigate();
-  const [showConfirm, setShowConfirm]   = useState(false);
+  const navigate = useNavigate();
+  const [showConfirm, setShowConfirm] = useState(false);
   const [isDeactivating, setIsDeactivating] = useState(false);
 
   const handleDeactivate = async () => {
@@ -234,8 +239,8 @@ function DangerZoneSection() {
           <div>
             <p className="text-sm font-semibold text-gray-800">Deactivate Account</p>
             <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">
-              Your profile will be hidden and you will be logged out immediately.
-              Your data is preserved — an admin can reactivate your account.
+              Your profile will be hidden and you will be logged out immediately. Your data is
+              preserved — an admin can reactivate your account.
             </p>
           </div>
           {!showConfirm ? (
@@ -295,7 +300,6 @@ export default function ChangePasswordPage() {
 
       <section className="section py-12">
         <div className="container-custom max-w-2xl">
-
           <div className="mb-8">
             <h1 className="text-2xl font-bold text-gray-800">Account Settings</h1>
             <p className="text-sm text-gray-500 mt-1">
@@ -308,7 +312,6 @@ export default function ChangePasswordPage() {
             <ChangePasswordSection />
             <DangerZoneSection />
           </div>
-
         </div>
       </section>
     </>

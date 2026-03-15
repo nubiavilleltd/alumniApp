@@ -22,8 +22,6 @@
 //   ),
 // );
 
-
-
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import type { AuthSessionUser } from '../types/auth.types';
@@ -40,14 +38,14 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       user: null,
       setSession: (user) => set({ user }),
-      
+
       // Update user profile/privacy without full re-authentication
       // TODO: When backend is ready, this should call PUT /profile endpoint
       updateUser: (updates) =>
         set((state) => ({
           user: state.user ? { ...state.user, ...updates } : null,
         })),
-      
+
       clearSession: () => set({ user: null }),
     }),
     {

@@ -32,18 +32,14 @@
 //       } ${className}`}
 //       title={isPublic ? 'Click to make private' : 'Click to make public'}
 //     >
-//       <Icon 
-//         icon={isPublic ? 'mdi:eye-outline' : 'mdi:eye-off-outline'} 
-//         className="w-3.5 h-3.5" 
+//       <Icon
+//         icon={isPublic ? 'mdi:eye-outline' : 'mdi:eye-off-outline'}
+//         className="w-3.5 h-3.5"
 //       />
 //       <span>{isPublic ? 'Public' : 'Private'}</span>
 //     </button>
 //   );
 // }
-
-
-
-
 
 // features/user/components/ui/PrivacyToggle.tsx
 
@@ -79,10 +75,7 @@ export function PrivacyToggle({ value, onChange, className = '' }: PrivacyToggle
       } ${className}`}
       title={isPublic ? 'Click to make private' : 'Click to make public'}
     >
-      <Icon 
-        icon={isPublic ? 'mdi:eye-outline' : 'mdi:eye-off-outline'} 
-        className="w-3 h-3" 
-      />
+      <Icon icon={isPublic ? 'mdi:eye-outline' : 'mdi:eye-off-outline'} className="w-3 h-3" />
       <span>{isPublic ? 'Public' : 'Private'}</span>
     </button>
   );

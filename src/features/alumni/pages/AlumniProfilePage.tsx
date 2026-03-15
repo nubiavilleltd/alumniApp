@@ -4,35 +4,50 @@ import { useAlumnus } from '@/features/alumni/hooks/useAlumni';
 import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { getMockAccountByMemberId } from '@/features/authentication/lib/mockAuth';
 import { defaultPrivacySettings } from '@/features/authentication/types/auth.types';
-import type { PrivacySettings } from '@/features/authentication/types/auth.types';
+import type { PrivacySettings, AuthSessionUser } from '@/features/authentication/types/auth.types';
 import { Layout } from '@/shared/components/layout/Layout';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { SEO } from '@/shared/common/SEO';
+import { isFieldVisible, getPrivateFieldDisplay, getPhotoDisplay } from '@/features/alumni/utils/privacyHelpers';
+import {
+  employmentStatusOptions,
+  occupationOptions,
+  industrySectorOptions,
+  yearsOfExperienceOptions,
+  areaOptions,
+} from '@/features/authentication/constants/profileOptions';
 
-// ─── Privacy helper ───────────────────────────────────────────────────────────
-// Returns the value if public, or a "Hidden" badge if private.
-// isOwnProfile — owner always sees their own data regardless.
 
-function usePrivacyResolver(
-  privacy: PrivacySettings,
-  isOwnProfile: boolean,
-) {
-  return function resolve(
-    field: keyof PrivacySettings,
-    value: React.ReactNode,
-  ): React.ReactNode {
-    if (isOwnProfile) return value;
-    if (privacy[field] === 'private') {
-      return (
-        <span className="inline-flex items-center gap-1 text-xs text-gray-400 italic">
-          <Icon icon="mdi:eye-off-outline" className="w-3.5 h-3.5" />
-          Hidden
-        </span>
-      );
-    }
-    return value;
-  };
+
+interface UserDataForDisplay {
+  whatsappPhone?: string;
+  alternativePhone?: string;
+  birthDate?: string;
+  houseColor?: string;
+  isClassCoordinator?: boolean;
+  residentialAddress?: string;
+  area?: string;
+  city?: string;
+  employmentStatus?: string;
+  occupation?: string; // Singular for display
+  industrySector?: string; // Singular for display
+  yearsOfExperience?: number;
+  isVolunteer?: boolean;
+}
+
+// ─── Helper Functions ─────────────────────────────────────────────────────────
+
+// Helper to get display label from option value
+function getDisplayLabel(value: string | number | undefined, options: readonly { label: string; value: string | number }[]): string {
+  if (value === undefined || value === null) return 'Not provided';
+  const option = options.find(opt => opt.value == value); // Use == for loose comparison
+  return option?.label || value.toString();
+}
+// Helper to capitalize first letter
+function capitalizeFirst(text: string | undefined): string {
+  if (!text) return 'Not provided';
+  return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
@@ -67,6 +82,28 @@ function ProfileSkeleton() {
   );
 }
 
+// ─── Helper to get user data from account ────────────────────────────────────
+function getUserDataFromAccount(alumnus: any): UserDataForDisplay | null  {
+  const account = alumnus.memberId ? getMockAccountByMemberId(alumnus.memberId) : undefined;
+  if (!account) return null;
+  
+  return {
+    whatsappPhone: account.whatsappPhone,
+    alternativePhone: account.alternativePhone,
+    birthDate: account.birthDate,
+    houseColor: account.houseColor,
+    isClassCoordinator: account.isClassCoordinator,
+    residentialAddress: account.residentialAddress,
+    area: account.area,
+    city: account.city,
+    employmentStatus: account.employmentStatus,
+    occupation: account.occupations?.[0],
+    industrySector: account.industrySectors?.[0],
+    yearsOfExperience: account.yearsOfExperience,
+    isVolunteer: account.isVolunteer,
+  };
+}
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export function AlumniProfilePage() {
   const { slug = '' }  = useParams();
@@ -92,35 +129,24 @@ export function AlumniProfilePage() {
     );
   }
 
-  // ── Resolve privacy settings for this alumnus ──────────────────────────────
-  // Look up their MockAuthAccount to get stored privacy settings.
-  // Falls back to defaultPrivacySettings if not found.
-  const alumnusAccount = alumnus.memberId
-    ? getMockAccountByMemberId(alumnus.memberId)
-    : undefined;
-
-  const privacy: PrivacySettings = {
-    ...defaultPrivacySettings,
-    ...alumnusAccount?.privacy,
-  };
-
-  // Is the currently logged-in user viewing their own profile?
-  const isOwnProfile = !!currentUser && currentUser.memberId === alumnus.memberId;
-
-  const resolve = usePrivacyResolver(privacy, isOwnProfile);
-
-  const alum    = { ...alumnus };
-  const socials = alum.social ?? {};
+  // ── Get privacy settings and user data from MockAuthAccount ────────────────
+  const alumnusAccount = alumnus.memberId ? getMockAccountByMemberId(alumnus.memberId) : undefined;
+  const privacy: PrivacySettings = { ...defaultPrivacySettings, ...alumnusAccount?.privacy };
+  const userData = getUserDataFromAccount(alumnus);
+  const alumnusWithPrivacy = { ...alumnus, privacy, id: alumnus.memberId };
 
   const breadcrumbItems = [
     { label: 'Home',     href: '/' },
     { label: 'Profiles', href: '/alumni/profiles' },
-    { label: alum.name },
+    { label: alumnus.name },
   ];
+
+  // Determine if viewing own profile
+  const isOwnProfile = currentUser?.memberId === alumnus.memberId;
 
   return (
     <>
-      <SEO title={alum.name} description={alum.short_bio} />
+      <SEO title={alumnus.name} description={alumnus.short_bio} />
       <Breadcrumbs items={breadcrumbItems} />
 
       <section className="section py-12">
@@ -131,64 +157,93 @@ export function AlumniProfilePage() {
             <aside className="lg:col-span-1 bg-white shadow-md rounded-2xl p-6 text-center">
 
               {/* Photo — respects privacy */}
-              {privacy.photo === 'public' || isOwnProfile ? (
+              {getPhotoDisplay(alumnus.photo, isFieldVisible(alumnusWithPrivacy, 'photo', currentUser)) ? (
                 <img
-                  src={alum.photo || '/logo.svg'}
-                  alt={alum.name}
+                  src={alumnus.photo || '/logo.svg'}
+                  alt={alumnus.name}
                   className="w-36 h-36 sm:w-40 sm:h-40 rounded-full object-cover border mx-auto mb-4"
                 />
               ) : (
                 <div className="w-36 h-36 sm:w-40 sm:h-40 rounded-full bg-gray-100 border flex flex-col items-center justify-center mx-auto mb-4">
-                  <Icon icon="mdi:account-outline" className="w-14 h-14 text-gray-300" />
+                  <Icon icon="mdi:lock" className="w-12 h-12 text-gray-300" />
                   <span className="text-[10px] text-gray-400 mt-1 flex items-center gap-0.5">
-                    <Icon icon="mdi:eye-off-outline" className="w-3 h-3" />
-                    Hidden
+                    <Icon icon="mdi:lock" className="w-3 h-3" />
+                    Private
                   </span>
                 </div>
               )}
 
-              <h1 className="text-2xl font-bold">{alum.name}</h1>
-              <p className="text-primary-600 mt-1">Class of {alum.year}</p>
+              <h1 className="text-2xl font-bold">{alumnus.name}</h1>
+              <p className="text-primary-600 mt-1">Class of {alumnus.year}</p>
+
+              {/* House Color */}
+              {userData?.houseColor && (
+                <p className="text-sm text-gray-500 mt-2">
+                  <Icon icon="mdi:home" className="inline w-4 h-4 mr-1" />
+                  {userData.houseColor} House
+                </p>
+              )}
+
+              {/* Class Coordinator Badge */}
+              {userData?.isClassCoordinator && (
+                <div className="mt-3 inline-flex items-center gap-1 bg-primary-50 text-primary-600 px-3 py-1 rounded-full text-xs font-semibold">
+                  <Icon icon="mdi:star" className="w-3.5 h-3.5" />
+                  Class Coordinator
+                </div>
+              )}
 
               {isSignedIn ? (
                 <>
-                  <div className="mt-4 space-y-2 text-sm text-gray-700 text-left">
-                    {alum.position && (
-                      <p><strong>Position:</strong> {alum.position}</p>
-                    )}
-                    {alum.company && (
-                      <p><strong>Company:</strong> {alum.company}</p>
-                    )}
-                    {alum.location && (
-                      <p><strong>Location:</strong> {resolve('city', alum.location)}</p>
-                    )}
-                    {alum.email && (
-                      <p className="flex items-center gap-1 flex-wrap">
-                        <strong>Email:</strong>
-                        <AppLink
-                          href={`mailto:${alum.email}`}
-                          className="text-primary-600 hover:underline"
-                        >
-                          {alum.email}
+                  <div className="mt-6 space-y-3 text-sm text-gray-700 text-left">
+                    {/* Email - always visible */}
+                    {alumnus.email && (
+                      <div className="flex items-start gap-2">
+                        <Icon icon="mdi:email-outline" className="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" />
+                        <AppLink href={`mailto:${alumnus.email}`} className="text-primary-600 hover:underline break-all">
+                          {alumnus.email}
                         </AppLink>
-                      </p>
+                      </div>
+                    )}
+
+                    {/* WhatsApp Phone */}
+                    {userData?.whatsappPhone && (
+                      <div className="flex items-start gap-2">
+                        <Icon icon="mdi:whatsapp" className="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" />
+                        <span className="break-all">
+                          {getPrivateFieldDisplay(
+                            userData.whatsappPhone,
+                            isFieldVisible(alumnusWithPrivacy, 'whatsappPhone', currentUser),
+                            'Not provided'
+                          )}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Alternative Phone */}
+                    {userData?.alternativePhone && (
+                      <div className="flex items-start gap-2">
+                        <Icon icon="mdi:phone-outline" className="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" />
+                        <span className="break-all">
+                          {getPrivateFieldDisplay(
+                            userData.alternativePhone,
+                            isFieldVisible(alumnusWithPrivacy, 'alternativePhone', currentUser),
+                            'Not provided'
+                          )}
+                        </span>
+                      </div>
                     )}
                   </div>
 
-                  {(socials.linkedin || socials.github || socials.twitter) && (
+                  {/* Social Links */}
+                  {(alumnus.social?.linkedin || alumnus.social?.twitter) && (
                     <div className="mt-6 flex justify-center gap-5 text-gray-600">
-                      {socials.linkedin && (
-                        <AppLink href={socials.linkedin} target="_blank" className="hover:text-primary-600">
+                      {alumnus.social.linkedin && (
+                        <AppLink href={alumnus.social.linkedin} target="_blank" className="hover:text-primary-600">
                           <Icon icon="mdi:linkedin" className="w-6 h-6" />
                         </AppLink>
                       )}
-                      {socials.github && (
-                        <AppLink href={socials.github} target="_blank" className="hover:text-primary-600">
-                          <Icon icon="mdi:github" className="w-6 h-6" />
-                        </AppLink>
-                      )}
-                      {socials.twitter && (
-                        <AppLink href={socials.twitter} target="_blank" className="hover:text-primary-600">
+                      {alumnus.social.twitter && (
+                        <AppLink href={alumnus.social.twitter} target="_blank" className="hover:text-primary-600">
                           <Icon icon="mdi:twitter" className="w-6 h-6" />
                         </AppLink>
                       )}
@@ -199,8 +254,7 @@ export function AlumniProfilePage() {
                 <div className="mt-6 rounded-2xl border border-primary-200 bg-primary-50 p-4 text-left">
                   <p className="text-sm font-semibold text-primary-900">Member-only profile</p>
                   <p className="mt-2 text-sm leading-6 text-primary-900/80">
-                    Sign in to view this alumnus's biography, work details, contact information, and
-                    full profile sections.
+                    Sign in to view contact information and full profile details.
                   </p>
                   <AppLink href="/auth/login" className="btn btn-primary btn-sm mt-4 w-full justify-center">
                     Sign in to continue
@@ -210,87 +264,148 @@ export function AlumniProfilePage() {
             </aside>
 
             {/* ── Main Content ─────────────────────────────────────────── */}
-            <main className="lg:col-span-2 space-y-8">
+            <main className="lg:col-span-2 space-y-6">
               {isSignedIn ? (
                 <>
+                  {/* About */}
                   <section className="bg-white shadow-md rounded-2xl p-6">
-                    <h2 className="text-xl font-semibold mb-3">About</h2>
-                    <p className="text-gray-700">{alum.long_bio}</p>
+                    <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
+                      <Icon icon="mdi:account-outline" className="w-5 h-5 text-primary-500" />
+                      About
+                    </h2>
+                    <p className="text-gray-700 leading-relaxed">{alumnus.long_bio}</p>
                   </section>
 
-                  {/* Skills */}
-                  {alum.skills && alum.skills.length > 0 && (
+                  {/* Professional Information */}
+                  {(userData?.employmentStatus || userData?.occupation || userData?.industrySector || userData?.yearsOfExperience) && (
                     <section className="bg-white shadow-md rounded-2xl p-6">
-                      <h2 className="text-xl font-semibold mb-3">Skills</h2>
-                      <div className="flex flex-wrap gap-2">
-                        {alum.skills.map((skill) => (
-                          <span className="badge badge-primary" key={skill}>{skill}</span>
-                        ))}
-                      </div>
-                    </section>
-                  )}
-
-                  {/* Work Experience */}
-                  {alum.work_experience && alum.work_experience.length > 0 && (
-                    <section className="bg-white shadow-md rounded-2xl p-6">
-                      <h2 className="text-xl font-semibold mb-4">Work Experience</h2>
-                      <div className="space-y-4">
-                        {alum.work_experience.map((exp) => (
-                          <div key={`${exp.company}-${exp.position}`}>
-                            <div className="flex items-start justify-between gap-2">
-                              <div>
-                                <h3 className="font-semibold">{exp.position}</h3>
-                                <p className="text-sm text-primary-600">{exp.company}</p>
-                              </div>
-                              <span className="text-xs text-gray-400 flex-shrink-0">{exp.duration}</span>
-                            </div>
-                            <p className="text-sm text-gray-600 mt-1">{exp.description}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </section>
-                  )}
-
-                  {/* Education */}
-                  {alum.education && alum.education.length > 0 && (
-                    <section className="bg-white shadow-md rounded-2xl p-6">
-                      <h2 className="text-xl font-semibold mb-4">Education</h2>
-                      <div className="space-y-3">
-                        {alum.education.map((edu) => (
-                          <div key={`${edu.degree}-${edu.year}`}>
-                            <h3 className="font-semibold">{edu.degree}</h3>
-                            <p className="text-sm text-gray-600">
-                              {edu.institution} · {edu.year}
+                      <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                        <Icon icon="mdi:briefcase-outline" className="w-5 h-5 text-primary-500" />
+                        Professional Information
+                      </h2>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                        {userData.employmentStatus && (
+                          <div>
+                            <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">Employment Status</p>
+                            <p className="font-medium text-gray-800">
+                              {getPrivateFieldDisplay(
+                                getDisplayLabel(userData.employmentStatus, employmentStatusOptions),
+                                isFieldVisible(alumnusWithPrivacy, 'employmentStatus', currentUser)
+                              )}
                             </p>
-                            {edu.gpa && (
-                              <p className="text-xs text-gray-400">GPA: {edu.gpa}</p>
-                            )}
                           </div>
-                        ))}
+                        )}
+                        {userData.occupation && (
+                          <div>
+                            <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">Occupation</p>
+                            <p className="font-medium text-gray-800">
+                              {getPrivateFieldDisplay(
+                                getDisplayLabel(userData.occupation, occupationOptions),
+                                isFieldVisible(alumnusWithPrivacy, 'occupations', currentUser)
+                              )}
+                            </p>
+                          </div>
+                        )}
+                        {userData.industrySector && (
+                          <div>
+                            <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">Industry Sector</p>
+                            <p className="font-medium text-gray-800">
+                              {getPrivateFieldDisplay(
+                                getDisplayLabel(userData.industrySector, industrySectorOptions),
+                                isFieldVisible(alumnusWithPrivacy, 'industrySectors', currentUser)
+                              )}
+                            </p>
+                          </div>
+                        )}
+                        {userData.yearsOfExperience && (
+                          <div>
+                            <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">Years of Experience</p>
+                            <p className="font-medium text-gray-800">
+                              {getPrivateFieldDisplay(
+                                getDisplayLabel(userData.yearsOfExperience?.toString(), yearsOfExperienceOptions),
+                                isFieldVisible(alumnusWithPrivacy, 'yearsOfExperience', currentUser)
+                              )}
+                            </p>
+                          </div>
+                        )}
                       </div>
                     </section>
                   )}
 
-                  {/* Achievements */}
-                  {alum.achievements && alum.achievements.length > 0 && (
+                  {/* Location Information */}
+                  {(userData?.city || userData?.area || userData?.residentialAddress) && (
                     <section className="bg-white shadow-md rounded-2xl p-6">
-                      <h2 className="text-xl font-semibold mb-3">Achievements</h2>
-                      <ul className="list-disc list-inside text-gray-700 space-y-1">
-                        {alum.achievements.map((a) => (
-                          <li key={a}>{a}</li>
-                        ))}
-                      </ul>
+                      <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                        <Icon icon="mdi:map-marker-outline" className="w-5 h-5 text-primary-500" />
+                        Location
+                      </h2>
+                      <div className="space-y-3 text-sm">
+                        {userData.city && (
+                          <div>
+                            <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">City</p>
+                            <p className="font-medium text-gray-800">
+                              {getPrivateFieldDisplay(
+                                capitalizeFirst(userData.city),
+                                isFieldVisible(alumnusWithPrivacy, 'city', currentUser)
+                              )}
+                            </p>
+                          </div>
+                        )}
+                        {userData.area && (
+                          <div>
+                            <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">Area</p>
+                            <p className="font-medium text-gray-800">
+                              {getPrivateFieldDisplay(
+                                getDisplayLabel(userData.area, areaOptions),
+                                isFieldVisible(alumnusWithPrivacy, 'area', currentUser)
+                              )}
+                            </p>
+                          </div>
+                        )}
+                        {userData.residentialAddress && (
+                          <div>
+                            <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">Residential Address</p>
+                            <p className="font-medium text-gray-800">
+                              {getPrivateFieldDisplay(
+                                userData.residentialAddress,
+                                isFieldVisible(alumnusWithPrivacy, 'residentialAddress', currentUser)
+                              )}
+                            </p>
+                          </div>
+                        )}
+                      </div>
                     </section>
                   )}
 
-                  {/* Interests */}
-                  {alum.interests && alum.interests.length > 0 && (
+                  {/* Personal Information */}
+                  {userData?.birthDate && (
                     <section className="bg-white shadow-md rounded-2xl p-6">
-                      <h2 className="text-xl font-semibold mb-3">Interests</h2>
-                      <div className="flex flex-wrap gap-2">
-                        {alum.interests.map((interest) => (
-                          <span className="badge badge-secondary" key={interest}>{interest}</span>
-                        ))}
+                      <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                        <Icon icon="mdi:calendar-outline" className="w-5 h-5 text-primary-500" />
+                        Personal
+                      </h2>
+                      <div className="text-sm">
+                        <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">Date of Birth</p>
+                        <p className="font-medium text-gray-800">
+                          {getPrivateFieldDisplay(
+                            userData.birthDate,
+                            isFieldVisible(alumnusWithPrivacy, 'birthDate', currentUser)
+                          )}
+                        </p>
+                      </div>
+                    </section>
+                  )}
+
+                  {/* Volunteer Status */}
+                  {userData?.isVolunteer && (
+                    <section className="bg-white shadow-md rounded-2xl p-6">
+                      <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
+                        <Icon icon="mdi:hand-heart-outline" className="w-5 h-5 text-primary-500" />
+                        Community
+                      </h2>
+                      <div className="flex items-center gap-2 text-sm">
+                        <Icon icon="mdi:check-circle" className="w-5 h-5 text-green-500" />
+                        <span className="text-gray-700">Available for volunteer opportunities</span>
                       </div>
                     </section>
                   )}
@@ -306,9 +421,8 @@ export function AlumniProfilePage() {
                 <section className="bg-white shadow-md rounded-2xl p-6">
                   <h2 className="text-xl font-semibold mb-3">Profile access limited</h2>
                   <p className="text-gray-700 leading-7">
-                    Visitors can view only the most basic alumni information. Sign in with a member
-                    session to unlock biography, professional background, education history,
-                    projects, achievements, interests, and contact details.
+                    Sign in to view full profile information including professional background,
+                    location details, and contact information.
                   </p>
                 </section>
               )}

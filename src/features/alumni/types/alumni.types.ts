@@ -71,6 +71,7 @@ type SocialLinks = {
   linkedin?: string;
   twitter?: string;
   github?: string;
+  instagram?: string;
 };
 
 export type Alumni = {

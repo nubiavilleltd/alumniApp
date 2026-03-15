@@ -7,6 +7,10 @@ import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { FilterDropdown } from '@/shared/components/ui/FilterDropdown';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import { useAlumni } from '@/features/alumni/hooks/useAlumni';
+import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
+import { getMockAccountByMemberId } from '@/features/authentication/lib/mockAuth';
+import { defaultPrivacySettings } from '@/features/authentication/types/auth.types';
+import { isFieldVisible, getPhotoDisplay } from '@/features/alumni/utils/privacyHelpers';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 function AlumnaeCardSkeleton() {
@@ -36,10 +40,21 @@ interface AlumnaeCardProps {
     photo?: string;
     short_bio: string;
     location?: string;
+    memberId?: string;
   };
+  currentUser: any;
 }
 
-function AlumnaeCard({ entry }: AlumnaeCardProps) {
+function AlumnaeCard({ entry, currentUser }: AlumnaeCardProps) {
+  // Get privacy settings for this alumnus
+  const alumnusAccount = entry.memberId ? getMockAccountByMemberId(entry.memberId) : undefined;
+  const privacy = { ...defaultPrivacySettings, ...alumnusAccount?.privacy };
+  const alumnusWithPrivacy = { ...entry, privacy, id: entry.memberId };
+
+  // Check field visibility
+  const photoVisible = isFieldVisible(alumnusWithPrivacy, 'photo', currentUser);
+  const cityVisible = isFieldVisible(alumnusWithPrivacy, 'city', currentUser);
+
   const initials = entry.name
     .split(' ')
     .map((s) => s[0])
@@ -48,21 +63,31 @@ function AlumnaeCard({ entry }: AlumnaeCardProps) {
 
   const classLabel = `Class '${String(entry.year).slice(-2)}`;
 
+  // Determine photo display
+  const displayPhoto = getPhotoDisplay(entry.photo, photoVisible);
+
   return (
     <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex flex-col">
-      <div className="h-57 w-full overflow-hidden bg-gray-100">
-        {entry.photo ? (
+      {/* <div className="h-57 w-full overflow-hidden bg-gray-100"> */}
+      <div className="h-57 w-full overflow-hidden bg-gray-100 min-h-[228px]">
+        {displayPhoto ? (
           <img
-            src={entry.photo}
+            src={displayPhoto}
             alt={entry.name}
             className="w-full h-full object-cover object-top"
             loading="lazy"
           />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-primary-50">
-            <span className="text-3xl font-bold text-primary-400">{initials}</span>
-          </div>
-        )}
+) : (
+  <div className="w-full h-full flex items-center justify-center bg-gray-100 relative">
+    <Icon icon="mdi:account-circle" className="w-32 h-32 text-gray-300" />
+    {!photoVisible && entry.photo && (
+      <div className="absolute bottom-2 right-2 bg-gray-800 bg-opacity-80 rounded-full p-1.5">
+        <Icon icon="mdi:lock" className="w-3.5 h-3.5 text-white" />
+      </div>
+    )}
+  </div>
+)}
+   
       </div>
       <div className="p-3 flex flex-col gap-1.5">
         <h3 className="text-primary-500 font-bold text-sm leading-tight">{entry.name}</h3>
@@ -73,7 +98,12 @@ function AlumnaeCard({ entry }: AlumnaeCardProps) {
               <span className="text-gray-300">|</span>
               <span className="flex items-center gap-0.5">
                 <Icon icon="mdi:map-marker-outline" className="w-3 h-3" />
-                {entry.location}
+                {cityVisible ? entry.location : (
+                  <span className="inline-flex items-center gap-0.5 italic">
+                    <Icon icon="mdi:lock" className="w-2.5 h-2.5" />
+                    Private
+                  </span>
+                )}
               </span>
             </>
           )}
@@ -105,6 +135,9 @@ export function AlumniDirectoryPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [yearFilter, setYearFilter] = useState('');
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
+
+  // ── Get current user for privacy checks ───────────────────────────────────
+  const currentUser = useAuthStore((state) => state.user);
 
   // ── Hook ───────────────────────────────────────────────────────────────────
   const { data: alumni = [], isLoading } = useAlumni();
@@ -188,7 +221,7 @@ export function AlumniDirectoryPage() {
           ) : visibleAlumni.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4 mb-10">
               {visibleAlumni.map((entry) => (
-                <AlumnaeCard key={entry.slug} entry={entry} />
+                <AlumnaeCard key={entry.slug} entry={entry} currentUser={currentUser} />
               ))}
             </div>
           ) : (
