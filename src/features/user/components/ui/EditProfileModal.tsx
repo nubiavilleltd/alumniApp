@@ -42,28 +42,26 @@ interface FormState {
 // Converts the stored numeric yearsOfExperience to the closest option value string
 function resolveYearsOfExperience(years: number | undefined): string {
   if (years == null) return '';
-  const match = [...yearsOfExperienceOptions]
-    .reverse()
-    .find((o) => o.value <= years);
+  const match = [...yearsOfExperienceOptions].reverse().find((o) => o.value <= years);
   return match ? String(match.value) : String(yearsOfExperienceOptions[0].value);
 }
 
 function toFormState(user: AuthSessionUser | null): FormState {
   return {
-    alternativePhone:  user?.alternativePhone   ?? '',
-    birthDate:         user?.birthDate          ?? '',
+    alternativePhone: user?.alternativePhone ?? '',
+    birthDate: user?.birthDate ?? '',
     residentialAddress: user?.residentialAddress ?? '',
-    area:              user?.area               ?? '',
-    city:              user?.city               ?? '',
-    employmentStatus:  user?.employmentStatus   ?? '',
-    occupation:        user?.occupations?.[0]   ?? '',
-    industrySector:    user?.industrySectors?.[0] ?? '',
+    area: user?.area ?? '',
+    city: user?.city ?? '',
+    employmentStatus: user?.employmentStatus ?? '',
+    occupation: user?.occupations?.[0] ?? '',
+    industrySector: user?.industrySectors?.[0] ?? '',
     yearsOfExperience: resolveYearsOfExperience(user?.yearsOfExperience),
-    isVolunteer:       user?.isVolunteer === true ? 'yes' : user?.isVolunteer === false ? 'no' : '',
-    linkedin:          '',
-    twitter:           '',
-    instagram:         '',
-    photo:             user?.photo              ?? '',
+    isVolunteer: user?.isVolunteer === true ? 'yes' : user?.isVolunteer === false ? 'no' : '',
+    linkedin: '',
+    twitter: '',
+    instagram: '',
+    photo: user?.photo ?? '',
   };
 }
 
@@ -74,9 +72,9 @@ const yearsOfExperienceSelectOptions = yearsOfExperienceOptions.map((o) => ({
 }));
 
 export default function EditProfileModal({ isOpen, onClose, currentUser }: Props) {
-  const [form, setForm]               = useState<FormState>(() => toFormState(currentUser));
+  const [form, setForm] = useState<FormState>(() => toFormState(currentUser));
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
-  const [isSaving, setIsSaving]       = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     setForm(toFormState(currentUser));
@@ -129,15 +127,20 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
   return (
     <Modal isOpen={isOpen} onClose={handleClose} title="Edit Profile">
       <div className="flex flex-col gap-6">
-
         {/* ── Photo ──────────────────────────────────────────────────────── */}
         <div className="flex items-center gap-4">
           <div className="relative flex-shrink-0">
             <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-primary-100 bg-primary-50 flex items-center justify-center">
               {displayPhoto ? (
-                <img src={displayPhoto} alt={currentUser?.fullName} className="w-full h-full object-cover" />
+                <img
+                  src={displayPhoto}
+                  alt={currentUser?.fullName}
+                  className="w-full h-full object-cover"
+                />
               ) : (
-                <span className="text-xl font-bold text-primary-400">{currentUser?.avatarInitials}</span>
+                <span className="text-xl font-bold text-primary-400">
+                  {currentUser?.avatarInitials}
+                </span>
               )}
             </div>
             <label className="absolute bottom-0 right-0 w-6 h-6 bg-primary-500 hover:bg-primary-600 rounded-full flex items-center justify-center cursor-pointer shadow transition-colors">
@@ -156,7 +159,9 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
 
         {/* ── Contact ────────────────────────────────────────────────────── */}
         <div>
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Contact</p>
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+            Contact
+          </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <FormInput
               label="Alternative Phone"
@@ -177,7 +182,9 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
 
         {/* ── Address ────────────────────────────────────────────────────── */}
         <div>
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Address</p>
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+            Address
+          </p>
           <div className="flex flex-col gap-4">
             <FormInput
               label="Residential Address"
@@ -249,7 +256,7 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
               onChange={handleChange}
               options={[
                 { label: 'Yes, I am interested', value: 'yes' },
-                { label: 'No, not at this time',  value: 'no'  },
+                { label: 'No, not at this time', value: 'no' },
               ]}
               placeholder="Are you a volunteer?"
             />
@@ -258,29 +265,60 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
 
         {/* ── Social Links ───────────────────────────────────────────────── */}
         <div>
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Social Links</p>
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+            Social Links
+          </p>
           <div className="flex flex-col gap-3">
-            <FormInput label="LinkedIn"    name="linkedin"   value={form.linkedin}   onChange={handleChange} placeholder="https://linkedin.com/in/yourname" />
-            <FormInput label="Twitter / X" name="twitter"    value={form.twitter}    onChange={handleChange} placeholder="https://twitter.com/yourhandle" />
-            <FormInput label="Instagram"   name="instagram"  value={form.instagram}  onChange={handleChange} placeholder="https://instagram.com/yourhandle" />
+            <FormInput
+              label="LinkedIn"
+              name="linkedin"
+              value={form.linkedin}
+              onChange={handleChange}
+              placeholder="https://linkedin.com/in/yourname"
+            />
+            <FormInput
+              label="Twitter / X"
+              name="twitter"
+              value={form.twitter}
+              onChange={handleChange}
+              placeholder="https://twitter.com/yourhandle"
+            />
+            <FormInput
+              label="Instagram"
+              name="instagram"
+              value={form.instagram}
+              onChange={handleChange}
+              placeholder="https://instagram.com/yourhandle"
+            />
           </div>
         </div>
 
         {/* ── Actions ────────────────────────────────────────────────────── */}
         <div className="flex items-center gap-3 pt-2 border-t border-gray-100">
-          <Button variant="primary" className="flex-1 py-2.5" onClick={handleSave} disabled={isSaving}>
+          <Button
+            variant="primary"
+            className="flex-1 py-2.5"
+            onClick={handleSave}
+            disabled={isSaving}
+          >
             {isSaving ? (
               <span className="flex items-center justify-center gap-2">
                 <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" />
                 Saving...
               </span>
-            ) : 'Save Changes'}
+            ) : (
+              'Save Changes'
+            )}
           </Button>
-          <Button variant="outline" className="flex-1 py-2.5" onClick={handleClose} disabled={isSaving}>
+          <Button
+            variant="outline"
+            className="flex-1 py-2.5"
+            onClick={handleClose}
+            disabled={isSaving}
+          >
             Cancel
           </Button>
         </div>
-
       </div>
     </Modal>
   );

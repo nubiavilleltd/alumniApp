@@ -15,7 +15,7 @@ import EditProfileModal from '../components/ui/EditProfileModal';
 import { SEO } from '@/shared/common/SEO';
 
 const breadcrumbItems = [
-  { label: 'Home',      href: '/' },
+  { label: 'Home', href: '/' },
   { label: 'Dashboard', href: '/dashboard' },
   { label: 'My Profile' },
 ];
@@ -33,15 +33,21 @@ function resolveLabel(
 function formatDate(iso: string | undefined): string | undefined {
   if (!iso) return undefined;
   return new Date(iso).toLocaleDateString('en-US', {
-    year: 'numeric', month: 'long', day: 'numeric',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
   });
 }
 
 // ── Sub-components ────────────────────────────────────────────────────────────
 function FieldRow({
-  label, value, icon,
+  label,
+  value,
+  icon,
 }: {
-  label: string; value?: string | number; icon: string;
+  label: string;
+  value?: string | number;
+  icon: string;
 }) {
   return (
     <div className="flex items-center justify-between py-3">
@@ -57,9 +63,15 @@ function FieldRow({
 }
 
 function SectionCard({
-  title, icon, onEdit, children,
+  title,
+  icon,
+  onEdit,
+  children,
 }: {
-  title: string; icon: string; onEdit: () => void; children: React.ReactNode;
+  title: string;
+  icon: string;
+  onEdit: () => void;
+  children: React.ReactNode;
 }) {
   return (
     <section className="bg-white shadow-md rounded-2xl p-6">
@@ -89,9 +101,9 @@ export default function UserProfilePage() {
   const openEdit = () => setShowEdit(true);
 
   // Resolved labels for sidebar
-  const occupationLabel     = resolveLabel(currentUser?.occupations?.[0], occupationOptions);
-  const employmentLabel     = resolveLabel(currentUser?.employmentStatus, employmentStatusOptions);
-  const areaLabel           = resolveLabel(currentUser?.area, areaOptions);
+  const occupationLabel = resolveLabel(currentUser?.occupations?.[0], occupationOptions);
+  const employmentLabel = resolveLabel(currentUser?.employmentStatus, employmentStatusOptions);
+  const areaLabel = resolveLabel(currentUser?.area, areaOptions);
 
   // Deduplicate area + city (e.g. "Abuja, Abuja" → "Abuja")
   const locationParts = [areaLabel, currentUser?.city]
@@ -106,10 +118,8 @@ export default function UserProfilePage() {
       <section className="section py-12">
         <div className="container-custom">
           <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-3">
-
             {/* ── Sidebar ──────────────────────────────────────────────── */}
             <aside className="space-y-4 lg:col-span-1 h-fit">
-
               <div className="bg-white shadow-md rounded-2xl p-6 flex flex-col items-center text-center">
                 <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-primary-100 bg-primary-50 flex items-center justify-center mb-4">
                   {currentUser?.photo ? (
@@ -129,12 +139,9 @@ export default function UserProfilePage() {
                   {currentUser?.fullName ?? 'Your Name'}
                 </h1>
 
-                {currentUser?.nameInSchool &&
-                  currentUser.nameInSchool !== currentUser.fullName && (
-                    <p className="text-xs text-gray-400 mt-0.5">
-                      née {currentUser.nameInSchool}
-                    </p>
-                  )}
+                {currentUser?.nameInSchool && currentUser.nameInSchool !== currentUser.fullName && (
+                  <p className="text-xs text-gray-400 mt-0.5">née {currentUser.nameInSchool}</p>
+                )}
 
                 <p className="text-sm text-primary-500 mt-0.5">
                   Class of {currentUser?.graduationYear}
@@ -168,36 +175,65 @@ export default function UserProfilePage() {
 
               {currentUser?.isVolunteer && (
                 <div className="bg-primary-50 border border-primary-100 rounded-2xl px-4 py-3 flex items-center gap-3">
-                  <Icon icon="mdi:hand-heart-outline" className="w-5 h-5 text-primary-500 flex-shrink-0" />
+                  <Icon
+                    icon="mdi:hand-heart-outline"
+                    className="w-5 h-5 text-primary-500 flex-shrink-0"
+                  />
                   <p className="text-sm text-primary-700 font-medium">Volunteer</p>
                 </div>
               )}
-
             </aside>
 
             {/* ── Main content ─────────────────────────────────────────── */}
             <main className="space-y-6 lg:col-span-2">
-
               <SectionCard title="Identity" icon="mdi:account-outline" onEdit={openEdit}>
                 <div className="divide-y divide-gray-50">
-                  <FieldRow label="Full Name"      value={currentUser?.fullName}                    icon="mdi:account-outline" />
-                  <FieldRow label="Name in School" value={currentUser?.nameInSchool}                icon="mdi:school-outline" />
-                  <FieldRow label="Email"          value={currentUser?.email}                       icon="mdi:email-outline" />
-                  <FieldRow label="WhatsApp"       value={currentUser?.whatsappPhone}               icon="mdi:whatsapp" />
+                  <FieldRow
+                    label="Full Name"
+                    value={currentUser?.fullName}
+                    icon="mdi:account-outline"
+                  />
+                  <FieldRow
+                    label="Name in School"
+                    value={currentUser?.nameInSchool}
+                    icon="mdi:school-outline"
+                  />
+                  <FieldRow label="Email" value={currentUser?.email} icon="mdi:email-outline" />
+                  <FieldRow
+                    label="WhatsApp"
+                    value={currentUser?.whatsappPhone}
+                    icon="mdi:whatsapp"
+                  />
                   {currentUser?.alternativePhone && (
-                    <FieldRow label="Alt. Phone"   value={currentUser.alternativePhone}             icon="mdi:phone-outline" />
+                    <FieldRow
+                      label="Alt. Phone"
+                      value={currentUser.alternativePhone}
+                      icon="mdi:phone-outline"
+                    />
                   )}
                   {currentUser?.birthDate && (
-                    <FieldRow label="Date of Birth" value={formatDate(currentUser.birthDate)}       icon="mdi:calendar-outline" />
+                    <FieldRow
+                      label="Date of Birth"
+                      value={formatDate(currentUser.birthDate)}
+                      icon="mdi:calendar-outline"
+                    />
                   )}
                 </div>
               </SectionCard>
 
               <SectionCard title="Address" icon="mdi:map-marker-outline" onEdit={openEdit}>
                 <div className="divide-y divide-gray-50">
-                  <FieldRow label="Residential Address" value={currentUser?.residentialAddress}    icon="mdi:home-outline" />
-                  <FieldRow label="Area"                value={areaLabel}                          icon="mdi:map-outline" />
-                  <FieldRow label="City"                value={currentUser?.city}                  icon="mdi:city-variant-outline" />
+                  <FieldRow
+                    label="Residential Address"
+                    value={currentUser?.residentialAddress}
+                    icon="mdi:home-outline"
+                  />
+                  <FieldRow label="Area" value={areaLabel} icon="mdi:map-outline" />
+                  <FieldRow
+                    label="City"
+                    value={currentUser?.city}
+                    icon="mdi:city-variant-outline"
+                  />
                 </div>
               </SectionCard>
 
@@ -224,14 +260,15 @@ export default function UserProfilePage() {
                   />
                   <FieldRow
                     label="Years of Experience"
-                    value={currentUser?.yearsOfExperience !== undefined
-                      ? `${currentUser.yearsOfExperience} years`
-                      : undefined}
+                    value={
+                      currentUser?.yearsOfExperience !== undefined
+                        ? `${currentUser.yearsOfExperience} years`
+                        : undefined
+                    }
                     icon="mdi:chart-timeline-variant"
                   />
                 </div>
               </SectionCard>
-
             </main>
           </div>
         </div>

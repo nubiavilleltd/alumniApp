@@ -1,8 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import {
-  marketplaceService,
-  type GetMarketplaceParams,
-} from '@/features/marketplace/services/marketplace.service';
+import { GetMarketplaceParams } from '../types/marketplace.types';
+import { marketplaceService } from '../services/marketplace.service';
+// import {
+//   marketplaceService,
+//   type GetMarketplaceParams,
+// } from '@/features/marketplace/services/marketplace.type';
 
 // ─── Query Keys ───────────────────────────────────────────────────────────────
 export const marketplaceKeys = {
@@ -27,7 +29,7 @@ export function useMarketplace(params?: GetMarketplaceParams) {
 export function useMarketplaceListing(id: string) {
   return useQuery({
     queryKey: marketplaceKeys.detail(id),
-    queryFn: () => marketplaceService.getById(id),
+    queryFn: () => marketplaceService.getByOwner(id),
     enabled: !!id,
     staleTime: 1000 * 60 * 5,
   });

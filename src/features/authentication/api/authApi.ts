@@ -41,6 +41,7 @@ export const authApi = {
   async login(values: LoginFormValues): Promise<LoginResponse> {
     await wait();
     const account = authenticateMockAccount(values.email, values.password);
+    console.log("account", {account})
     if (!account) {
       throw new Error('Invalid email or password');
     }
