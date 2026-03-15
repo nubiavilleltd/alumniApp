@@ -45,10 +45,6 @@
 //   social?: SocialLinks;
 // };
 
-
-
-
-
 // features/alumni/types/alumni.types.ts
 
 type AlumniProject = {
@@ -79,27 +75,27 @@ type SocialLinks = {
 
 export type Alumni = {
   // ── Relational keys ──────────────────────────────────────────────────────
-  memberId:   string;   // FK → MockAuthAccount.memberId
-  chapterId?: string;   // FK → Chapter.chapterId
+  memberId: string; // FK → MockAuthAccount.memberId
+  chapterId?: string; // FK → Chapter.chapterId
 
   // ── Identity ──────────────────────────────────────────────────────────────
-  name:       string;
-  slug:       string;   // URL only
-  year:       number;   // graduation year
+  name: string;
+  slug: string; // URL only
+  year: number; // graduation year
 
   // ── Profile ───────────────────────────────────────────────────────────────
-  short_bio:       string;
-  long_bio:        string;
-  photo:           string;
-  email:           string;
-  location:        string;
-  company:         string;
-  position:        string;
-  skills:          string[];
-  projects:        AlumniProject[];
+  short_bio: string;
+  long_bio: string;
+  photo: string;
+  email: string;
+  location: string;
+  company: string;
+  position: string;
+  skills: string[];
+  projects: AlumniProject[];
   work_experience: WorkExperience[];
-  education:       Education[];
-  achievements:    string[];
-  interests:       string[];
-  social?:         SocialLinks;
+  education: Education[];
+  achievements: string[];
+  interests: string[];
+  social?: SocialLinks;
 };

@@ -3,36 +3,36 @@
 // ─── Business entity ──────────────────────────────────────────────────────────
 export interface Business {
   // ── Relational keys ──────────────────────────────────────────────────────
-  businessId: string;   // 'BIZ-{year}-{seq}' — stable unique ID
-  ownerId:    string;   // FK → MockAuthAccount.memberId
+  businessId: string; // 'BIZ-{year}-{seq}' — stable unique ID
+  ownerId: string; // FK → MockAuthAccount.memberId
 
   // ── Identity ──────────────────────────────────────────────────────────────
-  slug:     string;
-  name:     string;
-  owner:    string;     // display name — denormalised for convenience
+  slug: string;
+  name: string;
+  owner: string; // display name — denormalised for convenience
 
   // ── Details ───────────────────────────────────────────────────────────────
-  category:    string;
+  category: string;
   description: string;
-  location:    string;
-  phone:       string;
-  website?:    string;
-  images:      string[];
+  location: string;
+  phone: string;
+  website?: string;
+  images: string[];
 }
 
 // ─── Service params / payloads ────────────────────────────────────────────────
 export interface GetMarketplaceParams {
-  search?:   string;
+  search?: string;
   category?: string;
-  page?:     number;
+  page?: number;
 }
 
 export interface PostBusinessPayload {
-  name:        string;
-  category:    string;
+  name: string;
+  category: string;
   description: string;
-  location:    string;
-  phone:       string;
-  website?:    string;
-  images:      File[];
+  location: string;
+  phone: string;
+  website?: string;
+  images: File[];
 }

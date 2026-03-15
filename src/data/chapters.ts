@@ -16,13 +16,13 @@ export interface Chapter {
 
 export const chapters: Chapter[] = [
   {
-    chapterId:   'CHR-LAGOS',
-    name:        'Lagos Chapter',
-    shortName:   'Lagos',
-    city:        'Lagos',
-    country:     'Nigeria',
+    chapterId: 'CHR-LAGOS',
+    name: 'Lagos Chapter',
+    shortName: 'Lagos',
+    city: 'Lagos',
+    country: 'Nigeria',
     established: '2001-01-01',
-    isActive:    true,
+    isActive: true,
   },
   // 🔴 TODO: Add more chapters as the association grows
   // {

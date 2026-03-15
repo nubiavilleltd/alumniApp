@@ -15,7 +15,7 @@ const navItems = [
     label: 'Alumnae Connect',
     url: '#',
     children: [
-      { label: 'Messages', url: '/messages', icon: 'mdi:message-outline' },
+      { label: 'Messages',         url: '/messages',       icon: 'mdi:message-outline' },
       { label: 'Alumni Directory', url: '/alumni/profiles', icon: 'mdi:account-group-outline' },
     ],
   },
@@ -177,15 +177,20 @@ function UserDropdown({
               <Icon icon="mdi:storefront-outline" className="w-4 h-4 text-primary-400" />
               My Business
             </AppLink>
+            <AppLink
+              href="/user/settings"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors"
+            >
+              <Icon icon="mdi:cog-outline" className="w-4 h-4 text-primary-400" />
+              Settings
+            </AppLink>
           </div>
 
           <div className="border-t border-gray-100 py-1">
             <button
               type="button"
-              onClick={() => {
-                setOpen(false);
-                onLogout();
-              }}
+              onClick={() => { setOpen(false); onLogout(); }}
               className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors"
             >
               <Icon icon="mdi:logout" className="w-4 h-4" />
@@ -209,19 +214,15 @@ export function Navigation() {
   const mobileButtonRef = useRef<HTMLButtonElement>(null);
   const { pathname } = useLocation();
 
-  useEffect(() => {
-    setMobileOpen(false);
-  }, [pathname]);
+  useEffect(() => { setMobileOpen(false); }, [pathname]);
 
   useEffect(() => {
     const onOutsideClick = (e: MouseEvent) => {
-      const inMenu = mobileMenuRef.current?.contains(e.target as Node);
+      const inMenu   = mobileMenuRef.current?.contains(e.target as Node);
       const inButton = mobileButtonRef.current?.contains(e.target as Node);
       if (!inMenu && !inButton) setMobileOpen(false);
     };
-    const onResize = () => {
-      if (window.innerWidth >= 1024) setMobileOpen(false);
-    };
+    const onResize = () => { if (window.innerWidth >= 1024) setMobileOpen(false); };
     document.addEventListener('click', onOutsideClick);
     window.addEventListener('resize', onResize);
     return () => {
@@ -240,6 +241,7 @@ export function Navigation() {
     <nav className="bg-primary-500 sticky top-0 z-50 text-white shadow-sm">
       <div className="container-custom">
         <div className="flex items-center justify-between h-16 lg:h-20">
+
           {/* ── Logo ───────────────────────────────────────────────────── */}
           <AppLink href="/" className="flex items-center gap-3 group flex-shrink-0">
             <div className="w-10 h-10">
@@ -257,9 +259,7 @@ export function Navigation() {
               <h1 className="text-lg font-bold text-white group-hover:text-white/80 transition-colors">
                 {config.site.name}
               </h1>
-              <p className="text-xs text-white/70 hidden sm:block">
-                Federal Government Girls College
-              </p>
+              <p className="text-xs text-white/70 hidden sm:block">Federal Government Girls College</p>
             </div>
           </AppLink>
 
@@ -326,10 +326,9 @@ export function Navigation() {
                   key={item.label}
                   href={item.url}
                   className={`block px-4 py-2.5 text-sm rounded-lg transition-colors
-                    ${
-                      (item.url === '/' ? pathname === '/' : pathname.startsWith(item.url))
-                        ? 'bg-white/20 text-white font-semibold'
-                        : 'text-white/80 hover:bg-white/10 hover:text-white'
+                    ${(item.url === '/' ? pathname === '/' : pathname.startsWith(item.url))
+                      ? 'bg-white/20 text-white font-semibold'
+                      : 'text-white/80 hover:bg-white/10 hover:text-white'
                     }`}
                 >
                   {item.label}
@@ -356,9 +355,7 @@ export function Navigation() {
                   </div>
                   <div>
                     <p className="font-semibold text-white text-sm">{currentUser.fullName}</p>
-                    <p className="text-xs text-white/60 capitalize">
-                      {currentUser.role ?? 'Member'}
-                    </p>
+                    <p className="text-xs text-white/60 capitalize">{currentUser.role ?? 'Member'}</p>
                   </div>
                 </div>
                 <AppLink
@@ -381,6 +378,13 @@ export function Navigation() {
                 >
                   <Icon icon="mdi:storefront-outline" className="w-4 h-4" />
                   My Business
+                </AppLink>
+                <AppLink
+                  href="/user/settings"
+                  className="flex items-center gap-2.5 px-3 py-2.5 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                >
+                  <Icon icon="mdi:cog-outline" className="w-4 h-4" />
+                  Settings
                 </AppLink>
                 <button
                   type="button"

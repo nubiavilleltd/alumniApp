@@ -34,7 +34,7 @@ export function LoginForm() {
   const onSubmit = handleSubmit(async (values) => {
     try {
       const response = await authApi.login(values);
-      console.log("user", response.user)
+      console.log('user', response.user);
       setSession(response.user);
       navigate(from, { replace: true });
     } catch (error) {
