@@ -77,17 +77,16 @@ function AlumnaeCard({ entry, currentUser }: AlumnaeCardProps) {
             className="w-full h-full object-cover object-top"
             loading="lazy"
           />
-) : (
-  <div className="w-full h-full flex items-center justify-center bg-gray-100 relative">
-    <Icon icon="mdi:account-circle" className="w-32 h-32 text-gray-300" />
-    {!photoVisible && entry.photo && (
-      <div className="absolute bottom-2 right-2 bg-gray-800 bg-opacity-80 rounded-full p-1.5">
-        <Icon icon="mdi:lock" className="w-3.5 h-3.5 text-white" />
-      </div>
-    )}
-  </div>
-)}
-   
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gray-100 relative">
+            <Icon icon="mdi:account-circle" className="w-32 h-32 text-gray-300" />
+            {!photoVisible && entry.photo && (
+              <div className="absolute bottom-2 right-2 bg-gray-800 bg-opacity-80 rounded-full p-1.5">
+                <Icon icon="mdi:lock" className="w-3.5 h-3.5 text-white" />
+              </div>
+            )}
+          </div>
+        )}
       </div>
       <div className="p-3 flex flex-col gap-1.5">
         <h3 className="text-primary-500 font-bold text-sm leading-tight">{entry.name}</h3>
@@ -98,7 +97,9 @@ function AlumnaeCard({ entry, currentUser }: AlumnaeCardProps) {
               <span className="text-gray-300">|</span>
               <span className="flex items-center gap-0.5">
                 <Icon icon="mdi:map-marker-outline" className="w-3 h-3" />
-                {cityVisible ? entry.location : (
+                {cityVisible ? (
+                  entry.location
+                ) : (
                   <span className="inline-flex items-center gap-0.5 italic">
                     <Icon icon="mdi:lock" className="w-2.5 h-2.5" />
                     Private

@@ -9,7 +9,11 @@ import { Layout } from '@/shared/components/layout/Layout';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { SEO } from '@/shared/common/SEO';
-import { isFieldVisible, getPrivateFieldDisplay, getPhotoDisplay } from '@/features/alumni/utils/privacyHelpers';
+import {
+  isFieldVisible,
+  getPrivateFieldDisplay,
+  getPhotoDisplay,
+} from '@/features/alumni/utils/privacyHelpers';
 import {
   employmentStatusOptions,
   occupationOptions,
@@ -17,8 +21,6 @@ import {
   yearsOfExperienceOptions,
   areaOptions,
 } from '@/features/authentication/constants/profileOptions';
-
-
 
 interface UserDataForDisplay {
   whatsappPhone?: string;
@@ -39,9 +41,12 @@ interface UserDataForDisplay {
 // ─── Helper Functions ─────────────────────────────────────────────────────────
 
 // Helper to get display label from option value
-function getDisplayLabel(value: string | number | undefined, options: readonly { label: string; value: string | number }[]): string {
+function getDisplayLabel(
+  value: string | number | undefined,
+  options: readonly { label: string; value: string | number }[],
+): string {
   if (value === undefined || value === null) return 'Not provided';
-  const option = options.find(opt => opt.value == value); // Use == for loose comparison
+  const option = options.find((opt) => opt.value == value); // Use == for loose comparison
   return option?.label || value.toString();
 }
 // Helper to capitalize first letter
@@ -83,10 +88,10 @@ function ProfileSkeleton() {
 }
 
 // ─── Helper to get user data from account ────────────────────────────────────
-function getUserDataFromAccount(alumnus: any): UserDataForDisplay | null  {
+function getUserDataFromAccount(alumnus: any): UserDataForDisplay | null {
   const account = alumnus.memberId ? getMockAccountByMemberId(alumnus.memberId) : undefined;
   if (!account) return null;
-  
+
   return {
     whatsappPhone: account.whatsappPhone,
     alternativePhone: account.alternativePhone,
@@ -106,9 +111,9 @@ function getUserDataFromAccount(alumnus: any): UserDataForDisplay | null  {
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export function AlumniProfilePage() {
-  const { slug = '' }  = useParams();
-  const currentUser    = useAuthStore((state) => state.user);
-  const isSignedIn     = !!currentUser;
+  const { slug = '' } = useParams();
+  const currentUser = useAuthStore((state) => state.user);
+  const isSignedIn = !!currentUser;
 
   const { data: alumnus, isLoading } = useAlumnus(slug);
 
@@ -136,7 +141,7 @@ export function AlumniProfilePage() {
   const alumnusWithPrivacy = { ...alumnus, privacy, id: alumnus.memberId };
 
   const breadcrumbItems = [
-    { label: 'Home',     href: '/' },
+    { label: 'Home', href: '/' },
     { label: 'Profiles', href: '/alumni/profiles' },
     { label: alumnus.name },
   ];
@@ -152,12 +157,13 @@ export function AlumniProfilePage() {
       <section className="section py-12">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
             {/* ── Sidebar ──────────────────────────────────────────────── */}
             <aside className="lg:col-span-1 bg-white shadow-md rounded-2xl p-6 text-center">
-
               {/* Photo — respects privacy */}
-              {getPhotoDisplay(alumnus.photo, isFieldVisible(alumnusWithPrivacy, 'photo', currentUser)) ? (
+              {getPhotoDisplay(
+                alumnus.photo,
+                isFieldVisible(alumnusWithPrivacy, 'photo', currentUser),
+              ) ? (
                 <img
                   src={alumnus.photo || '/logo.svg'}
                   alt={alumnus.name}
@@ -198,8 +204,14 @@ export function AlumniProfilePage() {
                     {/* Email - always visible */}
                     {alumnus.email && (
                       <div className="flex items-start gap-2">
-                        <Icon icon="mdi:email-outline" className="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" />
-                        <AppLink href={`mailto:${alumnus.email}`} className="text-primary-600 hover:underline break-all">
+                        <Icon
+                          icon="mdi:email-outline"
+                          className="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5"
+                        />
+                        <AppLink
+                          href={`mailto:${alumnus.email}`}
+                          className="text-primary-600 hover:underline break-all"
+                        >
                           {alumnus.email}
                         </AppLink>
                       </div>
@@ -208,12 +220,15 @@ export function AlumniProfilePage() {
                     {/* WhatsApp Phone */}
                     {userData?.whatsappPhone && (
                       <div className="flex items-start gap-2">
-                        <Icon icon="mdi:whatsapp" className="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" />
+                        <Icon
+                          icon="mdi:whatsapp"
+                          className="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5"
+                        />
                         <span className="break-all">
                           {getPrivateFieldDisplay(
                             userData.whatsappPhone,
                             isFieldVisible(alumnusWithPrivacy, 'whatsappPhone', currentUser),
-                            'Not provided'
+                            'Not provided',
                           )}
                         </span>
                       </div>
@@ -222,12 +237,15 @@ export function AlumniProfilePage() {
                     {/* Alternative Phone */}
                     {userData?.alternativePhone && (
                       <div className="flex items-start gap-2">
-                        <Icon icon="mdi:phone-outline" className="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" />
+                        <Icon
+                          icon="mdi:phone-outline"
+                          className="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5"
+                        />
                         <span className="break-all">
                           {getPrivateFieldDisplay(
                             userData.alternativePhone,
                             isFieldVisible(alumnusWithPrivacy, 'alternativePhone', currentUser),
-                            'Not provided'
+                            'Not provided',
                           )}
                         </span>
                       </div>
@@ -238,12 +256,20 @@ export function AlumniProfilePage() {
                   {(alumnus.social?.linkedin || alumnus.social?.twitter) && (
                     <div className="mt-6 flex justify-center gap-5 text-gray-600">
                       {alumnus.social.linkedin && (
-                        <AppLink href={alumnus.social.linkedin} target="_blank" className="hover:text-primary-600">
+                        <AppLink
+                          href={alumnus.social.linkedin}
+                          target="_blank"
+                          className="hover:text-primary-600"
+                        >
                           <Icon icon="mdi:linkedin" className="w-6 h-6" />
                         </AppLink>
                       )}
                       {alumnus.social.twitter && (
-                        <AppLink href={alumnus.social.twitter} target="_blank" className="hover:text-primary-600">
+                        <AppLink
+                          href={alumnus.social.twitter}
+                          target="_blank"
+                          className="hover:text-primary-600"
+                        >
                           <Icon icon="mdi:twitter" className="w-6 h-6" />
                         </AppLink>
                       )}
@@ -256,7 +282,10 @@ export function AlumniProfilePage() {
                   <p className="mt-2 text-sm leading-6 text-primary-900/80">
                     Sign in to view contact information and full profile details.
                   </p>
-                  <AppLink href="/auth/login" className="btn btn-primary btn-sm mt-4 w-full justify-center">
+                  <AppLink
+                    href="/auth/login"
+                    className="btn btn-primary btn-sm mt-4 w-full justify-center"
+                  >
                     Sign in to continue
                   </AppLink>
                 </div>
@@ -277,7 +306,10 @@ export function AlumniProfilePage() {
                   </section>
 
                   {/* Professional Information */}
-                  {(userData?.employmentStatus || userData?.occupation || userData?.industrySector || userData?.yearsOfExperience) && (
+                  {(userData?.employmentStatus ||
+                    userData?.occupation ||
+                    userData?.industrySector ||
+                    userData?.yearsOfExperience) && (
                     <section className="bg-white shadow-md rounded-2xl p-6">
                       <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
                         <Icon icon="mdi:briefcase-outline" className="w-5 h-5 text-primary-500" />
@@ -286,44 +318,59 @@ export function AlumniProfilePage() {
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                         {userData.employmentStatus && (
                           <div>
-                            <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">Employment Status</p>
+                            <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">
+                              Employment Status
+                            </p>
                             <p className="font-medium text-gray-800">
                               {getPrivateFieldDisplay(
                                 getDisplayLabel(userData.employmentStatus, employmentStatusOptions),
-                                isFieldVisible(alumnusWithPrivacy, 'employmentStatus', currentUser)
+                                isFieldVisible(alumnusWithPrivacy, 'employmentStatus', currentUser),
                               )}
                             </p>
                           </div>
                         )}
                         {userData.occupation && (
                           <div>
-                            <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">Occupation</p>
+                            <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">
+                              Occupation
+                            </p>
                             <p className="font-medium text-gray-800">
                               {getPrivateFieldDisplay(
                                 getDisplayLabel(userData.occupation, occupationOptions),
-                                isFieldVisible(alumnusWithPrivacy, 'occupations', currentUser)
+                                isFieldVisible(alumnusWithPrivacy, 'occupations', currentUser),
                               )}
                             </p>
                           </div>
                         )}
                         {userData.industrySector && (
                           <div>
-                            <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">Industry Sector</p>
+                            <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">
+                              Industry Sector
+                            </p>
                             <p className="font-medium text-gray-800">
                               {getPrivateFieldDisplay(
                                 getDisplayLabel(userData.industrySector, industrySectorOptions),
-                                isFieldVisible(alumnusWithPrivacy, 'industrySectors', currentUser)
+                                isFieldVisible(alumnusWithPrivacy, 'industrySectors', currentUser),
                               )}
                             </p>
                           </div>
                         )}
                         {userData.yearsOfExperience && (
                           <div>
-                            <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">Years of Experience</p>
+                            <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">
+                              Years of Experience
+                            </p>
                             <p className="font-medium text-gray-800">
                               {getPrivateFieldDisplay(
-                                getDisplayLabel(userData.yearsOfExperience?.toString(), yearsOfExperienceOptions),
-                                isFieldVisible(alumnusWithPrivacy, 'yearsOfExperience', currentUser)
+                                getDisplayLabel(
+                                  userData.yearsOfExperience?.toString(),
+                                  yearsOfExperienceOptions,
+                                ),
+                                isFieldVisible(
+                                  alumnusWithPrivacy,
+                                  'yearsOfExperience',
+                                  currentUser,
+                                ),
                               )}
                             </p>
                           </div>
@@ -342,33 +389,43 @@ export function AlumniProfilePage() {
                       <div className="space-y-3 text-sm">
                         {userData.city && (
                           <div>
-                            <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">City</p>
+                            <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">
+                              City
+                            </p>
                             <p className="font-medium text-gray-800">
                               {getPrivateFieldDisplay(
                                 capitalizeFirst(userData.city),
-                                isFieldVisible(alumnusWithPrivacy, 'city', currentUser)
+                                isFieldVisible(alumnusWithPrivacy, 'city', currentUser),
                               )}
                             </p>
                           </div>
                         )}
                         {userData.area && (
                           <div>
-                            <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">Area</p>
+                            <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">
+                              Area
+                            </p>
                             <p className="font-medium text-gray-800">
                               {getPrivateFieldDisplay(
                                 getDisplayLabel(userData.area, areaOptions),
-                                isFieldVisible(alumnusWithPrivacy, 'area', currentUser)
+                                isFieldVisible(alumnusWithPrivacy, 'area', currentUser),
                               )}
                             </p>
                           </div>
                         )}
                         {userData.residentialAddress && (
                           <div>
-                            <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">Residential Address</p>
+                            <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">
+                              Residential Address
+                            </p>
                             <p className="font-medium text-gray-800">
                               {getPrivateFieldDisplay(
                                 userData.residentialAddress,
-                                isFieldVisible(alumnusWithPrivacy, 'residentialAddress', currentUser)
+                                isFieldVisible(
+                                  alumnusWithPrivacy,
+                                  'residentialAddress',
+                                  currentUser,
+                                ),
                               )}
                             </p>
                           </div>
@@ -385,11 +442,13 @@ export function AlumniProfilePage() {
                         Personal
                       </h2>
                       <div className="text-sm">
-                        <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">Date of Birth</p>
+                        <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">
+                          Date of Birth
+                        </p>
                         <p className="font-medium text-gray-800">
                           {getPrivateFieldDisplay(
                             userData.birthDate,
-                            isFieldVisible(alumnusWithPrivacy, 'birthDate', currentUser)
+                            isFieldVisible(alumnusWithPrivacy, 'birthDate', currentUser),
                           )}
                         </p>
                       </div>
