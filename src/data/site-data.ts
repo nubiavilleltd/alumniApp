@@ -814,224 +814,775 @@ export const projects: Project[] = [
 // createdBy → admin memberId
 // registrations → array of member memberIds who have RSVP'd
 
+// export const events: Event[] = [
+//   {
+//     slug: 'annual-homecoming-weekend-gala',
+//     title: 'Annual Homecoming Weekend & Grand Gala',
+//     description:
+//       'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
+//     image: 'https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?w=700&q=80',
+//     location: 'Transcorp Hilton, Abuja',
+//     attire: 'Formal Attire',
+//     date: '2026-12-12',
+//     type: 'upcoming',
+//     isVirtual: false,
+//     category: 'Reunion',
+//     tags: ['reunion', 'gala', 'networking', 'homecoming'],
+//     featured: true,
+//     content: `# Annual Homecoming Weekend & Grand Gala\n\nA spectacular reunion bringing together alumnae from every set and every corner of the world.`,
+//     createdBy: MBR_ADAEZE,
+//     registrations: [MBR_NGOZI, MBR_CHIDINMA, MBR_PRECIOUS, MBR_THERESA],
+//   },
+//   {
+//     slug: 'diaspora-virtual-networking-night',
+//     title: 'Diaspora Virtual Networking Night',
+//     description:
+//       'Connecting alumnae in the diaspora for an evening of networking and shared stories.',
+//     image: 'https://images.unsplash.com/photo-1588196749597-9ff075ee6b5b?w=700&q=80',
+//     location: 'Zoom, Global',
+//     attire: '',
+//     date: '2026-12-12',
+//     type: 'upcoming',
+//     isVirtual: true,
+//     category: 'Networking',
+//     tags: ['diaspora', 'virtual', 'networking', 'global'],
+//     featured: false,
+//     content: '',
+//     createdBy: MBR_ADAEZE,
+//     registrations: [MBR_ABIGAL_DEV, MBR_ABIGAL_ART5],
+//   },
+//   {
+//     slug: 'child-birth-of-one-us',
+//     title: 'Child Birth Of One Us',
+//     description: 'A celebration of new life and community support for our sisters.',
+//     image: 'https://images.unsplash.com/photo-1519689680058-324335c77eba?w=700&q=80',
+//     location: 'Transcorp Hilton, Abuja',
+//     attire: 'Formal Attire',
+//     date: '2028-12-12',
+//     type: 'upcoming',
+//     isVirtual: false,
+//     category: 'Celebration',
+//     tags: ['celebration', 'community', 'maternal', 'support'],
+//     featured: false,
+//     content: '',
+//     createdBy: MBR_STELLA,
+//     registrations: [MBR_NGOZI, MBR_ABIGAL_OJO],
+//   },
+//   {
+//     slug: 'donation-for-project',
+//     title: 'Donation For Project',
+//     description: 'Virtual fundraising drive for the school perimeter fencing project.',
+//     image: 'https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=700&q=80',
+//     location: 'Zoom, Global',
+//     attire: '',
+//     date: '2026-12-12',
+//     type: 'upcoming',
+//     isVirtual: true,
+//     category: 'Fundraising',
+//     tags: ['donation', 'fundraising', 'project', 'giveback'],
+//     featured: false,
+//     content: '',
+//     createdBy: MBR_STELLA,
+//     registrations: [MBR_ADAEZE, MBR_NGOZI, MBR_CHIDINMA, MBR_PRECIOUS, MBR_THERESA],
+//   },
+//   {
+//     slug: 'school-opening',
+//     title: 'School Opening',
+//     description: 'Ceremony marking the opening of the new academic session at FGGC Owerri.',
+//     image: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=700&q=80',
+//     location: 'FGGC Owerri, Imo State',
+//     attire: 'Formal Attire',
+//     date: '2026-12-12',
+//     type: 'upcoming',
+//     isVirtual: false,
+//     category: 'Education',
+//     tags: ['education', 'school', 'opening', 'ceremony'],
+//     featured: false,
+//     content: '',
+//     createdBy: MBR_ADAEZE,
+//     registrations: [MBR_ADAEZE, MBR_STELLA, MBR_JOSEPHINE],
+//   },
+//   {
+//     slug: 'night-party',
+//     title: 'Night Party',
+//     description: 'An evening of music, fun, and sisterhood.',
+//     image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=700&q=80',
+//     location: 'Zoom, Global',
+//     attire: '',
+//     date: '2026-12-12',
+//     type: 'upcoming',
+//     isVirtual: true,
+//     category: 'Social',
+//     tags: ['party', 'social', 'virtual', 'fun'],
+//     featured: false,
+//     content: '',
+//     createdBy: MBR_BELLA,
+//     registrations: [MBR_NGOZI, MBR_CHIDINMA, MBR_ABIGAL_OJO, MBR_PRECIOUS],
+//   },
+//   {
+//     slug: 'annual-alumni-meet-2024',
+//     title: 'Annual Alumni Meet 2024',
+//     description: 'Join us for our most anticipated event of the year!',
+//     image: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=700&q=80',
+//     location: 'Main Campus Auditorium',
+//     attire: 'Smart Casual',
+//     date: '2024-12-15',
+//     type: 'past',
+//     isVirtual: false,
+//     category: 'Reunion',
+//     tags: ['reunion', 'networking', 'annual', 'alumni'],
+//     featured: false,
+//     content: '',
+//     createdBy: MBR_STELLA,
+//     registrations: [MBR_ADAEZE, MBR_NGOZI, MBR_CHIDINMA, MBR_PRECIOUS, MBR_THERESA, MBR_ABIGAL_OJO],
+//   },
+//   {
+//     slug: 'startup-pitch-competition-2024',
+//     title: 'Startup Pitch Competition 2024',
+//     description:
+//       'Annual startup pitch competition showcasing innovative ideas from our alumni community.',
+//     image: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=700&q=80',
+//     location: 'Innovation Hub, University Campus',
+//     attire: 'Business Casual',
+//     date: '2024-04-20',
+//     type: 'past',
+//     isVirtual: false,
+//     category: 'Entrepreneurship',
+//     tags: ['startup', 'pitch', 'entrepreneurship', 'innovation'],
+//     featured: false,
+//     content: '',
+//     createdBy: MBR_ADAEZE,
+//     registrations: [MBR_CHIDINMA, MBR_ABIGAL_CEO, MBR_ABIGAL_DEV],
+//   },
+//   {
+//     slug: 'tech-career-fair-2024',
+//     title: 'Tech Career Fair 2024',
+//     description: 'Annual technology career fair connecting alumni with top tech companies.',
+//     image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=700&q=80',
+//     location: 'Convention Center, Downtown',
+//     attire: 'Business Formal',
+//     date: '2024-03-15',
+//     type: 'past',
+//     isVirtual: false,
+//     category: 'Career',
+//     tags: ['career', 'technology', 'jobs', 'networking'],
+//     featured: false,
+//     content: '',
+//     createdBy: MBR_ADAEZE,
+//     registrations: [MBR_CHIDINMA, MBR_ABIGAL_DEV, MBR_ABIGAL_ART5],
+//   },
+//   {
+//     slug: 'scholarship-award-night-2024',
+//     title: 'Scholarship Award Night 2024',
+//     description: 'Celebrating our brightest students with the annual scholarship award ceremony.',
+//     image: 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=700&q=80',
+//     location: 'Grand Ballroom, Eko Hotel, Lagos',
+//     attire: 'Black Tie',
+//     date: '2024-02-10',
+//     type: 'past',
+//     isVirtual: false,
+//     category: 'Education',
+//     tags: ['scholarship', 'awards', 'education', 'excellence'],
+//     featured: true,
+//     content: '',
+//     createdBy: MBR_STELLA,
+//     registrations: [MBR_ADAEZE, MBR_NGOZI, MBR_PRECIOUS, MBR_THERESA, MBR_STELLA, MBR_FAVOUR],
+//   },
+//   {
+//     slug: 'virtual-mentorship-summit-2023',
+//     title: 'Virtual Mentorship Summit 2023',
+//     description: 'A virtual summit connecting senior alumnae mentors with recent graduates.',
+//     image: 'https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=700&q=80',
+//     location: 'Zoom, Global',
+//     attire: '',
+//     date: '2023-11-05',
+//     type: 'past',
+//     isVirtual: true,
+//     category: 'Mentorship',
+//     tags: ['mentorship', 'virtual', 'career', 'guidance'],
+//     featured: false,
+//     content: '',
+//     createdBy: MBR_ADAEZE,
+//     registrations: [MBR_NGOZI, MBR_CHIDINMA, MBR_ABIGAL_DEV, MBR_ABIGAL_ART5, MBR_ABIGAL_ART3],
+//   },
+//   {
+//     slug: 'cultural-day-celebration-2023',
+//     title: 'Cultural Day Celebration 2023',
+//     description:
+//       'A vibrant celebration of Nigerian culture, heritage, and the bonds that unite FGGC alumnae.',
+//     image: 'https://images.unsplash.com/photo-1504609773096-104ff2c73ba4?w=700&q=80',
+//     location: 'National Arts Theatre, Lagos',
+//     attire: 'Traditional Attire',
+//     date: '2023-10-01',
+//     type: 'past',
+//     isVirtual: false,
+//     category: 'Networking',
+//     tags: ['networking', 'celebration', 'alumni', 'annual'],
+//     featured: true,
+//     content: '',
+//     createdBy: MBR_BELLA,
+//     registrations: [
+//       MBR_ADAEZE,
+//       MBR_NGOZI,
+//       MBR_CHIDINMA,
+//       MBR_ABIGAL_OJO,
+//       MBR_PRECIOUS,
+//       MBR_THERESA,
+//       MBR_ABIGAL_CEO,
+//     ],
+//   },
+// ];
+
+
+
+
+
+// ─── Updated Events Data ──────────────────────────────────────────────────────
+// Replace the events array in /src/data/site-data.ts with this
+
+// NOTE: Make sure these constants are imported at the top of site-data.ts:
+// const MBR_ADAEZE, MBR_NGOZI, MBR_CHIDINMA, MBR_PRECIOUS, MBR_THERESA, 
+// MBR_ABIGAL_OJO, MBR_ABIGAL_DEV, MBR_ABIGAL_ART5, MBR_ABIGAL_ART3,
+// MBR_ABIGAL_CEO, MBR_STELLA, MBR_BELLA, MBR_JOSEPHINE, MBR_FAVOUR
+
 export const events: Event[] = [
+  // ═══════════════════════════════════════════════════════════════════════════
+  // UPCOMING EVENTS
+  // ═══════════════════════════════════════════════════════════════════════════
+  
   {
+    // Identity
+    id: 'evt-001',
     slug: 'annual-homecoming-weekend-gala',
     title: 'Annual Homecoming Weekend & Grand Gala',
-    description:
-      'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
-    image: 'https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?w=700&q=80',
-    location: 'Transcorp Hilton, Abuja',
-    attire: 'Formal Attire',
+    
+    // Timing
     date: '2026-12-12',
-    type: 'upcoming',
+    startTime: '18:00',
+    endTime: '23:00',
+    
+    // Content
+    description: 'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
+    content: `# Annual Homecoming Weekend & Grand Gala\n\nA spectacular reunion bringing together alumnae from every set and every corner of the world.`,
+    image: 'https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?w=700&q=80',
+    
+    // Location
+    location: 'Transcorp Hilton, Abuja',
     isVirtual: false,
+    attire: 'Formal Attire',
+    
+    // Classification
     category: 'Reunion',
     tags: ['reunion', 'gala', 'networking', 'homecoming'],
     featured: true,
-    content: `# Annual Homecoming Weekend & Grand Gala\n\nA spectacular reunion bringing together alumnae from every set and every corner of the world.`,
+    status: 'published',
+    
+    // Registration
+    capacity: 200,
+    allowGuests: true,
+    
+    // Relations
     createdBy: MBR_ADAEZE,
     registrations: [MBR_NGOZI, MBR_CHIDINMA, MBR_PRECIOUS, MBR_THERESA],
+    
+    // Timestamps
+    createdAt: '2026-01-15T10:00:00Z',
+    publishedAt: '2026-01-15T10:30:00Z',
+    
+    // Legacy
+    type: 'upcoming', // @deprecated - computed from date
   },
+  
   {
+    // Identity
+    id: 'evt-002',
     slug: 'diaspora-virtual-networking-night',
     title: 'Diaspora Virtual Networking Night',
-    description:
-      'Connecting alumnae in the diaspora for an evening of networking and shared stories.',
-    image: 'https://images.unsplash.com/photo-1588196749597-9ff075ee6b5b?w=700&q=80',
-    location: 'Zoom, Global',
-    attire: '',
+    
+    // Timing
     date: '2026-12-12',
-    type: 'upcoming',
+    startTime: '19:00',
+    endTime: '21:00',
+    
+    // Content
+    description: 'Connecting alumnae in the diaspora for an evening of networking and shared stories.',
+    content: '',
+    image: 'https://images.unsplash.com/photo-1588196749597-9ff075ee6b5b?w=700&q=80',
+    
+    // Location
+    location: 'Zoom, Global',
     isVirtual: true,
+    virtualLink: 'https://zoom.us/j/1234567890?pwd=FGGC2026',
+    attire: '',
+    
+    // Classification
     category: 'Networking',
     tags: ['diaspora', 'virtual', 'networking', 'global'],
     featured: false,
-    content: '',
+    status: 'published',
+    
+    // Registration
+    capacity: undefined, // Unlimited for virtual
+    allowGuests: false,
+    
+    // Relations
     createdBy: MBR_ADAEZE,
     registrations: [MBR_ABIGAL_DEV, MBR_ABIGAL_ART5],
+    
+    // Timestamps
+    createdAt: '2026-01-20T14:00:00Z',
+    publishedAt: '2026-01-20T14:15:00Z',
+    
+    // Legacy
+    type: 'upcoming',
   },
+  
   {
+    // Identity
+    id: 'evt-003',
     slug: 'child-birth-of-one-us',
     title: 'Child Birth Of One Us',
-    description: 'A celebration of new life and community support for our sisters.',
-    image: 'https://images.unsplash.com/photo-1519689680058-324335c77eba?w=700&q=80',
-    location: 'Transcorp Hilton, Abuja',
-    attire: 'Formal Attire',
+    
+    // Timing
     date: '2028-12-12',
-    type: 'upcoming',
+    startTime: '14:00',
+    endTime: '17:00',
+    
+    // Content
+    description: 'A celebration of new life and community support for our sisters.',
+    content: '',
+    image: 'https://images.unsplash.com/photo-1519689680058-324335c77eba?w=700&q=80',
+    
+    // Location
+    location: 'Transcorp Hilton, Abuja',
     isVirtual: false,
+    attire: 'Formal Attire',
+    
+    // Classification
     category: 'Celebration',
     tags: ['celebration', 'community', 'maternal', 'support'],
     featured: false,
-    content: '',
+    status: 'published',
+    
+    // Registration
+    capacity: 100,
+    allowGuests: true,
+    
+    // Relations
     createdBy: MBR_STELLA,
     registrations: [MBR_NGOZI, MBR_ABIGAL_OJO],
+    
+    // Timestamps
+    createdAt: '2028-10-01T09:00:00Z',
+    publishedAt: '2028-10-01T09:30:00Z',
+    
+    // Legacy
+    type: 'upcoming',
   },
+  
   {
+    // Identity
+    id: 'evt-004',
     slug: 'donation-for-project',
     title: 'Donation For Project',
-    description: 'Virtual fundraising drive for the school perimeter fencing project.',
-    image: 'https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=700&q=80',
-    location: 'Zoom, Global',
-    attire: '',
+    
+    // Timing
     date: '2026-12-12',
-    type: 'upcoming',
+    startTime: '10:00',
+    endTime: '12:00',
+    
+    // Content
+    description: 'Virtual fundraising drive for the school perimeter fencing project.',
+    content: '',
+    image: 'https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=700&q=80',
+    
+    // Location
+    location: 'Zoom, Global',
     isVirtual: true,
+    virtualLink: 'https://zoom.us/j/9876543210?pwd=DONATE2026',
+    attire: '',
+    
+    // Classification
     category: 'Fundraising',
     tags: ['donation', 'fundraising', 'project', 'giveback'],
     featured: false,
-    content: '',
+    status: 'published',
+    
+    // Registration
+    capacity: undefined, // Unlimited
+    allowGuests: false,
+    
+    // Relations
     createdBy: MBR_STELLA,
     registrations: [MBR_ADAEZE, MBR_NGOZI, MBR_CHIDINMA, MBR_PRECIOUS, MBR_THERESA],
+    
+    // Timestamps
+    createdAt: '2026-02-01T08:00:00Z',
+    publishedAt: '2026-02-01T09:00:00Z',
+    
+    // Legacy
+    type: 'upcoming',
   },
+  
   {
+    // Identity
+    id: 'evt-005',
     slug: 'school-opening',
     title: 'School Opening',
-    description: 'Ceremony marking the opening of the new academic session at FGGC Owerri.',
-    image: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=700&q=80',
-    location: 'FGGC Owerri, Imo State',
-    attire: 'Formal Attire',
+    
+    // Timing
     date: '2026-12-12',
-    type: 'upcoming',
+    startTime: '09:00',
+    endTime: '13:00',
+    
+    // Content
+    description: 'Ceremony marking the opening of the new academic session at FGGC Owerri.',
+    content: '',
+    image: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=700&q=80',
+    
+    // Location
+    location: 'FGGC Owerri, Imo State',
     isVirtual: false,
+    attire: 'Formal Attire',
+    
+    // Classification
     category: 'Education',
     tags: ['education', 'school', 'opening', 'ceremony'],
     featured: false,
-    content: '',
+    status: 'published',
+    
+    // Registration
+    capacity: 150,
+    allowGuests: true,
+    
+    // Relations
     createdBy: MBR_ADAEZE,
     registrations: [MBR_ADAEZE, MBR_STELLA, MBR_JOSEPHINE],
+    
+    // Timestamps
+    createdAt: '2026-09-01T12:00:00Z',
+    publishedAt: '2026-09-01T13:00:00Z',
+    
+    // Legacy
+    type: 'upcoming',
   },
+  
   {
+    // Identity
+    id: 'evt-006',
     slug: 'night-party',
     title: 'Night Party',
-    description: 'An evening of music, fun, and sisterhood.',
-    image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=700&q=80',
-    location: 'Zoom, Global',
-    attire: '',
+    
+    // Timing
     date: '2026-12-12',
-    type: 'upcoming',
+    startTime: '20:00',
+    endTime: '02:00',
+    
+    // Content
+    description: 'An evening of music, fun, and sisterhood.',
+    content: '',
+    image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=700&q=80',
+    
+    // Location
+    location: 'Zoom, Global',
     isVirtual: true,
+    virtualLink: 'https://zoom.us/j/1111222233?pwd=PARTY2026',
+    attire: '',
+    
+    // Classification
     category: 'Social',
     tags: ['party', 'social', 'virtual', 'fun'],
     featured: false,
-    content: '',
+    status: 'published',
+    
+    // Registration
+    capacity: undefined, // Unlimited
+    allowGuests: false,
+    
+    // Relations
     createdBy: MBR_BELLA,
     registrations: [MBR_NGOZI, MBR_CHIDINMA, MBR_ABIGAL_OJO, MBR_PRECIOUS],
+    
+    // Timestamps
+    createdAt: '2026-10-15T16:00:00Z',
+    publishedAt: '2026-10-15T16:30:00Z',
+    
+    // Legacy
+    type: 'upcoming',
   },
+  
+  // ═══════════════════════════════════════════════════════════════════════════
+  // PAST EVENTS
+  // ═══════════════════════════════════════════════════════════════════════════
+  
   {
+    // Identity
+    id: 'evt-007',
     slug: 'annual-alumni-meet-2024',
     title: 'Annual Alumni Meet 2024',
-    description: 'Join us for our most anticipated event of the year!',
-    image: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=700&q=80',
-    location: 'Main Campus Auditorium',
-    attire: 'Smart Casual',
+    
+    // Timing
     date: '2024-12-15',
-    type: 'past',
+    startTime: '15:00',
+    endTime: '19:00',
+    
+    // Content
+    description: 'Join us for our most anticipated event of the year!',
+    content: '',
+    image: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=700&q=80',
+    
+    // Location
+    location: 'Main Campus Auditorium',
     isVirtual: false,
+    attire: 'Smart Casual',
+    
+    // Classification
     category: 'Reunion',
     tags: ['reunion', 'networking', 'annual', 'alumni'],
     featured: false,
-    content: '',
+    status: 'completed',
+    
+    // Registration
+    capacity: 250,
+    allowGuests: true,
+    
+    // Relations
     createdBy: MBR_STELLA,
     registrations: [MBR_ADAEZE, MBR_NGOZI, MBR_CHIDINMA, MBR_PRECIOUS, MBR_THERESA, MBR_ABIGAL_OJO],
+    
+    // Timestamps
+    createdAt: '2024-09-01T10:00:00Z',
+    publishedAt: '2024-09-01T11:00:00Z',
+    updatedAt: '2024-12-16T10:00:00Z',
+    
+    // Legacy
+    type: 'past',
   },
+  
   {
+    // Identity
+    id: 'evt-008',
     slug: 'startup-pitch-competition-2024',
     title: 'Startup Pitch Competition 2024',
-    description:
-      'Annual startup pitch competition showcasing innovative ideas from our alumni community.',
-    image: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=700&q=80',
-    location: 'Innovation Hub, University Campus',
-    attire: 'Business Casual',
+    
+    // Timing
     date: '2024-04-20',
-    type: 'past',
+    startTime: '10:00',
+    endTime: '16:00',
+    
+    // Content
+    description: 'Annual startup pitch competition showcasing innovative ideas from our alumni community.',
+    content: '',
+    image: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=700&q=80',
+    
+    // Location
+    location: 'Innovation Hub, University Campus',
     isVirtual: false,
+    attire: 'Business Casual',
+    
+    // Classification
     category: 'Entrepreneurship',
     tags: ['startup', 'pitch', 'entrepreneurship', 'innovation'],
     featured: false,
-    content: '',
+    status: 'completed',
+    
+    // Registration
+    capacity: 100,
+    allowGuests: false,
+    
+    // Relations
     createdBy: MBR_ADAEZE,
     registrations: [MBR_CHIDINMA, MBR_ABIGAL_CEO, MBR_ABIGAL_DEV],
+    
+    // Timestamps
+    createdAt: '2024-01-15T09:00:00Z',
+    publishedAt: '2024-01-15T10:00:00Z',
+    updatedAt: '2024-04-21T14:00:00Z',
+    
+    // Legacy
+    type: 'past',
   },
+  
   {
+    // Identity
+    id: 'evt-009',
     slug: 'tech-career-fair-2024',
     title: 'Tech Career Fair 2024',
-    description: 'Annual technology career fair connecting alumni with top tech companies.',
-    image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=700&q=80',
-    location: 'Convention Center, Downtown',
-    attire: 'Business Formal',
+    
+    // Timing
     date: '2024-03-15',
-    type: 'past',
+    startTime: '09:00',
+    endTime: '17:00',
+    
+    // Content
+    description: 'Annual technology career fair connecting alumni with top tech companies.',
+    content: '',
+    image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=700&q=80',
+    
+    // Location
+    location: 'Convention Center, Downtown',
     isVirtual: false,
+    attire: 'Business Formal',
+    
+    // Classification
     category: 'Career',
     tags: ['career', 'technology', 'jobs', 'networking'],
     featured: false,
-    content: '',
+    status: 'completed',
+    
+    // Registration
+    capacity: 300,
+    allowGuests: false,
+    
+    // Relations
     createdBy: MBR_ADAEZE,
     registrations: [MBR_CHIDINMA, MBR_ABIGAL_DEV, MBR_ABIGAL_ART5],
+    
+    // Timestamps
+    createdAt: '2023-12-01T08:00:00Z',
+    publishedAt: '2023-12-01T09:00:00Z',
+    updatedAt: '2024-03-16T12:00:00Z',
+    
+    // Legacy
+    type: 'past',
   },
+  
   {
+    // Identity
+    id: 'evt-010',
     slug: 'scholarship-award-night-2024',
     title: 'Scholarship Award Night 2024',
-    description: 'Celebrating our brightest students with the annual scholarship award ceremony.',
-    image: 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=700&q=80',
-    location: 'Grand Ballroom, Eko Hotel, Lagos',
-    attire: 'Black Tie',
+    
+    // Timing
     date: '2024-02-10',
-    type: 'past',
+    startTime: '18:00',
+    endTime: '22:00',
+    
+    // Content
+    description: 'Celebrating our brightest students with the annual scholarship award ceremony.',
+    content: '',
+    image: 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=700&q=80',
+    
+    // Location
+    location: 'Grand Ballroom, Eko Hotel, Lagos',
     isVirtual: false,
+    attire: 'Black Tie',
+    
+    // Classification
     category: 'Education',
     tags: ['scholarship', 'awards', 'education', 'excellence'],
     featured: true,
-    content: '',
+    status: 'completed',
+    
+    // Registration
+    capacity: 180,
+    allowGuests: true,
+    
+    // Relations
     createdBy: MBR_STELLA,
     registrations: [MBR_ADAEZE, MBR_NGOZI, MBR_PRECIOUS, MBR_THERESA, MBR_STELLA, MBR_FAVOUR],
+    
+    // Timestamps
+    createdAt: '2023-11-01T10:00:00Z',
+    publishedAt: '2023-11-01T11:00:00Z',
+    updatedAt: '2024-02-11T09:00:00Z',
+    
+    // Legacy
+    type: 'past',
   },
+  
   {
+    // Identity
+    id: 'evt-011',
     slug: 'virtual-mentorship-summit-2023',
     title: 'Virtual Mentorship Summit 2023',
-    description: 'A virtual summit connecting senior alumnae mentors with recent graduates.',
-    image: 'https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=700&q=80',
-    location: 'Zoom, Global',
-    attire: '',
+    
+    // Timing
     date: '2023-11-05',
-    type: 'past',
+    startTime: '14:00',
+    endTime: '18:00',
+    
+    // Content
+    description: 'A virtual summit connecting senior alumnae mentors with recent graduates.',
+    content: '',
+    image: 'https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=700&q=80',
+    
+    // Location
+    location: 'Zoom, Global',
     isVirtual: true,
+    virtualLink: 'https://zoom.us/j/5555666677?pwd=MENTOR2023',
+    attire: '',
+    
+    // Classification
     category: 'Mentorship',
     tags: ['mentorship', 'virtual', 'career', 'guidance'],
     featured: false,
-    content: '',
+    status: 'completed',
+    
+    // Registration
+    capacity: undefined, // Unlimited
+    allowGuests: false,
+    
+    // Relations
     createdBy: MBR_ADAEZE,
     registrations: [MBR_NGOZI, MBR_CHIDINMA, MBR_ABIGAL_DEV, MBR_ABIGAL_ART5, MBR_ABIGAL_ART3],
+    
+    // Timestamps
+    createdAt: '2023-09-01T10:00:00Z',
+    publishedAt: '2023-09-01T11:00:00Z',
+    updatedAt: '2023-11-06T10:00:00Z',
+    
+    // Legacy
+    type: 'past',
   },
+  
   {
+    // Identity
+    id: 'evt-012',
     slug: 'cultural-day-celebration-2023',
     title: 'Cultural Day Celebration 2023',
-    description:
-      'A vibrant celebration of Nigerian culture, heritage, and the bonds that unite FGGC alumnae.',
-    image: 'https://images.unsplash.com/photo-1504609773096-104ff2c73ba4?w=700&q=80',
-    location: 'National Arts Theatre, Lagos',
-    attire: 'Traditional Attire',
+    
+    // Timing
     date: '2023-10-01',
-    type: 'past',
+    startTime: '11:00',
+    endTime: '20:00',
+    
+    // Content
+    description: 'A vibrant celebration of Nigerian culture, heritage, and the bonds that unite FGGC alumnae.',
+    content: '',
+    image: 'https://images.unsplash.com/photo-1504609773096-104ff2c73ba4?w=700&q=80',
+    
+    // Location
+    location: 'National Arts Theatre, Lagos',
     isVirtual: false,
+    attire: 'Traditional Attire',
+    
+    // Classification
     category: 'Networking',
     tags: ['networking', 'celebration', 'alumni', 'annual'],
     featured: true,
-    content: '',
+    status: 'completed',
+    
+    // Registration
+    capacity: 500,
+    allowGuests: true,
+    
+    // Relations
     createdBy: MBR_BELLA,
-    registrations: [
-      MBR_ADAEZE,
-      MBR_NGOZI,
-      MBR_CHIDINMA,
-      MBR_ABIGAL_OJO,
-      MBR_PRECIOUS,
-      MBR_THERESA,
-      MBR_ABIGAL_CEO,
-    ],
+    registrations: [MBR_ADAEZE, MBR_NGOZI, MBR_CHIDINMA, MBR_ABIGAL_OJO, MBR_PRECIOUS, MBR_THERESA, MBR_ABIGAL_CEO],
+    
+    // Timestamps
+    createdAt: '2023-07-01T08:00:00Z',
+    publishedAt: '2023-07-01T09:00:00Z',
+    updatedAt: '2023-10-02T12:00:00Z',
+    
+    // Legacy
+    type: 'past',
   },
 ];
+
+
+
 
 // ─── Businesses (Marketplace) ─────────────────────────────────────────────────
 // ownerId → memberId of the business owner

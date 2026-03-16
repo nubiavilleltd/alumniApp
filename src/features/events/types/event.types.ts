@@ -16,25 +16,75 @@
 
 // features/events/types/event.types.ts
 
-export type Event = {
-  // ── Relational keys ──────────────────────────────────────────────────────
-  createdBy?: string; // FK → MockAuthAccount.memberId (admin who created it)
-  registrations?: string[]; // FK[] → MockAuthAccount.memberId (members who RSVP'd)
+// export type Event = {
+//   // ── Relational keys ──────────────────────────────────────────────────────
+//   createdBy?: string; // FK → MockAuthAccount.memberId (admin who created it)
+//   registrations?: string[]; // FK[] → MockAuthAccount.memberId (members who RSVP'd)
 
-  // ── Identity ──────────────────────────────────────────────────────────────
+//   // ── Identity ──────────────────────────────────────────────────────────────
+//   slug: string;
+//   title: string;
+//   date: string; // ISO date string: '2026-12-12'
+//   type?: string; // 'upcoming' | 'past'
+
+//   // ── Content ───────────────────────────────────────────────────────────────
+//   description: string;
+//   content: string;
+//   image: string;
+//   location: string;
+//   category: string;
+//   tags: string[];
+//   featured: boolean;
+//   isVirtual: boolean;
+//   attire: string;
+// };
+
+
+
+
+
+
+export type Event = {
+  // ── Identity ─────────────────────────────────────────────────────────
+  id: string;              // ➕ NEW
   slug: string;
   title: string;
-  date: string; // ISO date string: '2026-12-12'
-  type?: string; // 'upcoming' | 'past'
-
-  // ── Content ───────────────────────────────────────────────────────────────
+  
+  // ── Timing ────────────────────────────────────────────────────────────
+  date: string;
+  startTime?: string;      // ➕ NEW
+  endTime?: string;        // ➕ NEW
+  
+  // ── Content ───────────────────────────────────────────────────────────
   description: string;
   content: string;
   image: string;
+  
+  // ── Location ──────────────────────────────────────────────────────────
   location: string;
+  isVirtual: boolean;
+  virtualLink?: string;    // ➕ NEW
+  attire: string;
+  
+  // ── Classification ────────────────────────────────────────────────────
   category: string;
   tags: string[];
   featured: boolean;
-  isVirtual: boolean;
-  attire: string;
+  status?: 'draft' | 'published' | 'cancelled' | 'completed'; // ➕ NEW
+  
+  // ── Registration ──────────────────────────────────────────────────────
+  capacity?: number;       // ➕ NEW
+  allowGuests?: boolean;   // ➕ NEW
+  
+  // ── Relations ─────────────────────────────────────────────────────────
+  createdBy?: string;
+  registrations?: string[];
+  
+  // ── Timestamps ────────────────────────────────────────────────────────
+  createdAt: string;       // ➕ NEW
+  publishedAt?: string;    // ➕ NEW
+  updatedAt?: string;      // ➕ NEW
+  
+  // ── Legacy ────────────────────────────────────────────────────────────
+  type?: string;           // @deprecated - kept for backward compatibility
 };
