@@ -49,6 +49,10 @@ export function findMockAccountByEmail(email: string) {
   );
 }
 
+export function getMockAccountByMemberId(memberId: string) {
+  return readStoredAccounts().find((account) => account.memberId === memberId);
+}
+
 export function updateMockAccountPassword(email: string, password: string) {
   const normalizedEmail = email.trim().toLowerCase();
   const accounts = readStoredAccounts();

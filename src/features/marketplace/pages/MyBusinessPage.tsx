@@ -6,6 +6,7 @@ import EmptyState from '@/shared/components/ui/EmptyState';
 import { PostBusinessModal } from '../components/PostYourBusinessModal';
 import { useMarketplace } from '@/features/marketplace/hooks/useMarketplace';
 import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
+import type { Business } from '../types/marketplace.types';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 function MyBusinessCardSkeleton() {
@@ -31,19 +32,6 @@ function MyBusinessCardSkeleton() {
 }
 
 // ─── Business Card ────────────────────────────────────────────────────────────
-interface Business {
-  slug: string;
-  name: string;
-  category: string;
-  description: string;
-  images: string[];
-  location: string;
-  phone: string;
-  website: string;
-  owner: string;
-  slug_owner: string;
-}
-
 function MyBusinessCard({
   business,
   onEdit,
@@ -92,7 +80,6 @@ function MyBusinessCard({
             </button>
           </>
         )}
-        {/* Image count dots */}
         {business.images.length > 1 && (
           <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
             {business.images.map((_, i) => (
@@ -105,7 +92,6 @@ function MyBusinessCard({
             ))}
           </div>
         )}
-        {/* Category tag */}
         <span className="absolute top-2 left-2 bg-primary-500 text-white text-[10px] font-semibold px-2 py-0.5 rounded uppercase tracking-wide">
           {business.category}
         </span>
@@ -126,10 +112,12 @@ function MyBusinessCard({
             <Icon icon="mdi:phone-outline" className="w-3 h-3 flex-shrink-0" />
             {business.phone}
           </span>
-          <span className="flex items-center gap-1 text-gray-400 text-[11px]">
-            <Icon icon="mdi:web" className="w-3 h-3 flex-shrink-0" />
-            {business.website}
-          </span>
+          {business.website && (
+            <span className="flex items-center gap-1 text-gray-400 text-[11px]">
+              <Icon icon="mdi:web" className="w-3 h-3 flex-shrink-0" />
+              {business.website}
+            </span>
+          )}
         </div>
 
         {/* Actions */}
@@ -186,8 +174,8 @@ export default function MyBusinessPage() {
 
   const { data: allBusinesses = [], isLoading } = useMarketplace();
 
-  // Filter to only current user's businesses
-  const myBusinesses = allBusinesses.filter((b) => b.slug_owner === currentUser?.slug);
+  // Filter to only the current user's businesses using memberId — not slug
+  const myBusinesses = allBusinesses.filter((b) => b.ownerId === currentUser?.memberId);
 
   const handleEdit = (business: Business) => {
     setEditBusiness(business);
@@ -196,7 +184,8 @@ export default function MyBusinessPage() {
 
   const handleDelete = (business: Business) => {
     // 🔴 TODO: call deleteBusinessMutation
-    console.log('Deleting business:', business.slug);
+    // await deleteBusiness(business.businessId);
+    console.log('Deleting business:', business.businessId);
   };
 
   const handleCloseModal = () => {
@@ -251,7 +240,7 @@ export default function MyBusinessPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {myBusinesses.map((business) => (
                 <MyBusinessCard
-                  key={business.slug}
+                  key={business.businessId}
                   business={business}
                   onEdit={handleEdit}
                   onDelete={handleDelete}
@@ -273,7 +262,7 @@ export default function MyBusinessPage() {
       <PostBusinessModal
         isOpen={showPostModal}
         onClose={handleCloseModal}
-        // editData={editBusiness}
+        editData={editBusiness}
       />
     </>
   );

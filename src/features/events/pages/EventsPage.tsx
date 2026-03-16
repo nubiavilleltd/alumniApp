@@ -3,11 +3,15 @@ import { useState, useMemo } from 'react';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
-import { RegisterEventModal, RegisterEventModalEvent } from '../components/RegisterEventModal';
+import { RegisterEventModal } from '../components/RegisterEventModal';
 import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { FilterDropdown } from '@/shared/components/ui/FilterDropdown';
 import Button from '@/shared/components/ui/Button';
 import { useUpcomingEvents, usePastEvents } from '@/features/events/hooks/useEvents';
+import {
+  useEventRegistration,
+  useEventAttendeeCount,
+} from '@/features/events/hooks/useEventRegistration';
 import type { Event } from '@/features/events/types/event.types';
 
 type Tab = 'upcoming' | 'past';
@@ -40,6 +44,9 @@ function EventCard({
   isPast: boolean;
   onRegister: () => void;
 }) {
+  const { isRegistered } = useEventRegistration(event.id);
+  const { attendeeCount, capacity, isFull, spotsLeft } = useEventAttendeeCount(event);
+
   const formattedDate = new Date(event.date).toLocaleDateString('en-GB', {
     weekday: 'short',
     day: '2-digit',
@@ -50,13 +57,26 @@ function EventCard({
   return (
     <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex flex-col">
       {event.image && (
-        <div className="h-52 w-full overflow-hidden bg-gray-100">
+        <div className="h-52 w-full overflow-hidden bg-gray-100 relative">
           <img
             src={event.image}
             alt={event.title}
             className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
             loading="lazy"
           />
+          {/* Registration Status Badge */}
+          {!isPast && isRegistered && (
+            <div className="absolute top-3 right-3 bg-green-500 text-white text-[10px] font-semibold px-2.5 py-1 rounded-full flex items-center gap-1">
+              <Icon icon="mdi:check-circle" className="w-3 h-3" />
+              Registered
+            </div>
+          )}
+          {/* Event Full Badge */}
+          {!isPast && isFull && (
+            <div className="absolute top-3 left-3 bg-red-500 text-white text-[10px] font-semibold px-2.5 py-1 rounded-full">
+              Event Full
+            </div>
+          )}
         </div>
       )}
       <div className="p-4 flex flex-col gap-2 flex-1">
@@ -82,7 +102,29 @@ function EventCard({
         <p className="text-gray-500 text-[11px] leading-relaxed line-clamp-3">
           {event.description}
         </p>
-        <div className="mt-auto pt-2">
+
+        {/* Attendee Count - Show for upcoming events */}
+        {!isPast && (
+          <div className="flex items-center gap-1 text-gray-600 text-[11px] mt-1">
+            <Icon icon="mdi:account-group-outline" className="w-3.5 h-3.5 flex-shrink-0" />
+            <span>
+              {capacity ? (
+                <>
+                  <span className="font-semibold">{attendeeCount}</span>/{capacity} attending
+                  {spotsLeft !== undefined && spotsLeft > 0 && spotsLeft <= 10 && (
+                    <span className="text-orange-500 ml-1">({spotsLeft} spots left)</span>
+                  )}
+                </>
+              ) : (
+                <>
+                  <span className="font-semibold">{attendeeCount}</span> attending
+                </>
+              )}
+            </span>
+          </div>
+        )}
+
+        <div className="mt-auto pt-2 flex items-center gap-2">
           {isPast ? (
             <AppLink
               href={`/events/${event.slug}`}
@@ -90,6 +132,31 @@ function EventCard({
             >
               View Details
             </AppLink>
+          ) : isRegistered ? (
+            <>
+              <button
+                type="button"
+                disabled
+                className="inline-flex items-center gap-1 border border-green-500 text-green-600 text-xs font-semibold px-4 py-1.5 rounded-md cursor-default"
+              >
+                <Icon icon="mdi:check-circle" className="w-3.5 h-3.5" />
+                Registered
+              </button>
+              <AppLink
+                href={`/events/${event.slug}`}
+                className="inline-flex items-center gap-1 text-gray-500 hover:text-primary-500 text-xs font-semibold transition-colors"
+              >
+                View Details
+              </AppLink>
+            </>
+          ) : isFull ? (
+            <button
+              type="button"
+              disabled
+              className="inline-flex items-center gap-1 text-gray-400 text-xs font-semibold cursor-not-allowed"
+            >
+              Event Full
+            </button>
           ) : (
             <button
               type="button"
@@ -108,7 +175,7 @@ function EventCard({
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export function EventsPage() {
   const [tab, setTab] = useState<Tab>('upcoming');
-  const [registerEvent, setRegisterEvent] = useState<RegisterEventModalEvent | null>(null);
+  const [registerEvent, setRegisterEvent] = useState<Event | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [locationFilter, setLocationFilter] = useState('');
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);

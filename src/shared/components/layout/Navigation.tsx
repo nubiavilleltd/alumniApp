@@ -177,6 +177,14 @@ function UserDropdown({
               <Icon icon="mdi:storefront-outline" className="w-4 h-4 text-primary-400" />
               My Business
             </AppLink>
+            <AppLink
+              href="/user/settings"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors"
+            >
+              <Icon icon="mdi:cog-outline" className="w-4 h-4 text-primary-400" />
+              Settings
+            </AppLink>
           </div>
 
           <div className="border-t border-gray-100 py-1">
@@ -381,6 +389,13 @@ export function Navigation() {
                 >
                   <Icon icon="mdi:storefront-outline" className="w-4 h-4" />
                   My Business
+                </AppLink>
+                <AppLink
+                  href="/user/settings"
+                  className="flex items-center gap-2.5 px-3 py-2.5 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                >
+                  <Icon icon="mdi:cog-outline" className="w-4 h-4" />
+                  Settings
                 </AppLink>
                 <button
                   type="button"

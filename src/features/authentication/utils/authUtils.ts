@@ -1,15 +1,12 @@
 // features/authentication/utils/authUtils.ts
 //
-// Pure utility functions for auth data transformation.
-// These are NOT mock-specific — they stay when mockAuth.ts is deleted.
+// Pure transformation utilities — not mock-specific.
+// These stay when mockAuth.ts is deleted.
 
 import type { MockAuthAccount } from '../constants/mockAccounts';
 import type { AuthSessionUser } from '../types/auth.types';
+import { defaultPrivacySettings } from '../types/auth.types';
 
-/**
- * Derives avatar initials from surname + otherNames.
- * e.g. surname="Okonkwo" otherNames="Adaeze Chioma" → "AO"
- */
 export function getInitials(surname: string, otherNames: string): string {
   const first = otherNames.trim().split(' ')[0]?.[0]?.toUpperCase() ?? '';
   const last = surname.trim()[0]?.toUpperCase() ?? '';
@@ -17,26 +14,46 @@ export function getInitials(surname: string, otherNames: string): string {
 }
 
 /**
- * Maps a raw account object (mock or real API response) into the
- * consistent AuthSessionUser shape used throughout the app.
+ * Maps a raw account (mock or real API response) into AuthSessionUser.
  *
  * 🔴 TODO: When the real backend is ready, update the parameter type from
- * MockAuthAccount to whatever shape the API returns, then adjust the
- * field mappings below accordingly. The return type stays the same.
+ * MockAuthAccount to the API response shape and adjust mappings below.
+ * The return type (AuthSessionUser) stays the same.
  */
 export function toAuthSessionUser(account: MockAuthAccount): AuthSessionUser {
   const fullName = `${account.otherNames} ${account.surname}`.trim();
 
   return {
-    // ── System ──────────────────────────────────────────────────────────────
+    // ── Identity ─────────────────────────────────────────────────────────
+    memberId: account.memberId,
     id: account.id,
     slug: account.slug,
     avatarInitials: getInitials(account.surname, account.otherNames),
     profileHref: `/alumni/profiles/${account.slug}`,
     createdAt: account.createdAt,
+    chapterId: account.chapterId,
+
+    // ── Auth ─────────────────────────────────────────────────────────────
     role: account.role,
 
-    // ── Registration fields (always present) ────────────────────────────────
+    // ── Verification ─────────────────────────────────────────────────────
+    isEmailVerified: account.isEmailVerified,
+    emailVerifiedAt: account.emailVerifiedAt,
+
+    // ── Approval ─────────────────────────────────────────────────────────
+    approvalStatus: account.approvalStatus,
+    approvedAt: account.approvedAt,
+    approvedBy: account.approvedBy,
+
+    // ── Account ───────────────────────────────────────────────────────────
+    accountStatus: account.accountStatus,
+
+    // ── Dues ──────────────────────────────────────────────────────────────
+    duesStatus: account.duesStatus,
+    duesLastPaidAt: account.duesLastPaidAt,
+    duesAmountOwing: account.duesAmountOwing,
+
+    // ── Registration fields ───────────────────────────────────────────────
     surname: account.surname,
     otherNames: account.otherNames,
     fullName,
@@ -45,7 +62,7 @@ export function toAuthSessionUser(account: MockAuthAccount): AuthSessionUser {
     whatsappPhone: account.whatsappPhone,
     graduationYear: account.graduationYear,
 
-    // ── Profile fields (optional, filled after registration) ────────────────
+    // ── Profile fields ────────────────────────────────────────────────────
     photo: account.photo,
     alternativePhone: account.alternativePhone,
     birthDate: account.birthDate,
@@ -59,5 +76,8 @@ export function toAuthSessionUser(account: MockAuthAccount): AuthSessionUser {
     industrySectors: account.industrySectors,
     yearsOfExperience: account.yearsOfExperience,
     isVolunteer: account.isVolunteer,
+
+    // ── Privacy — merge stored settings over defaults ─────────────────────
+    privacy: { ...defaultPrivacySettings, ...account.privacy },
   };
 }

@@ -1,16 +1,16 @@
-
 // features/user/pages/UserDashboardPage.tsx
 // Route: /dashboard  (ProtectedRoute)
 
 import { Icon } from '@iconify/react';
 import type { ReactNode } from 'react';
-import { Layout } from '@/shared/components/layout/Layout';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { useUpcomingEvents } from '@/features/events/hooks/useEvents';
 import { useLatestAnnouncements } from '@/features/announcements/hooks/useAnnouncements';
 import { useAlumni } from '@/features/alumni/hooks/useAlumni';
 import { SEO } from '@/shared/common/SEO';
+
+import { useEventRegistration } from '@/features/events/hooks/useEventRegistration';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function formatEventDate(date: string) {
@@ -160,6 +160,7 @@ export function UserDashboardPage() {
 
   const quickLinks = [
     { label: 'Edit Profile', href: '/user/profile', icon: 'mdi:account-edit-outline' },
+    { label: 'My Events', href: '/my-events', icon: 'mdi:calendar-check-outline' }, // ← NEW
     { label: 'View Directory', href: '/alumni/profiles', icon: 'mdi:account-group-outline' },
     { label: 'Browse Events', href: '/events', icon: 'mdi:calendar-month-outline' },
     { label: 'My Business', href: '/marketplace/my-business', icon: 'mdi:store-outline' },
@@ -296,25 +297,36 @@ export function UserDashboardPage() {
                   <SectionSkeleton rows={3} />
                 ) : (
                   <div className="space-y-3">
-                    {dashboardEvents.map((event) => (
-                      <div
-                        key={event.slug}
-                        className="flex flex-col gap-4 rounded-2xl border border-accent-100 bg-white px-4 py-4 md:flex-row md:items-center md:justify-between"
-                      >
-                        <div>
-                          <p className="font-medium text-accent-900">{event.title}</p>
-                          <p className="mt-1 text-sm text-accent-600">
-                            {formatEventDate(event.date)} • {event.location}
-                          </p>
-                        </div>
-                        <AppLink
-                          href={`/events/${event.slug}`}
-                          className="btn btn-primary btn-sm justify-center"
+                    {dashboardEvents.map((event) => {
+                      const { isRegistered } = useEventRegistration(event.id);
+
+                      return (
+                        <div
+                          key={event.slug}
+                          className="flex flex-col gap-4 rounded-2xl border border-accent-100 bg-white px-4 py-4 md:flex-row md:items-center md:justify-between"
                         >
-                          RSVP
-                        </AppLink>
-                      </div>
-                    ))}
+                          <div>
+                            <p className="font-medium text-accent-900">{event.title}</p>
+                            <p className="mt-1 text-sm text-accent-600">
+                              {formatEventDate(event.date)} • {event.location}
+                            </p>
+                          </div>
+                          {isRegistered ? (
+                            <div className="flex items-center gap-2 text-green-600 text-sm font-semibold">
+                              <Icon icon="mdi:check-circle" className="w-4 h-4" />
+                              Registered
+                            </div>
+                          ) : (
+                            <AppLink
+                              href={`/events/${event.slug}`}
+                              className="btn btn-primary btn-sm justify-center"
+                            >
+                              RSVP
+                            </AppLink>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </SectionCard>

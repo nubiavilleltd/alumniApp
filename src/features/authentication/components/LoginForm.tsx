@@ -1,4 +1,3 @@
-
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Icon } from '@iconify/react';
 import { useState } from 'react';
@@ -35,6 +34,7 @@ export function LoginForm() {
   const onSubmit = handleSubmit(async (values) => {
     try {
       const response = await authApi.login(values);
+      console.log('user', response.user);
       setSession(response.user);
       navigate(from, { replace: true });
     } catch (error) {

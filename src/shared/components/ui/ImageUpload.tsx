@@ -30,7 +30,6 @@ export function ImageUpload({
 
   const removePreview = (index: number) => {
     const newPreviews = previews.filter((_, i) => i !== index);
-    // Signal removal — parent manages files state
     onChange([], newPreviews);
   };
 
@@ -63,11 +62,11 @@ export function ImageUpload({
         onChange={handleChange}
       />
 
-      {/* Previews */}
+      {/* Previews — X button always visible for mobile friendliness */}
       {previews.length > 0 && (
         <div className="flex gap-2 mt-2 flex-wrap">
           {previews.map((src, i) => (
-            <div key={i} className="relative group/img">
+            <div key={i} className="relative">
               <img
                 src={src}
                 alt={`preview-${i}`}
@@ -76,7 +75,7 @@ export function ImageUpload({
               <button
                 type="button"
                 onClick={() => removePreview(i)}
-                className="absolute -top-1.5 -right-1.5 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-opacity"
+                className="absolute -top-1.5 -right-1.5 bg-red-500 hover:bg-red-600 text-white rounded-full w-4 h-4 flex items-center justify-center transition-colors"
               >
                 <Icon icon="mdi:close" className="w-2.5 h-2.5" />
               </button>
@@ -85,12 +84,12 @@ export function ImageUpload({
         </div>
       )}
 
-      {error ? (
+      {error && (
         <p className="text-xs text-red-500 flex items-center gap-1">
           <Icon icon="mdi:alert-circle-outline" className="w-3 h-3" />
           {error}
         </p>
-      ) : null}
+      )}
     </div>
   );
 }

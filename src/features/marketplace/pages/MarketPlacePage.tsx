@@ -10,6 +10,7 @@ import {
   useMarketplace,
   useMarketplaceCategories,
 } from '@/features/marketplace/hooks/useMarketplace';
+import type { Business } from '../types/marketplace.types';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 function BusinessCardSkeleton() {
@@ -33,19 +34,6 @@ function BusinessCardSkeleton() {
 }
 
 // ─── Business Card ────────────────────────────────────────────────────────────
-interface Business {
-  slug: string;
-  name: string;
-  category: string;
-  description: string;
-  images: string[];
-  location: string;
-  phone: string;
-  website: string;
-  owner: string;
-  slug_owner: string;
-}
-
 function BusinessCard({ business }: { business: Business }) {
   const [imgIndex, setImgIndex] = useState(0);
 
@@ -105,9 +93,15 @@ function BusinessCard({ business }: { business: Business }) {
             <Icon icon="mdi:phone-outline" className="w-3 h-3 flex-shrink-0" />
             {business.phone}
           </span>
+          {business.website && (
+            <span className="flex items-center gap-1 text-gray-400 text-[11px]">
+              <Icon icon="mdi:web" className="w-3 h-3 flex-shrink-0" />
+              {business.website}
+            </span>
+          )}
           <span className="flex items-center gap-1 text-gray-400 text-[11px]">
-            <Icon icon="mdi:web" className="w-3 h-3 flex-shrink-0" />
-            {business.website}
+            <Icon icon="mdi:account-outline" className="w-3 h-3 flex-shrink-0" />
+            {business.owner}
           </span>
         </div>
         <button
@@ -130,11 +124,9 @@ export default function MarketPlacePage() {
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
   const [showPostModal, setShowPostModal] = useState(false);
 
-  // ── Hooks ──────────────────────────────────────────────────────────────────
   const { data: businesses = [], isLoading } = useMarketplace();
   const { data: categoriesList = [] } = useMarketplaceCategories();
 
-  // ── Client-side filtering ──────────────────────────────────────────────────
   const filtered = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
     return businesses.filter((b) => {
@@ -212,7 +204,7 @@ export default function MarketPlacePage() {
           ) : visible.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
               {visible.map((business) => (
-                <BusinessCard key={business.slug} business={business} />
+                <BusinessCard key={business.businessId} business={business} />
               ))}
             </div>
           ) : (

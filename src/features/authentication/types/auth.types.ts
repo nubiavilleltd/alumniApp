@@ -1,5 +1,4 @@
 import type { z } from 'zod';
-import type { SupportedPhoneCountry } from '../constants/phoneCountries';
 import type {
   emailVerificationSchema,
   forgotPasswordSchema,
@@ -7,41 +6,88 @@ import type {
   registerDetailsSchema,
   resetPasswordSchema,
 } from '../schemas/authSchema';
+import type { ApprovalStatus, AccountStatus, DuesStatus } from '../constants/mockAccounts';
 
 export type AuthMode = 'login' | 'register' | 'forgot-password' | 'reset-password';
 
-// ─── Privacy visibility flag ──────────────────────────────────────────────────
-export type FieldVisibility = 'public' | 'members' | 'private';
+// ─── Privacy ──────────────────────────────────────────────────────────────────
+// Simple public/private per field.
+// public  → visible to everyone including logged-out visitors
+// private → visible only to the user themselves
+
+export type FieldVisibility = 'public' | 'private';
 
 export interface PrivacySettings {
-  birthDate: FieldVisibility;
-  address: FieldVisibility;
-  alternativePhone: FieldVisibility;
+  // private by default
+  photo: FieldVisibility;
   whatsappPhone: FieldVisibility;
-  occupation: FieldVisibility;
-  industrySector: FieldVisibility;
+  alternativePhone: FieldVisibility;
+  birthDate: FieldVisibility;
+  residentialAddress: FieldVisibility;
+  // public by default
+  area: FieldVisibility;
+  city: FieldVisibility;
+  employmentStatus: FieldVisibility;
+  occupations: FieldVisibility;
+  industrySectors: FieldVisibility;
   yearsOfExperience: FieldVisibility;
 }
 
+export const defaultPrivacySettings: PrivacySettings = {
+  photo: 'public',
+  whatsappPhone: 'private',
+  alternativePhone: 'private',
+  birthDate: 'private',
+  residentialAddress: 'private',
+  area: 'public',
+  city: 'public',
+  employmentStatus: 'public',
+  occupations: 'public',
+  industrySectors: 'public',
+  yearsOfExperience: 'public',
+};
+
 // ─── Logged-in session user ───────────────────────────────────────────────────
 export interface AuthSessionUser {
-  // System
-  id: string;
-  slug: string;
+  // ── Identity ─────────────────────────────────────────────────────────────
+  memberId: string; // 'MBR-{year}-{hex}' — primary relational key
+  id: string; // legacy internal ref
+  slug: string; // URL-only
   avatarInitials: string;
   profileHref: string;
   createdAt: string;
+  chapterId?: string; // assigned by admin after approval
 
-  // Registration fields
+  // ── Auth ──────────────────────────────────────────────────────────────────
+  role: 'member' | 'admin';
+
+  // ── Verification ──────────────────────────────────────────────────────────
+  isEmailVerified: boolean;
+  emailVerifiedAt?: string;
+
+  // ── Approval ──────────────────────────────────────────────────────────────
+  approvalStatus: ApprovalStatus;
+  approvedAt?: string;
+  approvedBy?: string;
+
+  // ── Account ───────────────────────────────────────────────────────────────
+  accountStatus: AccountStatus;
+
+  // ── Dues ──────────────────────────────────────────────────────────────────
+  duesStatus: DuesStatus;
+  duesLastPaidAt?: string;
+  duesAmountOwing?: number;
+
+  // ── Registration fields (always present) ─────────────────────────────────
   surname: string;
   otherNames: string;
   fullName: string; // derived: otherNames + surname
-  nameInSchool: string; // First Name + Surname as used in FGGC
+  nameInSchool: string;
   email: string;
   whatsappPhone: string;
   graduationYear: number;
 
-  // Profile fields (filled after registration)
+  // ── Profile fields (optional, filled after registration) ─────────────────
   photo?: string;
   alternativePhone?: string;
   birthDate?: string;
@@ -56,26 +102,20 @@ export interface AuthSessionUser {
   yearsOfExperience?: number;
   isVolunteer?: boolean;
 
-  // Privacy
-  privacy?: PrivacySettings;
+  linkedin?:            string;
+twitter?:             string;
+instagram?:           string;
 
-  // Role
-  role: 'member' | 'admin';
+  // ── Privacy ───────────────────────────────────────────────────────────────
+  privacy?: PrivacySettings;
 }
 
 // ─── Form value types — derived from schemas ──────────────────────────────────
-// Using z.input<> (not z.infer<>) so the types match what react-hook-form
-// sees before Zod transforms/defaults are applied. This prevents resolver
-// type mismatches (e.g. rememberMe: boolean vs boolean | undefined).
-
 export type LoginFormValues = z.input<typeof loginSchema>;
 export type ForgotPasswordFormValues = z.input<typeof forgotPasswordSchema>;
 export type RegisterDetailsFormValues = z.input<typeof registerDetailsSchema>;
 export type ResetPasswordFormValues = z.input<typeof resetPasswordSchema>;
 export type EmailVerificationFormValues = z.input<typeof emailVerificationSchema>;
-
-// Keep SupportedPhoneCountry available for consumers of RegisterDetailsFormValues
-export type { SupportedPhoneCountry };
 
 // ─── API payloads / responses ─────────────────────────────────────────────────
 export interface AuthUserSummary {
