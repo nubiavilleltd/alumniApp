@@ -75,7 +75,7 @@ function FieldRowWithPrivacy({
   privacy?: FieldVisibility;
 }) {
   const isPublic = privacy === 'public';
-  
+
   return (
     <div className="flex items-center justify-between py-3">
       <div className="flex items-center gap-2 text-sm text-gray-400">
@@ -185,11 +185,17 @@ export default function UserProfilePage() {
                           ? 'bg-green-50 text-green-600 border border-green-200'
                           : 'bg-gray-100 text-gray-600 border border-gray-300'
                       }`}
-                      title={currentUser.privacy.photo === 'public' ? 'Photo is public' : 'Photo is private'}
+                      title={
+                        currentUser.privacy.photo === 'public'
+                          ? 'Photo is public'
+                          : 'Photo is private'
+                      }
                     >
-                      <Icon 
-                        icon={currentUser.privacy.photo === 'public' ? 'mdi:eye-outline' : 'mdi:lock'} 
-                        className="w-3 h-3" 
+                      <Icon
+                        icon={
+                          currentUser.privacy.photo === 'public' ? 'mdi:eye-outline' : 'mdi:lock'
+                        }
+                        className="w-3 h-3"
                       />
                     </span>
                   )}

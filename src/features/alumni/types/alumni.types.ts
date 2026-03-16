@@ -1,4 +1,3 @@
-
 // features/alumni/types/alumni.types.ts
 
 type AlumniProject = {
@@ -45,7 +44,7 @@ export type Alumni = {
   education: Education[];
   achievements: string[];
   interests: string[];
-  
+
   // ── Extended Profile Fields (from AuthSessionUser) ───────────────────────
   // These fields allow merging session data when viewing own profile
   alternativePhone?: string;
@@ -58,7 +57,7 @@ export type Alumni = {
   industrySectors?: string[];
   yearsOfExperience?: number;
   isVolunteer?: boolean;
-  
+
   // ── Social Links (direct fields) ─────────────────────────────────────────
   linkedin?: string;
   twitter?: string;

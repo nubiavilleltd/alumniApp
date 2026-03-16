@@ -376,8 +376,12 @@ function EventCard({
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export function EventsPage() {
+  // Read view from URL parameter (e.g., /events?view=calendar)
+  const searchParams = new URLSearchParams(window.location.search);
+  const initialView = searchParams.get('view') === 'calendar' ? 'calendar' : 'grid';
+  
   const [tab, setTab] = useState<Tab>('upcoming');
-  const [viewType, setViewType] = useState<ViewType>('grid');
+  const [viewType, setViewType] = useState<ViewType>(initialView);
   const [registerEvent, setRegisterEvent] = useState<Event | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [locationFilter, setLocationFilter] = useState('');

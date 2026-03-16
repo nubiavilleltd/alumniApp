@@ -153,7 +153,7 @@ export const alumni: Alumni[] = [
     ],
     achievements: [],
     interests: ['Healthcare', 'Public Health', 'Wellness', 'Community Medicine'],
-    linkedin: '' ,
+    linkedin: '',
   },
 
   {
@@ -192,7 +192,7 @@ export const alumni: Alumni[] = [
     achievements: ['FCT Women in Tech Award 2023'],
     interests: ['Technology', 'Open Source', 'Women in STEM', 'Entrepreneurship'],
     linkedin: '',
-    twitter: ''
+    twitter: '',
   },
 
   // ── Leadership (excos) ─────────────────────────────────────────────────────
@@ -226,7 +226,7 @@ export const alumni: Alumni[] = [
     ],
     achievements: ['Nigerian Bar Association Award of Excellence 2019'],
     interests: ['Law', 'Community Service', 'Women Empowerment', 'Education'],
-    linkedin: '' ,
+    linkedin: '',
   },
   {
     memberId: MBR_ABIGAL_VP,
@@ -248,7 +248,7 @@ export const alumni: Alumni[] = [
     education: [],
     achievements: [],
     interests: ['Business', 'Fashion', 'Community'],
-    linkedin: '' 
+    linkedin: '',
   },
   {
     memberId: MBR_JOSEPHINE,
@@ -270,7 +270,7 @@ export const alumni: Alumni[] = [
     education: [],
     achievements: [],
     interests: ['Media', 'Communications', 'Community Service'],
-    linkedin: '' 
+    linkedin: '',
   },
   {
     memberId: MBR_FAVOUR,
@@ -292,7 +292,7 @@ export const alumni: Alumni[] = [
     education: [],
     achievements: [],
     interests: ['Public Service', 'Administration', 'Community'],
-    linkedin: '' 
+    linkedin: '',
   },
   {
     memberId: MBR_LILIAN,
@@ -314,7 +314,7 @@ export const alumni: Alumni[] = [
     education: [],
     achievements: [],
     interests: ['Finance', 'Banking', 'Community Service'],
-    linkedin: '' 
+    linkedin: '',
   },
   {
     memberId: MBR_GOODNESS,
@@ -336,7 +336,7 @@ export const alumni: Alumni[] = [
     education: [],
     achievements: [],
     interests: ['Finance', 'Investment', 'Community Service'],
-    linkedin: '' 
+    linkedin: '',
   },
   {
     memberId: MBR_BELLA,
@@ -358,7 +358,7 @@ export const alumni: Alumni[] = [
     education: [],
     achievements: [],
     interests: ['Events', 'Hospitality', 'Food', 'Community'],
-    linkedin: '' 
+    linkedin: '',
   },
   {
     memberId: MBR_ABIGAL_OJO,
@@ -394,7 +394,8 @@ export const alumni: Alumni[] = [
     ],
     achievements: [],
     interests: ['Visual Art', 'Design', 'Culture', 'Fashion'],
-    linkedin: '', twitter: '' 
+    linkedin: '',
+    twitter: '',
   },
   {
     memberId: MBR_PRECIOUS,
@@ -430,7 +431,7 @@ export const alumni: Alumni[] = [
     ],
     achievements: [],
     interests: ['Finance', 'Investment', 'Mentorship', 'Travel'],
-    linkedin: '' 
+    linkedin: '',
   },
   {
     memberId: MBR_THERESA,
@@ -466,7 +467,7 @@ export const alumni: Alumni[] = [
     ],
     achievements: [],
     interests: ['Healthcare', 'Community Service', 'Public Health', 'Wellness'],
-    linkedin: '' 
+    linkedin: '',
   },
   {
     memberId: MBR_ABIGAL_CEO,
@@ -502,7 +503,7 @@ export const alumni: Alumni[] = [
     ],
     achievements: [],
     interests: ['Fashion', 'Entrepreneurship', 'African Culture', 'Design'],
-    linkedin: '' 
+    linkedin: '',
   },
   {
     memberId: MBR_ABIGAL_DEV,
@@ -538,7 +539,8 @@ export const alumni: Alumni[] = [
     ],
     achievements: [],
     interests: ['Technology', 'Web Design', 'Open Source', 'Innovation'],
-    linkedin: '', instagram: ''
+    linkedin: '',
+    instagram: '',
   },
   {
     memberId: MBR_ABIGAL_CHEF,
@@ -574,7 +576,7 @@ export const alumni: Alumni[] = [
     ],
     achievements: [],
     interests: ['Cooking', 'Food Culture', 'Travel', 'Wellness'],
-    linkedin: ''
+    linkedin: '',
   },
   {
     memberId: MBR_ABIGAL_ART2,
@@ -596,7 +598,7 @@ export const alumni: Alumni[] = [
     education: [],
     achievements: [],
     interests: ['Art', 'Photography', 'Culture', 'Travel'],
-    linkedin: ''
+    linkedin: '',
   },
   {
     memberId: MBR_ABIGAL_ART3,
@@ -624,7 +626,7 @@ export const alumni: Alumni[] = [
     education: [],
     achievements: [],
     interests: ['Social Impact', 'Design', 'Media', 'Community'],
-    linkedin: ''
+    linkedin: '',
   },
   {
     memberId: MBR_ABIGAL_ART4,
@@ -646,7 +648,7 @@ export const alumni: Alumni[] = [
     education: [],
     achievements: [],
     interests: ['Fashion', 'Photography', 'Branding', 'Lifestyle'],
-    linkedin: ''
+    linkedin: '',
   },
   {
     memberId: MBR_ABIGAL_ART5,
@@ -674,7 +676,7 @@ export const alumni: Alumni[] = [
     education: [],
     achievements: [],
     interests: ['Tech', 'Media', 'Design', 'Innovation'],
-    linkedin: ''
+    linkedin: '',
   },
   {
     memberId: MBR_ABIGAL_ART6,
@@ -696,7 +698,7 @@ export const alumni: Alumni[] = [
     education: [],
     achievements: [],
     interests: ['Education', 'Art', 'Youth Development', 'Culture'],
-    linkedin: ''
+    linkedin: '',
   },
   {
     memberId: MBR_ABIGAL_ART7,
@@ -718,7 +720,7 @@ export const alumni: Alumni[] = [
     education: [],
     achievements: [],
     interests: ['Art', 'Strategy', 'Mentorship', 'Design'],
-    linkedin: ''
+    linkedin: '',
   },
 ];
 
@@ -810,7 +812,6 @@ export const projects: Project[] = [
     image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=700&q=80',
   },
 ];
-
 
 export const events: Event[] = [
   // ═══════════════════════════════════════════════════════════════════════════

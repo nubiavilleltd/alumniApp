@@ -9,7 +9,11 @@ import { Layout } from '@/shared/components/layout/Layout';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { SEO } from '@/shared/common/SEO';
-import { isFieldVisible, getPrivateFieldDisplay, getPhotoDisplay } from '@/features/alumni/utils/privacyHelpers';
+import {
+  isFieldVisible,
+  getPrivateFieldDisplay,
+  getPhotoDisplay,
+} from '@/features/alumni/utils/privacyHelpers';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 function ProfileSkeleton() {
@@ -45,9 +49,9 @@ function ProfileSkeleton() {
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export function AlumniProfilePage() {
-  const { slug = '' }  = useParams();
-  const currentUser    = useAuthStore((state) => state.user);
-  const isSignedIn     = !!currentUser;
+  const { slug = '' } = useParams();
+  const currentUser = useAuthStore((state) => state.user);
+  const isSignedIn = !!currentUser;
 
   const { data: alumnus, isLoading } = useAlumnus(slug);
 
@@ -72,39 +76,40 @@ export function AlumniProfilePage() {
   // If viewing own profile, show latest data from session (Edit Profile changes)
   // instead of stale mock data. This ensures social links and other updates appear immediately.
   const isOwnProfile = currentUser?.slug === slug;
-  
+
   // Handle backward compatibility: mock data might have nested social object
   const getAlumnusSocial = (field: 'linkedin' | 'twitter' | 'instagram') => {
     // @ts-ignore - handling backward compatibility with nested social object
     return alumnus[field] || alumnus.social?.[field];
   };
-  
-  const displayAlumnus = isOwnProfile && currentUser
-    ? {
-        ...alumnus,
-        // Override with latest session data
-        photo: currentUser.photo || alumnus.photo,
-        alternativePhone: currentUser.alternativePhone || alumnus.alternativePhone,
-        birthDate: currentUser.birthDate || alumnus.birthDate,
-        residentialAddress: currentUser.residentialAddress || alumnus.residentialAddress,
-        area: currentUser.area || alumnus.area,
-        city: currentUser.city || alumnus.city,
-        employmentStatus: currentUser.employmentStatus || alumnus.employmentStatus,
-        occupations: currentUser.occupations || alumnus.occupations,
-        industrySectors: currentUser.industrySectors || alumnus.industrySectors,
-        yearsOfExperience: currentUser.yearsOfExperience ?? alumnus.yearsOfExperience,
-        isVolunteer: currentUser.isVolunteer ?? alumnus.isVolunteer,
-        linkedin: currentUser.linkedin || getAlumnusSocial('linkedin'),
-        twitter: currentUser.twitter || getAlumnusSocial('twitter'),
-        instagram: currentUser.instagram || getAlumnusSocial('instagram'),
-      }
-    : {
-        ...alumnus,
-        // For other profiles, also extract from nested social if needed
-        linkedin: alumnus.linkedin || getAlumnusSocial('linkedin'),
-        twitter: alumnus.twitter || getAlumnusSocial('twitter'),
-        instagram: alumnus.instagram || getAlumnusSocial('instagram'),
-      };
+
+  const displayAlumnus =
+    isOwnProfile && currentUser
+      ? {
+          ...alumnus,
+          // Override with latest session data
+          photo: currentUser.photo || alumnus.photo,
+          alternativePhone: currentUser.alternativePhone || alumnus.alternativePhone,
+          birthDate: currentUser.birthDate || alumnus.birthDate,
+          residentialAddress: currentUser.residentialAddress || alumnus.residentialAddress,
+          area: currentUser.area || alumnus.area,
+          city: currentUser.city || alumnus.city,
+          employmentStatus: currentUser.employmentStatus || alumnus.employmentStatus,
+          occupations: currentUser.occupations || alumnus.occupations,
+          industrySectors: currentUser.industrySectors || alumnus.industrySectors,
+          yearsOfExperience: currentUser.yearsOfExperience ?? alumnus.yearsOfExperience,
+          isVolunteer: currentUser.isVolunteer ?? alumnus.isVolunteer,
+          linkedin: currentUser.linkedin || getAlumnusSocial('linkedin'),
+          twitter: currentUser.twitter || getAlumnusSocial('twitter'),
+          instagram: currentUser.instagram || getAlumnusSocial('instagram'),
+        }
+      : {
+          ...alumnus,
+          // For other profiles, also extract from nested social if needed
+          linkedin: alumnus.linkedin || getAlumnusSocial('linkedin'),
+          twitter: alumnus.twitter || getAlumnusSocial('twitter'),
+          instagram: alumnus.instagram || getAlumnusSocial('instagram'),
+        };
 
   // ── Resolve privacy settings for this alumnus ──────────────────────────────
   // Look up their MockAuthAccount to get stored privacy settings.
@@ -124,12 +129,12 @@ export function AlumniProfilePage() {
   const alumnusWithPrivacy = { ...displayAlumnus, privacy, id: displayAlumnus.memberId };
 
   const alum = { ...displayAlumnus };
-  
+
   // Social links - direct fields on user object
   const hasAnySocial = alum.linkedin || alum.twitter || alum.instagram;
 
   const breadcrumbItems = [
-    { label: 'Home',     href: '/' },
+    { label: 'Home', href: '/' },
     { label: 'Profiles', href: '/alumni/profiles' },
     { label: alum.name },
   ];
@@ -142,12 +147,13 @@ export function AlumniProfilePage() {
       <section className="section py-12">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
             {/* ── Sidebar ──────────────────────────────────────────────── */}
             <aside className="lg:col-span-1 bg-white shadow-md rounded-2xl p-6 text-center">
-
               {/* Photo — respects privacy */}
-              {getPhotoDisplay(alum.photo, isFieldVisible(alumnusWithPrivacy, 'photo', currentUser)) ? (
+              {getPhotoDisplay(
+                alum.photo,
+                isFieldVisible(alumnusWithPrivacy, 'photo', currentUser),
+              ) ? (
                 <img
                   src={alum.photo || '/logo.svg'}
                   alt={alum.name}
@@ -170,16 +176,23 @@ export function AlumniProfilePage() {
                 <>
                   <div className="mt-4 space-y-2 text-sm text-gray-700 text-left">
                     {alum.position && (
-                      <p><strong>Position:</strong> {alum.position}</p>
+                      <p>
+                        <strong>Position:</strong> {alum.position}
+                      </p>
                     )}
                     {alum.company && (
-                      <p><strong>Company:</strong> {alum.company}</p>
+                      <p>
+                        <strong>Company:</strong> {alum.company}
+                      </p>
                     )}
                     {alum.location && (
-                      <p><strong>Location:</strong> {getPrivateFieldDisplay(
-                        alum.location, 
-                        isFieldVisible(alumnusWithPrivacy, 'city', currentUser)
-                      )}</p>
+                      <p>
+                        <strong>Location:</strong>{' '}
+                        {getPrivateFieldDisplay(
+                          alum.location,
+                          isFieldVisible(alumnusWithPrivacy, 'city', currentUser),
+                        )}
+                      </p>
                     )}
                     {alum.email && (
                       <p className="flex items-center gap-1 flex-wrap">
@@ -197,17 +210,29 @@ export function AlumniProfilePage() {
                   {hasAnySocial && (
                     <div className="mt-6 flex justify-center gap-5 text-gray-600">
                       {alum.linkedin && (
-                        <AppLink href={alum.linkedin} target="_blank" className="hover:text-primary-600">
+                        <AppLink
+                          href={alum.linkedin}
+                          target="_blank"
+                          className="hover:text-primary-600"
+                        >
                           <Icon icon="mdi:linkedin" className="w-6 h-6" />
                         </AppLink>
                       )}
                       {alum.twitter && (
-                        <AppLink href={alum.twitter} target="_blank" className="hover:text-primary-600">
+                        <AppLink
+                          href={alum.twitter}
+                          target="_blank"
+                          className="hover:text-primary-600"
+                        >
                           <Icon icon="mdi:twitter" className="w-6 h-6" />
                         </AppLink>
                       )}
                       {alum.instagram && (
-                        <AppLink href={alum.instagram} target="_blank" className="hover:text-primary-600">
+                        <AppLink
+                          href={alum.instagram}
+                          target="_blank"
+                          className="hover:text-primary-600"
+                        >
                           <Icon icon="mdi:instagram" className="w-6 h-6" />
                         </AppLink>
                       )}
@@ -221,7 +246,10 @@ export function AlumniProfilePage() {
                     Sign in to view this alumnus's biography, work details, contact information, and
                     full profile sections.
                   </p>
-                  <AppLink href="/auth/login" className="btn btn-primary btn-sm mt-4 w-full justify-center">
+                  <AppLink
+                    href="/auth/login"
+                    className="btn btn-primary btn-sm mt-4 w-full justify-center"
+                  >
                     Sign in to continue
                   </AppLink>
                 </div>
@@ -238,7 +266,10 @@ export function AlumniProfilePage() {
                   </section>
 
                   {/* Professional Information */}
-                  {(alum.employmentStatus || alum.occupations || alum.industrySectors || alum.yearsOfExperience) && (
+                  {(alum.employmentStatus ||
+                    alum.occupations ||
+                    alum.industrySectors ||
+                    alum.yearsOfExperience) && (
                     <section className="bg-white shadow-md rounded-2xl p-6">
                       <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
                         <Icon icon="mdi:briefcase-outline" className="w-5 h-5 text-primary-500" />
@@ -252,8 +283,10 @@ export function AlumniProfilePage() {
                             </p>
                             <p className="font-medium text-gray-800">
                               {getPrivateFieldDisplay(
-                                alum.employmentStatus.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
-                                isFieldVisible(alumnusWithPrivacy, 'employmentStatus', currentUser)
+                                alum.employmentStatus
+                                  .replace(/-/g, ' ')
+                                  .replace(/\b\w/g, (c) => c.toUpperCase()),
+                                isFieldVisible(alumnusWithPrivacy, 'employmentStatus', currentUser),
                               )}
                             </p>
                           </div>
@@ -265,8 +298,12 @@ export function AlumniProfilePage() {
                             </p>
                             <p className="font-medium text-gray-800">
                               {getPrivateFieldDisplay(
-                                alum.occupations.map(o => o.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())).join(', '),
-                                isFieldVisible(alumnusWithPrivacy, 'occupations', currentUser)
+                                alum.occupations
+                                  .map((o) =>
+                                    o.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+                                  )
+                                  .join(', '),
+                                isFieldVisible(alumnusWithPrivacy, 'occupations', currentUser),
                               )}
                             </p>
                           </div>
@@ -278,25 +315,34 @@ export function AlumniProfilePage() {
                             </p>
                             <p className="font-medium text-gray-800">
                               {getPrivateFieldDisplay(
-                                alum.industrySectors.map(s => s.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())).join(', '),
-                                isFieldVisible(alumnusWithPrivacy, 'industrySectors', currentUser)
+                                alum.industrySectors
+                                  .map((s) =>
+                                    s.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+                                  )
+                                  .join(', '),
+                                isFieldVisible(alumnusWithPrivacy, 'industrySectors', currentUser),
                               )}
                             </p>
                           </div>
                         )}
-                        {alum.yearsOfExperience !== undefined && alum.yearsOfExperience !== null && (
-                          <div>
-                            <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">
-                              Years of Experience
-                            </p>
-                            <p className="font-medium text-gray-800">
-                              {getPrivateFieldDisplay(
-                                `${alum.yearsOfExperience}+ years`,
-                                isFieldVisible(alumnusWithPrivacy, 'yearsOfExperience', currentUser)
-                              )}
-                            </p>
-                          </div>
-                        )}
+                        {alum.yearsOfExperience !== undefined &&
+                          alum.yearsOfExperience !== null && (
+                            <div>
+                              <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">
+                                Years of Experience
+                              </p>
+                              <p className="font-medium text-gray-800">
+                                {getPrivateFieldDisplay(
+                                  `${alum.yearsOfExperience}+ years`,
+                                  isFieldVisible(
+                                    alumnusWithPrivacy,
+                                    'yearsOfExperience',
+                                    currentUser,
+                                  ),
+                                )}
+                              </p>
+                            </div>
+                          )}
                       </div>
                     </section>
                   )}
@@ -317,7 +363,7 @@ export function AlumniProfilePage() {
                             <p className="font-medium text-gray-800">
                               {getPrivateFieldDisplay(
                                 alum.city.charAt(0).toUpperCase() + alum.city.slice(1),
-                                isFieldVisible(alumnusWithPrivacy, 'city', currentUser)
+                                isFieldVisible(alumnusWithPrivacy, 'city', currentUser),
                               )}
                             </p>
                           </div>
@@ -330,7 +376,7 @@ export function AlumniProfilePage() {
                             <p className="font-medium text-gray-800">
                               {getPrivateFieldDisplay(
                                 alum.area.charAt(0).toUpperCase() + alum.area.slice(1),
-                                isFieldVisible(alumnusWithPrivacy, 'area', currentUser)
+                                isFieldVisible(alumnusWithPrivacy, 'area', currentUser),
                               )}
                             </p>
                           </div>
@@ -343,7 +389,11 @@ export function AlumniProfilePage() {
                             <p className="font-medium text-gray-800">
                               {getPrivateFieldDisplay(
                                 alum.residentialAddress,
-                                isFieldVisible(alumnusWithPrivacy, 'residentialAddress', currentUser)
+                                isFieldVisible(
+                                  alumnusWithPrivacy,
+                                  'residentialAddress',
+                                  currentUser,
+                                ),
                               )}
                             </p>
                           </div>
@@ -365,12 +415,12 @@ export function AlumniProfilePage() {
                         </p>
                         <p className="font-medium text-gray-800">
                           {getPrivateFieldDisplay(
-                            new Date(alum.birthDate).toLocaleDateString('en-US', { 
-                              year: 'numeric', 
-                              month: 'long', 
-                              day: 'numeric' 
+                            new Date(alum.birthDate).toLocaleDateString('en-US', {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
                             }),
-                            isFieldVisible(alumnusWithPrivacy, 'birthDate', currentUser)
+                            isFieldVisible(alumnusWithPrivacy, 'birthDate', currentUser),
                           )}
                         </p>
                       </div>
@@ -378,7 +428,7 @@ export function AlumniProfilePage() {
                   )}
 
                   {/* Contact Information (WhatsApp/Alternative Phone) */}
-                  {(alum.alternativePhone) && (
+                  {alum.alternativePhone && (
                     <section className="bg-white shadow-md rounded-2xl p-6">
                       <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
                         <Icon icon="mdi:phone-outline" className="w-5 h-5 text-primary-500" />
@@ -393,7 +443,7 @@ export function AlumniProfilePage() {
                             <p className="font-medium text-gray-800">
                               {getPrivateFieldDisplay(
                                 alum.alternativePhone,
-                                isFieldVisible(alumnusWithPrivacy, 'alternativePhone', currentUser)
+                                isFieldVisible(alumnusWithPrivacy, 'alternativePhone', currentUser),
                               )}
                             </p>
                           </div>
