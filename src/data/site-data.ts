@@ -103,7 +103,7 @@ export const alumni: Alumni[] = [
       'FGGC Owerri Alumni Award of Excellence 2020',
     ],
     interests: ['Entrepreneurship', 'Women Empowerment', 'Finance', 'Community Service'],
-    social: { linkedin: '' },
+    linkedin: '',
   },
 
   {
@@ -153,7 +153,7 @@ export const alumni: Alumni[] = [
     ],
     achievements: [],
     interests: ['Healthcare', 'Public Health', 'Wellness', 'Community Medicine'],
-    social: { linkedin: '' },
+    linkedin: '' ,
   },
 
   {
@@ -191,7 +191,8 @@ export const alumni: Alumni[] = [
     ],
     achievements: ['FCT Women in Tech Award 2023'],
     interests: ['Technology', 'Open Source', 'Women in STEM', 'Entrepreneurship'],
-    social: { linkedin: '', github: '' },
+    linkedin: '',
+    twitter: ''
   },
 
   // ── Leadership (excos) ─────────────────────────────────────────────────────
@@ -225,7 +226,7 @@ export const alumni: Alumni[] = [
     ],
     achievements: ['Nigerian Bar Association Award of Excellence 2019'],
     interests: ['Law', 'Community Service', 'Women Empowerment', 'Education'],
-    social: { linkedin: '' },
+    linkedin: '' ,
   },
   {
     memberId: MBR_ABIGAL_VP,
@@ -247,7 +248,7 @@ export const alumni: Alumni[] = [
     education: [],
     achievements: [],
     interests: ['Business', 'Fashion', 'Community'],
-    social: { linkedin: '' },
+    linkedin: '' 
   },
   {
     memberId: MBR_JOSEPHINE,
@@ -269,7 +270,7 @@ export const alumni: Alumni[] = [
     education: [],
     achievements: [],
     interests: ['Media', 'Communications', 'Community Service'],
-    social: { linkedin: '' },
+    linkedin: '' 
   },
   {
     memberId: MBR_FAVOUR,
@@ -291,7 +292,7 @@ export const alumni: Alumni[] = [
     education: [],
     achievements: [],
     interests: ['Public Service', 'Administration', 'Community'],
-    social: { linkedin: '' },
+    linkedin: '' 
   },
   {
     memberId: MBR_LILIAN,
@@ -313,7 +314,7 @@ export const alumni: Alumni[] = [
     education: [],
     achievements: [],
     interests: ['Finance', 'Banking', 'Community Service'],
-    social: { linkedin: '' },
+    linkedin: '' 
   },
   {
     memberId: MBR_GOODNESS,
@@ -335,7 +336,7 @@ export const alumni: Alumni[] = [
     education: [],
     achievements: [],
     interests: ['Finance', 'Investment', 'Community Service'],
-    social: { linkedin: '' },
+    linkedin: '' 
   },
   {
     memberId: MBR_BELLA,
@@ -357,7 +358,7 @@ export const alumni: Alumni[] = [
     education: [],
     achievements: [],
     interests: ['Events', 'Hospitality', 'Food', 'Community'],
-    social: { linkedin: '' },
+    linkedin: '' 
   },
   {
     memberId: MBR_ABIGAL_OJO,
@@ -393,7 +394,7 @@ export const alumni: Alumni[] = [
     ],
     achievements: [],
     interests: ['Visual Art', 'Design', 'Culture', 'Fashion'],
-    social: { linkedin: '', twitter: '' },
+    linkedin: '', twitter: '' 
   },
   {
     memberId: MBR_PRECIOUS,
@@ -429,7 +430,7 @@ export const alumni: Alumni[] = [
     ],
     achievements: [],
     interests: ['Finance', 'Investment', 'Mentorship', 'Travel'],
-    social: { linkedin: '' },
+    linkedin: '' 
   },
   {
     memberId: MBR_THERESA,
@@ -465,7 +466,7 @@ export const alumni: Alumni[] = [
     ],
     achievements: [],
     interests: ['Healthcare', 'Community Service', 'Public Health', 'Wellness'],
-    social: { linkedin: '' },
+    linkedin: '' 
   },
   {
     memberId: MBR_ABIGAL_CEO,
@@ -501,7 +502,7 @@ export const alumni: Alumni[] = [
     ],
     achievements: [],
     interests: ['Fashion', 'Entrepreneurship', 'African Culture', 'Design'],
-    social: { linkedin: '' },
+    linkedin: '' 
   },
   {
     memberId: MBR_ABIGAL_DEV,
@@ -537,7 +538,7 @@ export const alumni: Alumni[] = [
     ],
     achievements: [],
     interests: ['Technology', 'Web Design', 'Open Source', 'Innovation'],
-    social: { linkedin: '', github: '' },
+    linkedin: '', instagram: ''
   },
   {
     memberId: MBR_ABIGAL_CHEF,
@@ -573,7 +574,7 @@ export const alumni: Alumni[] = [
     ],
     achievements: [],
     interests: ['Cooking', 'Food Culture', 'Travel', 'Wellness'],
-    social: { linkedin: '' },
+    linkedin: ''
   },
   {
     memberId: MBR_ABIGAL_ART2,
@@ -595,7 +596,7 @@ export const alumni: Alumni[] = [
     education: [],
     achievements: [],
     interests: ['Art', 'Photography', 'Culture', 'Travel'],
-    social: { linkedin: '' },
+    linkedin: ''
   },
   {
     memberId: MBR_ABIGAL_ART3,
@@ -623,7 +624,7 @@ export const alumni: Alumni[] = [
     education: [],
     achievements: [],
     interests: ['Social Impact', 'Design', 'Media', 'Community'],
-    social: { linkedin: '' },
+    linkedin: ''
   },
   {
     memberId: MBR_ABIGAL_ART4,
@@ -645,7 +646,7 @@ export const alumni: Alumni[] = [
     education: [],
     achievements: [],
     interests: ['Fashion', 'Photography', 'Branding', 'Lifestyle'],
-    social: { linkedin: '' },
+    linkedin: ''
   },
   {
     memberId: MBR_ABIGAL_ART5,
@@ -673,7 +674,7 @@ export const alumni: Alumni[] = [
     education: [],
     achievements: [],
     interests: ['Tech', 'Media', 'Design', 'Innovation'],
-    social: { linkedin: '' },
+    linkedin: ''
   },
   {
     memberId: MBR_ABIGAL_ART6,
@@ -695,7 +696,7 @@ export const alumni: Alumni[] = [
     education: [],
     achievements: [],
     interests: ['Education', 'Art', 'Youth Development', 'Culture'],
-    social: { linkedin: '' },
+    linkedin: ''
   },
   {
     memberId: MBR_ABIGAL_ART7,
@@ -717,7 +718,7 @@ export const alumni: Alumni[] = [
     education: [],
     achievements: [],
     interests: ['Art', 'Strategy', 'Mentorship', 'Design'],
-    social: { linkedin: '' },
+    linkedin: ''
   },
 ];
 
@@ -810,236 +811,6 @@ export const projects: Project[] = [
   },
 ];
 
-// ─── Events ───────────────────────────────────────────────────────────────────
-// createdBy → admin memberId
-// registrations → array of member memberIds who have RSVP'd
-
-// export const events: Event[] = [
-//   {
-//     slug: 'annual-homecoming-weekend-gala',
-//     title: 'Annual Homecoming Weekend & Grand Gala',
-//     description:
-//       'A spectacular reunion bringing together alumnae from every set and every corner of the world. Awards ceremony, cultural night, and gala dinner.',
-//     image: 'https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?w=700&q=80',
-//     location: 'Transcorp Hilton, Abuja',
-//     attire: 'Formal Attire',
-//     date: '2026-12-12',
-//     type: 'upcoming',
-//     isVirtual: false,
-//     category: 'Reunion',
-//     tags: ['reunion', 'gala', 'networking', 'homecoming'],
-//     featured: true,
-//     content: `# Annual Homecoming Weekend & Grand Gala\n\nA spectacular reunion bringing together alumnae from every set and every corner of the world.`,
-//     createdBy: MBR_ADAEZE,
-//     registrations: [MBR_NGOZI, MBR_CHIDINMA, MBR_PRECIOUS, MBR_THERESA],
-//   },
-//   {
-//     slug: 'diaspora-virtual-networking-night',
-//     title: 'Diaspora Virtual Networking Night',
-//     description:
-//       'Connecting alumnae in the diaspora for an evening of networking and shared stories.',
-//     image: 'https://images.unsplash.com/photo-1588196749597-9ff075ee6b5b?w=700&q=80',
-//     location: 'Zoom, Global',
-//     attire: '',
-//     date: '2026-12-12',
-//     type: 'upcoming',
-//     isVirtual: true,
-//     category: 'Networking',
-//     tags: ['diaspora', 'virtual', 'networking', 'global'],
-//     featured: false,
-//     content: '',
-//     createdBy: MBR_ADAEZE,
-//     registrations: [MBR_ABIGAL_DEV, MBR_ABIGAL_ART5],
-//   },
-//   {
-//     slug: 'child-birth-of-one-us',
-//     title: 'Child Birth Of One Us',
-//     description: 'A celebration of new life and community support for our sisters.',
-//     image: 'https://images.unsplash.com/photo-1519689680058-324335c77eba?w=700&q=80',
-//     location: 'Transcorp Hilton, Abuja',
-//     attire: 'Formal Attire',
-//     date: '2028-12-12',
-//     type: 'upcoming',
-//     isVirtual: false,
-//     category: 'Celebration',
-//     tags: ['celebration', 'community', 'maternal', 'support'],
-//     featured: false,
-//     content: '',
-//     createdBy: MBR_STELLA,
-//     registrations: [MBR_NGOZI, MBR_ABIGAL_OJO],
-//   },
-//   {
-//     slug: 'donation-for-project',
-//     title: 'Donation For Project',
-//     description: 'Virtual fundraising drive for the school perimeter fencing project.',
-//     image: 'https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=700&q=80',
-//     location: 'Zoom, Global',
-//     attire: '',
-//     date: '2026-12-12',
-//     type: 'upcoming',
-//     isVirtual: true,
-//     category: 'Fundraising',
-//     tags: ['donation', 'fundraising', 'project', 'giveback'],
-//     featured: false,
-//     content: '',
-//     createdBy: MBR_STELLA,
-//     registrations: [MBR_ADAEZE, MBR_NGOZI, MBR_CHIDINMA, MBR_PRECIOUS, MBR_THERESA],
-//   },
-//   {
-//     slug: 'school-opening',
-//     title: 'School Opening',
-//     description: 'Ceremony marking the opening of the new academic session at FGGC Owerri.',
-//     image: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=700&q=80',
-//     location: 'FGGC Owerri, Imo State',
-//     attire: 'Formal Attire',
-//     date: '2026-12-12',
-//     type: 'upcoming',
-//     isVirtual: false,
-//     category: 'Education',
-//     tags: ['education', 'school', 'opening', 'ceremony'],
-//     featured: false,
-//     content: '',
-//     createdBy: MBR_ADAEZE,
-//     registrations: [MBR_ADAEZE, MBR_STELLA, MBR_JOSEPHINE],
-//   },
-//   {
-//     slug: 'night-party',
-//     title: 'Night Party',
-//     description: 'An evening of music, fun, and sisterhood.',
-//     image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=700&q=80',
-//     location: 'Zoom, Global',
-//     attire: '',
-//     date: '2026-12-12',
-//     type: 'upcoming',
-//     isVirtual: true,
-//     category: 'Social',
-//     tags: ['party', 'social', 'virtual', 'fun'],
-//     featured: false,
-//     content: '',
-//     createdBy: MBR_BELLA,
-//     registrations: [MBR_NGOZI, MBR_CHIDINMA, MBR_ABIGAL_OJO, MBR_PRECIOUS],
-//   },
-//   {
-//     slug: 'annual-alumni-meet-2024',
-//     title: 'Annual Alumni Meet 2024',
-//     description: 'Join us for our most anticipated event of the year!',
-//     image: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=700&q=80',
-//     location: 'Main Campus Auditorium',
-//     attire: 'Smart Casual',
-//     date: '2024-12-15',
-//     type: 'past',
-//     isVirtual: false,
-//     category: 'Reunion',
-//     tags: ['reunion', 'networking', 'annual', 'alumni'],
-//     featured: false,
-//     content: '',
-//     createdBy: MBR_STELLA,
-//     registrations: [MBR_ADAEZE, MBR_NGOZI, MBR_CHIDINMA, MBR_PRECIOUS, MBR_THERESA, MBR_ABIGAL_OJO],
-//   },
-//   {
-//     slug: 'startup-pitch-competition-2024',
-//     title: 'Startup Pitch Competition 2024',
-//     description:
-//       'Annual startup pitch competition showcasing innovative ideas from our alumni community.',
-//     image: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=700&q=80',
-//     location: 'Innovation Hub, University Campus',
-//     attire: 'Business Casual',
-//     date: '2024-04-20',
-//     type: 'past',
-//     isVirtual: false,
-//     category: 'Entrepreneurship',
-//     tags: ['startup', 'pitch', 'entrepreneurship', 'innovation'],
-//     featured: false,
-//     content: '',
-//     createdBy: MBR_ADAEZE,
-//     registrations: [MBR_CHIDINMA, MBR_ABIGAL_CEO, MBR_ABIGAL_DEV],
-//   },
-//   {
-//     slug: 'tech-career-fair-2024',
-//     title: 'Tech Career Fair 2024',
-//     description: 'Annual technology career fair connecting alumni with top tech companies.',
-//     image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=700&q=80',
-//     location: 'Convention Center, Downtown',
-//     attire: 'Business Formal',
-//     date: '2024-03-15',
-//     type: 'past',
-//     isVirtual: false,
-//     category: 'Career',
-//     tags: ['career', 'technology', 'jobs', 'networking'],
-//     featured: false,
-//     content: '',
-//     createdBy: MBR_ADAEZE,
-//     registrations: [MBR_CHIDINMA, MBR_ABIGAL_DEV, MBR_ABIGAL_ART5],
-//   },
-//   {
-//     slug: 'scholarship-award-night-2024',
-//     title: 'Scholarship Award Night 2024',
-//     description: 'Celebrating our brightest students with the annual scholarship award ceremony.',
-//     image: 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=700&q=80',
-//     location: 'Grand Ballroom, Eko Hotel, Lagos',
-//     attire: 'Black Tie',
-//     date: '2024-02-10',
-//     type: 'past',
-//     isVirtual: false,
-//     category: 'Education',
-//     tags: ['scholarship', 'awards', 'education', 'excellence'],
-//     featured: true,
-//     content: '',
-//     createdBy: MBR_STELLA,
-//     registrations: [MBR_ADAEZE, MBR_NGOZI, MBR_PRECIOUS, MBR_THERESA, MBR_STELLA, MBR_FAVOUR],
-//   },
-//   {
-//     slug: 'virtual-mentorship-summit-2023',
-//     title: 'Virtual Mentorship Summit 2023',
-//     description: 'A virtual summit connecting senior alumnae mentors with recent graduates.',
-//     image: 'https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=700&q=80',
-//     location: 'Zoom, Global',
-//     attire: '',
-//     date: '2023-11-05',
-//     type: 'past',
-//     isVirtual: true,
-//     category: 'Mentorship',
-//     tags: ['mentorship', 'virtual', 'career', 'guidance'],
-//     featured: false,
-//     content: '',
-//     createdBy: MBR_ADAEZE,
-//     registrations: [MBR_NGOZI, MBR_CHIDINMA, MBR_ABIGAL_DEV, MBR_ABIGAL_ART5, MBR_ABIGAL_ART3],
-//   },
-//   {
-//     slug: 'cultural-day-celebration-2023',
-//     title: 'Cultural Day Celebration 2023',
-//     description:
-//       'A vibrant celebration of Nigerian culture, heritage, and the bonds that unite FGGC alumnae.',
-//     image: 'https://images.unsplash.com/photo-1504609773096-104ff2c73ba4?w=700&q=80',
-//     location: 'National Arts Theatre, Lagos',
-//     attire: 'Traditional Attire',
-//     date: '2023-10-01',
-//     type: 'past',
-//     isVirtual: false,
-//     category: 'Networking',
-//     tags: ['networking', 'celebration', 'alumni', 'annual'],
-//     featured: true,
-//     content: '',
-//     createdBy: MBR_BELLA,
-//     registrations: [
-//       MBR_ADAEZE,
-//       MBR_NGOZI,
-//       MBR_CHIDINMA,
-//       MBR_ABIGAL_OJO,
-//       MBR_PRECIOUS,
-//       MBR_THERESA,
-//       MBR_ABIGAL_CEO,
-//     ],
-//   },
-// ];
-
-// ─── Updated Events Data ──────────────────────────────────────────────────────
-// Replace the events array in /src/data/site-data.ts with this
-
-// NOTE: Make sure these constants are imported at the top of site-data.ts:
-// const MBR_ADAEZE, MBR_NGOZI, MBR_CHIDINMA, MBR_PRECIOUS, MBR_THERESA,
-// MBR_ABIGAL_OJO, MBR_ABIGAL_DEV, MBR_ABIGAL_ART5, MBR_ABIGAL_ART3,
-// MBR_ABIGAL_CEO, MBR_STELLA, MBR_BELLA, MBR_JOSEPHINE, MBR_FAVOUR
 
 export const events: Event[] = [
   // ═══════════════════════════════════════════════════════════════════════════
