@@ -72,6 +72,13 @@ export function AlumniProfilePage() {
   // If viewing own profile, show latest data from session (Edit Profile changes)
   // instead of stale mock data. This ensures social links and other updates appear immediately.
   const isOwnProfile = currentUser?.slug === slug;
+  
+  // Handle backward compatibility: mock data might have nested social object
+  const getAlumnusSocial = (field: 'linkedin' | 'twitter' | 'instagram') => {
+    // @ts-ignore - handling backward compatibility with nested social object
+    return alumnus[field] || alumnus.social?.[field];
+  };
+  
   const displayAlumnus = isOwnProfile && currentUser
     ? {
         ...alumnus,
@@ -87,11 +94,17 @@ export function AlumniProfilePage() {
         industrySectors: currentUser.industrySectors || alumnus.industrySectors,
         yearsOfExperience: currentUser.yearsOfExperience ?? alumnus.yearsOfExperience,
         isVolunteer: currentUser.isVolunteer ?? alumnus.isVolunteer,
-        linkedin: currentUser.linkedin || alumnus.linkedin,
-        twitter: currentUser.twitter || alumnus.twitter,
-        instagram: currentUser.instagram || alumnus.instagram,
+        linkedin: currentUser.linkedin || getAlumnusSocial('linkedin'),
+        twitter: currentUser.twitter || getAlumnusSocial('twitter'),
+        instagram: currentUser.instagram || getAlumnusSocial('instagram'),
       }
-    : alumnus;
+    : {
+        ...alumnus,
+        // For other profiles, also extract from nested social if needed
+        linkedin: alumnus.linkedin || getAlumnusSocial('linkedin'),
+        twitter: alumnus.twitter || getAlumnusSocial('twitter'),
+        instagram: alumnus.instagram || getAlumnusSocial('instagram'),
+      };
 
   // ── Resolve privacy settings for this alumnus ──────────────────────────────
   // Look up their MockAuthAccount to get stored privacy settings.
@@ -114,7 +127,6 @@ export function AlumniProfilePage() {
   
   // Social links - direct fields on user object
   const hasAnySocial = alum.linkedin || alum.twitter || alum.instagram;
-  console.log("alum", {alum, hasAnySocial})
 
   const breadcrumbItems = [
     { label: 'Home',     href: '/' },
@@ -225,79 +237,181 @@ export function AlumniProfilePage() {
                     <p className="text-gray-700">{alum.long_bio}</p>
                   </section>
 
-                  {/* Skills */}
-                  {alum.skills && alum.skills.length > 0 && (
+                  {/* Professional Information */}
+                  {(alum.employmentStatus || alum.occupations || alum.industrySectors || alum.yearsOfExperience) && (
                     <section className="bg-white shadow-md rounded-2xl p-6">
-                      <h2 className="text-xl font-semibold mb-3">Skills</h2>
-                      <div className="flex flex-wrap gap-2">
-                        {alum.skills.map((skill) => (
-                          <span className="badge badge-primary" key={skill}>{skill}</span>
-                        ))}
-                      </div>
-                    </section>
-                  )}
-
-                  {/* Work Experience */}
-                  {alum.work_experience && alum.work_experience.length > 0 && (
-                    <section className="bg-white shadow-md rounded-2xl p-6">
-                      <h2 className="text-xl font-semibold mb-4">Work Experience</h2>
-                      <div className="space-y-4">
-                        {alum.work_experience.map((exp) => (
-                          <div key={`${exp.company}-${exp.position}`}>
-                            <div className="flex items-start justify-between gap-2">
-                              <div>
-                                <h3 className="font-semibold">{exp.position}</h3>
-                                <p className="text-sm text-primary-600">{exp.company}</p>
-                              </div>
-                              <span className="text-xs text-gray-400 flex-shrink-0">{exp.duration}</span>
-                            </div>
-                            <p className="text-sm text-gray-600 mt-1">{exp.description}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </section>
-                  )}
-
-                  {/* Education */}
-                  {alum.education && alum.education.length > 0 && (
-                    <section className="bg-white shadow-md rounded-2xl p-6">
-                      <h2 className="text-xl font-semibold mb-4">Education</h2>
-                      <div className="space-y-3">
-                        {alum.education.map((edu) => (
-                          <div key={`${edu.degree}-${edu.year}`}>
-                            <h3 className="font-semibold">{edu.degree}</h3>
-                            <p className="text-sm text-gray-600">
-                              {edu.institution} · {edu.year}
+                      <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                        <Icon icon="mdi:briefcase-outline" className="w-5 h-5 text-primary-500" />
+                        Professional Information
+                      </h2>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                        {alum.employmentStatus && (
+                          <div>
+                            <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">
+                              Employment Status
                             </p>
-                            {edu.gpa && (
-                              <p className="text-xs text-gray-400">GPA: {edu.gpa}</p>
-                            )}
+                            <p className="font-medium text-gray-800">
+                              {getPrivateFieldDisplay(
+                                alum.employmentStatus.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
+                                isFieldVisible(alumnusWithPrivacy, 'employmentStatus', currentUser)
+                              )}
+                            </p>
                           </div>
-                        ))}
+                        )}
+                        {alum.occupations && alum.occupations.length > 0 && (
+                          <div>
+                            <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">
+                              Occupation
+                            </p>
+                            <p className="font-medium text-gray-800">
+                              {getPrivateFieldDisplay(
+                                alum.occupations.map(o => o.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())).join(', '),
+                                isFieldVisible(alumnusWithPrivacy, 'occupations', currentUser)
+                              )}
+                            </p>
+                          </div>
+                        )}
+                        {alum.industrySectors && alum.industrySectors.length > 0 && (
+                          <div>
+                            <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">
+                              Industry Sector
+                            </p>
+                            <p className="font-medium text-gray-800">
+                              {getPrivateFieldDisplay(
+                                alum.industrySectors.map(s => s.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())).join(', '),
+                                isFieldVisible(alumnusWithPrivacy, 'industrySectors', currentUser)
+                              )}
+                            </p>
+                          </div>
+                        )}
+                        {alum.yearsOfExperience !== undefined && alum.yearsOfExperience !== null && (
+                          <div>
+                            <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">
+                              Years of Experience
+                            </p>
+                            <p className="font-medium text-gray-800">
+                              {getPrivateFieldDisplay(
+                                `${alum.yearsOfExperience}+ years`,
+                                isFieldVisible(alumnusWithPrivacy, 'yearsOfExperience', currentUser)
+                              )}
+                            </p>
+                          </div>
+                        )}
                       </div>
                     </section>
                   )}
 
-                  {/* Achievements */}
-                  {alum.achievements && alum.achievements.length > 0 && (
+                  {/* Location Information */}
+                  {(alum.city || alum.area || alum.residentialAddress) && (
                     <section className="bg-white shadow-md rounded-2xl p-6">
-                      <h2 className="text-xl font-semibold mb-3">Achievements</h2>
-                      <ul className="list-disc list-inside text-gray-700 space-y-1">
-                        {alum.achievements.map((a) => (
-                          <li key={a}>{a}</li>
-                        ))}
-                      </ul>
+                      <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                        <Icon icon="mdi:map-marker-outline" className="w-5 h-5 text-primary-500" />
+                        Location
+                      </h2>
+                      <div className="space-y-3 text-sm">
+                        {alum.city && (
+                          <div>
+                            <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">
+                              City
+                            </p>
+                            <p className="font-medium text-gray-800">
+                              {getPrivateFieldDisplay(
+                                alum.city.charAt(0).toUpperCase() + alum.city.slice(1),
+                                isFieldVisible(alumnusWithPrivacy, 'city', currentUser)
+                              )}
+                            </p>
+                          </div>
+                        )}
+                        {alum.area && (
+                          <div>
+                            <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">
+                              Area
+                            </p>
+                            <p className="font-medium text-gray-800">
+                              {getPrivateFieldDisplay(
+                                alum.area.charAt(0).toUpperCase() + alum.area.slice(1),
+                                isFieldVisible(alumnusWithPrivacy, 'area', currentUser)
+                              )}
+                            </p>
+                          </div>
+                        )}
+                        {alum.residentialAddress && (
+                          <div>
+                            <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">
+                              Residential Address
+                            </p>
+                            <p className="font-medium text-gray-800">
+                              {getPrivateFieldDisplay(
+                                alum.residentialAddress,
+                                isFieldVisible(alumnusWithPrivacy, 'residentialAddress', currentUser)
+                              )}
+                            </p>
+                          </div>
+                        )}
+                      </div>
                     </section>
                   )}
 
-                  {/* Interests */}
-                  {alum.interests && alum.interests.length > 0 && (
+                  {/* Personal Information */}
+                  {alum.birthDate && (
                     <section className="bg-white shadow-md rounded-2xl p-6">
-                      <h2 className="text-xl font-semibold mb-3">Interests</h2>
-                      <div className="flex flex-wrap gap-2">
-                        {alum.interests.map((interest) => (
-                          <span className="badge badge-secondary" key={interest}>{interest}</span>
-                        ))}
+                      <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                        <Icon icon="mdi:calendar-outline" className="w-5 h-5 text-primary-500" />
+                        Personal
+                      </h2>
+                      <div className="text-sm">
+                        <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">
+                          Date of Birth
+                        </p>
+                        <p className="font-medium text-gray-800">
+                          {getPrivateFieldDisplay(
+                            new Date(alum.birthDate).toLocaleDateString('en-US', { 
+                              year: 'numeric', 
+                              month: 'long', 
+                              day: 'numeric' 
+                            }),
+                            isFieldVisible(alumnusWithPrivacy, 'birthDate', currentUser)
+                          )}
+                        </p>
+                      </div>
+                    </section>
+                  )}
+
+                  {/* Contact Information (WhatsApp/Alternative Phone) */}
+                  {(alum.alternativePhone) && (
+                    <section className="bg-white shadow-md rounded-2xl p-6">
+                      <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                        <Icon icon="mdi:phone-outline" className="w-5 h-5 text-primary-500" />
+                        Additional Contact
+                      </h2>
+                      <div className="space-y-3 text-sm">
+                        {alum.alternativePhone && (
+                          <div>
+                            <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">
+                              Alternative Phone
+                            </p>
+                            <p className="font-medium text-gray-800">
+                              {getPrivateFieldDisplay(
+                                alum.alternativePhone,
+                                isFieldVisible(alumnusWithPrivacy, 'alternativePhone', currentUser)
+                              )}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </section>
+                  )}
+
+                  {/* Volunteer Status */}
+                  {alum.isVolunteer && (
+                    <section className="bg-white shadow-md rounded-2xl p-6">
+                      <h2 className="text-xl font-semibold mb-3 flex items-center gap-2">
+                        <Icon icon="mdi:hand-heart-outline" className="w-5 h-5 text-primary-500" />
+                        Community
+                      </h2>
+                      <div className="flex items-center gap-2 text-sm">
+                        <Icon icon="mdi:check-circle" className="w-5 h-5 text-green-500" />
+                        <span className="text-gray-700">Available for volunteer opportunities</span>
                       </div>
                     </section>
                   )}
@@ -313,9 +427,8 @@ export function AlumniProfilePage() {
                 <section className="bg-white shadow-md rounded-2xl p-6">
                   <h2 className="text-xl font-semibold mb-3">Profile access limited</h2>
                   <p className="text-gray-700 leading-7">
-                    Visitors can view only the most basic alumni information. Sign in with a member
-                    session to unlock biography, professional background, education history,
-                    projects, achievements, interests, and contact details.
+                    Sign in to view full profile information including professional background,
+                    location details, and contact information.
                   </p>
                 </section>
               )}

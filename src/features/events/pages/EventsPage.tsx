@@ -8,13 +8,11 @@ import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { FilterDropdown } from '@/shared/components/ui/FilterDropdown';
 import Button from '@/shared/components/ui/Button';
 import { useUpcomingEvents, usePastEvents } from '@/features/events/hooks/useEvents';
-import {
-  useEventRegistration,
-  useEventAttendeeCount,
-} from '@/features/events/hooks/useEventRegistration';
+import { useEventRegistration, useEventAttendeeCount } from '@/features/events/hooks/useEventRegistration';
 import type { Event } from '@/features/events/types/event.types';
 
 type Tab = 'upcoming' | 'past';
+type ViewType = 'grid' | 'calendar';
 const ITEMS_PER_PAGE = 6;
 
 // ─── Skeletons ────────────────────────────────────────────────────────────────
@@ -29,6 +27,210 @@ function EventCardSkeleton() {
         <div className="h-3 bg-gray-200 rounded w-full" />
         <div className="h-3 bg-gray-200 rounded w-5/6" />
         <div className="h-3 bg-gray-200 rounded w-16 mt-2" />
+      </div>
+    </div>
+  );
+}
+
+// ─── Calendar Event Pill ──────────────────────────────────────────────────────
+// Separate component to avoid calling hooks in a loop
+function CalendarEventPill({ event, onRegister }: { event: Event; onRegister: (event: Event) => void }) {
+  const { isRegistered } = useEventRegistration(event.id);
+  
+  return (
+    <button
+      type="button"
+      onClick={() => onRegister(event)}
+      className={`w-full text-left text-[10px] px-1.5 py-1 rounded truncate ${
+        isRegistered
+          ? 'bg-green-100 text-green-700 hover:bg-green-200'
+          : 'bg-primary-100 text-primary-700 hover:bg-primary-200'
+      } transition-colors`}
+      title={event.title}
+    >
+      {event.title}
+    </button>
+  );
+}
+
+// ─── Calendar View ────────────────────────────────────────────────────────────
+function CalendarView({ 
+  events, 
+  onRegister,
+  currentDate,
+  onDateChange,
+}: { 
+  events: Event[]; 
+  onRegister: (event: Event) => void;
+  currentDate: Date;
+  onDateChange: (date: Date) => void;
+}) {
+  // Group events by date
+  const eventsByDate = useMemo(() => {
+    const map = new Map<string, Event[]>();
+    events.forEach((event) => {
+      const dateKey = new Date(event.date).toISOString().split('T')[0];
+      const existing = map.get(dateKey) || [];
+      map.set(dateKey, [...existing, event]);
+    });
+    return map;
+  }, [events]);
+
+  // Get calendar data
+  const { year, month, daysInMonth, firstDayOfWeek, prevMonthDays } = useMemo(() => {
+    const y = currentDate.getFullYear();
+    const m = currentDate.getMonth();
+    const firstDay = new Date(y, m, 1);
+    const lastDay = new Date(y, m + 1, 0);
+    const prevLastDay = new Date(y, m, 0);
+
+    return {
+      year: y,
+      month: m,
+      daysInMonth: lastDay.getDate(),
+      firstDayOfWeek: firstDay.getDay(),
+      prevMonthDays: prevLastDay.getDate(),
+    };
+  }, [currentDate]);
+
+  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+  const goToPrevMonth = () => {
+    onDateChange(new Date(year, month - 1, 1));
+  };
+
+  const goToNextMonth = () => {
+    onDateChange(new Date(year, month + 1, 1));
+  };
+
+  const goToToday = () => {
+    onDateChange(new Date());
+  };
+
+  // Generate calendar days
+  const calendarDays = [];
+  
+  // Previous month days
+  for (let i = firstDayOfWeek - 1; i >= 0; i--) {
+    calendarDays.push({
+      day: prevMonthDays - i,
+      isCurrentMonth: false,
+      date: new Date(year, month - 1, prevMonthDays - i),
+    });
+  }
+
+  // Current month days
+  for (let day = 1; day <= daysInMonth; day++) {
+    calendarDays.push({
+      day,
+      isCurrentMonth: true,
+      date: new Date(year, month, day),
+    });
+  }
+
+  // Next month days to fill grid
+  const remainingDays = 42 - calendarDays.length; // 6 weeks * 7 days
+  for (let day = 1; day <= remainingDays; day++) {
+    calendarDays.push({
+      day,
+      isCurrentMonth: false,
+      date: new Date(year, month + 1, day),
+    });
+  }
+
+  const today = new Date().toISOString().split('T')[0];
+
+  return (
+    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      {/* Calendar Header */}
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-bold text-gray-800">
+          {monthNames[month]} {year}
+        </h2>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={goToToday}
+            className="px-3 py-1.5 text-xs font-semibold text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
+          >
+            Today
+          </button>
+          <button
+            type="button"
+            onClick={goToPrevMonth}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <Icon icon="mdi:chevron-left" className="w-5 h-5 text-gray-600" />
+          </button>
+          <button
+            type="button"
+            onClick={goToNextMonth}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <Icon icon="mdi:chevron-right" className="w-5 h-5 text-gray-600" />
+          </button>
+        </div>
+      </div>
+
+      {/* Day Headers */}
+      <div className="grid grid-cols-7 gap-2 mb-2">
+        {dayNames.map((day) => (
+          <div key={day} className="text-center text-xs font-semibold text-gray-500 py-2">
+            {day}
+          </div>
+        ))}
+      </div>
+
+      {/* Calendar Grid */}
+      <div className="grid grid-cols-7 gap-2">
+        {calendarDays.map((calDay, idx) => {
+          const dateKey = calDay.date.toISOString().split('T')[0];
+          const dayEvents = eventsByDate.get(dateKey) || [];
+          const isToday = dateKey === today;
+
+          return (
+            <div
+              key={idx}
+              className={`min-h-[100px] p-2 border rounded-lg ${
+                calDay.isCurrentMonth ? 'bg-white' : 'bg-gray-50'
+              } ${isToday ? 'border-primary-500 border-2' : 'border-gray-200'}`}
+            >
+              <div
+                className={`text-sm font-semibold mb-1 ${
+                  calDay.isCurrentMonth ? 'text-gray-700' : 'text-gray-400'
+                } ${isToday ? 'text-primary-600' : ''}`}
+              >
+                {calDay.day}
+              </div>
+              <div className="space-y-1">
+                {dayEvents.map((event) => (
+                  <CalendarEventPill 
+                    key={event.id} 
+                    event={event} 
+                    onRegister={onRegister} 
+                  />
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Legend */}
+      <div className="mt-6 pt-4 border-t border-gray-100 flex items-center gap-6 text-xs text-gray-500">
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded bg-primary-100 border border-primary-200" />
+          <span>Event</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded bg-green-100 border border-green-200" />
+          <span>Registered</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded border-2 border-primary-500" />
+          <span>Today</span>
+        </div>
       </div>
     </div>
   );
@@ -175,9 +377,13 @@ function EventCard({
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export function EventsPage() {
   const [tab, setTab] = useState<Tab>('upcoming');
+  const [viewType, setViewType] = useState<ViewType>('grid');
   const [registerEvent, setRegisterEvent] = useState<Event | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [locationFilter, setLocationFilter] = useState('');
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
+  const [calendarDate, setCalendarDate] = useState(new Date());
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
 
   // ── Hooks — share same React Query cache, one network request ─────────────
@@ -199,9 +405,35 @@ export function EventsPage() {
       const matchesSearch =
         !q || e.title.toLowerCase().includes(q) || e.description.toLowerCase().includes(q);
       const matchesLocation = !locationFilter || e.location === locationFilter;
-      return matchesSearch && matchesLocation;
+      
+      // Date range filtering
+      let matchesDateRange = true;
+      if (dateFrom || dateTo) {
+        const eventDate = new Date(e.date);
+        const fromDate = dateFrom ? new Date(dateFrom) : null;
+        const toDate = dateTo ? new Date(dateTo) : null;
+        
+        // Set time to start/end of day for accurate comparison
+        if (fromDate) {
+          fromDate.setHours(0, 0, 0, 0);
+          eventDate.setHours(0, 0, 0, 0);
+        }
+        if (toDate) {
+          toDate.setHours(23, 59, 59, 999);
+        }
+        
+        if (fromDate && toDate) {
+          matchesDateRange = eventDate >= fromDate && eventDate <= toDate;
+        } else if (fromDate) {
+          matchesDateRange = eventDate >= fromDate;
+        } else if (toDate) {
+          matchesDateRange = eventDate <= toDate;
+        }
+      }
+      
+      return matchesSearch && matchesLocation && matchesDateRange;
     });
-  }, [activeList, searchTerm, locationFilter]);
+  }, [activeList, searchTerm, locationFilter, dateFrom, dateTo]);
 
   const visible = filtered.slice(0, visibleCount);
   const hasMore = visibleCount < filtered.length;
@@ -211,6 +443,8 @@ export function EventsPage() {
     setVisibleCount(ITEMS_PER_PAGE);
     setSearchTerm('');
     setLocationFilter('');
+    setDateFrom('');
+    setDateTo('');
   };
 
   const handleFilterChange = (setter: (v: string) => void) => (value: string) => {
@@ -239,50 +473,139 @@ export function EventsPage() {
             </p>
           </div>
 
-          {/* Tab toggle */}
-          <div className="flex items-center gap-2 mb-6">
-            <Button
-              variant={tab === 'upcoming' ? 'primary' : 'outline'}
-              onClick={() => handleTabChange('upcoming')}
-              className="px-5 py-2 rounded-lg text-sm"
-            >
-              Upcoming
-            </Button>
-            <Button
-              variant={tab === 'past' ? 'primary' : 'outline'}
-              onClick={() => handleTabChange('past')}
-              className="px-5 py-2 rounded-lg text-sm"
-            >
-              Past
-            </Button>
+          {/* Tab toggle + View toggle */}
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-2">
+              <Button
+                variant={tab === 'upcoming' ? 'primary' : 'outline'}
+                onClick={() => handleTabChange('upcoming')}
+                className="px-5 py-2 rounded-lg text-sm"
+              >
+                Upcoming
+              </Button>
+              <Button
+                variant={tab === 'past' ? 'primary' : 'outline'}
+                onClick={() => handleTabChange('past')}
+                className="px-5 py-2 rounded-lg text-sm"
+              >
+                Past
+              </Button>
+            </div>
+
+            {/* View Toggle */}
+            <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
+              <button
+                type="button"
+                onClick={() => setViewType('grid')}
+                className={`p-2 rounded transition-colors ${
+                  viewType === 'grid'
+                    ? 'bg-white text-primary-600 shadow-sm'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+                title="Grid view"
+              >
+                <Icon icon="mdi:view-grid-outline" className="w-5 h-5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewType('calendar')}
+                className={`p-2 rounded transition-colors ${
+                  viewType === 'calendar'
+                    ? 'bg-white text-primary-600 shadow-sm'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+                title="Calendar view"
+              >
+                <Icon icon="mdi:calendar-month-outline" className="w-5 h-5" />
+              </button>
+            </div>
           </div>
 
-          {/* Filters */}
-          <div className="flex flex-col sm:flex-row items-end gap-3 mb-8">
-            <SearchInput
-              label="Search"
-              value={searchTerm}
-              onValueChange={handleFilterChange(setSearchTerm)}
-              placeholder="Search events..."
-              className="flex-1"
-            />
-            <FilterDropdown
-              label="Location"
-              value={locationFilter}
-              onChange={handleFilterChange(setLocationFilter)}
-              options={locationOptions}
-              placeholder="All Locations"
-            />
-          </div>
+          {/* Filters - only show in grid view */}
+          {viewType === 'grid' && (
+            <div className="space-y-3 mb-8">
+              <div className="flex flex-col sm:flex-row items-end gap-3">
+                <SearchInput
+                  label="Search"
+                  value={searchTerm}
+                  onValueChange={handleFilterChange(setSearchTerm)}
+                  placeholder="Search events..."
+                  className="flex-1"
+                />
+                <FilterDropdown
+                  label="Location"
+                  value={locationFilter}
+                  onChange={handleFilterChange(setLocationFilter)}
+                  options={locationOptions}
+                  placeholder="All Locations"
+                />
+              </div>
 
-          {/* Grid */}
+              {/* Date Range Filter */}
+              <div className="flex flex-col sm:flex-row items-end gap-3">
+                <div className="flex-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    From Date
+                  </label>
+                  <input
+                    type="date"
+                    value={dateFrom}
+                    onChange={(e) => {
+                      setDateFrom(e.target.value);
+                      setVisibleCount(ITEMS_PER_PAGE);
+                    }}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors text-sm"
+                  />
+                </div>
+                <div className="flex-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    To Date
+                  </label>
+                  <input
+                    type="date"
+                    value={dateTo}
+                    onChange={(e) => {
+                      setDateTo(e.target.value);
+                      setVisibleCount(ITEMS_PER_PAGE);
+                    }}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors text-sm"
+                  />
+                </div>
+                {(dateFrom || dateTo) && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setDateFrom('');
+                      setDateTo('');
+                      setVisibleCount(ITEMS_PER_PAGE);
+                    }}
+                    className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors flex items-center gap-1"
+                  >
+                    <Icon icon="mdi:close" className="w-4 h-4" />
+                    Clear Dates
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Content */}
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
               {Array.from({ length: ITEMS_PER_PAGE }).map((_, i) => (
                 <EventCardSkeleton key={i} />
               ))}
             </div>
+          ) : viewType === 'calendar' ? (
+            /* Calendar View */
+            <CalendarView 
+              events={filtered} 
+              onRegister={setRegisterEvent}
+              currentDate={calendarDate}
+              onDateChange={setCalendarDate}
+            />
           ) : visible.length > 0 ? (
+            /* Grid View */
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
               {visible.map((event) => (
                 <EventCard
@@ -303,8 +626,8 @@ export function EventsPage() {
             </div>
           )}
 
-          {/* Load More */}
-          {hasMore && !isLoading && (
+          {/* Load More - only in grid view */}
+          {viewType === 'grid' && hasMore && !isLoading && (
             <div className="text-center">
               <button
                 type="button"
