@@ -78,9 +78,7 @@ function MyEventCard({
     year: 'numeric',
   });
 
-  const formattedTime = event.startTime
-    ? ` at ${event.startTime}`
-    : '';
+  const formattedTime = event.startTime ? ` at ${event.startTime}` : '';
 
   const guestText = registration?.guestCount
     ? registration.guestCount === 1
@@ -228,7 +226,9 @@ export function MyEventsPage() {
       if (!event) return null;
       return { event, registration: reg };
     })
-    .filter((item): item is { event: Event; registration: typeof registrations[0] } => item !== null);
+    .filter(
+      (item): item is { event: Event; registration: (typeof registrations)[0] } => item !== null,
+    );
 
   // Split into upcoming and past
   const upcomingEvents = myEvents.filter((item) => new Date(item.event.date) >= new Date());
@@ -255,10 +255,7 @@ export function MyEventsPage() {
 
   return (
     <>
-      <SEO
-        title="My Events"
-        description="View and manage your event registrations"
-      />
+      <SEO title="My Events" description="View and manage your event registrations" />
       <Breadcrumbs items={breadcrumbItems} />
 
       <section className="section">
@@ -266,9 +263,7 @@ export function MyEventsPage() {
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-3xl md:text-4xl font-bold italic mb-2">My Events</h1>
-            <p className="text-gray-500 text-sm">
-              View and manage your event registrations
-            </p>
+            <p className="text-gray-500 text-sm">View and manage your event registrations</p>
           </div>
 
           {/* Upcoming Events */}

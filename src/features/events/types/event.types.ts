@@ -39,52 +39,47 @@
 //   attire: string;
 // };
 
-
-
-
-
-
 export type Event = {
   // ── Identity ─────────────────────────────────────────────────────────
-  id: string;              // ➕ NEW
+  id: string; // ➕ NEW
   slug: string;
   title: string;
-  
+
   // ── Timing ────────────────────────────────────────────────────────────
   date: string;
-  startTime?: string;      // ➕ NEW
-  endTime?: string;        // ➕ NEW
-  
+  startTime?: string; // ➕ NEW
+  endTime?: string; // ➕ NEW
+
   // ── Content ───────────────────────────────────────────────────────────
   description: string;
   content: string;
   image: string;
-  
+
   // ── Location ──────────────────────────────────────────────────────────
   location: string;
   isVirtual: boolean;
-  virtualLink?: string;    // ➕ NEW
+  virtualLink?: string; // ➕ NEW
   attire: string;
-  
+
   // ── Classification ────────────────────────────────────────────────────
   category: string;
   tags: string[];
   featured: boolean;
   status?: 'draft' | 'published' | 'cancelled' | 'completed'; // ➕ NEW
-  
+
   // ── Registration ──────────────────────────────────────────────────────
-  capacity?: number;       // ➕ NEW
-  allowGuests?: boolean;   // ➕ NEW
-  
+  capacity?: number; // ➕ NEW
+  allowGuests?: boolean; // ➕ NEW
+
   // ── Relations ─────────────────────────────────────────────────────────
   createdBy?: string;
   registrations?: string[];
-  
+
   // ── Timestamps ────────────────────────────────────────────────────────
-  createdAt: string;       // ➕ NEW
-  publishedAt?: string;    // ➕ NEW
-  updatedAt?: string;      // ➕ NEW
-  
+  createdAt: string; // ➕ NEW
+  publishedAt?: string; // ➕ NEW
+  updatedAt?: string; // ➕ NEW
+
   // ── Legacy ────────────────────────────────────────────────────────────
-  type?: string;           // @deprecated - kept for backward compatibility
+  type?: string; // @deprecated - kept for backward compatibility
 };

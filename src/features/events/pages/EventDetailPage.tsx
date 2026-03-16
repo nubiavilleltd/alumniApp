@@ -60,13 +60,16 @@ export function EventDetailPage() {
                 dangerouslySetInnerHTML={{ __html: markdown }}
               />
             </div>
-            
+
             <div className="lg:col-span-1 space-y-4">
               <div className="card p-6">
                 <h2 className="font-semibold mb-4">Event Details</h2>
                 <ul className="text-sm text-gray-700 space-y-3">
                   <li className="flex items-start gap-2">
-                    <Icon icon="mdi:calendar-outline" className="w-4 h-4 mt-0.5 text-primary-500 flex-shrink-0" />
+                    <Icon
+                      icon="mdi:calendar-outline"
+                      className="w-4 h-4 mt-0.5 text-primary-500 flex-shrink-0"
+                    />
                     <div>
                       <strong className="block text-xs text-gray-500 mb-0.5">Date</strong>
                       <span>
@@ -82,7 +85,10 @@ export function EventDetailPage() {
 
                   {event.startTime && (
                     <li className="flex items-start gap-2">
-                      <Icon icon="mdi:clock-outline" className="w-4 h-4 mt-0.5 text-primary-500 flex-shrink-0" />
+                      <Icon
+                        icon="mdi:clock-outline"
+                        className="w-4 h-4 mt-0.5 text-primary-500 flex-shrink-0"
+                      />
                       <div>
                         <strong className="block text-xs text-gray-500 mb-0.5">Time</strong>
                         <span>
@@ -108,7 +114,10 @@ export function EventDetailPage() {
 
                   {event.attire && (
                     <li className="flex items-start gap-2">
-                      <Icon icon="mdi:hanger" className="w-4 h-4 mt-0.5 text-primary-500 flex-shrink-0" />
+                      <Icon
+                        icon="mdi:hanger"
+                        className="w-4 h-4 mt-0.5 text-primary-500 flex-shrink-0"
+                      />
                       <div>
                         <strong className="block text-xs text-gray-500 mb-0.5">Dress Code</strong>
                         <span>{event.attire}</span>
@@ -118,7 +127,10 @@ export function EventDetailPage() {
 
                   {event.category && (
                     <li className="flex items-start gap-2">
-                      <Icon icon="mdi:tag-outline" className="w-4 h-4 mt-0.5 text-primary-500 flex-shrink-0" />
+                      <Icon
+                        icon="mdi:tag-outline"
+                        className="w-4 h-4 mt-0.5 text-primary-500 flex-shrink-0"
+                      />
                       <div>
                         <strong className="block text-xs text-gray-500 mb-0.5">Category</strong>
                         <span>{event.category}</span>
@@ -129,7 +141,10 @@ export function EventDetailPage() {
                   {/* Attendee Count - Only for upcoming events */}
                   {!isPastEvent && (
                     <li className="flex items-start gap-2">
-                      <Icon icon="mdi:account-group-outline" className="w-4 h-4 mt-0.5 text-primary-500 flex-shrink-0" />
+                      <Icon
+                        icon="mdi:account-group-outline"
+                        className="w-4 h-4 mt-0.5 text-primary-500 flex-shrink-0"
+                      />
                       <div>
                         <strong className="block text-xs text-gray-500 mb-0.5">Attendance</strong>
                         <span>
@@ -161,15 +176,19 @@ export function EventDetailPage() {
                   ) : isRegistered ? (
                     <div className="space-y-3">
                       <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-center">
-                        <Icon icon="mdi:check-circle" className="w-5 h-5 text-green-600 mx-auto mb-1" />
+                        <Icon
+                          icon="mdi:check-circle"
+                          className="w-5 h-5 text-green-600 mx-auto mb-1"
+                        />
                         <p className="text-green-700 font-semibold text-sm">You're Registered!</p>
                         {registration && registration.guestCount > 0 && (
                           <p className="text-green-600 text-xs mt-1">
-                            You + {registration.guestCount} guest{registration.guestCount > 1 ? 's' : ''}
+                            You + {registration.guestCount} guest
+                            {registration.guestCount > 1 ? 's' : ''}
                           </p>
                         )}
                       </div>
-                      
+
                       {/* Virtual Event Link */}
                       {event.isVirtual && event.virtualLink && (
                         <a
@@ -182,7 +201,7 @@ export function EventDetailPage() {
                           Join Virtual Event
                         </a>
                       )}
-                      
+
                       <AppLink
                         href="/my-events"
                         className="btn btn-outline btn-sm w-full text-center"
@@ -192,7 +211,10 @@ export function EventDetailPage() {
                     </div>
                   ) : isFull ? (
                     <div className="text-center py-3 text-gray-500 text-sm">
-                      <Icon icon="mdi:alert-circle-outline" className="w-5 h-5 mx-auto mb-1 text-red-500" />
+                      <Icon
+                        icon="mdi:alert-circle-outline"
+                        className="w-5 h-5 mx-auto mb-1 text-red-500"
+                      />
                       <p className="font-semibold text-red-600">Event Full</p>
                       <p className="text-xs mt-1">Registration is closed</p>
                     </div>

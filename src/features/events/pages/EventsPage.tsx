@@ -8,7 +8,10 @@ import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { FilterDropdown } from '@/shared/components/ui/FilterDropdown';
 import Button from '@/shared/components/ui/Button';
 import { useUpcomingEvents, usePastEvents } from '@/features/events/hooks/useEvents';
-import { useEventRegistration, useEventAttendeeCount } from '@/features/events/hooks/useEventRegistration';
+import {
+  useEventRegistration,
+  useEventAttendeeCount,
+} from '@/features/events/hooks/useEventRegistration';
 import type { Event } from '@/features/events/types/event.types';
 
 type Tab = 'upcoming' | 'past';

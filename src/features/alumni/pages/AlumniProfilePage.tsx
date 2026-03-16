@@ -116,6 +116,7 @@ export function AlumniProfilePage() {
   const isSignedIn = !!currentUser;
 
   const { data: alumnus, isLoading } = useAlumnus(slug);
+  // console.log("alumnus", {alumnus})
 
   if (isLoading) return <ProfileSkeleton />;
 
@@ -253,7 +254,7 @@ export function AlumniProfilePage() {
                   </div>
 
                   {/* Social Links */}
-                  {(alumnus.social?.linkedin || alumnus.social?.twitter) && (
+                  {(alumnus.social?.linkedin || alumnus.social?.twitter || alumnus.social?.instagram) && (
                     <div className="mt-6 flex justify-center gap-5 text-gray-600">
                       {alumnus.social.linkedin && (
                         <AppLink
@@ -271,6 +272,15 @@ export function AlumniProfilePage() {
                           className="hover:text-primary-600"
                         >
                           <Icon icon="mdi:twitter" className="w-6 h-6" />
+                        </AppLink>
+                      )}
+                      {alumnus.social.instagram && (
+                        <AppLink
+                          href={alumnus.social.instagram}
+                          target="_blank"
+                          className="hover:text-primary-600"
+                        >
+                          <Icon icon="mdi:instagram" className="w-6 h-6" />
                         </AppLink>
                       )}
                     </div>

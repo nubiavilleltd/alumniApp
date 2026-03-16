@@ -13,23 +13,23 @@ interface RegisterEventModalProps {
 export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) {
   const currentUser = useAuthStore((state) => state.user);
   const { register } = useEventRegistration(event?.id || '');
-  
+
   const [guestCount, setGuestCount] = useState(0);
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!currentUser || !event) {
       console.error('User must be logged in to register');
       return;
     }
-    
+
     // Register via event store
     // TODO: When backend is ready, this will call:
     // await apiClient.post(`/events/${event.id}/register`, { guestCount })
     register(guestCount);
-    
+
     setSubmitted(true);
   };
 
@@ -54,7 +54,7 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
             You have successfully registered for{' '}
             <span className="font-semibold">{event.title}</span>.
           </p>
-          
+
           {/* Show virtual link if event is virtual */}
           {event.isVirtual && event.virtualLink && (
             <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg text-left">
@@ -69,7 +69,7 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
               </a>
             </div>
           )}
-          
+
           <button
             type="button"
             onClick={handleClose}
@@ -123,7 +123,9 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
                 />
               </div>
               <p className="text-xs text-gray-500 mt-1">
-                {event.allowGuests ? 'This event allows guests' : 'No guests allowed for this event'}
+                {event.allowGuests
+                  ? 'This event allows guests'
+                  : 'No guests allowed for this event'}
               </p>
             </div>
           )}

@@ -10,22 +10,18 @@ import type { Event } from '../types/event.types';
  */
 export function useEventRegistration(eventId: string) {
   const currentUser = useAuthStore((state) => state.user);
-  const {
-    registerForEvent,
-    unregisterFromEvent,
-    isRegisteredForEvent,
-    getRegistration,
-  } = useEventStore();
+  const { registerForEvent, unregisterFromEvent, isRegisteredForEvent, getRegistration } =
+    useEventStore();
 
   const memberId = currentUser?.memberId || '';
-  
+
   return {
     // Check if current user is registered
     isRegistered: isRegisteredForEvent(eventId, memberId),
-    
+
     // Get registration details
     registration: getRegistration(eventId, memberId),
-    
+
     // Register current user
     register: (guestCount: number = 0) => {
       if (!currentUser) {
@@ -34,13 +30,13 @@ export function useEventRegistration(eventId: string) {
       }
       registerForEvent(eventId, memberId, guestCount);
     },
-    
+
     // Unregister current user
     unregister: () => {
       if (!currentUser) return;
       unregisterFromEvent(eventId, memberId);
     },
-    
+
     // Current user info
     currentUser,
   };
@@ -52,14 +48,14 @@ export function useEventRegistration(eventId: string) {
  */
 export function useEventAttendeeCount(event: Event) {
   const { getAttendeeCount } = useEventStore();
-  
+
   // Get static registration count from mock data
   const staticCount = event.registrations?.length || 0;
-  
+
   // Get total count (static + dynamic)
   // TODO: When backend is ready, backend will return this count directly
   const totalCount = getAttendeeCount(event.id, staticCount);
-  
+
   return {
     attendeeCount: totalCount,
     capacity: event.capacity,
@@ -74,17 +70,17 @@ export function useEventAttendeeCount(event: Event) {
 export function useMyEvents() {
   const currentUser = useAuthStore((state) => state.user);
   const { getMyRegistrations } = useEventStore();
-  
+
   if (!currentUser) {
     return {
       registrations: [],
       registeredEventIds: [],
     };
   }
-  
+
   const registrations = getMyRegistrations(currentUser.memberId);
   const registeredEventIds = registrations.map((r) => r.eventId);
-  
+
   return {
     registrations,
     registeredEventIds,

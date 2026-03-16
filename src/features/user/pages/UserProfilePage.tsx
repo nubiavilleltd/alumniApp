@@ -75,7 +75,7 @@ function FieldRowWithPrivacy({
   privacy?: FieldVisibility;
 }) {
   const isPublic = privacy === 'public';
-
+  
   return (
     <div className="flex items-center justify-between py-3">
       <div className="flex items-center gap-2 text-sm text-gray-400">
@@ -185,17 +185,11 @@ export default function UserProfilePage() {
                           ? 'bg-green-50 text-green-600 border border-green-200'
                           : 'bg-gray-100 text-gray-600 border border-gray-300'
                       }`}
-                      title={
-                        currentUser.privacy.photo === 'public'
-                          ? 'Photo is public'
-                          : 'Photo is private'
-                      }
+                      title={currentUser.privacy.photo === 'public' ? 'Photo is public' : 'Photo is private'}
                     >
-                      <Icon
-                        icon={
-                          currentUser.privacy.photo === 'public' ? 'mdi:eye-outline' : 'mdi:lock'
-                        }
-                        className="w-3 h-3"
+                      <Icon 
+                        icon={currentUser.privacy.photo === 'public' ? 'mdi:eye-outline' : 'mdi:lock'} 
+                        className="w-3 h-3" 
                       />
                     </span>
                   )}
@@ -349,6 +343,62 @@ export default function UserProfilePage() {
                   />
                 </div>
               </SectionCard>
+
+              {/* Social Links */}
+              {(currentUser?.linkedin || currentUser?.twitter || currentUser?.instagram) && (
+                <SectionCard title="Social Links" icon="mdi:link-variant" onEdit={openEdit}>
+                  <div className="divide-y divide-gray-50">
+                    {currentUser?.linkedin && (
+                      <div className="flex items-center justify-between py-3">
+                        <div className="flex items-center gap-2 text-sm text-gray-400">
+                          <Icon icon="mdi:linkedin" className="w-4 h-4" />
+                          LinkedIn
+                        </div>
+                        <a
+                          href={currentUser.linkedin}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm font-medium text-primary-500 hover:text-primary-600 hover:underline transition-colors"
+                        >
+                          View Profile
+                        </a>
+                      </div>
+                    )}
+                    {currentUser?.twitter && (
+                      <div className="flex items-center justify-between py-3">
+                        <div className="flex items-center gap-2 text-sm text-gray-400">
+                          <Icon icon="mdi:twitter" className="w-4 h-4" />
+                          Twitter / X
+                        </div>
+                        <a
+                          href={currentUser.twitter}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm font-medium text-primary-500 hover:text-primary-600 hover:underline transition-colors"
+                        >
+                          View Profile
+                        </a>
+                      </div>
+                    )}
+                    {currentUser?.instagram && (
+                      <div className="flex items-center justify-between py-3">
+                        <div className="flex items-center gap-2 text-sm text-gray-400">
+                          <Icon icon="mdi:instagram" className="w-4 h-4" />
+                          Instagram
+                        </div>
+                        <a
+                          href={currentUser.instagram}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm font-medium text-primary-500 hover:text-primary-600 hover:underline transition-colors"
+                        >
+                          View Profile
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                </SectionCard>
+              )}
             </main>
           </div>
         </div>
