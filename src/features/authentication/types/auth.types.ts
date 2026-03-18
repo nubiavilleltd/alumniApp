@@ -102,9 +102,9 @@ export interface AuthSessionUser {
   yearsOfExperience?: number;
   isVolunteer?: boolean;
 
-  linkedin?:            string;
-twitter?:             string;
-instagram?:           string;
+  linkedin?: string;
+  twitter?: string;
+  instagram?: string;
 
   // ── Privacy ───────────────────────────────────────────────────────────────
   privacy?: PrivacySettings;

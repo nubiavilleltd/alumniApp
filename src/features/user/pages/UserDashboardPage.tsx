@@ -1,3 +1,4 @@
+
 // features/user/pages/UserDashboardPage.tsx
 // Route: /dashboard  (ProtectedRoute)
 
@@ -9,8 +10,8 @@ import { useUpcomingEvents } from '@/features/events/hooks/useEvents';
 import { useLatestAnnouncements } from '@/features/announcements/hooks/useAnnouncements';
 import { useAlumni } from '@/features/alumni/hooks/useAlumni';
 import { SEO } from '@/shared/common/SEO';
-
-import { useEventRegistration } from '@/features/events/hooks/useEventRegistration';
+import { useMyEvents, useEventRegistration } from '@/features/events/hooks/useEventRegistration';
+import { events } from '@/data/site-data';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function formatEventDate(date: string) {
@@ -26,6 +27,41 @@ function formatAnnouncementDate(date: string) {
     month: 'short',
     day: 'numeric',
   });
+}
+
+// ── Dashboard Event Card (avoids hooks in loop) ──────────────────────────────
+function DashboardEventCard({ event, registration }: { event: any; registration?: { guestCount: number; registeredAt: string } }) {
+  const guestText = registration?.guestCount
+    ? registration.guestCount === 1
+      ? '+ 1 guest'
+      : `+ ${registration.guestCount} guests`
+    : '';
+  
+  return (
+    <div className="flex flex-col gap-4 rounded-2xl border border-accent-100 bg-white px-4 py-4 md:flex-row md:items-center md:justify-between">
+      <div className="flex-1">
+        <p className="font-medium text-accent-900">{event.title}</p>
+        <p className="mt-1 text-sm text-accent-600">
+          {formatEventDate(event.date)} • {event.location}
+        </p>
+        {guestText && (
+          <p className="mt-1 text-xs text-primary-600">You {guestText}</p>
+        )}
+      </div>
+      <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 text-green-600 text-sm font-semibold">
+          <Icon icon="mdi:check-circle" className="w-4 h-4" />
+          Registered
+        </div>
+        <AppLink
+          href={`/events/${event.slug}`}
+          className="text-xs text-primary-600 hover:text-primary-700 font-medium"
+        >
+          Details →
+        </AppLink>
+      </div>
+    </div>
+  );
 }
 
 // ── Sub-components ────────────────────────────────────────────────────────────
@@ -111,6 +147,18 @@ export function UserDashboardPage() {
   const { data: upcomingEvents = [], isLoading: eventsLoading } = useUpcomingEvents();
   const { data: announcements = [], isLoading: announcementsLoading } = useLatestAnnouncements(3);
   const { data: allAlumni = [], isLoading: alumniLoading } = useAlumni();
+  const { registrations } = useMyEvents();
+
+  // ── Get registered events with details ────────────────────────────────────────
+  const myRegisteredEvents = registrations
+    .map((reg) => {
+      const event = events.find((e) => e.id === reg.eventId);
+      if (!event) return null;
+      return { event, registration: reg };
+    })
+    .filter((item): item is { event: any; registration: typeof registrations[0] } => item !== null)
+    .filter((item) => new Date(item.event.date) >= new Date()) // Only upcoming
+    .slice(0, 3); // Show max 3 on dashboard
 
   // ── Profile completion ─────────────────────────────────────────────────────
   const profileCompletion = (() => {
@@ -137,7 +185,6 @@ export function UserDashboardPage() {
     profileTasks.push('Add your residential address');
 
   // ── Derived data ───────────────────────────────────────────────────────────
-  const dashboardEvents = upcomingEvents.slice(0, 3);
   const suggestedAlumni = allAlumni.filter((a) => a.slug !== currentUser?.slug).slice(0, 2);
 
   const communityUpdates = [
@@ -160,7 +207,7 @@ export function UserDashboardPage() {
 
   const quickLinks = [
     { label: 'Edit Profile', href: '/user/profile', icon: 'mdi:account-edit-outline' },
-    { label: 'My Events', href: '/my-events', icon: 'mdi:calendar-check-outline' }, // ← NEW
+    { label: 'My Events', href: '/my-events', icon: 'mdi:calendar-check-outline' },
     { label: 'View Directory', href: '/alumni/profiles', icon: 'mdi:account-group-outline' },
     { label: 'Browse Events', href: '/events', icon: 'mdi:calendar-month-outline' },
     { label: 'My Business', href: '/marketplace/my-business', icon: 'mdi:store-outline' },
@@ -209,12 +256,12 @@ export function UserDashboardPage() {
           </section>
 
           {/* ── Stats ──────────────────────────────────────────────────── */}
-          <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <section className="grid gap-4 md:grid-cols-2">
             <StatCard
-              label="Upcoming Events"
-              value={String(dashboardEvents.length)}
-              detail="RSVPs waiting this month"
-              icon="mdi:calendar-star"
+              label="My Registered Events"
+              value={String(myRegisteredEvents.length)}
+              detail="Upcoming events you've registered for"
+              icon="mdi:calendar-check"
               tone="primary"
               loading={eventsLoading}
             />
@@ -226,20 +273,42 @@ export function UserDashboardPage() {
               tone="accent"
               loading={announcementsLoading}
             />
-            <StatCard
-              label="Dues Status"
-              value="Pending"
-              detail="Q2 community dues: ₦120,000"
-              icon="mdi:credit-card-outline"
-              tone="secondary"
-            />
-            <StatCard
-              label="Messages"
-              value="4 unread"
-              detail="New replies from your network"
-              icon="mdi:message-text-outline"
-              tone="primary"
-            />
+            
+            {/* ================================================================
+                TODO: Add these cards back when features are implemented
+                ================================================================
+                
+                When Dues Management System is ready:
+                - Fetch dues status from backend API
+                - Update grid to md:grid-cols-2 xl:grid-cols-3
+                - Add this card:
+                
+                <StatCard
+                  label="Dues Status"
+                  value={duesStatus} // e.g., "Paid", "Pending", "Overdue"
+                  detail={duesDetail} // e.g., "Q2 community dues: ₦20,000"
+                  icon="mdi:credit-card-outline"
+                  tone="secondary"
+                  loading={duesLoading}
+                />
+                
+                ----------------------------------------------------------------
+                
+                When Messaging System is ready:
+                - Fetch unread message count from backend API
+                - Update grid to md:grid-cols-2 xl:grid-cols-4
+                - Add this card:
+                
+                <StatCard
+                  label="Messages"
+                  value={`${unreadCount} unread`}
+                  detail="New replies from your network"
+                  icon="mdi:message-text-outline"
+                  tone="primary"
+                  loading={messagesLoading}
+                />
+                
+                ================================================================ */}
           </section>
 
           {/* ── Main grid ──────────────────────────────────────────────── */}
@@ -283,50 +352,39 @@ export function UserDashboardPage() {
               </SectionCard>
 
               <SectionCard
-                title="Upcoming Events"
+                title="My Registered Events"
                 action={
                   <AppLink
-                    href="/events"
+                    href="/my-events"
                     className="text-sm font-semibold text-primary-600 hover:text-primary-700"
                   >
-                    Calendar
+                    View all
                   </AppLink>
                 }
               >
                 {eventsLoading ? (
                   <SectionSkeleton rows={3} />
-                ) : (
+                ) : myRegisteredEvents.length > 0 ? (
                   <div className="space-y-3">
-                    {dashboardEvents.map((event) => {
-                      const { isRegistered } = useEventRegistration(event.id);
-
-                      return (
-                        <div
-                          key={event.slug}
-                          className="flex flex-col gap-4 rounded-2xl border border-accent-100 bg-white px-4 py-4 md:flex-row md:items-center md:justify-between"
-                        >
-                          <div>
-                            <p className="font-medium text-accent-900">{event.title}</p>
-                            <p className="mt-1 text-sm text-accent-600">
-                              {formatEventDate(event.date)} • {event.location}
-                            </p>
-                          </div>
-                          {isRegistered ? (
-                            <div className="flex items-center gap-2 text-green-600 text-sm font-semibold">
-                              <Icon icon="mdi:check-circle" className="w-4 h-4" />
-                              Registered
-                            </div>
-                          ) : (
-                            <AppLink
-                              href={`/events/${event.slug}`}
-                              className="btn btn-primary btn-sm justify-center"
-                            >
-                              RSVP
-                            </AppLink>
-                          )}
-                        </div>
-                      );
-                    })}
+                    {myRegisteredEvents.map((item) => (
+                      <DashboardEventCard 
+                        key={item.event.slug} 
+                        event={item.event}
+                        registration={item.registration}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <Icon icon="mdi:calendar-blank-outline" className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                    <p className="text-sm mb-3">You haven't registered for any upcoming events yet.</p>
+                    <AppLink
+                      href="/events"
+                      className="inline-flex items-center gap-1 text-primary-600 hover:text-primary-700 text-sm font-semibold"
+                    >
+                      Browse Events
+                      <Icon icon="mdi:arrow-right" className="w-4 h-4" />
+                    </AppLink>
                   </div>
                 )}
               </SectionCard>
