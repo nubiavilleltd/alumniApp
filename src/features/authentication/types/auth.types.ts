@@ -149,6 +149,7 @@ export interface StartRegistrationResponse {
 export interface VerifyRegistrationRequest {
   draft: RegisterDetailsFormValues;
   code: string;
+  userId:string
 }
 
 export interface ResetPasswordRequest {

@@ -48,7 +48,7 @@ export function RegisterForm() {
   }));
 
   const [step, setStep] = useState<RegistrationStep>('details');
-  const [draft, setDraft] = useState<RegisterDetailsFormValues | null>(null);
+  const [draft, setDraft] = useState<(RegisterDetailsFormValues & {userId?:string}) | null>(null);
   const [verificationState, setVerificationState] = useState<StartRegistrationResponse | null>(
     null,
   );
@@ -74,7 +74,7 @@ export function RegisterForm() {
 
   const verificationForm = useForm<EmailVerificationFormValues>({
     resolver: zodResolver(emailVerificationSchema),
-    defaultValues: { code: '' },
+    defaultValues: { code: '', userId:'' },
   });
 
   const passwordValue = detailForm.watch('password') ?? '';
@@ -112,13 +112,16 @@ export function RegisterForm() {
     setVerificationState(response);
     setCompletionState(null);
     setResendMessage('');
-    verificationForm.reset({ code: '' });
+    verificationForm.reset({ code: '', userId:'' });
     setStep('verification');
   });
 
   const submitVerification = verificationForm.handleSubmit(async (values) => {
     if (!draft) return;
-    const response = await authApi.verifyRegistrationEmail({ draft, code: values.code });
+
+    console.log("values", {values})
+    const response = await authApi.verifyRegistrationEmail({ draft, code: values.code, userId:values.userId });
+    // const response = await authApi.verifyRegistrationEmail({ draft, code: values.code, userId:'30' });
     setCompletionState(response);
     setStep('success');
   });
@@ -390,7 +393,8 @@ export function RegisterForm() {
               inputMode="numeric"
               maxLength={6}
               placeholder="Enter 6-digit code"
-              hint="Any 6-digit code works in frontend-only mode"
+              // hint="Any 6-digit code works in frontend-only mode"
+              hint=""
               error={verificationForm.formState.errors.code?.message}
               className="text-center text-lg tracking-[0.4em]"
               {...verificationForm.register('code')}

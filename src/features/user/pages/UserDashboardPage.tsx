@@ -1,4 +1,3 @@
-
 // features/user/pages/UserDashboardPage.tsx
 // Route: /dashboard  (ProtectedRoute)
 
@@ -30,13 +29,19 @@ function formatAnnouncementDate(date: string) {
 }
 
 // ── Dashboard Event Card (avoids hooks in loop) ──────────────────────────────
-function DashboardEventCard({ event, registration }: { event: any; registration?: { guestCount: number; registeredAt: string } }) {
+function DashboardEventCard({
+  event,
+  registration,
+}: {
+  event: any;
+  registration?: { guestCount: number; registeredAt: string };
+}) {
   const guestText = registration?.guestCount
     ? registration.guestCount === 1
       ? '+ 1 guest'
       : `+ ${registration.guestCount} guests`
     : '';
-  
+
   return (
     <div className="flex flex-col gap-4 rounded-2xl border border-accent-100 bg-white px-4 py-4 md:flex-row md:items-center md:justify-between">
       <div className="flex-1">
@@ -44,9 +49,7 @@ function DashboardEventCard({ event, registration }: { event: any; registration?
         <p className="mt-1 text-sm text-accent-600">
           {formatEventDate(event.date)} • {event.location}
         </p>
-        {guestText && (
-          <p className="mt-1 text-xs text-primary-600">You {guestText}</p>
-        )}
+        {guestText && <p className="mt-1 text-xs text-primary-600">You {guestText}</p>}
       </div>
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-2 text-green-600 text-sm font-semibold">
@@ -156,7 +159,9 @@ export function UserDashboardPage() {
       if (!event) return null;
       return { event, registration: reg };
     })
-    .filter((item): item is { event: any; registration: typeof registrations[0] } => item !== null)
+    .filter(
+      (item): item is { event: any; registration: (typeof registrations)[0] } => item !== null,
+    )
     .filter((item) => new Date(item.event.date) >= new Date()) // Only upcoming
     .slice(0, 3); // Show max 3 on dashboard
 
@@ -273,7 +278,7 @@ export function UserDashboardPage() {
               tone="accent"
               loading={announcementsLoading}
             />
-            
+
             {/* ================================================================
                 TODO: Add these cards back when features are implemented
                 ================================================================
@@ -367,8 +372,8 @@ export function UserDashboardPage() {
                 ) : myRegisteredEvents.length > 0 ? (
                   <div className="space-y-3">
                     {myRegisteredEvents.map((item) => (
-                      <DashboardEventCard 
-                        key={item.event.slug} 
+                      <DashboardEventCard
+                        key={item.event.slug}
                         event={item.event}
                         registration={item.registration}
                       />
@@ -376,8 +381,13 @@ export function UserDashboardPage() {
                   </div>
                 ) : (
                   <div className="text-center py-8 text-gray-500">
-                    <Icon icon="mdi:calendar-blank-outline" className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                    <p className="text-sm mb-3">You haven't registered for any upcoming events yet.</p>
+                    <Icon
+                      icon="mdi:calendar-blank-outline"
+                      className="w-12 h-12 mx-auto mb-3 text-gray-300"
+                    />
+                    <p className="text-sm mb-3">
+                      You haven't registered for any upcoming events yet.
+                    </p>
                     <AppLink
                       href="/events"
                       className="inline-flex items-center gap-1 text-primary-600 hover:text-primary-700 text-sm font-semibold"

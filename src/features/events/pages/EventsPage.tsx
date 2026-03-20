@@ -8,7 +8,10 @@ import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { FilterDropdown } from '@/shared/components/ui/FilterDropdown';
 import Button from '@/shared/components/ui/Button';
 import { useUpcomingEvents, usePastEvents } from '@/features/events/hooks/useEvents';
-import { useEventRegistration, useEventAttendeeCount } from '@/features/events/hooks/useEventRegistration';
+import {
+  useEventRegistration,
+  useEventAttendeeCount,
+} from '@/features/events/hooks/useEventRegistration';
 import type { Event } from '@/features/events/types/event.types';
 
 type Tab = 'upcoming' | 'past';
@@ -34,9 +37,15 @@ function EventCardSkeleton() {
 
 // ─── Calendar Event Pill ──────────────────────────────────────────────────────
 // Separate component to avoid calling hooks in a loop
-function CalendarEventPill({ event, onRegister }: { event: Event; onRegister: (event: Event) => void }) {
+function CalendarEventPill({
+  event,
+  onRegister,
+}: {
+  event: Event;
+  onRegister: (event: Event) => void;
+}) {
   const { isRegistered } = useEventRegistration(event.id);
-  
+
   return (
     <button
       type="button"
@@ -54,13 +63,13 @@ function CalendarEventPill({ event, onRegister }: { event: Event; onRegister: (e
 }
 
 // ─── Calendar View ────────────────────────────────────────────────────────────
-function CalendarView({ 
-  events, 
+function CalendarView({
+  events,
   onRegister,
   currentDate,
   onDateChange,
-}: { 
-  events: Event[]; 
+}: {
+  events: Event[];
   onRegister: (event: Event) => void;
   currentDate: Date;
   onDateChange: (date: Date) => void;
@@ -93,7 +102,20 @@ function CalendarView({
     };
   }, [currentDate]);
 
-  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const monthNames = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   const goToPrevMonth = () => {
@@ -110,7 +132,7 @@ function CalendarView({
 
   // Generate calendar days
   const calendarDays = [];
-  
+
   // Previous month days
   for (let i = firstDayOfWeek - 1; i >= 0; i--) {
     calendarDays.push({
@@ -205,11 +227,7 @@ function CalendarView({
               </div>
               <div className="space-y-1">
                 {dayEvents.map((event) => (
-                  <CalendarEventPill 
-                    key={event.id} 
-                    event={event} 
-                    onRegister={onRegister} 
-                  />
+                  <CalendarEventPill key={event.id} event={event} onRegister={onRegister} />
                 ))}
               </div>
             </div>
@@ -379,7 +397,7 @@ export function EventsPage() {
   // Read view from URL parameter (e.g., /events?view=calendar)
   const searchParams = new URLSearchParams(window.location.search);
   const initialView = searchParams.get('view') === 'calendar' ? 'calendar' : 'grid';
-  
+
   const [tab, setTab] = useState<Tab>('upcoming');
   const [viewType, setViewType] = useState<ViewType>(initialView);
   const [registerEvent, setRegisterEvent] = useState<Event | null>(null);
@@ -409,14 +427,14 @@ export function EventsPage() {
       const matchesSearch =
         !q || e.title.toLowerCase().includes(q) || e.description.toLowerCase().includes(q);
       const matchesLocation = !locationFilter || e.location === locationFilter;
-      
+
       // Date range filtering
       let matchesDateRange = true;
       if (dateFrom || dateTo) {
         const eventDate = new Date(e.date);
         const fromDate = dateFrom ? new Date(dateFrom) : null;
         const toDate = dateTo ? new Date(dateTo) : null;
-        
+
         // Set time to start/end of day for accurate comparison
         if (fromDate) {
           fromDate.setHours(0, 0, 0, 0);
@@ -425,7 +443,7 @@ export function EventsPage() {
         if (toDate) {
           toDate.setHours(23, 59, 59, 999);
         }
-        
+
         if (fromDate && toDate) {
           matchesDateRange = eventDate >= fromDate && eventDate <= toDate;
         } else if (fromDate) {
@@ -434,7 +452,7 @@ export function EventsPage() {
           matchesDateRange = eventDate <= toDate;
         }
       }
-      
+
       return matchesSearch && matchesLocation && matchesDateRange;
     });
   }, [activeList, searchTerm, locationFilter, dateFrom, dateTo]);
@@ -548,9 +566,7 @@ export function EventsPage() {
               {/* Date Range Filter */}
               <div className="flex flex-col sm:flex-row items-end gap-3">
                 <div className="flex-1">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    From Date
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">From Date</label>
                   <input
                     type="date"
                     value={dateFrom}
@@ -562,9 +578,7 @@ export function EventsPage() {
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    To Date
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">To Date</label>
                   <input
                     type="date"
                     value={dateTo}
@@ -602,8 +616,8 @@ export function EventsPage() {
             </div>
           ) : viewType === 'calendar' ? (
             /* Calendar View */
-            <CalendarView 
-              events={filtered} 
+            <CalendarView
+              events={filtered}
               onRegister={setRegisterEvent}
               currentDate={calendarDate}
               onDateChange={setCalendarDate}
