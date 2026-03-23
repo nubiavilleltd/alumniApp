@@ -108,15 +108,14 @@ export function RegisterForm() {
     },
   });
 
-
   useEffect(() => {
-  const savedDraft = sessionStorage.getItem('registration_draft');
-  if (savedDraft) {
-    const parsed = JSON.parse(savedDraft);
-    setDraft(parsed);
-    setStep('verification'); // Resume at verification step
-  }
-}, []);
+    const savedDraft = sessionStorage.getItem('registration_draft');
+    if (savedDraft) {
+      const parsed = JSON.parse(savedDraft);
+      setDraft(parsed);
+      setStep('verification'); // Resume at verification step
+    }
+  }, []);
 
   const submitDetails = detailForm.handleSubmit(async (values) => {
     const response = await authApi.startRegistration(values);
