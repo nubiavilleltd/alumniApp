@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Icon } from '@iconify/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { FormInput } from '@/shared/components/ui/input/FormInput';
@@ -48,7 +48,9 @@ export function RegisterForm() {
   }));
 
   const [step, setStep] = useState<RegistrationStep>('details');
-  const [draft, setDraft] = useState<(RegisterDetailsFormValues & {userId?:string}) | null>(null);
+  const [draft, setDraft] = useState<(RegisterDetailsFormValues & { userId?: string }) | null>(
+    null,
+  );
   const [verificationState, setVerificationState] = useState<StartRegistrationResponse | null>(
     null,
   );
@@ -74,7 +76,7 @@ export function RegisterForm() {
 
   const verificationForm = useForm<EmailVerificationFormValues>({
     resolver: zodResolver(emailVerificationSchema),
-    defaultValues: { code: '', userId:'' },
+    defaultValues: { code: '', userId: '' },
   });
 
   const passwordValue = detailForm.watch('password') ?? '';
@@ -106,23 +108,39 @@ export function RegisterForm() {
     },
   });
 
+
+  useEffect(() => {
+  const savedDraft = sessionStorage.getItem('registration_draft');
+  if (savedDraft) {
+    const parsed = JSON.parse(savedDraft);
+    setDraft(parsed);
+    setStep('verification'); // Resume at verification step
+  }
+}, []);
+
   const submitDetails = detailForm.handleSubmit(async (values) => {
     const response = await authApi.startRegistration(values);
     setDraft(values);
+    sessionStorage.setItem('registration_draft', JSON.stringify(values));
     setVerificationState(response);
     setCompletionState(null);
     setResendMessage('');
-    verificationForm.reset({ code: '', userId:'' });
+    verificationForm.reset({ code: '', userId: '' });
     setStep('verification');
   });
 
   const submitVerification = verificationForm.handleSubmit(async (values) => {
     if (!draft) return;
 
-    console.log("values", {values})
-    const response = await authApi.verifyRegistrationEmail({ draft, code: values.code, userId:values.userId });
+    console.log('values', { values });
+    const response = await authApi.verifyRegistrationEmail({
+      draft,
+      code: values.code,
+      userId: values.userId,
+    });
     // const response = await authApi.verifyRegistrationEmail({ draft, code: values.code, userId:'30' });
     setCompletionState(response);
+    sessionStorage.removeItem('registration_draft');
     setStep('success');
   });
 

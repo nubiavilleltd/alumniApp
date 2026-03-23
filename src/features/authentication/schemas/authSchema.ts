@@ -80,7 +80,7 @@ export const emailVerificationSchema = z.object({
     .trim()
     .regex(/^\d{6}$/, 'Enter the 6-digit verification code'),
 
-    userId:z.string()
+  userId: z.string(),
 });
 
 export const resetPasswordSchema = z

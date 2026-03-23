@@ -106,11 +106,6 @@
 //   },
 // };
 
-
-
-
-
-
 import { apiClient } from '@/lib/api/client';
 import { API_ENDPOINTS } from '@/lib/api/endpoints';
 import { formatPhoneNumberWithCountryCode } from '../constants/phoneCountries';
@@ -138,7 +133,7 @@ import {
   mapRegistrationResponse,
   mapVerificationPayload,
   mapVerificationResponse,
-} from "../api/adapters/register.adapter"
+} from '../api/adapters/register.adapter';
 
 const MOCK_DELAY_MS = 900;
 
@@ -190,9 +185,9 @@ export const authApi = {
 
   /**
    * REGISTRATION STEP 1: Submit registration details
-   * 
+   *
    * Real Backend Integration
-   * 
+   *
    * Endpoint: POST /auth/register
    * - Sends registration data to backend
    * - Backend sends 6-digit verification code to user's email
@@ -202,33 +197,33 @@ export const authApi = {
     try {
       // Map frontend form data to backend payload format
       const payload = mapRegistrationPayload(values);
-      
+
       // Call real backend API
       const response = await apiClient.post(API_ENDPOINTS.AUTH.REGISTER, payload);
-      console.log("response", {response, response2:mapRegistrationResponse(response.data)})
-      
+      console.log('response', { response, response2: mapRegistrationResponse(response.data) });
+
       // Map backend response to frontend format
       return mapRegistrationResponse(response.data);
-      
     } catch (error: any) {
       // Extract error message from backend response
-      const errorMessage = error.response?.data?.message 
-        || error.response?.data?.error
-        || error.response?.data?.detail
-        || 'Registration failed. Please try again.';
-      
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.response?.data?.detail ||
+        'Registration failed. Please try again.';
+
       // Log full error for debugging
       console.error('Registration error:', error.response?.data || error.message);
-      
+
       throw new Error(errorMessage);
     }
   },
 
   /**
    * REGISTRATION STEP 2: Verify email with 6-digit code
-   * 
+   *
    * Real Backend Integration
-   * 
+   *
    * Endpoint: POST /auth/verify-email
    * - Sends email and verification code to backend
    * - Backend verifies code and creates account
@@ -239,28 +234,28 @@ export const authApi = {
     values: VerifyRegistrationRequest,
   ): Promise<CompleteRegistrationResponse> {
     try {
-      console.log("values", {values})
+      console.log('values', { values });
       // Map to backend format
       const payload = mapVerificationPayload(values.draft.email, values.code, values.userId);
 
-      console.log("payload", {payload})
-      
+      console.log('payload', { payload });
+
       // Call real backend API
       const response = await apiClient.post(API_ENDPOINTS.AUTH.VERIFY_EMAIL, payload);
-      
+
       // Map backend response to frontend format
       return mapVerificationResponse(response.data);
-      
     } catch (error: any) {
       // Extract error message from backend response
-      const errorMessage = error.response?.data?.message 
-        || error.response?.data?.error
-        || error.response?.data?.detail
-        || 'Verification failed. Please check the code and try again.';
-      
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.response?.data?.detail ||
+        'Verification failed. Please check the code and try again.';
+
       // Log full error for debugging
       console.error('Verification error:', error.response?.data || error.message);
-      
+
       throw new Error(errorMessage);
     }
   },
