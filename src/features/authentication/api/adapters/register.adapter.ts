@@ -106,7 +106,7 @@ export function mapRegistrationResponse(backendResponse: any) {
     message:
       backendResponse.message || backendResponse.msg || 'Verification code sent to your email',
     expiresInMinutes: backendResponse.expiresInMinutes || backendResponse.expires_in_minutes || 10,
-    userId:backendResponse.user_id,
+    userId: backendResponse.user_id,
     draft: {
       fullName:
         `${backendResponse.first_name || backendResponse.otherNames || ''} ${backendResponse.last_name || backendResponse.surname || ''}`.trim(),

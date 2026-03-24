@@ -115,9 +115,9 @@
 //       console.log("parsed ====>", {parsed})
 //       setDraft(parsed.values);
 //       setVerificationState(parsed.response);
-//       verificationForm.reset({ 
-//   code: '', 
-//   userId: parsed.response?.userId || '' 
+//       verificationForm.reset({
+//   code: '',
+//   userId: parsed.response?.userId || ''
 // });
 //       setStep('verification'); // Resume at verification step
 //     }
@@ -133,8 +133,8 @@
 //     setResendMessage('');
 //     // verificationForm.reset({ code: '', userId: '' });
 //     console.log("setting user id => ", {response})
-//     verificationForm.reset({ 
-//     code: '', 
+//     verificationForm.reset({
+//     code: '',
 //     userId: response.userId || '' // ← Use userId from backend
 //   });
 //     setStep('verification');
@@ -500,36 +500,6 @@
 //   );
 // }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // features/authentication/components/RegisterForm.tsx
 //
 // Registration flow: details → email verification → success
@@ -576,9 +546,9 @@ type RegistrationStep = 'details' | 'verification' | 'success';
 const STEPS: RegistrationStep[] = ['details', 'verification', 'success'];
 
 const stepMeta: Record<RegistrationStep, { step: string; label: string }> = {
-  details:      { step: 'Step 1 of 3', label: 'Account Details' },
+  details: { step: 'Step 1 of 3', label: 'Account Details' },
   verification: { step: 'Step 2 of 3', label: 'Verify Email' },
-  success:      { step: 'Step 3 of 3', label: 'Approval Pending' },
+  success: { step: 'Step 3 of 3', label: 'Approval Pending' },
 };
 
 // ─── Flow state ───────────────────────────────────────────────────────────────
@@ -840,7 +810,6 @@ export function RegisterForm() {
   // ─────────────────────────────────────────────────────────────────────────
   return (
     <AuthCard title="Sign" titleAccent="Up" subtitle="Join your Sisters">
-
       {/* ── Step indicator ──────────────────────────────────────────────── */}
       <div className="flex items-center justify-between mb-6 pb-5 border-b border-gray-100">
         <div>
@@ -952,17 +921,24 @@ export function RegisterForm() {
                 onClick={() => setShowPassword((v) => !v)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
               >
-                <Icon icon={showPassword ? 'mdi:eye-off-outline' : 'mdi:eye-outline'} className="w-4 h-4" />
+                <Icon
+                  icon={showPassword ? 'mdi:eye-off-outline' : 'mdi:eye-outline'}
+                  className="w-4 h-4"
+                />
               </button>
             </div>
             {detailForm.formState.errors.password && (
-              <p className="mt-1 text-xs text-red-500">{detailForm.formState.errors.password.message}</p>
+              <p className="mt-1 text-xs text-red-500">
+                {detailForm.formState.errors.password.message}
+              </p>
             )}
           </div>
 
           {/* Confirm Password */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Confirm Password</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              Confirm Password
+            </label>
             <div className="relative">
               <input
                 type={showConfirmPassword ? 'text' : 'password'}
@@ -975,13 +951,20 @@ export function RegisterForm() {
                 onClick={() => setShowConfirmPassword((v) => !v)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
               >
-                <Icon icon={showConfirmPassword ? 'mdi:eye-off-outline' : 'mdi:eye-outline'} className="w-4 h-4" />
+                <Icon
+                  icon={showConfirmPassword ? 'mdi:eye-off-outline' : 'mdi:eye-outline'}
+                  className="w-4 h-4"
+                />
               </button>
             </div>
             {detailForm.formState.errors.confirmPassword ? (
-              <p className="mt-1 text-xs text-red-500">{detailForm.formState.errors.confirmPassword.message}</p>
+              <p className="mt-1 text-xs text-red-500">
+                {detailForm.formState.errors.confirmPassword.message}
+              </p>
             ) : confirmPasswordValue ? (
-              <p className={`mt-1 text-xs ${passwordsMatch ? 'text-primary-600' : 'text-gray-400'}`}>
+              <p
+                className={`mt-1 text-xs ${passwordsMatch ? 'text-primary-600' : 'text-gray-400'}`}
+              >
                 {passwordsMatch ? '✓ Passwords match' : 'Passwords must match exactly'}
               </p>
             ) : null}
@@ -1002,15 +985,22 @@ export function RegisterForm() {
             className="btn btn-primary w-full flex items-center justify-center gap-2 mt-2"
           >
             {detailForm.formState.isSubmitting ? (
-              <><Icon icon="mdi:loading" className="w-4 h-4 animate-spin" /> Checking...</>
+              <>
+                <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" /> Checking...
+              </>
             ) : (
-              <>Sign up <Icon icon="mdi:arrow-right" className="w-4 h-4" /></>
+              <>
+                Sign up <Icon icon="mdi:arrow-right" className="w-4 h-4" />
+              </>
             )}
           </button>
 
           <p className="text-center text-sm text-gray-500">
             Already have an account?{' '}
-            <AppLink href="/auth/login" className="font-semibold text-primary-500 hover:text-primary-600">
+            <AppLink
+              href="/auth/login"
+              className="font-semibold text-primary-500 hover:text-primary-600"
+            >
               Login
             </AppLink>
           </p>
@@ -1030,18 +1020,26 @@ export function RegisterForm() {
           {/* Registration summary */}
           <div className="bg-gray-50 rounded-2xl p-4 space-y-2.5 text-sm">
             {[
-              { label: 'Full name', value: `${flow.formValues.otherNames} ${flow.formValues.surname}` },
+              {
+                label: 'Full name',
+                value: `${flow.formValues.otherNames} ${flow.formValues.surname}`,
+              },
               { label: 'Name in school', value: flow.formValues.nameInSchool },
               { label: 'Email', value: flow.formValues.email },
               {
                 label: 'WhatsApp',
-                value: formatPhoneNumberWithCountryCode(flow.formValues.phoneCountry, flow.formValues.whatsappPhone),
+                value: formatPhoneNumberWithCountryCode(
+                  flow.formValues.phoneCountry,
+                  flow.formValues.whatsappPhone,
+                ),
               },
               { label: 'Graduation year', value: String(flow.formValues.graduationYear) },
             ].map(({ label, value }) => (
               <div key={label} className="flex justify-between items-center">
                 <span className="text-gray-500">{label}</span>
-                <span className="font-medium text-gray-800 text-right max-w-[60%] truncate">{value}</span>
+                <span className="font-medium text-gray-800 text-right max-w-[60%] truncate">
+                  {value}
+                </span>
               </div>
             ))}
             <button
@@ -1070,7 +1068,9 @@ export function RegisterForm() {
             {/* API / session error */}
             {verificationForm.formState.errors.root && (
               <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3">
-                <p className="text-sm text-red-600">{verificationForm.formState.errors.root.message}</p>
+                <p className="text-sm text-red-600">
+                  {verificationForm.formState.errors.root.message}
+                </p>
                 {/* Show back button if session data is missing */}
                 {verificationForm.formState.errors.root.message?.includes('Session data') && (
                   <button
@@ -1097,7 +1097,9 @@ export function RegisterForm() {
                 className="btn btn-primary flex-1 flex items-center justify-center gap-2"
               >
                 {verificationForm.formState.isSubmitting ? (
-                  <><Icon icon="mdi:loading" className="w-4 h-4 animate-spin" /> Verifying...</>
+                  <>
+                    <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" /> Verifying...
+                  </>
                 ) : (
                   'Verify email'
                 )}
@@ -1123,13 +1125,18 @@ export function RegisterForm() {
           </div>
           <div>
             <p className="font-semibold text-gray-800 mb-2">Registration completed!</p>
-            <p className="text-sm text-gray-500 leading-relaxed">{flow.completionResponse.message}</p>
+            <p className="text-sm text-gray-500 leading-relaxed">
+              {flow.completionResponse.message}
+            </p>
           </div>
           <ul className="text-left space-y-2.5 text-sm text-gray-500">
             {[
               { icon: 'mdi:check-circle-outline', text: 'Your email has been verified.' },
               { icon: 'mdi:clock-outline', text: 'Your account is awaiting admin approval.' },
-              { icon: 'mdi:email-outline', text: 'You will be notified once your account is approved.' },
+              {
+                icon: 'mdi:email-outline',
+                text: 'You will be notified once your account is approved.',
+              },
             ].map(({ icon, text }) => (
               <li key={text} className="flex items-start gap-2">
                 <Icon icon={icon} className="w-4 h-4 text-primary-500 mt-0.5 flex-shrink-0" />

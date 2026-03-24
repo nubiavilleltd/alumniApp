@@ -236,7 +236,6 @@ export const authApi = {
       // Map to backend format
       const payload = mapVerificationPayload(values.draft.email, values.code, values.userId);
 
-
       // Call real backend API
       const response = await apiClient.post(API_ENDPOINTS.AUTH.VERIFY_EMAIL, payload);
 
