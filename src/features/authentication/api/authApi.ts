@@ -134,6 +134,7 @@ import {
   mapVerificationPayload,
   mapVerificationResponse,
 } from '../api/adapters/register.adapter';
+import { mapLoginError, mapLoginPayload, mapLoginResponse } from './adapters/login.adapter';
 
 const MOCK_DELAY_MS = 900;
 
@@ -152,19 +153,50 @@ function toUserSummary(values: RegisterDetailsFormValues): AuthUserSummary {
   };
 }
 
+
+
+
+
+
+
+
+
 export const authApi = {
+  // async login(values: LoginFormValues): Promise<LoginResponse> {
+  //   await wait();
+  //   const account = authenticateMockAccount(values.email, values.password);
+  //   console.log('account', { account });
+  //   if (!account) {
+  //     throw new Error('Invalid email or password');
+  //   }
+  //   return {
+  //     status: 'success',
+  //     message: `Login request validated. Replace this mock with a POST to ${API_ENDPOINTS.AUTH.LOGIN} when the API is available.`,
+  //     user: toAuthSessionUser(account),
+  //   };
+  // },
+
+
+
+  /**
+   * AUTHENTICATION: Login with email and password
+   *
+   * Real Backend Integration
+   *
+   * Endpoint: POST /login
+   * - Sends identity (email) and password to backend
+   * - Returns tokens + full user profile on success
+   * - Throws mapped error messages for all known error codes
+   */
   async login(values: LoginFormValues): Promise<LoginResponse> {
-    await wait();
-    const account = authenticateMockAccount(values.email, values.password);
-    console.log('account', { account });
-    if (!account) {
-      throw new Error('Invalid email or password');
+    try {
+      const payload = mapLoginPayload(values);
+      const response = await apiClient.post(API_ENDPOINTS.AUTH.LOGIN, payload);
+      return mapLoginResponse(response.data);
+    } catch (error: any) {
+      console.error('Login error:', error.response?.data || error.message);
+      throw new Error(mapLoginError(error));
     }
-    return {
-      status: 'success',
-      message: `Login request validated. Replace this mock with a POST to ${API_ENDPOINTS.AUTH.LOGIN} when the API is available.`,
-      user: toAuthSessionUser(account),
-    };
   },
 
   async requestPasswordReset(values: ForgotPasswordFormValues): Promise<ForgotPasswordResponse> {
