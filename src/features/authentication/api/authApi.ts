@@ -200,7 +200,6 @@ export const authApi = {
 
       // Call real backend API
       const response = await apiClient.post(API_ENDPOINTS.AUTH.REGISTER, payload);
-      console.log('response', { response, response2: mapRegistrationResponse(response.data) });
 
       // Map backend response to frontend format
       return mapRegistrationResponse(response.data);
@@ -234,11 +233,9 @@ export const authApi = {
     values: VerifyRegistrationRequest,
   ): Promise<CompleteRegistrationResponse> {
     try {
-      console.log('values', { values });
       // Map to backend format
       const payload = mapVerificationPayload(values.draft.email, values.code, values.userId);
 
-      console.log('payload', { payload });
 
       // Call real backend API
       const response = await apiClient.post(API_ENDPOINTS.AUTH.VERIFY_EMAIL, payload);
