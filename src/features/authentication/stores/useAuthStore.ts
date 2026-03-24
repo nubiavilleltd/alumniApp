@@ -55,10 +55,6 @@
 //   ),
 // );
 
-
-
-
-
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import type { AuthSessionUser } from '../types/auth.types';
@@ -80,8 +76,7 @@ export const useAuthStore = create<AuthState>()(
       accessToken: null,
       refreshToken: null,
 
-      setSession: (user, accessToken, refreshToken) =>
-        set({ user, accessToken, refreshToken }),
+      setSession: (user, accessToken, refreshToken) => set({ user, accessToken, refreshToken }),
 
       // Update user profile/privacy without full re-authentication
       // TODO: When backend is ready, this should call PUT /profile endpoint
@@ -90,8 +85,7 @@ export const useAuthStore = create<AuthState>()(
           user: state.user ? { ...state.user, ...updates } : null,
         })),
 
-      clearSession: () =>
-        set({ user: null, accessToken: null, refreshToken: null }),
+      clearSession: () => set({ user: null, accessToken: null, refreshToken: null }),
     }),
     {
       name: 'openalumns.auth.session',

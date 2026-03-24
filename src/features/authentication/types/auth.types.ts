@@ -303,7 +303,6 @@ export interface AuthUserSummary {
 //   user: AuthSessionUser;
 // }
 
-
 export interface LoginResponse {
   user: AuthSessionUser;
   accessToken: string;

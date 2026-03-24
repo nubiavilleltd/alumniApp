@@ -82,14 +82,17 @@ export function mapLoginResponse(backendResponse: any): {
   const fullName = r.fullname || `${firstName} ${lastName}`.trim();
 
   // Derive initials for avatar fallback
-  const avatarInitials = [firstName[0], lastName[0]]
-    .filter(Boolean)
-    .join('')
-    .toUpperCase() || r.email?.[0]?.toUpperCase() || '?';
+  const avatarInitials =
+    [firstName[0], lastName[0]].filter(Boolean).join('').toUpperCase() ||
+    r.email?.[0]?.toUpperCase() ||
+    '?';
 
   // Derive slug from email prefix (e.g. "emeka.okafor@gmail.com" → "emeka-okafor")
   // TODO: Replace with backend-provided slug when available
-  const slug = (r.email || '').split('@')[0].replace(/[^a-z0-9]/gi, '-').toLowerCase();
+  const slug = (r.email || '')
+    .split('@')[0]
+    .replace(/[^a-z0-9]/gi, '-')
+    .toLowerCase();
 
   // ─── Infer statuses from available backend flags ──────────────────────────
   // TODO: Replace with dedicated fields when backend provides them
@@ -103,11 +106,11 @@ export function mapLoginResponse(backendResponse: any): {
     user: {
       // ── Identity ────────────────────────────────────────────────────────
       id: String(r.user_id || ''),
-      memberId: String(r.user_id || ''),       // TODO: Use dedicated memberId when backend provides it
+      memberId: String(r.user_id || ''), // TODO: Use dedicated memberId when backend provides it
       slug,
       avatarInitials,
       profileHref: `/alumni/${slug}`,
-      createdAt: new Date().toISOString(),     // TODO: Use backend-provided createdAt when available
+      createdAt: new Date().toISOString(), // TODO: Use backend-provided createdAt when available
       chapterId: r.chapter_id ? String(r.chapter_id) : undefined,
 
       // ── Auth ────────────────────────────────────────────────────────────
@@ -129,7 +132,7 @@ export function mapLoginResponse(backendResponse: any): {
       fullName,
       surname: lastName,
       otherNames: firstName,
-      nameInSchool: r.name_in_school || '',   // TODO: Confirm if backend will ever return this
+      nameInSchool: r.name_in_school || '', // TODO: Confirm if backend will ever return this
       email: r.email || '',
       whatsappPhone: r.phone || '',
       graduationYear: parseInt(r.graduation_year || '0', 10),
@@ -154,9 +157,7 @@ export function mapLoginResponse(backendResponse: any): {
 export function mapLoginError(error: any): string {
   const status = error.response?.status;
   const serverMessage =
-    error.response?.data?.message ||
-    error.response?.data?.error ||
-    error.response?.data?.detail;
+    error.response?.data?.message || error.response?.data?.error || error.response?.data?.detail;
 
   switch (status) {
     case 400:
@@ -177,7 +178,6 @@ export function mapLoginError(error: any): string {
       return serverMessage || 'Login failed. Please try again.';
   }
 }
-
 
 function mapBackendDues(backendValue: any): DuesStatus {
   switch (backendValue) {

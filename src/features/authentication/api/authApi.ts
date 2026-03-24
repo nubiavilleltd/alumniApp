@@ -153,14 +153,6 @@ function toUserSummary(values: RegisterDetailsFormValues): AuthUserSummary {
   };
 }
 
-
-
-
-
-
-
-
-
 export const authApi = {
   // async login(values: LoginFormValues): Promise<LoginResponse> {
   //   await wait();
@@ -175,8 +167,6 @@ export const authApi = {
   //     user: toAuthSessionUser(account),
   //   };
   // },
-
-
 
   /**
    * AUTHENTICATION: Login with email and password
