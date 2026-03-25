@@ -135,6 +135,7 @@ import {
   mapVerificationResponse,
 } from '../api/adapters/register.adapter';
 import { mapLoginError, mapLoginPayload, mapLoginResponse } from './adapters/login.adapter';
+import { mapForgotPasswordError, mapForgotPasswordPayload, mapForgotPasswordResponse } from './adapters/forgotpassword.adapter';
 
 const MOCK_DELAY_MS = 900;
 
@@ -189,21 +190,48 @@ export const authApi = {
     }
   },
 
+  // async requestPasswordReset(values: ForgotPasswordFormValues): Promise<ForgotPasswordResponse> {
+  //   await wait();
+  //   const account = findMockAccountByEmail(values.email);
+  //   const token = `reset-${Math.random().toString(36).slice(2, 12)}`;
+  //   const resetLink = account
+  //     ? `/auth/reset-password?token=${encodeURIComponent(token)}&email=${encodeURIComponent(values.email)}`
+  //     : undefined;
+  //   return {
+  //     status: 'email_sent',
+  //     message: `If an account exists for ${values.email}, a password reset email has been simulated. Replace this mock with a POST to ${API_ENDPOINTS.AUTH.FORGOT_PASSWORD} when the API is available.`,
+  //     email: values.email,
+  //     expiresInMinutes: 30,
+  //     resetLink,
+  //   };
+  // },
+
+
+
+
+/**
+   * FORGOT PASSWORD: Request a password reset email
+   *
+   * Real Backend Integration
+   *
+   * Endpoint: POST /auth/forgot-password
+   * - Sends email to backend
+   * - Backend emails reset instructions to the user
+   * - Returns confirmation on success
+   */
   async requestPasswordReset(values: ForgotPasswordFormValues): Promise<ForgotPasswordResponse> {
-    await wait();
-    const account = findMockAccountByEmail(values.email);
-    const token = `reset-${Math.random().toString(36).slice(2, 12)}`;
-    const resetLink = account
-      ? `/auth/reset-password?token=${encodeURIComponent(token)}&email=${encodeURIComponent(values.email)}`
-      : undefined;
-    return {
-      status: 'email_sent',
-      message: `If an account exists for ${values.email}, a password reset email has been simulated. Replace this mock with a POST to ${API_ENDPOINTS.AUTH.FORGOT_PASSWORD} when the API is available.`,
-      email: values.email,
-      expiresInMinutes: 30,
-      resetLink,
-    };
+    try {
+      const payload = mapForgotPasswordPayload(values);
+      console.log("payload => ", {payload})
+      const response = await apiClient.post(API_ENDPOINTS.AUTH.FORGOT_PASSWORD, payload);
+      return mapForgotPasswordResponse(response.data);
+    } catch (error: any) {
+      console.error('Forgot password error:', error.response?.data || error.message);
+      throw new Error(mapForgotPasswordError(error));
+    }
   },
+
+
 
   /**
    * REGISTRATION STEP 1: Submit registration details

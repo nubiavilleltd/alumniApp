@@ -11,7 +11,8 @@ export const API_ENDPOINTS = {
     LOGOUT: '/auth/logout',
     REFRESH_TOKEN: '/auth/refresh',
     ME: '/auth/me',
-    FORGOT_PASSWORD: '/auth/forgot-password',
+    FORGOT_PASSWORD: '/forgot_password',
+    // FORGOT_PASSWORD: '/auth/forgot-password',
     RESET_PASSWORD: '/auth/reset-password',
     // VERIFY_EMAIL: '/auth/verify-email',
     VERIFY_EMAIL: '/verify_email',
@@ -19,7 +20,7 @@ export const API_ENDPOINTS = {
 
   // ─── Alumni ───────────────────────────────────────────────────────────────
   ALUMNI: {
-    LIST: '/alumni',
+    LIST: '/get_users_by_action',
     SEARCH: '/alumni/search',
     DETAIL: (slug: string) => `/alumni/${slug}`,
     UPDATE: (id: string) => `/alumni/${id}`,
