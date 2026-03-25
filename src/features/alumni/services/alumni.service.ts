@@ -51,12 +51,6 @@
 //   },
 // };
 
-
-
-
-
-
-
 // import { apiClient } from '@/lib/api/client';
 // import { API_ENDPOINTS } from '@/lib/api/endpoints';
 // import { getAlumni, getAlumnusBySlug } from '@/data/site-data';
@@ -93,13 +87,6 @@
 //   },
 // };
 
-
-
-
-
-
-
-
 import { apiClient } from '@/lib/api/client';
 import { API_ENDPOINTS } from '@/lib/api/endpoints';
 import { getAlumni, getAlumnusBySlug } from '@/data/site-data';
@@ -109,15 +96,13 @@ import { mapBackendAlumniList, mapBackendAlumniToFrontend } from '../api/adapter
 
 export interface GetAlumniParams {
   search?: string;
-  year?:   string;
-  page?:   number;
-  limit?:  number;
+  year?: string;
+  page?: number;
+  limit?: number;
 }
 
 // Build a fast lookup: memberId → accountStatus
-const accountStatusMap = new Map(
-  defaultMockAccounts.map((a) => [a.memberId, a.accountStatus]),
-);
+const accountStatusMap = new Map(defaultMockAccounts.map((a) => [a.memberId, a.accountStatus]));
 
 function isActiveAccount(memberId: string): boolean {
   const status = accountStatusMap.get(memberId);
@@ -134,16 +119,14 @@ export const alumniService = {
     try {
       const { data } = await apiClient.post(API_ENDPOINTS.ALUMNI.LIST);
 
-      
       // Transform messy backend data to clean frontend format
       const cleanedData = mapBackendAlumniList(data.users);
-      
+
       // Filter out suspended/closed accounts (if needed)
       return cleanedData.filter((a) => isActiveAccount(a.memberId));
-      
     } catch (error) {
       console.error('Failed to fetch alumni from API:', error);
-      
+
       // ═══════════════════════════════════════════════════════════════
       // FALLBACK: Use mock data if API fails (for development)
       // ═══════════════════════════════════════════════════════════════
@@ -158,23 +141,22 @@ export const alumniService = {
     // ═══════════════════════════════════════════════════════════════════
     try {
       const { data } = await apiClient.get(API_ENDPOINTS.ALUMNI.DETAIL(slug));
-      
+
       // Transform messy backend data to clean frontend format
       const alumnus = mapBackendAlumniToFrontend(data);
-      
+
       // Don't return profile of suspended/closed account
       if (!isActiveAccount(alumnus.memberId)) return undefined;
-      
+
       return alumnus;
-      
     } catch (error: any) {
       // If 404, alumnus doesn't exist
       if (error.response?.status === 404) {
         return undefined;
       }
-      
+
       console.error('Failed to fetch alumnus from API:', error);
-      
+
       // ═══════════════════════════════════════════════════════════════
       // FALLBACK: Use mock data if API fails (for development)
       // ═══════════════════════════════════════════════════════════════

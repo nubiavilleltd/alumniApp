@@ -63,10 +63,7 @@ export function mapForgotPasswordResponse(backendResponse: any) {
       backendResponse.msg ||
       'Password reset instructions sent to your email.',
     email: backendResponse.email || '',
-    expiresInMinutes:
-      backendResponse.expires_in_minutes ||
-      backendResponse.expiresInMinutes ||
-      30, // Default to 30 mins if backend doesn't return this
+    expiresInMinutes: backendResponse.expires_in_minutes || backendResponse.expiresInMinutes || 30, // Default to 30 mins if backend doesn't return this
   };
 }
 
@@ -78,9 +75,7 @@ export function mapForgotPasswordResponse(backendResponse: any) {
 export function mapForgotPasswordError(error: any): string {
   const status = error.response?.status;
   const serverMessage =
-    error.response?.data?.message ||
-    error.response?.data?.error ||
-    error.response?.data?.detail;
+    error.response?.data?.message || error.response?.data?.error || error.response?.data?.detail;
 
   switch (status) {
     case 400:

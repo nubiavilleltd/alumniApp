@@ -135,7 +135,11 @@ import {
   mapVerificationResponse,
 } from '../api/adapters/register.adapter';
 import { mapLoginError, mapLoginPayload, mapLoginResponse } from './adapters/login.adapter';
-import { mapForgotPasswordError, mapForgotPasswordPayload, mapForgotPasswordResponse } from './adapters/forgotpassword.adapter';
+import {
+  mapForgotPasswordError,
+  mapForgotPasswordPayload,
+  mapForgotPasswordResponse,
+} from './adapters/forgotpassword.adapter';
 
 const MOCK_DELAY_MS = 900;
 
@@ -206,10 +210,7 @@ export const authApi = {
   //   };
   // },
 
-
-
-
-/**
+  /**
    * FORGOT PASSWORD: Request a password reset email
    *
    * Real Backend Integration
@@ -222,7 +223,7 @@ export const authApi = {
   async requestPasswordReset(values: ForgotPasswordFormValues): Promise<ForgotPasswordResponse> {
     try {
       const payload = mapForgotPasswordPayload(values);
-      console.log("payload => ", {payload})
+      console.log('payload => ', { payload });
       const response = await apiClient.post(API_ENDPOINTS.AUTH.FORGOT_PASSWORD, payload);
       return mapForgotPasswordResponse(response.data);
     } catch (error: any) {
@@ -230,8 +231,6 @@ export const authApi = {
       throw new Error(mapForgotPasswordError(error));
     }
   },
-
-
 
   /**
    * REGISTRATION STEP 1: Submit registration details

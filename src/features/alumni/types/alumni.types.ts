@@ -44,23 +44,22 @@ export type Alumni = {
   education: Education[];
   achievements: string[];
   interests: string[];
-  houseColor:string;
+  houseColor: string;
 
-  phone:string;
+  phone: string;
 
+  isCoordinator: boolean;
+  isEmailVerified: boolean;
+  isApproved: boolean;
+  isActive: boolean;
+  isVisible: boolean;
 
-   isCoordinator: boolean;
-    isEmailVerified: boolean;
-    isApproved:boolean
-    isActive: boolean;
-    isVisible: boolean 
-    
-    // ═══════════════════════════════════════════════════════════════════
-    // TIMESTAMPS
-    // ═══════════════════════════════════════════════════════════════════
-    createdAt: string
-    updatedAt: string,
-    lastLogin: string,
+  // ═══════════════════════════════════════════════════════════════════
+  // TIMESTAMPS
+  // ═══════════════════════════════════════════════════════════════════
+  createdAt: string;
+  updatedAt: string;
+  lastLogin: string;
 
   // ── Extended Profile Fields (from AuthSessionUser) ───────────────────────
   // These fields allow merging session data when viewing own profile
@@ -74,12 +73,12 @@ export type Alumni = {
   industrySectors?: string[];
   yearsOfExperience?: number;
   isVolunteer?: boolean;
-  nameInSchool:string
+  nameInSchool: string;
 
   // ── Social Links (direct fields) ─────────────────────────────────────────
   linkedin?: string;
   twitter?: string;
   instagram?: string;
-  facebook?:string
-  website?:string
+  facebook?: string;
+  website?: string;
 };
