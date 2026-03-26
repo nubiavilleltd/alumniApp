@@ -75,6 +75,10 @@ export const API_ENDPOINTS = {
     UPLOAD_AVATAR: '/profile/avatar',
   },
 
+  USER: {
+    UPDATE_PROFILE: '/update_profile',
+  },
+
   // ─── Admin ────────────────────────────────────────────────────────────────
   ADMIN: {
     STATS: '/admin/stats',

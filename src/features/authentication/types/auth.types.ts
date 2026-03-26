@@ -208,6 +208,8 @@ export interface PrivacySettings {
   yearsOfExperience: FieldVisibility;
 }
 
+
+
 export const defaultPrivacySettings: PrivacySettings = {
   photo: 'public',
   whatsappPhone: 'private',
@@ -275,6 +277,9 @@ export interface AuthSessionUser {
   instagram?: string;
 
   privacy?: PrivacySettings;
+
+  position?:string
+  company?:string
 }
 
 // ─── Form value types ─────────────────────────────────────────────────────────
