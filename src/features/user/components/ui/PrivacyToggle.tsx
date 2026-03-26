@@ -52,7 +52,6 @@ interface PrivacyToggleProps {
   className?: string;
 }
 
-
 /**
  * Compact inline privacy toggle for profile fields
  * Shows as: 🔓 Public or 🔒 Private

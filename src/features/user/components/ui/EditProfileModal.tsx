@@ -459,12 +459,6 @@
 //   );
 // }
 
-
-
-
-
-
-
 // features/user/components/ui/EditProfileModal.tsx
 //
 // Profile editing modal with REAL backend integration using adapter pattern
@@ -553,10 +547,7 @@ function toFormState(user: AuthSessionUser | null): FormState {
 //   };
 // }
 
-
-
 type PrivacyState = PrivacySettings;
-
 
 function toPrivacyState(user: AuthSessionUser | null): PrivacyState {
   return {
@@ -574,7 +565,7 @@ const yearsOfExperienceSelectOptions = yearsOfExperienceOptions.map((o) => ({
 export default function EditProfileModal({ isOpen, onClose, currentUser }: Props) {
   const updateUser = useAuthStore((state) => state.updateUser);
   const accessToken = useAuthStore((state) => state.accessToken);
-  
+
   const [form, setForm] = useState<FormState>(() => toFormState(currentUser));
   const [privacy, setPrivacy] = useState<PrivacyState>(() => toPrivacyState(currentUser));
   const [photoFile, setPhotoFile] = useState<File | null>(null);
@@ -601,19 +592,19 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    
+
     // Validate file type
     if (!file.type.startsWith('image/')) {
       setError('Please select a valid image file');
       return;
     }
-    
+
     // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
       setError('Image must be smaller than 5MB');
       return;
     }
-    
+
     setPhotoFile(file);
     const reader = new FileReader();
     reader.onload = () => setPhotoPreview(reader.result as string);
@@ -630,10 +621,10 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
 
   const handleSave = async () => {
     if (!currentUser) return;
-    
+
     setIsSaving(true);
     setError('');
-    
+
     try {
       // Build updates object
       const updates: Partial<AuthSessionUser> = {
@@ -646,7 +637,8 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
         occupations: form.occupation ? [form.occupation] : undefined,
         industrySectors: form.industrySector ? [form.industrySector] : undefined,
         yearsOfExperience: form.yearsOfExperience ? Number(form.yearsOfExperience) : undefined,
-        isVolunteer: form.isVolunteer === 'yes' ? true : form.isVolunteer === 'no' ? false : undefined,
+        isVolunteer:
+          form.isVolunteer === 'yes' ? true : form.isVolunteer === 'no' ? false : undefined,
         linkedin: form.linkedin || undefined,
         twitter: form.twitter || undefined,
         instagram: form.instagram || undefined,
@@ -656,20 +648,20 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
           ...privacy,
         },
       };
-      
+
       // Call backend API
       const updatedData = await userService.updateProfile({
         userId: currentUser.id, // Use numeric ID from auth store
         updates,
         photoFile: photoFile || undefined,
       });
-      
+
       // Update local auth store with new data
       updateUser({
         ...updatedData,
         privacy: updates.privacy, // Privacy is local only
       });
-      
+
       onClose();
     } catch (err: any) {
       setError(err.message || 'Failed to update profile. Please try again.');
@@ -735,9 +727,7 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
 
         {/* ── Contact ──────────────────────────────────────────────────── */}
         <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-accent-700 uppercase tracking-wide">
-            Contact
-          </h3>
+          <h3 className="text-sm font-semibold text-accent-700 uppercase tracking-wide">Contact</h3>
           <div className="space-y-3">
             <div className="flex items-end gap-2">
               <FormInput
@@ -772,9 +762,7 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
 
         {/* ── Address ──────────────────────────────────────────────────── */}
         <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-accent-700 uppercase tracking-wide">
-            Address
-          </h3>
+          <h3 className="text-sm font-semibold text-accent-700 uppercase tracking-wide">Address</h3>
           <div className="space-y-3">
             <div className="flex items-end gap-2">
               <FormInput

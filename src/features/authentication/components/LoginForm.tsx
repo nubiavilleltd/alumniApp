@@ -183,7 +183,7 @@ export function LoginForm() {
     try {
       const response = await authApi.login(values);
       setSession(response.user, response.accessToken, response.refreshToken);
-      navigate(response?.user?.role == "admin" ? "/admin/dashboard" : from, { replace: true });
+      navigate(response?.user?.role == 'admin' ? '/admin/dashboard' : from, { replace: true });
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Login failed. Please try again.';
 
