@@ -7,7 +7,8 @@ import type { PrivacySettings } from '../types/auth.types';
 
 export type ApprovalStatus = 'pending' | 'approved' | 'rejected';
 export type AccountStatus = 'active' | 'suspended' | 'closed';
-export type DuesStatus = 'paid' | 'owing' | 'exempt';
+// export type DuesStatus = 'paid' | 'owing' | 'exempt';
+export type DuesStatus = 'paid' | 'owing' | 'overdue' | 'exempt' | 'unknown';
 
 export interface MockAuthAccount {
   // ── Identity ───────────────────────────────────────────────────────────────

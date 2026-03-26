@@ -192,6 +192,7 @@ export type AuthMode = 'login' | 'register' | 'forgot-password' | 'reset-passwor
 // ─── Privacy ──────────────────────────────────────────────────────────────────
 
 export type FieldVisibility = 'public' | 'private';
+// export type DuesStatus = 'paid' | 'owing' | 'overdue' | 'unknown';
 
 export interface PrivacySettings {
   photo: FieldVisibility;
@@ -274,6 +275,9 @@ export interface AuthSessionUser {
   instagram?: string;
 
   privacy?: PrivacySettings;
+
+  position?: string;
+  company?: string;
 }
 
 // ─── Form value types ─────────────────────────────────────────────────────────
@@ -296,10 +300,16 @@ export interface AuthUserSummary {
   graduationYear: number;
 }
 
+// export interface LoginResponse {
+//   status: 'success';
+//   message: string;
+//   user: AuthSessionUser;
+// }
+
 export interface LoginResponse {
-  status: 'success';
-  message: string;
   user: AuthSessionUser;
+  accessToken: string;
+  refreshToken: string;
 }
 
 export interface ForgotPasswordResponse {

@@ -59,16 +59,16 @@ export function AlumniProfilePage() {
 
   if (!alumnus) {
     return (
-      <Layout title="Profile Not Found">
-        <section className="section">
-          <div className="container-custom text-center">
-            <h1 className="text-3xl font-bold mb-4">Alumni profile not found</h1>
-            <AppLink href="/alumni/profiles" className="btn btn-primary">
-              Browse Directory
-            </AppLink>
-          </div>
-        </section>
-      </Layout>
+      // <div className="min-h-screen flex items-center justify-center flex-col bg-white text-gray-900 font-sans antialiased">
+      <section className="section">
+        <div className="container-custom text-center">
+          <h1 className="text-3xl font-bold mb-4">Alumni profile not found</h1>
+          <AppLink href="/alumni/profiles" className="btn btn-primary">
+            Browse Directory
+          </AppLink>
+        </div>
+      </section>
+      // </div>
     );
   }
 
