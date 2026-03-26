@@ -9,10 +9,10 @@ import { adminDashboardApi } from '../api/adminDashboardApi';
 // ─── Query keys ───────────────────────────────────────────────────────────────
 
 export const adminKeys = {
-  all:     ['admin'] as const,
+  all: ['admin'] as const,
   dashboard: () => [...adminKeys.all, 'dashboard'] as const,
-  pending:   () => [...adminKeys.all, 'pending']   as const,
-  approved:  () => [...adminKeys.all, 'approved']  as const,
+  pending: () => [...adminKeys.all, 'pending'] as const,
+  approved: () => [...adminKeys.all, 'approved'] as const,
 };
 
 // ─── Queries ──────────────────────────────────────────────────────────────────
@@ -24,7 +24,7 @@ export const adminKeys = {
 export function useAdminDashboard() {
   return useQuery({
     queryKey: adminKeys.dashboard(),
-    queryFn:  () => adminDashboardApi.getDashboard(),
+    queryFn: () => adminDashboardApi.getDashboard(),
     staleTime: 1000 * 60 * 2, // 2 min — dashboard data should be reasonably fresh
     retry: 1,
   });
@@ -37,7 +37,7 @@ export function useAdminDashboard() {
 export function usePendingMembers() {
   return useQuery({
     queryKey: adminKeys.pending(),
-    queryFn:  () => adminDashboardApi.getPendingMembers(),
+    queryFn: () => adminDashboardApi.getPendingMembers(),
     staleTime: 1000 * 60 * 1, // 1 min — pending list changes more often
     retry: 1,
   });

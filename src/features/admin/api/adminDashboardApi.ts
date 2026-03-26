@@ -127,13 +127,6 @@
 //   },
 // };
 
-
-
-
-
-
-
-
 // features/admin/api/adminDashboardApi.ts
 //
 // Admin-only API layer. Completely separate from userDashboardApi.
@@ -170,7 +163,7 @@ export interface AdminStat {
 }
 
 export interface PendingMember {
-  id: string;          // backend user_id, always stringified
+  id: string; // backend user_id, always stringified
   fullName: string;
   nameInSchool: string;
   email: string;
@@ -181,7 +174,7 @@ export interface PendingMember {
 export interface RecentMember {
   name: string;
   email: string;
-  joinedAt: string;    // ISO date string
+  joinedAt: string; // ISO date string
   slug: string;
 }
 
@@ -201,8 +194,8 @@ export interface ApproveResult {
 // Centralised here so one-line changes cover both the payload builder and call.
 
 const ADMIN_ENDPOINTS = {
-  MEMBER_LIST: '/get_users_by_action',  // POST — action_type flag in body
-  APPROVE_USER: '/approve_user',       // POST — action: approve | reject
+  MEMBER_LIST: '/get_users_by_action', // POST — action_type flag in body
+  APPROVE_USER: '/approve_user', // POST — action: approve | reject
 } as const;
 
 // ─── Stat placeholders ────────────────────────────────────────────────────────
@@ -214,7 +207,7 @@ function buildStatPlaceholders(pendingCount: number): AdminStat[] {
     {
       id: 'members',
       label: 'Total Members',
-      value: '—',           // 🔴 TODO: real count from backend stats endpoint
+      value: '—', // 🔴 TODO: real count from backend stats endpoint
       detail: 'Approved & active',
       icon: 'mdi:account-group-outline',
       tone: 'primary',
@@ -230,7 +223,7 @@ function buildStatPlaceholders(pendingCount: number): AdminStat[] {
     {
       id: 'events',
       label: 'Upcoming Events',
-      value: '—',           // 🔴 TODO: real count from backend stats endpoint
+      value: '—', // 🔴 TODO: real count from backend stats endpoint
       detail: 'Scheduled this quarter',
       icon: 'mdi:calendar-star',
       tone: 'accent',
@@ -238,7 +231,7 @@ function buildStatPlaceholders(pendingCount: number): AdminStat[] {
     {
       id: 'revenue',
       label: 'Dues Collected',
-      value: '—',           // 🔴 TODO: real figure from backend dues endpoint
+      value: '—', // 🔴 TODO: real figure from backend dues endpoint
       detail: 'Current period',
       icon: 'mdi:cash-multiple',
       tone: 'secondary',
@@ -281,7 +274,7 @@ export const adminDashboardApi = {
     ]);
 
     const pending = pendingMembers.status === 'fulfilled' ? pendingMembers.value : [];
-    const recent  = recentMembers.status  === 'fulfilled' ? recentMembers.value  : [];
+    const recent = recentMembers.status === 'fulfilled' ? recentMembers.value : [];
 
     // Log partial failures for debugging without breaking the whole dashboard
     if (pendingMembers.status === 'rejected') {
@@ -312,10 +305,7 @@ export const adminDashboardApi = {
 
       return {
         success: true,
-        message:
-          data?.message ??
-          data?.msg ??
-          'User account approved successfully',
+        message: data?.message ?? data?.msg ?? 'User account approved successfully',
       };
     } catch (error: any) {
       const message =
@@ -348,10 +338,7 @@ export const adminDashboardApi = {
 
       return {
         success: true,
-        message:
-          data?.message ??
-          data?.msg ??
-          'User account rejected',
+        message: data?.message ?? data?.msg ?? 'User account rejected',
       };
     } catch (error: any) {
       const message =

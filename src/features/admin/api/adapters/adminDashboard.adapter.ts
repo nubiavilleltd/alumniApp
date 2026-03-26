@@ -69,8 +69,7 @@ export function mapBackendMemberToPending(raw: any): PendingMember | null {
     const firstName = raw?.first_name ?? raw?.firstName ?? raw?.otherNames ?? '';
     const lastName = raw?.last_name ?? raw?.lastName ?? raw?.surname ?? '';
     const fullName =
-      (raw?.fullname ?? raw?.full_name ?? raw?.fullName ??
-      `${firstName} ${lastName}`.trim()) ||
+      (raw?.fullname ?? raw?.full_name ?? raw?.fullName ?? `${firstName} ${lastName}`.trim()) ||
       'Unknown';
 
     return {
@@ -80,7 +79,7 @@ export function mapBackendMemberToPending(raw: any): PendingMember | null {
       email: raw?.email ?? '',
       graduationYear: safeParseInt(raw?.graduation_year ?? raw?.graduationYear) ?? 0,
       submittedAt: safeParseDate(
-        raw?.submitted_at ?? raw?.submittedAt ?? raw?.created_at ?? raw?.created_on
+        raw?.submitted_at ?? raw?.submittedAt ?? raw?.created_at ?? raw?.created_on,
       ),
     };
   } catch {
@@ -99,23 +98,22 @@ export function mapBackendMemberToRecent(raw: any): RecentMember | null {
     const firstName = raw?.first_name ?? raw?.firstName ?? raw?.otherNames ?? '';
     const lastName = raw?.last_name ?? raw?.lastName ?? raw?.surname ?? '';
     const fullName =
-      (raw?.fullname ?? raw?.full_name ?? raw?.fullName ??
-      `${firstName} ${lastName}`.trim()) ||
+      (raw?.fullname ?? raw?.full_name ?? raw?.fullName ?? `${firstName} ${lastName}`.trim()) ||
       'Unknown';
 
     const slug =
       (raw?.slug ??
-      fullName
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-|-$/g, '')) ||
+        fullName
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-|-$/g, '')) ||
       `member-${id}`;
 
     return {
       name: fullName,
       email: raw?.email ?? '',
       joinedAt: safeParseDate(
-        raw?.approved_at ?? raw?.approvedAt ?? raw?.created_at ?? raw?.created_on
+        raw?.approved_at ?? raw?.approvedAt ?? raw?.created_at ?? raw?.created_on,
       ),
       slug,
     };
@@ -130,14 +128,17 @@ export function mapBackendMemberToRecent(raw: any): RecentMember | null {
  */
 export function mapMemberListResponse(
   rawResponse: any,
-  mapper: (raw: any) => PendingMember | RecentMember | null
+  mapper: (raw: any) => PendingMember | RecentMember | null,
 ): (PendingMember | RecentMember)[] {
-  const list: any[] =
-    Array.isArray(rawResponse) ? rawResponse :
-    Array.isArray(rawResponse?.users) ? rawResponse.users :
-    Array.isArray(rawResponse?.data) ? rawResponse.data :
-    Array.isArray(rawResponse?.members) ? rawResponse.members :
-    [];
+  const list: any[] = Array.isArray(rawResponse)
+    ? rawResponse
+    : Array.isArray(rawResponse?.users)
+      ? rawResponse.users
+      : Array.isArray(rawResponse?.data)
+        ? rawResponse.data
+        : Array.isArray(rawResponse?.members)
+          ? rawResponse.members
+          : [];
 
   return list
     .map((item) => {

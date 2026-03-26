@@ -384,13 +384,6 @@
 //   );
 // }
 
-
-
-
-
-
-
-
 // features/admin/pages/AdminDashboardPage.tsx
 // Route: /admin/dashboard  (AdminRoute)
 
@@ -400,20 +393,16 @@ import { Layout } from '@/shared/components/layout/Layout';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { type AdminStat, type PendingMember } from '../api/adminDashboardApi';
-import {
-  useAdminDashboard,
-  useApproveMember,
-  useRejectMember,
-} from '../hooks/useAdminDashboard';
+import { useAdminDashboard, useApproveMember, useRejectMember } from '../hooks/useAdminDashboard';
 import { SEO } from '@/shared/common/SEO';
 
 // ─── Tone map ─────────────────────────────────────────────────────────────────
 
 const statToneClass: Record<AdminStat['tone'], string> = {
-  primary:   'from-primary-500 to-primary-700 text-white',
-  accent:    'from-accent-800 to-accent-950 text-white',
+  primary: 'from-primary-500 to-primary-700 text-white',
+  accent: 'from-accent-800 to-accent-950 text-white',
   secondary: 'from-secondary-500 to-secondary-700 text-white',
-  warning:   'from-amber-500 to-orange-600 text-white',
+  warning: 'from-amber-500 to-orange-600 text-white',
 };
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
@@ -471,7 +460,7 @@ function PendingMemberRow({
   const [actionError, setActionError] = useState('');
 
   const approveMutation = useApproveMember();
-  const rejectMutation  = useRejectMember();
+  const rejectMutation = useRejectMember();
 
   const busy = approveMutation.isPending || rejectMutation.isPending;
 
@@ -488,7 +477,10 @@ function PendingMemberRow({
   const handleRejectConfirm = async () => {
     setActionError('');
     try {
-      await rejectMutation.mutateAsync({ userId: member.id, reason: rejectReason.trim() || undefined });
+      await rejectMutation.mutateAsync({
+        userId: member.id,
+        reason: rejectReason.trim() || undefined,
+      });
       onReject(member.id, rejectReason.trim() || undefined);
     } catch (error: any) {
       setActionError(error.message ?? 'Rejection failed. Please try again.');
@@ -528,7 +520,10 @@ function PendingMemberRow({
             <button
               type="button"
               disabled={busy}
-              onClick={() => { setShowRejectInput(true); setActionError(''); }}
+              onClick={() => {
+                setShowRejectInput(true);
+                setActionError('');
+              }}
               className="btn btn-outline btn-sm text-red-600 border-red-200 hover:bg-red-50"
             >
               Reject
@@ -541,8 +536,7 @@ function PendingMemberRow({
       {showRejectInput && (
         <div className="space-y-2 border-t border-accent-100 pt-3">
           <label className="block text-xs font-medium text-accent-700">
-            Reason for rejection{' '}
-            <span className="font-normal text-accent-400">(optional)</span>
+            Reason for rejection <span className="font-normal text-accent-400">(optional)</span>
           </label>
           <textarea
             rows={2}
@@ -567,7 +561,11 @@ function PendingMemberRow({
             <button
               type="button"
               disabled={busy}
-              onClick={() => { setShowRejectInput(false); setRejectReason(''); setActionError(''); }}
+              onClick={() => {
+                setShowRejectInput(false);
+                setRejectReason('');
+                setActionError('');
+              }}
               className="btn btn-outline btn-sm"
             >
               Cancel
@@ -618,16 +616,14 @@ export function AdminDashboardPage() {
   // All dashboard data via React Query — no local useState for data
   const { data: dashboard, isLoading, isError, refetch } = useAdminDashboard();
 
-  console.log("dashboard", {dashboard})
+  console.log('dashboard', { dashboard });
 
   // Local optimistic removal — remove from list immediately on approve/reject
   // while the cache invalidation + refetch completes in the background.
   const [removedIds, setRemovedIds] = useState<Set<string>>(new Set());
 
-  const handleApprove = (id: string) =>
-    setRemovedIds((prev) => new Set([...prev, id]));
-  const handleReject = (id: string) =>
-    setRemovedIds((prev) => new Set([...prev, id]));
+  const handleApprove = (id: string) => setRemovedIds((prev) => new Set([...prev, id]));
+  const handleReject = (id: string) => setRemovedIds((prev) => new Set([...prev, id]));
 
   if (isLoading) return <AdminSkeleton />;
 
@@ -637,17 +633,16 @@ export function AdminDashboardPage() {
         <section className="section">
           <div className="container-custom">
             <div className="mx-auto max-w-2xl rounded-[2rem] border border-secondary-200 bg-white p-8 text-center shadow-sm">
-              <Icon icon="mdi:alert-circle-outline" className="h-10 w-10 text-secondary-500 mx-auto" />
+              <Icon
+                icon="mdi:alert-circle-outline"
+                className="h-10 w-10 text-secondary-500 mx-auto"
+              />
               <h1 className="mt-4 text-2xl font-bold text-accent-900">Dashboard unavailable</h1>
               <p className="mt-2 text-sm text-accent-600">
                 Could not load admin dashboard data. This may be a network issue or the server is
                 temporarily unavailable.
               </p>
-              <button
-                type="button"
-                className="btn btn-primary mt-6"
-                onClick={() => void refetch()}
-              >
+              <button type="button" className="btn btn-primary mt-6" onClick={() => void refetch()}>
                 Try again
               </button>
             </div>
@@ -665,7 +660,6 @@ export function AdminDashboardPage() {
       <SEO title="Admin Dashboard" description="Admin dashboard" />
       <section className="section bg-[radial-gradient(circle_at_top_left,_rgba(59,130,246,0.1),_transparent_30%),linear-gradient(180deg,_#f8fafc,_#ffffff)]">
         <div className="container-custom space-y-6">
-
           {/* ── Banner ──────────────────────────────────────────────────── */}
           <section className="relative overflow-hidden rounded-[2rem] bg-[linear-gradient(135deg,_#0f172a_0%,_#1e293b_60%,_#1d4ed8_100%)] p-6 text-white shadow-2xl md:p-8">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.08),_transparent_30%)]" />
@@ -708,7 +702,6 @@ export function AdminDashboardPage() {
 
           {/* ── Main grid ───────────────────────────────────────────────── */}
           <section className="grid gap-6 xl:grid-cols-[1.3fr_0.7fr]">
-
             {/* Left: pending approvals + recent members */}
             <div className="space-y-6">
               <SectionCard
@@ -760,7 +753,11 @@ export function AdminDashboardPage() {
                         className="flex items-center gap-3 rounded-2xl border border-accent-100 px-4 py-3"
                       >
                         <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-accent-100 text-sm font-semibold text-accent-700">
-                          {m.name.split(' ').slice(0, 2).map((p) => p[0]).join('')}
+                          {m.name
+                            .split(' ')
+                            .slice(0, 2)
+                            .map((p) => p[0])
+                            .join('')}
                         </div>
                         <div className="min-w-0 flex-1">
                           <p className="font-medium text-accent-900 truncate">{m.name}</p>
@@ -816,11 +813,23 @@ export function AdminDashboardPage() {
               <SectionCard title="Quick Actions">
                 <div className="space-y-2">
                   {[
-                    { label: 'Manage Members',     href: '/admin/members',       icon: 'mdi:account-group-outline' },
-                    { label: 'Create Event',        href: '/events/create',       icon: 'mdi:calendar-plus-outline' },
-                    { label: 'Post Announcement',   href: '/admin/announcements', icon: 'mdi:bullhorn-outline' },
-                    { label: 'View Marketplace',    href: '/marketplace',         icon: 'mdi:store-outline' },
-                    { label: 'Site Settings',       href: '/admin/settings',      icon: 'mdi:cog-outline' },
+                    {
+                      label: 'Manage Members',
+                      href: '/admin/members',
+                      icon: 'mdi:account-group-outline',
+                    },
+                    {
+                      label: 'Create Event',
+                      href: '/events/create',
+                      icon: 'mdi:calendar-plus-outline',
+                    },
+                    {
+                      label: 'Post Announcement',
+                      href: '/admin/announcements',
+                      icon: 'mdi:bullhorn-outline',
+                    },
+                    { label: 'View Marketplace', href: '/marketplace', icon: 'mdi:store-outline' },
+                    { label: 'Site Settings', href: '/admin/settings', icon: 'mdi:cog-outline' },
                   ].map((link) => (
                     <AppLink
                       href={link.href}

@@ -39,9 +39,6 @@
 //   },
 // );
 
-
-
-
 // api/client.ts
 
 import axios from 'axios';
@@ -80,7 +77,7 @@ apiClient.interceptors.request.use((config) => {
         payload.jwt = accessToken;
       }
 
-      console.log("payload   --", {payload})
+      console.log('payload   --', { payload });
 
       config.data = payload;
     }
