@@ -455,6 +455,12 @@ import ChangePasswordPage from './features/user/pages/ChangePasswordPage';
 // ── Admin (admin only) ────────────────────────────────────────────────────────
 import { AdminDashboardPage } from './features/admin/pages/AdminDashboardPage';
 
+// Add these imports
+import CreateEventPage from '@/features/events/pages/CreateEventPage';
+import EditEventPage from '@/features/events/pages/EditEventPage';
+
+// Add these routes inside the Routes section, after the events routes:
+
 export default function App() {
   return (
     // App-level safety net — catches anything not caught by a page boundary below
@@ -553,6 +559,27 @@ export default function App() {
               <ProtectedRoute>
                 <ErrorBoundary>
                   <MyEventsPage />
+                </ErrorBoundary>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/events/create"
+            element={
+              <ProtectedRoute>
+                <ErrorBoundary>
+                  <CreateEventPage />
+                </ErrorBoundary>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/events/:id/edit"
+            element={
+              <ProtectedRoute>
+                <ErrorBoundary>
+                  <EditEventPage />
                 </ErrorBoundary>
               </ProtectedRoute>
             }

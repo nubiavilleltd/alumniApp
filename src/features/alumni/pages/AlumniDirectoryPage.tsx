@@ -118,7 +118,7 @@ function AlumnaeCard({ entry, currentUser }: AlumnaeCardProps) {
             Send Message
           </button>
           <AppLink
-            href={`/alumni/profiles/${entry.slug}`}
+            href={`/alumni/profiles/${entry.memberId}`}
             className="flex-1 text-center border border-gray-300 text-gray-600 hover:border-primary-400 hover:text-primary-500 text-[11px] font-medium py-1.5 rounded transition-colors"
           >
             View Profile
