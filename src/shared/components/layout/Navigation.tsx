@@ -1100,7 +1100,8 @@ function UserDropdown({
             )}
 
             <AppLink
-              href={`/alumni/profiles/${currentUser.memberId}`}
+              // href={`/alumni/profiles/${currentUser.memberId}`}
+              href="/user/profile"
               onClick={() => setOpen(false)}
               className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors"
             >
@@ -1360,7 +1361,8 @@ export function Navigation() {
                 )}
 
                 <AppLink
-                  href={`/alumni/profiles/${currentUser.memberId}`}
+                  // href={`/alumni/profiles/${currentUser.memberId}`}
+                  href="/user/profile"
                   className="flex items-center gap-2.5 px-3 py-2.5 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                 >
                   <Icon icon="mdi:account-outline" className="w-4 h-4" />
