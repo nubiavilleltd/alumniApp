@@ -347,7 +347,7 @@ function EventCard({
         <div className="mt-auto pt-2 flex items-center gap-2">
           {isPast ? (
             <AppLink
-              href={`/events/${event.slug}`}
+              href={`/events/${event.id}`}
               className="inline-block border border-gray-300 text-gray-500 hover:border-primary-400 hover:text-primary-500 text-xs font-semibold px-5 py-1.5 rounded-md transition-colors"
             >
               View Details
@@ -414,6 +414,20 @@ export function EventsPage() {
 
   const isLoading = tab === 'upcoming' ? upcomingLoading : pastLoading;
   const activeList = tab === 'upcoming' ? upcoming : past;
+
+  console.log('Upcoming from hook:', upcoming.length);
+  console.log('Past from hook:', past.length);
+
+  console.log('Active list length:', activeList.length);
+
+  console.log(
+    '📊 Upcoming events in page:',
+    upcoming.map((e) => ({ title: e.title, date: e.date })),
+  );
+  console.log(
+    '📊 Past events in page:',
+    past.map((e) => ({ title: e.title, date: e.date })),
+  );
 
   // ── Client-side filtering ──────────────────────────────────────────────────
   const locationOptions = useMemo(() => {
@@ -627,7 +641,7 @@ export function EventsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
               {visible.map((event) => (
                 <EventCard
-                  key={event.slug}
+                  key={event.id}
                   event={event}
                   isPast={tab === 'past'}
                   onRegister={() => setRegisterEvent(event)}
