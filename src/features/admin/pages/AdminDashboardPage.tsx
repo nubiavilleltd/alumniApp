@@ -586,25 +586,27 @@ function PendingMemberRow({
 
 function AdminSkeleton() {
   return (
-    <Layout title="Admin Dashboard" description="Loading admin dashboard">
-      <section className="section">
-        <div className="container-custom space-y-6 animate-pulse">
-          <div className="h-32 rounded-[2rem] bg-accent-900/80" />
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="h-32 rounded-[1.5rem] bg-accent-100" />
-            ))}
-          </div>
-          <div className="grid gap-6 xl:grid-cols-[1.3fr_0.7fr]">
-            <div className="h-96 rounded-[1.5rem] bg-accent-100" />
-            <div className="space-y-6">
-              <div className="h-44 rounded-[1.5rem] bg-accent-100" />
-              <div className="h-44 rounded-[1.5rem] bg-accent-100" />
-            </div>
+    // <Layout title="Admin Dashboard" description="Loading admin dashboard">
+
+    // </Layout>
+
+    <section className="section">
+      <div className="container-custom space-y-6 animate-pulse">
+        <div className="h-32 rounded-[2rem] bg-accent-900/80" />
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="h-32 rounded-[1.5rem] bg-accent-100" />
+          ))}
+        </div>
+        <div className="grid gap-6 xl:grid-cols-[1.3fr_0.7fr]">
+          <div className="h-96 rounded-[1.5rem] bg-accent-100" />
+          <div className="space-y-6">
+            <div className="h-44 rounded-[1.5rem] bg-accent-100" />
+            <div className="h-44 rounded-[1.5rem] bg-accent-100" />
           </div>
         </div>
-      </section>
-    </Layout>
+      </div>
+    </section>
   );
 }
 
@@ -676,7 +678,7 @@ export function AdminDashboardPage() {
               </div>
               <div className="flex gap-3">
                 <AppLink
-                  href="/admin/members"
+                  href="/alumni/profiles"
                   className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-medium text-white hover:bg-white/15 transition-colors"
                 >
                   <Icon icon="mdi:account-group-outline" className="h-4 w-4" />
