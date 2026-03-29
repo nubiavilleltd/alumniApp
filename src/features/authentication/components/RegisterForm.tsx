@@ -682,10 +682,12 @@ export function RegisterForm() {
   // This handles the page-refresh case. We restore flow state only — we do NOT
   // touch the verification form here because the code field should always start
   // empty (the user needs to re-enter the code, which is correct UX).
+
   useEffect(() => {
     const saved = loadFlow();
     if (saved) {
       setFlow(saved);
+      saveFlow(saved); // restore persistence so refresh continues working
     }
   }, []);
 
