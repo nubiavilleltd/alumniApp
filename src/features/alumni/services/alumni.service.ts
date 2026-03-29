@@ -710,10 +710,85 @@
 
 // features/alumni/services/alumni.service.ts - Cleaned up version
 
+// import { apiClient } from '@/lib/api/client';
+// import { API_ENDPOINTS } from '@/lib/api/endpoints';
+// import type { Alumni } from '@/features/alumni/types/alumni.types';
+// import { mapBackendAlumniToFrontend, mapBackendAlumniList } from '../api/adapters/alumni.adapter';
+
+// export interface GetAlumniParams {
+//   search?: string;
+//   year?: string;
+//   page?: number;
+//   limit?: number;
+// }
+
+// export const alumniService = {
+//   getAll: async (params?: GetAlumniParams): Promise<Alumni[]> => {
+//     try {
+//       const response = await apiClient.post(API_ENDPOINTS.ALUMNI.LIST, params || {});
+
+//       let alumniList = [];
+//       if (response.data.users && Array.isArray(response.data.users)) {
+//         alumniList = response.data.users;
+//       } else if (Array.isArray(response.data)) {
+//         alumniList = response.data;
+//       } else if (response.data.data && Array.isArray(response.data.data)) {
+//         alumniList = response.data.data;
+//       }
+
+//       return mapBackendAlumniList(alumniList);
+//     } catch (error) {
+//       console.error('Failed to fetch alumni:', error);
+//       return [];
+//     }
+//   },
+
+//   getById: async (id: string): Promise<Alumni | null> => {
+//     try {
+//       const response = await apiClient.post(API_ENDPOINTS.ALUMNI.LIST, { user_id: id });
+
+//       let alumnusData = null;
+//       if (response.data.users && Array.isArray(response.data.users)) {
+//         alumnusData = response.data.users.find((u: any) => String(u.id) === String(id));
+//       } else if (response.data.user && String(response.data.user.id) === String(id)) {
+//         alumnusData = response.data.user;
+//       } else if (Array.isArray(response.data)) {
+//         alumnusData = response.data.find((u: any) => String(u.id) === String(id));
+//       }
+
+//       if (!alumnusData) return null;
+//       return mapBackendAlumniToFrontend(alumnusData);
+//     } catch (error) {
+//       console.error('Failed to fetch alumnus:', error);
+//       return null;
+//     }
+//   },
+
+//   update: async (id: string, payload: FormData): Promise<Alumni> => {
+//     const response = await apiClient.post('/update_profile', payload, {
+//       headers: { 'Content-Type': 'multipart/form-data' },
+//     });
+//     let alumnusData = response.data.user || response.data.data || response.data;
+//     return mapBackendAlumniToFrontend(alumnusData);
+//   },
+// };
+
+/**
+ * ============================================================================
+ * ALUMNI SERVICE - WITH ENHANCED ERROR HANDLING
+ * ============================================================================
+ *
+ * Example of how to use the new error handling utilities
+ * Apply this pattern to ALL services
+ *
+ * ============================================================================
+ */
+
 import { apiClient } from '@/lib/api/client';
 import { API_ENDPOINTS } from '@/lib/api/endpoints';
 import type { Alumni } from '@/features/alumni/types/alumni.types';
 import { mapBackendAlumniToFrontend, mapBackendAlumniList } from '../api/adapters/alumni.adapter';
+import { handleApiError } from '@/lib/errors/apiErrorHandler';
 
 export interface GetAlumniParams {
   search?: string;
@@ -723,10 +798,14 @@ export interface GetAlumniParams {
 }
 
 export const alumniService = {
+  /**
+   * Get all alumni with optional filters
+   */
   getAll: async (params?: GetAlumniParams): Promise<Alumni[]> => {
     try {
       const response = await apiClient.post(API_ENDPOINTS.ALUMNI.LIST, params || {});
 
+      // Handle different response structures
       let alumniList = [];
       if (response.data.users && Array.isArray(response.data.users)) {
         alumniList = response.data.users;
@@ -738,15 +817,23 @@ export const alumniService = {
 
       return mapBackendAlumniList(alumniList);
     } catch (error) {
-      console.error('Failed to fetch alumni:', error);
-      return [];
+      // Use standardized error handler
+      throw handleApiError(
+        error,
+        'Unable to load alumni directory. Please try again.',
+        'AlumniService.getAll',
+      );
     }
   },
 
+  /**
+   * Get single alumni by ID
+   */
   getById: async (id: string): Promise<Alumni | null> => {
     try {
       const response = await apiClient.post(API_ENDPOINTS.ALUMNI.LIST, { user_id: id });
 
+      // Extract alumnus data from various response structures
       let alumnusData = null;
       if (response.data.users && Array.isArray(response.data.users)) {
         alumnusData = response.data.users.find((u: any) => String(u.id) === String(id));
@@ -758,17 +845,37 @@ export const alumniService = {
 
       if (!alumnusData) return null;
       return mapBackendAlumniToFrontend(alumnusData);
-    } catch (error) {
-      console.error('Failed to fetch alumnus:', error);
-      return null;
+    } catch (error: any) {
+      // Check if 404 - return null instead of throwing
+      if (error.response?.status === 404) {
+        return null;
+      }
+
+      throw handleApiError(
+        error,
+        'Unable to load alumni profile. Please try again.',
+        'AlumniService.getById',
+      );
     }
   },
 
+  /**
+   * Update alumni profile
+   */
   update: async (id: string, payload: FormData): Promise<Alumni> => {
-    const response = await apiClient.post('/update_profile', payload, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-    let alumnusData = response.data.user || response.data.data || response.data;
-    return mapBackendAlumniToFrontend(alumnusData);
+    try {
+      const response = await apiClient.post('/update_profile', payload, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      const alumnusData = response.data.user || response.data.data || response.data;
+      return mapBackendAlumniToFrontend(alumnusData);
+    } catch (error) {
+      throw handleApiError(
+        error,
+        'Unable to update profile. Please check your information and try again.',
+        'AlumniService.update',
+      );
+    }
   },
 };
