@@ -504,6 +504,9 @@ export function mapBackendAlumniToFrontend(raw: unknown): Alumni {
   const name = d.fullname || `${d.first_name || ''} ${d.last_name || ''}`.trim() || 'Unknown';
 
   const city = profile.city || d.city || '';
+  const DEFAULT_AVATAR = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+    name,
+  )}&background=E5E7EB&color=6B7280&size=256`;
 
   return {
     memberId: String(d.id ?? ''),
@@ -519,7 +522,7 @@ export function mapBackendAlumniToFrontend(raw: unknown): Alumni {
     phone: safeString(d.phone),
     alternativePhone: optionalString(d.alternative_phone),
 
-    photo: d.avatar && d.avatar !== 'default.png' ? d.avatar : undefined,
+    photo: d.avatar && d.avatar !== 'default.png' ? String(d.avatar) : DEFAULT_AVATAR,
 
     short_bio: safeString(d.bio),
     long_bio: safeString(d.bio),

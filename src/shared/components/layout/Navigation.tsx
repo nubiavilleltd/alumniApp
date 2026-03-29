@@ -1035,6 +1035,8 @@ function UserDropdown({
   const ref = useRef<HTMLDivElement>(null);
   const isAdmin = currentUser?.role === 'admin';
 
+  console.log('Current user photo:', currentUser.photo);
+
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (!ref.current?.contains(e.target as Node)) setOpen(false);

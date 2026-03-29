@@ -210,7 +210,12 @@ export function mapLoginResponse(res: any): {
   const lastName = res.last_name || '';
   const fullName = res.fullname || `${firstName} ${lastName}`.trim();
 
+  console.log('res.avatar', res.avatar);
+
   const slug = generateSlug(res.email?.split('@')[0] || '', res.user_id, 'user');
+  const DEFAULT_AVATAR = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+    `${firstName} ${lastName}`,
+  )}&background=E5E7EB&color=6B7280&size=256`;
 
   return {
     accessToken: res.access_token || '',
@@ -246,7 +251,7 @@ export function mapLoginResponse(res: any): {
       whatsappPhone: res.phone || '',
       graduationYear: safeParseInt(res.graduation_year) ?? 0,
 
-      photo: res.avatar || undefined,
+      photo: res.avatar && !res.avatar.includes('default.png') ? res.avatar : DEFAULT_AVATAR,
       bio: res.bio || undefined,
 
       linkedin: res.profile?.linkedin,
