@@ -323,15 +323,176 @@
 
 // features/authentication/api/authApi.ts
 
+// import { apiClient } from '@/lib/api/client';
+// import { API_ENDPOINTS } from '@/lib/api/endpoints';
+// import { formatPhoneNumberWithCountryCode } from '../constants/phoneCountries';
+// import {
+//   authenticateMockAccount,
+//   findMockAccountByEmail,
+//   toAuthSessionUser,
+//   updateMockAccountPassword,
+// } from '../lib/mockAuth';
+// import type {
+//   AuthUserSummary,
+//   CompleteRegistrationResponse,
+//   ForgotPasswordFormValues,
+//   ForgotPasswordResponse,
+//   LoginFormValues,
+//   LoginResponse,
+//   RegisterDetailsFormValues,
+//   ResetPasswordRequest,
+//   ResetPasswordResponse,
+//   StartRegistrationResponse,
+//   VerifyRegistrationRequest,
+// } from '../types/auth.types';
+// import {
+//   mapRegistrationPayload,
+//   mapRegistrationResponse,
+//   mapVerificationPayload,
+//   mapVerificationResponse,
+// } from '../api/adapters/register.adapter';
+// import { mapLoginError, mapLoginPayload, mapLoginResponse } from './adapters/login.adapter';
+// import {
+//   mapForgotPasswordError,
+//   mapForgotPasswordPayload,
+//   mapForgotPasswordResponse,
+// } from './adapters/forgotpassword.adapter';
+
+// const MOCK_DELAY_MS = 900;
+
+// function wait(duration = MOCK_DELAY_MS): Promise<void> {
+//   return new Promise((resolve) => {
+//     window.setTimeout(resolve, duration);
+//   });
+// }
+
+// function toUserSummary(values: RegisterDetailsFormValues): AuthUserSummary {
+//   return {
+//     fullName: `${values.otherNames} ${values.surname}`.trim(),
+//     email: values.email,
+//     phoneNumber: formatPhoneNumberWithCountryCode(values.phoneCountry, values.whatsappPhone),
+//     graduationYear: Number(values.graduationYear),
+//   };
+// }
+
+// export const authApi = {
+//   /**
+//    * AUTHENTICATION: Login with email and password
+//    *
+//    * Endpoint: POST /login
+//    */
+//   async login(values: LoginFormValues): Promise<LoginResponse> {
+//     try {
+//       const payload = mapLoginPayload(values);
+//       const response = await apiClient.post(API_ENDPOINTS.AUTH.LOGIN, payload);
+//       return mapLoginResponse(response.data);
+//     } catch (error: any) {
+//       console.error('Login error:', error.response?.data || error.message);
+//       throw new Error(mapLoginError(error));
+//     }
+//   },
+
+//   /**
+//    * AUTHENTICATION: Logout user
+//    *
+//    * Endpoint: POST /api/logout
+//    * Body: { user_id: string }
+//    */
+//   async logout(userId: string): Promise<void> {
+//     try {
+//       await apiClient.post('/logout', { user_id: userId });
+//       console.log('Logout successful');
+//     } catch (error: any) {
+//       console.error('Logout error:', error.response?.data || error.message);
+//       // Don't throw - we still want to clear local session
+//       // Just log the error for debugging
+//     }
+//   },
+
+//   /**
+//    * FORGOT PASSWORD: Request a password reset email
+//    *
+//    * Endpoint: POST /forgot_password
+//    */
+//   async requestPasswordReset(values: ForgotPasswordFormValues): Promise<ForgotPasswordResponse> {
+//     try {
+//       const payload = mapForgotPasswordPayload(values);
+//       console.log('payload => ', { payload });
+//       const response = await apiClient.post(API_ENDPOINTS.AUTH.FORGOT_PASSWORD, payload);
+//       return mapForgotPasswordResponse(response.data);
+//     } catch (error: any) {
+//       console.error('Forgot password error:', error.response?.data || error.message);
+//       throw new Error(mapForgotPasswordError(error));
+//     }
+//   },
+
+//   /**
+//    * REGISTRATION STEP 1: Submit registration details
+//    *
+//    * Endpoint: POST /register
+//    */
+//   async startRegistration(values: RegisterDetailsFormValues): Promise<StartRegistrationResponse> {
+//     try {
+//       const payload = mapRegistrationPayload(values);
+//       const response = await apiClient.post(API_ENDPOINTS.AUTH.REGISTER, payload);
+//       return mapRegistrationResponse(response.data);
+//     } catch (error: any) {
+//       const errorMessage =
+//         error.response?.data?.message ||
+//         error.response?.data?.error ||
+//         error.response?.data?.detail ||
+//         'Registration failed. Please try again.';
+//       console.error('Registration error:', error.response?.data || error.message);
+//       throw new Error(errorMessage);
+//     }
+//   },
+
+//   /**
+//    * REGISTRATION STEP 2: Verify email with 6-digit code
+//    *
+//    * Endpoint: POST /verify_email
+//    */
+//   async verifyRegistrationEmail(
+//     values: VerifyRegistrationRequest,
+//   ): Promise<CompleteRegistrationResponse> {
+//     try {
+//       const payload = mapVerificationPayload(values.draft.email, values.code, values.userId);
+//       const response = await apiClient.post(API_ENDPOINTS.AUTH.VERIFY_EMAIL, payload);
+//       return mapVerificationResponse(response.data);
+//     } catch (error: any) {
+//       const errorMessage =
+//         error.response?.data?.message ||
+//         error.response?.data?.error ||
+//         error.response?.data?.detail ||
+//         'Verification failed. Please check the code and try again.';
+//       console.error('Verification error:', error.response?.data || error.message);
+//       throw new Error(errorMessage);
+//     }
+//   },
+
+//   async resetPassword(values: ResetPasswordRequest): Promise<ResetPasswordResponse> {
+//     await wait();
+//     const updatedAccount = values.email
+//       ? updateMockAccountPassword(values.email, values.password)
+//       : null;
+//     if (!updatedAccount) {
+//       throw new Error('Password reset failed for this account');
+//     }
+//     return {
+//       status: 'success',
+//       message: `Password reset validated for ${updatedAccount.email}. Replace this mock with a POST to ${API_ENDPOINTS.AUTH.RESET_PASSWORD} when the API is available.`,
+//       email: updatedAccount.email,
+//     };
+//   },
+// };
+
+// features/authentication/api/authApi.ts
+
 import { apiClient } from '@/lib/api/client';
 import { API_ENDPOINTS } from '@/lib/api/endpoints';
+import { handleApiError } from '@/lib/errors/apiErrorHandler';
 import { formatPhoneNumberWithCountryCode } from '../constants/phoneCountries';
-import {
-  authenticateMockAccount,
-  findMockAccountByEmail,
-  toAuthSessionUser,
-  updateMockAccountPassword,
-} from '../lib/mockAuth';
+import { updateMockAccountPassword } from '../lib/mockAuth';
 import type {
   AuthUserSummary,
   CompleteRegistrationResponse,
@@ -350,21 +511,13 @@ import {
   mapRegistrationResponse,
   mapVerificationPayload,
   mapVerificationResponse,
-} from '../api/adapters/register.adapter';
+} from './adapters/register.adapter';
 import { mapLoginError, mapLoginPayload, mapLoginResponse } from './adapters/login.adapter';
 import {
   mapForgotPasswordError,
   mapForgotPasswordPayload,
   mapForgotPasswordResponse,
 } from './adapters/forgotpassword.adapter';
-
-const MOCK_DELAY_MS = 900;
-
-function wait(duration = MOCK_DELAY_MS): Promise<void> {
-  return new Promise((resolve) => {
-    window.setTimeout(resolve, duration);
-  });
-}
 
 function toUserSummary(values: RegisterDetailsFormValues): AuthUserSummary {
   return {
@@ -376,111 +529,85 @@ function toUserSummary(values: RegisterDetailsFormValues): AuthUserSummary {
 }
 
 export const authApi = {
-  /**
-   * AUTHENTICATION: Login with email and password
-   *
-   * Endpoint: POST /login
-   */
+  /** POST /login */
   async login(values: LoginFormValues): Promise<LoginResponse> {
     try {
-      const payload = mapLoginPayload(values);
-      const response = await apiClient.post(API_ENDPOINTS.AUTH.LOGIN, payload);
-      return mapLoginResponse(response.data);
-    } catch (error: any) {
-      console.error('Login error:', error.response?.data || error.message);
-      throw new Error(mapLoginError(error));
+      const { data } = await apiClient.post(API_ENDPOINTS.AUTH.LOGIN, mapLoginPayload(values));
+      return mapLoginResponse(data);
+    } catch (error) {
+      // Login uses a custom error mapper for specific messages (wrong password, etc.)
+      throw handleApiError(error, mapLoginError(error), 'authApi.login');
     }
   },
 
-  /**
-   * AUTHENTICATION: Logout user
-   *
-   * Endpoint: POST /api/logout
-   * Body: { user_id: string }
-   */
+  /** POST /logout */
   async logout(userId: string): Promise<void> {
     try {
       await apiClient.post('/logout', { user_id: userId });
-      console.log('Logout successful');
-    } catch (error: any) {
-      console.error('Logout error:', error.response?.data || error.message);
-      // Don't throw - we still want to clear local session
-      // Just log the error for debugging
+    } catch (error) {
+      // Don't throw — always clear the local session regardless of server response
+      if (import.meta.env.DEV) console.warn('[authApi.logout]', error);
     }
   },
 
-  /**
-   * FORGOT PASSWORD: Request a password reset email
-   *
-   * Endpoint: POST /forgot_password
-   */
+  /** POST /forgot_password */
   async requestPasswordReset(values: ForgotPasswordFormValues): Promise<ForgotPasswordResponse> {
     try {
-      const payload = mapForgotPasswordPayload(values);
-      console.log('payload => ', { payload });
-      const response = await apiClient.post(API_ENDPOINTS.AUTH.FORGOT_PASSWORD, payload);
-      return mapForgotPasswordResponse(response.data);
-    } catch (error: any) {
-      console.error('Forgot password error:', error.response?.data || error.message);
-      throw new Error(mapForgotPasswordError(error));
+      const { data } = await apiClient.post(
+        API_ENDPOINTS.AUTH.FORGOT_PASSWORD,
+        mapForgotPasswordPayload(values),
+      );
+      return mapForgotPasswordResponse(data);
+    } catch (error) {
+      throw handleApiError(error, mapForgotPasswordError(error), 'authApi.requestPasswordReset');
     }
   },
 
-  /**
-   * REGISTRATION STEP 1: Submit registration details
-   *
-   * Endpoint: POST /register
-   */
+  /** POST /register — step 1: submit details, receive OTP */
   async startRegistration(values: RegisterDetailsFormValues): Promise<StartRegistrationResponse> {
     try {
-      const payload = mapRegistrationPayload(values);
-      const response = await apiClient.post(API_ENDPOINTS.AUTH.REGISTER, payload);
-      return mapRegistrationResponse(response.data);
-    } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.response?.data?.error ||
-        error.response?.data?.detail ||
-        'Registration failed. Please try again.';
-      console.error('Registration error:', error.response?.data || error.message);
-      throw new Error(errorMessage);
+      const { data } = await apiClient.post(
+        API_ENDPOINTS.AUTH.REGISTER,
+        mapRegistrationPayload(values),
+      );
+      return mapRegistrationResponse(data);
+    } catch (error) {
+      throw handleApiError(
+        error,
+        'Registration failed. Please check your details and try again.',
+        'authApi.startRegistration',
+      );
     }
   },
 
-  /**
-   * REGISTRATION STEP 2: Verify email with 6-digit code
-   *
-   * Endpoint: POST /verify_email
-   */
+  /** POST /verify_email — step 2: verify OTP */
   async verifyRegistrationEmail(
     values: VerifyRegistrationRequest,
   ): Promise<CompleteRegistrationResponse> {
     try {
-      const payload = mapVerificationPayload(values.draft.email, values.code, values.userId);
-      const response = await apiClient.post(API_ENDPOINTS.AUTH.VERIFY_EMAIL, payload);
-      return mapVerificationResponse(response.data);
-    } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.message ||
-        error.response?.data?.error ||
-        error.response?.data?.detail ||
-        'Verification failed. Please check the code and try again.';
-      console.error('Verification error:', error.response?.data || error.message);
-      throw new Error(errorMessage);
+      const { data } = await apiClient.post(
+        API_ENDPOINTS.AUTH.VERIFY_EMAIL,
+        mapVerificationPayload(values.draft.email, values.code, values.userId),
+      );
+      return mapVerificationResponse(data);
+    } catch (error) {
+      throw handleApiError(
+        error,
+        'Verification failed. Please check the code and try again.',
+        'authApi.verifyRegistrationEmail',
+      );
     }
   },
 
+  /** Password reset — still mocked; backend endpoint not yet available */
   async resetPassword(values: ResetPasswordRequest): Promise<ResetPasswordResponse> {
-    await wait();
     const updatedAccount = values.email
       ? updateMockAccountPassword(values.email, values.password)
       : null;
-    if (!updatedAccount) {
-      throw new Error('Password reset failed for this account');
-    }
+    if (!updatedAccount) throw new Error('Password reset failed for this account');
     return {
       status: 'success',
-      message: `Password reset validated for ${updatedAccount.email}. Replace this mock with a POST to ${API_ENDPOINTS.AUTH.RESET_PASSWORD} when the API is available.`,
+      message: 'Password reset successfully.',
       email: updatedAccount.email,
     };
   },

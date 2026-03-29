@@ -258,217 +258,324 @@
 //  * ============================================================================
 //  */
 
+// import type { Alumni } from '../../types/alumni.types';
+
+// /**
+//  * ============================================================================
+//  * STRICT ALUMNI DATA ADAPTER (UI-SAFE)
+//  * ============================================================================
+//  *
+//  * Guarantees:
+//  * - No undefined for UI-critical fields (strings, arrays)
+//  * - Consistent data shape across app
+//  * - Backend inconsistencies handled here ONLY
+//  *
+//  * ============================================================================
+//  */
+
+// // ────────────────────────────────────────────────────────────────────────────
+// // MAIN MAPPER
+// // ────────────────────────────────────────────────────────────────────────────
+// export function mapBackendAlumniToFrontend(backendData: any): Alumni {
+//   const profile = backendData.profile || {};
+
+//   const name = safeString(
+//     backendData.fullname || `${backendData.first_name || ''} ${backendData.last_name || ''}`.trim(),
+//     'Unknown',
+//   );
+
+//   const slug = generateSlug(name, backendData.id);
+
+//   const city = safeString(profile.city || backendData.city);
+
+//   return {
+//     // ═══════════════════════════════════════════════════════════════════
+//     // IDENTITY
+//     // ═══════════════════════════════════════════════════════════════════
+//     memberId: safeString(backendData.id),
+//     slug,
+
+//     // ═══════════════════════════════════════════════════════════════════
+//     // BASIC INFO
+//     // ═══════════════════════════════════════════════════════════════════
+//     name,
+//     email: safeString(backendData.email),
+
+//     // ═══════════════════════════════════════════════════════════════════
+//     // SCHOOL INFO
+//     // ═══════════════════════════════════════════════════════════════════
+//     year: safeNumber(backendData.graduation_year, new Date().getFullYear()),
+//     nameInSchool: safeString(backendData.name_in_school),
+//     houseColor: safeString(backendData.house_color),
+
+//     // ═══════════════════════════════════════════════════════════════════
+//     // CONTACT
+//     // ═══════════════════════════════════════════════════════════════════
+//     phone: safeString(backendData.phone),
+//     alternativePhone: optionalString(backendData.alternative_phone),
+
+//     // ═══════════════════════════════════════════════════════════════════
+//     // PROFILE (UI-SAFE STRINGS)
+//     // ═══════════════════════════════════════════════════════════════════
+//     photo:
+//       backendData.avatar && backendData.avatar !== 'default.png' ? backendData.avatar : undefined,
+
+//     short_bio: safeString(backendData.bio),
+//     long_bio: safeString(backendData.bio),
+//     birthDate: optionalString(backendData.birth_date),
+
+//     // ═══════════════════════════════════════════════════════════════════
+//     // LOCATION (UI-SAFE)
+//     // ═══════════════════════════════════════════════════════════════════
+//     city,
+//     location: city,
+//     area: optionalString(backendData.area),
+//     residentialAddress: optionalString(backendData.residential_address),
+
+//     // ═══════════════════════════════════════════════════════════════════
+//     // PROFESSIONAL
+//     // ═══════════════════════════════════════════════════════════════════
+//     position: safeString(profile.current_position),
+//     company: safeString(profile.current_company),
+//     employmentStatus: optionalString(backendData.employment_status),
+
+//     occupations: optionalStringArray(backendData.occupation),
+//     industrySectors: optionalStringArray(backendData.industry_sector),
+
+//     yearsOfExperience: safeOptionalNumber(backendData.years_of_experience),
+
+//     // ═══════════════════════════════════════════════════════════════════
+//     // SOCIAL LINKS
+//     // ═══════════════════════════════════════════════════════════════════
+//     linkedin: optionalString(profile.linkedin),
+//     twitter: optionalString(profile.twitter),
+//     facebook: optionalString(profile.facebook),
+//     website: optionalString(profile.website),
+//     instagram: undefined,
+
+//     // ═══════════════════════════════════════════════════════════════════
+//     // ARRAYS (ALWAYS SAFE)
+//     // ═══════════════════════════════════════════════════════════════════
+//     skills: safeArray(parseCommaSeparatedString(profile.skills)),
+//     achievements: safeArray(parseCommaSeparatedString(profile.achievements)),
+
+//     projects: [],
+//     work_experience: [],
+//     education: [],
+//     interests: [],
+
+//     // ═══════════════════════════════════════════════════════════════════
+//     // FLAGS
+//     // ═══════════════════════════════════════════════════════════════════
+//     isCoordinator: stringToBoolean(backendData.is_coordinator),
+//     isVolunteer: stringToBoolean(backendData.is_volunteer),
+//     isApproved: stringToBoolean(backendData.is_approved),
+//     isEmailVerified: stringToBoolean(backendData.email_verified),
+//     isActive: stringToBoolean(backendData.active),
+//     isVisible: profile.is_visible !== false,
+
+//     // ═══════════════════════════════════════════════════════════════════
+//     // TIMESTAMPS
+//     // ═══════════════════════════════════════════════════════════════════
+//     createdAt: safeString(backendData.created_at || unixToISO(backendData.created_on)),
+//     updatedAt: safeString(backendData.updated_at),
+//     lastLogin: safeString(backendData.last_login),
+//   };
+// }
+
+// // ────────────────────────────────────────────────────────────────────────────
+// // LIST MAPPER
+// // ────────────────────────────────────────────────────────────────────────────
+// export function mapBackendAlumniList(backendList: any[]): Alumni[] {
+//   if (!Array.isArray(backendList)) return [];
+
+//   return backendList
+//     .map((item) => {
+//       try {
+//         return mapBackendAlumniToFrontend(item);
+//       } catch (error) {
+//         console.error('Failed to map alumni:', item, error);
+//         return null;
+//       }
+//     })
+//     .filter((item): item is Alumni => item !== null);
+// }
+
+// // ────────────────────────────────────────────────────────────────────────────
+// // HELPERS (STRICT + REUSABLE)
+// // ────────────────────────────────────────────────────────────────────────────
+
+// function safeString(value: any, fallback = ''): string {
+//   if (value === null || value === undefined) return fallback;
+//   return String(value).trim();
+// }
+
+// function optionalString(value: any): string | undefined {
+//   if (value === null || value === undefined || value === '') return undefined;
+//   return String(value).trim();
+// }
+
+// function safeNumber(value: any, fallback: number): number {
+//   const parsed = Number(value);
+//   return isNaN(parsed) ? fallback : parsed;
+// }
+
+// function safeOptionalNumber(value: any): number | undefined {
+//   if (value === null || value === undefined || value === '') return undefined;
+//   const parsed = Number(value);
+//   return isNaN(parsed) ? undefined : parsed;
+// }
+
+// function safeArray<T>(value: T[] | undefined): T[] {
+//   return Array.isArray(value) ? value : [];
+// }
+
+// function optionalStringArray(value: any): string[] | undefined {
+//   const parsed = parseCommaSeparatedString(value);
+//   return parsed && parsed.length > 0 ? parsed : undefined;
+// }
+
+// function stringToBoolean(value: any): boolean {
+//   return value === true || value === 1 || value === '1';
+// }
+
+// function unixToISO(timestamp: any): string | undefined {
+//   if (!timestamp) return undefined;
+//   const ts = Number(timestamp);
+//   if (isNaN(ts)) return undefined;
+//   return new Date(ts * 1000).toISOString();
+// }
+
+// function parseCommaSeparatedString(value: any): string[] | undefined {
+//   if (!value) return undefined;
+
+//   if (Array.isArray(value)) return value;
+
+//   if (typeof value === 'string') {
+//     const parsed = value
+//       .split(',')
+//       .map((s) => s.trim())
+//       .filter(Boolean);
+
+//     return parsed.length > 0 ? parsed : undefined;
+//   }
+
+//   return undefined;
+// }
+
+// function generateSlug(name: string, id: string): string {
+//   return (
+//     name
+//       .toLowerCase()
+//       .replace(/[^a-z0-9]+/g, '-')
+//       .replace(/^-+|-+$/g, '')
+//       .substring(0, 50) || `alumni-${id}`
+//   );
+// }
+
 import type { Alumni } from '../../types/alumni.types';
+import { generateSlug, safeParseInt, stringToBoolean, safeParseDate } from '@/lib/utils/adapters';
 
-/**
- * ============================================================================
- * STRICT ALUMNI DATA ADAPTER (UI-SAFE)
- * ============================================================================
- *
- * Guarantees:
- * - No undefined for UI-critical fields (strings, arrays)
- * - Consistent data shape across app
- * - Backend inconsistencies handled here ONLY
- *
- * ============================================================================
- */
+// ─── Helpers (local, minimal) ───────────────────────────────────────────────
 
-// ────────────────────────────────────────────────────────────────────────────
-// MAIN MAPPER
-// ────────────────────────────────────────────────────────────────────────────
-export function mapBackendAlumniToFrontend(backendData: any): Alumni {
-  const profile = backendData.profile || {};
+const safeString = (v: unknown, fallback = '') => (v ? String(v).trim() : fallback);
 
-  const name = safeString(
-    backendData.fullname || `${backendData.first_name || ''} ${backendData.last_name || ''}`.trim(),
-    'Unknown',
-  );
+const optionalString = (v: unknown) => (v ? String(v).trim() : undefined);
 
-  const slug = generateSlug(name, backendData.id);
+const parseArray = (v: unknown): string[] | undefined => {
+  if (!v) return undefined;
+  if (Array.isArray(v)) return v;
+  if (typeof v === 'string') {
+    const arr = v
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+    return arr.length ? arr : undefined;
+  }
+  return undefined;
+};
 
-  const city = safeString(profile.city || backendData.city);
+// ─── Inbound ────────────────────────────────────────────────────────────────
+
+export function mapBackendAlumniToFrontend(raw: unknown): Alumni {
+  const d = raw as Record<string, any>;
+  const profile = d.profile || {};
+
+  const name = d.fullname || `${d.first_name || ''} ${d.last_name || ''}`.trim() || 'Unknown';
+
+  const city = profile.city || d.city || '';
 
   return {
-    // ═══════════════════════════════════════════════════════════════════
-    // IDENTITY
-    // ═══════════════════════════════════════════════════════════════════
-    memberId: safeString(backendData.id),
-    slug,
+    memberId: String(d.id ?? ''),
+    slug: generateSlug(name, d.id ?? '', 'alumni'),
 
-    // ═══════════════════════════════════════════════════════════════════
-    // BASIC INFO
-    // ═══════════════════════════════════════════════════════════════════
     name,
-    email: safeString(backendData.email),
+    email: safeString(d.email),
 
-    // ═══════════════════════════════════════════════════════════════════
-    // SCHOOL INFO
-    // ═══════════════════════════════════════════════════════════════════
-    year: safeNumber(backendData.graduation_year, new Date().getFullYear()),
-    nameInSchool: safeString(backendData.name_in_school),
-    houseColor: safeString(backendData.house_color),
+    year: safeParseInt(d.graduation_year) ?? new Date().getFullYear(),
+    nameInSchool: safeString(d.name_in_school),
+    houseColor: safeString(d.house_color),
 
-    // ═══════════════════════════════════════════════════════════════════
-    // CONTACT
-    // ═══════════════════════════════════════════════════════════════════
-    phone: safeString(backendData.phone),
-    alternativePhone: optionalString(backendData.alternative_phone),
+    phone: safeString(d.phone),
+    alternativePhone: optionalString(d.alternative_phone),
 
-    // ═══════════════════════════════════════════════════════════════════
-    // PROFILE (UI-SAFE STRINGS)
-    // ═══════════════════════════════════════════════════════════════════
-    photo:
-      backendData.avatar && backendData.avatar !== 'default.png' ? backendData.avatar : undefined,
+    photo: d.avatar && d.avatar !== 'default.png' ? d.avatar : undefined,
 
-    short_bio: safeString(backendData.bio),
-    long_bio: safeString(backendData.bio),
-    birthDate: optionalString(backendData.birth_date),
+    short_bio: safeString(d.bio),
+    long_bio: safeString(d.bio),
+    birthDate: optionalString(d.birth_date),
 
-    // ═══════════════════════════════════════════════════════════════════
-    // LOCATION (UI-SAFE)
-    // ═══════════════════════════════════════════════════════════════════
     city,
     location: city,
-    area: optionalString(backendData.area),
-    residentialAddress: optionalString(backendData.residential_address),
+    area: optionalString(d.area),
+    residentialAddress: optionalString(d.residential_address),
 
-    // ═══════════════════════════════════════════════════════════════════
-    // PROFESSIONAL
-    // ═══════════════════════════════════════════════════════════════════
     position: safeString(profile.current_position),
     company: safeString(profile.current_company),
-    employmentStatus: optionalString(backendData.employment_status),
+    employmentStatus: optionalString(d.employment_status),
 
-    occupations: optionalStringArray(backendData.occupation),
-    industrySectors: optionalStringArray(backendData.industry_sector),
+    occupations: parseArray(d.occupation),
+    industrySectors: parseArray(d.industry_sector),
 
-    yearsOfExperience: safeOptionalNumber(backendData.years_of_experience),
+    yearsOfExperience: safeParseInt(d.years_of_experience),
 
-    // ═══════════════════════════════════════════════════════════════════
-    // SOCIAL LINKS
-    // ═══════════════════════════════════════════════════════════════════
     linkedin: optionalString(profile.linkedin),
     twitter: optionalString(profile.twitter),
     facebook: optionalString(profile.facebook),
     website: optionalString(profile.website),
     instagram: undefined,
 
-    // ═══════════════════════════════════════════════════════════════════
-    // ARRAYS (ALWAYS SAFE)
-    // ═══════════════════════════════════════════════════════════════════
-    skills: safeArray(parseCommaSeparatedString(profile.skills)),
-    achievements: safeArray(parseCommaSeparatedString(profile.achievements)),
+    skills: parseArray(profile.skills) ?? [],
+    achievements: parseArray(profile.achievements) ?? [],
 
     projects: [],
     work_experience: [],
     education: [],
     interests: [],
 
-    // ═══════════════════════════════════════════════════════════════════
-    // FLAGS
-    // ═══════════════════════════════════════════════════════════════════
-    isCoordinator: stringToBoolean(backendData.is_coordinator),
-    isVolunteer: stringToBoolean(backendData.is_volunteer),
-    isApproved: stringToBoolean(backendData.is_approved),
-    isEmailVerified: stringToBoolean(backendData.email_verified),
-    isActive: stringToBoolean(backendData.active),
+    isCoordinator: stringToBoolean(d.is_coordinator) ?? false,
+    isVolunteer: stringToBoolean(d.is_volunteer),
+    isApproved: stringToBoolean(d.is_approved) ?? false,
+    isEmailVerified: stringToBoolean(d.email_verified) ?? false,
+    isActive: stringToBoolean(d.active) ?? false,
     isVisible: profile.is_visible !== false,
 
-    // ═══════════════════════════════════════════════════════════════════
-    // TIMESTAMPS
-    // ═══════════════════════════════════════════════════════════════════
-    createdAt: safeString(backendData.created_at || unixToISO(backendData.created_on)),
-    updatedAt: safeString(backendData.updated_at),
-    lastLogin: safeString(backendData.last_login),
+    createdAt: safeParseDate(d.created_at || d.created_on),
+    updatedAt: safeParseDate(d.updated_at),
+    lastLogin: safeParseDate(d.last_login),
   };
 }
 
-// ────────────────────────────────────────────────────────────────────────────
-// LIST MAPPER
-// ────────────────────────────────────────────────────────────────────────────
-export function mapBackendAlumniList(backendList: any[]): Alumni[] {
-  if (!Array.isArray(backendList)) return [];
+export function mapBackendAlumniList(raw: unknown): Alumni[] {
+  if (!Array.isArray(raw)) return [];
 
-  return backendList
+  return raw
     .map((item) => {
       try {
         return mapBackendAlumniToFrontend(item);
-      } catch (error) {
-        console.error('Failed to map alumni:', item, error);
+      } catch {
         return null;
       }
     })
-    .filter((item): item is Alumni => item !== null);
-}
-
-// ────────────────────────────────────────────────────────────────────────────
-// HELPERS (STRICT + REUSABLE)
-// ────────────────────────────────────────────────────────────────────────────
-
-function safeString(value: any, fallback = ''): string {
-  if (value === null || value === undefined) return fallback;
-  return String(value).trim();
-}
-
-function optionalString(value: any): string | undefined {
-  if (value === null || value === undefined || value === '') return undefined;
-  return String(value).trim();
-}
-
-function safeNumber(value: any, fallback: number): number {
-  const parsed = Number(value);
-  return isNaN(parsed) ? fallback : parsed;
-}
-
-function safeOptionalNumber(value: any): number | undefined {
-  if (value === null || value === undefined || value === '') return undefined;
-  const parsed = Number(value);
-  return isNaN(parsed) ? undefined : parsed;
-}
-
-function safeArray<T>(value: T[] | undefined): T[] {
-  return Array.isArray(value) ? value : [];
-}
-
-function optionalStringArray(value: any): string[] | undefined {
-  const parsed = parseCommaSeparatedString(value);
-  return parsed && parsed.length > 0 ? parsed : undefined;
-}
-
-function stringToBoolean(value: any): boolean {
-  return value === true || value === 1 || value === '1';
-}
-
-function unixToISO(timestamp: any): string | undefined {
-  if (!timestamp) return undefined;
-  const ts = Number(timestamp);
-  if (isNaN(ts)) return undefined;
-  return new Date(ts * 1000).toISOString();
-}
-
-function parseCommaSeparatedString(value: any): string[] | undefined {
-  if (!value) return undefined;
-
-  if (Array.isArray(value)) return value;
-
-  if (typeof value === 'string') {
-    const parsed = value
-      .split(',')
-      .map((s) => s.trim())
-      .filter(Boolean);
-
-    return parsed.length > 0 ? parsed : undefined;
-  }
-
-  return undefined;
-}
-
-function generateSlug(name: string, id: string): string {
-  return (
-    name
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '')
-      .substring(0, 50) || `alumni-${id}`
-  );
+    .filter((i): i is Alumni => i !== null);
 }

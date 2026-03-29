@@ -784,11 +784,110 @@
  * ============================================================================
  */
 
+// import { apiClient } from '@/lib/api/client';
+// import { API_ENDPOINTS } from '@/lib/api/endpoints';
+// import type { Alumni } from '@/features/alumni/types/alumni.types';
+// import { mapBackendAlumniToFrontend, mapBackendAlumniList } from '../api/adapters/alumni.adapter';
+// import { handleApiError } from '@/lib/errors/apiErrorHandler';
+
+// export interface GetAlumniParams {
+//   search?: string;
+//   year?: string;
+//   page?: number;
+//   limit?: number;
+// }
+
+// export const alumniService = {
+//   /**
+//    * Get all alumni with optional filters
+//    */
+//   getAll: async (params?: GetAlumniParams): Promise<Alumni[]> => {
+//     try {
+//       const response = await apiClient.post(API_ENDPOINTS.ALUMNI.LIST, params || {});
+
+//       // Handle different response structures
+//       let alumniList = [];
+//       if (response.data.users && Array.isArray(response.data.users)) {
+//         alumniList = response.data.users;
+//       } else if (Array.isArray(response.data)) {
+//         alumniList = response.data;
+//       } else if (response.data.data && Array.isArray(response.data.data)) {
+//         alumniList = response.data.data;
+//       }
+
+//       return mapBackendAlumniList(alumniList);
+//     } catch (error) {
+//       // Use standardized error handler
+//       throw handleApiError(
+//         error,
+//         'Unable to load alumni directory. Please try again.',
+//         'AlumniService.getAll',
+//       );
+//     }
+//   },
+
+//   /**
+//    * Get single alumni by ID
+//    */
+//   getById: async (id: string): Promise<Alumni | null> => {
+//     try {
+//       const response = await apiClient.post(API_ENDPOINTS.ALUMNI.LIST, { user_id: id });
+
+//       // Extract alumnus data from various response structures
+//       let alumnusData = null;
+//       if (response.data.users && Array.isArray(response.data.users)) {
+//         alumnusData = response.data.users.find((u: any) => String(u.id) === String(id));
+//       } else if (response.data.user && String(response.data.user.id) === String(id)) {
+//         alumnusData = response.data.user;
+//       } else if (Array.isArray(response.data)) {
+//         alumnusData = response.data.find((u: any) => String(u.id) === String(id));
+//       }
+
+//       if (!alumnusData) return null;
+//       return mapBackendAlumniToFrontend(alumnusData);
+//     } catch (error: any) {
+//       // Check if 404 - return null instead of throwing
+//       if (error.response?.status === 404) {
+//         return null;
+//       }
+
+//       throw handleApiError(
+//         error,
+//         'Unable to load alumni profile. Please try again.',
+//         'AlumniService.getById',
+//       );
+//     }
+//   },
+
+//   /**
+//    * Update alumni profile
+//    */
+//   update: async (id: string, payload: FormData): Promise<Alumni> => {
+//     try {
+//       const response = await apiClient.post('/update_profile', payload, {
+//         headers: { 'Content-Type': 'multipart/form-data' },
+//       });
+
+//       const alumnusData = response.data.user || response.data.data || response.data;
+//       return mapBackendAlumniToFrontend(alumnusData);
+//     } catch (error) {
+//       throw handleApiError(
+//         error,
+//         'Unable to update profile. Please check your information and try again.',
+//         'AlumniService.update',
+//       );
+//     }
+//   },
+// };
+
+// features/alumni/services/alumni.service.ts
+
 import { apiClient } from '@/lib/api/client';
 import { API_ENDPOINTS } from '@/lib/api/endpoints';
-import type { Alumni } from '@/features/alumni/types/alumni.types';
-import { mapBackendAlumniToFrontend, mapBackendAlumniList } from '../api/adapters/alumni.adapter';
 import { handleApiError } from '@/lib/errors/apiErrorHandler';
+import { extractList } from '@/lib/utils/adapters';
+import { mapBackendAlumniToFrontend, mapBackendAlumniList } from '../api/adapters/alumni.adapter';
+import type { Alumni } from '../types/alumni.types';
 
 export interface GetAlumniParams {
   search?: string;
@@ -798,83 +897,54 @@ export interface GetAlumniParams {
 }
 
 export const alumniService = {
-  /**
-   * Get all alumni with optional filters
-   */
-  getAll: async (params?: GetAlumniParams): Promise<Alumni[]> => {
+  /** Fetch all approved alumni. POST /get_users_by_action */
+  async getAll(params?: GetAlumniParams): Promise<Alumni[]> {
     try {
-      const response = await apiClient.post(API_ENDPOINTS.ALUMNI.LIST, params || {});
-
-      // Handle different response structures
-      let alumniList = [];
-      if (response.data.users && Array.isArray(response.data.users)) {
-        alumniList = response.data.users;
-      } else if (Array.isArray(response.data)) {
-        alumniList = response.data;
-      } else if (response.data.data && Array.isArray(response.data.data)) {
-        alumniList = response.data.data;
-      }
-
-      return mapBackendAlumniList(alumniList);
+      const { data } = await apiClient.post(API_ENDPOINTS.ALUMNI.LIST, params ?? {});
+      const list = extractList(data, ['users', 'data']);
+      return mapBackendAlumniList(list);
     } catch (error) {
-      // Use standardized error handler
       throw handleApiError(
         error,
-        'Unable to load alumni directory. Please try again.',
-        'AlumniService.getAll',
+        'Unable to load the alumni directory. Please try again.',
+        'alumniService.getAll',
       );
     }
   },
 
-  /**
-   * Get single alumni by ID
-   */
-  getById: async (id: string): Promise<Alumni | null> => {
+  /** Fetch a single alumnus by backend numeric ID. POST /get_users_by_action { user_id } */
+  async getById(id: string): Promise<Alumni | null> {
     try {
-      const response = await apiClient.post(API_ENDPOINTS.ALUMNI.LIST, { user_id: id });
+      const { data } = await apiClient.post(API_ENDPOINTS.ALUMNI.LIST, { user_id: id });
 
-      // Extract alumnus data from various response structures
-      let alumnusData = null;
-      if (response.data.users && Array.isArray(response.data.users)) {
-        alumnusData = response.data.users.find((u: any) => String(u.id) === String(id));
-      } else if (response.data.user && String(response.data.user.id) === String(id)) {
-        alumnusData = response.data.user;
-      } else if (Array.isArray(response.data)) {
-        alumnusData = response.data.find((u: any) => String(u.id) === String(id));
-      }
+      const list = extractList(data, ['users', 'data']);
+      const match =
+        list.find((u: any) => String(u.id) === String(id)) ??
+        (!Array.isArray(data) && (data as any).user?.id === id ? (data as any).user : null);
 
-      if (!alumnusData) return null;
-      return mapBackendAlumniToFrontend(alumnusData);
+      if (!match) return null;
+      return mapBackendAlumniToFrontend(match);
     } catch (error: any) {
-      // Check if 404 - return null instead of throwing
-      if (error.response?.status === 404) {
-        return null;
-      }
-
+      if (error.response?.status === 404) return null;
       throw handleApiError(
         error,
-        'Unable to load alumni profile. Please try again.',
-        'AlumniService.getById',
+        'Unable to load this profile. Please try again.',
+        'alumniService.getById',
       );
     }
   },
 
-  /**
-   * Update alumni profile
-   */
-  update: async (id: string, payload: FormData): Promise<Alumni> => {
+  /** Update alumni profile. POST /update_profile (FormData) */
+  async update(id: string, payload: FormData): Promise<Alumni> {
     try {
-      const response = await apiClient.post('/update_profile', payload, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-
-      const alumnusData = response.data.user || response.data.data || response.data;
-      return mapBackendAlumniToFrontend(alumnusData);
+      const { data } = await apiClient.post(API_ENDPOINTS.USER.UPDATE_PROFILE, payload);
+      const raw = (data as any).user ?? (data as any).data ?? data;
+      return mapBackendAlumniToFrontend(raw);
     } catch (error) {
       throw handleApiError(
         error,
-        'Unable to update profile. Please check your information and try again.',
-        'AlumniService.update',
+        'Unable to update your profile. Please check your information and try again.',
+        'alumniService.update',
       );
     }
   },
