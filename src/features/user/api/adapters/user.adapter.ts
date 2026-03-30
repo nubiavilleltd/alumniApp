@@ -419,6 +419,12 @@ export function mapBackendResponseToFrontendUser(raw: unknown): Partial<AuthSess
   const user = d.user || d;
   const profile = user.profile || d.profile || {};
 
+  const DEFAULT_AVATAR = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+    `${user.first_name} ${user.last_name}`,
+  )}&background=E5E7EB&color=6B7280&size=256`;
+
+  console.log('my default avatar', { DEFAULT_AVATAR });
+
   return {
     // Identity
     id: String(user.id),
@@ -440,7 +446,8 @@ export function mapBackendResponseToFrontendUser(raw: unknown): Partial<AuthSess
     alternativePhone: user.alternative_phone || undefined,
 
     // Profile
-    photo: user.avatar && user.avatar !== 'default.png' ? user.avatar : undefined,
+    // photo: user.avatar && user.avatar !== 'default.png' ? user.avatar : undefined,
+    photo: d.avatar && d.avatar !== 'default.png' ? String(d.avatar) : DEFAULT_AVATAR,
 
     birthDate: user.birth_date || undefined,
 
