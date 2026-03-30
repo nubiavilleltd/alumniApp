@@ -149,6 +149,8 @@ export function AlumniDirectoryPage() {
     [alumni],
   );
 
+  console.log('my alum', { alumni });
+
   const filteredAlumni = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
     return alumni.filter((e) => {
