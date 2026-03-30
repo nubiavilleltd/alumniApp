@@ -60,7 +60,7 @@ export const eventsService = {
       });
 
       console.log('🔍 Fetching events with payload:', payload);
-      const response = await apiClient.post(ENDPOINTS.GET_EVENTS, payload);
+      const response = await apiClient.post(ENDPOINTS.GET_EVENTS);
       console.log('📥 Get events response:', response.data);
 
       // Handle different response structures
@@ -77,7 +77,7 @@ export const eventsService = {
       }
 
       const mappedEvents = mapBackendEventList(events);
-      console.log(`✅ Mapped ${mappedEvents.length} events`);
+      console.log(`✅ Mapped ${mappedEvents.length} events`, { mappedEvents });
       return mappedEvents;
     } catch (error) {
       console.error('Failed to fetch events:', error);

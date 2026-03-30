@@ -29,19 +29,42 @@ function useAllEvents() {
 /** Upcoming events only — sorted soonest first */
 export function useUpcomingEvents() {
   const { data: allEvents = [], isLoading, error } = useAllEvents();
+  console.log('upcoming => ', allEvents);
 
   const upcoming = useMemo(() => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const now = new Date();
 
     return allEvents
       .filter((event) => {
-        const eventDate = new Date(event.date);
-        eventDate.setHours(0, 0, 0, 0);
-        return eventDate >= today;
+        const [hours, minutes] = (event.endTime || '23:59').split(':').map(Number);
+
+        const date = new Date(event.date);
+
+        const endDateTime = new Date(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate(),
+          hours,
+          minutes,
+        );
+
+        return endDateTime >= now;
       })
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   }, [allEvents]);
+
+  // const upcoming = useMemo(() => {
+  //   const today = new Date();
+  //   today.setHours(0, 0, 0, 0);
+
+  //   return allEvents
+  //     .filter((event) => {
+  //       const eventDate = new Date(event.date);
+  //       eventDate.setHours(0, 0, 0, 0);
+  //       return eventDate >= today;
+  //     })
+  //     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  // }, [allEvents]);
 
   return { data: upcoming, isLoading, error };
 }
