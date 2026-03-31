@@ -13,6 +13,7 @@ import {
   useMarketplaceCategories,
 } from '@/features/marketplace/hooks/useMarketplace';
 import type { Business } from '../types/marketplace.types';
+import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 function BusinessCardSkeleton() {
@@ -137,6 +138,7 @@ export default function MarketPlacePage() {
   const [category, setCategory] = useState('');
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
   const [showPostModal, setShowPostModal] = useState(false);
+  const currentUser = useAuthStore((state) => state.user);
 
   const { data: businesses = [], isLoading, error } = useMarketplace();
   const { data: categoriesList = [] } = useMarketplaceCategories();
@@ -181,14 +183,17 @@ export default function MarketPlacePage() {
                 Discover and support businesses owned by Our Sisters.
               </p>
             </div>
-            <button
-              type="button"
-              onClick={() => setShowPostModal(true)}
-              className="flex-shrink-0 flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-colors"
-            >
-              <Icon icon="mdi:plus" className="w-4 h-4" />
-              Post Your Business
-            </button>
+
+            {currentUser && (
+              <button
+                type="button"
+                onClick={() => setShowPostModal(true)}
+                className="flex-shrink-0 flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-colors"
+              >
+                <Icon icon="mdi:plus" className="w-4 h-4" />
+                Post Your Business
+              </button>
+            )}
           </div>
 
           {/* Filters */}
@@ -237,7 +242,7 @@ export default function MarketPlacePage() {
               icon="mdi:storefront-outline"
               title="No businesses found"
               description="Try adjusting your search or be the first to list your business."
-              actionLabel="Post Your Business"
+              actionLabel={currentUser ? 'Post Your Business' : ''}
               onAction={() => setShowPostModal(true)}
             />
           ) : null}
