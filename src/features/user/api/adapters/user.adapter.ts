@@ -89,8 +89,8 @@ export function mapBackendResponseToFrontendUser(raw: unknown): Partial<AuthSess
     alternativePhone: user.alternative_phone || undefined,
 
     // Profile
-    // photo: user.avatar && user.avatar !== 'default.png' ? user.avatar : undefined,
-    photo: d.avatar && d.avatar !== 'default.png' ? String(d.avatar) : DEFAULT_AVATAR,
+    photo: user.avatar && user.avatar !== 'default.png' ? user.avatar : undefined,
+    // photo: d.avatar && d.avatar !== 'default.png' ? String(d.avatar) : DEFAULT_AVATAR,
 
     birthDate: user.birth_date || undefined,
 

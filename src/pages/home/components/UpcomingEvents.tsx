@@ -36,7 +36,7 @@ function EventCard({ event }: { event: Event }) {
         </div>
         <p className="text-gray-500 text-xs mb-3 line-clamp-2">{event.description}</p>
         <AppLink
-          href={`/events/${event.slug}`}
+          href={`/events/${event.id}`}
           className="text-primary-500 text-xs font-semibold hover:underline flex items-center gap-1"
         >
           Register <Icon icon="mdi:arrow-right" className="w-3 h-3" />
@@ -82,7 +82,7 @@ export default function UpcomingEvents() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {isLoading
             ? Array.from({ length: 4 }).map((_, i) => <EventCardSkeleton key={i} />)
-            : events.map((event) => <EventCard key={event.slug} event={event} />)}
+            : events.map((event) => <EventCard key={event.id} event={event} />)}
         </div>
 
         <div className="mt-6 text-right">

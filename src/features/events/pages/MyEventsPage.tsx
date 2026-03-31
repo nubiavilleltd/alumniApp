@@ -146,7 +146,7 @@ function MyEventCard({
 
             {/* View Details */}
             <AppLink
-              href={`/events/${event.slug}`}
+              href={`/events/${event.id}`}
               className="inline-flex items-center gap-1 text-primary-500 hover:text-primary-600 text-xs font-semibold transition-colors px-3 py-2"
             >
               View Details
