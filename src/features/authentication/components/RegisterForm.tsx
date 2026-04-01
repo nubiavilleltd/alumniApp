@@ -17,7 +17,7 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { FormInput } from '@/shared/components/ui/input/FormInput';
-import { authApi } from '../api/authApi';
+import { authApi } from '../services/auth.service';
 import {
   defaultPhoneCountry,
   formatPhoneNumberWithCountryCode,

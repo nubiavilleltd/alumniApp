@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { FormInput } from '@/shared/components/ui/input/FormInput';
-import { authApi } from '../api/authApi';
+import { authApi } from '../services/auth.service';
 import { forgotPasswordSchema } from '../schemas/authSchema';
 import type { ForgotPasswordFormValues, ForgotPasswordResponse } from '../types/auth.types';
 import { AuthCard } from './AuthCard';

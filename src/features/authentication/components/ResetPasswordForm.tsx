@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSearchParams } from 'react-router-dom';
 import { AppLink } from '@/shared/components/ui/AppLink';
-import { authApi } from '../api/authApi';
+import { authApi } from '../services/auth.service';
 import { resetPasswordSchema } from '../schemas/authSchema';
 import type { ResetPasswordFormValues } from '../types/auth.types';
 import { PasswordStrengthMeter } from './PasswordStrengthMeter';

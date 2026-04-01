@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { getSiteConfig } from '@/data/content';
 import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
-import { authApi } from '@/features/authentication/api/authApi';
+import { authApi } from '@/features/authentication/services/auth.service';
 import { AppLink } from '../ui/AppLink';
 import Button from '../ui/Button';
 

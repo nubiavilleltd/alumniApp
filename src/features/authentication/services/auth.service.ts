@@ -23,13 +23,13 @@ import {
   mapRegistrationResponse,
   mapVerificationPayload,
   mapVerificationResponse,
-} from './adapters/register.adapter';
-import { mapLoginError, mapLoginPayload, mapLoginResponse } from './adapters/login.adapter';
+} from '../api/adapters/register.adapter';
+import { mapLoginError, mapLoginPayload, mapLoginResponse } from '../api/adapters/login.adapter';
 import {
   mapForgotPasswordError,
   mapForgotPasswordPayload,
   mapForgotPasswordResponse,
-} from './adapters/forgotpassword.adapter';
+} from '../api/adapters/forgotpassword.adapter';
 
 function toUserSummary(values: RegisterDetailsFormValues): AuthUserSummary {
   return {
