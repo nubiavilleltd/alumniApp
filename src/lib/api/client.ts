@@ -16,6 +16,8 @@ import axios from 'axios';
 import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { logError } from '@/lib/errors/errorUtils';
 
+import { handleTokenRefresh } from '@/features/authentication/services/refreshToken.service';
+
 export const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   headers: { 'Content-Type': 'application/json' },
@@ -95,7 +97,7 @@ apiClient.interceptors.response.use(
     }
     return response;
   },
-  (error) => {
+  async (error) => {
     // Enhanced error handling
     if (error.response) {
       // Server responded with error status
@@ -109,13 +111,26 @@ apiClient.interceptors.response.use(
         });
       }
 
-      // Handle specific status codes
-      if (status === 401) {
-        // Unauthorized - clear session and redirect to login
+      if (status === 401 && !error.config._retry) {
+        error.config._retry = true;
+
+        const newToken = await handleTokenRefresh();
+
+        if (newToken) {
+          // 🔁 Retry original request with new token
+          if (error.config.data instanceof FormData) {
+            error.config.data.set('jwt', newToken);
+          } else if (typeof error.config.data === 'object') {
+            error.config.data.jwt = newToken;
+          }
+
+          return apiClient(error.config);
+        }
+
+        // ❌ Refresh failed → logout
         const clearSession = useAuthStore.getState().clearSession;
         clearSession();
 
-        // Only redirect if not already on login page
         if (!window.location.pathname.startsWith('/auth/login')) {
           window.location.href = '/auth/login?session_expired=true';
         }
@@ -152,5 +167,6 @@ apiClient.interceptors.response.use(
     logError(error, 'API Response');
 
     return Promise.reject(error);
+    // return new Promise(() => {});
   },
 );

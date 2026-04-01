@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Icon } from '@iconify/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AppLink } from '@/shared/components/ui/AppLink';
@@ -10,12 +10,25 @@ import { loginSchema } from '../schemas/authSchema';
 import { useAuthStore } from '../stores/useAuthStore';
 import type { LoginFormValues } from '../types/auth.types';
 import { AuthCard } from './AuthCard';
+import { toast } from '@/shared/components/ui/Toast';
 
 export function LoginForm() {
   const navigate = useNavigate();
   const location = useLocation();
   const setSession = useAuthStore((state) => state.setSession);
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+
+    if (params.get('session_expired')) {
+      toast.info('Your session expired. Please login again.');
+
+      // 🧼 Remove query param so it doesn't show again on refresh
+      params.delete('session_expired');
+      navigate({ search: params.toString() }, { replace: true });
+    }
+  }, [location.search, navigate]);
 
   // Where to go after login — defaults to /dashboard
   // ProtectedRoute / AdminRoute pass their path as location.state.from
