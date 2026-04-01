@@ -141,15 +141,13 @@ export function AlumniDirectoryPage() {
   const currentUser = useAuthStore((state) => state.user);
 
   // ── Hook ───────────────────────────────────────────────────────────────────
-  const { data: alumni = [], isLoading } = useAlumni();
+  const { data: alumni = [], isLoading } = useAlumni({ action_type: 'approved' });
 
   // ── Derived data ───────────────────────────────────────────────────────────
   const years = useMemo(
     () => [...new Set(alumni.map((e) => e.year))].sort((a, b) => b - a),
     [alumni],
   );
-
-  console.log('my alum', { alumni });
 
   const filteredAlumni = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();

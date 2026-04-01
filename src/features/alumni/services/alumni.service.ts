@@ -12,6 +12,7 @@ export interface GetAlumniParams {
   year?: string;
   page?: number;
   limit?: number;
+  action_type?: string;
 }
 
 export const alumniService = {
