@@ -1,4 +1,254 @@
-// src/App.tsx
+// // src/App.tsx
+
+// import { Navigate, Route, Routes } from 'react-router-dom';
+// import { RootLayout } from './shared/components/layout/RootLayout';
+// import { ErrorBoundary } from './shared/components/ui/ErrorBoundary';
+// import { ProtectedRoute } from './shared/components/routing/ProtectedRoute';
+// import { AdminRoute } from './shared/components/routing/AdminRoute';
+
+// // ── Public pages ──────────────────────────────────────────────────────────────
+// import { HomePage } from './pages/home/HomePage';
+// import { AboutPage } from './pages/about/AboutPage';
+// import { PrivacyPage } from './pages/legal/PrivacyPage';
+// import { TermsPage } from './pages/legal/TermsPage';
+// import { NotFoundPage } from './pages/errors/NotFoundPage';
+// import ProjectsPage from './features/projects/pages/ProjectsPage';
+// import LeadershipPage from './features/leadership/pages/LeadershipPage';
+
+// // ── Auth pages (no guard — public) ───────────────────────────────────────────
+// import { AuthPage } from './features/authentication/pages/AuthPage';
+
+// // ── Alumni (public) ───────────────────────────────────────────────────────────
+// import { AlumniRedirectPage } from './features/alumni/pages/AlumniRedirectPage';
+// import { AlumniDirectoryPage } from './features/alumni/pages/AlumniDirectoryPage';
+// import { AlumniProfilePage } from './features/alumni/pages/AlumniProfilePage';
+
+// // ── Events (public) ───────────────────────────────────────────────────────────
+// import { EventsPage } from './features/events/pages/EventsPage';
+// import { EventDetailPage } from './features/events/pages/EventDetailPage';
+// import { MyEventsPage } from './features/events/pages/MyEventsPage';
+
+// // ── Marketplace (public browse, protected actions) ────────────────────────────
+// import MarketPlacePage from './features/marketplace/pages/MarketPlacePage';
+// import MyBusinessPage from './features/marketplace/pages/MyBusinessPage';
+
+// // ── User (protected) ─────────────────────────────────────────────────────────
+// import { UserDashboardPage } from './features/user/pages/UserDashboardPage';
+// import UserProfilePage from './features/user/pages/UserProfilePage';
+// import ChangePasswordPage from './features/user/pages/ChangePasswordPage';
+
+// // ── Admin (admin only) ────────────────────────────────────────────────────────
+// import { AdminDashboardPage } from './features/admin/pages/AdminDashboardPage';
+
+// // Add these imports
+// import CreateEventPage from '@/features/events/pages/CreateEventPage';
+// import EditEventPage from '@/features/events/pages/EditEventPage';
+
+// // Add these routes inside the Routes section, after the events routes:
+
+// export default function App() {
+//   return (
+//     // App-level safety net — catches anything not caught by a page boundary below
+//     <ErrorBoundary>
+//       <Routes>
+//         <Route element={<RootLayout />}>
+//           {/* ── Public ─────────────────────────────────────────────────── */}
+//           <Route
+//             path="/"
+//             element={
+//               <ErrorBoundary>
+//                 <HomePage />
+//               </ErrorBoundary>
+//             }
+//           />
+//           <Route
+//             path="/about"
+//             element={
+//               <ErrorBoundary>
+//                 <AboutPage />
+//               </ErrorBoundary>
+//             }
+//           />
+//           <Route
+//             path="/privacy"
+//             element={
+//               <ErrorBoundary>
+//                 <PrivacyPage />
+//               </ErrorBoundary>
+//             }
+//           />
+//           <Route
+//             path="/terms"
+//             element={
+//               <ErrorBoundary>
+//                 <TermsPage />
+//               </ErrorBoundary>
+//             }
+//           />
+//           <Route
+//             path="/projects"
+//             element={
+//               <ErrorBoundary>
+//                 <ProjectsPage />
+//               </ErrorBoundary>
+//             }
+//           />
+//           <Route
+//             path="/leadership"
+//             element={
+//               <ErrorBoundary>
+//                 <LeadershipPage />
+//               </ErrorBoundary>
+//             }
+//           />
+
+//           {/* ── Alumni ─────────────────────────────────────────────────── */}
+//           <Route path="/alumni" element={<AlumniRedirectPage />} />
+//           <Route
+//             path="/alumni/profiles"
+//             element={
+//               <ErrorBoundary>
+//                 <AlumniDirectoryPage />
+//               </ErrorBoundary>
+//             }
+//           />
+//           <Route
+//             path="/alumni/profiles/:slug"
+//             element={
+//               <ErrorBoundary>
+//                 <AlumniProfilePage />
+//               </ErrorBoundary>
+//             }
+//           />
+
+//           {/* ── Events ─────────────────────────────────────────────────── */}
+//           <Route
+//             path="/events"
+//             element={
+//               <ErrorBoundary>
+//                 <EventsPage />
+//               </ErrorBoundary>
+//             }
+//           />
+//           <Route
+//             path="/events/:slug"
+//             element={
+//               <ErrorBoundary>
+//                 <EventDetailPage />
+//               </ErrorBoundary>
+//             }
+//           />
+//           <Route
+//             path="/my-events"
+//             element={
+//               <ProtectedRoute>
+//                 <ErrorBoundary>
+//                   <MyEventsPage />
+//                 </ErrorBoundary>
+//               </ProtectedRoute>
+//             }
+//           />
+
+//           <Route
+//             path="/events/create"
+//             element={
+//               <ProtectedRoute>
+//                 <ErrorBoundary>
+//                   <CreateEventPage />
+//                 </ErrorBoundary>
+//               </ProtectedRoute>
+//             }
+//           />
+//           <Route
+//             path="/events/:id/edit"
+//             element={
+//               <ProtectedRoute>
+//                 <ErrorBoundary>
+//                   <EditEventPage />
+//                 </ErrorBoundary>
+//               </ProtectedRoute>
+//             }
+//           />
+
+//           {/* ── Marketplace ────────────────────────────────────────────── */}
+//           <Route
+//             path="/marketplace"
+//             element={
+//               <ErrorBoundary>
+//                 <MarketPlacePage />
+//               </ErrorBoundary>
+//             }
+//           />
+//           <Route
+//             path="/marketplace/my-business"
+//             element={
+//               <ProtectedRoute>
+//                 <ErrorBoundary>
+//                   <MyBusinessPage />
+//                 </ErrorBoundary>
+//               </ProtectedRoute>
+//             }
+//           />
+
+//           {/* ── Auth ───────────────────────────────────────────────────── */}
+//           <Route path="/auth" element={<Navigate to="/auth/login" replace />} />
+//           <Route path="/auth/login" element={<AuthPage mode="login" />} />
+//           <Route path="/auth/register" element={<AuthPage mode="register" />} />
+//           <Route path="/auth/forgot-password" element={<AuthPage mode="forgot-password" />} />
+//           <Route path="/auth/reset-password" element={<AuthPage mode="reset-password" />} />
+
+//           {/* ── User (protected) ───────────────────────────────────────── */}
+//           <Route
+//             path="/dashboard"
+//             element={
+//               <ProtectedRoute>
+//                 <ErrorBoundary>
+//                   <UserDashboardPage />
+//                 </ErrorBoundary>
+//               </ProtectedRoute>
+//             }
+//           />
+//           <Route
+//             path="/user/profile"
+//             element={
+//               <ProtectedRoute>
+//                 <ErrorBoundary>
+//                   <UserProfilePage />
+//                 </ErrorBoundary>
+//               </ProtectedRoute>
+//             }
+//           />
+//           <Route
+//             path="/user/settings"
+//             element={
+//               <ProtectedRoute>
+//                 <ErrorBoundary>
+//                   <ChangePasswordPage />
+//                 </ErrorBoundary>
+//               </ProtectedRoute>
+//             }
+//           />
+
+//           {/* ── Admin (admin only) ─────────────────────────────────────── */}
+//           <Route
+//             path="/admin/dashboard"
+//             element={
+//               <AdminRoute>
+//                 <ErrorBoundary>
+//                   <AdminDashboardPage />
+//                 </ErrorBoundary>
+//               </AdminRoute>
+//             }
+//           />
+
+//           {/* ── Redirects & fallback ───────────────────────────────────── */}
+//           <Route path="/home" element={<Navigate to="/" replace />} />
+//           <Route path="*" element={<NotFoundPage />} />
+//         </Route>
+//       </Routes>
+//     </ErrorBoundary>
+//   );
+// }
 
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { RootLayout } from './shared/components/layout/RootLayout';
@@ -6,7 +256,9 @@ import { ErrorBoundary } from './shared/components/ui/ErrorBoundary';
 import { ProtectedRoute } from './shared/components/routing/ProtectedRoute';
 import { AdminRoute } from './shared/components/routing/AdminRoute';
 
-// ── Public pages ──────────────────────────────────────────────────────────────
+import { ROUTES } from '@/shared/constants/routes';
+
+// Pages
 import { HomePage } from './pages/home/HomePage';
 import { AboutPage } from './pages/about/AboutPage';
 import { PrivacyPage } from './pages/legal/PrivacyPage';
@@ -15,46 +267,35 @@ import { NotFoundPage } from './pages/errors/NotFoundPage';
 import ProjectsPage from './features/projects/pages/ProjectsPage';
 import LeadershipPage from './features/leadership/pages/LeadershipPage';
 
-// ── Auth pages (no guard — public) ───────────────────────────────────────────
 import { AuthPage } from './features/authentication/pages/AuthPage';
 
-// ── Alumni (public) ───────────────────────────────────────────────────────────
 import { AlumniRedirectPage } from './features/alumni/pages/AlumniRedirectPage';
 import { AlumniDirectoryPage } from './features/alumni/pages/AlumniDirectoryPage';
 import { AlumniProfilePage } from './features/alumni/pages/AlumniProfilePage';
 
-// ── Events (public) ───────────────────────────────────────────────────────────
 import { EventsPage } from './features/events/pages/EventsPage';
 import { EventDetailPage } from './features/events/pages/EventDetailPage';
 import { MyEventsPage } from './features/events/pages/MyEventsPage';
+import CreateEventPage from '@/features/events/pages/CreateEventPage';
+import EditEventPage from '@/features/events/pages/EditEventPage';
 
-// ── Marketplace (public browse, protected actions) ────────────────────────────
 import MarketPlacePage from './features/marketplace/pages/MarketPlacePage';
 import MyBusinessPage from './features/marketplace/pages/MyBusinessPage';
 
-// ── User (protected) ─────────────────────────────────────────────────────────
 import { UserDashboardPage } from './features/user/pages/UserDashboardPage';
 import UserProfilePage from './features/user/pages/UserProfilePage';
 import ChangePasswordPage from './features/user/pages/ChangePasswordPage';
 
-// ── Admin (admin only) ────────────────────────────────────────────────────────
 import { AdminDashboardPage } from './features/admin/pages/AdminDashboardPage';
-
-// Add these imports
-import CreateEventPage from '@/features/events/pages/CreateEventPage';
-import EditEventPage from '@/features/events/pages/EditEventPage';
-
-// Add these routes inside the Routes section, after the events routes:
 
 export default function App() {
   return (
-    // App-level safety net — catches anything not caught by a page boundary below
     <ErrorBoundary>
       <Routes>
         <Route element={<RootLayout />}>
-          {/* ── Public ─────────────────────────────────────────────────── */}
+          {/* Public */}
           <Route
-            path="/"
+            path={ROUTES.HOME}
             element={
               <ErrorBoundary>
                 <HomePage />
@@ -62,7 +303,7 @@ export default function App() {
             }
           />
           <Route
-            path="/about"
+            path={ROUTES.ABOUT}
             element={
               <ErrorBoundary>
                 <AboutPage />
@@ -70,7 +311,7 @@ export default function App() {
             }
           />
           <Route
-            path="/privacy"
+            path={ROUTES.PRIVACY}
             element={
               <ErrorBoundary>
                 <PrivacyPage />
@@ -78,7 +319,7 @@ export default function App() {
             }
           />
           <Route
-            path="/terms"
+            path={ROUTES.TERMS}
             element={
               <ErrorBoundary>
                 <TermsPage />
@@ -86,7 +327,7 @@ export default function App() {
             }
           />
           <Route
-            path="/projects"
+            path={ROUTES.PROJECTS}
             element={
               <ErrorBoundary>
                 <ProjectsPage />
@@ -94,7 +335,7 @@ export default function App() {
             }
           />
           <Route
-            path="/leadership"
+            path={ROUTES.LEADERSHIP}
             element={
               <ErrorBoundary>
                 <LeadershipPage />
@@ -102,10 +343,10 @@ export default function App() {
             }
           />
 
-          {/* ── Alumni ─────────────────────────────────────────────────── */}
-          <Route path="/alumni" element={<AlumniRedirectPage />} />
+          {/* Alumni */}
+          <Route path={ROUTES.ALUMNI.ROOT} element={<AlumniRedirectPage />} />
           <Route
-            path="/alumni/profiles"
+            path={ROUTES.ALUMNI.PROFILES}
             element={
               <ErrorBoundary>
                 <AlumniDirectoryPage />
@@ -113,7 +354,7 @@ export default function App() {
             }
           />
           <Route
-            path="/alumni/profiles/:slug"
+            path={ROUTES.ALUMNI.PROFILE(':slug')}
             element={
               <ErrorBoundary>
                 <AlumniProfilePage />
@@ -121,9 +362,9 @@ export default function App() {
             }
           />
 
-          {/* ── Events ─────────────────────────────────────────────────── */}
+          {/* Events */}
           <Route
-            path="/events"
+            path={ROUTES.EVENTS.ROOT}
             element={
               <ErrorBoundary>
                 <EventsPage />
@@ -131,15 +372,16 @@ export default function App() {
             }
           />
           <Route
-            path="/events/:slug"
+            path={ROUTES.EVENTS.DETAIL(':slug')}
             element={
               <ErrorBoundary>
                 <EventDetailPage />
               </ErrorBoundary>
             }
           />
+
           <Route
-            path="/my-events"
+            path={ROUTES.EVENTS.MY_EVENTS}
             element={
               <ProtectedRoute>
                 <ErrorBoundary>
@@ -150,7 +392,7 @@ export default function App() {
           />
 
           <Route
-            path="/events/create"
+            path={ROUTES.EVENTS.CREATE}
             element={
               <ProtectedRoute>
                 <ErrorBoundary>
@@ -159,8 +401,9 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+
           <Route
-            path="/events/:id/edit"
+            path={ROUTES.EVENTS.EDIT(':id')}
             element={
               <ProtectedRoute>
                 <ErrorBoundary>
@@ -170,17 +413,18 @@ export default function App() {
             }
           />
 
-          {/* ── Marketplace ────────────────────────────────────────────── */}
+          {/* Marketplace */}
           <Route
-            path="/marketplace"
+            path={ROUTES.MARKETPLACE.ROOT}
             element={
               <ErrorBoundary>
                 <MarketPlacePage />
               </ErrorBoundary>
             }
           />
+
           <Route
-            path="/marketplace/my-business"
+            path={ROUTES.MARKETPLACE.MY_BUSINESS}
             element={
               <ProtectedRoute>
                 <ErrorBoundary>
@@ -190,16 +434,16 @@ export default function App() {
             }
           />
 
-          {/* ── Auth ───────────────────────────────────────────────────── */}
-          <Route path="/auth" element={<Navigate to="/auth/login" replace />} />
-          <Route path="/auth/login" element={<AuthPage mode="login" />} />
-          <Route path="/auth/register" element={<AuthPage mode="register" />} />
-          <Route path="/auth/forgot-password" element={<AuthPage mode="forgot-password" />} />
-          <Route path="/auth/reset-password" element={<AuthPage mode="reset-password" />} />
+          {/* Auth */}
+          <Route path={ROUTES.AUTH.ROOT} element={<Navigate to={ROUTES.AUTH.LOGIN} replace />} />
+          <Route path={ROUTES.AUTH.LOGIN} element={<AuthPage mode="login" />} />
+          <Route path={ROUTES.AUTH.REGISTER} element={<AuthPage mode="register" />} />
+          <Route path={ROUTES.AUTH.FORGOT_PASSWORD} element={<AuthPage mode="forgot-password" />} />
+          <Route path={ROUTES.AUTH.RESET_PASSWORD} element={<AuthPage mode="reset-password" />} />
 
-          {/* ── User (protected) ───────────────────────────────────────── */}
+          {/* User */}
           <Route
-            path="/dashboard"
+            path={ROUTES.USER.DASHBOARD}
             element={
               <ProtectedRoute>
                 <ErrorBoundary>
@@ -208,8 +452,9 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+
           <Route
-            path="/user/profile"
+            path={ROUTES.USER.PROFILE}
             element={
               <ProtectedRoute>
                 <ErrorBoundary>
@@ -218,8 +463,9 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+
           <Route
-            path="/user/settings"
+            path={ROUTES.USER.SETTINGS}
             element={
               <ProtectedRoute>
                 <ErrorBoundary>
@@ -229,9 +475,9 @@ export default function App() {
             }
           />
 
-          {/* ── Admin (admin only) ─────────────────────────────────────── */}
+          {/* Admin */}
           <Route
-            path="/admin/dashboard"
+            path={ROUTES.ADMIN.DASHBOARD}
             element={
               <AdminRoute>
                 <ErrorBoundary>
@@ -241,8 +487,8 @@ export default function App() {
             }
           />
 
-          {/* ── Redirects & fallback ───────────────────────────────────── */}
-          <Route path="/home" element={<Navigate to="/" replace />} />
+          {/* Redirects */}
+          <Route path="/home" element={<Navigate to={ROUTES.HOME} replace />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>

@@ -12,6 +12,8 @@ import { RegisterEventModal } from '../components/RegisterEventModal';
 import { useEvent } from '../hooks/useEvents';
 import { useEventRegistration, useEventAttendeeCount } from '../hooks/useEventRegistration';
 import type { Event } from '../types/event.types';
+import { EVENT_ROUTES } from '../routes';
+import { ROUTES } from '@/shared/constants/routes';
 
 // ─── Skeleton Loader ─────────────────────────────────────────────────────────
 function EventDetailSkeleton() {
@@ -92,7 +94,7 @@ export function EventDetailPage() {
             The event you're looking for doesn't exist or has been removed.
           </p>
           <div className="flex gap-4 justify-center">
-            <AppLink href="/events" className="btn btn-primary">
+            <AppLink href={EVENT_ROUTES.ROOT} className="btn btn-primary">
               Back to Events
             </AppLink>
             <button onClick={() => window.location.reload()} className="btn btn-outline">
@@ -107,8 +109,8 @@ export function EventDetailPage() {
   const isPastEvent = new Date(event.date) < new Date();
 
   const breadcrumbItems = [
-    { label: 'Home', href: '/' },
-    { label: 'Events', href: '/events' },
+    { label: 'Home', href: ROUTES.HOME },
+    { label: 'Events', href: EVENT_ROUTES.ROOT },
     { label: event.title },
   ];
 
@@ -294,7 +296,7 @@ export function EventDetailPage() {
                       )}
 
                       <AppLink
-                        href="/my-events"
+                        href={EVENT_ROUTES.MY_EVENTS}
                         className="btn btn-outline btn-sm w-full text-center"
                       >
                         View My Events

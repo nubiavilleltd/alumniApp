@@ -21,6 +21,8 @@ import {
   useEventAttendeeCount,
 } from '@/features/events/hooks/useEventRegistration';
 import type { Event } from '@/features/events/types/event.types';
+import { EVENT_ROUTES } from '../routes';
+import { ROUTES } from '@/shared/constants/routes';
 
 type Tab = 'upcoming' | 'past';
 type ViewType = 'grid' | 'calendar';
@@ -362,12 +364,11 @@ function EventCard({
               </span>
             </div>
           )}
-
           <div className="mt-auto pt-2 flex items-center justify-between">
             <div className="flex items-center gap-2">
               {isPast ? (
                 <AppLink
-                  href={`/events/${event.id}`}
+                  href={EVENT_ROUTES.DETAIL(event.id)}
                   className="inline-block border border-gray-300 text-gray-500 hover:border-primary-400 hover:text-primary-500 text-xs font-semibold px-5 py-1.5 rounded-md transition-colors"
                 >
                   View Details
@@ -383,7 +384,7 @@ function EventCard({
                     Registered
                   </button>
                   <AppLink
-                    href={`/events/${event.id}`}
+                    href={EVENT_ROUTES.DETAIL(event.id)}
                     className="inline-flex items-center gap-1 text-gray-500 hover:text-primary-500 text-xs font-semibold transition-colors"
                   >
                     View Details
@@ -412,7 +413,7 @@ function EventCard({
             {isAdmin && (
               <div className="flex items-center gap-2">
                 <AppLink
-                  href={`/events/${event.id}/edit`}
+                  href={EVENT_ROUTES.EDIT(event.id)}
                   className="flex items-center gap-1 text-xs text-primary-500 hover:text-primary-600 transition-colors"
                 >
                   <Icon icon="mdi:pencil-outline" className="w-3.5 h-3.5" />
@@ -566,7 +567,7 @@ export function EventsPage() {
     });
   };
 
-  const breadcrumbItems = [{ label: 'Home', href: '/' }, { label: 'Events' }];
+  const breadcrumbItems = [{ label: 'Home', href: ROUTES.HOME }, { label: 'Events' }];
 
   return (
     <>
@@ -639,7 +640,7 @@ export function EventsPage() {
               {isAdmin && (
                 <button
                   type="button"
-                  onClick={() => navigate('/events/create')}
+                  onClick={() => navigate(EVENT_ROUTES.CREATE)}
                   className="flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-colors"
                 >
                   <Icon icon="mdi:plus" className="w-4 h-4" />

@@ -17,6 +17,7 @@ import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { logError } from '@/lib/errors/errorUtils';
 
 import { handleTokenRefresh } from '@/features/authentication/services/refreshToken.service';
+import { AUTH_ROUTES } from '@/features/authentication/routes';
 
 export const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -131,8 +132,8 @@ apiClient.interceptors.response.use(
         const clearSession = useAuthStore.getState().clearSession;
         clearSession();
 
-        if (!window.location.pathname.startsWith('/auth/login')) {
-          window.location.href = '/auth/login?session_expired=true';
+        if (!window.location.pathname.startsWith(AUTH_ROUTES.LOGIN)) {
+          window.location.href = `${AUTH_ROUTES.LOGIN}?session_expired=true`;
         }
       }
 

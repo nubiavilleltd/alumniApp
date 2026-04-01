@@ -8,27 +8,34 @@ import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { authApi } from '@/features/authentication/services/auth.service';
 import { AppLink } from '../ui/AppLink';
 import Button from '../ui/Button';
+import { ROUTES } from '@/shared/constants/routes';
+import { MARKETPLACE_ROUTES } from '@/features/marketplace/routes';
+import { ALUMNI_ROUTES } from '@/features/alumni/routes';
+import { EVENT_ROUTES } from '@/features/events/routes';
+import { ADMIN_ROUTES } from '@/features/admin/routes';
+import { USER_ROUTES } from '@/features/user/routes';
+import { AUTH_ROUTES } from '@/features/authentication/routes';
 
 // ─── Nav Items ────────────────────────────────────────────────────────────────
 const navItems = [
-  { label: 'Home', url: '/' },
-  { label: 'About Us', url: '/about' },
-  { label: 'Market Place', url: '/marketplace' },
+  { label: 'Home', url: ROUTES.HOME },
+  { label: 'About Us', url: ROUTES.ABOUT },
+  { label: 'Market Place', url: MARKETPLACE_ROUTES.ROOT },
   {
     label: 'Alumnae Connect',
     url: '#',
     children: [
       { label: 'Messages', url: '/messages', icon: 'mdi:message-outline' },
-      { label: 'Alumni Directory', url: '/alumni/profiles', icon: 'mdi:account-group-outline' },
+      { label: 'Alumni Directory', url: ALUMNI_ROUTES.PROFILES, icon: 'mdi:account-group-outline' },
     ],
   },
-  { label: 'Events', url: '/events' },
+  { label: 'Events', url: EVENT_ROUTES.ROOT },
 ];
 
 // ─── Active link helper ───────────────────────────────────────────────────────
 function useIsActive(url: string) {
   const { pathname } = useLocation();
-  if (url === '/') return pathname === '/';
+  if (url === ROUTES.HOME) return pathname === '/';
   return pathname.startsWith(url);
 }
 
@@ -178,7 +185,7 @@ function UserDropdown({
             {isAdmin && (
               <>
                 <AppLink
-                  href="/admin/dashboard"
+                  href={ADMIN_ROUTES.DASHBOARD}
                   onClick={() => setOpen(false)}
                   className="flex items-center gap-2.5 px-4 py-2.5 text-sm bg-purple-50 text-purple-700 hover:bg-purple-100 transition-colors border-l-2 border-purple-500"
                 >
@@ -190,8 +197,7 @@ function UserDropdown({
             )}
 
             <AppLink
-              // href={`/alumni/profiles/${currentUser.memberId}`}
-              href="/user/profile"
+              href={USER_ROUTES.PROFILE}
               onClick={() => setOpen(false)}
               className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors"
             >
@@ -199,7 +205,7 @@ function UserDropdown({
               View Profile
             </AppLink>
             <AppLink
-              href="/dashboard"
+              href={USER_ROUTES.DASHBOARD}
               onClick={() => setOpen(false)}
               className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors"
             >
@@ -207,7 +213,7 @@ function UserDropdown({
               Dashboard
             </AppLink>
             <AppLink
-              href="/marketplace/my-business"
+              href={MARKETPLACE_ROUTES.MY_BUSINESS}
               onClick={() => setOpen(false)}
               className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors"
             >
@@ -215,7 +221,7 @@ function UserDropdown({
               My Business
             </AppLink>
             <AppLink
-              href="/user/settings"
+              href={USER_ROUTES.SETTINGS}
               onClick={() => setOpen(false)}
               className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors"
             >
@@ -298,7 +304,7 @@ export function Navigation() {
     // Clear local session state
     clearSession();
     setMobileOpen(false);
-    navigate('/', { replace: true });
+    navigate(ROUTES.HOME, { replace: true });
     setIsLoggingOut(false);
   };
 
@@ -307,7 +313,7 @@ export function Navigation() {
       <div className="container-custom">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* ── Logo ───────────────────────────────────────────────────── */}
-          <AppLink href="/" className="flex items-center gap-3 group flex-shrink-0">
+          <AppLink href={ROUTES.HOME} className="flex items-center gap-3 group flex-shrink-0">
             <div className="w-10 h-10">
               {config.site.logo ? (
                 <img
@@ -349,7 +355,7 @@ export function Navigation() {
                 isLoggingOut={isLoggingOut}
               />
             ) : (
-              <AppLink href="/auth/login">
+              <AppLink href={AUTH_ROUTES.LOGIN}>
                 <Button variant="white">Login</Button>
               </AppLink>
             )}
@@ -442,7 +448,7 @@ export function Navigation() {
                 {/* Admin Dashboard - Mobile */}
                 {isAdmin && (
                   <AppLink
-                    href="/admin/dashboard"
+                    href={ADMIN_ROUTES.DASHBOARD}
                     className="flex items-center gap-2.5 px-3 py-2.5 text-sm bg-purple-500/20 text-white hover:bg-purple-500/30 rounded-lg transition-colors"
                   >
                     <Icon icon="mdi:shield-account-outline" className="w-4 h-4" />
@@ -451,29 +457,28 @@ export function Navigation() {
                 )}
 
                 <AppLink
-                  // href={`/alumni/profiles/${currentUser.memberId}`}
-                  href="/user/profile"
+                  href={USER_ROUTES.PROFILE}
                   className="flex items-center gap-2.5 px-3 py-2.5 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                 >
                   <Icon icon="mdi:account-outline" className="w-4 h-4" />
                   View Profile
                 </AppLink>
                 <AppLink
-                  href="/dashboard"
+                  href={USER_ROUTES.DASHBOARD}
                   className="flex items-center gap-2.5 px-3 py-2.5 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                 >
                   <Icon icon="mdi:view-dashboard-outline" className="w-4 h-4" />
                   Dashboard
                 </AppLink>
                 <AppLink
-                  href="/marketplace/my-business"
+                  href={MARKETPLACE_ROUTES.MY_BUSINESS}
                   className="flex items-center gap-2.5 px-3 py-2.5 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                 >
                   <Icon icon="mdi:storefront-outline" className="w-4 h-4" />
                   My Business
                 </AppLink>
                 <AppLink
-                  href="/user/settings"
+                  href={USER_ROUTES.SETTINGS}
                   className="flex items-center gap-2.5 px-3 py-2.5 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                 >
                   <Icon icon="mdi:cog-outline" className="w-4 h-4" />
@@ -492,13 +497,13 @@ export function Navigation() {
             ) : (
               <div className="grid grid-cols-2 gap-3 px-4 pt-4 border-t border-white/20 mt-2">
                 <AppLink
-                  href="/auth/login"
+                  href={AUTH_ROUTES.LOGIN}
                   className="btn btn-outline btn-sm w-full justify-center text-white border-white hover:bg-white hover:text-primary-600"
                 >
                   Login
                 </AppLink>
                 <AppLink
-                  href="/auth/register"
+                  href={AUTH_ROUTES.REGISTER}
                   className="btn btn-sm w-full justify-center bg-white text-primary-600 hover:bg-white/90"
                 >
                   Register

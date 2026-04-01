@@ -11,10 +11,12 @@ import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { authenticateMockAccount } from '@/features/authentication/lib/mockAuth';
+import { ROUTES } from '@/shared/constants/routes';
+import { USER_ROUTES } from '../routes';
 
 const breadcrumbItems = [
-  { label: 'Home', href: '/' },
-  { label: 'Dashboard', href: '/dashboard' },
+  { label: 'Home', href: ROUTES.HOME },
+  { label: 'Dashboard', href: USER_ROUTES.DASHBOARD },
   { label: 'Settings' },
 ];
 
@@ -219,7 +221,7 @@ function DangerZoneSection() {
     await new Promise((r) => setTimeout(r, 800));
 
     clearSession();
-    navigate('/', { replace: true });
+    navigate(ROUTES.HOME, { replace: true });
   };
 
   return (

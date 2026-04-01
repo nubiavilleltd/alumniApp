@@ -1,4 +1,4 @@
-// features/authentication/api/authApi.ts
+// features/authentication/services/auth.service.ts
 
 import { apiClient } from '@/lib/api/client';
 import { API_ENDPOINTS } from '@/lib/api/endpoints';

@@ -9,6 +9,7 @@ import { resetPasswordSchema } from '../schemas/authSchema';
 import type { ResetPasswordFormValues } from '../types/auth.types';
 import { PasswordStrengthMeter } from './PasswordStrengthMeter';
 import { AuthCard } from './AuthCard';
+import { AUTH_ROUTES } from '../routes';
 
 // ─── Reusable password field ──────────────────────────────────────────────────
 function PasswordField({
@@ -94,13 +95,13 @@ export function ResetPasswordForm() {
             This reset link is missing or invalid. Please request a new password reset email.
           </p>
           <AppLink
-            href="/auth/forgot-password"
+            href={AUTH_ROUTES.FORGOT_PASSWORD}
             className="btn btn-primary w-full block text-center"
           >
             Request reset email
           </AppLink>
           <AppLink
-            href="/auth/login"
+            href={AUTH_ROUTES.LOGIN}
             className="block text-sm text-center text-gray-500 hover:text-primary-500"
           >
             Back to login
@@ -121,7 +122,7 @@ export function ResetPasswordForm() {
           <p className="text-sm text-gray-600 leading-relaxed">
             Your password has been updated successfully. You can now sign in with your new password.
           </p>
-          <AppLink href="/auth/login" className="btn btn-primary w-full block text-center">
+          <AppLink href={AUTH_ROUTES.LOGIN} className="btn btn-primary w-full block text-center">
             Go to login
           </AppLink>
         </div>
@@ -186,7 +187,7 @@ export function ResetPasswordForm() {
         </button>
 
         <AppLink
-          href="/auth/login"
+          href={AUTH_ROUTES.LOGIN}
           className="block text-sm text-center text-gray-500 hover:text-primary-500"
         >
           Back to login

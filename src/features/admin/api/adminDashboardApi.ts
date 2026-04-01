@@ -13,6 +13,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { apiClient } from '@/lib/api/client';
+import { API_ENDPOINTS } from '@/lib/api/endpoints';
 import {
   buildApprovePayload,
   buildMemberListPayload,
@@ -64,11 +65,6 @@ export interface ApproveResult {
 // ─── Endpoints ────────────────────────────────────────────────────────────────
 // Centralised here so one-line changes cover both the payload builder and call.
 
-const ADMIN_ENDPOINTS = {
-  MEMBER_LIST: '/get_users_by_action', // POST — action_type flag in body
-  APPROVE_USER: '/approve_user', // POST — action: approve | reject
-} as const;
-
 // ─── Stat placeholders ────────────────────────────────────────────────────────
 // These are shown while the real counts aren't available from the backend yet.
 // The pending count is filled in dynamically from getPendingMembers().
@@ -119,7 +115,7 @@ export const adminDashboardApi = {
    */
   async getPendingMembers(): Promise<PendingMember[]> {
     const payload = buildMemberListPayload('pending Approval');
-    const { data } = await apiClient.post(ADMIN_ENDPOINTS.MEMBER_LIST, payload);
+    const { data } = await apiClient.post(API_ENDPOINTS.ADMIN_ENDPOINTS.MEMBER_LIST, payload);
     return mapMemberListResponse(data, mapBackendMemberToPending) as PendingMember[];
   },
 
@@ -129,7 +125,7 @@ export const adminDashboardApi = {
    */
   async getApprovedMembers(): Promise<RecentMember[]> {
     const payload = buildMemberListPayload('approved');
-    const { data } = await apiClient.post(ADMIN_ENDPOINTS.MEMBER_LIST, payload);
+    const { data } = await apiClient.post(API_ENDPOINTS.ADMIN_ENDPOINTS.MEMBER_LIST, payload);
     return mapMemberListResponse(data, mapBackendMemberToRecent) as RecentMember[];
   },
 
@@ -172,7 +168,7 @@ export const adminDashboardApi = {
   async approveMember(userId: string): Promise<ApproveResult> {
     try {
       const payload = buildApprovePayload(userId);
-      const { data } = await apiClient.post(ADMIN_ENDPOINTS.APPROVE_USER, payload);
+      const { data } = await apiClient.post(API_ENDPOINTS.ADMIN_ENDPOINTS.APPROVE_USER, payload);
 
       return {
         success: true,
@@ -205,7 +201,7 @@ export const adminDashboardApi = {
   async rejectMember(userId: string, reason?: string): Promise<ApproveResult> {
     try {
       const payload = buildRejectPayload(userId, reason);
-      const { data } = await apiClient.post(ADMIN_ENDPOINTS.APPROVE_USER, payload);
+      const { data } = await apiClient.post(API_ENDPOINTS.ADMIN_ENDPOINTS.APPROVE_USER, payload);
 
       return {
         success: true,

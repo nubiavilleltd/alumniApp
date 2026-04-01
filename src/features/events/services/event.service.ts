@@ -16,16 +16,9 @@ import {
   mapGetUserEventsPayload,
 } from '../api/adapters/event.adapter';
 import type { Event } from '../types/event.types';
+import { API_ENDPOINTS } from '@/lib/api/endpoints';
 
 // API endpoints (using exact endpoints from backend contract)
-const ENDPOINTS = {
-  CREATE_EVENT: '/create_event',
-  MANAGE_EVENT: '/manage_event',
-  GET_EVENTS: '/get_events',
-  REGISTER_EVENT: '/register_event',
-  MANAGE_EVENT_RSVP: '/manage_event_rsvp',
-  GET_EVENT_ATTENDEES: '/get_event_attendees',
-};
 
 export interface GetEventsParams {
   search?: string;
@@ -60,7 +53,7 @@ export const eventsService = {
       });
 
       console.log('🔍 Fetching events with payload:', payload);
-      const response = await apiClient.post(ENDPOINTS.GET_EVENTS);
+      const response = await apiClient.post(API_ENDPOINTS.EVENTS.GET_EVENTS);
       console.log('📥 Get events response:', response.data);
 
       // Handle different response structures
@@ -107,7 +100,7 @@ export const eventsService = {
     try {
       const payload = mapGetSingleEventPayload(id);
       console.log(`🔍 Fetching event ${id} with payload:`, payload);
-      const response = await apiClient.post(ENDPOINTS.GET_EVENTS, payload);
+      const response = await apiClient.post(API_ENDPOINTS.EVENTS.GET_EVENTS, payload);
       console.log(`📥 Get event by ID response for ${id}:`, response.data);
 
       let eventData = null;
@@ -158,7 +151,7 @@ export const eventsService = {
     try {
       const payload = mapGetUserEventsPayload(userId);
       console.log(`🔍 Fetching events for user ${userId}`);
-      const response = await apiClient.post(ENDPOINTS.GET_EVENTS, payload);
+      const response = await apiClient.post(API_ENDPOINTS.EVENTS.GET_EVENTS, payload);
 
       let events = [];
       if (response.data.events && Array.isArray(response.data.events)) {
@@ -185,14 +178,14 @@ export const eventsService = {
 
     if (payload instanceof FormData) {
       console.log('📤 Sending create event as FormData');
-      response = await apiClient.post(ENDPOINTS.CREATE_EVENT, payload, {
+      response = await apiClient.post(API_ENDPOINTS.EVENTS.CREATE_EVENT, payload, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
     } else {
       console.log('📤 Sending create event as JSON:', payload);
-      response = await apiClient.post(ENDPOINTS.CREATE_EVENT, payload);
+      response = await apiClient.post(API_ENDPOINTS.EVENTS.CREATE_EVENT, payload);
     }
 
     console.log('📥 Create event response:', response.data);
@@ -218,7 +211,7 @@ export const eventsService = {
    */
   update: async (id: string, payload: Record<string, any>): Promise<Event> => {
     console.log(`📤 Sending update event for ${id}:`, payload);
-    const response = await apiClient.post(ENDPOINTS.MANAGE_EVENT, payload);
+    const response = await apiClient.post(API_ENDPOINTS.EVENTS.MANAGE_EVENT, payload);
     console.log(`📥 Update event response:`, response.data);
 
     const updated = await eventsService.getById(id);
@@ -237,7 +230,7 @@ export const eventsService = {
   delete: async (id: string): Promise<void> => {
     const payload = mapEventToDeletePayload(id);
     console.log(`🗑️ Deleting event ${id}`);
-    await apiClient.post(ENDPOINTS.MANAGE_EVENT, payload);
+    await apiClient.post(API_ENDPOINTS.EVENTS.MANAGE_EVENT, payload);
     console.log(`✅ Successfully deleted event ${id}`);
   },
 
@@ -252,7 +245,7 @@ export const eventsService = {
   ): Promise<void> => {
     const payload = mapRegisterEventPayload(userId, eventId, status);
     console.log(`📤 Registering user ${userId} for event ${eventId} with status: ${status}`);
-    await apiClient.post(ENDPOINTS.REGISTER_EVENT, payload);
+    await apiClient.post(API_ENDPOINTS.EVENTS.REGISTER_EVENT, payload);
     console.log(`✅ Successfully registered for event ${eventId}`);
   },
 
@@ -263,7 +256,7 @@ export const eventsService = {
   cancelRegistration: async (eventId: string, userId: string): Promise<void> => {
     const payload = mapCancelRegistrationPayload(userId, eventId);
     console.log(`📤 Cancelling registration for user ${userId} from event ${eventId}`);
-    await apiClient.post(ENDPOINTS.MANAGE_EVENT_RSVP, payload);
+    await apiClient.post(API_ENDPOINTS.EVENTS.MANAGE_EVENT_RSVP, payload);
     console.log(`✅ Successfully cancelled registration for event ${eventId}`);
   },
 
@@ -278,7 +271,7 @@ export const eventsService = {
   ): Promise<void> => {
     const payload = mapUpdateRSVPPayload(userId, eventId, status);
     console.log(`📤 Updating RSVP for user ${userId} to ${status} for event ${eventId}`);
-    await apiClient.post(ENDPOINTS.MANAGE_EVENT_RSVP, payload);
+    await apiClient.post(API_ENDPOINTS.EVENTS.MANAGE_EVENT_RSVP, payload);
     console.log(`✅ Successfully updated RSVP for event ${eventId}`);
   },
 
@@ -290,7 +283,7 @@ export const eventsService = {
     try {
       const payload = mapGetEventAttendeesPayload(eventId, status);
       console.log(`🔍 Fetching attendees for event ${eventId}`);
-      const response = await apiClient.post(ENDPOINTS.GET_EVENT_ATTENDEES, payload);
+      const response = await apiClient.post(API_ENDPOINTS.EVENTS.GET_ATTENDEES, payload);
 
       let attendees = [];
       if (response.data.attendees && Array.isArray(response.data.attendees)) {

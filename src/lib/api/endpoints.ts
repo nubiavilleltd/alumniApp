@@ -6,45 +6,46 @@
 export const API_ENDPOINTS = {
   // ─── Auth ─────────────────────────────────────────────────────────────────
   AUTH: {
-    LOGIN: '/login',
-    REGISTER: '/register',
-    LOGOUT: '/logout',
-    REFRESH_TOKEN: '/auth/refresh',
+    LOGIN: '/api/login',
+    REGISTER: '/api/register',
+    LOGOUT: '/api/logout',
+    REFRESH_TOKEN: '/api/refresh_token',
     ME: '/auth/me',
-    FORGOT_PASSWORD: '/forgot_password',
-    RESET_PASSWORD: '/auth/reset-password',
-    VERIFY_EMAIL: '/verify_email',
+    FORGOT_PASSWORD: '/api/forgot_password',
+    RESET_PASSWORD: '/api/reset_password',
+    VERIFY_EMAIL: '/api/verify_email',
+    RESEND_VERIFY_EMAIL: '/api/resend_verify_email',
   },
 
   // ─── Alumni ───────────────────────────────────────────────────────────────
   ALUMNI: {
-    LIST: '/get_users_by_action',
-    DETAIL: (slug: string) => `/alumni/${slug}`,
-    UPDATE: (id: string) => `/alumni/${id}`,
+    LIST: '/api/get_users_by_action',
+    DETAIL: (slug: string) => `/api/alumni/${slug}`,
+    UPDATE: (id: string) => `/api/alumni/${id}`,
   },
 
   // ─── Marketplace ──────────────────────────────────────────────────────────
   // All three backend endpoints live here. The service no longer defines
   // its own local ENDPOINTS object.
   MARKETPLACE: {
-    GET_LISTINGS: '/get_listings',
-    CREATE_LISTING: '/create_listing',
-    MANAGE_LISTING: '/manage_listing', // update + delete via function_type flag
+    GET_LISTINGS: '/api/get_listings',
+    CREATE_LISTING: '/api/create_listing',
+    MANAGE_LISTING: '/api/manage_listing', // update + delete via function_type flag
   },
 
   // ─── Events ───────────────────────────────────────────────────────────────
   EVENTS: {
-    GET_EVENTS: '/get_events',
-    CREATE_EVENT: '/create_event',
-    MANAGE_EVENT: '/manage_event',
-    REGISTER_EVENT: '/register_event',
-    MANAGE_EVENT_RSVP: '/manage_event_rsvp',
-    GET_ATTENDEES: '/get_event_attendees',
+    GET_EVENTS: '/api/get_events',
+    CREATE_EVENT: '/api/create_event',
+    MANAGE_EVENT: '/api/manage_event',
+    REGISTER_EVENT: '/api/register_event',
+    MANAGE_EVENT_RSVP: '/api/manage_event_rsvp',
+    GET_ATTENDEES: '/api/get_event_attendees',
   },
 
   // ─── User / Profile ───────────────────────────────────────────────────────
   USER: {
-    UPDATE_PROFILE: '/update_profile',
+    UPDATE_PROFILE: '/api/update_profile',
   },
 
   // ─── Admin ────────────────────────────────────────────────────────────────
@@ -69,5 +70,10 @@ export const API_ENDPOINTS = {
   // ─── Leadership ───────────────────────────────────────────────────────────
   LEADERSHIP: {
     LIST: '/leadership',
+  },
+
+  ADMIN_ENDPOINTS: {
+    MEMBER_LIST: '/api/get_users_by_action', // POST — action_type flag in body
+    APPROVE_USER: '/api/approve_user', // POST — action: approve | reject
   },
 } as const;

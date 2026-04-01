@@ -14,6 +14,7 @@ import {
 } from '@/features/marketplace/hooks/useMarketplace';
 import type { Business } from '../types/marketplace.types';
 import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
+import { ROUTES } from '@/shared/constants/routes';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 function BusinessCardSkeleton() {
@@ -161,7 +162,7 @@ export default function MarketPlacePage() {
     setVisibleCount(ITEMS_PER_PAGE);
   };
 
-  const breadcrumbItems = [{ label: 'Home', href: '/' }, { label: 'Marketplace' }];
+  const breadcrumbItems = [{ label: 'Home', href: ROUTES.HOME }, { label: 'Marketplace' }];
 
   return (
     <>

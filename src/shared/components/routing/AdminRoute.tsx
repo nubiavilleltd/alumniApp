@@ -8,6 +8,8 @@
 import type { ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
+import { AUTH_ROUTES } from '@/features/authentication/routes';
+import { USER_ROUTES } from '@/features/user/routes';
 
 interface AdminRouteProps {
   children: ReactNode;
@@ -18,11 +20,11 @@ export function AdminRoute({ children }: AdminRouteProps) {
   const location = useLocation();
 
   if (!user) {
-    return <Navigate to="/auth/login" state={{ from: location.pathname }} replace />;
+    return <Navigate to={AUTH_ROUTES.LOGIN} state={{ from: location.pathname }} replace />;
   }
 
   if (user.role !== 'admin') {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to={USER_ROUTES.DASHBOARD} replace />;
   }
 
   return <>{children}</>;

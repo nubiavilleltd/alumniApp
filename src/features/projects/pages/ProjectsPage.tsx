@@ -6,6 +6,7 @@ import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import { useProjects } from '@/features/projects/hooks/useProjects';
 import type { Project } from '@/features/projects/types/project.types';
+import { ROUTES } from '@/shared/constants/routes';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 function ProjectCardSkeleton() {
@@ -89,7 +90,7 @@ export default function ProjectsPage() {
   const visible = filtered.slice(0, visibleCount);
   const hasMore = visibleCount < filtered.length;
 
-  const breadcrumbItems = [{ label: 'Home', href: '/' }, { label: 'Projects' }];
+  const breadcrumbItems = [{ label: 'Home', href: ROUTES.HOME }, { label: 'Projects' }];
 
   return (
     <>

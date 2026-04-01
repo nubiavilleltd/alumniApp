@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import Button from '@/shared/components/ui/Button';
 import HeroBg from '/hero-bg.png';
+import { AUTH_ROUTES } from '@/features/authentication/routes';
 
 const heroImages = [
   HeroBg,
@@ -55,7 +56,7 @@ export default function HeroSection() {
           The Connection is Real. Own Your Journey. Reconnect with your sisters, expand your
           network, and give back to the community that shaped us.
         </p>
-        <AppLink href="/auth/register">
+        <AppLink href={AUTH_ROUTES.REGISTER}>
           <Button size="lg" className="px-14 py-3.5 rounded-full font-bold text-base shadow-lg">
             Join us
           </Button>

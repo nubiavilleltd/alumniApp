@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { getSiteConfig } from '@/data/content';
+import { ROUTES } from '@/shared/constants/routes';
 
 interface AuthCardProps {
   title: string;
@@ -15,7 +16,7 @@ export function AuthCard({ title, titleAccent, subtitle, children }: AuthCardPro
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-blue-50 flex flex-col items-center justify-center px-4 py-12">
       {/* Logo + site name */}
-      <AppLink href="/" className="flex items-center gap-3 mb-8 group">
+      <AppLink href={ROUTES.HOME} className="flex items-center gap-3 mb-8 group">
         {config.site.logo ? (
           <img
             src={config.site.logo}

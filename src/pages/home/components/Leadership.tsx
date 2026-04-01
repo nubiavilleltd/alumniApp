@@ -2,6 +2,7 @@ import { AppLink } from '@/shared/components/ui/AppLink';
 
 import { useLeadership } from '@/features/leadership/hooks/useLeadership';
 import { LeadershipMember } from '@/features/leadership/types/leadership.types';
+import { ROUTES } from '@/shared/constants/routes';
 
 function MemberCard({ member }: { member: LeadershipMember }) {
   return (
@@ -100,7 +101,7 @@ export default function Leadership() {
 
         <div className="mt-8 text-right">
           <AppLink
-            href="/leadership"
+            href={ROUTES.LEADERSHIP}
             className="text-primary-500 text-sm font-semibold hover:underline inline-flex items-center gap-1"
           >
             See More →

@@ -11,6 +11,9 @@ import { useAuthStore } from '../stores/useAuthStore';
 import type { LoginFormValues } from '../types/auth.types';
 import { AuthCard } from './AuthCard';
 import { toast } from '@/shared/components/ui/Toast';
+import { USER_ROUTES } from '@/features/user/routes';
+import { ADMIN_ROUTES } from '@/features/admin/routes';
+import { AUTH_ROUTES } from '../routes';
 
 export function LoginForm() {
   const navigate = useNavigate();
@@ -32,7 +35,7 @@ export function LoginForm() {
 
   // Where to go after login — defaults to /dashboard
   // ProtectedRoute / AdminRoute pass their path as location.state.from
-  const from = (location.state as { from?: string } | null)?.from ?? '/dashboard';
+  const from = (location.state as { from?: string } | null)?.from ?? USER_ROUTES.DASHBOARD;
 
   const {
     register,
@@ -48,7 +51,7 @@ export function LoginForm() {
     try {
       const response = await authApi.login(values);
       setSession(response.user, response.accessToken, response.refreshToken);
-      navigate(response?.user?.role == 'admin' ? '/admin/dashboard' : from, { replace: true });
+      navigate(response?.user?.role == 'admin' ? ADMIN_ROUTES.DASHBOARD : from, { replace: true });
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Login failed. Please try again.';
 
@@ -113,7 +116,7 @@ export function LoginForm() {
           <div className="flex items-center justify-between mb-1.5">
             <label className="block text-sm font-medium text-gray-700">Password</label>
             <AppLink
-              href="/auth/forgot-password"
+              href={AUTH_ROUTES.FORGOT_PASSWORD}
               className="text-xs font-medium text-primary-500 hover:text-primary-600"
             >
               Forgot password?
@@ -182,7 +185,7 @@ export function LoginForm() {
         <p className="text-center text-sm text-gray-500">
           Don't have an account?{' '}
           <AppLink
-            href="/auth/register"
+            href={AUTH_ROUTES.REGISTER}
             className="font-semibold text-primary-500 hover:text-primary-600"
           >
             Sign up

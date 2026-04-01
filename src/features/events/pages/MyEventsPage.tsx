@@ -7,6 +7,8 @@ import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { useMyEvents, useEventRegistration } from '../hooks/useEventRegistration';
 import type { Event } from '../types/event.types';
+import { EVENT_ROUTES } from '../routes';
+import { ROUTES } from '@/shared/constants/routes';
 
 // ─── Unregister Confirmation Modal ───────────────────────────────────────────
 function UnregisterModal({
@@ -146,7 +148,7 @@ function MyEventCard({
 
             {/* View Details */}
             <AppLink
-              href={`/events/${event.id}`}
+              href={EVENT_ROUTES.DETAIL(event.id)}
               className="inline-flex items-center gap-1 text-primary-500 hover:text-primary-600 text-xs font-semibold transition-colors px-3 py-2"
             >
               View Details
@@ -211,7 +213,7 @@ function EmptyState({ type }: { type: 'upcoming' | 'past' }) {
       </p>
       {type === 'upcoming' && (
         <AppLink
-          href="/events"
+          href={EVENT_ROUTES.ROOT}
           className="inline-flex items-center gap-1 text-primary-500 hover:text-primary-600 text-sm font-semibold transition-colors"
         >
           Browse Events
@@ -241,8 +243,8 @@ export function MyEventsPage() {
   };
 
   const breadcrumbItems = [
-    { label: 'Home', href: '/' },
-    { label: 'Events', href: '/events' },
+    { label: 'Home', href: ROUTES.HOME },
+    { label: 'Events', href: EVENT_ROUTES.ROOT },
     { label: 'My Events' },
   ];
 
