@@ -3,6 +3,7 @@
 // Pure transformation utilities — not mock-specific.
 // These stay when mockAuth.ts is deleted.
 
+import { ALUMNI_ROUTES } from '@/features/alumni/routes';
 import type { MockAuthAccount } from '../constants/mockAccounts';
 import type { AuthSessionUser } from '../types/auth.types';
 import { defaultPrivacySettings } from '../types/auth.types';
@@ -29,7 +30,7 @@ export function toAuthSessionUser(account: MockAuthAccount): AuthSessionUser {
     id: account.id,
     slug: account.slug,
     avatarInitials: getInitials(account.surname, account.otherNames),
-    profileHref: `/alumni/profiles/${account.slug}`,
+    profileHref: ALUMNI_ROUTES.PROFILE(account.id),
     createdAt: account.createdAt,
     chapterId: account.chapterId,
 

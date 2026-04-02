@@ -15,6 +15,8 @@ import Button from '@/shared/components/ui/Button';
 import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { useEvent, useUpdateEvent, useDeleteEvent } from '../hooks/useEvents';
 import { mapEventToUpdatePayload } from '../api/adapters/event.adapter';
+import { EVENT_ROUTES } from '../routes';
+import { ROUTES } from '@/shared/constants/routes';
 
 // Simple schema directly in the file
 const editEventSchema = z.object({
@@ -132,8 +134,8 @@ export default function EditEventPage() {
   };
 
   const breadcrumbItems = [
-    { label: 'Home', href: '/' },
-    { label: 'Events', href: '/events' },
+    { label: 'Home', href: ROUTES.HOME },
+    { label: 'Events', href: EVENT_ROUTES.ROOT },
     { label: event?.title || 'Edit Event' },
   ];
 
@@ -149,7 +151,7 @@ export default function EditEventPage() {
             <Icon icon="mdi:lock-outline" className="w-16 h-16 text-red-400 mx-auto mb-4" />
             <h1 className="text-3xl font-bold mb-4">Access Denied</h1>
             <p className="text-gray-600 mb-6">You don't have permission to edit events.</p>
-            <Button onClick={() => navigate('/events')}>Back to Events</Button>
+            <Button onClick={() => navigate(EVENT_ROUTES.ROOT)}>Back to Events</Button>
           </div>
         </section>
       </>
@@ -186,7 +188,7 @@ export default function EditEventPage() {
           <div className="container-custom text-center">
             <Icon icon="mdi:calendar-alert" className="w-16 h-16 text-red-400 mx-auto mb-4" />
             <h1 className="text-3xl font-bold mb-4">Event Not Found</h1>
-            <Button onClick={() => navigate('/events')}>Back to Events</Button>
+            <Button onClick={() => navigate(EVENT_ROUTES.ROOT)}>Back to Events</Button>
           </div>
         </section>
       </>

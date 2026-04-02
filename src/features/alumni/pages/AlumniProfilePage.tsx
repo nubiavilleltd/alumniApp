@@ -22,6 +22,9 @@ import {
   industrySectorOptions,
   occupationOptions,
 } from '@/features/authentication/constants/profileOptions';
+import { ALUMNI_ROUTES } from '../routes';
+import { ROUTES } from '@/shared/constants/routes';
+import { AUTH_ROUTES } from '@/features/authentication/routes';
 
 // ─── Helper Functions ─────────────────────────────────────────────────────────
 function resolveLabel(
@@ -206,7 +209,7 @@ export function AlumniProfilePage() {
             There was an error loading this profile. Please try again later.
           </p>
           <div className="flex gap-4 justify-center">
-            <AppLink href="/alumni/profiles" className="btn btn-primary">
+            <AppLink href={ALUMNI_ROUTES.PROFILES} className="btn btn-primary">
               Browse Directory
             </AppLink>
             <button onClick={() => window.location.reload()} className="btn btn-outline">
@@ -228,7 +231,7 @@ export function AlumniProfilePage() {
             The profile you're looking for doesn't exist or has been removed.
           </p>
           <div className="flex gap-4 justify-center">
-            <AppLink href="/alumni/profiles" className="btn btn-primary">
+            <AppLink href={ALUMNI_ROUTES.PROFILES} className="btn btn-primary">
               Browse Directory
             </AppLink>
             <button onClick={() => window.location.reload()} className="btn btn-outline">
@@ -286,8 +289,8 @@ export function AlumniProfilePage() {
   const areaLabel = resolveLabel(alum.area, areaOptions);
 
   const breadcrumbItems = [
-    { label: 'Home', href: '/' },
-    { label: 'Profiles', href: '/alumni/profiles' },
+    { label: 'Home', href: ROUTES.HOME },
+    { label: 'Profiles', href: ALUMNI_ROUTES.PROFILES },
     { label: alum.name || 'Profile' },
   ];
 
@@ -612,7 +615,7 @@ export function AlumniProfilePage() {
                     Join our alumni network to connect with fellow alumnae and access complete
                     profiles.
                   </p>
-                  <AppLink href="/auth/login" className="btn btn-primary btn-sm">
+                  <AppLink href={AUTH_ROUTES.LOGIN} className="btn btn-primary btn-sm">
                     Sign In
                   </AppLink>
                 </div>

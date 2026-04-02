@@ -17,7 +17,7 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { FormInput } from '@/shared/components/ui/input/FormInput';
-import { authApi } from '../api/authApi';
+import { authApi } from '../services/auth.service';
 import {
   defaultPhoneCountry,
   formatPhoneNumberWithCountryCode,
@@ -36,6 +36,7 @@ import type {
 import { PasswordStrengthMeter } from './PasswordStrengthMeter';
 import { AuthCard } from './AuthCard';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
+import { AUTH_ROUTES } from '../routes';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -498,7 +499,7 @@ export function RegisterForm() {
           <p className="text-center text-sm text-gray-500">
             Already have an account?{' '}
             <AppLink
-              href="/auth/login"
+              href={AUTH_ROUTES.LOGIN}
               className="font-semibold text-primary-500 hover:text-primary-600"
             >
               Login
@@ -648,7 +649,10 @@ export function RegisterForm() {
             <button type="button" onClick={resetFlow} className="btn btn-outline flex-1 text-sm">
               Register another
             </button>
-            <AppLink href="/auth/login" className="btn btn-primary flex-1 text-sm text-center">
+            <AppLink
+              href={AUTH_ROUTES.LOGIN}
+              className="btn btn-primary flex-1 text-sm text-center"
+            >
               Go to login
             </AppLink>
           </div>

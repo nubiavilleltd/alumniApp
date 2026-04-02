@@ -36,7 +36,7 @@ export function mapLoginResponse(res: any): {
         res.email?.[0]?.toUpperCase() ||
         '?',
 
-      profileHref: `/alumni/${slug}`,
+      profileHref: `/alumni/profiles/${res.user_id}`,
       createdAt: new Date().toISOString(),
       chapterId: res.chapter_id ? String(res.chapter_id) : undefined,
 

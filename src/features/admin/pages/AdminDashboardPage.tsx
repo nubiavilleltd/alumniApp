@@ -9,6 +9,10 @@ import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { type AdminStat, type PendingMember } from '../api/adminDashboardApi';
 import { useAdminDashboard, useApproveMember, useRejectMember } from '../hooks/useAdminDashboard';
 import { SEO } from '@/shared/common/SEO';
+import { ALUMNI_ROUTES } from '@/features/alumni/routes';
+import { USER_ROUTES } from '@/features/user/routes';
+import { EVENT_ROUTES } from '@/features/events/routes';
+import { MARKETPLACE_ROUTES } from '@/features/marketplace/routes';
 
 // ─── Tone map ─────────────────────────────────────────────────────────────────
 
@@ -243,26 +247,24 @@ export function AdminDashboardPage() {
 
   if (isError || !dashboard) {
     return (
-      <Layout title="Admin Dashboard" description="Admin dashboard">
-        <section className="section">
-          <div className="container-custom">
-            <div className="mx-auto max-w-2xl rounded-[2rem] border border-secondary-200 bg-white p-8 text-center shadow-sm">
-              <Icon
-                icon="mdi:alert-circle-outline"
-                className="h-10 w-10 text-secondary-500 mx-auto"
-              />
-              <h1 className="mt-4 text-2xl font-bold text-accent-900">Dashboard unavailable</h1>
-              <p className="mt-2 text-sm text-accent-600">
-                Could not load admin dashboard data. This may be a network issue or the server is
-                temporarily unavailable.
-              </p>
-              <button type="button" className="btn btn-primary mt-6" onClick={() => void refetch()}>
-                Try again
-              </button>
-            </div>
+      <section className="section">
+        <div className="container-custom">
+          <div className="mx-auto max-w-2xl rounded-[2rem] border border-secondary-200 bg-white p-8 text-center shadow-sm">
+            <Icon
+              icon="mdi:alert-circle-outline"
+              className="h-10 w-10 text-secondary-500 mx-auto"
+            />
+            <h1 className="mt-4 text-2xl font-bold text-accent-900">Dashboard unavailable</h1>
+            <p className="mt-2 text-sm text-accent-600">
+              Could not load admin dashboard data. This may be a network issue or the server is
+              temporarily unavailable.
+            </p>
+            <button type="button" className="btn btn-primary mt-6" onClick={() => void refetch()}>
+              Try again
+            </button>
           </div>
-        </section>
-      </Layout>
+        </div>
+      </section>
     );
   }
 
@@ -290,14 +292,14 @@ export function AdminDashboardPage() {
               </div>
               <div className="flex gap-3">
                 <AppLink
-                  href="/alumni/profiles"
+                  href={ALUMNI_ROUTES.PROFILES}
                   className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-medium text-white hover:bg-white/15 transition-colors"
                 >
                   <Icon icon="mdi:account-group-outline" className="h-4 w-4" />
                   Members
                 </AppLink>
                 <AppLink
-                  href="/dashboard"
+                  href={USER_ROUTES.DASHBOARD}
                   className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-medium text-white hover:bg-white/15 transition-colors"
                 >
                   <Icon icon="mdi:account-outline" className="h-4 w-4" />
@@ -396,7 +398,7 @@ export function AdminDashboardPage() {
                 title="Upcoming Events"
                 action={
                   <AppLink
-                    href="/events"
+                    href={EVENT_ROUTES.ROOT}
                     className="text-sm font-semibold text-primary-600 hover:text-primary-700"
                   >
                     Manage
@@ -434,7 +436,7 @@ export function AdminDashboardPage() {
                     },
                     {
                       label: 'Create Event',
-                      href: '/events/create',
+                      href: EVENT_ROUTES.CREATE,
                       icon: 'mdi:calendar-plus-outline',
                     },
                     {
@@ -442,7 +444,11 @@ export function AdminDashboardPage() {
                       href: '/admin/announcements',
                       icon: 'mdi:bullhorn-outline',
                     },
-                    { label: 'View Marketplace', href: '/marketplace', icon: 'mdi:store-outline' },
+                    {
+                      label: 'View Marketplace',
+                      href: MARKETPLACE_ROUTES.ROOT,
+                      icon: 'mdi:store-outline',
+                    },
                     { label: 'Site Settings', href: '/admin/settings', icon: 'mdi:cog-outline' },
                   ].map((link) => (
                     <AppLink

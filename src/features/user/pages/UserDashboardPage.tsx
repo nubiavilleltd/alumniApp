@@ -11,6 +11,11 @@ import { useAlumni } from '@/features/alumni/hooks/useAlumni';
 import { SEO } from '@/shared/common/SEO';
 import { useMyEvents } from '@/features/events/hooks/useEventRegistration';
 import type { Event } from '@/features/events/types/event.types';
+import { ROUTES } from '@/shared/constants/routes';
+import { EVENT_ROUTES } from '@/features/events/routes';
+import { ALUMNI_ROUTES } from '@/features/alumni/routes';
+import { MARKETPLACE_ROUTES } from '@/features/marketplace/routes';
+import { USER_ROUTES } from '../routes';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function formatEventDate(date: string) {
@@ -37,7 +42,7 @@ function DashboardEventCard({ event }: { event: Event }) {
           Registered
         </div>
         <AppLink
-          href={`/events/${event.id}`}
+          href={EVENT_ROUTES.DETAIL(event.id)}
           className="text-xs text-primary-600 hover:text-primary-700 font-medium"
         >
           Details →
@@ -168,26 +173,26 @@ export function UserDashboardPage() {
     {
       title: 'Mentorship circle opens next week',
       subtitle: 'Join a cross-year mentoring group before seats fill up.',
-      href: '/about',
+      href: ROUTES.ABOUT,
     },
     {
       title: 'Regional meetup planning has started',
       subtitle: 'See the latest planning note and volunteer opportunities.',
-      href: '/events',
+      href: EVENT_ROUTES.ROOT,
     },
     {
       title: 'Community directory refresh underway',
       subtitle: 'Profiles with complete details will be featured more often.',
-      href: '/alumni/profiles',
+      href: ALUMNI_ROUTES.PROFILES,
     },
   ];
 
   const quickLinks = [
-    { label: 'Edit Profile', href: '/user/profile', icon: 'mdi:account-edit-outline' },
-    { label: 'My Events', href: '/my-events', icon: 'mdi:calendar-check-outline' },
-    { label: 'View Directory', href: '/alumni/profiles', icon: 'mdi:account-group-outline' },
-    { label: 'Browse Events', href: '/events', icon: 'mdi:calendar-month-outline' },
-    { label: 'My Business', href: '/marketplace/my-business', icon: 'mdi:store-outline' },
+    { label: 'Edit Profile', href: USER_ROUTES.PROFILE, icon: 'mdi:account-edit-outline' },
+    { label: 'My Events', href: EVENT_ROUTES.MY_EVENTS, icon: 'mdi:calendar-check-outline' },
+    { label: 'View Directory', href: ALUMNI_ROUTES.PROFILES, icon: 'mdi:account-group-outline' },
+    { label: 'Browse Events', href: EVENT_ROUTES.ROOT, icon: 'mdi:calendar-month-outline' },
+    { label: 'My Business', href: MARKETPLACE_ROUTES.MY_BUSINESS, icon: 'mdi:store-outline' },
   ];
 
   // Combine loading states
@@ -296,7 +301,7 @@ export function UserDashboardPage() {
                 title="My Registered Events"
                 action={
                   <AppLink
-                    href="/my-events"
+                    href={EVENT_ROUTES.ROOT}
                     className="text-sm font-semibold text-primary-600 hover:text-primary-700"
                   >
                     View all
@@ -321,7 +326,7 @@ export function UserDashboardPage() {
                       You haven't registered for any upcoming events yet.
                     </p>
                     <AppLink
-                      href="/events"
+                      href={EVENT_ROUTES.ROOT}
                       className="inline-flex items-center gap-1 text-primary-600 hover:text-primary-700 text-sm font-semibold"
                     >
                       Browse Events
@@ -370,7 +375,10 @@ export function UserDashboardPage() {
                   </div>
                 )}
 
-                <AppLink href="/user/profile" className="btn btn-primary mt-5 w-full text-center">
+                <AppLink
+                  href={USER_ROUTES.PROFILE}
+                  className="btn btn-primary mt-5 w-full text-center"
+                >
                   {profileCompletion === 100 ? 'View Profile' : 'Complete Profile'}
                 </AppLink>
               </SectionCard>
@@ -380,7 +388,7 @@ export function UserDashboardPage() {
                 title="Suggested Alumni"
                 action={
                   <AppLink
-                    href="/alumni/profiles"
+                    href={ALUMNI_ROUTES.PROFILES}
                     className="text-sm font-semibold text-primary-600 hover:text-primary-700"
                   >
                     View directory
@@ -393,8 +401,8 @@ export function UserDashboardPage() {
                   <div className="space-y-3">
                     {suggestedAlumni.map((alumnus) => (
                       <AppLink
-                        href={`/alumni/profiles/${alumnus.slug}`}
-                        key={alumnus.slug}
+                        href={ALUMNI_ROUTES.PROFILE(alumnus.memberId)}
+                        key={alumnus.memberId}
                         className="flex items-center gap-3 rounded-2xl border border-accent-100 px-4 py-4 transition-colors hover:border-primary-200 hover:bg-primary-50/60"
                       >
                         <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl bg-accent-100 font-semibold text-accent-700">

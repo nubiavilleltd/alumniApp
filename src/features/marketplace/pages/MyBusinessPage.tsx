@@ -8,6 +8,8 @@ import EmptyState from '@/shared/components/ui/EmptyState';
 import { PostBusinessModal } from '../components/PostYourBusinessModal';
 import { useMyBusinesses, useDeleteListing } from '../hooks/useMarketplace';
 import type { Business } from '../types/marketplace.types';
+import { MARKETPLACE_ROUTES } from '../routes';
+import { ROUTES } from '@/shared/constants/routes';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 function MyBusinessCardSkeleton() {
@@ -220,8 +222,8 @@ export default function MyBusinessPage() {
   };
 
   const breadcrumbItems = [
-    { label: 'Home', href: '/' },
-    { label: 'Marketplace', href: '/marketplace' },
+    { label: 'Home', href: ROUTES.HOME },
+    { label: 'Marketplace', href: MARKETPLACE_ROUTES.ROOT },
     { label: 'My Business' },
   ];
 

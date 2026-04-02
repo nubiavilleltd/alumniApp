@@ -14,6 +14,7 @@ import {
 } from '@/features/marketplace/hooks/useMarketplace';
 import type { Business } from '../types/marketplace.types';
 import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
+import { ROUTES } from '@/shared/constants/routes';
 import { useStartDirectConversation } from '@/features/messages/hooks/useStartDirectConversation';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
@@ -178,7 +179,7 @@ export default function MarketPlacePage() {
     setVisibleCount(ITEMS_PER_PAGE);
   };
 
-  const breadcrumbItems = [{ label: 'Home', href: '/' }, { label: 'Marketplace' }];
+  const breadcrumbItems = [{ label: 'Home', href: ROUTES.HOME }, { label: 'Marketplace' }];
 
   async function handleStartBusinessConversation(business: Business) {
     setPendingBusinessId(business.businessId);

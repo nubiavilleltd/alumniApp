@@ -11,6 +11,8 @@ import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { getMockAccountByMemberId } from '@/features/authentication/lib/mockAuth';
 import { defaultPrivacySettings } from '@/features/authentication/types/auth.types';
 import { isFieldVisible, getPhotoDisplay } from '@/features/alumni/utils/privacyHelpers';
+import { ALUMNI_ROUTES } from '../routes';
+import { ROUTES } from '@/shared/constants/routes';
 import { useStartDirectConversation } from '@/features/messages/hooks/useStartDirectConversation';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
@@ -132,7 +134,7 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: A
             {isOwnProfile ? 'Your Profile' : isMessagePending ? 'Opening...' : 'Send Message'}
           </button>
           <AppLink
-            href={`/alumni/profiles/${entry.memberId}`}
+            href={ALUMNI_ROUTES.PROFILE(entry.memberId as string)}
             className="flex-1 text-center border border-gray-300 text-gray-600 hover:border-primary-400 hover:text-primary-500 text-[11px] font-medium py-1.5 rounded transition-colors"
           >
             View Profile
@@ -160,15 +162,13 @@ export function AlumniDirectoryPage() {
   );
 
   // ── Hook ───────────────────────────────────────────────────────────────────
-  const { data: alumni = [], isLoading } = useAlumni();
+  const { data: alumni = [], isLoading } = useAlumni({ action_type: 'approved' });
 
   // ── Derived data ───────────────────────────────────────────────────────────
   const years = useMemo(
     () => [...new Set(alumni.map((e) => e.year))].sort((a, b) => b - a),
     [alumni],
   );
-
-  console.log('my alum', { alumni });
 
   const filteredAlumni = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
@@ -188,11 +188,7 @@ export function AlumniDirectoryPage() {
     setVisibleCount(ITEMS_PER_PAGE);
   };
 
-  const breadcrumbItems = [
-    { label: 'Home', href: '/' },
-    { label: 'Profiles', href: '/alumni' },
-    { label: 'Directory' },
-  ];
+  const breadcrumbItems = [{ label: 'Home', href: ROUTES.HOME }, { label: 'Profiles' }];
 
   async function handleStartConversation(entry: {
     name: string;

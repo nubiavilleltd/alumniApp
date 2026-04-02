@@ -15,10 +15,12 @@ import {
 } from '@/features/authentication/constants/profileOptions';
 import EditProfileModal from '../components/ui/EditProfileModal';
 import { SEO } from '@/shared/common/SEO';
+import { ROUTES } from '@/shared/constants/routes';
+import { USER_ROUTES } from '../routes';
 
 const breadcrumbItems = [
-  { label: 'Home', href: '/' },
-  { label: 'Dashboard', href: '/dashboard' },
+  { label: 'Home', href: ROUTES.HOME },
+  { label: 'Dashboard', href: USER_ROUTES.DASHBOARD },
   { label: 'My Profile' },
 ];
 
