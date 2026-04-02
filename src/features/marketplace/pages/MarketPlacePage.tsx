@@ -14,6 +14,7 @@ import {
 } from '@/features/marketplace/hooks/useMarketplace';
 import type { Business } from '../types/marketplace.types';
 import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
+import { useStartDirectConversation } from '@/features/messages/hooks/useStartDirectConversation';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 function BusinessCardSkeleton() {
@@ -37,8 +38,19 @@ function BusinessCardSkeleton() {
 }
 
 // ─── Business Card ────────────────────────────────────────────────────────────
-function BusinessCard({ business }: { business: Business }) {
+function BusinessCard({
+  business,
+  currentUserMemberId,
+  onMessageClick,
+  isMessagePending,
+}: {
+  business: Business;
+  currentUserMemberId?: string;
+  onMessageClick: (business: Business) => void;
+  isMessagePending: boolean;
+}) {
   const [imgIndex, setImgIndex] = useState(0);
+  const isOwnBusiness = business.ownerId === currentUserMemberId;
 
   const prev = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -121,9 +133,11 @@ function BusinessCard({ business }: { business: Business }) {
         </div>
         <button
           type="button"
-          className="mt-2 w-full bg-primary-500 hover:bg-primary-600 text-white text-[11px] font-medium py-1.5 rounded transition-colors"
+          onClick={() => onMessageClick(business)}
+          disabled={isOwnBusiness || isMessagePending}
+          className="mt-2 w-full bg-primary-500 hover:bg-primary-600 text-white text-[11px] font-medium py-1.5 rounded transition-colors disabled:cursor-not-allowed disabled:bg-primary-200"
         >
-          Send Message
+          {isOwnBusiness ? 'Your Listing' : isMessagePending ? 'Opening...' : 'Send Message'}
         </button>
       </div>
     </div>
@@ -138,7 +152,10 @@ export default function MarketPlacePage() {
   const [category, setCategory] = useState('');
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
   const [showPostModal, setShowPostModal] = useState(false);
+  const [pendingBusinessId, setPendingBusinessId] = useState<string | null>(null);
   const currentUser = useAuthStore((state) => state.user);
+  const { startDirectConversation, isPending: isStartingConversation } =
+    useStartDirectConversation();
 
   const { data: businesses = [], isLoading, error } = useMarketplace();
   const { data: categoriesList = [] } = useMarketplaceCategories();
@@ -162,6 +179,21 @@ export default function MarketPlacePage() {
   };
 
   const breadcrumbItems = [{ label: 'Home', href: '/' }, { label: 'Marketplace' }];
+
+  async function handleStartBusinessConversation(business: Business) {
+    setPendingBusinessId(business.businessId);
+    await startDirectConversation({
+      participantMemberId: business.ownerId,
+      topic: `Marketplace enquiry about ${business.name}`,
+      recipientProfile: {
+        fullName: business.owner,
+        headline: `Owner of ${business.name}`,
+        location: business.location,
+        profileHref: `/alumni/profiles/${business.ownerId}`,
+      },
+    });
+    setPendingBusinessId((current) => (current === business.businessId ? null : current));
+  }
 
   return (
     <>
@@ -234,7 +266,15 @@ export default function MarketPlacePage() {
           ) : !error && visible.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
               {visible.map((business) => (
-                <BusinessCard key={business.businessId} business={business} />
+                <BusinessCard
+                  key={business.businessId}
+                  business={business}
+                  currentUserMemberId={currentUser?.memberId}
+                  onMessageClick={handleStartBusinessConversation}
+                  isMessagePending={
+                    isStartingConversation && pendingBusinessId === business.businessId
+                  }
+                />
               ))}
             </div>
           ) : !error && visible.length === 0 ? (

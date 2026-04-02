@@ -47,6 +47,18 @@ export const API_ENDPOINTS = {
     UPDATE_PROFILE: '/update_profile',
   },
 
+  // ─── Messages ──────────────────────────────────────────────────────────────
+  MESSAGES: {
+    THREADS: '/messages/threads',
+    THREAD_DETAIL: (threadId: string) => `/messages/threads/${threadId}`,
+    DIRECT_THREAD: '/messages/threads/direct',
+    GROUP_THREAD: '/messages/threads/group',
+    SEND_MESSAGE: '/messages/messages',
+    MARK_READ: (threadId: string) => `/messages/threads/${threadId}/read`,
+    ATTACHMENTS: '/messages/attachments',
+    POLL: '/messages/poll',
+  },
+
   // ─── Admin ────────────────────────────────────────────────────────────────
   ADMIN: {
     MEMBER_LIST: '/api/admin/members/list',

@@ -18,8 +18,14 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const location = useLocation();
 
   if (!user) {
-    // Pass the current path as `from` so LoginForm can redirect back after login
-    return <Navigate to="/auth/login" state={{ from: location.pathname }} replace />;
+    // Preserve path and search so guarded deep links can resume after login.
+    return (
+      <Navigate
+        to="/auth/login"
+        state={{ from: `${location.pathname}${location.search}` }}
+        replace
+      />
+    );
   }
 
   return <>{children}</>;

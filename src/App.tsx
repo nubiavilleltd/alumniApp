@@ -36,6 +36,7 @@ import MyBusinessPage from './features/marketplace/pages/MyBusinessPage';
 import { UserDashboardPage } from './features/user/pages/UserDashboardPage';
 import UserProfilePage from './features/user/pages/UserProfilePage';
 import ChangePasswordPage from './features/user/pages/ChangePasswordPage';
+import { MessagesPage } from './features/messages/pages/MessagesPage';
 
 // ── Admin (admin only) ────────────────────────────────────────────────────────
 import { AdminDashboardPage } from './features/admin/pages/AdminDashboardPage';
@@ -224,6 +225,16 @@ export default function App() {
               <ProtectedRoute>
                 <ErrorBoundary>
                   <ChangePasswordPage />
+                </ErrorBoundary>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/messages"
+            element={
+              <ProtectedRoute>
+                <ErrorBoundary>
+                  <MessagesPage />
                 </ErrorBoundary>
               </ProtectedRoute>
             }

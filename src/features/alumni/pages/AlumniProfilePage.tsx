@@ -10,6 +10,7 @@ import type { PrivacySettings, FieldVisibility } from '@/features/authentication
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { SEO } from '@/shared/common/SEO';
+import { useStartDirectConversation } from '@/features/messages/hooks/useStartDirectConversation';
 import {
   isFieldVisible,
   getPrivateFieldDisplay,
@@ -187,6 +188,8 @@ export function AlumniProfilePage() {
   const { slug = '' } = useParams(); // slug is actually the ID now (e.g., "16")
   const currentUser = useAuthStore((state) => state.user);
   const isSignedIn = !!currentUser;
+  const { startDirectConversation, isPending: isStartingConversation } =
+    useStartDirectConversation();
 
   // Fetch alumnus by ID
   const { data: alumnus, isLoading, error } = useAlumnus(slug);
@@ -369,6 +372,44 @@ export function AlumniProfilePage() {
                     <p className="text-xs text-primary-700 font-medium">Volunteer</p>
                   </div>
                 )}
+
+                {!isOwnProfile ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const recipientHeadline =
+                        alum.position && alum.company
+                          ? `${alum.position} at ${alum.company}`
+                          : occupationLabel
+                            ? employmentLabel
+                              ? `${occupationLabel} · ${employmentLabel}`
+                              : occupationLabel
+                            : `Class of ${alum.year}`;
+
+                      void startDirectConversation({
+                        participantMemberId: alum.memberId,
+                        topic: `Alumni profile conversation with ${alum.name}`,
+                        recipientProfile: {
+                          fullName: alum.name,
+                          avatar: alum.photo,
+                          headline: recipientHeadline,
+                          location: alum.location || alum.city,
+                          graduationYear: alum.year,
+                          slug: alum.slug,
+                          profileHref: `/alumni/profiles/${alum.memberId}`,
+                        },
+                      });
+                    }}
+                    disabled={isStartingConversation}
+                    className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary-500 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-600 disabled:cursor-not-allowed disabled:bg-primary-200"
+                  >
+                    <Icon
+                      icon={isStartingConversation ? 'mdi:loading' : 'mdi:message-outline'}
+                      className={`h-4 w-4 ${isStartingConversation ? 'animate-spin' : ''}`}
+                    />
+                    {isStartingConversation ? 'Opening conversation...' : 'Send Message'}
+                  </button>
+                ) : null}
               </div>
             </aside>
 
