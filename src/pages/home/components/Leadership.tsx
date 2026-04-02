@@ -37,6 +37,8 @@ function MemberCardSkeleton() {
 export default function Leadership() {
   const { data: members = [], isLoading } = useLeadership();
 
+  console.log('leadership', { members });
+
   const president = members.find((m) => m.featured);
   const board = members.filter((m) => !m.featured);
 

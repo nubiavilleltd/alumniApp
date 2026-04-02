@@ -75,15 +75,18 @@ export const API_ENDPOINTS = {
     DONATE: (id: string) => `/projects/${id}/donate`,
   },
 
+  // ─── Leadership ───────────────────────────────────────────────────────────
+  LEADERSHIP: {
+    GET_LEADERSHIP: '/api/get_leadership',
+    // CMS endpoints (future):
+    // CREATE_LEADER: '/create_leader',
+    // MANAGE_LEADER: '/manage_leader',
+  },
+
   // ─── Announcements ────────────────────────────────────────────────────────
   ANNOUNCEMENTS: {
     LIST: '/announcements',
     DETAIL: (slug: string) => `/announcements/${slug}`,
-  },
-
-  // ─── Leadership ───────────────────────────────────────────────────────────
-  LEADERSHIP: {
-    LIST: '/leadership',
   },
 
   ADMIN_ENDPOINTS: {
