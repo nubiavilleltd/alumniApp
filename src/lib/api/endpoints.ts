@@ -68,8 +68,10 @@ export const API_ENDPOINTS = {
 
   // ─── Projects ─────────────────────────────────────────────────────────────
   PROJECTS: {
-    LIST: '/projects',
-    DETAIL: (id: string) => `/projects/${id}`,
+    LIST: '/api/get_projects',
+    CREATE: '/api/create_project',
+    MANAGE: '/api/manage_project',
+    // keep donate if it's separate
     DONATE: (id: string) => `/projects/${id}/donate`,
   },
 

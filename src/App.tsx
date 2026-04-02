@@ -288,6 +288,7 @@ import ChangePasswordPage from './features/user/pages/ChangePasswordPage';
 import { MessagesPage } from './features/messages/pages/MessagesPage';
 
 import { AdminDashboardPage } from './features/admin/pages/AdminDashboardPage';
+import ProjectDetailsPage from './features/projects/pages/ProjectDetail';
 
 export default function App() {
   return (
@@ -328,13 +329,22 @@ export default function App() {
             }
           />
           <Route
-            path={ROUTES.PROJECTS}
+            path={ROUTES.PROJECTS.ROOT}
             element={
               <ErrorBoundary>
                 <ProjectsPage />
               </ErrorBoundary>
             }
           />
+          <Route
+            path={ROUTES.PROJECTS.DETAIL_PATH}
+            element={
+              <ErrorBoundary>
+                <ProjectDetailsPage />
+              </ErrorBoundary>
+            }
+          />
+
           <Route
             path={ROUTES.LEADERSHIP}
             element={

@@ -2,23 +2,26 @@ import { AppLink } from '@/shared/components/ui/AppLink';
 
 import { useProjects } from '@/features/projects/hooks/useProjects';
 import { Project } from '@/features/projects/types/project.types';
+import { ROUTES } from '@/shared/constants/routes';
 
 function ProjectCard({ project }: { project: Project }) {
+  const placeholderImage = 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=700&q=80';
+  const mainImage = project.images?.[0] || placeholderImage;
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
       <div className="h-44 overflow-hidden bg-gray-100">
-        <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+        <img src={mainImage} alt={project.title} className="w-full h-full object-cover" />
       </div>
       <div className="p-4">
         <AppLink
-          href={`/projects/${project.id}`}
+          href={ROUTES.PROJECTS.DETAIL(project.id)}
           className="text-primary-500 font-semibold text-sm hover:underline"
         >
           {project.title}
         </AppLink>
         <p className="text-gray-500 text-xs mt-1 mb-3">{project.description}</p>
         <span className="inline-block bg-primary-500 text-white text-xs px-3 py-1 rounded-full">
-          {project.budget}
+          {`₦${project.amountRaised.toLocaleString()}`}
         </span>
       </div>
     </div>
@@ -63,7 +66,7 @@ export default function OurProjects() {
 
         <div className="mt-6 text-right">
           <AppLink
-            href="/projects"
+            href={ROUTES.PROJECTS.ROOT}
             className="text-primary-500 text-sm font-semibold hover:underline inline-flex items-center gap-1"
           >
             See More →

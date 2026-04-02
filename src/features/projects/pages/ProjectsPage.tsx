@@ -7,6 +7,7 @@ import EmptyState from '@/shared/components/ui/EmptyState';
 import { useProjects } from '@/features/projects/hooks/useProjects';
 import type { Project } from '@/features/projects/types/project.types';
 import { ROUTES } from '@/shared/constants/routes';
+import { AppLink } from '@/shared/components/ui/AppLink';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 function ProjectCardSkeleton() {
@@ -27,13 +28,59 @@ function ProjectCardSkeleton() {
 }
 
 // ─── Project Card ─────────────────────────────────────────────────────────────
+// function ProjectCard({ project }: { project: Project }) {
+//   return (
+//     <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex flex-col">
+//       {/* Image */}
+//       <div className="h-48 w-full overflow-hidden bg-gray-100">
+//         <img
+//           src={project?.images[0] || "https://source.unsplash.com/600x400/?construction"}
+//           alt={project.title}
+//           className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+//           loading="lazy"
+//         />
+//       </div>
+
+//       {/* Info */}
+//       <div className="p-4 flex flex-col gap-2 flex-1">
+//         <h3 className="text-primary-500 font-bold text-sm leading-snug">{project.title}</h3>
+//         <p className="text-gray-500 text-[11px] leading-relaxed line-clamp-2">
+//           {project.description}
+//         </p>
+
+//         {/* Budget + Action */}
+//         <div className="mt-auto pt-3 flex items-center justify-between">
+//           {project.amountRaised && (
+//             <div className="flex items-center gap-1 text-gray-600 text-xs font-semibold">
+//               <Icon icon="mdi:cash-outline" className="w-3.5 h-3.5 text-primary-400" />
+//               {project.amountRaised}
+//             </div>
+//           )}
+//           <AppLink
+//             href={ROUTES.PROJECTS.DETAIL(project.id)}
+//             className="flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 text-white text-xs font-semibold px-4 py-2 rounded-full transition-colors"
+//           >
+//             <Icon icon="mdi:heart-outline" className="w-3.5 h-3.5" />
+//             View Project
+//           </AppLink>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
 function ProjectCard({ project }: { project: Project }) {
+  // Define a fallback image (local or online)
+  const placeholderImage = 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=700&q=80';
+  // const placeholderImage = "https://dummyimage.com/600x400/ccc/000?text=No+Image";
+  const mainImage = project.images?.[0] || placeholderImage;
+
   return (
     <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex flex-col">
       {/* Image */}
       <div className="h-48 w-full overflow-hidden bg-gray-100">
         <img
-          src={project.image}
+          src={mainImage}
           alt={project.title}
           className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
           loading="lazy"
@@ -49,19 +96,21 @@ function ProjectCard({ project }: { project: Project }) {
 
         {/* Budget + Action */}
         <div className="mt-auto pt-3 flex items-center justify-between">
-          {project.budget && (
+          {project.amountRaised && (
             <div className="flex items-center gap-1 text-gray-600 text-xs font-semibold">
-              <Icon icon="mdi:cash-outline" className="w-3.5 h-3.5 text-primary-400" />
-              {project.budget}
+              {/* <Icon icon="mdi:cash-outline" className="w-3.5 h-3.5 text-primary-400" /> */}
+              <span className="inline-block bg-primary-500 text-white text-xs px-3 py-1 rounded-full">
+                {`₦${project.amountRaised.toLocaleString()}`}
+              </span>
             </div>
           )}
-          <button
-            type="button"
+          <AppLink
+            href={ROUTES.PROJECTS.DETAIL(project.id)}
             className="flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 text-white text-xs font-semibold px-4 py-2 rounded-full transition-colors"
           >
             <Icon icon="mdi:heart-outline" className="w-3.5 h-3.5" />
             View Project
-          </button>
+          </AppLink>
         </div>
       </div>
     </div>
@@ -77,6 +126,8 @@ export default function ProjectsPage() {
 
   // ── Hook ───────────────────────────────────────────────────────────────────
   const { data: projects = [], isLoading } = useProjects();
+
+  console.log('data => ', { projects });
 
   // ── Client-side filtering ──────────────────────────────────────────────────
   const filtered = useMemo(() => {
