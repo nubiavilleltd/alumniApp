@@ -4,8 +4,11 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { toast } from '@/shared/components/ui/Toast';
 import { marketplaceService } from '../services/marketplace.service';
-import type { GetMarketplaceParams } from '../types/marketplace.types';
-import type { CreateListingFormData } from '../api/adapters/marketplace.adapter';
+import type {
+  CreateListingFormData,
+  GetMarketplaceParams,
+  UpdateListingFormData,
+} from '../types/marketplace.types';
 
 // ─── Query keys ───────────────────────────────────────────────────────────────
 
@@ -109,7 +112,7 @@ export function useUpdateListing() {
   const currentUser = useAuthStore((state) => state.user);
 
   return useMutation({
-    mutationFn: ({ id, formData }: { id: string; formData: CreateListingFormData }) =>
+    mutationFn: ({ id, formData }: { id: string; formData: UpdateListingFormData }) =>
       marketplaceService.update(id, formData),
     onSuccess: (_, { id }) => {
       queryClient.invalidateQueries({ queryKey: marketplaceKeys.detail(id) });

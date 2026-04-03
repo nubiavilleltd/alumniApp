@@ -1,9 +1,6 @@
 // features/projects/components/ProjectFormModal.tsx
-//
-// Shared form for creating and editing projects (admin only).
-// Handles all three image modes: add, replace, remove specific images.
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -15,6 +12,7 @@ import { SelectInput } from '@/shared/components/ui/SelectInput';
 import { ImageUpload } from '@/shared/components/ui/ImageUpload';
 import Button from '@/shared/components/ui/Button';
 import { useCreateProject, useUpdateProject } from '../hooks/useProjects';
+import { useImageManager } from '@/shared/hooks/useImageManager';
 import type { Project } from '../types/project.types';
 
 // ─── Validation schema ────────────────────────────────────────────────────────
@@ -51,13 +49,13 @@ export function ProjectFormModal({ isOpen, onClose, editData }: ProjectFormModal
   const createMutation = useCreateProject();
   const updateMutation = useUpdateProject();
 
-  // Existing image URLs (from the project being edited)
-  const [existingImages, setExistingImages] = useState<string[]>([]);
-  const [removedImages, setRemovedImages] = useState<string[]>([]);
-
-  // New files selected by the user in this session
-  const [newFiles, setNewFiles] = useState<File[]>([]);
-  const [newPreviews, setNewPreviews] = useState<string[]>([]);
+  const {
+    allPreviews,
+    newFiles,
+    removedImages,
+    handleImages,
+    reset: resetImages,
+  } = useImageManager();
 
   const {
     register,
@@ -66,7 +64,7 @@ export function ProjectFormModal({ isOpen, onClose, editData }: ProjectFormModal
     formState: { errors },
   } = useForm<ProjectFormValues>({
     resolver: zodResolver(projectFormSchema) as any,
-    mode: 'onChange', // ← real-time validation
+    mode: 'onChange',
     defaultValues: {
       title: '',
       description: '',
@@ -78,7 +76,7 @@ export function ProjectFormModal({ isOpen, onClose, editData }: ProjectFormModal
     },
   });
 
-  // Sync form when edit data changes
+  // Sync form + images when edit data changes
   useEffect(() => {
     if (isOpen && editData) {
       reset({
@@ -90,44 +88,12 @@ export function ProjectFormModal({ isOpen, onClose, editData }: ProjectFormModal
         sortOrder: editData.sortOrder,
         isFeatured: Boolean(editData.isFeatured),
       });
-      setExistingImages(editData.images ?? []);
+      resetImages(editData.images ?? []);
     } else {
       reset({ title: '', description: '', status: 'active', amountRaised: 0, isFeatured: false });
-      setExistingImages([]);
+      resetImages();
     }
-    setRemovedImages([]);
-    setNewFiles([]);
-    setNewPreviews([]);
-  }, [isOpen, editData, reset]);
-
-  // ── Image handler (ImageUpload component interface) ─────────────────────────
-
-  // Combine existing (kept) images + new preview URLs for the ImageUpload component
-  const allPreviews = [...existingImages, ...newPreviews];
-
-  const handleImages = (files: File[], previews: string[]) => {
-    if (files.length > 0) {
-      // New files were added
-      setNewFiles((prev) => [...prev, ...files]);
-      setNewPreviews((prev) => [...prev, ...previews]);
-    } else {
-      // A preview was removed — figure out which one
-      // Previews that were removed but were originally existing images
-      const removedExisting = existingImages.filter((url) => !previews.includes(url));
-      const keptExisting = existingImages.filter((url) => previews.includes(url));
-
-      // Previews that were removed but were new uploads
-      const keptNewPreviews = newPreviews.filter((url) => previews.includes(url));
-      const removedNewIdxs = newPreviews
-        .map((url, i) => (previews.includes(url) ? -1 : i))
-        .filter((i) => i !== -1);
-
-      setExistingImages(keptExisting);
-      setRemovedImages((prev) => [...prev, ...removedExisting]);
-      setNewPreviews(keptNewPreviews);
-      setNewFiles((prev) => prev.filter((_, i) => !removedNewIdxs.includes(i)));
-    }
-  };
+  }, [isOpen, editData, reset, resetImages]);
 
   // ── Submit ──────────────────────────────────────────────────────────────────
 
@@ -221,7 +187,6 @@ export function ProjectFormModal({ isOpen, onClose, editData }: ProjectFormModal
           />
         </div>
 
-        {/* Featured toggle */}
         <label className="flex items-center gap-3 cursor-pointer">
           <input
             type="checkbox"
@@ -231,7 +196,6 @@ export function ProjectFormModal({ isOpen, onClose, editData }: ProjectFormModal
           <span className="text-sm font-medium text-gray-700">Featured project</span>
         </label>
 
-        {/* ── Images ─────────────────────────────────────────────────────── */}
         <ImageUpload
           label="Images"
           hint="jpg, png, gif, webp — max 5 MB each"
@@ -241,7 +205,6 @@ export function ProjectFormModal({ isOpen, onClose, editData }: ProjectFormModal
           multiple
         />
 
-        {/* Summary of pending image changes in edit mode */}
         {isEditing && (removedImages.length > 0 || newFiles.length > 0) && (
           <p className="text-xs text-primary-600 -mt-3">
             {removedImages.length > 0 && `${removedImages.length} image(s) will be removed. `}
@@ -249,7 +212,6 @@ export function ProjectFormModal({ isOpen, onClose, editData }: ProjectFormModal
           </p>
         )}
 
-        {/* Actions */}
         <div className="flex gap-3 pt-2">
           <Button type="submit" className="flex-1" disabled={isLoading}>
             {isLoading ? (

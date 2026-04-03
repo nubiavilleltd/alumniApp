@@ -36,3 +36,20 @@ export interface PostBusinessPayload {
   website?: string;
   images: File[];
 }
+
+export interface CreateListingFormData {
+  name: string;
+  category: string;
+  description: string;
+  location: string;
+  phone: string;
+  website?: string;
+  images: File[];
+}
+
+export interface UpdateListingFormData extends Partial<CreateListingFormData> {
+  // imageAction controls how existing images are handled on update
+  imageAction?: 'add' | 'replace';
+  // removeImages: array of existing image URLs to delete
+  removeImages?: string[];
+}

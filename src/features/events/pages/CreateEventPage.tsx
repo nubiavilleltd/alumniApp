@@ -64,6 +64,7 @@ export default function CreateEventPage() {
       visibility: 'public',
       max_attendees: 0,
     },
+    mode: 'onChange',
   });
 
   const visibility = watch('visibility');

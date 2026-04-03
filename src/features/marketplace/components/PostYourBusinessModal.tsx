@@ -12,8 +12,8 @@ import {
   useUpdateListing,
   useMarketplaceCategories,
 } from '../hooks/useMarketplace';
-import type { CreateListingFormData } from '../api/adapters/marketplace.adapter';
-import type { Business } from '../types/marketplace.types';
+import { useImageManager } from '@/shared/hooks/useImageManager';
+import type { Business, CreateListingFormData } from '../types/marketplace.types';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -24,7 +24,6 @@ interface PostBusinessForm {
   location: string;
   phone: string;
   website: string;
-  images: File[];
 }
 
 const defaultForm: PostBusinessForm = {
@@ -34,7 +33,6 @@ const defaultForm: PostBusinessForm = {
   location: '',
   phone: '',
   website: '',
-  images: [],
 };
 
 interface PostBusinessModalProps {
@@ -54,11 +52,10 @@ function toFormState(data: Business | null | undefined): PostBusinessForm {
     location: data.location,
     phone: data.phone,
     website: data.website ?? '',
-    images: [],
   };
 }
 
-function toCreateListingFormData(form: PostBusinessForm): CreateListingFormData {
+function toCreateListingFormData(form: PostBusinessForm, images: File[]): CreateListingFormData {
   return {
     name: form.name,
     category: form.category,
@@ -66,7 +63,7 @@ function toCreateListingFormData(form: PostBusinessForm): CreateListingFormData 
     location: form.location,
     phone: form.phone,
     website: form.website || undefined,
-    images: form.images,
+    images,
   };
 }
 
@@ -76,40 +73,38 @@ export function PostBusinessModal({ isOpen, onClose, editData }: PostBusinessMod
   const isEditing = !!editData;
 
   const [form, setForm] = useState<PostBusinessForm>(() => toFormState(editData));
-  const [previews, setPreviews] = useState<string[]>(() => editData?.images ?? []);
   const [error, setError] = useState<string | null>(null);
 
   const createMutation = useCreateListing();
   const updateMutation = useUpdateListing();
+
+  const {
+    allPreviews,
+    newFiles,
+    removedImages,
+    handleImages,
+    reset: resetImages,
+  } = useImageManager();
+
   const { data: categoriesList = [] } = useMarketplaceCategories();
 
   // Re-sync when editData changes
   useEffect(() => {
     setForm(toFormState(editData));
-    setPreviews(editData?.images ?? []);
+    resetImages(editData?.images ?? []);
   }, [editData]);
 
   // Reset on close
   useEffect(() => {
     if (!isOpen) {
       setForm(defaultForm);
-      setPreviews([]);
+      resetImages();
       setError(null);
     }
   }, [isOpen]);
 
   const set = (field: keyof PostBusinessForm) => (value: string) =>
     setForm((prev) => ({ ...prev, [field]: value }));
-
-  const handleImages = (files: File[], urls: string[]) => {
-    if (files.length > 0) {
-      setForm((prev) => ({ ...prev, images: [...prev.images, ...files] }));
-      setPreviews((prev) => [...prev, ...urls]);
-    } else {
-      setPreviews(urls);
-      setForm((prev) => ({ ...prev, images: [] }));
-    }
-  };
 
   const validate = (): string | null => {
     if (!form.name.trim()) return 'Business name is required';
@@ -130,7 +125,7 @@ export function PostBusinessModal({ isOpen, onClose, editData }: PostBusinessMod
       return;
     }
 
-    const listingFormData = toCreateListingFormData(form);
+    const listingFormData = toCreateListingFormData(form, newFiles);
 
     if (isEditing) {
       if (!editData?.businessId) {
@@ -139,14 +134,20 @@ export function PostBusinessModal({ isOpen, onClose, editData }: PostBusinessMod
       }
 
       updateMutation.mutate(
-        { id: editData.businessId, formData: listingFormData },
+        {
+          id: editData.businessId,
+          formData: {
+            ...listingFormData,
+            removeImages: removedImages.length ? removedImages : undefined,
+            imageAction: newFiles.length > 0 ? 'add' : undefined,
+          },
+        },
         {
           onSuccess: onClose,
           onError: (err: any) => setError(err?.message ?? 'Failed to update. Please try again.'),
         },
       );
     } else {
-      // userId and chapterId are read from the auth store inside useCreateListing
       createMutation.mutate(listingFormData, {
         onSuccess: onClose,
         onError: (err: any) => setError(err?.message ?? 'Failed to create. Please try again.'),
@@ -238,7 +239,7 @@ export function PostBusinessModal({ isOpen, onClose, editData }: PostBusinessMod
               ? 'Existing images shown below. Upload new ones to add more.'
               : 'PNG or JPG (max 800×400px)'
           }
-          previews={previews}
+          previews={allPreviews}
           onChange={handleImages}
         />
 

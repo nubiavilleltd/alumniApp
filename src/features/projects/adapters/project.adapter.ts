@@ -133,9 +133,11 @@ export function mapProjectToUpdatePayload(
     const fd = new FormData();
     Object.entries(base).forEach(([k, v]) => fd.append(k, String(v ?? '')));
     formData.images!.forEach((img) => fd.append('images', img));
+    console.log('formD', { formData });
     return fd;
   }
 
+  console.log('base', { base });
   return base;
 }
 

@@ -9,7 +9,12 @@
 //   seller_name → owner
 //   title       → name
 
-import type { Business } from '../../types/marketplace.types';
+import { keyof } from 'zod';
+import type {
+  Business,
+  CreateListingFormData,
+  UpdateListingFormData,
+} from '../../types/marketplace.types';
 import { generateSlug, parseImages, extractList } from '@/lib/utils/adapters';
 
 // ─── Inbound (backend → frontend) ────────────────────────────────────────────
@@ -48,16 +53,6 @@ export function mapBackendListingList(rawResponse: unknown): Business[] {
 
 // ─── Outbound (frontend → backend) ───────────────────────────────────────────
 
-export interface CreateListingFormData {
-  name: string;
-  category: string;
-  description: string;
-  location: string;
-  phone: string;
-  website?: string;
-  images: File[];
-}
-
 /**
  * Build the create-listing payload.
  * Returns FormData when images are present, plain object otherwise.
@@ -90,7 +85,7 @@ export function mapBusinessToCreatePayload(
   if (formData.images.length > 0) {
     const fd = new FormData();
     Object.entries(base).forEach(([k, v]) => fd.append(k, String(v ?? '')));
-    formData.images.forEach((img) => fd.append('images[]', img));
+    formData.images.forEach((img) => fd.append('images', img));
     return fd;
   }
 
@@ -101,9 +96,55 @@ export function mapBusinessToCreatePayload(
  * Build the update-listing payload.
  * Sends to /manage_listing with function_type: "update".
  */
+// export function mapBusinessToUpdatePayload(
+//   businessId: string,
+//   formData: UpdateListingFormData,
+// ): FormData | Record<string, unknown> {
+//   const base: Record<string, unknown> = {
+//     id: businessId,
+//     function_type: 'update',
+//     title: formData.name,
+//     description: formData.description,
+//     category: formData.category,
+//     location: formData.location,
+//     phone: formData.phone,
+//     status: 'active',
+//     image_action: formData.imageAction
+//   };
+
+//   console.log("formData", {formData})
+
+//   if (formData.website?.trim()) base.website = formData.website.trim();
+
+//     if (formData.removeImages?.length) {
+//     base.remove_images = JSON.stringify(formData.removeImages);
+//   }
+
+//     const hasNewImages = (formData.images?.length ?? 0) > 0;
+// //   if (formData.images.length > 0) {
+// //     const fd = new FormData();
+// //     Object.entries(base).forEach(([k, v]) => fd.append(k, String(v ?? '')));
+// //     formData.images.forEach((img) => fd.append('images[]', img));
+// //     return fd;
+// //   }
+
+//   if (hasNewImages) {
+//     const fd = new FormData();
+//     Object.entries(base).forEach(([k, v]) => fd.append(k, String(v ?? '')));
+//     formData.images!.forEach((img) => fd.append('images', img));
+
+//      console.log("fd => ", {fd})
+//     return fd;
+//   }
+
+//   console.log("base => ", {base})
+
+//   return base;
+// }
+
 export function mapBusinessToUpdatePayload(
   businessId: string,
-  formData: CreateListingFormData,
+  formData: UpdateListingFormData,
 ): FormData | Record<string, unknown> {
   const base: Record<string, unknown> = {
     id: businessId,
@@ -116,15 +157,40 @@ export function mapBusinessToUpdatePayload(
     status: 'active',
   };
 
-  if (formData.website?.trim()) base.website = formData.website.trim();
+  if (formData.website?.trim()) {
+    base.website = formData.website.trim();
+  }
 
-  if (formData.images.length > 0) {
+  // ✅ Only set if defined
+  if (formData.imageAction) {
+    base.image_action = formData.imageAction;
+  }
+
+  // ✅ Required for deletion
+  if (formData.removeImages?.length) {
+    base.remove_images = JSON.stringify(formData.removeImages);
+  }
+
+  const hasNewImages = (formData.images?.length ?? 0) > 0;
+
+  if (hasNewImages) {
     const fd = new FormData();
-    Object.entries(base).forEach(([k, v]) => fd.append(k, String(v ?? '')));
-    formData.images.forEach((img) => fd.append('images[]', img));
+
+    Object.entries(base).forEach(([k, v]) => {
+      fd.append(k, String(v ?? ''));
+    });
+
+    // ✅ FIXED HERE
+    formData.images!.forEach((img) => {
+      fd.append('images', img);
+    });
+
+    console.log('fd => ', { fd });
+
     return fd;
   }
 
+  console.log('base => ', { base, formData });
   return base;
 }
 
