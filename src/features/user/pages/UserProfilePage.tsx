@@ -250,6 +250,13 @@ export default function UserProfilePage() {
 
             {/* ── Main content ───────────────────────────────────────── */}
             <main className="space-y-6 lg:col-span-2">
+              {/* About Section */}
+              <SectionCard title="About" icon="mdi:information-outline" onEdit={openEdit}>
+                <p className="text-gray-700 text-sm leading-relaxed">
+                  {currentUser?.bio || 'No bio available.'}
+                </p>
+              </SectionCard>
+
               <SectionCard title="Identity" icon="mdi:account-outline" onEdit={openEdit}>
                 <div className="divide-y divide-gray-50">
                   <FieldRow

@@ -86,6 +86,7 @@ export interface AuthSessionUser {
   photo?: string;
   alternativePhone?: string;
   birthDate?: string;
+  bio: string;
   houseColor?: string;
   isClassCoordinator?: boolean;
   residentialAddress?: string;

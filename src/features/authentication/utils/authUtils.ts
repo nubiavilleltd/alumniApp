@@ -62,6 +62,7 @@ export function toAuthSessionUser(account: MockAuthAccount): AuthSessionUser {
     email: account.email,
     whatsappPhone: account.whatsappPhone,
     graduationYear: account.graduationYear,
+    bio: account.bio,
 
     // ── Profile fields ────────────────────────────────────────────────────
     photo: account.photo,

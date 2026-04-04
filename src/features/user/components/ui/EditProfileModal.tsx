@@ -1612,6 +1612,7 @@ import {
   yearsOfExperienceOptions,
   houseColorOptions,
 } from '@/features/authentication/constants/profileOptions';
+import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
 
 interface Props {
   isOpen: boolean;
@@ -1626,6 +1627,7 @@ interface FormState {
   whatsappPhone: string;
   alternativePhone: string;
   birthDate: string;
+  bio: string;
 
   graduationYear: string;
   houseColor: string;
@@ -1662,6 +1664,7 @@ function toFormState(user: AuthSessionUser | null): FormState {
     whatsappPhone: user?.whatsappPhone ?? '',
     alternativePhone: user?.alternativePhone ?? '',
     birthDate: user?.birthDate ?? '',
+    bio: user?.bio ?? '',
 
     graduationYear: user?.graduationYear ? String(user.graduationYear) : '',
     houseColor: user?.houseColor ?? '',
@@ -1806,6 +1809,9 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
     if (form.instagram !== initialForm.instagram) {
       changes.instagram = form.instagram;
     }
+
+    changes.bio = form.bio;
+    changes.residentialAddress = form.residentialAddress;
 
     // ✅ Filter out undefined values completely
     const cleanedChanges: Partial<AuthSessionUser> = {};
@@ -2000,6 +2006,16 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
               onChange={handleChange}
               options={houseColorOptions}
               placeholder="Select house"
+            />
+          </div>
+          <div className="mt-4">
+            <TextareaInput
+              label="Bio"
+              name="bio"
+              rows={5}
+              placeholder="Tell us about yourself..."
+              value={form.bio}
+              onChange={handleChange}
             />
           </div>
         </div>
@@ -2226,7 +2242,8 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
 
         {/* Actions */}
         <div className="flex gap-3 pt-2 sticky bottom-0 bg-white pb-2 border-t border-gray-100 mt-4">
-          <Button onClick={handleSave} disabled={isSaving || !hasChanges} className="flex-1">
+          {/* <Button onClick={handleSave} disabled={isSaving || !hasChanges} className="flex-1"> */}
+          <Button onClick={handleSave} disabled={isSaving} className="flex-1">
             {isSaving ? (
               <span className="flex items-center justify-center gap-2">
                 <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" />

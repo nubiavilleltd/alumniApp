@@ -63,6 +63,7 @@ export function mapLoginResponse(res: any): {
       linkedin: res.profile?.linkedin,
       twitter: res.profile?.twitter,
       city: res.profile?.city,
+      residentialAddress: res.residential_address || '',
     } as AuthSessionUser,
   };
 }

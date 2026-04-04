@@ -1,7 +1,10 @@
+// features/events/routes.ts
+// Central route constants for the events feature.
+
 export const EVENT_ROUTES = {
   ROOT: '/events',
-  DETAIL: (slug: string) => `/events/${slug}`,
   CREATE: '/events/create',
-  EDIT: (id: string | number) => `/events/${id}/edit`,
   MY_EVENTS: '/my-events',
+  DETAIL: (id: string) => `/events/${id}`,
+  EDIT: (id: string) => `/events/${id}/edit`,
 } as const;

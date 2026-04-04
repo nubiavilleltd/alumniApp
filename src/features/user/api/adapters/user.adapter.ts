@@ -209,6 +209,7 @@ export function mapFrontendUserToBackendPayload(user: Partial<AuthSessionUser>) 
   if (user.houseColor !== undefined) payload.house_color = user.houseColor || '';
 
   if (user.birthDate !== undefined) payload.birth_date = user.birthDate || '';
+  if (user.bio !== undefined) payload.bio = user.bio || '';
 
   if (user.residentialAddress !== undefined)
     payload.residential_address = user.residentialAddress || '';
@@ -288,6 +289,7 @@ export function mapBackendResponseToFrontendUser(raw: unknown): Partial<AuthSess
     photo: hasRealPhoto ? String(avatarField) : undefined,
 
     birthDate: user.birth_date || undefined,
+    bio: user.bio || undefined,
 
     graduationYear: safeParseInt(user.graduation_year),
     houseColor: user.house_color || undefined,

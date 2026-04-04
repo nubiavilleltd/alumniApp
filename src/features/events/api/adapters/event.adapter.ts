@@ -84,6 +84,7 @@ export function mapEventToCreatePayload(
     end_time?: string;
     color?: string;
     visibility?: string;
+    status: string;
     max_attendees?: number;
     event_banner?: File | null;
   },

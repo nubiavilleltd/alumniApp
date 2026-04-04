@@ -49,6 +49,7 @@ export interface MockAuthAccount {
 
   // ── Profile fields (filled after registration) ────────────────────────────
   photo?: string;
+  bio: string;
   alternativePhone?: string;
   birthDate?: string;
   houseColor?: string;
