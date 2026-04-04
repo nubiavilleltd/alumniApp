@@ -44,8 +44,11 @@ export const API_ENDPOINTS = {
   },
 
   // ─── User / Profile ───────────────────────────────────────────────────────
+
   USER: {
     UPDATE_PROFILE: '/api/update_profile',
+    GET_PROFILE_VISIBILITY: '/api/get_profile_visibility',
+    UPDATE_PROFILE_VISIBILITY: '/api/update_profile_visibility',
   },
 
   // ─── Messages ──────────────────────────────────────────────────────────────
