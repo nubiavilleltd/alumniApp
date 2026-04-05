@@ -93,6 +93,7 @@ export function mapEventToCreatePayload(
 ): FormData | Record<string, unknown> {
   const base: Record<string, unknown> = {
     user_id: userId,
+    chapter_id: chapterId,
     title: formData.title,
     description: formData.description,
     location: formData.location,
@@ -118,6 +119,7 @@ export function mapEventToCreatePayload(
     });
 
     fd.append('event_banner', formData.event_banner);
+    fd.append('chapter_id', chapterId as string);
 
     return fd;
   }

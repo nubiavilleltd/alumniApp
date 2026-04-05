@@ -972,6 +972,8 @@ function CalendarView({
 export function EventsPage() {
   const navigate = useNavigate();
   const currentUser = useAuthStore((state) => state.user);
+
+  console.log('currentUser', { currentUser });
   const isAdmin = currentUser?.role === 'admin';
 
   const initialView =
