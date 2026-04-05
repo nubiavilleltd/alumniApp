@@ -19,8 +19,12 @@ import { logError } from '@/lib/errors/errorUtils';
 import { handleTokenRefresh } from '@/features/authentication/services/refreshToken.service';
 import { AUTH_ROUTES } from '@/features/authentication/routes';
 
+const configuredApiBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim() ?? '';
+const shouldUseViteDevProxy = import.meta.env.DEV && /^https?:\/\//i.test(configuredApiBaseUrl);
+const resolvedApiBaseUrl = shouldUseViteDevProxy ? '' : configuredApiBaseUrl;
+
 export const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: resolvedApiBaseUrl,
   headers: { 'Content-Type': 'application/json' },
   timeout: 15000,
 });

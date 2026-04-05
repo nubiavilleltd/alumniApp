@@ -12,12 +12,12 @@ export const MESSAGE_POLLING_INTERVAL_MS = 6_000;
 // follows it, so the future API can replace the mock without changing the page.
 export const MESSAGES_API_CONTRACT = {
   LIST_THREADS: {
-    method: 'GET',
+    method: 'POST',
     path: API_ENDPOINTS.MESSAGES.THREADS,
   },
   GET_THREAD: {
-    method: 'GET',
-    path: API_ENDPOINTS.MESSAGES.THREAD_DETAIL(':threadId'),
+    method: 'POST',
+    path: API_ENDPOINTS.MESSAGES.THREAD_DETAIL,
   },
   CREATE_DIRECT_THREAD: {
     method: 'POST',
@@ -37,10 +37,10 @@ export const MESSAGES_API_CONTRACT = {
   },
   MARK_THREAD_READ: {
     method: 'POST',
-    path: API_ENDPOINTS.MESSAGES.MARK_READ(':threadId'),
+    path: API_ENDPOINTS.MESSAGES.MARK_READ,
   },
   POLL_THREADS: {
-    method: 'GET',
+    method: 'POST',
     path: API_ENDPOINTS.MESSAGES.POLL,
   },
 } as const;

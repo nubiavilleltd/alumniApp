@@ -1,4 +1,5 @@
 import { Icon } from '@iconify/react';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   Fragment,
   useDeferredValue,
@@ -28,6 +29,7 @@ import {
 import type { UploadMessageAttachmentRequest } from '../api/messages.contract';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import {
+  messageKeys,
   useCreateDirectMessageThread,
   useMarkMessageThreadRead,
   useMessageThread,
@@ -35,8 +37,6 @@ import {
   useSendMessage,
   useUploadMessageAttachment,
 } from '../hooks/useMessages';
-import { isMockMessagesTransportActive } from '../services/messages.service';
-import { resetMockMessagesServerState } from '../lib/mockMessagesTransport';
 import {
   getMessageAttachmentPreviewUrl,
   registerMessageAttachmentPreview,
@@ -45,6 +45,7 @@ import {
 import type {
   MessageAttachment,
   MessageDeliveryStatus,
+  MessageItem,
   MessageThreadDetail,
   MessageThreadFilter,
   MessageThreadSummary,
@@ -171,6 +172,29 @@ function buildDraftComposerAttachmentFromUploadRequest(
     durationSeconds: uploadRequest.durationSeconds,
     previewUrl: options?.previewUrl,
     uploadRequest,
+  };
+}
+
+function buildOptimisticMessage(params: {
+  viewerMemberId: string;
+  threadId: string;
+  body?: string;
+  attachments: MessageAttachment[];
+  clientGeneratedId: string;
+  currentUserName?: string;
+  currentUserAvatar?: string;
+}): MessageItem {
+  return {
+    id: params.clientGeneratedId,
+    threadId: params.threadId,
+    senderMemberId: params.viewerMemberId,
+    senderDisplayName: params.currentUserName ?? 'You',
+    senderAvatar: params.currentUserAvatar,
+    body: params.body?.trim() ?? '',
+    createdAt: new Date().toISOString(),
+    status: 'sending',
+    attachments: params.attachments,
+    isOwn: true,
   };
 }
 
@@ -574,6 +598,7 @@ function ImageAttachmentLightbox({
 export function MessagesPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const queryClient = useQueryClient();
   const currentUser = useAuthStore((state) => state.user);
   const viewerMemberId = currentUser?.memberId ?? '';
   const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null);
@@ -588,6 +613,9 @@ export function MessagesPage() {
     'idle' | 'starting' | 'recording' | 'finishing'
   >('idle');
   const [voiceRecordingDurationMs, setVoiceRecordingDurationMs] = useState(0);
+  const [optimisticMessagesByThreadId, setOptimisticMessagesByThreadId] = useState<
+    Record<string, MessageItem[]>
+  >({});
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const voiceRecordButtonRef = useRef<HTMLButtonElement | null>(null);
   const messagePaneRef = useRef<HTMLDivElement | null>(null);
@@ -645,7 +673,17 @@ export function MessagesPage() {
   const activeThreadId = requestedThreadId ?? selectedThreadId ?? resolvedThreadSummary?.id ?? null;
   const threadQuery = useMessageThread(activeThreadId);
   const activeThread = threadQuery.data ?? null;
-  const threadShell = activeThread ?? resolvedThreadSummary;
+  const activeOptimisticMessages = activeThreadId
+    ? (optimisticMessagesByThreadId[activeThreadId] ?? [])
+    : [];
+  const activeThreadWithOptimisticMessages =
+    activeThread && activeOptimisticMessages.length > 0
+      ? {
+          ...activeThread,
+          messages: [...activeThread.messages, ...activeOptimisticMessages],
+        }
+      : activeThread;
+  const threadShell = activeThreadWithOptimisticMessages ?? resolvedThreadSummary;
   const unreadMessageCount = inboxQuery.data?.unreadCount ?? 0;
 
   function replaceMessagesSearch(nextThreadId?: string) {
@@ -669,16 +707,6 @@ export function MessagesPage() {
       inboxQuery.refetch(),
       activeThreadId ? threadQuery.refetch() : Promise.resolve(),
     ]);
-  }
-
-  function handleResetMockInbox() {
-    const shouldReset = window.confirm(
-      'Reset the mock messages inbox back to its seeded state? This clears threads created during testing.',
-    );
-    if (!shouldReset) return;
-
-    resetMockMessagesServerState();
-    window.location.assign('/messages');
   }
 
   function releaseDraftAttachmentResources(
@@ -714,6 +742,34 @@ export function MessagesPage() {
       });
 
       return [];
+    });
+  }
+
+  function addOptimisticMessage(threadId: string, message: MessageItem) {
+    setOptimisticMessagesByThreadId((previous) => ({
+      ...previous,
+      [threadId]: [...(previous[threadId] ?? []), message],
+    }));
+  }
+
+  function removeOptimisticMessage(threadId: string, messageId: string) {
+    setOptimisticMessagesByThreadId((previous) => {
+      const existingMessages = previous[threadId] ?? [];
+      const nextMessages = existingMessages.filter((message) => message.id !== messageId);
+
+      if (nextMessages.length === existingMessages.length) {
+        return previous;
+      }
+
+      if (nextMessages.length === 0) {
+        const { [threadId]: _removed, ...rest } = previous;
+        return rest;
+      }
+
+      return {
+        ...previous,
+        [threadId]: nextMessages,
+      };
     });
   }
 
@@ -1054,9 +1110,12 @@ export function MessagesPage() {
 
   useEffect(() => {
     const container = messagePaneRef.current;
-    if (!container || !activeThread?.messages.length) return;
+    if (!container || !activeThreadWithOptimisticMessages?.messages.length) return;
 
-    const lastMessage = activeThread.messages[activeThread.messages.length - 1];
+    const lastMessage =
+      activeThreadWithOptimisticMessages.messages[
+        activeThreadWithOptimisticMessages.messages.length - 1
+      ];
     const distanceFromBottom =
       container.scrollHeight - container.scrollTop - container.clientHeight;
 
@@ -1068,7 +1127,7 @@ export function MessagesPage() {
         });
       });
     }
-  }, [activeThread?.id, activeThread?.messages]);
+  }, [activeThreadWithOptimisticMessages?.id, activeThreadWithOptimisticMessages?.messages]);
 
   async function handleFileSelection(event: ChangeEvent<HTMLInputElement>) {
     const files = Array.from(event.target.files ?? []);
@@ -1084,15 +1143,18 @@ export function MessagesPage() {
   async function handleSendMessage() {
     if (!viewerMemberId || !activeThread) return;
 
-    const body = draftMessage.trim();
-    if (!body && draftAttachments.length === 0) return;
+    const currentThreadId = activeThread.id;
+    const originalDraftMessage = draftMessage;
+    const originalDraftAttachments = draftAttachments;
+    const body = originalDraftMessage.trim();
+    if (!body && originalDraftAttachments.length === 0) return;
 
     const uploadedByDraftId = new Map<string, MessageAttachment>();
     const preservePreviewUrls = new Set<string>();
     const preserveUploadedAttachmentIds = new Set<string>();
     const resolvedAttachments: MessageAttachment[] = [];
 
-    for (const draftAttachment of draftAttachments) {
+    for (const draftAttachment of originalDraftAttachments) {
       const uploadedAttachment =
         draftAttachment.uploadedAttachment ??
         (await uploadAttachment.mutateAsync(draftAttachment.uploadRequest));
@@ -1116,24 +1178,51 @@ export function MessagesPage() {
       );
     }
 
-    const response = await sendMessage.mutateAsync(
-      buildSendMessageRequest({
-        viewerMemberId,
-        threadId: activeThread.id,
-        body,
-        attachments: resolvedAttachments,
-      }),
-    );
-
-    if (response.thread.id !== activeThread.id) {
-      setSelectedThreadId(response.thread.id);
-      replaceMessagesSearch(response.thread.id);
-    }
+    const request = buildSendMessageRequest({
+      viewerMemberId,
+      threadId: currentThreadId,
+      body,
+      attachments: resolvedAttachments,
+    });
+    const optimisticMessage = buildOptimisticMessage({
+      viewerMemberId,
+      threadId: currentThreadId,
+      body,
+      attachments: resolvedAttachments,
+      clientGeneratedId: request.clientGeneratedId,
+      currentUserName: currentUser?.fullName,
+      currentUserAvatar: currentUser?.photo,
+    });
 
     discardDraftComposer({
       preservePreviewUrls,
       preserveUploadedAttachmentIds,
     });
+    addOptimisticMessage(currentThreadId, optimisticMessage);
+
+    try {
+      const response = await sendMessage.mutateAsync(request);
+
+      removeOptimisticMessage(currentThreadId, optimisticMessage.id);
+      queryClient.setQueryData(
+        messageKeys.thread(viewerMemberId, response.thread.id),
+        response.thread,
+      );
+
+      if (response.thread.id !== currentThreadId) {
+        queryClient.removeQueries({
+          queryKey: messageKeys.thread(viewerMemberId, currentThreadId),
+          exact: true,
+        });
+        setSelectedThreadId(response.thread.id);
+        replaceMessagesSearch(response.thread.id);
+      }
+    } catch (error) {
+      removeOptimisticMessage(currentThreadId, optimisticMessage.id);
+      setDraftMessage(originalDraftMessage);
+      setDraftAttachments(originalDraftAttachments);
+      return;
+    }
   }
 
   function handleComposerKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
@@ -1223,17 +1312,6 @@ export function MessagesPage() {
                   </div>
 
                   <div className="flex items-center gap-2">
-                    {import.meta.env.DEV && isMockMessagesTransportActive() ? (
-                      <button
-                        type="button"
-                        onClick={handleResetMockInbox}
-                        className="inline-flex items-center gap-2 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-800 transition-colors hover:border-amber-300 hover:bg-amber-100"
-                      >
-                        <Icon icon="mdi:refresh-auto" className="h-4 w-4" />
-                        <span>Reset mock inbox</span>
-                      </button>
-                    ) : null}
-
                     <button
                       type="button"
                       onClick={() => void refreshAll()}
@@ -1314,6 +1392,12 @@ export function MessagesPage() {
                     description="Refresh to try loading your conversations again."
                     actionLabel="Refresh"
                     onAction={() => void refreshAll()}
+                  />
+                ) : inboxThreads.length === 0 ? (
+                  <EmptyState
+                    icon="mdi:message-outline"
+                    title="No messages yet"
+                    description="Once conversations begin, they will appear here."
                   />
                 ) : visibleThreads.length === 0 ? (
                   <EmptyState
@@ -1469,16 +1553,17 @@ export function MessagesPage() {
                         actionLabel="Refresh"
                         onAction={() => void refreshAll()}
                       />
-                    ) : activeThread ? (
+                    ) : activeThreadWithOptimisticMessages ? (
                       <div className="space-y-4">
-                        {activeThread.messages.map((message, index) => {
-                          const previousMessage = activeThread.messages[index - 1];
+                        {activeThreadWithOptimisticMessages.messages.map((message, index) => {
+                          const previousMessage =
+                            activeThreadWithOptimisticMessages.messages[index - 1];
                           const showDayDivider =
                             !previousMessage ||
                             new Date(previousMessage.createdAt).toDateString() !==
                               new Date(message.createdAt).toDateString();
                           const showSenderName =
-                            activeThread.type === 'group' &&
+                            activeThreadWithOptimisticMessages.type === 'group' &&
                             !message.isOwn &&
                             (!previousMessage ||
                               previousMessage.senderMemberId !== message.senderMemberId ||

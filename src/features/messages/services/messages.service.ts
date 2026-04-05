@@ -8,12 +8,12 @@ import type {
   SendMessageRequest,
   UploadMessageAttachmentRequest,
 } from '../api/messages.contract';
-import { mockMessagesTransport } from '../lib/mockMessagesTransport';
+import { backendMessagesTransport } from '../lib/backendMessagesTransport';
 
-const activeMessagesTransport = mockMessagesTransport;
+const activeMessagesTransport = backendMessagesTransport;
 
 export function isMockMessagesTransportActive() {
-  return true;
+  return false;
 }
 
 export const messagesService = {
