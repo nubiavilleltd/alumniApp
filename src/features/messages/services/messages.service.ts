@@ -8,21 +8,12 @@ import type {
   SendMessageRequest,
   UploadMessageAttachmentRequest,
 } from '../api/messages.contract';
-import { isMessagesSupabaseConfigured } from '../lib/supabase';
-import { supabaseMessagesTransport } from '../lib/supabase/messagesSupabaseTransport';
 import { mockMessagesTransport } from '../lib/mockMessagesTransport';
 
-const activeMessagesTransport = isMessagesSupabaseConfigured()
-  ? supabaseMessagesTransport
-  : mockMessagesTransport;
-const activeMessagesTransportMode = isMessagesSupabaseConfigured() ? 'supabase' : 'mock';
+const activeMessagesTransport = mockMessagesTransport;
 
 export function isMockMessagesTransportActive() {
-  return activeMessagesTransportMode === 'mock';
-}
-
-export function isSupabaseMessagesTransportActive() {
-  return activeMessagesTransportMode === 'supabase';
+  return true;
 }
 
 export const messagesService = {

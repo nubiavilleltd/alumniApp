@@ -42,7 +42,6 @@ import {
   registerMessageAttachmentPreview,
   revokeMessageAttachmentPreview,
 } from '../lib/messageAttachmentPreviewRegistry';
-import { ensureChatProfile } from '../lib/supabase/chat.actions';
 import type {
   MessageAttachment,
   MessageDeliveryStatus,
@@ -997,14 +996,6 @@ export function MessagesPage() {
   }, []);
 
   useEffect(() => {
-    if (!currentUser?.memberId) return;
-
-    void ensureChatProfile(currentUser).catch((error) => {
-      console.error('Unable to ensure the current user exists in chat_profiles.', error);
-    });
-  }, [currentUser]);
-
-  useEffect(() => {
     if (!requestedThreadId) return;
 
     setSelectedThreadId((current) => (current === requestedThreadId ? current : requestedThreadId));
@@ -1024,19 +1015,12 @@ export function MessagesPage() {
 
     pendingDirectThreadIntentRef.current = intentKey;
 
-    void (async () => {
-      try {
-        await ensureChatProfile(currentUser);
-      } catch (error) {
-        console.error('Unable to ensure the current user exists in chat_profiles.', error);
-      }
-
-      return createDirectThread.mutateAsync({
+    void createDirectThread
+      .mutateAsync({
         viewerMemberId: currentUser.memberId,
         participantMemberId: requestedRecipientId,
         topic: requestedTopic,
-      });
-    })()
+      })
       .then((response) => {
         setSelectedThreadId(response.thread.id);
         replaceMessagesSearch(response.thread.id);

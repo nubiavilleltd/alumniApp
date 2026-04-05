@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { toast } from '@/shared/components/ui/Toast';
 import { registerMessageRecipient } from '../lib/messageRecipientRegistry';
-import { ensureChatProfile } from '../lib/supabase/chat.actions';
 import { useCreateDirectMessageThread } from './useMessages';
 
 interface DirectConversationRecipientProfile {
@@ -62,12 +61,6 @@ export function useStartDirectConversation() {
       toast.info('Your existing conversations are waiting in your inbox.');
       navigate('/messages');
       return;
-    }
-
-    try {
-      await ensureChatProfile(currentUser);
-    } catch (error) {
-      console.error('Unable to ensure the current user exists in chat_profiles.', error);
     }
 
     try {

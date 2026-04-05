@@ -10,7 +10,6 @@ mock data to live data with minimal frontend changes.
 For the broader rollout plans, see:
 
 - `docs/messages-realtime-implementation-plan.md` for the backend-neutral realtime architecture
-- `docs/messages-supabase-implementation-plan.md` for the Supabase-backed prototype path
 
 ## Source Of Truth In Code
 
