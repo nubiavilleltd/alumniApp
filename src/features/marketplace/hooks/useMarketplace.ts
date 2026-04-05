@@ -9,6 +9,7 @@ import type {
   GetMarketplaceParams,
   UpdateListingFormData,
 } from '../types/marketplace.types';
+import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 
 // ─── Query keys ───────────────────────────────────────────────────────────────
 
@@ -87,7 +88,9 @@ export function useLatestListings(count = 6) {
 /** Create a new listing. Caller passes form data; hook reads userId from store. */
 export function useCreateListing() {
   const queryClient = useQueryClient();
-  const currentUser = useAuthStore((state) => state.user);
+  // const currentUser = useAuthStore((state) => state.user);
+  const { data: currentUser, isLoading } = useCurrentUser();
+  // const currentUser = useAuthStore((state) => state.user);
 
   return useMutation({
     mutationFn: (formData: CreateListingFormData) => {

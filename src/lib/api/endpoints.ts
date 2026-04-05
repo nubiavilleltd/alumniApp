@@ -10,7 +10,6 @@ export const API_ENDPOINTS = {
     REGISTER: '/api/register',
     LOGOUT: '/api/logout',
     REFRESH_TOKEN: '/api/refresh_token',
-    ME: '/auth/me',
     FORGOT_PASSWORD: '/api/forgot_password',
     RESET_PASSWORD: '/api/reset_password',
     VERIFY_EMAIL: '/api/verify_email',
@@ -49,6 +48,7 @@ export const API_ENDPOINTS = {
     UPDATE_PROFILE: '/api/update_profile',
     GET_PROFILE_VISIBILITY: '/api/get_profile_visibility',
     UPDATE_PROFILE_VISIBILITY: '/api/update_profile_visibility',
+    GET_USER_PROFILE: '/api/get_user_profile',
   },
 
   // ─── Messages ──────────────────────────────────────────────────────────────

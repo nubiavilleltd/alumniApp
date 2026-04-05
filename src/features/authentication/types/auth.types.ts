@@ -12,9 +12,12 @@ import type {
   registerDetailsSchema,
   resetPasswordSchema,
 } from '../schemas/authSchema';
-import type { ApprovalStatus, AccountStatus, DuesStatus } from '../constants/mockAccounts';
 
 export type AuthMode = 'login' | 'register' | 'forgot-password' | 'reset-password';
+export type ApprovalStatus = 'pending' | 'approved' | 'rejected';
+export type AccountStatus = 'active' | 'suspended' | 'closed' | 'deactivated';
+// export type DuesStatus = 'paid' | 'owing' | 'exempt';
+export type DuesStatus = 'paid' | 'owing' | 'overdue' | 'exempt' | 'unknown';
 
 // ─── Privacy ──────────────────────────────────────────────────────────────────
 
@@ -23,7 +26,7 @@ export type FieldVisibility = 'public' | 'private';
 
 export interface PrivacySettings {
   photo: FieldVisibility;
-  whatsappPhone: FieldVisibility;
+  phone: FieldVisibility;
   alternativePhone: FieldVisibility;
   birthDate: FieldVisibility;
   residentialAddress: FieldVisibility;
@@ -37,7 +40,7 @@ export interface PrivacySettings {
 
 export const defaultPrivacySettings: PrivacySettings = {
   photo: 'public',
-  whatsappPhone: 'private',
+  phone: 'private',
   alternativePhone: 'private',
   birthDate: 'private',
   residentialAddress: 'private',
@@ -54,6 +57,7 @@ export const defaultPrivacySettings: PrivacySettings = {
 export interface AuthSessionUser {
   memberId: string;
   id: string;
+  userCode: string;
   slug: string;
   avatarInitials: string;
   profileHref: string;
@@ -101,6 +105,9 @@ export interface AuthSessionUser {
   linkedin?: string;
   twitter?: string;
   instagram?: string;
+  facebook?: string;
+  website?: string;
+  country?: string;
 
   privacy?: PrivacySettings;
 
@@ -135,7 +142,7 @@ export interface AuthUserSummary {
 // }
 
 export interface LoginResponse {
-  user: AuthSessionUser;
+  user: { id: string; memberId: string; role: string };
   accessToken: string;
   refreshToken: string;
 }

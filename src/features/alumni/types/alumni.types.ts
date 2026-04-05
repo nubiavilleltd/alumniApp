@@ -89,6 +89,7 @@ import type { PrivacySettings } from '@/features/authentication/types/auth.types
 
 export interface Alumni {
   // ── Relational keys ──────────────────────────────────────────────────────
+  id: string;
   memberId: string;
   chapterId?: string;
 
@@ -98,7 +99,7 @@ export interface Alumni {
   email: string;
 
   // ── School ────────────────────────────────────────────────────────────────
-  year: number;
+  graduationYear: number;
   nameInSchool: string;
   houseColor?: string;
 
@@ -108,8 +109,7 @@ export interface Alumni {
 
   // ── Profile ───────────────────────────────────────────────────────────────
   photo: string;
-  short_bio: string;
-  long_bio: string;
+  bio: string;
   birthDate?: string;
 
   // ── Location ──────────────────────────────────────────────────────────────
@@ -132,15 +132,6 @@ export interface Alumni {
   facebook?: string;
   website?: string;
   instagram?: string;
-
-  // ── Additional ────────────────────────────────────────────────────────────
-  skills: string[];
-  achievements: string[];
-
-  projects: any[];
-  work_experience: any[];
-  education: any[];
-  interests: any[];
 
   // ── Status ────────────────────────────────────────────────────────────────
   isCoordinator: boolean;

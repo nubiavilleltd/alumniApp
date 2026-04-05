@@ -150,6 +150,7 @@ function generateInitialsAvatar(name: string): string {
  * 2. Initials avatar (only as last resort)
  */
 function resolvePhotoUrl(avatarField: any, name: string): string {
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
   // Check if we have a real photo URL
   const hasRealPhoto =
     avatarField &&
@@ -158,7 +159,7 @@ function resolvePhotoUrl(avatarField: any, name: string): string {
     !String(avatarField).includes('ui-avatars.com');
 
   if (hasRealPhoto) {
-    return String(avatarField);
+    return `${BASE_URL}/${String(avatarField)}`;
   }
 
   // Fallback to initials avatar
@@ -181,6 +182,10 @@ function resolvePhotoUrl(avatarField: any, name: string): string {
  */
 export function mapBackendAlumniToFrontend(raw: unknown): Alumni {
   const d = raw as Record<string, any>;
+
+  if (d.id == '39') {
+    console.log('id39', { prof: d });
+  }
   const profile = d.profile || {};
 
   const name = d.fullname || `${d.first_name || ''} ${d.last_name || ''}`.trim() || 'Unknown';
@@ -192,27 +197,30 @@ export function mapBackendAlumniToFrontend(raw: unknown): Alumni {
   // ═══════════════════════════════════════════════════════════════════════
   // ✅ NEW: Privacy mapping
   // ═══════════════════════════════════════════════════════════════════════
-  let privacy = defaultPrivacySettings;
 
-  if (d.privacy || d.field_visibility) {
-    try {
-      privacy = {
-        ...defaultPrivacySettings,
-        ...mapBackendPrivacyToFrontend(d),
-      };
-    } catch (error) {
-      console.warn('Failed to map privacy for alumni:', name, error);
-    }
-  }
+  //   if (d.privacy || d.field_visibility) {
+  //     try {
+  //       privacy = {
+  //         ...defaultPrivacySettings,
+  //         ...mapBackendPrivacyToFrontend(d),
+  //       };
+  //     } catch (error) {
+  //       console.warn('Failed to map privacy for alumni:', name, error);
+  //     }
+  //   }
+  //   if (d.privacy || d.field_visibility) {
+  //      privacy = mapBackendPrivacyToFrontend(d)
+  //   }
 
   return {
+    id: String(d.id ?? ''),
     memberId: String(d.id ?? ''),
     slug: generateSlug(name, d.id ?? '', 'alumni'),
 
     name,
     email: safeString(d.email),
 
-    year: safeParseInt(d.graduation_year) ?? new Date().getFullYear(),
+    graduationYear: safeParseInt(d.graduation_year) ?? new Date().getFullYear(),
     nameInSchool: safeString(d.name_in_school),
     houseColor: safeString(d.house_color),
 
@@ -222,8 +230,7 @@ export function mapBackendAlumniToFrontend(raw: unknown): Alumni {
     // ✅ FIXED: Use proper photo resolution logic
     photo: resolvePhotoUrl(avatarField, name),
 
-    short_bio: safeString(d.bio),
-    long_bio: safeString(d.bio),
+    bio: safeString(d.bio),
     birthDate: optionalString(d.birth_date),
 
     city,
@@ -244,15 +251,7 @@ export function mapBackendAlumniToFrontend(raw: unknown): Alumni {
     twitter: optionalString(profile.twitter),
     facebook: optionalString(profile.facebook),
     website: optionalString(profile.website),
-    instagram: undefined,
-
-    skills: parseArray(profile.skills) ?? [],
-    achievements: parseArray(profile.achievements) ?? [],
-
-    projects: [],
-    work_experience: [],
-    education: [],
-    interests: [],
+    instagram: optionalString(profile.instagram),
 
     isCoordinator: stringToBoolean(d.is_coordinator) ?? false,
     isVolunteer: stringToBoolean(d.is_volunteer),
@@ -264,7 +263,7 @@ export function mapBackendAlumniToFrontend(raw: unknown): Alumni {
     // ═══════════════════════════════════════════════════════════════════════
     // ✅ NEW: Privacy settings
     // ═══════════════════════════════════════════════════════════════════════
-    privacy,
+    privacy: mapBackendPrivacyToFrontend(profile),
   };
 }
 

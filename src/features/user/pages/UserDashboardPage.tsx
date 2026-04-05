@@ -484,6 +484,8 @@ import { EVENT_ROUTES } from '@/features/events/routes';
 import { ALUMNI_ROUTES } from '@/features/alumni/routes';
 import { MARKETPLACE_ROUTES } from '@/features/marketplace/routes';
 import { USER_ROUTES } from '../routes';
+import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
+import { mapCurrentUserResponse } from '@/features/authentication/api/adapters/login.adapter';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -626,7 +628,9 @@ function SectionSkeleton({ rows = 3 }: { rows?: number }) {
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export function UserDashboardPage() {
-  const currentUser = useAuthStore((state) => state.user);
+  // const currentUser = useAuthStore((state) => state.user);
+
+  const { data: currentUser, isLoading: isLoadingProfile } = useCurrentUser();
 
   // Real data
   const { data: upcomingEvents = [], isLoading: eventsLoading } = useUpcomingEvents();
@@ -948,7 +952,8 @@ export function UserDashboardPage() {
                           <div className="min-w-0">
                             <p className="font-medium text-accent-900">{alumnus.name}</p>
                             <p className="mt-1 truncate text-sm text-accent-600">
-                              {alumnus.position && `${alumnus.position} • `}Class of {alumnus.year}
+                              {alumnus.position && `${alumnus.position} • `}Class of{' '}
+                              {alumnus.graduationYear}
                             </p>
                           </div>
                         </AppLink>

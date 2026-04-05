@@ -10,7 +10,6 @@ import { z } from 'zod';
 import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
-import { authenticateMockAccount } from '@/features/authentication/lib/mockAuth';
 import { ROUTES } from '@/shared/constants/routes';
 import { USER_ROUTES } from '../routes';
 

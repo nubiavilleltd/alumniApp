@@ -8,12 +8,12 @@ import { FilterDropdown } from '@/shared/components/ui/FilterDropdown';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import { useAlumni } from '@/features/alumni/hooks/useAlumni';
 import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
-import { getMockAccountByMemberId } from '@/features/authentication/lib/mockAuth';
 import { defaultPrivacySettings } from '@/features/authentication/types/auth.types';
 import { isFieldVisible, getPhotoDisplay } from '@/features/alumni/utils/privacyHelpers';
 import { ALUMNI_ROUTES } from '../routes';
 import { ROUTES } from '@/shared/constants/routes';
 import { useStartDirectConversation } from '@/features/messages/hooks/useStartDirectConversation';
+import { Alumni } from '../types/alumni.types';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 function AlumnaeCardSkeleton() {
@@ -36,37 +36,21 @@ function AlumnaeCardSkeleton() {
 
 // ─── Alumnae Card ─────────────────────────────────────────────────────────────
 interface AlumnaeCardProps {
-  entry: {
-    name: string;
-    slug: string;
-    year: number;
-    photo?: string;
-    short_bio: string;
-    location?: string;
-    memberId?: string;
-  };
+  entry: Alumni;
   currentUser: any;
-  onMessageClick: (entry: {
-    name: string;
-    slug: string;
-    year: number;
-    photo?: string;
-    short_bio: string;
-    location?: string;
-    memberId?: string;
-  }) => void;
+  onMessageClick: (entry: Alumni) => void;
   isMessagePending: boolean;
 }
 
 function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: AlumnaeCardProps) {
   // Get privacy settings for this alumnus
-  const alumnusAccount = entry.memberId ? getMockAccountByMemberId(entry.memberId) : undefined;
-  const privacy = { ...defaultPrivacySettings, ...alumnusAccount?.privacy };
-  const alumnusWithPrivacy = { ...entry, privacy, id: entry.memberId };
+  // const alumnusAccount = entry.memberId ? getMockAccountByMemberId(entry.memberId) : undefined;
+  // const privacy = { ...defaultPrivacySettings, ...alumnusAccount?.privacy };
+  // const alumnusWithPrivacy = { ...entry };
 
   // Check field visibility
-  const photoVisible = isFieldVisible(alumnusWithPrivacy, 'photo', currentUser);
-  const cityVisible = isFieldVisible(alumnusWithPrivacy, 'city', currentUser);
+  const photoVisible = isFieldVisible(entry, 'photo', currentUser);
+  const cityVisible = isFieldVisible(entry, 'city', currentUser);
 
   const initials = entry.name
     .split(' ')
@@ -74,7 +58,7 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: A
     .join('')
     .toUpperCase();
 
-  const classLabel = `Class '${String(entry.year).slice(-2)}`;
+  const classLabel = `Class '${String(entry.graduationYear).slice(-2)}`;
   const isOwnProfile = entry.memberId === currentUser?.memberId;
 
   // Determine photo display
@@ -123,7 +107,7 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: A
             </>
           )}
         </div>
-        <p className="text-gray-500 text-[11px] leading-relaxed line-clamp-2">{entry.short_bio}</p>
+        <p className="text-gray-500 text-[11px] leading-relaxed line-clamp-2">{entry.bio}</p>
         <div className="flex items-center gap-1.5 mt-1">
           <button
             type="button"
@@ -166,7 +150,7 @@ export function AlumniDirectoryPage() {
 
   // ── Derived data ───────────────────────────────────────────────────────────
   const years = useMemo(
-    () => [...new Set(alumni.map((e) => e.year))].sort((a, b) => b - a),
+    () => [...new Set(alumni.map((e) => e.graduationYear))].sort((a, b) => b - a),
     [alumni],
   );
 
@@ -174,8 +158,8 @@ export function AlumniDirectoryPage() {
     const q = searchTerm.trim().toLowerCase();
     return alumni.filter((e) => {
       const matchesSearch =
-        !q || e.name.toLowerCase().includes(q) || e.short_bio.toLowerCase().includes(q);
-      const matchesYear = !yearFilter || e.year.toString() === yearFilter;
+        !q || e.name.toLowerCase().includes(q) || e.bio.toLowerCase().includes(q);
+      const matchesYear = !yearFilter || e.graduationYear.toString() === yearFilter;
       return matchesSearch && matchesYear;
     });
   }, [alumni, searchTerm, yearFilter]);
@@ -265,7 +249,7 @@ export function AlumniDirectoryPage() {
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4 mb-10">
               {visibleAlumni.map((entry) => (
                 <AlumnaeCard
-                  key={entry.slug}
+                  key={entry.id}
                   entry={entry}
                   currentUser={currentUser}
                   onMessageClick={handleStartConversation}

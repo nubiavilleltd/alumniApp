@@ -4,7 +4,6 @@ import { Icon } from '@iconify/react';
 import { useParams } from 'react-router-dom';
 import { useAlumnus } from '@/features/alumni/hooks/useAlumni';
 import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
-import { getMockAccountByMemberId } from '@/features/authentication/lib/mockAuth';
 import { defaultPrivacySettings } from '@/features/authentication/types/auth.types';
 import type { PrivacySettings, FieldVisibility } from '@/features/authentication/types/auth.types';
 import { AppLink } from '@/shared/components/ui/AppLink';
@@ -25,6 +24,8 @@ import {
 import { ALUMNI_ROUTES } from '../routes';
 import { ROUTES } from '@/shared/constants/routes';
 import { AUTH_ROUTES } from '@/features/authentication/routes';
+import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
+import { mapCurrentUserResponse } from '@/features/authentication/api/adapters/login.adapter';
 
 // ─── Helper Functions ─────────────────────────────────────────────────────────
 function resolveLabel(
@@ -189,7 +190,10 @@ function SectionCard({
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export function AlumniProfilePage() {
   const { slug = '' } = useParams(); // slug is actually the ID now (e.g., "16")
-  const currentUser = useAuthStore((state) => state.user);
+  // const currentUser = useAuthStore((state) => state.user);
+
+  const { data: currentUser, isLoading: isLoadingProfile } = useCurrentUser();
+
   const isSignedIn = !!currentUser;
   const { startDirectConversation, isPending: isStartingConversation } =
     useStartDirectConversation();
@@ -197,7 +201,7 @@ export function AlumniProfilePage() {
   // Fetch alumnus by ID
   const { data: alumnus, isLoading, error } = useAlumnus(slug);
 
-  if (isLoading) return <ProfileSkeleton />;
+  if (isLoading || isLoadingProfile) return <ProfileSkeleton />;
 
   if (error) {
     return (
@@ -247,41 +251,45 @@ export function AlumniProfilePage() {
   const isOwnProfile = currentUser?.memberId === alumnus.memberId;
 
   // ── Merge session data for own profile ────────────────────────────────────
-  const displayAlumnus =
-    isOwnProfile && currentUser
-      ? {
-          ...alumnus,
-          photo: currentUser.photo || alumnus.photo,
-          alternativePhone: currentUser.alternativePhone || alumnus.alternativePhone,
-          birthDate: currentUser.birthDate || alumnus.birthDate,
-          residentialAddress: currentUser.residentialAddress || alumnus.residentialAddress,
-          area: currentUser.area || alumnus.area,
-          city: currentUser.city || alumnus.city,
-          employmentStatus: currentUser.employmentStatus || alumnus.employmentStatus,
-          occupations: currentUser.occupations || alumnus.occupations,
-          industrySectors: currentUser.industrySectors || alumnus.industrySectors,
-          yearsOfExperience: currentUser.yearsOfExperience ?? alumnus.yearsOfExperience,
-          isVolunteer: currentUser.isVolunteer ?? alumnus.isVolunteer,
-          linkedin: currentUser.linkedin || alumnus.linkedin,
-          twitter: currentUser.twitter || alumnus.twitter,
-          instagram: currentUser.instagram || alumnus.instagram,
-          whatsappPhone: currentUser.whatsappPhone || (alumnus as any).whatsappPhone,
-          privacy: currentUser.privacy || (alumnus as any).privacy,
-        }
-      : alumnus;
+  // const displayAlumnus =
+  //   isOwnProfile && currentUser
+  //     ? {
+  //         ...alumnus,
+  //         photo: currentUser.photo || alumnus.photo,
+  //         alternativePhone: currentUser.alternativePhone || alumnus.alternativePhone,
+  //         birthDate: currentUser.birthDate || alumnus.birthDate,
+  //         residentialAddress: currentUser.residentialAddress || alumnus.residentialAddress,
+  //         area: currentUser.area || alumnus.area,
+  //         city: currentUser.city || alumnus.city,
+  //         employmentStatus: currentUser.employmentStatus || alumnus.employmentStatus,
+  //         occupations: currentUser.occupations || alumnus.occupations,
+  //         industrySectors: currentUser.industrySectors || alumnus.industrySectors,
+  //         yearsOfExperience: currentUser.yearsOfExperience ?? alumnus.yearsOfExperience,
+  //         isVolunteer: currentUser.isVolunteer ?? alumnus.isVolunteer,
+  //         linkedin: currentUser.linkedin || alumnus.linkedin,
+  //         twitter: currentUser.twitter || alumnus.twitter,
+  //         instagram: currentUser.instagram || alumnus.instagram,
+  //         whatsappPhone: currentUser.whatsappPhone || (alumnus as any).whatsappPhone,
+  //         privacy: currentUser.privacy || (alumnus as any).privacy,
+  //       }
+  //     : alumnus;
 
-  // ── Resolve privacy settings ──────────────────────────────────────────────
-  const alumnusAccount = displayAlumnus.memberId
-    ? getMockAccountByMemberId(displayAlumnus.memberId)
-    : undefined;
+  // // ── Resolve privacy settings ──────────────────────────────────────────────
+  // const alumnusAccount = displayAlumnus.memberId
+  //   ? getMockAccountByMemberId(displayAlumnus.memberId)
+  //   : undefined;
 
-  const privacy: PrivacySettings = {
-    ...defaultPrivacySettings,
-    ...alumnusAccount?.privacy,
-    ...(isOwnProfile && currentUser?.privacy ? currentUser.privacy : {}),
-  };
+  // const privacy: PrivacySettings = {
+  //   ...defaultPrivacySettings,
+  //   ...alumnusAccount?.privacy,
+  //   ...(isOwnProfile && currentUser?.privacy ? currentUser.privacy : {}),
+  // };
 
-  const alum = { ...displayAlumnus, privacy };
+  // const alum = { ...displayAlumnus, privacy };
+
+  const alum = alumnus;
+
+  console.log('alum alum', { alum });
 
   // Resolved labels
   const occupationLabel = resolveLabel(alum.occupations?.[0], occupationOptions);
@@ -296,7 +304,7 @@ export function AlumniProfilePage() {
 
   return (
     <>
-      <SEO title={alum.name || 'Alumni Profile'} description={alum.short_bio} />
+      <SEO title={alum.name || 'Alumni Profile'} description={alum.bio} />
       <Breadcrumbs items={breadcrumbItems} />
 
       <section className="section py-12">
@@ -349,7 +357,7 @@ export function AlumniProfilePage() {
                   <p className="text-xs text-gray-400 mt-0.5">née {alum.nameInSchool}</p>
                 )}
 
-                <p className="text-sm text-primary-500 mt-0.5">Class of {alum.year}</p>
+                <p className="text-sm text-primary-500 mt-0.5">Class of {alum.graduationYear}</p>
 
                 {/* Employment summary */}
                 {occupationLabel && (
@@ -387,7 +395,7 @@ export function AlumniProfilePage() {
                             ? employmentLabel
                               ? `${occupationLabel} · ${employmentLabel}`
                               : occupationLabel
-                            : `Class of ${alum.year}`;
+                            : `Class of ${alum.graduationYear}`;
 
                       void startDirectConversation({
                         participantMemberId: alum.memberId,
@@ -397,7 +405,7 @@ export function AlumniProfilePage() {
                           avatar: alum.photo,
                           headline: recipientHeadline,
                           location: alum.location || alum.city,
-                          graduationYear: alum.year,
+                          graduationYear: alum.graduationYear,
                           slug: alum.slug,
                           profileHref: `/alumni/profiles/${alum.memberId}`,
                         },
@@ -421,7 +429,7 @@ export function AlumniProfilePage() {
               {/* About Section */}
               <SectionCard title="About" icon="mdi:information-outline">
                 <p className="text-gray-700 text-sm leading-relaxed">
-                  {alum.long_bio || alum.short_bio || 'No bio available.'}
+                  {alum.bio || 'No bio available.'}
                 </p>
               </SectionCard>
 
@@ -437,9 +445,9 @@ export function AlumniProfilePage() {
                   <FieldRow label="Email" value={alum.email} icon="mdi:email-outline" />
                   <FieldRowWithPrivacy
                     label="WhatsApp"
-                    value={(alum as any).whatsappPhone}
+                    value={alum.phone}
                     icon="mdi:whatsapp"
-                    privacy={alum.privacy?.whatsappPhone}
+                    privacy={alum.privacy?.phone}
                     currentUser={currentUser}
                     viewerIsOwner={isOwnProfile}
                   />

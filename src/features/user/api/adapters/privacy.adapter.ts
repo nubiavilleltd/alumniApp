@@ -181,20 +181,50 @@ import type { PrivacySettings, FieldVisibility } from '@/features/authentication
  * }
  */
 
+// export function mapBackendPrivacyToFrontend(raw: any): PrivacySettings {
+//   const visibility = raw.field_visibility || {};
+
+//   // Helper: Ensure value is "public" or "private"
+//   const normalize = (value: any): FieldVisibility => {
+//     // if (value === 'public') return 'public';
+//     // if (value === 'private') return 'private';
+
+//     if (value === 'public' || value === true || value === 'true' || value === 1 || value === '1') {
+//       return 'public';
+//     }
+
+//     // Fallback for any unexpected values
+//     return 'private'; // Default to private for safety
+//   };
+
+//   return {
+//     photo: normalize(visibility.avatar),
+//     whatsappPhone: normalize(visibility.phone),
+//     alternativePhone: normalize(visibility.alternative_phone),
+//     birthDate: normalize(visibility.birth_date),
+//     residentialAddress: normalize(visibility.residential_address),
+//     area: normalize(visibility.area),
+//     city: normalize(visibility.city),
+//     employmentStatus: normalize(visibility.employment_status),
+//     occupations: normalize(visibility.occupation),
+//     industrySectors: normalize(visibility.industry_sector),
+//     yearsOfExperience: normalize(visibility.years_of_experience),
+//   };
+// }
+
+// features/user/api/adapters/privacy.adapter.ts
+
 export function mapBackendPrivacyToFrontend(raw: any): PrivacySettings {
-  const visibility = raw.field_visibility || {};
+  console.log('my raw', { raw });
+  // ✅ Handle missing field_visibility gracefully
+  const visibility = raw?.field_visibility || raw || {};
 
-  // Helper: Ensure value is "public" or "private"
   const normalize = (value: any): FieldVisibility => {
-    // if (value === 'public') return 'public';
-    // if (value === 'private') return 'private';
-
+    if (!raw.field_visibility) return 'public'; ///This line should be removed!!!!!!!!. This is just a workaround before the backend dev does the right thing
     if (value === 'public' || value === true || value === 'true' || value === 1 || value === '1') {
       return 'public';
     }
-
-    // Fallback for any unexpected values
-    return 'private'; // Default to private for safety
+    return 'private';
   };
 
   return {

@@ -9,6 +9,8 @@ import type { ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { AUTH_ROUTES } from '@/features/authentication/routes';
+import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
+import { mapCurrentUserResponse } from '@/features/authentication/api/adapters/login.adapter';
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -16,6 +18,10 @@ interface ProtectedRouteProps {
 
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const user = useAuthStore((state) => state.user);
+
+  //  const { data, isLoading } = useCurrentUser();
+  //    const currentUserProfile = data ? mapCurrentUserResponse(data) : null
+
   const location = useLocation();
 
   if (!user) {

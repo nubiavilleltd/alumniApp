@@ -6,7 +6,11 @@ import { useState } from 'react';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { defaultPrivacySettings } from '@/features/authentication/types/auth.types';
-import type { FieldVisibility, PrivacySettings } from '@/features/authentication/types/auth.types';
+import type {
+  AuthSessionUser,
+  FieldVisibility,
+  PrivacySettings,
+} from '@/features/authentication/types/auth.types';
 import {
   areaOptions,
   employmentStatusOptions,
@@ -17,6 +21,10 @@ import EditProfileModal from '../components/ui/EditProfileModal';
 import { SEO } from '@/shared/common/SEO';
 import { ROUTES } from '@/shared/constants/routes';
 import { USER_ROUTES } from '../routes';
+import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
+import { mapCurrentUserResponse } from '@/features/authentication/api/adapters/login.adapter';
+import { ProfileSkeleton } from '../components/ProfileSkeleton';
+import { usePrivacySettings } from '../hooks/usePrivacySettings';
 
 const breadcrumbItems = [
   { label: 'Home', href: ROUTES.HOME },
@@ -141,16 +149,38 @@ function SectionCard({
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function UserProfilePage() {
-  const currentUser = useAuthStore((state) => state.user);
+  // const currentUser = useAuthStore((state) => state.user);
+
+  const { data: currentUser, isLoading } = useCurrentUser();
+  const { data: privacyValue, isLoading: privacyLoading } = usePrivacySettings();
+  console.log('current user', { currentUser });
+
   const [showEdit, setShowEdit] = useState(false);
   const openEdit = () => setShowEdit(true);
 
+  if (isLoading || privacyLoading) {
+    return (
+      <>
+        <SEO title="My Profile" />
+        <Breadcrumbs items={breadcrumbItems} />
+        <section className="section py-12">
+          <div className="container-custom">
+            <ProfileSkeleton />
+          </div>
+        </section>
+      </>
+    );
+  }
+
   // Always have a complete privacy object — merge stored settings over defaults.
   // This guarantees badges always render even for users who haven't edited yet.
-  const privacy: PrivacySettings = {
-    ...defaultPrivacySettings,
-    ...currentUser?.privacy,
-  };
+  // const privacy: PrivacySettings = {
+  //   ...defaultPrivacySettings,
+  //   ...currentUser?.privacy,
+  // };
+  const privacy: PrivacySettings = privacyValue as PrivacySettings;
+
+  console.log('privacy 1', { privacy });
 
   const occupationLabel = resolveLabel(currentUser?.occupations?.[0], occupationOptions);
   const employmentLabel = resolveLabel(currentUser?.employmentStatus, employmentStatusOptions);
@@ -188,14 +218,14 @@ export default function UserProfilePage() {
                   {/* Photo privacy badge — always shown */}
                   <span
                     className={`absolute bottom-3 right-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold ${
-                      privacy.photo === 'public'
+                      privacy?.photo === 'public'
                         ? 'bg-green-50 text-green-600 border border-green-200'
                         : 'bg-gray-100 text-gray-600 border border-gray-300'
                     }`}
-                    title={privacy.photo === 'public' ? 'Photo is public' : 'Photo is private'}
+                    title={privacy?.photo === 'public' ? 'Photo is public' : 'Photo is private'}
                   >
                     <Icon
-                      icon={privacy.photo === 'public' ? 'mdi:eye-outline' : 'mdi:lock'}
+                      icon={privacy?.photo === 'public' ? 'mdi:eye-outline' : 'mdi:lock'}
                       className="w-3 h-3"
                     />
                   </span>
@@ -274,14 +304,14 @@ export default function UserProfilePage() {
                     label="WhatsApp"
                     value={currentUser?.whatsappPhone}
                     icon="mdi:whatsapp"
-                    privacy={privacy.whatsappPhone}
+                    privacy={privacy?.whatsappPhone}
                   />
                   {currentUser?.alternativePhone && (
                     <FieldRowWithPrivacy
                       label="Alt. Phone"
                       value={currentUser.alternativePhone}
                       icon="mdi:phone-outline"
-                      privacy={privacy.alternativePhone}
+                      privacy={privacy?.alternativePhone}
                     />
                   )}
                   {currentUser?.birthDate && (
@@ -417,7 +447,7 @@ export default function UserProfilePage() {
       <EditProfileModal
         isOpen={showEdit}
         onClose={() => setShowEdit(false)}
-        currentUser={currentUser}
+        currentUser={currentUser as AuthSessionUser}
       />
     </>
   );

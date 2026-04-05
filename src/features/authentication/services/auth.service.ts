@@ -4,8 +4,8 @@ import { apiClient } from '@/lib/api/client';
 import { API_ENDPOINTS } from '@/lib/api/endpoints';
 import { handleApiError } from '@/lib/errors/apiErrorHandler';
 import { formatPhoneNumberWithCountryCode } from '../constants/phoneCountries';
-import { updateMockAccountPassword } from '../lib/mockAuth';
 import type {
+  AuthSessionUser,
   AuthUserSummary,
   CompleteRegistrationResponse,
   ForgotPasswordFormValues,
@@ -24,7 +24,12 @@ import {
   mapVerificationPayload,
   mapVerificationResponse,
 } from '../api/adapters/register.adapter';
-import { mapLoginError, mapLoginPayload, mapLoginResponse } from '../api/adapters/login.adapter';
+import {
+  mapCurrentUserResponse,
+  mapLoginError,
+  mapLoginPayload,
+  mapLoginResponse,
+} from '../api/adapters/login.adapter';
 import {
   mapForgotPasswordError,
   mapForgotPasswordPayload,
@@ -122,5 +127,26 @@ export const authApi = {
       message: 'Password reset successfully.',
       email: updatedAccount.email,
     };
+  },
+
+  /**
+   * GET /api/me - Get current user's profile
+   *
+   * Call this to get real-time user data instead of
+   * reading stale data from Zustand store
+   */
+
+  async getCurrentUser(userId: string): Promise<AuthSessionUser> {
+    try {
+      const { data } = await apiClient.post(API_ENDPOINTS.USER.GET_USER_PROFILE, {
+        user_id: userId,
+      });
+
+      console.log('res res', { data });
+
+      return mapCurrentUserResponse(data);
+    } catch (error) {
+      throw handleApiError(error, 'Unable to fetch user profile', 'authApi.getCurrentUser');
+    }
   },
 };

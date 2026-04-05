@@ -15,6 +15,8 @@ import { EVENT_ROUTES } from '@/features/events/routes';
 import { ADMIN_ROUTES } from '@/features/admin/routes';
 import { USER_ROUTES } from '@/features/user/routes';
 import { AUTH_ROUTES } from '@/features/authentication/routes';
+import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
+import { mapCurrentUserResponse } from '@/features/authentication/api/adapters/login.adapter';
 
 // ─── Nav Items ────────────────────────────────────────────────────────────────
 const navItems = [
@@ -254,7 +256,8 @@ function UserDropdown({
 export function Navigation() {
   const config = getSiteConfig();
   const navigate = useNavigate();
-  const currentUser = useAuthStore((state) => state.user);
+  const { data: currentUser, isLoading } = useCurrentUser();
+
   const clearSession = useAuthStore((state) => state.clearSession);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);

@@ -10,6 +10,8 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { AUTH_ROUTES } from '@/features/authentication/routes';
 import { USER_ROUTES } from '@/features/user/routes';
+import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
+import { mapCurrentUserResponse } from '@/features/authentication/api/adapters/login.adapter';
 
 interface AdminRouteProps {
   children: ReactNode;
@@ -17,13 +19,15 @@ interface AdminRouteProps {
 
 export function AdminRoute({ children }: AdminRouteProps) {
   const user = useAuthStore((state) => state.user);
+
+  const { data: currentUserProfile, isLoading } = useCurrentUser();
   const location = useLocation();
 
-  if (!user) {
+  if (!user || !currentUserProfile) {
     return <Navigate to={AUTH_ROUTES.LOGIN} state={{ from: location.pathname }} replace />;
   }
 
-  if (user.role !== 'admin') {
+  if (currentUserProfile.role !== 'admin') {
     return <Navigate to={USER_ROUTES.DASHBOARD} replace />;
   }
 

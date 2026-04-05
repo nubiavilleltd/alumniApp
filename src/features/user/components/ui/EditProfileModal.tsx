@@ -1695,7 +1695,7 @@ const yearsOfExperienceSelectOptions = yearsOfExperienceOptions.map((o) => ({
 
 export default function EditProfileModal({ isOpen, onClose, currentUser }: Props) {
   const queryClient = useQueryClient();
-  const updateUser = useAuthStore((state) => state.updateUser);
+  // const updateUser = useAuthStore((state) => state.updateUser);
 
   const { data: privacy, isLoading: privacyLoading } = usePrivacySettings();
 
@@ -1859,7 +1859,7 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
 
       console.log('🔄 Updating user with:', mergedUpdate);
 
-      updateUser(mergedUpdate);
+      // updateUser(mergedUpdate);
 
       queryClient.invalidateQueries({ queryKey: ['alumni'] });
       queryClient.invalidateQueries({ queryKey: ['user'] });
@@ -2250,7 +2250,7 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
                 Saving...
               </span>
             ) : (
-              `Save Changes${hasChanges ? ` (${Object.keys(changedFields).length})` : ''}`
+              'Save Changes'
             )}
           </Button>
           <Button variant="outline" onClick={handleClose} disabled={isSaving} className="flex-1">

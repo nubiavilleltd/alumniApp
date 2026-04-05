@@ -58,7 +58,7 @@ export function usePrivacySettings() {
 export function useUpdateFieldPrivacy() {
   const queryClient = useQueryClient();
   const currentUser = useAuthStore((state) => state.user);
-  const updateUser = useAuthStore((state) => state.updateUser);
+  //   const updateUser = useAuthStore((state) => state.updateUser);
   const userId = currentUser?.id;
 
   return useMutation({
@@ -93,14 +93,14 @@ export function useUpdateFieldPrivacy() {
       }));
 
       // Optimistically update auth store
-      if (currentUser?.privacy) {
-        updateUser({
-          privacy: {
-            ...currentUser.privacy,
-            [field]: visibility,
-          },
-        });
-      }
+      //   if (currentUser?.privacy) {
+      //     updateUser({
+      //       privacy: {
+      //         ...currentUser.privacy,
+      //         [field]: visibility,
+      //       },
+      //     });
+      //   }
 
       console.log(`🔄 Optimistic update: ${field} → ${visibility}`);
 
@@ -120,7 +120,7 @@ export function useUpdateFieldPrivacy() {
       queryClient.setQueryData<PrivacySettings>(privacyKeys.user(userId), updatedPrivacy);
 
       // Update auth store with backend response
-      updateUser({ privacy: updatedPrivacy });
+      //   updateUser({ privacy: updatedPrivacy });
 
       // Invalidate related caches for app-wide sync
       queryClient.invalidateQueries({ queryKey: ['alumni'] });
@@ -145,7 +145,7 @@ export function useUpdateFieldPrivacy() {
           context.previousPrivacy,
         );
 
-        updateUser({ privacy: context.previousPrivacy });
+        // updateUser({ privacy: context.previousPrivacy });
       }
 
       toast.error('Failed to update privacy setting. Please try again.');

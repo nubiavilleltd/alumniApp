@@ -270,6 +270,7 @@ import { useCreateEvent } from '../hooks/useEvents';
 import { mapEventToCreatePayload } from '../api/adapters/event.adapter';
 import { toast } from '@/shared/components/ui/Toast';
 import { EVENT_ROUTES } from '../routes';
+import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 
 // ─── Schema ───────────────────────────────────────────────────────────────────
 // Required: title, description, location, event_date, visibility, status
@@ -316,7 +317,8 @@ const statusOptions = [
 
 export default function CreateEventPage() {
   const navigate = useNavigate();
-  const currentUser = useAuthStore((state) => state.user);
+  //   const currentUser = useAuthStore((state) => state.user);
+  const { data: currentUser, isLoading } = useCurrentUser();
   const createEvent = useCreateEvent();
 
   const [bannerFile, setBannerFile] = useState<File | null>(null);
