@@ -49,3 +49,8 @@ export function getRegisteredMessageRecipient(memberId: string) {
   if (!memberId) return undefined;
   return readRegistry()[memberId];
 }
+
+export function resetRegisteredMessageRecipients() {
+  if (!canUseStorage()) return;
+  window.localStorage.removeItem(STORAGE_KEY);
+}

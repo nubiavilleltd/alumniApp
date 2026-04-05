@@ -73,6 +73,7 @@ export interface UploadMessageAttachmentRequest {
   fileName: string;
   mimeType: string;
   sizeInBytes: number;
+  binary?: Blob;
   kind: MessageAttachment['kind'];
   durationSeconds?: number;
   source: 'device' | 'microphone';

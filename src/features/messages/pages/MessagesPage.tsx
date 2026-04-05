@@ -8,6 +8,7 @@ import {
   useState,
   type ChangeEvent,
   type KeyboardEvent,
+  type PointerEvent as ReactPointerEvent,
 } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
@@ -16,12 +17,15 @@ import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import { toast } from '@/shared/components/ui/Toast';
 import {
+  MESSAGE_ATTACHMENT_FILE_INPUT_ACCEPT,
   buildFileAttachmentUploadRequest,
+  buildRecordedVoiceNoteUploadRequest,
   buildSendMessageRequest,
   buildVoiceNoteUploadRequest,
-  describeAttachmentForPreview,
   filterMessageThreads,
+  formatBytes,
 } from '../api/adapters/messages.adapter';
+import type { UploadMessageAttachmentRequest } from '../api/messages.contract';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import {
   useCreateDirectMessageThread,
@@ -31,6 +35,14 @@ import {
   useSendMessage,
   useUploadMessageAttachment,
 } from '../hooks/useMessages';
+import { isMockMessagesTransportActive } from '../services/messages.service';
+import { resetMockMessagesServerState } from '../lib/mockMessagesTransport';
+import {
+  getMessageAttachmentPreviewUrl,
+  registerMessageAttachmentPreview,
+  revokeMessageAttachmentPreview,
+} from '../lib/messageAttachmentPreviewRegistry';
+import { ensureChatProfile } from '../lib/supabase/chat.actions';
 import type {
   MessageAttachment,
   MessageDeliveryStatus,
@@ -40,6 +52,21 @@ import type {
 } from '../types/messages.types';
 
 const breadcrumbItems = [{ label: 'Home', href: '/' }, { label: 'Messages' }];
+const MIN_VOICE_NOTE_DURATION_MS = 600;
+const RECORDING_TIMER_INTERVAL_MS = 200;
+
+interface DraftComposerAttachment {
+  id: string;
+  kind: MessageAttachment['kind'];
+  fileName: string;
+  mimeType: string;
+  sizeInBytes: number;
+  sizeLabel: string;
+  durationSeconds?: number;
+  previewUrl?: string;
+  uploadRequest: UploadMessageAttachmentRequest;
+  uploadedAttachment?: MessageAttachment;
+}
 
 const inboxFilters: { key: MessageThreadFilter; label: string }[] = [
   { key: 'all', label: 'All' },
@@ -101,6 +128,53 @@ function formatAudioDuration(durationSeconds = 0) {
   return `${minutes}:${String(seconds).padStart(2, '0')}`;
 }
 
+function formatRecordingDuration(durationMs: number) {
+  return formatAudioDuration(Math.max(0, Math.floor(durationMs / 1000)));
+}
+
+function createDraftComposerAttachmentId() {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+
+  return `draft-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
+function buildDraftComposerAttachment(file: File, viewerMemberId: string): DraftComposerAttachment {
+  const uploadRequest = buildFileAttachmentUploadRequest(file, viewerMemberId);
+  const previewUrl = file.type.startsWith('image/') ? URL.createObjectURL(file) : undefined;
+
+  return {
+    id: createDraftComposerAttachmentId(),
+    kind: uploadRequest.kind,
+    fileName: uploadRequest.fileName,
+    mimeType: uploadRequest.mimeType,
+    sizeInBytes: uploadRequest.sizeInBytes,
+    sizeLabel: formatBytes(uploadRequest.sizeInBytes),
+    previewUrl,
+    uploadRequest,
+  };
+}
+
+function buildDraftComposerAttachmentFromUploadRequest(
+  uploadRequest: UploadMessageAttachmentRequest,
+  options?: {
+    previewUrl?: string;
+  },
+): DraftComposerAttachment {
+  return {
+    id: createDraftComposerAttachmentId(),
+    kind: uploadRequest.kind,
+    fileName: uploadRequest.fileName,
+    mimeType: uploadRequest.mimeType,
+    sizeInBytes: uploadRequest.sizeInBytes,
+    sizeLabel: formatBytes(uploadRequest.sizeInBytes),
+    durationSeconds: uploadRequest.durationSeconds,
+    previewUrl: options?.previewUrl,
+    uploadRequest,
+  };
+}
+
 function presenceClasses(value?: MessageThreadSummary['presence']) {
   if (value === 'online') return 'bg-emerald-500';
   if (value === 'away') return 'bg-amber-400';
@@ -141,6 +215,18 @@ function deliveryLabel(status: MessageDeliveryStatus) {
   if (status === 'failed') return 'Failed';
   if (status === 'sending') return 'Sending';
   return 'Sent';
+}
+
+function getPreferredRecorderMimeType() {
+  if (typeof MediaRecorder === 'undefined' || typeof MediaRecorder.isTypeSupported !== 'function') {
+    return '';
+  }
+
+  return (
+    ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus', 'audio/mp4'].find(
+      (mimeType) => MediaRecorder.isTypeSupported(mimeType),
+    ) ?? ''
+  );
 }
 
 function ThreadAvatar({
@@ -188,52 +274,300 @@ function ThreadAvatar({
 function MessageAttachments({
   attachments,
   isOwn,
+  onOpenImage,
 }: {
   attachments: MessageAttachment[];
   isOwn: boolean;
+  onOpenImage: (attachment: MessageAttachment) => void;
 }) {
   return (
     <div className="mt-3 space-y-2">
-      {attachments.map((attachment) => (
-        <div
-          key={attachment.id}
-          className={`rounded-2xl border px-4 py-3 ${
-            isOwn
-              ? 'border-primary-300/40 bg-white/10 text-white'
-              : 'border-accent-200 bg-white text-accent-800'
-          }`}
-        >
-          <div className="flex items-center gap-3">
-            <div
-              className={`flex h-10 w-10 items-center justify-center rounded-2xl ${
-                isOwn ? 'bg-white/15' : 'bg-primary-50 text-primary-600'
+      {attachments.map((attachment) => {
+        const previewUrl = attachment.url ?? getMessageAttachmentPreviewUrl(attachment.id);
+
+        if (attachment.kind === 'image' && previewUrl) {
+          return (
+            <button
+              key={attachment.id}
+              type="button"
+              onClick={() => onOpenImage(attachment)}
+              className={`group block w-full overflow-hidden rounded-[1.5rem] border text-left transition-transform hover:scale-[1.01] ${
+                isOwn
+                  ? 'border-primary-300/40 bg-white/10 text-white'
+                  : 'border-accent-200 bg-white text-accent-800'
               }`}
             >
-              <Icon icon={getAttachmentIcon(attachment.kind)} className="h-5 w-5" />
+              <div className="relative">
+                <img
+                  src={previewUrl}
+                  alt={attachment.fileName}
+                  className="max-h-80 w-full object-cover"
+                />
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent px-4 pb-4 pt-10 text-white">
+                  <div className="flex items-end justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold">{attachment.fileName}</p>
+                      <p className="text-xs text-white/75">{attachment.sizeLabel}</p>
+                    </div>
+                    <span className="inline-flex items-center gap-1 rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-white/90">
+                      <Icon icon="mdi:arrow-expand-all" className="h-3.5 w-3.5" />
+                      Open
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </button>
+          );
+        }
+
+        return (
+          <div
+            key={attachment.id}
+            className={`rounded-2xl border px-4 py-3 ${
+              isOwn
+                ? 'border-primary-300/40 bg-white/10 text-white'
+                : 'border-accent-200 bg-white text-accent-800'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <div
+                className={`flex h-10 w-10 items-center justify-center rounded-2xl ${
+                  isOwn ? 'bg-white/15' : 'bg-primary-50 text-primary-600'
+                }`}
+              >
+                <Icon icon={getAttachmentIcon(attachment.kind)} className="h-5 w-5" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-semibold">{attachment.fileName}</p>
+                <p className={`text-xs ${isOwn ? 'text-white/70' : 'text-accent-500'}`}>
+                  {attachment.kind === 'audio' && attachment.durationSeconds
+                    ? `${formatAudioDuration(attachment.durationSeconds)} • ${attachment.sizeLabel}`
+                    : attachment.sizeLabel}
+                </p>
+              </div>
             </div>
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-semibold">{attachment.fileName}</p>
-              <p className={`text-xs ${isOwn ? 'text-white/70' : 'text-accent-500'}`}>
-                {attachment.kind === 'audio' && attachment.durationSeconds
-                  ? `${formatAudioDuration(attachment.durationSeconds)} • ${attachment.sizeLabel}`
-                  : attachment.sizeLabel}
-              </p>
+
+            {attachment.kind === 'audio' && attachment.waveform ? (
+              <div className="mt-3 flex h-9 items-end gap-1">
+                {attachment.waveform.map((barHeight, index) => (
+                  <span
+                    key={`${attachment.id}-${index}`}
+                    className={`block w-1 rounded-full ${isOwn ? 'bg-white/75' : 'bg-primary-200'}`}
+                    style={{ height: `${Math.max(10, Math.round(barHeight * 0.45))}px` }}
+                  />
+                ))}
+              </div>
+            ) : null}
+
+            {attachment.kind === 'audio' ? (
+              previewUrl ? (
+                <audio controls preload="metadata" src={previewUrl} className="mt-3 w-full" />
+              ) : (
+                <p className={`mt-3 text-xs ${isOwn ? 'text-white/70' : 'text-accent-500'}`}>
+                  Audio playback is unavailable for this message right now.
+                </p>
+              )
+            ) : null}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function DraftComposerAttachments({
+  attachments,
+  onRemove,
+}: {
+  attachments: DraftComposerAttachment[];
+  onRemove: (attachmentId: string) => void;
+}) {
+  if (attachments.length === 0) return null;
+
+  return (
+    <div className="mb-4 space-y-3">
+      <div className={`grid gap-3 ${attachments.length > 1 ? 'sm:grid-cols-2' : ''}`}>
+        {attachments.map((attachment) => {
+          if (attachment.kind === 'image' && attachment.previewUrl) {
+            return (
+              <div
+                key={attachment.id}
+                className="relative overflow-hidden rounded-[1.5rem] border border-accent-200 bg-slate-900 shadow-sm"
+              >
+                <img
+                  src={attachment.previewUrl}
+                  alt={attachment.fileName}
+                  className="h-64 w-full object-cover sm:h-72"
+                />
+                <button
+                  type="button"
+                  onClick={() => onRemove(attachment.id)}
+                  className="absolute right-3 top-3 inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-950/75 text-white transition-colors hover:bg-slate-950"
+                  aria-label={`Remove ${attachment.fileName}`}
+                >
+                  <Icon icon="mdi:close" className="h-5 w-5" />
+                </button>
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent px-4 pb-4 pt-10 text-white">
+                  <p className="truncate text-sm font-semibold">{attachment.fileName}</p>
+                  <p className="text-xs text-white/70">{attachment.sizeLabel}</p>
+                </div>
+              </div>
+            );
+          }
+
+          if (attachment.kind === 'audio') {
+            return (
+              <div
+                key={attachment.id}
+                className="relative rounded-[1.5rem] border border-accent-200 bg-white px-4 py-4 text-accent-800 shadow-sm"
+              >
+                <button
+                  type="button"
+                  onClick={() => onRemove(attachment.id)}
+                  className="absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-full text-accent-400 transition-colors hover:bg-accent-100 hover:text-accent-700"
+                  aria-label={`Remove ${attachment.fileName}`}
+                >
+                  <Icon icon="mdi:close" className="h-4 w-4" />
+                </button>
+
+                <div className="flex items-center gap-3 pr-12">
+                  <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl bg-primary-50 text-primary-600">
+                    <Icon icon="mdi:waveform" className="h-5 w-5" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-semibold">{attachment.fileName}</p>
+                    <p className="text-xs text-accent-500">
+                      {attachment.durationSeconds
+                        ? `${formatAudioDuration(attachment.durationSeconds)} • ${attachment.sizeLabel}`
+                        : attachment.sizeLabel}
+                    </p>
+                  </div>
+                </div>
+
+                {attachment.previewUrl ? (
+                  <audio
+                    controls
+                    preload="metadata"
+                    src={attachment.previewUrl}
+                    className="mt-4 w-full"
+                  />
+                ) : (
+                  <p className="mt-4 text-xs text-accent-500">
+                    Playback preview is unavailable for this recording in the current browser.
+                  </p>
+                )}
+              </div>
+            );
+          }
+
+          return (
+            <div
+              key={attachment.id}
+              className="relative flex items-center gap-3 rounded-[1.5rem] border border-accent-200 bg-white px-4 py-4 text-accent-800 shadow-sm"
+            >
+              <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl bg-primary-50 text-primary-600">
+                <Icon icon={getAttachmentIcon(attachment.kind)} className="h-5 w-5" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-semibold">{attachment.fileName}</p>
+                <p className="text-xs text-accent-500">
+                  {attachment.kind === 'audio' && attachment.durationSeconds
+                    ? `${formatAudioDuration(attachment.durationSeconds)} • ${attachment.sizeLabel}`
+                    : attachment.sizeLabel}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => onRemove(attachment.id)}
+                className="inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-accent-400 transition-colors hover:bg-accent-100 hover:text-accent-700"
+                aria-label={`Remove ${attachment.fileName}`}
+              >
+                <Icon icon="mdi:close" className="h-4 w-4" />
+              </button>
             </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function ImageAttachmentLightbox({
+  attachment,
+  onClose,
+}: {
+  attachment: MessageAttachment | null;
+  onClose: () => void;
+}) {
+  const previewUrl = attachment
+    ? (attachment.url ?? getMessageAttachmentPreviewUrl(attachment.id))
+    : undefined;
+
+  useEffect(() => {
+    if (!attachment) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    function handleEscape(event: globalThis.KeyboardEvent) {
+      if (event.key === 'Escape') onClose();
+    }
+
+    window.addEventListener('keydown', handleEscape);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', handleEscape);
+    };
+  }, [attachment, onClose]);
+
+  if (!attachment || !previewUrl) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 px-4 py-6 backdrop-blur-sm"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={attachment.fileName}
+    >
+      <button
+        type="button"
+        onClick={onClose}
+        className="absolute right-5 top-5 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition-colors hover:bg-white/20"
+        aria-label="Close image preview"
+      >
+        <Icon icon="mdi:close" className="h-5 w-5" />
+      </button>
+
+      <div
+        className="w-full max-w-6xl overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900/90 shadow-2xl"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <div className="flex items-center justify-between gap-4 border-b border-white/10 px-5 py-4 text-white sm:px-6">
+          <div className="min-w-0">
+            <p className="truncate text-sm font-semibold sm:text-base">{attachment.fileName}</p>
+            <p className="text-xs text-white/60 sm:text-sm">{attachment.sizeLabel}</p>
           </div>
 
-          {attachment.kind === 'audio' && attachment.waveform ? (
-            <div className="mt-3 flex h-9 items-end gap-1">
-              {attachment.waveform.map((barHeight, index) => (
-                <span
-                  key={`${attachment.id}-${index}`}
-                  className={`block w-1 rounded-full ${isOwn ? 'bg-white/75' : 'bg-primary-200'}`}
-                  style={{ height: `${Math.max(10, Math.round(barHeight * 0.45))}px` }}
-                />
-              ))}
-            </div>
-          ) : null}
+          <button
+            type="button"
+            onClick={() => window.open(previewUrl, '_blank', 'noopener,noreferrer')}
+            className="inline-flex items-center gap-2 rounded-full border border-white/15 px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/80 transition-colors hover:border-white/30 hover:text-white"
+          >
+            <Icon icon="mdi:open-in-new" className="h-4 w-4" />
+            Open separately
+          </button>
         </div>
-      ))}
+
+        <div className="flex max-h-[80vh] items-center justify-center bg-slate-950/70 p-4 sm:p-6">
+          <img
+            src={previewUrl}
+            alt={attachment.fileName}
+            className="max-h-[72vh] w-auto max-w-full rounded-[1.5rem] object-contain"
+          />
+        </div>
+      </div>
     </div>
   );
 }
@@ -247,10 +581,27 @@ export function MessagesPage() {
   const [filter, setFilter] = useState<MessageThreadFilter>('all');
   const [query, setQuery] = useState('');
   const [draftMessage, setDraftMessage] = useState('');
-  const [draftAttachments, setDraftAttachments] = useState<MessageAttachment[]>([]);
+  const [draftAttachments, setDraftAttachments] = useState<DraftComposerAttachment[]>([]);
+  const [activeImageAttachment, setActiveImageAttachment] = useState<MessageAttachment | null>(
+    null,
+  );
+  const [voiceRecordingState, setVoiceRecordingState] = useState<
+    'idle' | 'starting' | 'recording' | 'finishing'
+  >('idle');
+  const [voiceRecordingDurationMs, setVoiceRecordingDurationMs] = useState(0);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const voiceRecordButtonRef = useRef<HTMLButtonElement | null>(null);
   const messagePaneRef = useRef<HTMLDivElement | null>(null);
   const pendingDirectThreadIntentRef = useRef<string | null>(null);
+  const activeVoicePointerIdRef = useRef<number | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const mediaStreamRef = useRef<MediaStream | null>(null);
+  const recordingChunksRef = useRef<Blob[]>([]);
+  const recordingContextRef = useRef<{ viewerMemberId: string; threadId: string } | null>(null);
+  const recordingStartedAtRef = useRef<number | null>(null);
+  const stopVoiceRecordingAfterStartRef = useRef(false);
+  const hasShownRecordingFallbackToastRef = useRef(false);
+  const voiceRecordingModeRef = useRef<'live' | 'simulated' | null>(null);
   const deferredQuery = useDeferredValue(query);
   const requestedThreadId = searchParams.get('threadId');
   const requestedRecipientId = searchParams.get('recipient');
@@ -321,10 +672,337 @@ export function MessagesPage() {
     ]);
   }
 
+  function handleResetMockInbox() {
+    const shouldReset = window.confirm(
+      'Reset the mock messages inbox back to its seeded state? This clears threads created during testing.',
+    );
+    if (!shouldReset) return;
+
+    resetMockMessagesServerState();
+    window.location.assign('/messages');
+  }
+
+  function releaseDraftAttachmentResources(
+    attachment: DraftComposerAttachment,
+    options?: {
+      preservePreviewUrls?: Set<string>;
+      preserveUploadedAttachmentIds?: Set<string>;
+    },
+  ) {
+    const shouldPreservePreviewUrl =
+      !!attachment.previewUrl && options?.preservePreviewUrls?.has(attachment.previewUrl);
+    const uploadedAttachmentId = attachment.uploadedAttachment?.id;
+    const shouldPreserveUploadedAttachment =
+      !!uploadedAttachmentId && options?.preserveUploadedAttachmentIds?.has(uploadedAttachmentId);
+
+    if (uploadedAttachmentId && !shouldPreserveUploadedAttachment) {
+      revokeMessageAttachmentPreview(uploadedAttachmentId);
+    }
+
+    if (attachment.previewUrl && !shouldPreservePreviewUrl) {
+      URL.revokeObjectURL(attachment.previewUrl);
+    }
+  }
+
+  function discardDraftComposer(options?: {
+    preservePreviewUrls?: Set<string>;
+    preserveUploadedAttachmentIds?: Set<string>;
+  }) {
+    setDraftMessage('');
+    setDraftAttachments((previous) => {
+      previous.forEach((attachment) => {
+        releaseDraftAttachmentResources(attachment, options);
+      });
+
+      return [];
+    });
+  }
+
+  function removeDraftAttachment(attachmentId: string) {
+    setDraftAttachments((previous) => {
+      const attachmentToRemove = previous.find((attachment) => attachment.id === attachmentId);
+      if (attachmentToRemove) {
+        releaseDraftAttachmentResources(attachmentToRemove);
+      }
+
+      return previous.filter((attachment) => attachment.id !== attachmentId);
+    });
+  }
+
+  function resetVoiceRecordingSession(shouldResetTimer = true) {
+    if (mediaStreamRef.current) {
+      mediaStreamRef.current.getTracks().forEach((track) => track.stop());
+    }
+
+    if (mediaRecorderRef.current) {
+      mediaRecorderRef.current.ondataavailable = null;
+      mediaRecorderRef.current.onstop = null;
+    }
+
+    mediaRecorderRef.current = null;
+    mediaStreamRef.current = null;
+    recordingChunksRef.current = [];
+    recordingContextRef.current = null;
+    recordingStartedAtRef.current = null;
+    stopVoiceRecordingAfterStartRef.current = false;
+    voiceRecordingModeRef.current = null;
+    activeVoicePointerIdRef.current = null;
+    if (shouldResetTimer) {
+      setVoiceRecordingDurationMs(0);
+    }
+  }
+
+  function stageDraftVoiceNote(
+    attachmentRequest: UploadMessageAttachmentRequest,
+    previewUrl?: string,
+  ) {
+    setDraftAttachments((previous) => [
+      ...previous,
+      buildDraftComposerAttachmentFromUploadRequest(attachmentRequest, {
+        previewUrl,
+      }),
+    ]);
+  }
+
+  async function finalizeSimulatedVoiceRecording() {
+    const context = recordingContextRef.current;
+    const startedAt = recordingStartedAtRef.current;
+    const durationMs = startedAt ? Date.now() - startedAt : 0;
+
+    if (!context) {
+      resetVoiceRecordingSession();
+      setVoiceRecordingState('idle');
+      return;
+    }
+
+    if (durationMs < MIN_VOICE_NOTE_DURATION_MS) {
+      resetVoiceRecordingSession();
+      setVoiceRecordingState('idle');
+      toast.info('Hold a little longer before releasing to send a voice note.');
+      return;
+    }
+
+    setVoiceRecordingState('finishing');
+
+    try {
+      const attachmentRequest = buildVoiceNoteUploadRequest(
+        context.viewerMemberId,
+        Math.max(1, Math.round(durationMs / 1000)),
+      );
+      const previewUrl = attachmentRequest.binary
+        ? URL.createObjectURL(attachmentRequest.binary)
+        : undefined;
+
+      stageDraftVoiceNote(attachmentRequest, previewUrl);
+    } finally {
+      resetVoiceRecordingSession();
+      setVoiceRecordingState('idle');
+    }
+  }
+
+  async function finalizeLiveVoiceRecording() {
+    const context = recordingContextRef.current;
+    const startedAt = recordingStartedAtRef.current;
+    const durationMs = startedAt ? Date.now() - startedAt : 0;
+    const mimeType =
+      mediaRecorderRef.current?.mimeType || recordingChunksRef.current[0]?.type || 'audio/webm';
+    const blob = new Blob(recordingChunksRef.current, { type: mimeType });
+
+    if (!context) {
+      resetVoiceRecordingSession();
+      setVoiceRecordingState('idle');
+      return;
+    }
+
+    if (durationMs < MIN_VOICE_NOTE_DURATION_MS || blob.size === 0) {
+      resetVoiceRecordingSession();
+      setVoiceRecordingState('idle');
+      toast.info('Hold a little longer before releasing to send a voice note.');
+      return;
+    }
+
+    try {
+      const attachmentRequest = buildRecordedVoiceNoteUploadRequest({
+        viewerMemberId: context.viewerMemberId,
+        blob,
+        durationSeconds: Math.max(1, Math.round(durationMs / 1000)),
+      });
+
+      stageDraftVoiceNote(attachmentRequest, URL.createObjectURL(blob));
+    } finally {
+      resetVoiceRecordingSession();
+      setVoiceRecordingState('idle');
+    }
+  }
+
+  async function startVoiceRecording() {
+    if (!viewerMemberId || !activeThread || voiceRecordingState !== 'idle') return;
+
+    recordingContextRef.current = {
+      viewerMemberId,
+      threadId: activeThread.id,
+    };
+    recordingChunksRef.current = [];
+    stopVoiceRecordingAfterStartRef.current = false;
+    setVoiceRecordingDurationMs(0);
+
+    if (
+      typeof navigator === 'undefined' ||
+      !navigator.mediaDevices?.getUserMedia ||
+      typeof MediaRecorder === 'undefined'
+    ) {
+      voiceRecordingModeRef.current = 'simulated';
+      recordingStartedAtRef.current = Date.now();
+      setVoiceRecordingState('recording');
+
+      if (!hasShownRecordingFallbackToastRef.current) {
+        toast.info(
+          'Live microphone capture is unavailable here, so a placeholder voice note will be generated from your hold duration.',
+        );
+        hasShownRecordingFallbackToastRef.current = true;
+      }
+
+      return;
+    }
+
+    setVoiceRecordingState('starting');
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+      if (stopVoiceRecordingAfterStartRef.current) {
+        stream.getTracks().forEach((track) => track.stop());
+        resetVoiceRecordingSession();
+        setVoiceRecordingState('idle');
+        return;
+      }
+
+      const mimeType = getPreferredRecorderMimeType();
+      const recorder = mimeType
+        ? new MediaRecorder(stream, { mimeType })
+        : new MediaRecorder(stream);
+
+      mediaStreamRef.current = stream;
+      mediaRecorderRef.current = recorder;
+      recordingStartedAtRef.current = Date.now();
+      voiceRecordingModeRef.current = 'live';
+
+      recorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          recordingChunksRef.current.push(event.data);
+        }
+      };
+
+      recorder.onstop = () => {
+        void finalizeLiveVoiceRecording();
+      };
+
+      recorder.start();
+      setVoiceRecordingState('recording');
+    } catch {
+      resetVoiceRecordingSession();
+      setVoiceRecordingState('idle');
+      toast.error('Microphone access is required to record voice notes.');
+    }
+  }
+
+  function stopVoiceRecording() {
+    if (voiceRecordingState === 'starting') {
+      stopVoiceRecordingAfterStartRef.current = true;
+      return;
+    }
+
+    if (voiceRecordingState !== 'recording') return;
+
+    if (voiceRecordingModeRef.current === 'simulated') {
+      void finalizeSimulatedVoiceRecording();
+      return;
+    }
+
+    const recorder = mediaRecorderRef.current;
+    if (!recorder || recorder.state === 'inactive') {
+      void finalizeLiveVoiceRecording();
+      return;
+    }
+
+    setVoiceRecordingState('finishing');
+    recorder.stop();
+  }
+
+  function handleVoiceRecordPointerDown(event: ReactPointerEvent<HTMLButtonElement>) {
+    if (voiceRecordingState !== 'idle') return;
+
+    activeVoicePointerIdRef.current = event.pointerId;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    void startVoiceRecording();
+  }
+
+  function handleVoiceRecordPointerUp(event: ReactPointerEvent<HTMLButtonElement>) {
+    if (
+      activeVoicePointerIdRef.current !== null &&
+      event.pointerId !== activeVoicePointerIdRef.current
+    ) {
+      return;
+    }
+
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+
+    activeVoicePointerIdRef.current = null;
+    stopVoiceRecording();
+  }
+
+  function handleVoiceRecordKeyDown(event: KeyboardEvent<HTMLButtonElement>) {
+    if ((event.key !== ' ' && event.key !== 'Enter') || event.repeat) return;
+
+    event.preventDefault();
+    void startVoiceRecording();
+  }
+
+  function handleVoiceRecordKeyUp(event: KeyboardEvent<HTMLButtonElement>) {
+    if (event.key !== ' ' && event.key !== 'Enter') return;
+
+    event.preventDefault();
+    stopVoiceRecording();
+  }
+
   const pullToRefresh = usePullToRefresh({
     onRefresh: refreshAll,
     disabled: !viewerMemberId,
   });
+
+  useEffect(() => {
+    if (voiceRecordingState !== 'recording') {
+      if (voiceRecordingState === 'idle') {
+        setVoiceRecordingDurationMs(0);
+      }
+      return undefined;
+    }
+
+    const timer = window.setInterval(() => {
+      if (!recordingStartedAtRef.current) return;
+      setVoiceRecordingDurationMs(Date.now() - recordingStartedAtRef.current);
+    }, RECORDING_TIMER_INTERVAL_MS);
+
+    return () => {
+      window.clearInterval(timer);
+    };
+  }, [voiceRecordingState]);
+
+  useEffect(() => {
+    return () => {
+      resetVoiceRecordingSession(false);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!currentUser?.memberId) return;
+
+    void ensureChatProfile(currentUser).catch((error) => {
+      console.error('Unable to ensure the current user exists in chat_profiles.', error);
+    });
+  }, [currentUser]);
 
   useEffect(() => {
     if (!requestedThreadId) return;
@@ -333,9 +1011,9 @@ export function MessagesPage() {
   }, [requestedThreadId]);
 
   useEffect(() => {
-    if (!viewerMemberId || !requestedRecipientId) return;
+    if (!currentUser?.memberId || !requestedRecipientId) return;
 
-    if (requestedRecipientId === viewerMemberId) {
+    if (requestedRecipientId === currentUser.memberId) {
       replaceMessagesSearch();
       toast.info('Your inbox is ready whenever you want to follow up.');
       return;
@@ -346,12 +1024,19 @@ export function MessagesPage() {
 
     pendingDirectThreadIntentRef.current = intentKey;
 
-    void createDirectThread
-      .mutateAsync({
-        viewerMemberId,
+    void (async () => {
+      try {
+        await ensureChatProfile(currentUser);
+      } catch (error) {
+        console.error('Unable to ensure the current user exists in chat_profiles.', error);
+      }
+
+      return createDirectThread.mutateAsync({
+        viewerMemberId: currentUser.memberId,
         participantMemberId: requestedRecipientId,
         topic: requestedTopic,
-      })
+      });
+    })()
       .then((response) => {
         setSelectedThreadId(response.thread.id);
         replaceMessagesSearch(response.thread.id);
@@ -359,12 +1044,11 @@ export function MessagesPage() {
       .catch(() => {
         pendingDirectThreadIntentRef.current = null;
       });
-  }, [createDirectThread, requestedRecipientId, requestedTopic, viewerMemberId]);
+  }, [createDirectThread, currentUser, requestedRecipientId, requestedTopic]);
 
   useEffect(() => {
     // Each thread keeps its own draft so attachments and text do not leak across chats.
-    setDraftMessage('');
-    setDraftAttachments([]);
+    discardDraftComposer();
   }, [activeThreadId]);
 
   useEffect(() => {
@@ -408,25 +1092,9 @@ export function MessagesPage() {
 
     if (!viewerMemberId || !activeThread || files.length === 0) return;
 
-    const nextAttachments: MessageAttachment[] = [];
-
-    for (const file of files) {
-      const attachment = await uploadAttachment.mutateAsync(
-        buildFileAttachmentUploadRequest(file, viewerMemberId),
-      );
-      nextAttachments.push(attachment);
-    }
+    const nextAttachments = files.map((file) => buildDraftComposerAttachment(file, viewerMemberId));
 
     setDraftAttachments((previous) => [...previous, ...nextAttachments]);
-  }
-
-  async function handleAddVoiceNote() {
-    if (!viewerMemberId || !activeThread) return;
-
-    const attachment = await uploadAttachment.mutateAsync(
-      buildVoiceNoteUploadRequest(viewerMemberId),
-    );
-    setDraftAttachments((previous) => [...previous, attachment]);
   }
 
   async function handleSendMessage() {
@@ -435,17 +1103,53 @@ export function MessagesPage() {
     const body = draftMessage.trim();
     if (!body && draftAttachments.length === 0) return;
 
-    await sendMessage.mutateAsync(
+    const uploadedByDraftId = new Map<string, MessageAttachment>();
+    const preservePreviewUrls = new Set<string>();
+    const preserveUploadedAttachmentIds = new Set<string>();
+    const resolvedAttachments: MessageAttachment[] = [];
+
+    for (const draftAttachment of draftAttachments) {
+      const uploadedAttachment =
+        draftAttachment.uploadedAttachment ??
+        (await uploadAttachment.mutateAsync(draftAttachment.uploadRequest));
+
+      uploadedByDraftId.set(draftAttachment.id, uploadedAttachment);
+      resolvedAttachments.push(uploadedAttachment);
+
+      if (draftAttachment.kind === 'image' && draftAttachment.previewUrl) {
+        registerMessageAttachmentPreview(uploadedAttachment.id, draftAttachment.previewUrl);
+        preservePreviewUrls.add(draftAttachment.previewUrl);
+        preserveUploadedAttachmentIds.add(uploadedAttachment.id);
+      }
+    }
+
+    if (uploadedByDraftId.size > 0) {
+      setDraftAttachments((previous) =>
+        previous.map((attachment) => ({
+          ...attachment,
+          uploadedAttachment: uploadedByDraftId.get(attachment.id) ?? attachment.uploadedAttachment,
+        })),
+      );
+    }
+
+    const response = await sendMessage.mutateAsync(
       buildSendMessageRequest({
         viewerMemberId,
         threadId: activeThread.id,
         body,
-        attachments: draftAttachments,
+        attachments: resolvedAttachments,
       }),
     );
 
-    setDraftMessage('');
-    setDraftAttachments([]);
+    if (response.thread.id !== activeThread.id) {
+      setSelectedThreadId(response.thread.id);
+      replaceMessagesSearch(response.thread.id);
+    }
+
+    discardDraftComposer({
+      preservePreviewUrls,
+      preserveUploadedAttachmentIds,
+    });
   }
 
   function handleComposerKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
@@ -461,14 +1165,33 @@ export function MessagesPage() {
     : pullToRefresh.isArmed
       ? 'Release to refresh'
       : 'Pull to refresh';
-  const composerDisabled = !activeThread || sendMessage.isPending;
+  const voiceRecordingActive = voiceRecordingState === 'recording';
+  const voiceRecordingBusy = voiceRecordingState !== 'idle';
+  const voiceRecordingLabel =
+    voiceRecordingState === 'starting'
+      ? 'Preparing microphone'
+      : voiceRecordingState === 'finishing'
+        ? 'Preparing voice note preview'
+        : 'Recording voice note';
+  const voiceRecordingHint =
+    voiceRecordingState === 'starting'
+      ? 'Grant microphone access to begin.'
+      : voiceRecordingState === 'finishing'
+        ? 'Release complete. Building the preview.'
+        : 'Keep holding the mic button. Release to preview.';
+  const composerDisabled = !activeThread || sendMessage.isPending || voiceRecordingBusy;
   const attachmentsDisabled =
     composerDisabled || !activeThread?.attachmentsEnabled || uploadAttachment.isPending;
   const audioDisabled =
-    composerDisabled || !activeThread?.audioEnabled || uploadAttachment.isPending;
+    !activeThread ||
+    !activeThread.audioEnabled ||
+    uploadAttachment.isPending ||
+    sendMessage.isPending ||
+    voiceRecordingState === 'finishing';
   const canSend =
     !!activeThread &&
     !sendMessage.isPending &&
+    !voiceRecordingBusy &&
     (draftMessage.trim().length > 0 || draftAttachments.length > 0);
 
   return (
@@ -515,20 +1238,33 @@ export function MessagesPage() {
                     </p>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => void refreshAll()}
-                    disabled={inboxQuery.isRefetching || threadQuery.isRefetching}
-                    className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-accent-200 text-accent-600 transition-colors hover:border-primary-200 hover:text-primary-600 disabled:cursor-not-allowed disabled:opacity-60"
-                    aria-label="Refresh messages"
-                  >
-                    <Icon
-                      icon="mdi:refresh"
-                      className={`h-5 w-5 ${
-                        inboxQuery.isRefetching || threadQuery.isRefetching ? 'animate-spin' : ''
-                      }`}
-                    />
-                  </button>
+                  <div className="flex items-center gap-2">
+                    {import.meta.env.DEV && isMockMessagesTransportActive() ? (
+                      <button
+                        type="button"
+                        onClick={handleResetMockInbox}
+                        className="inline-flex items-center gap-2 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-800 transition-colors hover:border-amber-300 hover:bg-amber-100"
+                      >
+                        <Icon icon="mdi:refresh-auto" className="h-4 w-4" />
+                        <span>Reset mock inbox</span>
+                      </button>
+                    ) : null}
+
+                    <button
+                      type="button"
+                      onClick={() => void refreshAll()}
+                      disabled={inboxQuery.isRefetching || threadQuery.isRefetching}
+                      className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-accent-200 text-accent-600 transition-colors hover:border-primary-200 hover:text-primary-600 disabled:cursor-not-allowed disabled:opacity-60"
+                      aria-label="Refresh messages"
+                    >
+                      <Icon
+                        icon="mdi:refresh"
+                        className={`h-5 w-5 ${
+                          inboxQuery.isRefetching || threadQuery.isRefetching ? 'animate-spin' : ''
+                        }`}
+                      />
+                    </button>
+                  </div>
                 </div>
 
                 <label className="relative mt-5 block">
@@ -591,7 +1327,7 @@ export function MessagesPage() {
                   <EmptyState
                     icon="mdi:chat-alert-outline"
                     title="We could not load your inbox"
-                    description="Refresh to try the simulated transport again."
+                    description="Refresh to try loading your conversations again."
                     actionLabel="Refresh"
                     onAction={() => void refreshAll()}
                   />
@@ -745,7 +1481,7 @@ export function MessagesPage() {
                       <EmptyState
                         icon="mdi:chat-remove-outline"
                         title="Conversation unavailable"
-                        description="Refresh to reload the simulated thread."
+                        description="Refresh to reload this conversation."
                         actionLabel="Refresh"
                         onAction={() => void refreshAll()}
                       />
@@ -804,6 +1540,7 @@ export function MessagesPage() {
                                       <MessageAttachments
                                         attachments={message.attachments}
                                         isOwn={message.isOwn}
+                                        onOpenImage={setActiveImageAttachment}
                                       />
                                     ) : null}
                                   </div>
@@ -846,44 +1583,41 @@ export function MessagesPage() {
                   </div>
 
                   <footer className="border-t border-accent-100 px-5 py-5 sm:px-7">
-                    {/* Staged uploads let us mimic the backend attachment flow before websockets arrive. */}
-                    {draftAttachments.length > 0 ? (
-                      <div className="mb-4 flex flex-wrap gap-2">
-                        {draftAttachments.map((attachment) => (
-                          <div
-                            key={attachment.id}
-                            className="inline-flex items-center gap-2 rounded-full border border-accent-200 bg-accent-50 px-3 py-2 text-sm text-accent-700"
-                          >
-                            <Icon icon={getAttachmentIcon(attachment.kind)} className="h-4 w-4" />
-                            <span className="max-w-[14rem] truncate">
-                              {describeAttachmentForPreview(attachment)}
-                            </span>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                setDraftAttachments((previous) =>
-                                  previous.filter((item) => item.id !== attachment.id),
-                                )
-                              }
-                              className="text-accent-400 transition-colors hover:text-accent-700"
-                              aria-label={`Remove ${attachment.fileName}`}
-                            >
-                              <Icon icon="mdi:close-circle" className="h-4 w-4" />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    ) : null}
-
                     <input
                       ref={fileInputRef}
                       type="file"
                       multiple
+                      accept={MESSAGE_ATTACHMENT_FILE_INPUT_ACCEPT}
                       className="hidden"
                       onChange={handleFileSelection}
                     />
 
                     <div className="rounded-[1.75rem] border border-accent-200 bg-accent-50 p-4">
+                      <DraftComposerAttachments
+                        attachments={draftAttachments}
+                        onRemove={removeDraftAttachment}
+                      />
+
+                      {voiceRecordingBusy ? (
+                        <div className="mb-4 flex items-center justify-between gap-3 rounded-[1.5rem] border border-rose-200 bg-rose-50 px-4 py-3 text-rose-900">
+                          <div className="flex min-w-0 items-center gap-3">
+                            <span
+                              className={`h-3 w-3 flex-shrink-0 rounded-full ${
+                                voiceRecordingActive ? 'animate-pulse bg-rose-500' : 'bg-rose-400'
+                              }`}
+                            />
+                            <div className="min-w-0">
+                              <p className="text-sm font-semibold">{voiceRecordingLabel}</p>
+                              <p className="text-xs text-rose-700">{voiceRecordingHint}</p>
+                            </div>
+                          </div>
+
+                          <span className="rounded-full bg-white px-3 py-1 text-sm font-semibold text-rose-700 shadow-sm">
+                            {formatRecordingDuration(voiceRecordingDurationMs)}
+                          </span>
+                        </div>
+                      ) : null}
+
                       <textarea
                         value={draftMessage}
                         onChange={(event) => setDraftMessage(event.target.value)}
@@ -912,19 +1646,43 @@ export function MessagesPage() {
 
                           <button
                             type="button"
-                            onClick={() => void handleAddVoiceNote()}
+                            ref={voiceRecordButtonRef}
+                            onPointerDown={handleVoiceRecordPointerDown}
+                            onPointerUp={handleVoiceRecordPointerUp}
+                            onPointerCancel={handleVoiceRecordPointerUp}
+                            onKeyDown={handleVoiceRecordKeyDown}
+                            onKeyUp={handleVoiceRecordKeyUp}
                             disabled={audioDisabled}
-                            className="inline-flex items-center gap-2 rounded-full border border-accent-200 bg-white px-3 py-2 text-sm font-medium text-accent-700 transition-colors hover:border-primary-200 hover:text-primary-600 disabled:cursor-not-allowed disabled:opacity-60"
+                            className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${
+                              voiceRecordingBusy
+                                ? 'border-rose-200 bg-rose-50 text-rose-700'
+                                : 'border-accent-200 bg-white text-accent-700 hover:border-primary-200 hover:text-primary-600'
+                            }`}
+                            aria-label="Hold to record a voice note and release to send"
                           >
                             <Icon
                               icon={
-                                uploadAttachment.isPending
+                                voiceRecordingState === 'starting' ||
+                                voiceRecordingState === 'finishing'
                                   ? 'mdi:loading'
-                                  : 'mdi:microphone-outline'
+                                  : voiceRecordingActive
+                                    ? 'mdi:microphone'
+                                    : 'mdi:microphone-outline'
                               }
-                              className={`h-4 w-4 ${uploadAttachment.isPending ? 'animate-spin' : ''}`}
+                              className={`h-4 w-4 ${
+                                voiceRecordingState === 'starting' ||
+                                voiceRecordingState === 'finishing'
+                                  ? 'animate-spin'
+                                  : ''
+                              }`}
                             />
-                            Audio
+                            {voiceRecordingState === 'starting'
+                              ? 'Starting...'
+                              : voiceRecordingState === 'finishing'
+                                ? 'Preparing...'
+                                : voiceRecordingActive
+                                  ? 'Release to preview'
+                                  : 'Hold to talk'}
                           </button>
                         </div>
 
@@ -955,6 +1713,11 @@ export function MessagesPage() {
           </section>
         </div>
       </section>
+
+      <ImageAttachmentLightbox
+        attachment={activeImageAttachment}
+        onClose={() => setActiveImageAttachment(null)}
+      />
     </>
   );
 }

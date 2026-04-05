@@ -8,11 +8,22 @@ import type {
   SendMessageRequest,
   UploadMessageAttachmentRequest,
 } from '../api/messages.contract';
+import { isMessagesSupabaseConfigured } from '../lib/supabase';
+import { supabaseMessagesTransport } from '../lib/supabase/messagesSupabaseTransport';
 import { mockMessagesTransport } from '../lib/mockMessagesTransport';
 
-// The page talks to this service instead of the mock directly. When the backend
-// arrives, swap the transport implementation and keep the rest of the feature.
-const activeMessagesTransport = mockMessagesTransport;
+const activeMessagesTransport = isMessagesSupabaseConfigured()
+  ? supabaseMessagesTransport
+  : mockMessagesTransport;
+const activeMessagesTransportMode = isMessagesSupabaseConfigured() ? 'supabase' : 'mock';
+
+export function isMockMessagesTransportActive() {
+  return activeMessagesTransportMode === 'mock';
+}
+
+export function isSupabaseMessagesTransportActive() {
+  return activeMessagesTransportMode === 'supabase';
+}
 
 export const messagesService = {
   getInbox(request: ListMessageThreadsRequest) {

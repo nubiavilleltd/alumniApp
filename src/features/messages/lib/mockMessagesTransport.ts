@@ -23,7 +23,11 @@ import {
   formatBytes,
   sortMessageThreads,
 } from '../api/adapters/messages.adapter';
-import { getRegisteredMessageRecipient } from './messageRecipientRegistry';
+import {
+  getRegisteredMessageRecipient,
+  resetRegisteredMessageRecipients,
+} from './messageRecipientRegistry';
+import { resetMessageAttachmentPreviews } from './messageAttachmentPreviewRegistry';
 import type {
   MessageAttachment,
   MessageDeliveryStatus,
@@ -439,6 +443,13 @@ function readState() {
 function writeState(state: MockMessagesServerState) {
   if (!canUseStorage()) return;
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+export function resetMockMessagesServerState() {
+  if (!canUseStorage()) return;
+  window.localStorage.removeItem(STORAGE_KEY);
+  resetRegisteredMessageRecipients();
+  resetMessageAttachmentPreviews();
 }
 
 function resolveParticipant(memberId: string): MessageParticipant {
