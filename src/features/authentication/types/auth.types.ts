@@ -11,6 +11,7 @@ import type {
   loginSchema,
   registerDetailsSchema,
   resetPasswordSchema,
+  changePasswordSchema,
 } from '../schemas/authSchema';
 
 export type AuthMode = 'login' | 'register' | 'forgot-password' | 'reset-password';
@@ -26,7 +27,7 @@ export type FieldVisibility = 'public' | 'private';
 
 export interface PrivacySettings {
   photo: FieldVisibility;
-  phone: FieldVisibility;
+  whatsappPhone: FieldVisibility;
   alternativePhone: FieldVisibility;
   birthDate: FieldVisibility;
   residentialAddress: FieldVisibility;
@@ -40,7 +41,7 @@ export interface PrivacySettings {
 
 export const defaultPrivacySettings: PrivacySettings = {
   photo: 'public',
-  phone: 'private',
+  whatsappPhone: 'private',
   alternativePhone: 'private',
   birthDate: 'private',
   residentialAddress: 'private',
@@ -121,6 +122,7 @@ export type LoginFormValues = z.input<typeof loginSchema>;
 export type ForgotPasswordFormValues = z.input<typeof forgotPasswordSchema>;
 export type RegisterDetailsFormValues = z.input<typeof registerDetailsSchema>;
 export type ResetPasswordFormValues = z.input<typeof resetPasswordSchema>;
+export type ChangePasswordFormValues = z.input<typeof changePasswordSchema>;
 
 // userId is intentionally absent — it is server state, not a form field.
 // It lives in RegistrationFlowState inside RegisterForm.tsx.
@@ -171,18 +173,16 @@ export interface VerifyRegistrationRequest {
 
 export interface ResetPasswordRequest {
   token: string;
-  email?: string;
   password: string;
+  confirmPassword: string;
+}
+export interface ResetPasswordResponse {
+  status: 'success';
+  message: string;
 }
 
 export interface CompleteRegistrationResponse {
   status: 'pending_admin_approval';
   message: string;
   draft: AuthUserSummary;
-}
-
-export interface ResetPasswordResponse {
-  status: 'success';
-  message: string;
-  email?: string;
 }

@@ -104,7 +104,7 @@ export function getPhotoDisplay(photoUrl: string | undefined, isVisible: boolean
  * Useful for determining whether to show a "Contact" section at all
  */
 export function hasVisibleContactInfo(fieldOwner: Alumni, currentViewer: Alumni | null): boolean {
-  const contactFields: (keyof PrivacySettings)[] = ['phone', 'alternativePhone'];
+  const contactFields: (keyof PrivacySettings)[] = ['whatsappPhone', 'alternativePhone'];
 
   return contactFields.some((field) => isFieldVisible(fieldOwner, field, currentViewer));
 }

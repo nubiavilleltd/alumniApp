@@ -49,6 +49,7 @@ export const API_ENDPOINTS = {
     GET_PROFILE_VISIBILITY: '/api/get_profile_visibility',
     UPDATE_PROFILE_VISIBILITY: '/api/update_profile_visibility',
     GET_USER_PROFILE: '/api/get_user_profile',
+    CHANGE_PASSWORD: '/api/change_user_password',
   },
 
   // ─── Messages ──────────────────────────────────────────────────────────────

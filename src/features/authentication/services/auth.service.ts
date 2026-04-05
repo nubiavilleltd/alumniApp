@@ -35,6 +35,14 @@ import {
   mapForgotPasswordPayload,
   mapForgotPasswordResponse,
 } from '../api/adapters/forgotpassword.adapter';
+import {
+  mapResetPasswordError,
+  mapResetPasswordPayload,
+} from '../api/adapters/resetpassword.adapter';
+import {
+  mapChangePasswordError,
+  mapChangePasswordPayload,
+} from '../../user/api/adapters/changepassword.adapter';
 
 function toUserSummary(values: RegisterDetailsFormValues): AuthUserSummary {
   return {
@@ -116,17 +124,31 @@ export const authApi = {
     }
   },
 
-  /** Password reset — still mocked; backend endpoint not yet available */
+  /**
+   * POST /api/reset_password
+   *
+   * The reset code comes from the URL path segment:
+   *   /auth/reset-password/{code}
+   *
+   * Payload: { code, new_password, new_password_confirm }
+   */
   async resetPassword(values: ResetPasswordRequest): Promise<ResetPasswordResponse> {
-    const updatedAccount = values.email
-      ? updateMockAccountPassword(values.email, values.password)
-      : null;
-    if (!updatedAccount) throw new Error('Password reset failed for this account');
-    return {
-      status: 'success',
-      message: 'Password reset successfully.',
-      email: updatedAccount.email,
-    };
+    try {
+      const payload = mapResetPasswordPayload({
+        code: values.token, // token = the URL path code
+        password: values.password,
+        confirmPassword: values.confirmPassword ?? values.password,
+      });
+
+      const { data } = await apiClient.post(API_ENDPOINTS.AUTH.RESET_PASSWORD, payload);
+
+      return {
+        status: 'success',
+        message: data?.message ?? 'Password reset successfully.',
+      };
+    } catch (error) {
+      throw handleApiError(error, mapResetPasswordError(error), 'authApi.resetPassword');
+    }
   },
 
   /**

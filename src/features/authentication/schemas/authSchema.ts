@@ -98,3 +98,14 @@ export const resetPasswordSchema = z
     path: ['confirmPassword'],
     message: 'Passwords do not match',
   });
+
+export const changePasswordSchema = z
+  .object({
+    currentPassword: passwordSchema,
+    newPassword: passwordSchema,
+    confirmPassword: z.string().min(1, 'Please confirm your password'),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    path: ['confirmPassword'],
+    message: 'Passwords do not match',
+  });

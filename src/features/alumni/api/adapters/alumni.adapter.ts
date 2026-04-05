@@ -224,7 +224,7 @@ export function mapBackendAlumniToFrontend(raw: unknown): Alumni {
     nameInSchool: safeString(d.name_in_school),
     houseColor: safeString(d.house_color),
 
-    phone: safeString(d.phone),
+    whatsappPhone: safeString(d.phone),
     alternativePhone: optionalString(d.alternative_phone),
 
     // ✅ FIXED: Use proper photo resolution logic

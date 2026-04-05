@@ -9,6 +9,11 @@ import {
   createProfileUpdatePayload,
   mapBackendResponseToFrontendUser,
 } from '../api/adapters/user.adapter';
+import { ChangePasswordRequest } from '../types/user.type';
+import {
+  mapChangePasswordError,
+  mapChangePasswordPayload,
+} from '../api/adapters/changepassword.adapter';
 
 export interface UpdateProfileParams {
   userId: string;
@@ -43,6 +48,20 @@ export const userService = {
         'Unable to save your profile. Please check your information and try again.',
         'userService.updateProfile',
       );
+    }
+  },
+
+  /**
+   * POST /api/change_user_password
+   *
+   * Called from the authenticated settings page.
+   * Payload: { old_password, new_password, confirm_password }
+   */
+  async changePassword(values: ChangePasswordRequest): Promise<void> {
+    try {
+      await apiClient.post(API_ENDPOINTS.USER.CHANGE_PASSWORD, mapChangePasswordPayload(values));
+    } catch (error) {
+      throw handleApiError(error, mapChangePasswordError(error), 'authApi.changePassword');
     }
   },
 };

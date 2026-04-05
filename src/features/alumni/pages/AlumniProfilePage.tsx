@@ -445,9 +445,9 @@ export function AlumniProfilePage() {
                   <FieldRow label="Email" value={alum.email} icon="mdi:email-outline" />
                   <FieldRowWithPrivacy
                     label="WhatsApp"
-                    value={alum.phone}
+                    value={alum.whatsappPhone}
                     icon="mdi:whatsapp"
-                    privacy={alum.privacy?.phone}
+                    privacy={alum.privacy?.whatsappPhone}
                     currentUser={currentUser}
                     viewerIsOwner={isOwnProfile}
                   />

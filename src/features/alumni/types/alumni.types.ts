@@ -104,7 +104,7 @@ export interface Alumni {
   houseColor?: string;
 
   // ── Contact ───────────────────────────────────────────────────────────────
-  phone: string;
+  whatsappPhone: string;
   alternativePhone?: string;
 
   // ── Profile ───────────────────────────────────────────────────────────────

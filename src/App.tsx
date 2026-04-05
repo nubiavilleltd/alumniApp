@@ -34,7 +34,7 @@ import MyBusinessPage from './features/marketplace/pages/MyBusinessPage';
 
 import { UserDashboardPage } from './features/user/pages/UserDashboardPage';
 import UserProfilePage from './features/user/pages/UserProfilePage';
-import ChangePasswordPage from './features/user/pages/ChangePasswordPage';
+import SettingsPage from './features/user/pages/SettingsPage';
 import { MessagesPage } from './features/messages/pages/MessagesPage';
 
 import { AdminDashboardPage } from './features/admin/pages/AdminDashboardPage';
@@ -201,6 +201,10 @@ export default function App() {
           <Route path={ROUTES.AUTH.REGISTER} element={<AuthPage mode="register" />} />
           <Route path={ROUTES.AUTH.FORGOT_PASSWORD} element={<AuthPage mode="forgot-password" />} />
           <Route path={ROUTES.AUTH.RESET_PASSWORD} element={<AuthPage mode="reset-password" />} />
+          <Route
+            path={ROUTES.AUTH.RESET_PASSWORD_WITH_CODE(':code')}
+            element={<AuthPage mode="reset-password" />}
+          />
 
           {/* User */}
           <Route
@@ -230,7 +234,7 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <ErrorBoundary>
-                  <ChangePasswordPage />
+                  <SettingsPage />
                 </ErrorBoundary>
               </ProtectedRoute>
             }
