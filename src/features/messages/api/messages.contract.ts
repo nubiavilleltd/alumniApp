@@ -35,6 +35,10 @@ export const MESSAGES_API_CONTRACT = {
     method: 'POST',
     path: API_ENDPOINTS.MESSAGES.SEND_MESSAGE,
   },
+  DELETE_MESSAGE: {
+    method: 'POST',
+    path: API_ENDPOINTS.MESSAGES.DELETE_MESSAGE,
+  },
   MARK_THREAD_READ: {
     method: 'POST',
     path: API_ENDPOINTS.MESSAGES.MARK_READ,
@@ -70,6 +74,7 @@ export interface GetMessageThreadResponse {
 
 export interface UploadMessageAttachmentRequest {
   viewerMemberId: string;
+  threadId?: string;
   fileName: string;
   mimeType: string;
   sizeInBytes: number;
@@ -89,6 +94,7 @@ export interface SendMessageRequest {
   threadId: string;
   body?: string;
   attachments?: MessageAttachment[];
+  replyToMessageId?: string;
   clientGeneratedId: string;
 }
 
@@ -134,6 +140,18 @@ export interface CreateGroupThreadResponse {
   serverTime: string;
 }
 
+export interface DeleteMessageRequest {
+  viewerMemberId: string;
+  threadId: string;
+  messageId: string;
+}
+
+export interface DeleteMessageResponse {
+  threadId: string;
+  messageId: string;
+  serverTime: string;
+}
+
 export interface MessagesTransport {
   listThreads(request: ListMessageThreadsRequest): Promise<ListMessageThreadsResponse>;
   getThread(request: GetMessageThreadRequest): Promise<GetMessageThreadResponse>;
@@ -141,6 +159,7 @@ export interface MessagesTransport {
     request: UploadMessageAttachmentRequest,
   ): Promise<UploadMessageAttachmentResponse>;
   sendMessage(request: SendMessageRequest): Promise<SendMessageResponse>;
+  deleteMessage(request: DeleteMessageRequest): Promise<DeleteMessageResponse>;
   markThreadRead(request: MarkMessageThreadReadRequest): Promise<MarkMessageThreadReadResponse>;
   createDirectThread(request: CreateDirectThreadRequest): Promise<CreateDirectThreadResponse>;
   createGroupThread(request: CreateGroupThreadRequest): Promise<CreateGroupThreadResponse>;

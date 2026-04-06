@@ -54,14 +54,15 @@ export const API_ENDPOINTS = {
 
   // ─── Messages ──────────────────────────────────────────────────────────────
   MESSAGES: {
-    THREADS: '/chat_api/get_threads',
-    THREAD_DETAIL: '/chat_api/get_thread',
-    DIRECT_THREAD: '/chat_api/send_direct',
-    GROUP_THREAD: '/chat_api/create_group',
-    SEND_MESSAGE: '/chat_api/send_message',
-    MARK_READ: '/chat_api/mark_read',
-    ATTACHMENTS: '/chat_api/upload_media',
-    POLL: '/chat_api/get_threads',
+    THREADS: '/chat_api/v2_get_threads',
+    THREAD_DETAIL: '/chat_api/v2_get_thread',
+    DIRECT_THREAD: '/chat_api/v2_send_direct',
+    GROUP_THREAD: '/chat_api/v2_create_group',
+    SEND_MESSAGE: '/chat_api/v2_send_message',
+    DELETE_MESSAGE: '/chat_api/v2_delete_message',
+    MARK_READ: '/chat_api/v2_mark_read',
+    ATTACHMENTS: '/chat_api/v2_upload_attachment',
+    POLL: '/chat_api/v2_get_threads',
   },
 
   // ─── Admin ────────────────────────────────────────────────────────────────

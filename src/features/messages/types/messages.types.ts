@@ -25,6 +25,8 @@ export interface MessageParticipant {
   profileHref: string;
   presence: MessagePresence;
   roleInThread: MessageParticipantRoleInThread;
+  lastReadMessageId?: string;
+  lastDeliveredMessageId?: string;
 }
 
 export interface MessageAttachment {
@@ -40,6 +42,16 @@ export interface MessageAttachment {
   waveform?: number[];
 }
 
+export interface MessageReplyPreview {
+  messageId: string;
+  senderMemberId: string;
+  senderDisplayName: string;
+  bodyPreview: string;
+  attachments: Pick<MessageAttachment, 'kind' | 'fileName'>[];
+  isOwn: boolean;
+  isDeleted: boolean;
+}
+
 export interface MessageItem {
   id: string;
   threadId: string;
@@ -51,6 +63,8 @@ export interface MessageItem {
   status: MessageDeliveryStatus;
   attachments: MessageAttachment[];
   isOwn: boolean;
+  replyTo?: MessageReplyPreview;
+  deletedAt?: string;
 }
 
 export interface MessageThreadSummary {

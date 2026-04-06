@@ -5,6 +5,7 @@ import { MESSAGE_POLLING_INTERVAL_MS } from '../api/messages.contract';
 import type {
   CreateDirectThreadRequest,
   CreateGroupThreadRequest,
+  DeleteMessageRequest,
   MarkMessageThreadReadRequest,
   SendMessageRequest,
   UploadMessageAttachmentRequest,
@@ -113,6 +114,31 @@ export function useMarkMessageThreadRead() {
       queryClient.invalidateQueries({
         queryKey: messageKeys.thread(viewerMemberId, request.threadId),
       });
+    },
+  });
+}
+
+export function useDeleteMessage() {
+  const queryClient = useQueryClient();
+  const currentUser = useAuthStore((state) => state.user);
+  const viewerMemberId = currentUser?.memberId ?? '';
+
+  return useMutation({
+    mutationFn: async (request: DeleteMessageRequest) => {
+      if (!viewerMemberId) {
+        throw new Error('You must be logged in to delete a message.');
+      }
+
+      return messagesService.deleteMessage(request);
+    },
+    onSuccess: (_, request) => {
+      queryClient.invalidateQueries({ queryKey: messageKeys.inbox(viewerMemberId) });
+      queryClient.invalidateQueries({
+        queryKey: messageKeys.thread(viewerMemberId, request.threadId),
+      });
+    },
+    onError: (error: any) => {
+      toast.fromError(error);
     },
   });
 }

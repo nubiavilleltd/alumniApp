@@ -2,6 +2,7 @@ import { withApiErrorHandling } from '@/lib/errors/apiErrorHandler';
 import type {
   CreateDirectThreadRequest,
   CreateGroupThreadRequest,
+  DeleteMessageRequest,
   GetMessageThreadRequest,
   ListMessageThreadsRequest,
   MarkMessageThreadReadRequest,
@@ -46,6 +47,14 @@ export const messagesService = {
       () => activeMessagesTransport.sendMessage(request),
       'Unable to send your message.',
       'messagesService.sendMessage',
+    );
+  },
+
+  deleteMessage(request: DeleteMessageRequest) {
+    return withApiErrorHandling(
+      () => activeMessagesTransport.deleteMessage(request),
+      'Unable to delete this message.',
+      'messagesService.deleteMessage',
     );
   },
 

@@ -7,6 +7,7 @@ import {
   useMemo,
   useRef,
   useState,
+  type CSSProperties,
   type ChangeEvent,
   type KeyboardEvent,
   type PointerEvent as ReactPointerEvent,
@@ -23,14 +24,17 @@ import {
   buildRecordedVoiceNoteUploadRequest,
   buildSendMessageRequest,
   buildVoiceNoteUploadRequest,
+  describeAttachmentForPreview,
   filterMessageThreads,
   formatBytes,
+  isGraduationYearGroupThread,
 } from '../api/adapters/messages.adapter';
 import type { UploadMessageAttachmentRequest } from '../api/messages.contract';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import {
   messageKeys,
   useCreateDirectMessageThread,
+  useDeleteMessage,
   useMarkMessageThreadRead,
   useMessageThread,
   useMessagesInbox,
@@ -46,6 +50,8 @@ import type {
   MessageAttachment,
   MessageDeliveryStatus,
   MessageItem,
+  MessageParticipant,
+  MessageReplyPreview,
   MessageThreadDetail,
   MessageThreadFilter,
   MessageThreadSummary,
@@ -66,6 +72,31 @@ interface DraftComposerAttachment {
   previewUrl?: string;
   uploadRequest: UploadMessageAttachmentRequest;
   uploadedAttachment?: MessageAttachment;
+}
+
+interface OpenMessageActionsMenu {
+  messageId: string;
+  style: CSSProperties;
+}
+
+function getParticipantRolePriority(role: MessageParticipant['roleInThread']) {
+  if (role === 'admin') return 0;
+  if (role === 'moderator') return 1;
+  return 2;
+}
+
+function sortGroupParticipants(participants: MessageParticipant[]) {
+  return [...participants].sort((left, right) => {
+    const roleDifference =
+      getParticipantRolePriority(left.roleInThread) -
+      getParticipantRolePriority(right.roleInThread);
+
+    if (roleDifference !== 0) {
+      return roleDifference;
+    }
+
+    return left.fullName.localeCompare(right.fullName);
+  });
 }
 
 const inboxFilters: { key: MessageThreadFilter; label: string }[] = [
@@ -183,6 +214,7 @@ function buildOptimisticMessage(params: {
   clientGeneratedId: string;
   currentUserName?: string;
   currentUserAvatar?: string;
+  replyTo?: MessageReplyPreview | null;
 }): MessageItem {
   return {
     id: params.clientGeneratedId,
@@ -195,6 +227,40 @@ function buildOptimisticMessage(params: {
     status: 'sending',
     attachments: params.attachments,
     isOwn: true,
+    replyTo: params.replyTo ?? undefined,
+  };
+}
+
+function buildCopyTextFromMessage(message: MessageItem) {
+  if (message.deletedAt) {
+    return '';
+  }
+
+  const body = message.body.trim();
+  const attachmentLines = message.attachments.map((attachment) =>
+    describeAttachmentForPreview(attachment),
+  );
+  return [body, ...attachmentLines].filter(Boolean).join('\n');
+}
+
+function buildReplyPreviewFromMessage(message: MessageItem): MessageReplyPreview {
+  return {
+    messageId: message.id,
+    senderMemberId: message.senderMemberId,
+    senderDisplayName: message.senderDisplayName,
+    bodyPreview: message.deletedAt
+      ? 'Message removed'
+      : message.body.trim() ||
+        message.attachments
+          .map((attachment) => describeAttachmentForPreview(attachment))
+          .join(', ') ||
+        'Message',
+    attachments: message.attachments.map((attachment) => ({
+      kind: attachment.kind,
+      fileName: attachment.fileName,
+    })),
+    isOwn: message.isOwn,
+    isDeleted: !!message.deletedAt,
   };
 }
 
@@ -252,6 +318,147 @@ function getPreferredRecorderMimeType() {
   );
 }
 
+function ParticipantAvatar({
+  participant,
+  size = 'md',
+}: {
+  participant: MessageParticipant;
+  size?: 'sm' | 'md';
+}) {
+  const [hasImageError, setHasImageError] = useState(false);
+  const sizeClasses =
+    size === 'sm' ? 'h-9 w-9 rounded-full text-xs' : 'h-11 w-11 rounded-2xl text-sm';
+
+  useEffect(() => {
+    setHasImageError(false);
+  }, [participant.avatar]);
+
+  return participant.avatar && !hasImageError ? (
+    <img
+      src={participant.avatar}
+      alt={participant.fullName}
+      className={`${sizeClasses} object-cover`}
+      onError={() => setHasImageError(true)}
+    />
+  ) : (
+    <div
+      className={`flex ${sizeClasses} items-center justify-center bg-primary-100 font-semibold text-primary-700`}
+    >
+      {participant.initials}
+    </div>
+  );
+}
+
+function GroupParticipantsModal({
+  isOpen,
+  onClose,
+  threadTitle,
+  participants,
+  viewerMemberId,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  threadTitle: string;
+  participants: MessageParticipant[];
+  viewerMemberId?: string;
+}) {
+  useEffect(() => {
+    if (!isOpen) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    function handleEscape(event: globalThis.KeyboardEvent) {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    }
+
+    window.addEventListener('keydown', handleEscape);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', handleEscape);
+    };
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/55 px-4 py-6 backdrop-blur-sm"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${threadTitle} members`}
+    >
+      <div
+        className="w-full max-w-2xl overflow-hidden rounded-[2rem] border border-accent-200 bg-white shadow-2xl"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <div className="flex items-start justify-between gap-4 border-b border-accent-100 px-5 py-5 sm:px-6">
+          <div className="min-w-0">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary-600">
+              Group Members
+            </p>
+            <h3 className="mt-2 truncate text-xl font-semibold text-accent-900">{threadTitle}</h3>
+            <p className="mt-1 text-sm text-accent-500">{participants.length} participants</p>
+          </div>
+
+          <button
+            type="button"
+            onClick={onClose}
+            className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-accent-200 text-accent-500 transition-colors hover:border-accent-300 hover:text-accent-700"
+            aria-label="Close members list"
+          >
+            <Icon icon="mdi:close" className="h-5 w-5" />
+          </button>
+        </div>
+
+        <div className="max-h-[70vh] overflow-y-auto px-5 py-4 sm:px-6">
+          <div className="space-y-3">
+            {participants.map((participant) => {
+              const isViewer = participant.memberId === viewerMemberId;
+
+              return (
+                <div
+                  key={participant.memberId}
+                  className="flex items-center gap-3 rounded-[1.5rem] border border-accent-100 bg-accent-50 px-4 py-3"
+                >
+                  <ParticipantAvatar participant={participant} />
+
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="truncate text-sm font-semibold text-accent-900">
+                        {participant.fullName}
+                      </p>
+                      {isViewer ? (
+                        <span className="rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-accent-500">
+                          You
+                        </span>
+                      ) : null}
+                      {participant.roleInThread === 'admin' ? (
+                        <span className="rounded-full bg-primary-50 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-primary-600">
+                          Admin
+                        </span>
+                      ) : participant.roleInThread === 'moderator' ? (
+                        <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-amber-700">
+                          Moderator
+                        </span>
+                      ) : null}
+                    </div>
+                    <p className="mt-1 truncate text-sm text-accent-500">{participant.headline}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ThreadAvatar({
   thread,
   size = 'md',
@@ -259,10 +466,15 @@ function ThreadAvatar({
   thread: MessageThreadSummary | MessageThreadDetail;
   size?: 'sm' | 'md';
 }) {
+  const [hasImageError, setHasImageError] = useState(false);
   const sizeClasses =
     size === 'sm'
       ? 'h-12 w-12 rounded-2xl'
       : 'h-14 w-14 rounded-[1.25rem] sm:h-16 sm:w-16 sm:rounded-[1.5rem]';
+
+  useEffect(() => {
+    setHasImageError(false);
+  }, [thread.avatar]);
 
   if (thread.type === 'group') {
     return (
@@ -276,8 +488,13 @@ function ThreadAvatar({
 
   return (
     <div className="relative flex-shrink-0">
-      {thread.avatar ? (
-        <img src={thread.avatar} alt={thread.title} className={`${sizeClasses} object-cover`} />
+      {thread.avatar && !hasImageError ? (
+        <img
+          src={thread.avatar}
+          alt={thread.title}
+          className={`${sizeClasses} object-cover`}
+          onError={() => setHasImageError(true)}
+        />
       ) : (
         <div
           className={`flex ${sizeClasses} items-center justify-center bg-primary-100 text-base font-semibold text-primary-700`}
@@ -290,6 +507,77 @@ function ThreadAvatar({
           thread.presence,
         )}`}
       />
+    </div>
+  );
+}
+
+function ReplyPreviewCard({
+  replyTo,
+  variant,
+  onClear,
+}: {
+  replyTo: MessageReplyPreview;
+  variant: 'composer' | 'bubble';
+  onClear?: () => void;
+}) {
+  const isComposer = variant === 'composer';
+  const attachmentSummary =
+    replyTo.attachments.length > 0
+      ? replyTo.attachments.length === 1
+        ? describeAttachmentForPreview({
+            id: replyTo.messageId,
+            kind: replyTo.attachments[0].kind,
+            fileName: replyTo.attachments[0].fileName,
+            mimeType: '',
+            sizeInBytes: 0,
+            sizeLabel: '',
+            uploadState: 'uploaded',
+          })
+        : `${replyTo.attachments.length} attachments`
+      : null;
+
+  return (
+    <div
+      className={`mb-3 rounded-2xl border-l-4 px-4 py-3 ${
+        isComposer
+          ? 'border-primary-500 bg-primary-50 text-accent-800'
+          : 'border-primary-300 bg-black/10 text-inherit'
+      }`}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p
+            className={`truncate text-xs font-semibold uppercase tracking-[0.16em] ${
+              isComposer ? 'text-primary-700' : 'text-current/80'
+            }`}
+          >
+            Replying to {replyTo.senderDisplayName}
+          </p>
+          <p
+            className={`mt-1 line-clamp-2 text-sm ${
+              isComposer ? 'text-accent-700' : 'text-current/85'
+            }`}
+          >
+            {replyTo.bodyPreview}
+          </p>
+          {attachmentSummary ? (
+            <p className={`mt-1 text-xs ${isComposer ? 'text-accent-500' : 'text-current/70'}`}>
+              {attachmentSummary}
+            </p>
+          ) : null}
+        </div>
+
+        {onClear ? (
+          <button
+            type="button"
+            onClick={onClear}
+            className="inline-flex h-8 w-8 items-center justify-center rounded-full text-accent-400 transition-colors hover:bg-accent-100 hover:text-accent-700"
+            aria-label="Clear reply target"
+          >
+            <Icon icon="mdi:close" className="h-4 w-4" />
+          </button>
+        ) : null}
+      </div>
     </div>
   );
 }
@@ -624,6 +912,9 @@ export function MessagesPage() {
   const [query, setQuery] = useState('');
   const [draftMessage, setDraftMessage] = useState('');
   const [draftAttachments, setDraftAttachments] = useState<DraftComposerAttachment[]>([]);
+  const [replyTarget, setReplyTarget] = useState<MessageReplyPreview | null>(null);
+  const [openMessageActions, setOpenMessageActions] = useState<OpenMessageActionsMenu | null>(null);
+  const [participantsModalOpen, setParticipantsModalOpen] = useState(false);
   const [activeImageAttachment, setActiveImageAttachment] = useState<MessageAttachment | null>(
     null,
   );
@@ -637,6 +928,7 @@ export function MessagesPage() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const voiceRecordButtonRef = useRef<HTMLButtonElement | null>(null);
   const messagePaneRef = useRef<HTMLDivElement | null>(null);
+  const lastOpenedThreadIdRef = useRef<string | null>(null);
   const pendingDirectThreadIntentRef = useRef<string | null>(null);
   const activeVoicePointerIdRef = useRef<number | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -654,6 +946,7 @@ export function MessagesPage() {
 
   const inboxQuery = useMessagesInbox();
   const createDirectThread = useCreateDirectMessageThread();
+  const deleteMessage = useDeleteMessage();
   const sendMessage = useSendMessage();
   const uploadAttachment = useUploadMessageAttachment();
   const markThreadRead = useMarkMessageThreadRead();
@@ -703,6 +996,23 @@ export function MessagesPage() {
       : activeThread;
   const threadShell = activeThreadWithOptimisticMessages ?? resolvedThreadSummary;
   const unreadMessageCount = inboxQuery.data?.unreadCount ?? 0;
+  const groupParticipants = useMemo(
+    () =>
+      threadShell?.type === 'group' ? sortGroupParticipants(threadShell.participants ?? []) : [],
+    [threadShell],
+  );
+  const previewGroupParticipants = groupParticipants.slice(0, 3);
+  const groupAdminParticipant =
+    groupParticipants.find((participant) => participant.roleInThread === 'admin') ?? null;
+  const openMessageActionsMessage = useMemo(
+    () =>
+      openMessageActions
+        ? (activeThreadWithOptimisticMessages?.messages.find(
+            (message) => message.id === openMessageActions.messageId,
+          ) ?? null)
+        : null,
+    [activeThreadWithOptimisticMessages?.messages, openMessageActions],
+  );
 
   function replaceMessagesSearch(nextThreadId?: string) {
     const nextSearch = new URLSearchParams();
@@ -754,6 +1064,7 @@ export function MessagesPage() {
     preserveUploadedAttachmentIds?: Set<string>;
   }) {
     setDraftMessage('');
+    setReplyTarget(null);
     setDraftAttachments((previous) => {
       previous.forEach((attachment) => {
         releaseDraftAttachmentResources(attachment, options);
@@ -895,7 +1206,7 @@ export function MessagesPage() {
     }
 
     try {
-      const attachmentRequest = buildRecordedVoiceNoteUploadRequest({
+      const attachmentRequest = await buildRecordedVoiceNoteUploadRequest({
         viewerMemberId: context.viewerMemberId,
         blob,
         durationSeconds: Math.max(1, Math.round(durationMs / 1000)),
@@ -1070,6 +1381,46 @@ export function MessagesPage() {
   }, []);
 
   useEffect(() => {
+    function handlePointerDown(event: PointerEvent) {
+      if (!(event.target instanceof Element)) return;
+      if (event.target.closest('[data-message-actions-root="true"]')) return;
+      setOpenMessageActions(null);
+    }
+
+    document.addEventListener('pointerdown', handlePointerDown);
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!openMessageActions) {
+      return undefined;
+    }
+
+    function handleCloseActionsMenu() {
+      setOpenMessageActions(null);
+    }
+
+    const messagePane = messagePaneRef.current;
+    window.addEventListener('resize', handleCloseActionsMenu);
+    messagePane?.addEventListener('scroll', handleCloseActionsMenu);
+
+    return () => {
+      window.removeEventListener('resize', handleCloseActionsMenu);
+      messagePane?.removeEventListener('scroll', handleCloseActionsMenu);
+    };
+  }, [openMessageActions]);
+
+  useEffect(() => {
+    setOpenMessageActions(null);
+  }, [activeThreadId]);
+
+  useEffect(() => {
+    setParticipantsModalOpen(false);
+  }, [activeThreadId]);
+
+  useEffect(() => {
     if (!requestedThreadId) return;
 
     setSelectedThreadId((current) => (current === requestedThreadId ? current : requestedThreadId));
@@ -1127,6 +1478,27 @@ export function MessagesPage() {
   }, [activeThread, markThreadRead, viewerMemberId]);
 
   useEffect(() => {
+    if (!activeThreadWithOptimisticMessages?.id) {
+      lastOpenedThreadIdRef.current = null;
+      return;
+    }
+
+    const container = messagePaneRef.current;
+    if (!container || lastOpenedThreadIdRef.current === activeThreadWithOptimisticMessages.id) {
+      return;
+    }
+
+    lastOpenedThreadIdRef.current = activeThreadWithOptimisticMessages.id;
+
+    window.requestAnimationFrame(() => {
+      container.scrollTo({
+        top: container.scrollHeight,
+        behavior: 'auto',
+      });
+    });
+  }, [activeThreadWithOptimisticMessages?.id, activeThreadWithOptimisticMessages?.messages.length]);
+
+  useEffect(() => {
     const container = messagePaneRef.current;
     if (!container || !activeThreadWithOptimisticMessages?.messages.length) return;
 
@@ -1158,12 +1530,101 @@ export function MessagesPage() {
     setDraftAttachments((previous) => [...previous, ...nextAttachments]);
   }
 
+  async function handleCopyMessage(message: MessageItem) {
+    const textToCopy = buildCopyTextFromMessage(message);
+
+    if (!textToCopy) {
+      toast.info('There is nothing to copy from this message.');
+      setOpenMessageActions(null);
+      return;
+    }
+
+    if (!navigator.clipboard?.writeText) {
+      toast.error('Copy is not supported in this browser.');
+      setOpenMessageActions(null);
+      return;
+    }
+
+    await navigator.clipboard.writeText(textToCopy);
+    toast.success('Message copied.');
+    setOpenMessageActions(null);
+  }
+
+  function handleReplyToMessage() {
+    if (!openMessageActionsMessage) {
+      return;
+    }
+
+    setReplyTarget(buildReplyPreviewFromMessage(openMessageActionsMessage));
+    setOpenMessageActions(null);
+  }
+
+  async function handleDeleteMessage() {
+    if (!viewerMemberId || !activeThread || !openMessageActionsMessage) {
+      setOpenMessageActions(null);
+      return;
+    }
+
+    if (!openMessageActionsMessage.isOwn || openMessageActionsMessage.deletedAt) {
+      setOpenMessageActions(null);
+      return;
+    }
+
+    const shouldDelete = window.confirm('Delete this message?');
+    if (!shouldDelete) {
+      setOpenMessageActions(null);
+      return;
+    }
+
+    setOpenMessageActions(null);
+
+    await deleteMessage.mutateAsync({
+      viewerMemberId,
+      threadId: activeThread.id,
+      messageId: openMessageActionsMessage.id,
+    });
+
+    if (replyTarget?.messageId === openMessageActionsMessage.id) {
+      setReplyTarget(null);
+    }
+  }
+
+  function handleToggleMessageActions(message: MessageItem, trigger: HTMLButtonElement) {
+    if (openMessageActions?.messageId === message.id) {
+      setOpenMessageActions(null);
+      return;
+    }
+
+    const rect = trigger.getBoundingClientRect();
+    const viewportPadding = 16;
+    const menuWidth = 160;
+    const menuStyle: CSSProperties = {
+      position: 'fixed',
+      bottom: `${Math.max(viewportPadding, window.innerHeight - rect.top + 8)}px`,
+    };
+
+    if (message.isOwn) {
+      menuStyle.left = `${Math.min(
+        Math.max(viewportPadding, rect.left),
+        window.innerWidth - menuWidth - viewportPadding,
+      )}px`;
+    } else {
+      menuStyle.right = `${Math.max(viewportPadding, window.innerWidth - rect.right)}px`;
+    }
+
+    setOpenMessageActions({
+      messageId: message.id,
+      style: menuStyle,
+    });
+  }
+
   async function handleSendMessage() {
     if (!viewerMemberId || !activeThread) return;
 
     const currentThreadId = activeThread.id;
     const originalDraftMessage = draftMessage;
     const originalDraftAttachments = draftAttachments;
+    const originalReplyTarget = replyTarget;
     const body = originalDraftMessage.trim();
     if (!body && originalDraftAttachments.length === 0) return;
 
@@ -1175,7 +1636,10 @@ export function MessagesPage() {
     for (const draftAttachment of originalDraftAttachments) {
       const uploadedAttachment =
         draftAttachment.uploadedAttachment ??
-        (await uploadAttachment.mutateAsync(draftAttachment.uploadRequest));
+        (await uploadAttachment.mutateAsync({
+          ...draftAttachment.uploadRequest,
+          threadId: currentThreadId,
+        }));
 
       uploadedByDraftId.set(draftAttachment.id, uploadedAttachment);
       resolvedAttachments.push(uploadedAttachment);
@@ -1201,6 +1665,7 @@ export function MessagesPage() {
       threadId: currentThreadId,
       body,
       attachments: resolvedAttachments,
+      replyToMessageId: originalReplyTarget?.messageId,
     });
     const optimisticMessage = buildOptimisticMessage({
       viewerMemberId,
@@ -1210,6 +1675,7 @@ export function MessagesPage() {
       clientGeneratedId: request.clientGeneratedId,
       currentUserName: currentUser?.fullName,
       currentUserAvatar: currentUser?.photo,
+      replyTo: originalReplyTarget,
     });
 
     discardDraftComposer({
@@ -1238,7 +1704,13 @@ export function MessagesPage() {
     } catch (error) {
       removeOptimisticMessage(currentThreadId, optimisticMessage.id);
       setDraftMessage(originalDraftMessage);
-      setDraftAttachments(originalDraftAttachments);
+      setReplyTarget(originalReplyTarget);
+      setDraftAttachments(
+        originalDraftAttachments.map((attachment) => ({
+          ...attachment,
+          uploadedAttachment: uploadedByDraftId.get(attachment.id) ?? attachment.uploadedAttachment,
+        })),
+      );
       return;
     }
   }
@@ -1291,14 +1763,16 @@ export function MessagesPage() {
         title="Messages"
         description="Stay in touch with alumnae conversations and follow-ups."
       />
-      <Breadcrumbs items={breadcrumbItems} />
+      <div className="xl:hidden">
+        <Breadcrumbs items={breadcrumbItems} />
+      </div>
 
       <section
         {...pullToRefresh.bind}
-        className="section bg-[radial-gradient(circle_at_top_left,_rgba(0,119,204,0.12),_transparent_32%),radial-gradient(circle_at_bottom_right,_rgba(14,165,233,0.12),_transparent_24%),linear-gradient(180deg,_#f8fbff,_#ffffff)]"
+        className="section relative bg-[radial-gradient(circle_at_top_left,_rgba(0,119,204,0.12),_transparent_32%),radial-gradient(circle_at_bottom_right,_rgba(14,165,233,0.12),_transparent_24%),linear-gradient(180deg,_#f8fbff,_#ffffff)] xl:h-[calc(100dvh-4.75rem)] xl:overflow-hidden xl:py-2"
       >
-        <div className="container-custom space-y-4">
-          <div className="flex justify-center">
+        <div className="container-custom space-y-4 xl:flex xl:h-full xl:min-h-0 xl:flex-col xl:space-y-0">
+          <div className="flex justify-center xl:pointer-events-none xl:absolute xl:left-1/2 xl:top-2 xl:z-20 xl:w-fit xl:-translate-x-1/2">
             <div
               className={`flex items-center gap-2 rounded-full border border-primary-100 bg-white/90 px-4 py-2 text-xs font-medium text-primary-700 shadow-sm transition-all duration-200 ${
                 refreshIndicatorVisible ? 'opacity-100' : 'pointer-events-none opacity-0'
@@ -1314,10 +1788,10 @@ export function MessagesPage() {
           </div>
 
           {/* The page stays intentionally simple: inbox on the left, active chat on the right. */}
-          <section className="grid gap-6 xl:grid-cols-[360px_minmax(0,1fr)]">
+          <section className="grid gap-6 xl:min-h-0 xl:flex-1 xl:grid-cols-[340px_minmax(0,1fr)] xl:gap-4">
             {/* Inbox pane */}
-            <aside className="flex min-h-[42rem] flex-col overflow-hidden rounded-[1.75rem] border border-accent-200 bg-white shadow-sm">
-              <div className="border-b border-accent-100 px-5 py-5">
+            <aside className="flex min-h-[42rem] flex-col overflow-hidden rounded-[1.75rem] border border-accent-200 bg-white shadow-sm xl:h-full xl:min-h-0">
+              <div className="border-b border-accent-100 px-5 py-5 xl:px-4 xl:py-4">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary-500">
@@ -1347,7 +1821,7 @@ export function MessagesPage() {
                   </div>
                 </div>
 
-                <label className="relative mt-5 block">
+                <label className="relative mt-4 block xl:mt-3">
                   <Icon
                     icon="mdi:magnify"
                     className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-accent-400"
@@ -1362,7 +1836,7 @@ export function MessagesPage() {
                   />
                 </label>
 
-                <div className="mt-4 flex flex-wrap gap-2">
+                <div className="mt-4 flex flex-wrap gap-2 xl:mt-3">
                   {inboxFilters.map((item) => {
                     const active = filter === item.key;
 
@@ -1384,7 +1858,7 @@ export function MessagesPage() {
                 </div>
               </div>
 
-              <div className="flex-1 overflow-y-auto px-3 py-3">
+              <div className="flex-1 overflow-y-auto px-3 py-3 xl:px-2.5 xl:py-2.5">
                 {inboxQuery.isLoading && !inboxQuery.data ? (
                   <div className="space-y-2">
                     {Array.from({ length: 4 }).map((_, index) => (
@@ -1495,11 +1969,11 @@ export function MessagesPage() {
             </aside>
 
             {/* Active thread pane */}
-            <article className="flex min-h-[42rem] flex-col overflow-hidden rounded-[1.75rem] border border-accent-200 bg-white shadow-sm">
+            <article className="flex min-h-[42rem] flex-col overflow-hidden rounded-[1.75rem] border border-accent-200 bg-white shadow-sm xl:h-full xl:min-h-0">
               {threadShell || (activeThreadId && threadQuery.isLoading) ? (
                 <>
                   {threadShell ? (
-                    <header className="border-b border-accent-100 px-5 py-5 sm:px-7">
+                    <header className="border-b border-accent-100 px-5 py-5 sm:px-7 xl:px-5 xl:py-4">
                       <div className="flex items-center gap-4">
                         <ThreadAvatar thread={threadShell} />
 
@@ -1519,6 +1993,45 @@ export function MessagesPage() {
                           <p className="mt-2 text-sm text-accent-400">
                             {formatThreadMeta(threadShell)}
                           </p>
+                          {threadShell.type === 'group' && groupParticipants.length > 0 ? (
+                            <button
+                              type="button"
+                              onClick={() => setParticipantsModalOpen(true)}
+                              className="mt-3 inline-flex max-w-full items-center gap-3 rounded-full border border-accent-200 bg-accent-50 px-3 py-2 text-left transition-colors hover:border-primary-200 hover:bg-primary-50"
+                            >
+                              <div className="flex -space-x-2">
+                                {previewGroupParticipants.map((participant) => (
+                                  <div
+                                    key={participant.memberId}
+                                    className="rounded-full border-2 border-white shadow-sm"
+                                  >
+                                    <ParticipantAvatar participant={participant} size="sm" />
+                                  </div>
+                                ))}
+                                {groupParticipants.length > previewGroupParticipants.length ? (
+                                  <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border-2 border-white bg-accent-200 text-[11px] font-semibold text-accent-700 shadow-sm">
+                                    +{groupParticipants.length - previewGroupParticipants.length}
+                                  </span>
+                                ) : null}
+                              </div>
+
+                              <div className="min-w-0">
+                                <p className="truncate text-sm font-semibold text-accent-800">
+                                  View members
+                                </p>
+                                <p className="truncate text-xs text-accent-500">
+                                  {groupAdminParticipant
+                                    ? `${groupAdminParticipant.fullName} is admin`
+                                    : `${groupParticipants.length} members`}
+                                </p>
+                              </div>
+
+                              <Icon
+                                icon="mdi:chevron-right"
+                                className="h-4 w-4 flex-shrink-0 text-accent-400"
+                              />
+                            </button>
+                          ) : null}
                         </div>
 
                         <button
@@ -1540,7 +2053,7 @@ export function MessagesPage() {
                       </div>
                     </header>
                   ) : (
-                    <header className="border-b border-accent-100 px-5 py-5 sm:px-7">
+                    <header className="border-b border-accent-100 px-5 py-5 sm:px-7 xl:px-5 xl:py-4">
                       <div className="flex animate-pulse items-center gap-4">
                         <div className="h-14 w-14 rounded-[1.25rem] bg-accent-100 sm:h-16 sm:w-16 sm:rounded-[1.5rem]" />
                         <div className="min-w-0 flex-1 space-y-3">
@@ -1551,7 +2064,10 @@ export function MessagesPage() {
                     </header>
                   )}
 
-                  <div ref={messagePaneRef} className="flex-1 overflow-y-auto px-5 py-5 sm:px-7">
+                  <div
+                    ref={messagePaneRef}
+                    className="flex-1 overflow-y-auto px-5 py-5 sm:px-7 xl:px-5 xl:py-4"
+                  >
                     {threadQuery.isLoading && !activeThread ? (
                       <div className="space-y-4">
                         {Array.from({ length: 3 }).map((_, index) => (
@@ -1603,11 +2119,36 @@ export function MessagesPage() {
                               <div
                                 className={`flex ${message.isOwn ? 'justify-end' : 'justify-start'}`}
                               >
-                                <div className="w-full max-w-[42rem]">
+                                <div className="group relative w-full max-w-[42rem]">
                                   {showSenderName ? (
                                     <p className="mb-2 px-1 text-xs font-semibold uppercase tracking-[0.16em] text-accent-400">
                                       {message.senderDisplayName}
                                     </p>
+                                  ) : null}
+
+                                  {message.status !== 'sending' && !message.deletedAt ? (
+                                    <div
+                                      data-message-actions-root="true"
+                                      className={`absolute top-3 z-10 ${
+                                        message.isOwn ? 'left-3' : 'right-3'
+                                      }`}
+                                    >
+                                      <button
+                                        type="button"
+                                        onClick={(event) => {
+                                          event.stopPropagation();
+                                          handleToggleMessageActions(message, event.currentTarget);
+                                        }}
+                                        className={`inline-flex h-8 w-8 items-center justify-center rounded-full border shadow-sm transition-all ${
+                                          openMessageActions?.messageId === message.id
+                                            ? 'border-accent-300 bg-white text-accent-700 opacity-100'
+                                            : 'border-accent-200 bg-white/95 text-accent-500 opacity-0 group-hover:opacity-100'
+                                        }`}
+                                        aria-label="Message actions"
+                                      >
+                                        <Icon icon="mdi:dots-horizontal" className="h-4 w-4" />
+                                      </button>
+                                    </div>
                                   ) : null}
 
                                   <div
@@ -1617,6 +2158,13 @@ export function MessagesPage() {
                                         : 'border border-accent-200 bg-white text-accent-800'
                                     }`}
                                   >
+                                    {message.replyTo && !message.deletedAt ? (
+                                      <ReplyPreviewCard
+                                        replyTo={message.replyTo}
+                                        variant="bubble"
+                                      />
+                                    ) : null}
+
                                     {message.body ? (
                                       <p className="whitespace-pre-wrap text-[15px] leading-7">
                                         {message.body}
@@ -1669,7 +2217,7 @@ export function MessagesPage() {
                     )}
                   </div>
 
-                  <footer className="border-t border-accent-100 px-5 py-5 sm:px-7">
+                  <footer className="border-t border-accent-100 px-5 py-5 sm:px-7 xl:px-5 xl:py-4">
                     <input
                       ref={fileInputRef}
                       type="file"
@@ -1679,7 +2227,15 @@ export function MessagesPage() {
                       onChange={handleFileSelection}
                     />
 
-                    <div className="rounded-[1.75rem] border border-accent-200 bg-accent-50 p-4">
+                    <div className="rounded-[1.75rem] border border-accent-200 bg-accent-50 p-4 xl:p-3.5">
+                      {replyTarget ? (
+                        <ReplyPreviewCard
+                          replyTo={replyTarget}
+                          variant="composer"
+                          onClear={() => setReplyTarget(null)}
+                        />
+                      ) : null}
+
                       <DraftComposerAttachments
                         attachments={draftAttachments}
                         onRemove={removeDraftAttachment}
@@ -1710,7 +2266,7 @@ export function MessagesPage() {
                         onChange={(event) => setDraftMessage(event.target.value)}
                         onKeyDown={handleComposerKeyDown}
                         disabled={composerDisabled}
-                        rows={3}
+                        rows={2}
                         placeholder={
                           activeThread
                             ? `Message ${activeThread.title}...`
@@ -1719,7 +2275,7 @@ export function MessagesPage() {
                         className="w-full resize-none border-0 bg-transparent text-[15px] text-accent-900 outline-none placeholder:text-accent-400 disabled:cursor-not-allowed disabled:opacity-60"
                       />
 
-                      <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+                      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 xl:mt-3">
                         <div className="flex flex-wrap items-center gap-2">
                           <button
                             type="button"
@@ -1797,6 +2353,41 @@ export function MessagesPage() {
                 />
               )}
             </article>
+
+            {openMessageActions && openMessageActionsMessage ? (
+              <div
+                data-message-actions-root="true"
+                style={openMessageActions.style}
+                className="z-50 w-40 rounded-2xl border border-accent-200 bg-white p-2 shadow-xl"
+              >
+                <button
+                  type="button"
+                  onClick={() => void handleReplyToMessage()}
+                  className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-accent-700 transition-colors hover:bg-accent-50"
+                >
+                  <Icon icon="mdi:reply-outline" className="h-4 w-4" />
+                  Reply
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void handleCopyMessage(openMessageActionsMessage)}
+                  className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-accent-700 transition-colors hover:bg-accent-50"
+                >
+                  <Icon icon="mdi:content-copy" className="h-4 w-4" />
+                  Copy
+                </button>
+                {openMessageActionsMessage.isOwn ? (
+                  <button
+                    type="button"
+                    onClick={() => void handleDeleteMessage()}
+                    className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-rose-600 transition-colors hover:bg-rose-50"
+                  >
+                    <Icon icon="mdi:delete-outline" className="h-4 w-4" />
+                    Delete
+                  </button>
+                ) : null}
+              </div>
+            ) : null}
           </section>
         </div>
       </section>
@@ -1804,6 +2395,13 @@ export function MessagesPage() {
       <ImageAttachmentLightbox
         attachment={activeImageAttachment}
         onClose={() => setActiveImageAttachment(null)}
+      />
+      <GroupParticipantsModal
+        isOpen={participantsModalOpen}
+        onClose={() => setParticipantsModalOpen(false)}
+        threadTitle={threadShell?.title ?? 'Group members'}
+        participants={groupParticipants}
+        viewerMemberId={viewerMemberId}
       />
     </>
   );

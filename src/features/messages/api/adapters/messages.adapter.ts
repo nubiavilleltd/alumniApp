@@ -1,6 +1,7 @@
 import type { SendMessageRequest, UploadMessageAttachmentRequest } from '../messages.contract';
 import type {
   MessageAttachment,
+  MessageThreadDetail,
   MessageThreadFilter,
   MessageThreadSummary,
 } from '../../types/messages.types';
@@ -28,7 +29,26 @@ export const MESSAGE_ATTACHMENT_ALLOWED_MIME_TYPES = [
 ] as const;
 export const MESSAGE_ATTACHMENT_FILE_INPUT_ACCEPT = MESSAGE_ATTACHMENT_ALLOWED_MIME_TYPES.join(',');
 
-const allowedMessageAttachmentMimeTypes = new Set<string>(MESSAGE_ATTACHMENT_ALLOWED_MIME_TYPES);
+export function normalizeMessageAttachmentMimeType(mimeType: string) {
+  const normalizedMimeType = mimeType.trim().toLowerCase();
+  if (!normalizedMimeType) {
+    return '';
+  }
+
+  const baseMimeType = normalizedMimeType.split(';')[0]?.trim() ?? normalizedMimeType;
+
+  if (baseMimeType === 'audio/x-wav') {
+    return 'audio/wav';
+  }
+
+  return baseMimeType;
+}
+
+const allowedMessageAttachmentMimeTypes = new Set<string>(
+  MESSAGE_ATTACHMENT_ALLOWED_MIME_TYPES.map((mimeType) =>
+    normalizeMessageAttachmentMimeType(mimeType),
+  ),
+);
 
 export function formatBytes(sizeInBytes: number) {
   if (sizeInBytes < 1024) return `${sizeInBytes} B`;
@@ -50,7 +70,7 @@ function resolveAudioFileExtension(mimeType: string) {
 }
 
 export function isAllowedMessageAttachmentMimeType(mimeType: string) {
-  return allowedMessageAttachmentMimeTypes.has(mimeType.trim().toLowerCase());
+  return allowedMessageAttachmentMimeTypes.has(normalizeMessageAttachmentMimeType(mimeType));
 }
 
 export function assertValidMessageBody(body?: string) {
@@ -80,7 +100,7 @@ export function assertValidMessageAttachmentUploadRequest(
   request: Pick<UploadMessageAttachmentRequest, 'fileName' | 'mimeType' | 'sizeInBytes' | 'kind'>,
 ) {
   const trimmedFileName = request.fileName.trim();
-  const normalizedMimeType = request.mimeType.trim().toLowerCase();
+  const normalizedMimeType = normalizeMessageAttachmentMimeType(request.mimeType);
 
   if (!trimmedFileName) {
     throw new Error('Attachments must have a valid file name.');
@@ -140,17 +160,77 @@ function buildSimulatedVoiceNoteBlob(durationSeconds: number) {
   return new Blob([buffer], { type: 'audio/wav' });
 }
 
+function buildWavBlobFromAudioBuffer(audioBuffer: AudioBuffer) {
+  const channelCount = audioBuffer.numberOfChannels;
+  const sampleRate = audioBuffer.sampleRate;
+  const bitsPerSample = 16;
+  const bytesPerSample = bitsPerSample / 8;
+  const dataSize = audioBuffer.length * channelCount * bytesPerSample;
+  const buffer = new ArrayBuffer(44 + dataSize);
+  const view = new DataView(buffer);
+
+  writeAsciiToDataView(view, 0, 'RIFF');
+  view.setUint32(4, 36 + dataSize, true);
+  writeAsciiToDataView(view, 8, 'WAVE');
+  writeAsciiToDataView(view, 12, 'fmt ');
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true);
+  view.setUint16(22, channelCount, true);
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate * channelCount * bytesPerSample, true);
+  view.setUint16(32, channelCount * bytesPerSample, true);
+  view.setUint16(34, bitsPerSample, true);
+  writeAsciiToDataView(view, 36, 'data');
+  view.setUint32(40, dataSize, true);
+
+  let offset = 44;
+
+  for (let sampleIndex = 0; sampleIndex < audioBuffer.length; sampleIndex += 1) {
+    for (let channelIndex = 0; channelIndex < channelCount; channelIndex += 1) {
+      const sample = audioBuffer.getChannelData(channelIndex)[sampleIndex] ?? 0;
+      const clampedSample = Math.max(-1, Math.min(1, sample));
+      const pcmValue = clampedSample < 0 ? clampedSample * 0x8000 : clampedSample * 0x7fff;
+
+      view.setInt16(offset, Math.round(pcmValue), true);
+      offset += bytesPerSample;
+    }
+  }
+
+  return new Blob([buffer], { type: 'audio/wav' });
+}
+
+async function convertRecordedAudioBlobToWav(blob: Blob) {
+  if (typeof window === 'undefined' || typeof window.AudioContext === 'undefined') {
+    return blob;
+  }
+
+  const audioContext = new window.AudioContext();
+
+  try {
+    const arrayBuffer = await blob.arrayBuffer();
+    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer.slice(0));
+
+    return buildWavBlobFromAudioBuffer(audioBuffer);
+  } finally {
+    await audioContext.close().catch(() => undefined);
+  }
+}
+
 export function buildFileAttachmentUploadRequest(
   file: File,
   viewerMemberId: string,
 ): UploadMessageAttachmentRequest {
+  const normalizedMimeType = normalizeMessageAttachmentMimeType(
+    file.type || 'application/octet-stream',
+  );
+
   return {
     viewerMemberId,
     fileName: file.name,
-    mimeType: file.type || 'application/octet-stream',
+    mimeType: normalizedMimeType || 'application/octet-stream',
     sizeInBytes: file.size,
     binary: file,
-    kind: resolveAttachmentKindFromMime(file.type || 'application/octet-stream'),
+    kind: resolveAttachmentKindFromMime(normalizedMimeType || 'application/octet-stream'),
     source: 'device',
   };
 }
@@ -160,11 +240,12 @@ export function buildVoiceNoteUploadRequest(
   durationSeconds = 18 + Math.floor(Math.random() * 45),
 ): UploadMessageAttachmentRequest {
   const binary = buildSimulatedVoiceNoteBlob(durationSeconds);
+  const normalizedMimeType = normalizeMessageAttachmentMimeType(binary.type || 'audio/wav');
 
   return {
     viewerMemberId,
     fileName: `voice-note-${Date.now()}.wav`,
-    mimeType: binary.type || 'audio/wav',
+    mimeType: normalizedMimeType || 'audio/wav',
     sizeInBytes: binary.size,
     binary,
     kind: 'audio',
@@ -173,19 +254,21 @@ export function buildVoiceNoteUploadRequest(
   };
 }
 
-export function buildRecordedVoiceNoteUploadRequest(params: {
+export async function buildRecordedVoiceNoteUploadRequest(params: {
   viewerMemberId: string;
   blob: Blob;
   durationSeconds: number;
 }): UploadMessageAttachmentRequest {
-  const fileExtension = resolveAudioFileExtension(params.blob.type || 'audio/webm');
+  const processedBlob = await convertRecordedAudioBlobToWav(params.blob).catch(() => params.blob);
+  const normalizedMimeType = normalizeMessageAttachmentMimeType(processedBlob.type || 'audio/wav');
+  const fileExtension = resolveAudioFileExtension(normalizedMimeType || 'audio/wav');
 
   return {
     viewerMemberId: params.viewerMemberId,
     fileName: `voice-note-${Date.now()}.${fileExtension}`,
-    mimeType: params.blob.type || 'audio/webm',
-    sizeInBytes: params.blob.size,
-    binary: params.blob,
+    mimeType: normalizedMimeType || 'audio/wav',
+    sizeInBytes: processedBlob.size,
+    binary: processedBlob,
     kind: 'audio',
     durationSeconds: params.durationSeconds,
     source: 'microphone',
@@ -197,21 +280,36 @@ export function buildSendMessageRequest(params: {
   threadId: string;
   body?: string;
   attachments?: MessageAttachment[];
+  replyToMessageId?: string;
 }): SendMessageRequest {
   return {
     viewerMemberId: params.viewerMemberId,
     threadId: params.threadId,
     body: params.body?.trim() || undefined,
     attachments: params.attachments ?? [],
+    replyToMessageId: params.replyToMessageId,
     clientGeneratedId: `client-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
   };
 }
 
+export function isGraduationYearGroupTitle(title: string) {
+  return /^class of \d{4}$/i.test(title.trim());
+}
+
+export function isGraduationYearGroupThread(
+  thread: Pick<MessageThreadSummary | MessageThreadDetail, 'type' | 'title'>,
+) {
+  return thread.type === 'group' && isGraduationYearGroupTitle(thread.title);
+}
+
 export function sortMessageThreads(threads: MessageThreadSummary[]) {
-  return [...threads].sort(
-    (left, right) =>
-      new Date(right.lastActivityAt).getTime() - new Date(left.lastActivityAt).getTime(),
-  );
+  return [...threads].sort((left, right) => {
+    if (left.isPinned !== right.isPinned) {
+      return left.isPinned ? -1 : 1;
+    }
+
+    return new Date(right.lastActivityAt).getTime() - new Date(left.lastActivityAt).getTime();
+  });
 }
 
 export function filterMessageThreads(
