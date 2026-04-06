@@ -346,7 +346,7 @@ import { useState } from 'react';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
-import { useMyEvents } from '../hooks/useEventRegistration';
+import { useEventAttendeeCount, useMyEvents } from '../hooks/useEventRegistration';
 import { useCancelRegistration } from '../hooks/useEvents';
 import { toast } from '@/shared/components/ui/Toast';
 import { EVENT_ROUTES } from '../routes';
@@ -407,21 +407,143 @@ function UnregisterModal({
 
 // ─── My Event Card ────────────────────────────────────────────────────────────
 
-function MyEventCard({
-  event,
-  isPast,
-  onUnregister,
-}: {
+// function MyEventCard({
+//   event,
+//   isPast,
+//   onUnregister,
+// }: {
+//   event: Event;
+//   isPast: boolean;
+//   onUnregister: () => void;
+// }) {
+//   const formattedDate = new Date(event.date).toLocaleDateString('en-GB', {
+//     weekday: 'long',
+//     day: 'numeric',
+//     month: 'long',
+//     year: 'numeric',
+//   });
+//   const isCancelled = event.status === 'cancelled';
+
+//   return (
+//     <div className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
+//       <div className="flex items-start gap-4">
+//         {/* Thumbnail */}
+//         <div className="w-24 h-24 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0 flex items-center justify-center">
+//           {event.image ? (
+//             <img
+//               src={event.image}
+//               alt={event.title}
+//               className="w-full h-full object-cover"
+//               loading="lazy"
+//             />
+//           ) : (
+//             <Icon icon="mdi:calendar-month-outline" className="w-8 h-8 text-gray-300" />
+//           )}
+//         </div>
+
+//         {/* Details */}
+//         <div className="flex-1 min-w-0">
+//           <div className="flex items-start justify-between gap-3 mb-2">
+//             <div>
+//               <h3 className="text-gray-900 font-bold text-base mb-1">{event.title}</h3>
+//               <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-gray-500 text-xs">
+//                 {event.location && (
+//                   <span className="flex items-center gap-1">
+//                     <Icon
+//                       icon={event.isVirtual ? 'mdi:video-outline' : 'mdi:map-marker-outline'}
+//                       className="w-3.5 h-3.5 flex-shrink-0"
+//                     />
+//                     {event.location}
+//                   </span>
+//                 )}
+//                 <span className="flex items-center gap-1">
+//                   <Icon icon="mdi:calendar-outline" className="w-3.5 h-3.5 flex-shrink-0" />
+//                   {formattedDate}
+//                   {event.startTime && ` at ${event.startTime}`}
+//                 </span>
+//                 {event.attire && (
+//                   <span className="flex items-center gap-1">
+//                     <Icon icon="mdi:hanger" className="w-3.5 h-3.5 flex-shrink-0" />
+//                     {event.attire}
+//                   </span>
+//                 )}
+//               </div>
+//             </div>
+
+//             {/* Badges */}
+//             <div className="flex flex-col items-end gap-1 flex-shrink-0">
+//               {isPast && (
+//                 <div className="flex items-center gap-1 bg-green-100 text-green-700 text-xs font-semibold px-2.5 py-1 rounded-full">
+//                   <Icon icon="mdi:check-circle" className="w-3.5 h-3.5" />
+//                   Attended
+//                 </div>
+//               )}
+//               {isCancelled && (
+//                 <div className="flex items-center gap-1 bg-gray-100 text-gray-600 text-xs font-semibold px-2.5 py-1 rounded-full">
+//                   Cancelled
+//                 </div>
+//               )}
+//             </div>
+//           </div>
+
+//           {/* Actions */}
+//           <div className="flex flex-wrap items-center gap-2 mt-3">
+//             {/* Join virtual */}
+//             {!isPast && event.isVirtual && event.virtualLink && (
+//               <a
+//                 href={event.virtualLink}
+//                 target="_blank"
+//                 rel="noopener noreferrer"
+//                 className="inline-flex items-center gap-1.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors"
+//               >
+//                 <Icon icon="mdi:video-outline" className="w-4 h-4" />
+//                 Join Meeting
+//               </a>
+//             )}
+
+//             {/* View details */}
+//             <AppLink
+//               href={EVENT_ROUTES.DETAIL(event.id)}
+//               className="inline-flex items-center gap-1 text-primary-500 hover:text-primary-600 text-xs font-semibold transition-colors px-3 py-2"
+//             >
+//               View Details
+//               <Icon icon="mdi:arrow-right" className="w-3.5 h-3.5" />
+//             </AppLink>
+
+//             {/* Unregister — upcoming + not cancelled only */}
+//             {!isPast && !isCancelled && (
+//               <button
+//                 type="button"
+//                 onClick={onUnregister}
+//                 className="inline-flex items-center gap-1 text-red-500 hover:text-red-600 text-xs font-semibold transition-colors px-3 py-2 ml-auto"
+//               >
+//                 <Icon icon="mdi:close-circle-outline" className="w-3.5 h-3.5" />
+//                 Unregister
+//               </button>
+//             )}
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+interface MyEventCardProps {
   event: Event;
   isPast: boolean;
   onUnregister: () => void;
-}) {
+}
+
+export function MyEventCard({ event, isPast, onUnregister }: MyEventCardProps) {
+  const { attendeeCount = 0 } = useEventAttendeeCount(event);
+
   const formattedDate = new Date(event.date).toLocaleDateString('en-GB', {
     weekday: 'long',
     day: 'numeric',
     month: 'long',
     year: 'numeric',
   });
+
   const isCancelled = event.status === 'cancelled';
 
   return (
@@ -486,6 +608,14 @@ function MyEventCard({
             </div>
           </div>
 
+          {/* Attendee count */}
+          {attendeeCount > 1 && (
+            <p className="text-gray-500 text-xs mt-2">
+              You + {attendeeCount - 1} other {attendeeCount - 1 === 1 ? 'person is' : 'people are'}{' '}
+              attending
+            </p>
+          )}
+
           {/* Actions */}
           <div className="flex flex-wrap items-center gap-2 mt-3">
             {/* Join virtual */}
@@ -500,15 +630,6 @@ function MyEventCard({
                 Join Meeting
               </a>
             )}
-
-            {/* View details */}
-            <AppLink
-              href={EVENT_ROUTES.DETAIL(event.id)}
-              className="inline-flex items-center gap-1 text-primary-500 hover:text-primary-600 text-xs font-semibold transition-colors px-3 py-2"
-            >
-              View Details
-              <Icon icon="mdi:arrow-right" className="w-3.5 h-3.5" />
-            </AppLink>
 
             {/* Unregister — upcoming + not cancelled only */}
             {!isPast && !isCancelled && (

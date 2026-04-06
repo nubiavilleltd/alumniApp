@@ -472,7 +472,6 @@
 import { Icon } from '@iconify/react';
 import type { ReactNode } from 'react';
 import { AppLink } from '@/shared/components/ui/AppLink';
-import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { useUpcomingEvents } from '@/features/events/hooks/useEvents';
 import { useLatestAnnouncements } from '@/features/announcements/hooks/useAnnouncements';
 import { useAlumni } from '@/features/alumni/hooks/useAlumni';
@@ -485,7 +484,6 @@ import { ALUMNI_ROUTES } from '@/features/alumni/routes';
 import { MARKETPLACE_ROUTES } from '@/features/marketplace/routes';
 import { USER_ROUTES } from '../routes';
 import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
-import { mapCurrentUserResponse } from '@/features/authentication/api/adapters/login.adapter';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 

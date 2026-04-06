@@ -265,7 +265,6 @@ import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
 import { ImageUpload } from '@/shared/components/ui/ImageUpload';
 import Button from '@/shared/components/ui/Button';
-import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { useCreateEvent } from '../hooks/useEvents';
 import { mapEventToCreatePayload } from '../api/adapters/event.adapter';
 import { toast } from '@/shared/components/ui/Toast';

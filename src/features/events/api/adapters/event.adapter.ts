@@ -7,6 +7,18 @@ import {
   safeParseDate,
 } from '@/lib/utils/adapters';
 
+function mapRSVPStatus(status: unknown): 'going' | 'maybe' | 'not_going' | null {
+  if (!status || status === '') return null; // clean "unregistered"
+
+  const map: Record<string, 'going' | 'maybe' | 'not_going'> = {
+    going: 'going',
+    maybe: 'maybe',
+    not_going: 'not_going',
+  };
+
+  return map[String(status)] ?? null;
+}
+
 // ─────────────────────────────────────────────────────────────
 // Inbound (backend → frontend)
 // ─────────────────────────────────────────────────────────────
@@ -31,20 +43,21 @@ export function mapBackendEventToFrontend(raw: unknown): Event {
 
     location: d.location ?? '',
 
-    isVirtual: false,
-    virtualLink: undefined,
-    attire: '',
-    category: '',
-    tags: parseTags(d.tags),
+    isVirtual: stringToBoolean(d.is_virtual) ?? false,
+    virtualLink: d.virtual_link || undefined,
+    attire: d.attire || undefined,
+    category: d.category || undefined,
+    tags: parseTags(d.tags).map((tag) => tag.trim().toLowerCase()),
 
     featured: stringToBoolean(d.is_featured) ?? false,
 
     status: mapStatus(d.status, d.event_date),
 
     capacity: safeParseInt(d.max_attendees),
-    allowGuests: false,
+    allowGuests: stringToBoolean(d.allow_guests) ?? false,
 
     createdBy: d.created_by_name || d.created_by || 'Organizer',
+    attendeeCount: safeParseInt(d.attendee_count),
 
     registrations: [],
 
@@ -53,6 +66,7 @@ export function mapBackendEventToFrontend(raw: unknown): Event {
     updatedAt: d.updated_at,
 
     type: d.category || 'event',
+    rsvpStatus: mapRSVPStatus(d.my_rsvp),
   };
 }
 
@@ -98,7 +112,7 @@ export function mapEventToCreatePayload(
     description: formData.description,
     location: formData.location,
     event_date: formData.event_date,
-    status: 'upcoming',
+    status: formData.status || 'upcoming',
     visibility: formData.visibility || 'public',
     is_approved: '1',
   };
@@ -258,8 +272,12 @@ export function mapGetUserEventsPayload(userId: string): Record<string, unknown>
 // ─────────────────────────────────────────────────────────────
 
 function mapStatus(status: string, date: string) {
+  //   if (!status) {
+  //     return new Date(date) < new Date() ? 'completed' : 'published';
+  //   }
+
   if (!status) {
-    return new Date(date) < new Date() ? 'completed' : 'published';
+    return new Date(date + 'Z') < new Date() ? 'completed' : 'published';
   }
 
   const map: Record<string, any> = {
