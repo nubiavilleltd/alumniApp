@@ -391,6 +391,24 @@ function MessageAttachments({
                 </p>
               )
             ) : null}
+
+            {attachment.kind === 'file' && previewUrl ? (
+              <div className="mt-3">
+                <a
+                  href={previewUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
+                    isOwn
+                      ? 'bg-white/15 text-white hover:bg-white/20'
+                      : 'bg-primary-50 text-primary-700 hover:bg-primary-100'
+                  }`}
+                >
+                  <Icon icon="mdi:open-in-new" className="h-4 w-4" />
+                  Open file
+                </a>
+              </div>
+            ) : null}
           </div>
         );
       })}

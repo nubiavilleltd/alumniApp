@@ -52,12 +52,39 @@ type DirectDraftThreadEntry = {
   topic?: string;
   thread: MessageThreadDetail;
 };
+type StagedBackendAttachment = MessageAttachment & {
+  __backendUploadRequest?: UploadMessageAttachmentRequest;
+};
 
 const DRAFT_DIRECT_THREAD_PREFIX = 'draft-direct__';
 const directDraftThreads = new Map<string, DirectDraftThreadEntry>();
 
 function nowIso() {
   return new Date().toISOString();
+}
+
+function createLocalAttachmentId() {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return `staged-${crypto.randomUUID()}`;
+  }
+
+  return `staged-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function sortThreadsForInbox(threads: MessageThreadSummary[]) {
+  return [...threads].sort((left, right) => {
+    if (left.isPinned !== right.isPinned) {
+      return left.isPinned ? -1 : 1;
+    }
+
+    return Date.parse(right.lastActivityAt) - Date.parse(left.lastActivityAt);
+  });
+}
+
+function sortMessagesChronologically(messages: MessageThreadDetail['messages']) {
+  return [...messages].sort(
+    (left, right) => Date.parse(left.createdAt) - Date.parse(right.createdAt),
+  );
 }
 
 function normalizeBackendTimestamp(value: unknown) {
@@ -195,6 +222,10 @@ function guessMimeTypeFromAttachmentKind(kind: MessageAttachment['kind']) {
   return 'application/octet-stream';
 }
 
+function buildAudioWaveform() {
+  return [18, 28, 46, 34, 54, 23, 39, 58, 31, 43, 27, 48];
+}
+
 function describeAttachmentFallback(kind: MessageAttachment['kind']) {
   if (kind === 'audio') return 'Audio attachment';
   if (kind === 'image') return 'Image attachment';
@@ -209,6 +240,14 @@ function extractAttachmentUrl(rawMessage: BackendMessageLike) {
     rawMessage.media_url;
 
   return typeof attachment === 'string' && attachment.trim() ? attachment : undefined;
+}
+
+function isDeletedBackendMessage(rawMessage: BackendMessageLike) {
+  return (
+    stringToBoolean(rawMessage.is_deleted) === true ||
+    stringToBoolean(rawMessage.deleted) === true ||
+    typeof rawMessage.deleted_at === 'string'
+  );
 }
 
 function buildAttachmentsFromBackendMessage(rawMessage: BackendMessageLike): MessageAttachment[] {
@@ -237,9 +276,66 @@ function buildAttachmentsFromBackendMessage(rawMessage: BackendMessageLike): Mes
       durationSeconds: safeParseInt(rawMessage.duration_seconds),
       uploadState: 'uploaded',
       url: attachmentUrl,
-      waveform: kind === 'audio' ? [18, 28, 46, 34, 54, 23, 39, 58, 31, 43, 27, 48] : undefined,
+      waveform: kind === 'audio' ? buildAudioWaveform() : undefined,
     },
   ];
+}
+
+function buildStagedAttachment(
+  request: UploadMessageAttachmentRequest,
+): UploadMessageAttachmentResponse['attachment'] {
+  const previewUrl =
+    request.binary && request.kind !== 'file' ? URL.createObjectURL(request.binary) : undefined;
+
+  return {
+    id: createLocalAttachmentId(),
+    kind: request.kind,
+    fileName: request.fileName,
+    mimeType: request.mimeType || guessMimeTypeFromAttachmentKind(request.kind),
+    sizeInBytes: request.sizeInBytes,
+    sizeLabel: formatBytes(request.sizeInBytes),
+    durationSeconds: request.durationSeconds,
+    uploadState: 'processing',
+    url: previewUrl,
+    waveform: request.kind === 'audio' ? buildAudioWaveform() : undefined,
+    __backendUploadRequest: request,
+  } satisfies StagedBackendAttachment;
+}
+
+function getStagedUploadRequest(attachment: MessageAttachment) {
+  return (attachment as StagedBackendAttachment).__backendUploadRequest ?? null;
+}
+
+function buildSendMultipartPayload(params: {
+  threadId?: string;
+  recipientId?: string;
+  body?: string;
+  attachment: MessageAttachment;
+}) {
+  const uploadRequest = getStagedUploadRequest(params.attachment);
+
+  if (!uploadRequest?.binary) {
+    throw new Error('That attachment is no longer available. Please attach it again.');
+  }
+
+  const payload = new FormData();
+
+  if (params.threadId) {
+    payload.append('group_id', String(normalizeBackendIdentifierValue(params.threadId)));
+  }
+
+  if (params.recipientId) {
+    payload.append('recipient_id', String(normalizeBackendIdentifierValue(params.recipientId)));
+  }
+
+  if (params.body?.trim()) {
+    payload.append('message', params.body.trim());
+  }
+
+  payload.append('attachment_type', params.attachment.kind);
+  payload.append('file', uploadRequest.binary, uploadRequest.fileName);
+
+  return payload;
 }
 
 function buildLastMessagePreview(rawLastMessage: BackendMessageLike | null | undefined) {
@@ -352,31 +448,36 @@ function buildMessageItemsFromBackend(params: {
   viewerMemberId: string;
   threadId: string;
 }) {
-  return params.rawMessages.map((rawMessage) => {
-    const senderMemberId = String(
-      rawMessage.sender_id ??
-        rawMessage.sender_user_id ??
-        rawMessage.user_id ??
-        rawMessage.member_id ??
-        '',
-    );
-    const sender =
-      params.participants.find((participant) => participant.memberId === senderMemberId) ?? null;
-    const body = String(rawMessage.message ?? rawMessage.body ?? '').trim();
+  return sortMessagesChronologically(
+    params.rawMessages.map((rawMessage) => {
+      const senderMemberId = String(
+        rawMessage.sender_id ??
+          rawMessage.sender_user_id ??
+          rawMessage.user_id ??
+          rawMessage.member_id ??
+          '',
+      );
+      const sender =
+        params.participants.find((participant) => participant.memberId === senderMemberId) ?? null;
+      const body = String(rawMessage.message ?? rawMessage.body ?? '').trim();
+      const isDeleted = isDeletedBackendMessage(rawMessage);
 
-    return {
-      id: String(rawMessage.id ?? rawMessage.message_id ?? rawMessage.created_at ?? Math.random()),
-      threadId: params.threadId,
-      senderMemberId,
-      senderDisplayName: sender?.fullName ?? String(rawMessage.sender_name ?? 'Member'),
-      senderAvatar: sender?.avatar,
-      body: body || '',
-      createdAt: normalizeBackendTimestamp(rawMessage.created_at),
-      status: senderMemberId === params.viewerMemberId ? 'sent' : 'seen',
-      attachments: buildAttachmentsFromBackendMessage(rawMessage),
-      isOwn: senderMemberId === params.viewerMemberId,
-    };
-  });
+      return {
+        id: String(
+          rawMessage.id ?? rawMessage.message_id ?? rawMessage.created_at ?? Math.random(),
+        ),
+        threadId: params.threadId,
+        senderMemberId,
+        senderDisplayName: sender?.fullName ?? String(rawMessage.sender_name ?? 'Member'),
+        senderAvatar: sender?.avatar,
+        body: isDeleted ? '[Message deleted]' : body || '',
+        createdAt: normalizeBackendTimestamp(rawMessage.created_at),
+        status: senderMemberId === params.viewerMemberId ? 'sent' : 'seen',
+        attachments: isDeleted ? [] : buildAttachmentsFromBackendMessage(rawMessage),
+        isOwn: senderMemberId === params.viewerMemberId,
+      };
+    }),
+  );
 }
 
 async function fetchThreadsEnvelope() {
@@ -394,6 +495,35 @@ async function fetchThreadDetailEnvelope(threadId: string, limit = 50, offset = 
   return getEnvelopeData(response.data);
 }
 
+function buildThreadPayloadForDetail(rawPayload: Record<string, unknown>) {
+  const nestedThread =
+    (extractObject(rawPayload, ['thread']) as BackendThreadLike | null) ??
+    (extractObject(rawPayload, ['group']) as BackendThreadLike | null);
+  const messages = extractList(rawPayload, ['messages']).map((message) => message);
+  const participants = extractList(rawPayload, ['participants']).map((participant) => participant);
+
+  if (!nestedThread) {
+    return {
+      ...rawPayload,
+      messages,
+      participants,
+    } as BackendThreadLike;
+  }
+
+  return {
+    ...rawPayload,
+    ...nestedThread,
+    messages:
+      messages.length > 0
+        ? messages
+        : extractList(nestedThread, ['messages']).map((message) => message),
+    participants:
+      participants.length > 0
+        ? participants
+        : extractList(nestedThread, ['participants']).map((participant) => participant),
+  } as BackendThreadLike;
+}
+
 function buildThreadDetailFromBackend(params: {
   rawThreadPayload: BackendThreadLike;
   viewerMemberId: string;
@@ -408,6 +538,7 @@ function buildThreadDetailFromBackend(params: {
 
   return {
     ...summary,
+    unreadCount: 0,
     description:
       typeof params.rawThreadPayload.description === 'string'
         ? params.rawThreadPayload.description
@@ -588,11 +719,13 @@ export const backendMessagesTransport: MessagesTransport = {
     const rawThreads = extractList(payload, ['threads']).map(
       (thread) => thread as BackendThreadLike,
     );
-    const threads = rawThreads.map((rawThread) =>
-      buildThreadSummaryFromBackend({
-        rawThread,
-        viewerMemberId: request.viewerMemberId,
-      }),
+    const threads = sortThreadsForInbox(
+      rawThreads.map((rawThread) =>
+        buildThreadSummaryFromBackend({
+          rawThread,
+          viewerMemberId: request.viewerMemberId,
+        }),
+      ),
     );
     const serverTime = normalizeBackendTimestamp(
       (payload as Record<string, unknown>).server_time ?? envelope?.server_time ?? nowIso(),
@@ -628,9 +761,7 @@ export const backendMessagesTransport: MessagesTransport = {
 
     const envelope = await fetchThreadDetailEnvelope(request.threadId, request.limit ?? 50, 0);
     const payload = extractObject(envelope, ['data']) ?? envelope ?? {};
-    const threadPayload =
-      (extractObject(payload, ['thread']) as BackendThreadLike | null) ??
-      (payload as BackendThreadLike);
+    const threadPayload = buildThreadPayloadForDetail(payload);
     const thread = buildThreadDetailFromBackend({
       rawThreadPayload: threadPayload,
       viewerMemberId: request.viewerMemberId,
@@ -649,17 +780,28 @@ export const backendMessagesTransport: MessagesTransport = {
   async uploadAttachment(
     request: UploadMessageAttachmentRequest,
   ): Promise<UploadMessageAttachmentResponse> {
-    return placeholderMessagesTransport.uploadAttachment(request);
+    if (!request.binary) {
+      throw new Error('Attachment data is missing. Please choose the file again.');
+    }
+
+    return {
+      attachment: buildStagedAttachment(request),
+      serverTime: nowIso(),
+    };
   },
 
   async sendMessage(request: SendMessageRequest): Promise<SendMessageResponse> {
-    if (request.attachments?.length) {
-      throw new Error(
-        'Attachment sending is not wired to the backend yet on this branch. Text messages are ready first.',
-      );
+    const messageBody = request.body?.trim() ?? '';
+    const safeAttachments = request.attachments ?? [];
+
+    if (!messageBody && safeAttachments.length === 0) {
+      throw new Error('Write a message before sending.');
     }
 
-    const messageBody = request.body?.trim() ?? '';
+    if (safeAttachments.length > 1) {
+      throw new Error('This backend currently supports one attachment per message.');
+    }
+
     const isDraftDirectThread = isDraftDirectThreadId(request.threadId);
     const draftEntry = isDraftDirectThread ? directDraftThreads.get(request.threadId) : undefined;
     const parsedDraftThread = isDraftDirectThread
@@ -672,28 +814,26 @@ export const backendMessagesTransport: MessagesTransport = {
       throw new Error('This direct conversation could not be resolved for sending yet.');
     }
 
-    if (import.meta.env.DEV) {
-      console.log('[messages/backend] JWT for Postman testing', {
-        endpoint: isDraftDirectThread
-          ? API_ENDPOINTS.MESSAGES.DIRECT_THREAD
-          : API_ENDPOINTS.MESSAGES.SEND_MESSAGE,
-        jwt: useAuthStore.getState().accessToken ?? null,
-      });
-    }
-
     const response = await apiClient.post(
       isDraftDirectThread
         ? API_ENDPOINTS.MESSAGES.DIRECT_THREAD
         : API_ENDPOINTS.MESSAGES.SEND_MESSAGE,
-      isDraftDirectThread
-        ? {
-            recipient_id: normalizeBackendIdentifierValue(participantMemberId),
-            message: messageBody,
-          }
-        : {
-            group_id: normalizeBackendIdentifierValue(request.threadId),
-            message: messageBody,
-          },
+      safeAttachments.length > 0
+        ? buildSendMultipartPayload({
+            threadId: isDraftDirectThread ? undefined : request.threadId,
+            recipientId: isDraftDirectThread ? participantMemberId : undefined,
+            body: messageBody,
+            attachment: safeAttachments[0],
+          })
+        : isDraftDirectThread
+          ? {
+              recipient_id: normalizeBackendIdentifierValue(participantMemberId),
+              message: messageBody,
+            }
+          : {
+              group_id: normalizeBackendIdentifierValue(request.threadId),
+              message: messageBody,
+            },
     );
     const envelope = getEnvelopeData(response.data) ?? {};
     const payload = extractObject(envelope, ['data']) ?? envelope ?? {};
@@ -732,7 +872,28 @@ export const backendMessagesTransport: MessagesTransport = {
   async markThreadRead(
     request: MarkMessageThreadReadRequest,
   ): Promise<MarkMessageThreadReadResponse> {
-    return placeholderMessagesTransport.markThreadRead(request);
+    if (isDraftDirectThreadId(request.threadId)) {
+      return {
+        threadId: request.threadId,
+        unreadCount: 0,
+        serverTime: nowIso(),
+      };
+    }
+
+    const response = await apiClient.post(API_ENDPOINTS.MESSAGES.MARK_READ, {
+      group_id: normalizeBackendIdentifierValue(request.threadId),
+    });
+    const envelope = getEnvelopeData(response.data) ?? {};
+    const payload = extractObject(envelope, ['data']) ?? envelope ?? {};
+    const serverTime = normalizeBackendTimestamp(
+      (payload as Record<string, unknown>).server_time ?? envelope?.server_time ?? nowIso(),
+    );
+
+    return {
+      threadId: request.threadId,
+      unreadCount: 0,
+      serverTime,
+    };
   },
 
   async createDirectThread(
