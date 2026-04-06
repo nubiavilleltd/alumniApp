@@ -319,7 +319,7 @@
 //   );
 // }
 
-// features/user/pages/ChangePasswordPage.tsx
+// features/user/pages/SettingsPage.tsx
 // Route: /user/settings  (ProtectedRoute)
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -337,6 +337,7 @@ import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 import { userService } from '../services/user.service';
 import { AUTH_ROUTES } from '@/features/authentication/routes';
 import { toast } from '@/shared/components/ui/Toast';
+import { useDeactivateOwnAccount } from '@/features/admin/hooks/useUserManagement';
 
 const breadcrumbItems = [
   { label: 'Home', href: ROUTES.HOME },
@@ -537,31 +538,126 @@ function ChangePasswordSection() {
 
 // ─── Danger Zone section ──────────────────────────────────────────────────────
 
-function DangerZoneSection() {
-  const currentUser = useAuthStore((state) => state.user);
-  const clearSession = useAuthStore((state) => state.clearSession);
-  const navigate = useNavigate();
+// function DangerZoneSection() {
+//   const currentUser = useAuthStore((state) => state.user);
+//   const clearSession = useAuthStore((state) => state.clearSession);
+//   const navigate = useNavigate();
 
+//   const [showConfirm, setShowConfirm] = useState(false);
+//   const [isDeactivating, setIsDeactivating] = useState(false);
+//   const [deactivateError, setDeactivateError] = useState('');
+
+//   const handleDeactivate = async () => {
+//     setIsDeactivating(true);
+//     setDeactivateError('');
+
+//     try {
+//       // TODO: Replace with real endpoint when backend provides POST /api/deactivate_account
+//       // await apiClient.post(API_ENDPOINTS.USER.DEACTIVATE_ACCOUNT, { user_id: currentUser?.id });
+//       throw new Error('Deactivate endpoint not yet available. Please contact an administrator.');
+//     } catch (error: any) {
+//       setDeactivateError(error.message ?? 'Failed to deactivate account. Please try again.');
+//       setIsDeactivating(false);
+//       return;
+//     }
+
+//     clearSession();
+//     navigate(ROUTES.HOME, { replace: true });
+//   };
+
+//   return (
+//     <section className="bg-white rounded-2xl border border-red-100 p-6">
+//       <div className="flex items-center gap-3 mb-4">
+//         <div className="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center">
+//           <Icon icon="mdi:alert-outline" className="w-5 h-5 text-red-500" />
+//         </div>
+//         <div>
+//           <h2 className="text-base font-bold text-red-700">Danger Zone</h2>
+//           <p className="text-xs text-gray-400">Irreversible account actions</p>
+//         </div>
+//       </div>
+
+//       <div className="rounded-xl border border-red-100 bg-red-50/50 p-4">
+//         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+//           <div>
+//             <p className="text-sm font-semibold text-gray-800">Deactivate Account</p>
+//             <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">
+//               Your profile will be hidden and you will be logged out immediately. Your data is
+//               preserved — an admin can reactivate your account.
+//             </p>
+//           </div>
+
+//           {!showConfirm ? (
+//             <button
+//               type="button"
+//               onClick={() => {
+//                 setShowConfirm(true);
+//                 setDeactivateError('');
+//               }}
+//               className="flex-shrink-0 flex items-center gap-2 border border-red-300 text-red-600 hover:bg-red-50 text-sm font-semibold px-4 py-2 rounded-xl transition-colors"
+//             >
+//               <Icon icon="mdi:account-off-outline" className="w-4 h-4" />
+//               Deactivate
+//             </button>
+//           ) : (
+//             <div className="flex-shrink-0 flex flex-col gap-2">
+//               <p className="text-xs text-red-600 font-medium text-center">
+//                 Are you sure? This will log you out.
+//               </p>
+//               <div className="flex gap-2">
+//                 <button
+//                   type="button"
+//                   disabled={isDeactivating}
+//                   onClick={handleDeactivate}
+//                   className="flex-1 flex items-center justify-center gap-1.5 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-colors disabled:opacity-50"
+//                 >
+//                   {isDeactivating ? (
+//                     <Icon icon="mdi:loading" className="w-3.5 h-3.5 animate-spin" />
+//                   ) : (
+//                     <>
+//                       <Icon icon="mdi:check" className="w-3.5 h-3.5" />
+//                       Yes, deactivate
+//                     </>
+//                   )}
+//                 </button>
+//                 <button
+//                   type="button"
+//                   onClick={() => {
+//                     setShowConfirm(false);
+//                     setDeactivateError('');
+//                   }}
+//                   className="flex-1 flex items-center justify-center gap-1.5 border border-gray-200 text-gray-600 hover:bg-gray-50 text-xs font-semibold px-4 py-2 rounded-xl transition-colors"
+//                 >
+//                   Cancel
+//                 </button>
+//               </div>
+//             </div>
+//           )}
+//         </div>
+
+//         {deactivateError && (
+//           <p className="mt-3 text-xs text-red-600 bg-red-100 rounded-lg px-3 py-2">
+//             {deactivateError}
+//           </p>
+//         )}
+//       </div>
+//     </section>
+//   );
+// }
+
+function DangerZoneSection() {
   const [showConfirm, setShowConfirm] = useState(false);
-  const [isDeactivating, setIsDeactivating] = useState(false);
-  const [deactivateError, setDeactivateError] = useState('');
+
+  // ✅ Use the mutation hook
+  const deactivate = useDeactivateOwnAccount();
 
   const handleDeactivate = async () => {
-    setIsDeactivating(true);
-    setDeactivateError('');
-
     try {
-      // TODO: Replace with real endpoint when backend provides POST /api/deactivate_account
-      // await apiClient.post(API_ENDPOINTS.USER.DEACTIVATE_ACCOUNT, { user_id: currentUser?.id });
-      throw new Error('Deactivate endpoint not yet available. Please contact an administrator.');
-    } catch (error: any) {
-      setDeactivateError(error.message ?? 'Failed to deactivate account. Please try again.');
-      setIsDeactivating(false);
-      return;
+      await deactivate.mutateAsync();
+      // Mutation handles logout and redirect
+    } catch (error) {
+      // Error toast shown by mutation
     }
-
-    clearSession();
-    navigate(ROUTES.HOME, { replace: true });
   };
 
   return (
@@ -589,11 +685,9 @@ function DangerZoneSection() {
           {!showConfirm ? (
             <button
               type="button"
-              onClick={() => {
-                setShowConfirm(true);
-                setDeactivateError('');
-              }}
-              className="flex-shrink-0 flex items-center gap-2 border border-red-300 text-red-600 hover:bg-red-50 text-sm font-semibold px-4 py-2 rounded-xl transition-colors"
+              onClick={() => setShowConfirm(true)}
+              disabled={deactivate.isPending}
+              className="flex-shrink-0 flex items-center gap-2 border border-red-300 text-red-600 hover:bg-red-50 text-sm font-semibold px-4 py-2 rounded-xl transition-colors disabled:opacity-50"
             >
               <Icon icon="mdi:account-off-outline" className="w-4 h-4" />
               Deactivate
@@ -606,12 +700,15 @@ function DangerZoneSection() {
               <div className="flex gap-2">
                 <button
                   type="button"
-                  disabled={isDeactivating}
+                  disabled={deactivate.isPending}
                   onClick={handleDeactivate}
                   className="flex-1 flex items-center justify-center gap-1.5 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-colors disabled:opacity-50"
                 >
-                  {isDeactivating ? (
-                    <Icon icon="mdi:loading" className="w-3.5 h-3.5 animate-spin" />
+                  {deactivate.isPending ? (
+                    <>
+                      <Icon icon="mdi:loading" className="w-3.5 h-3.5 animate-spin" />
+                      Deactivating...
+                    </>
                   ) : (
                     <>
                       <Icon icon="mdi:check" className="w-3.5 h-3.5" />
@@ -621,11 +718,9 @@ function DangerZoneSection() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => {
-                    setShowConfirm(false);
-                    setDeactivateError('');
-                  }}
-                  className="flex-1 flex items-center justify-center gap-1.5 border border-gray-200 text-gray-600 hover:bg-gray-50 text-xs font-semibold px-4 py-2 rounded-xl transition-colors"
+                  onClick={() => setShowConfirm(false)}
+                  disabled={deactivate.isPending}
+                  className="flex-1 flex items-center justify-center gap-1.5 border border-gray-200 text-gray-600 hover:bg-gray-50 text-xs font-semibold px-4 py-2 rounded-xl transition-colors disabled:opacity-50"
                 >
                   Cancel
                 </button>
@@ -633,12 +728,6 @@ function DangerZoneSection() {
             </div>
           )}
         </div>
-
-        {deactivateError && (
-          <p className="mt-3 text-xs text-red-600 bg-red-100 rounded-lg px-3 py-2">
-            {deactivateError}
-          </p>
-        )}
       </div>
     </section>
   );

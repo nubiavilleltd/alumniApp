@@ -39,6 +39,8 @@ import { MessagesPage } from './features/messages/pages/MessagesPage';
 
 import { AdminDashboardPage } from './features/admin/pages/AdminDashboardPage';
 import ProjectDetailsPage from './features/projects/pages/ProjectDetail';
+import { ADMIN_ROUTES } from './features/admin/routes';
+import { AdminMembersPage } from './features/admin/pages/AdminMembersPage';
 
 export default function App() {
   return (
@@ -257,6 +259,17 @@ export default function App() {
               <AdminRoute>
                 <ErrorBoundary>
                   <AdminDashboardPage />
+                </ErrorBoundary>
+              </AdminRoute>
+            }
+          />
+
+          <Route
+            path={ADMIN_ROUTES.MEMBERS}
+            element={
+              <AdminRoute>
+                <ErrorBoundary>
+                  <AdminMembersPage />
                 </ErrorBoundary>
               </AdminRoute>
             }

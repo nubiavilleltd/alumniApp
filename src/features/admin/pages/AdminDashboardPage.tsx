@@ -489,6 +489,7 @@ import { ALUMNI_ROUTES } from '@/features/alumni/routes';
 import { USER_ROUTES } from '@/features/user/routes';
 import { EVENT_ROUTES } from '@/features/events/routes';
 import { MARKETPLACE_ROUTES } from '@/features/marketplace/routes';
+import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 
 // ─── Tone map ─────────────────────────────────────────────────────────────────
 
@@ -699,7 +700,9 @@ function AdminSkeleton() {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export function AdminDashboardPage() {
-  const currentUser = useAuthStore((state) => state.user);
+  // const currentUser = useAuthStore((state) => state.user);
+
+  const { data: currentUser, isLoading: isLoadingProfile } = useCurrentUser();
 
   const { data: dashboard, isLoading, isError, refetch } = useAdminDashboard();
 
@@ -711,7 +714,7 @@ export function AdminDashboardPage() {
   const handleApprove = (id: string) => setRemovedIds((prev) => new Set([...prev, id]));
   const handleReject = (id: string) => setRemovedIds((prev) => new Set([...prev, id]));
 
-  if (isLoading) return <AdminSkeleton />;
+  if (isLoading || isLoadingProfile) return <AdminSkeleton />;
 
   if (isError || !dashboard) {
     return (
