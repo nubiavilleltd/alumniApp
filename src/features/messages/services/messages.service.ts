@@ -13,10 +13,6 @@ import { backendMessagesTransport } from '../lib/backendMessagesTransport';
 
 const activeMessagesTransport = backendMessagesTransport;
 
-export function isMockMessagesTransportActive() {
-  return false;
-}
-
 export const messagesService = {
   getInbox(request: ListMessageThreadsRequest) {
     return withApiErrorHandling(

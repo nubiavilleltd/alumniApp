@@ -36,7 +36,6 @@ import {
   normalizeMessageAttachmentMimeType,
 } from '../api/adapters/messages.adapter';
 import { getRegisteredMessageRecipient } from './messageRecipientRegistry';
-import { placeholderMessagesTransport } from './placeholderMessagesTransport';
 import type {
   MessageAttachment,
   MessageParticipant,
@@ -58,9 +57,6 @@ type DirectDraftThreadEntry = {
   participantMemberId: string;
   topic?: string;
   thread: MessageThreadDetail;
-};
-type StagedBackendAttachment = MessageAttachment & {
-  __backendUploadRequest?: UploadMessageAttachmentRequest;
 };
 
 const DRAFT_DIRECT_THREAD_PREFIX = 'draft-direct__';
@@ -407,27 +403,6 @@ function buildReplyPreviewFromBackendMessage(params: {
     isOwn: senderMemberId === params.viewerMemberId,
     isDeleted,
   };
-}
-
-function buildStagedAttachment(
-  request: UploadMessageAttachmentRequest,
-): UploadMessageAttachmentResponse['attachment'] {
-  const previewUrl =
-    request.binary && request.kind !== 'file' ? URL.createObjectURL(request.binary) : undefined;
-
-  return {
-    id: createLocalAttachmentId(),
-    kind: request.kind,
-    fileName: request.fileName,
-    mimeType: request.mimeType || guessMimeTypeFromAttachmentKind(request.kind),
-    sizeInBytes: request.sizeInBytes,
-    sizeLabel: formatBytes(request.sizeInBytes),
-    durationSeconds: request.durationSeconds,
-    uploadState: 'processing',
-    url: previewUrl,
-    waveform: request.kind === 'audio' ? buildAudioWaveform() : undefined,
-    __backendUploadRequest: request,
-  } satisfies StagedBackendAttachment;
 }
 
 function buildLastMessagePreview(rawLastMessage: BackendMessageLike | null | undefined) {
@@ -1157,6 +1132,30 @@ export const backendMessagesTransport: MessagesTransport = {
   },
 
   async createGroupThread(request: CreateGroupThreadRequest): Promise<CreateGroupThreadResponse> {
-    return placeholderMessagesTransport.createGroupThread(request);
+    const response = await apiClient.post(API_ENDPOINTS.MESSAGES.GROUP_THREAD, {
+      title: request.title.trim(),
+      member_ids: request.memberIds.map((memberId) => normalizeBackendIdentifierValue(memberId)),
+      category: request.category?.toLowerCase(),
+    });
+    const envelope = getEnvelopeData(response.data) ?? {};
+    const payload = extractObject(envelope, ['data']) ?? envelope ?? {};
+    const payloadRecord = payload as Record<string, unknown>;
+    const threadId = String(
+      payloadRecord.thread_id ?? payloadRecord.group_id ?? payloadRecord.id ?? '',
+    ).trim();
+
+    if (!threadId) {
+      throw new Error('The group was created, but the thread could not be resolved.');
+    }
+
+    const threadResponse = await backendMessagesTransport.getThread({
+      viewerMemberId: request.viewerMemberId,
+      threadId,
+    });
+
+    return {
+      thread: threadResponse.thread,
+      serverTime: threadResponse.serverTime,
+    };
   },
 };

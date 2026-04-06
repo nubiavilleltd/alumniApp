@@ -3,9 +3,8 @@
 This document lists the backend endpoints and request/response parameters the current
 frontend expects for the `/messages` feature.
 
-The frontend is currently using a mock transport, but it already follows a backend-style
-contract. If the real backend matches the shapes below, we should be able to switch from
-mock data to live data with minimal frontend changes.
+The frontend now uses a backend transport, but the contract below remains the source of
+truth for how the `/messages` feature expects data to be shaped.
 
 For the broader rollout plans, see:
 
