@@ -14,6 +14,7 @@ export const API_ENDPOINTS = {
     RESET_PASSWORD: '/api/reset_password',
     VERIFY_EMAIL: '/api/verify_email',
     RESEND_VERIFY_EMAIL: '/api/resend_verify_email',
+    GET_VOUCHERS: '/api/get_vouchers',
   },
 
   // ─── Alumni ───────────────────────────────────────────────────────────────

@@ -68,6 +68,7 @@ export const registerDetailsSchema = z
 
     password: passwordSchema,
     confirmPassword: z.string().min(1, 'Please confirm your password'),
+    voucherId: z.string().min(1, 'Please select a voucher who will approve your registration'),
   })
   .superRefine((data, ctx) => {
     const phoneError = validateNationalPhoneNumber(data.phoneCountry, data.whatsappPhone);
