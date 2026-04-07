@@ -20,11 +20,11 @@ import { handleTokenRefresh } from '@/features/authentication/services/refreshTo
 import { AUTH_ROUTES } from '@/features/authentication/routes';
 
 const configuredApiBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim() ?? '';
-const shouldUseViteDevProxy = import.meta.env.DEV && /^https?:\/\//i.test(configuredApiBaseUrl);
-const resolvedApiBaseUrl = shouldUseViteDevProxy ? '' : configuredApiBaseUrl;
+// const shouldUseViteDevProxy = import.meta.env.DEV && /^https?:\/\//i.test(configuredApiBaseUrl);
+// const resolvedApiBaseUrl = shouldUseViteDevProxy ? '' : configuredApiBaseUrl;
 
 export const apiClient = axios.create({
-  baseURL: resolvedApiBaseUrl,
+  baseURL: configuredApiBaseUrl,
   headers: { 'Content-Type': 'application/json' },
   timeout: 15000,
 });

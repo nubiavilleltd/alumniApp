@@ -13,26 +13,5 @@ export default defineConfig(({ mode }) => {
         '@': path.resolve(__dirname, './src'),
       },
     },
-    server: apiTarget
-      ? {
-          proxy: {
-            '/api': {
-              target: apiTarget,
-              changeOrigin: true,
-              secure: true,
-            },
-            '/auth': {
-              target: apiTarget,
-              changeOrigin: true,
-              secure: true,
-            },
-            '/chat_api': {
-              target: apiTarget,
-              changeOrigin: true,
-              secure: true,
-            },
-          },
-        }
-      : undefined,
   };
 });
