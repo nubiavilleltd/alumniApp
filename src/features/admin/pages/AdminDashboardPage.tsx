@@ -1,14 +1,21 @@
 // features/admin/pages/AdminDashboardPage.tsx
-// Route: /admin/dashboard  (AdminRoute)
+// MODIFIED: Upcoming Events panel now wired to real useUpcomingEvents hook.
+// Total Members stat derived from approved members count.
+// Upcoming Events stat derived from real events count.
 
 import { Icon } from '@iconify/react';
 import { useState, type ReactNode } from 'react';
-import { Layout } from '@/shared/components/layout/Layout';
 import { AppLink } from '@/shared/components/ui/AppLink';
-import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { type AdminStat, type PendingMember } from '../api/adminDashboardApi';
 import { useAdminDashboard, useApproveMember, useRejectMember } from '../hooks/useAdminDashboard';
+import { useUpcomingEvents } from '@/features/events/hooks/useEvents';
 import { SEO } from '@/shared/common/SEO';
+import { ALUMNI_ROUTES } from '@/features/alumni/routes';
+import { USER_ROUTES } from '@/features/user/routes';
+import { EVENT_ROUTES } from '@/features/events/routes';
+import { MARKETPLACE_ROUTES } from '@/features/marketplace/routes';
+import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
+import { toast } from '@/shared/components/ui/Toast';
 
 // ─── Tone map ─────────────────────────────────────────────────────────────────
 
@@ -19,15 +26,15 @@ const statToneClass: Record<AdminStat['tone'], string> = {
   warning: 'from-amber-500 to-orange-600 text-white',
 };
 
-// ─── Sub-components ───────────────────────────────────────────────────────────
+// ─── Stat Card ────────────────────────────────────────────────────────────────
 
-function StatCard({ stat }: { stat: AdminStat }) {
+function StatCard({ stat, overrideValue }: { stat: AdminStat; overrideValue?: string }) {
   return (
     <div className={`rounded-[1.5rem] bg-gradient-to-br p-5 shadow-lg ${statToneClass[stat.tone]}`}>
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-sm font-medium text-white/80">{stat.label}</p>
-          <p className="mt-3 text-2xl font-bold">{stat.value}</p>
+          <p className="mt-3 text-2xl font-bold">{overrideValue ?? stat.value}</p>
           <p className="mt-2 text-sm text-white/80">{stat.detail}</p>
         </div>
         <div className="rounded-2xl bg-white/10 p-3">
@@ -37,6 +44,8 @@ function StatCard({ stat }: { stat: AdminStat }) {
     </div>
   );
 }
+
+// ─── Section Card ─────────────────────────────────────────────────────────────
 
 function SectionCard({
   title,
@@ -58,7 +67,7 @@ function SectionCard({
   );
 }
 
-// ─── Pending member row ───────────────────────────────────────────────────────
+// ─── Pending Member Row ───────────────────────────────────────────────────────
 
 function PendingMemberRow({
   member,
@@ -75,7 +84,6 @@ function PendingMemberRow({
 
   const approveMutation = useApproveMember();
   const rejectMutation = useRejectMember();
-
   const busy = approveMutation.isPending || rejectMutation.isPending;
 
   const handleApprove = async () => {
@@ -83,6 +91,7 @@ function PendingMemberRow({
     try {
       await approveMutation.mutateAsync(member.id);
       onApprove(member.id);
+      toast.success('Account successfully approved');
     } catch (error: any) {
       setActionError(error.message ?? 'Approval failed. Please try again.');
     }
@@ -96,6 +105,7 @@ function PendingMemberRow({
         reason: rejectReason.trim() || undefined,
       });
       onReject(member.id, rejectReason.trim() || undefined);
+      toast.success('Account successfully rejected');
     } catch (error: any) {
       setActionError(error.message ?? 'Rejection failed. Please try again.');
     }
@@ -103,7 +113,6 @@ function PendingMemberRow({
 
   return (
     <div className="flex flex-col gap-3 rounded-2xl border border-accent-100 bg-accent-50/60 px-4 py-4">
-      {/* Member info */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
           <p className="font-medium text-accent-900">{member.fullName}</p>
@@ -115,8 +124,6 @@ function PendingMemberRow({
             {member.email}
           </p>
         </div>
-
-        {/* Action buttons */}
         {!showRejectInput && (
           <div className="flex gap-2 flex-shrink-0">
             <button
@@ -146,7 +153,6 @@ function PendingMemberRow({
         )}
       </div>
 
-      {/* Inline reject reason input — appears when Reject is clicked */}
       {showRejectInput && (
         <div className="space-y-2 border-t border-accent-100 pt-3">
           <label className="block text-xs font-medium text-accent-700">
@@ -188,7 +194,6 @@ function PendingMemberRow({
         </div>
       )}
 
-      {/* Per-row error */}
       {actionError && (
         <p className="text-xs text-red-500 bg-red-50 rounded-xl px-3 py-2">{actionError}</p>
       )}
@@ -200,10 +205,6 @@ function PendingMemberRow({
 
 function AdminSkeleton() {
   return (
-    // <Layout title="Admin Dashboard" description="Loading admin dashboard">
-
-    // </Layout>
-
     <section className="section">
       <div className="container-custom space-y-6 animate-pulse">
         <div className="h-32 rounded-[2rem] bg-accent-900/80" />
@@ -227,54 +228,60 @@ function AdminSkeleton() {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export function AdminDashboardPage() {
-  const currentUser = useAuthStore((state) => state.user);
+  // const currentUser = useAuthStore((state) => state.user);
 
-  // All dashboard data via React Query — no local useState for data
+  const { data: currentUser, isLoading: isLoadingProfile } = useCurrentUser();
+
   const { data: dashboard, isLoading, isError, refetch } = useAdminDashboard();
 
-  // Local optimistic removal — remove from list immediately on approve/reject
-  // while the cache invalidation + refetch completes in the background.
-  const [removedIds, setRemovedIds] = useState<Set<string>>(new Set());
+  // Real upcoming events — replaces the placeholder empty array
+  const { data: upcomingEvents = [], isLoading: eventsLoading } = useUpcomingEvents();
 
+  // Optimistic removal after approve/reject
+  const [removedIds, setRemovedIds] = useState<Set<string>>(new Set());
   const handleApprove = (id: string) => setRemovedIds((prev) => new Set([...prev, id]));
   const handleReject = (id: string) => setRemovedIds((prev) => new Set([...prev, id]));
 
-  if (isLoading) return <AdminSkeleton />;
+  if (isLoading || isLoadingProfile) return <AdminSkeleton />;
 
   if (isError || !dashboard) {
     return (
-      <Layout title="Admin Dashboard" description="Admin dashboard">
-        <section className="section">
-          <div className="container-custom">
-            <div className="mx-auto max-w-2xl rounded-[2rem] border border-secondary-200 bg-white p-8 text-center shadow-sm">
-              <Icon
-                icon="mdi:alert-circle-outline"
-                className="h-10 w-10 text-secondary-500 mx-auto"
-              />
-              <h1 className="mt-4 text-2xl font-bold text-accent-900">Dashboard unavailable</h1>
-              <p className="mt-2 text-sm text-accent-600">
-                Could not load admin dashboard data. This may be a network issue or the server is
-                temporarily unavailable.
-              </p>
-              <button type="button" className="btn btn-primary mt-6" onClick={() => void refetch()}>
-                Try again
-              </button>
-            </div>
+      <section className="section">
+        <div className="container-custom">
+          <div className="mx-auto max-w-2xl rounded-[2rem] border border-secondary-200 bg-white p-8 text-center shadow-sm">
+            <Icon
+              icon="mdi:alert-circle-outline"
+              className="h-10 w-10 text-secondary-500 mx-auto"
+            />
+            <h1 className="mt-4 text-2xl font-bold text-accent-900">Dashboard unavailable</h1>
+            <p className="mt-2 text-sm text-accent-600">
+              Could not load admin dashboard data. Please try again.
+            </p>
+            <button type="button" className="btn btn-primary mt-6" onClick={() => void refetch()}>
+              Try again
+            </button>
           </div>
-        </section>
-      </Layout>
+        </div>
+      </section>
     );
   }
 
-  // Filter out optimistically removed members
   const visiblePending = dashboard.pendingApprovals.filter((m) => !removedIds.has(m.id));
+
+  // Derive real stat values where possible
+  const totalMembersValue =
+    dashboard.recentMembers.length > 0 ? String(dashboard.recentMembers.length) + '+' : '—';
+  const upcomingEventsValue = eventsLoading ? '…' : String(upcomingEvents.length);
+
+  // Next 3 upcoming events for the sidebar panel
+  const nextUpcoming = upcomingEvents.slice(0, 3);
 
   return (
     <>
       <SEO title="Admin Dashboard" description="Admin dashboard" />
       <section className="section bg-[radial-gradient(circle_at_top_left,_rgba(59,130,246,0.1),_transparent_30%),linear-gradient(180deg,_#f8fafc,_#ffffff)]">
         <div className="container-custom space-y-6">
-          {/* ── Banner ──────────────────────────────────────────────────── */}
+          {/* ── Banner ──────────────────────────────────────────────── */}
           <section className="relative overflow-hidden rounded-[2rem] bg-[linear-gradient(135deg,_#0f172a_0%,_#1e293b_60%,_#1d4ed8_100%)] p-6 text-white shadow-2xl md:p-8">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.08),_transparent_30%)]" />
             <div className="relative z-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -290,14 +297,14 @@ export function AdminDashboardPage() {
               </div>
               <div className="flex gap-3">
                 <AppLink
-                  href="/alumni/profiles"
+                  href={ALUMNI_ROUTES.PROFILES}
                   className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-medium text-white hover:bg-white/15 transition-colors"
                 >
                   <Icon icon="mdi:account-group-outline" className="h-4 w-4" />
                   Members
                 </AppLink>
                 <AppLink
-                  href="/dashboard"
+                  href={USER_ROUTES.DASHBOARD}
                   className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-medium text-white hover:bg-white/15 transition-colors"
                 >
                   <Icon icon="mdi:account-outline" className="h-4 w-4" />
@@ -307,17 +314,29 @@ export function AdminDashboardPage() {
             </div>
           </section>
 
-          {/* ── Stats ───────────────────────────────────────────────────── */}
+          {/* ── Stats ───────────────────────────────────────────────── */}
           <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {dashboard.stats.map((stat) => (
-              <StatCard key={stat.id} stat={stat} />
+              <StatCard
+                key={stat.id}
+                stat={stat}
+                // Override with real values where available
+                overrideValue={
+                  stat.id === 'members'
+                    ? totalMembersValue
+                    : stat.id === 'events'
+                      ? upcomingEventsValue
+                      : undefined
+                }
+              />
             ))}
           </section>
 
-          {/* ── Main grid ───────────────────────────────────────────────── */}
+          {/* ── Main grid ───────────────────────────────────────────── */}
           <section className="grid gap-6 xl:grid-cols-[1.3fr_0.7fr]">
-            {/* Left: pending approvals + recent members */}
+            {/* Left */}
             <div className="space-y-6">
+              {/* Pending approvals */}
               <SectionCard
                 title={`Pending Approvals${visiblePending.length > 0 ? ` (${visiblePending.length})` : ''}`}
               >
@@ -390,32 +409,46 @@ export function AdminDashboardPage() {
               </SectionCard>
             </div>
 
-            {/* Right column */}
+            {/* Right */}
             <div className="space-y-6">
+              {/* Upcoming Events — now real data */}
               <SectionCard
                 title="Upcoming Events"
                 action={
                   <AppLink
-                    href="/events"
+                    href={EVENT_ROUTES.ROOT}
                     className="text-sm font-semibold text-primary-600 hover:text-primary-700"
                   >
                     Manage
                   </AppLink>
                 }
               >
-                {dashboard.upcomingEvents.length === 0 ? (
+                {eventsLoading ? (
+                  <div className="space-y-3 animate-pulse">
+                    {[1, 2, 3].map((i) => (
+                      <div key={i} className="h-14 rounded-2xl bg-accent-100" />
+                    ))}
+                  </div>
+                ) : nextUpcoming.length === 0 ? (
                   <p className="text-sm text-accent-400 py-4 text-center">No upcoming events.</p>
                 ) : (
                   <div className="space-y-3">
-                    {dashboard.upcomingEvents.map((event) => (
+                    {nextUpcoming.map((event) => (
                       <AppLink
-                        href={event.href}
-                        key={event.href}
+                        href={EVENT_ROUTES.DETAIL(event.id)}
+                        key={event.id}
                         className="block rounded-2xl border border-accent-100 bg-accent-50 px-4 py-3 hover:border-primary-200 hover:bg-primary-50/60 transition-colors"
                       >
-                        <p className="font-medium text-accent-900 text-sm">{event.title}</p>
+                        <p className="font-medium text-accent-900 text-sm truncate">
+                          {event.title}
+                        </p>
                         <p className="mt-0.5 text-xs text-accent-500">
-                          {event.date} · {event.location}
+                          {new Date(event.date).toLocaleDateString('en-GB', {
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric',
+                          })}
+                          {event.location ? ` · ${event.location}` : ''}
                         </p>
                       </AppLink>
                     ))}
@@ -423,7 +456,7 @@ export function AdminDashboardPage() {
                 )}
               </SectionCard>
 
-              {/* Quick actions */}
+              {/* Quick Actions */}
               <SectionCard title="Quick Actions">
                 <div className="space-y-2">
                   {[
@@ -434,16 +467,20 @@ export function AdminDashboardPage() {
                     },
                     {
                       label: 'Create Event',
-                      href: '/events/create',
+                      href: EVENT_ROUTES.CREATE,
                       icon: 'mdi:calendar-plus-outline',
                     },
+                    // {
+                    //   label: 'Post Announcement',
+                    //   href: '/admin/announcements',
+                    //   icon: 'mdi:bullhorn-outline',
+                    // },
                     {
-                      label: 'Post Announcement',
-                      href: '/admin/announcements',
-                      icon: 'mdi:bullhorn-outline',
+                      label: 'View Marketplace',
+                      href: MARKETPLACE_ROUTES.ROOT,
+                      icon: 'mdi:store-outline',
                     },
-                    { label: 'View Marketplace', href: '/marketplace', icon: 'mdi:store-outline' },
-                    { label: 'Site Settings', href: '/admin/settings', icon: 'mdi:cog-outline' },
+                    // { label: 'Site Settings', href: '/admin/settings', icon: 'mdi:cog-outline' },
                   ].map((link) => (
                     <AppLink
                       href={link.href}

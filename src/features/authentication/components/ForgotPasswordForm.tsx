@@ -5,10 +5,12 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { FormInput } from '@/shared/components/ui/input/FormInput';
-import { authApi } from '../api/authApi';
+import { authApi } from '../services/auth.service';
 import { forgotPasswordSchema } from '../schemas/authSchema';
 import type { ForgotPasswordFormValues, ForgotPasswordResponse } from '../types/auth.types';
 import { AuthCard } from './AuthCard';
+import { AUTH_ROUTES } from '../routes';
+import { ROUTES } from '@/shared/constants/routes';
 
 export function ForgotPasswordForm() {
   const navigate = useNavigate();
@@ -49,11 +51,15 @@ export function ForgotPasswordForm() {
           <div className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-xs text-gray-500">
             Please check your spam/junk folder if the email is not in your inbox
           </div>
-          <button type="button" onClick={() => navigate('/')} className="btn btn-primary w-full">
+          <button
+            type="button"
+            onClick={() => navigate(ROUTES.HOME)}
+            className="btn btn-primary w-full"
+          >
             Return Home
           </button>
           <AppLink
-            href="/auth/login"
+            href={AUTH_ROUTES.LOGIN}
             className="block text-sm text-center text-gray-500 hover:text-primary-500"
           >
             Back to login
@@ -94,7 +100,7 @@ export function ForgotPasswordForm() {
           )}
         </button>
         <AppLink
-          href="/auth/login"
+          href={AUTH_ROUTES.LOGIN}
           className="block text-sm text-center text-gray-500 hover:text-primary-500"
         >
           Back to login

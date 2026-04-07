@@ -31,6 +31,43 @@ export interface ApiError {
  * }
  * ```
  */
+// export function handleApiError(
+//   error: any,
+//   fallbackMessage: string = 'An error occurred',
+//   context?: string,
+// ): Error {
+//   // Log error for debugging
+//   logError(error, context);
+
+//   // Get user-friendly error
+//   const friendlyError = getUserFriendlyError(error);
+
+//   // Try to extract backend message first
+//   const backendMessage =
+//     error.response?.data?.message ||
+//     error.response?.data?.error ||
+//     error.response?.data?.detail ||
+//     error.response?.data?.msg;
+
+//   // Priority: Backend message > Friendly message > Fallback
+//   const finalMessage = backendMessage || friendlyError.message || fallbackMessage;
+
+//   // Create standardized error
+//   const apiError = new Error(finalMessage) as Error & ApiError;
+//   apiError.status = error.response?.status;
+//   apiError.code = error.code;
+
+//   // Attach original error in development
+//   if (import.meta.env.DEV) {
+//     apiError.details = {
+//       original: error,
+//       response: error.response?.data,
+//     };
+//   }
+
+//   return apiError;
+// }
+
 export function handleApiError(
   error: any,
   fallbackMessage: string = 'An error occurred',
@@ -39,29 +76,39 @@ export function handleApiError(
   // Log error for debugging
   logError(error, context);
 
-  // Get user-friendly error
-  const friendlyError = getUserFriendlyError(error);
-
-  // Try to extract backend message first
+  // Try to extract backend message from MULTIPLE possible locations
   const backendMessage =
     error.response?.data?.message ||
     error.response?.data?.error ||
     error.response?.data?.detail ||
-    error.response?.data?.msg;
+    error.response?.data?.msg ||
+    error.message || // ← ADD THIS: fall back to error.message
+    (typeof error === 'string' ? error : null);
 
-  // Priority: Backend message > Friendly message > Fallback
+  // Get user-friendly error (this might also be causing issues)
+  const friendlyError = getUserFriendlyError(error);
+
+  // Priority: Backend message > Error message > Friendly message > Fallback
   const finalMessage = backendMessage || friendlyError.message || fallbackMessage;
 
   // Create standardized error
   const apiError = new Error(finalMessage) as Error & ApiError;
-  apiError.status = error.response?.status;
-  apiError.code = error.code;
 
-  // Attach original error in development
-  if (import.meta.env.DEV) {
+  // Preserve as much original error info as possible
+  apiError.status = error.response?.status || error.status;
+  apiError.code = error.code || error.response?.data?.code;
+
+  // ALWAYS preserve the original response if available
+  if (error.response) {
     apiError.details = {
       original: error,
       response: error.response?.data,
+      status: error.response?.status,
+    };
+  } else if (import.meta.env.DEV) {
+    apiError.details = {
+      original: error,
+      message: error.message,
     };
   }
 

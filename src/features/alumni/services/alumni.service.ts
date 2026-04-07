@@ -6,12 +6,14 @@ import { handleApiError } from '@/lib/errors/apiErrorHandler';
 import { extractList } from '@/lib/utils/adapters';
 import { mapBackendAlumniToFrontend, mapBackendAlumniList } from '../api/adapters/alumni.adapter';
 import type { Alumni } from '../types/alumni.types';
+import { parseFieldVisibility } from '../utils/privacyHelpers';
 
 export interface GetAlumniParams {
   search?: string;
   year?: string;
   page?: number;
   limit?: number;
+  action_type?: string;
 }
 
 export const alumniService = {
@@ -41,7 +43,18 @@ export const alumniService = {
         (!Array.isArray(data) && (data as any).user?.id === id ? (data as any).user : null);
 
       if (!match) return null;
-      return mapBackendAlumniToFrontend(match);
+      console.log('match', { match });
+
+      //Stop formatting once the backend is sending the correct format!!!!!!!. Just pass in the match directly to mapBackendAlumniToFrontend()
+      const formattedData = {
+        ...match,
+        profile: {
+          ...match.profile,
+          field_visibility: parseFieldVisibility(match.profile.field_visibility),
+        },
+      };
+      console.log('formattedData', { formattedData });
+      return mapBackendAlumniToFrontend(formattedData);
     } catch (error: any) {
       if (error.response?.status === 404) return null;
       throw handleApiError(

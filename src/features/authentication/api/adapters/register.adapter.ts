@@ -21,6 +21,8 @@ export function mapRegistrationPayload(values: RegisterDetailsFormValues) {
     name_in_school: values.nameInSchool,
     graduation_year: String(values.graduationYear),
 
+    voucher_id: values.voucherId,
+
     // System
     user_role: 'alumni',
     chapter_id: '1',

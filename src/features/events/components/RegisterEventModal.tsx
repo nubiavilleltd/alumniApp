@@ -6,6 +6,7 @@ import { Modal } from '@/shared/components/ui/Modal';
 import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { useEventRegistration } from '../hooks/useEventRegistration';
 import type { Event } from '../types/event.types';
+import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 
 interface RegisterEventModalProps {
   event: Event | null;
@@ -13,7 +14,8 @@ interface RegisterEventModalProps {
 }
 
 export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) {
-  const currentUser = useAuthStore((state) => state.user);
+  // const currentUser = useAuthStore((state) => state.user);
+  const { data: currentUser, isLoading: isLoadingProfile } = useCurrentUser();
   const { register, isLoading } = useEventRegistration(event?.id || '');
 
   const [submitted, setSubmitted] = useState(false);

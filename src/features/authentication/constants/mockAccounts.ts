@@ -6,7 +6,7 @@ import type { PrivacySettings } from '../types/auth.types';
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 export type ApprovalStatus = 'pending' | 'approved' | 'rejected';
-export type AccountStatus = 'active' | 'suspended' | 'closed';
+export type AccountStatus = 'active' | 'suspended' | 'closed' | 'deactivated';
 // export type DuesStatus = 'paid' | 'owing' | 'exempt';
 export type DuesStatus = 'paid' | 'owing' | 'overdue' | 'exempt' | 'unknown';
 
@@ -49,6 +49,7 @@ export interface MockAuthAccount {
 
   // ── Profile fields (filled after registration) ────────────────────────────
   photo?: string;
+  bio: string;
   alternativePhone?: string;
   birthDate?: string;
   houseColor?: string;

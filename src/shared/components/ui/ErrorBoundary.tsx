@@ -13,6 +13,8 @@ import { ErrorBoundary as ReactErrorBoundary, type FallbackProps } from 'react-e
 import { Icon } from '@iconify/react';
 import { type ReactNode } from 'react';
 import { getUserFriendlyError, logError } from '@/lib/errors/errorUtils';
+import { AUTH_ROUTES } from '@/features/authentication/routes';
+import { ROUTES } from '@/shared/constants/routes';
 
 // ─── Enhanced Default Fallback UI ─────────────────────────────────────────────
 function EnhancedFallback({ error, resetErrorBoundary }: FallbackProps) {
@@ -63,7 +65,7 @@ function EnhancedFallback({ error, resetErrorBoundary }: FallbackProps) {
         {friendlyError.type === 'AUTH' ? (
           <button
             type="button"
-            onClick={() => (window.location.href = '/auth/login')}
+            onClick={() => (window.location.href = AUTH_ROUTES.LOGIN)}
             className="inline-flex items-center gap-2 bg-primary-500 hover:bg-primary-600 text-white text-sm font-semibold px-6 py-3 rounded-xl transition-colors shadow-sm"
           >
             <Icon icon="mdi:login" className="w-4 h-4" />
@@ -72,7 +74,7 @@ function EnhancedFallback({ error, resetErrorBoundary }: FallbackProps) {
         ) : (
           <button
             type="button"
-            onClick={() => (window.location.href = '/')}
+            onClick={() => (window.location.href = ROUTES.HOME)}
             className="inline-flex items-center gap-2 border-2 border-gray-200 text-gray-600 hover:border-primary-300 hover:text-primary-600 text-sm font-semibold px-6 py-3 rounded-xl transition-colors"
           >
             <Icon icon="mdi:home-outline" className="w-4 h-4" />

@@ -1,18 +1,23 @@
 // features/user/pages/UserDashboardPage.tsx
-// Route: /dashboard  (ProtectedRoute)
 
 import { Icon } from '@iconify/react';
 import type { ReactNode } from 'react';
 import { AppLink } from '@/shared/components/ui/AppLink';
-import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { useUpcomingEvents } from '@/features/events/hooks/useEvents';
 import { useLatestAnnouncements } from '@/features/announcements/hooks/useAnnouncements';
 import { useAlumni } from '@/features/alumni/hooks/useAlumni';
 import { SEO } from '@/shared/common/SEO';
 import { useMyEvents } from '@/features/events/hooks/useEventRegistration';
 import type { Event } from '@/features/events/types/event.types';
+import { ROUTES } from '@/shared/constants/routes';
+import { EVENT_ROUTES } from '@/features/events/routes';
+import { ALUMNI_ROUTES } from '@/features/alumni/routes';
+import { MARKETPLACE_ROUTES } from '@/features/marketplace/routes';
+import { USER_ROUTES } from '../routes';
+import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
+
 function formatEventDate(date: string) {
   return new Date(date).toLocaleDateString('en-US', {
     month: 'short',
@@ -22,22 +27,24 @@ function formatEventDate(date: string) {
 }
 
 // ── Dashboard Event Card ──────────────────────────────────────────────────────
+
 function DashboardEventCard({ event }: { event: Event }) {
   return (
     <div className="flex flex-col gap-4 rounded-2xl border border-accent-100 bg-white px-4 py-4 md:flex-row md:items-center md:justify-between">
-      <div className="flex-1">
-        <p className="font-medium text-accent-900">{event.title}</p>
+      <div className="flex-1 min-w-0">
+        <p className="font-medium text-accent-900 truncate">{event.title}</p>
         <p className="mt-1 text-sm text-accent-600">
-          {formatEventDate(event.date)} • {event.location}
+          {formatEventDate(event.date)}
+          {event.location ? ` • ${event.location}` : ''}
         </p>
       </div>
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 flex-shrink-0">
         <div className="flex items-center gap-2 text-green-600 text-sm font-semibold">
           <Icon icon="mdi:check-circle" className="w-4 h-4" />
           Registered
         </div>
         <AppLink
-          href={`/events/${event.id}`}
+          href={EVENT_ROUTES.DETAIL(event.id)}
           className="text-xs text-primary-600 hover:text-primary-700 font-medium"
         >
           Details →
@@ -47,9 +54,31 @@ function DashboardEventCard({ event }: { event: Event }) {
   );
 }
 
-// ── Sub-components ────────────────────────────────────────────────────────────
-type StatTone = 'primary' | 'accent' | 'secondary';
+// ── Upcoming Event Card (for the upcoming events widget) ──────────────────────
 
+function UpcomingEventCard({ event }: { event: Event }) {
+  return (
+    <AppLink
+      href={EVENT_ROUTES.DETAIL(event.id)}
+      className="flex items-center gap-3 rounded-2xl border border-accent-100 bg-accent-50/80 px-4 py-3 transition-colors hover:border-primary-200 hover:bg-primary-50/70"
+    >
+      <div className="mt-0.5 rounded-xl bg-white p-2 text-primary-600 shadow-sm flex-shrink-0">
+        <Icon icon="mdi:calendar-outline" className="h-4 w-4" />
+      </div>
+      <div className="min-w-0">
+        <p className="font-medium text-accent-900 truncate">{event.title}</p>
+        <p className="text-xs text-accent-500 mt-0.5">
+          {formatEventDate(event.date)}
+          {event.location ? ` • ${event.location}` : ''}
+        </p>
+      </div>
+    </AppLink>
+  );
+}
+
+// ── Stat Card ─────────────────────────────────────────────────────────────────
+
+type StatTone = 'primary' | 'accent' | 'secondary';
 const statToneClass: Record<StatTone, string> = {
   primary: 'from-primary-500 to-primary-700 text-white',
   accent: 'from-accent-800 to-accent-950 text-white',
@@ -93,6 +122,8 @@ function StatCard({
   );
 }
 
+// ── Section Card ──────────────────────────────────────────────────────────────
+
 function SectionCard({
   title,
   action,
@@ -124,20 +155,31 @@ function SectionSkeleton({ rows = 3 }: { rows?: number }) {
 }
 
 // ── Page ──────────────────────────────────────────────────────────────────────
-export function UserDashboardPage() {
-  const currentUser = useAuthStore((state) => state.user);
 
+export function UserDashboardPage() {
+  // const currentUser = useAuthStore((state) => state.user);
+
+  const { data: currentUser, isLoading: isLoadingProfile } = useCurrentUser();
+
+  // Real data
   const { data: upcomingEvents = [], isLoading: eventsLoading } = useUpcomingEvents();
   const { data: announcements = [], isLoading: announcementsLoading } = useLatestAnnouncements(3);
   const { data: allAlumni = [], isLoading: alumniLoading } = useAlumni();
+
+  // TODO: myEvents is blocked on backend implementing POST /get_events { user_id }
+  //       returning only RSVP'd events with rsvp_status per event.
+  //       Until then this returns an empty array.
   const { events: myEvents = [], isLoading: myEventsLoading } = useMyEvents();
 
-  // ── Get registered events (upcoming only) ────────────────────────────────────
+  // My registered upcoming events (max 3 for dashboard)
   const myRegisteredEvents = myEvents
-    .filter((event: Event) => new Date(event.date) >= new Date()) // Only upcoming
-    .slice(0, 3); // Show max 3 on dashboard
+    .filter((event: Event) => new Date(event.date) >= new Date())
+    .slice(0, 3);
 
-  // ── Profile completion ─────────────────────────────────────────────────────
+  // Next 3 upcoming events for the widget
+  const nextUpcoming = upcomingEvents.slice(0, 3);
+
+  // ── Profile completion ───────────────────────────────────────────────────
   const profileCompletion = (() => {
     if (!currentUser) return 0;
     const checks = [
@@ -161,36 +203,34 @@ export function UserDashboardPage() {
   if (currentUser && !currentUser.residentialAddress)
     profileTasks.push('Add your residential address');
 
-  // ── Derived data ───────────────────────────────────────────────────────────
   const suggestedAlumni = allAlumni.filter((a) => a.slug !== currentUser?.slug).slice(0, 2);
 
   const communityUpdates = [
     {
       title: 'Mentorship circle opens next week',
       subtitle: 'Join a cross-year mentoring group before seats fill up.',
-      href: '/about',
+      href: ROUTES.ABOUT,
     },
     {
       title: 'Regional meetup planning has started',
       subtitle: 'See the latest planning note and volunteer opportunities.',
-      href: '/events',
+      href: EVENT_ROUTES.ROOT,
     },
     {
       title: 'Community directory refresh underway',
       subtitle: 'Profiles with complete details will be featured more often.',
-      href: '/alumni/profiles',
+      href: ALUMNI_ROUTES.PROFILES,
     },
   ];
 
   const quickLinks = [
-    { label: 'Edit Profile', href: '/user/profile', icon: 'mdi:account-edit-outline' },
-    { label: 'My Events', href: '/my-events', icon: 'mdi:calendar-check-outline' },
-    { label: 'View Directory', href: '/alumni/profiles', icon: 'mdi:account-group-outline' },
-    { label: 'Browse Events', href: '/events', icon: 'mdi:calendar-month-outline' },
-    { label: 'My Business', href: '/marketplace/my-business', icon: 'mdi:store-outline' },
+    { label: 'Edit Profile', href: USER_ROUTES.PROFILE, icon: 'mdi:account-edit-outline' },
+    { label: 'My Events', href: EVENT_ROUTES.MY_EVENTS, icon: 'mdi:calendar-check-outline' },
+    { label: 'View Directory', href: ALUMNI_ROUTES.PROFILES, icon: 'mdi:account-group-outline' },
+    { label: 'Browse Events', href: EVENT_ROUTES.ROOT, icon: 'mdi:calendar-month-outline' },
+    { label: 'My Business', href: MARKETPLACE_ROUTES.MY_BUSINESS, icon: 'mdi:store-outline' },
   ];
 
-  // Combine loading states
   const isLoading = eventsLoading || myEventsLoading;
 
   return (
@@ -216,18 +256,18 @@ export function UserDashboardPage() {
                       style={{ width: `${profileCompletion}%` }}
                     />
                   </span>
-                  <span>Profile</span>
+                  {/* <span>Profile</span> */}
                 </div>
               </div>
-
               <div className="flex items-center gap-3 self-start">
-                <button
+                {/* TODO: Wire to a notifications endpoint when backend provides one */}
+                {/* <button
                   type="button"
                   className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-white/15"
                 >
                   <Icon icon="mdi:bell-outline" className="h-5 w-5" />
                   <span>Notifications</span>
-                </button>
+                </button> */}
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/15 text-base font-bold shadow-lg">
                   {currentUser?.avatarInitials}
                 </div>
@@ -259,7 +299,8 @@ export function UserDashboardPage() {
           <section className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
             {/* Left column */}
             <div className="space-y-6">
-              <SectionCard
+              {/* Announcements */}
+              {/* <SectionCard
                 title="Announcements"
                 action={
                   <AppLink
@@ -274,29 +315,36 @@ export function UserDashboardPage() {
                   <SectionSkeleton rows={3} />
                 ) : (
                   <div className="space-y-3">
-                    {announcements.map((item) => (
-                      <AppLink
-                        href={`/announcements/${item.slug}`}
-                        key={item.slug}
-                        className="flex items-start gap-3 rounded-2xl border border-accent-100 bg-accent-50/80 px-4 py-4 transition-colors hover:border-primary-200 hover:bg-primary-50/70"
-                      >
-                        <div className="mt-0.5 rounded-xl bg-white p-2 text-primary-600 shadow-sm">
-                          <Icon icon="mdi:bullhorn-outline" className="h-4 w-4" />
-                        </div>
-                        <div className="min-w-0">
-                          <p className="font-medium text-accent-900">{item.title}</p>
-                        </div>
-                      </AppLink>
-                    ))}
+                    {announcements.length > 0 ? (
+                      announcements.map((item) => (
+                        <AppLink
+                          href={`/announcements/${item.slug}`}
+                          key={item.slug}
+                          className="flex items-start gap-3 rounded-2xl border border-accent-100 bg-accent-50/80 px-4 py-4 transition-colors hover:border-primary-200 hover:bg-primary-50/70"
+                        >
+                          <div className="mt-0.5 rounded-xl bg-white p-2 text-primary-600 shadow-sm">
+                            <Icon icon="mdi:bullhorn-outline" className="h-4 w-4" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-medium text-accent-900">{item.title}</p>
+                          </div>
+                        </AppLink>
+                      ))
+                    ) : (
+                      <p className="text-sm text-accent-400 py-4 text-center">
+                        No announcements yet.
+                      </p>
+                    )}
                   </div>
                 )}
-              </SectionCard>
+              </SectionCard> */}
 
+              {/* My Registered Events */}
               <SectionCard
                 title="My Registered Events"
                 action={
                   <AppLink
-                    href="/my-events"
+                    href={EVENT_ROUTES.MY_EVENTS}
                     className="text-sm font-semibold text-primary-600 hover:text-primary-700"
                   >
                     View all
@@ -321,18 +369,42 @@ export function UserDashboardPage() {
                       You haven't registered for any upcoming events yet.
                     </p>
                     <AppLink
-                      href="/events"
+                      href={EVENT_ROUTES.ROOT}
                       className="inline-flex items-center gap-1 text-primary-600 hover:text-primary-700 text-sm font-semibold"
                     >
-                      Browse Events
-                      <Icon icon="mdi:arrow-right" className="w-4 h-4" />
+                      Browse Events <Icon icon="mdi:arrow-right" className="w-4 h-4" />
                     </AppLink>
                   </div>
                 )}
               </SectionCard>
+
+              {/* Upcoming Events (real data from backend) */}
+              <SectionCard
+                title="Upcoming Events"
+                action={
+                  <AppLink
+                    href={EVENT_ROUTES.ROOT}
+                    className="text-sm font-semibold text-primary-600 hover:text-primary-700"
+                  >
+                    View all
+                  </AppLink>
+                }
+              >
+                {eventsLoading ? (
+                  <SectionSkeleton rows={3} />
+                ) : nextUpcoming.length > 0 ? (
+                  <div className="space-y-3">
+                    {nextUpcoming.map((event) => (
+                      <UpcomingEventCard key={event.id} event={event} />
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-accent-400 py-4 text-center">No upcoming events.</p>
+                )}
+              </SectionCard>
             </div>
 
-            {/* Right column - Keep the same */}
+            {/* Right column */}
             <div className="space-y-6">
               {/* Profile completion */}
               <SectionCard title="Profile Completion">
@@ -355,7 +427,6 @@ export function UserDashboardPage() {
                     />
                   </div>
                 </div>
-
                 {profileTasks.length > 0 && (
                   <div className="mt-4 space-y-3">
                     {profileTasks.map((task) => (
@@ -369,8 +440,10 @@ export function UserDashboardPage() {
                     ))}
                   </div>
                 )}
-
-                <AppLink href="/user/profile" className="btn btn-primary mt-5 w-full text-center">
+                <AppLink
+                  href={USER_ROUTES.PROFILE}
+                  className="btn btn-primary mt-5 w-full text-center"
+                >
                   {profileCompletion === 100 ? 'View Profile' : 'Complete Profile'}
                 </AppLink>
               </SectionCard>
@@ -380,7 +453,7 @@ export function UserDashboardPage() {
                 title="Suggested Alumni"
                 action={
                   <AppLink
-                    href="/alumni/profiles"
+                    href={ALUMNI_ROUTES.PROFILES}
                     className="text-sm font-semibold text-primary-600 hover:text-primary-700"
                   >
                     View directory
@@ -391,32 +464,39 @@ export function UserDashboardPage() {
                   <SectionSkeleton rows={2} />
                 ) : (
                   <div className="space-y-3">
-                    {suggestedAlumni.map((alumnus) => (
-                      <AppLink
-                        href={`/alumni/profiles/${alumnus.slug}`}
-                        key={alumnus.slug}
-                        className="flex items-center gap-3 rounded-2xl border border-accent-100 px-4 py-4 transition-colors hover:border-primary-200 hover:bg-primary-50/60"
-                      >
-                        <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl bg-accent-100 font-semibold text-accent-700">
-                          {alumnus.name
-                            .split(' ')
-                            .slice(0, 2)
-                            .map((p) => p[0])
-                            .join('')}
-                        </div>
-                        <div className="min-w-0">
-                          <p className="font-medium text-accent-900">{alumnus.name}</p>
-                          <p className="mt-1 truncate text-sm text-accent-600">
-                            {alumnus.position} • Class of {alumnus.year}
-                          </p>
-                        </div>
-                      </AppLink>
-                    ))}
+                    {suggestedAlumni.length > 0 ? (
+                      suggestedAlumni.map((alumnus) => (
+                        <AppLink
+                          href={ALUMNI_ROUTES.PROFILE(alumnus.memberId)}
+                          key={alumnus.memberId}
+                          className="flex items-center gap-3 rounded-2xl border border-accent-100 px-4 py-4 transition-colors hover:border-primary-200 hover:bg-primary-50/60"
+                        >
+                          <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl bg-accent-100 font-semibold text-accent-700">
+                            {alumnus.name
+                              .split(' ')
+                              .slice(0, 2)
+                              .map((p) => p[0])
+                              .join('')}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-medium text-accent-900">{alumnus.name}</p>
+                            <p className="mt-1 truncate text-sm text-accent-600">
+                              {alumnus.position && `${alumnus.position} • `}Class of{' '}
+                              {alumnus.graduationYear}
+                            </p>
+                          </div>
+                        </AppLink>
+                      ))
+                    ) : (
+                      <p className="text-sm text-accent-400 py-2 text-center">
+                        No suggestions yet.
+                      </p>
+                    )}
                   </div>
                 )}
               </SectionCard>
 
-              {/* Community updates */}
+              {/* Community updates — TODO: replace with real announcements once endpoint is live */}
               <SectionCard title="Community Updates">
                 <div className="space-y-3">
                   {communityUpdates.map((item) => (

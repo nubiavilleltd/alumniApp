@@ -1,6 +1,6 @@
 // shared/components/layout/RootLayout.tsx
 
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import { useEffect, useState } from 'react';
 import { Navigation } from './Navigation';
@@ -9,6 +9,7 @@ import { ToastContainer } from '@/shared/components/ui/Toast';
 
 export function RootLayout() {
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const { pathname } = useLocation();
 
   useEffect(() => {
     const onScroll = (): void => {
@@ -17,6 +18,10 @@ export function RootLayout() {
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [pathname]);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });

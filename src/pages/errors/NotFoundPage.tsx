@@ -1,5 +1,6 @@
 import { SEO } from '@/shared/common/SEO';
 import { AppLink } from '@/shared/components/ui/AppLink';
+import { ROUTES } from '@/shared/constants/routes';
 
 export function NotFoundPage() {
   return (
@@ -9,7 +10,7 @@ export function NotFoundPage() {
         <div className="container-custom text-center">
           <h1 className="text-5xl font-bold text-accent-900 mb-4">404</h1>
           <p className="text-accent-600 mb-8">The page you requested does not exist.</p>
-          <AppLink href="/" className="btn btn-primary">
+          <AppLink href={ROUTES.HOME} className="btn btn-primary">
             Back to Home
           </AppLink>
         </div>

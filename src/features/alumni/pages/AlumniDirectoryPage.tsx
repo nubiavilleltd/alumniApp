@@ -8,9 +8,12 @@ import { FilterDropdown } from '@/shared/components/ui/FilterDropdown';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import { useAlumni } from '@/features/alumni/hooks/useAlumni';
 import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
-import { getMockAccountByMemberId } from '@/features/authentication/lib/mockAuth';
 import { defaultPrivacySettings } from '@/features/authentication/types/auth.types';
 import { isFieldVisible, getPhotoDisplay } from '@/features/alumni/utils/privacyHelpers';
+import { ALUMNI_ROUTES } from '../routes';
+import { ROUTES } from '@/shared/constants/routes';
+import { useStartDirectConversation } from '@/features/messages/hooks/useStartDirectConversation';
+import { Alumni } from '../types/alumni.types';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 function AlumnaeCardSkeleton() {
@@ -33,27 +36,21 @@ function AlumnaeCardSkeleton() {
 
 // ─── Alumnae Card ─────────────────────────────────────────────────────────────
 interface AlumnaeCardProps {
-  entry: {
-    name: string;
-    slug: string;
-    year: number;
-    photo?: string;
-    short_bio: string;
-    location?: string;
-    memberId?: string;
-  };
+  entry: Alumni;
   currentUser: any;
+  onMessageClick: (entry: Alumni) => void;
+  isMessagePending: boolean;
 }
 
-function AlumnaeCard({ entry, currentUser }: AlumnaeCardProps) {
+function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: AlumnaeCardProps) {
   // Get privacy settings for this alumnus
-  const alumnusAccount = entry.memberId ? getMockAccountByMemberId(entry.memberId) : undefined;
-  const privacy = { ...defaultPrivacySettings, ...alumnusAccount?.privacy };
-  const alumnusWithPrivacy = { ...entry, privacy, id: entry.memberId };
+  // const alumnusAccount = entry.memberId ? getMockAccountByMemberId(entry.memberId) : undefined;
+  // const privacy = { ...defaultPrivacySettings, ...alumnusAccount?.privacy };
+  // const alumnusWithPrivacy = { ...entry };
 
   // Check field visibility
-  const photoVisible = isFieldVisible(alumnusWithPrivacy, 'photo', currentUser);
-  const cityVisible = isFieldVisible(alumnusWithPrivacy, 'city', currentUser);
+  const photoVisible = isFieldVisible(entry, 'photo', currentUser);
+  const cityVisible = isFieldVisible(entry, 'city', currentUser);
 
   const initials = entry.name
     .split(' ')
@@ -61,7 +58,8 @@ function AlumnaeCard({ entry, currentUser }: AlumnaeCardProps) {
     .join('')
     .toUpperCase();
 
-  const classLabel = `Class '${String(entry.year).slice(-2)}`;
+  const classLabel = `Class '${String(entry.graduationYear).slice(-2)}`;
+  const isOwnProfile = entry.memberId === currentUser?.memberId;
 
   // Determine photo display
   const displayPhoto = getPhotoDisplay(entry.photo, photoVisible);
@@ -109,16 +107,18 @@ function AlumnaeCard({ entry, currentUser }: AlumnaeCardProps) {
             </>
           )}
         </div>
-        <p className="text-gray-500 text-[11px] leading-relaxed line-clamp-2">{entry.short_bio}</p>
+        <p className="text-gray-500 text-[11px] leading-relaxed line-clamp-2">{entry.bio}</p>
         <div className="flex items-center gap-1.5 mt-1">
           <button
             type="button"
-            className="flex-1 bg-primary-500 hover:bg-primary-600 text-white text-[11px] font-medium py-1.5 rounded transition-colors"
+            onClick={() => onMessageClick(entry)}
+            disabled={!entry.memberId || isOwnProfile || isMessagePending}
+            className="flex-1 bg-primary-500 hover:bg-primary-600 text-white text-[11px] font-medium py-1.5 rounded transition-colors disabled:cursor-not-allowed disabled:bg-primary-200"
           >
-            Send Message
+            {isOwnProfile ? 'Your Profile' : isMessagePending ? 'Opening...' : 'Send Message'}
           </button>
           <AppLink
-            href={`/alumni/profiles/${entry.memberId}`}
+            href={ALUMNI_ROUTES.PROFILE(entry.memberId as string)}
             className="flex-1 text-center border border-gray-300 text-gray-600 hover:border-primary-400 hover:text-primary-500 text-[11px] font-medium py-1.5 rounded transition-colors"
           >
             View Profile
@@ -139,24 +139,27 @@ export function AlumniDirectoryPage() {
 
   // ── Get current user for privacy checks ───────────────────────────────────
   const currentUser = useAuthStore((state) => state.user);
+  const { startDirectConversation, isPending: isStartingConversation } =
+    useStartDirectConversation();
+  const [pendingConversationMemberId, setPendingConversationMemberId] = useState<string | null>(
+    null,
+  );
 
   // ── Hook ───────────────────────────────────────────────────────────────────
-  const { data: alumni = [], isLoading } = useAlumni();
+  const { data: alumni = [], isLoading } = useAlumni({ action_type: 'approved' });
 
   // ── Derived data ───────────────────────────────────────────────────────────
   const years = useMemo(
-    () => [...new Set(alumni.map((e) => e.year))].sort((a, b) => b - a),
+    () => [...new Set(alumni.map((e) => e.graduationYear))].sort((a, b) => b - a),
     [alumni],
   );
-
-  console.log('my alum', { alumni });
 
   const filteredAlumni = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
     return alumni.filter((e) => {
       const matchesSearch =
-        !q || e.name.toLowerCase().includes(q) || e.short_bio.toLowerCase().includes(q);
-      const matchesYear = !yearFilter || e.year.toString() === yearFilter;
+        !q || e.name.toLowerCase().includes(q) || e.bio.toLowerCase().includes(q);
+      const matchesYear = !yearFilter || e.graduationYear.toString() === yearFilter;
       return matchesSearch && matchesYear;
     });
   }, [alumni, searchTerm, yearFilter]);
@@ -169,11 +172,32 @@ export function AlumniDirectoryPage() {
     setVisibleCount(ITEMS_PER_PAGE);
   };
 
-  const breadcrumbItems = [
-    { label: 'Home', href: '/' },
-    { label: 'Profiles', href: '/alumni' },
-    { label: 'Directory' },
-  ];
+  const breadcrumbItems = [{ label: 'Home', href: ROUTES.HOME }, { label: 'Profiles' }];
+
+  async function handleStartConversation(entry: {
+    name: string;
+    year?: number;
+    photo?: string;
+    location?: string;
+    memberId?: string;
+  }) {
+    if (!entry.memberId) return;
+
+    setPendingConversationMemberId(entry.memberId);
+    await startDirectConversation({
+      participantMemberId: entry.memberId,
+      topic: `Alumni connection with ${entry.name}`,
+      recipientProfile: {
+        fullName: entry.name,
+        avatar: entry.photo,
+        headline: entry.year ? `Class of ${entry.year}` : 'FGGC alumna',
+        location: entry.location,
+        graduationYear: entry.year,
+        profileHref: `/alumni/profiles/${entry.memberId}`,
+      },
+    });
+    setPendingConversationMemberId((current) => (current === entry.memberId ? null : current));
+  }
 
   return (
     <>
@@ -224,7 +248,15 @@ export function AlumniDirectoryPage() {
           ) : visibleAlumni.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4 mb-10">
               {visibleAlumni.map((entry) => (
-                <AlumnaeCard key={entry.slug} entry={entry} currentUser={currentUser} />
+                <AlumnaeCard
+                  key={entry.id}
+                  entry={entry}
+                  currentUser={currentUser}
+                  onMessageClick={handleStartConversation}
+                  isMessagePending={
+                    isStartingConversation && pendingConversationMemberId === entry.memberId
+                  }
+                />
               ))}
             </div>
           ) : (

@@ -11,10 +11,14 @@ import type {
   loginSchema,
   registerDetailsSchema,
   resetPasswordSchema,
+  changePasswordSchema,
 } from '../schemas/authSchema';
-import type { ApprovalStatus, AccountStatus, DuesStatus } from '../constants/mockAccounts';
 
 export type AuthMode = 'login' | 'register' | 'forgot-password' | 'reset-password';
+export type ApprovalStatus = 'pending' | 'approved' | 'rejected';
+export type AccountStatus = 'active' | 'suspended' | 'closed' | 'deactivated';
+// export type DuesStatus = 'paid' | 'owing' | 'exempt';
+export type DuesStatus = 'paid' | 'owing' | 'overdue' | 'exempt' | 'unknown';
 
 // ─── Privacy ──────────────────────────────────────────────────────────────────
 
@@ -54,6 +58,7 @@ export const defaultPrivacySettings: PrivacySettings = {
 export interface AuthSessionUser {
   memberId: string;
   id: string;
+  userCode: string;
   slug: string;
   avatarInitials: string;
   profileHref: string;
@@ -86,6 +91,7 @@ export interface AuthSessionUser {
   photo?: string;
   alternativePhone?: string;
   birthDate?: string;
+  bio: string;
   houseColor?: string;
   isClassCoordinator?: boolean;
   residentialAddress?: string;
@@ -100,6 +106,9 @@ export interface AuthSessionUser {
   linkedin?: string;
   twitter?: string;
   instagram?: string;
+  facebook?: string;
+  website?: string;
+  country?: string;
 
   privacy?: PrivacySettings;
 
@@ -113,6 +122,7 @@ export type LoginFormValues = z.input<typeof loginSchema>;
 export type ForgotPasswordFormValues = z.input<typeof forgotPasswordSchema>;
 export type RegisterDetailsFormValues = z.input<typeof registerDetailsSchema>;
 export type ResetPasswordFormValues = z.input<typeof resetPasswordSchema>;
+export type ChangePasswordFormValues = z.input<typeof changePasswordSchema>;
 
 // userId is intentionally absent — it is server state, not a form field.
 // It lives in RegistrationFlowState inside RegisterForm.tsx.
@@ -134,7 +144,7 @@ export interface AuthUserSummary {
 // }
 
 export interface LoginResponse {
-  user: AuthSessionUser;
+  user: { id: string; memberId: string; role: string };
   accessToken: string;
   refreshToken: string;
 }
@@ -163,18 +173,16 @@ export interface VerifyRegistrationRequest {
 
 export interface ResetPasswordRequest {
   token: string;
-  email?: string;
   password: string;
+  confirmPassword: string;
+}
+export interface ResetPasswordResponse {
+  status: 'success';
+  message: string;
 }
 
 export interface CompleteRegistrationResponse {
   status: 'pending_admin_approval';
   message: string;
   draft: AuthUserSummary;
-}
-
-export interface ResetPasswordResponse {
-  status: 'success';
-  message: string;
-  email?: string;
 }

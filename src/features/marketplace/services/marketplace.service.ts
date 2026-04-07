@@ -12,9 +12,13 @@ import {
   mapBusinessToDeletePayload,
   mapFilterListingsPayload,
   mapGetSingleListingPayload,
-  type CreateListingFormData,
 } from '../api/adapters/marketplace.adapter';
-import type { Business, GetMarketplaceParams } from '../types/marketplace.types';
+import type {
+  Business,
+  CreateListingFormData,
+  GetMarketplaceParams,
+  UpdateListingFormData,
+} from '../types/marketplace.types';
 
 export const marketplaceService = {
   /**
@@ -138,7 +142,7 @@ export const marketplaceService = {
    * Update an existing listing.
    * POST /manage_listing  { function_type: "update", ... }
    */
-  async update(id: string, formData: CreateListingFormData): Promise<Business> {
+  async update(id: string, formData: UpdateListingFormData): Promise<Business> {
     try {
       const payload = mapBusinessToUpdatePayload(id, formData);
       await apiClient.post(API_ENDPOINTS.MARKETPLACE.MANAGE_LISTING, payload);

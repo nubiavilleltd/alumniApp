@@ -68,6 +68,7 @@ export const registerDetailsSchema = z
 
     password: passwordSchema,
     confirmPassword: z.string().min(1, 'Please confirm your password'),
+    voucherId: z.string().min(1, 'Please select a voucher who will approve your registration'),
   })
   .superRefine((data, ctx) => {
     const phoneError = validateNationalPhoneNumber(data.phoneCountry, data.whatsappPhone);
@@ -95,6 +96,17 @@ export const resetPasswordSchema = z
     confirmPassword: z.string().min(1, 'Please confirm your password'),
   })
   .refine((data) => data.password === data.confirmPassword, {
+    path: ['confirmPassword'],
+    message: 'Passwords do not match',
+  });
+
+export const changePasswordSchema = z
+  .object({
+    currentPassword: passwordSchema,
+    newPassword: passwordSchema,
+    confirmPassword: z.string().min(1, 'Please confirm your password'),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
     path: ['confirmPassword'],
     message: 'Passwords do not match',
   });

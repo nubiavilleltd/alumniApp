@@ -5,11 +5,12 @@ import OurStory from '../home/components/OurStory';
 import CoreValues from './CoreValues';
 import Leadership from '../home/components/Leadership';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
+import { ROUTES } from '@/shared/constants/routes';
 
 export function AboutPage() {
   // const config = getSiteConfig();
 
-  const breadcrumbItems = [{ label: 'Home', href: '/' }, { label: 'About Us' }];
+  const breadcrumbItems = [{ label: 'Home', href: ROUTES.HOME }, { label: 'About Us' }];
 
   return (
     <>
