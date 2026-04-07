@@ -854,11 +854,7 @@ function DraftComposerAttachments({
               </div>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-semibold">{attachment.fileName}</p>
-                <p className="text-xs text-accent-500">
-                  {attachment.kind === 'audio' && attachment.durationSeconds
-                    ? `${formatAudioDuration(attachment.durationSeconds)} • ${attachment.sizeLabel}`
-                    : attachment.sizeLabel}
-                </p>
+                <p className="text-xs text-accent-500">{attachment.sizeLabel}</p>
               </div>
               <button
                 type="button"
@@ -1701,6 +1697,9 @@ export function MessagesPage() {
         .filter((value): value is string => typeof value === 'string' && value.length > 0),
     );
     const clientGeneratedId = createClientGeneratedMessageId();
+    const currentViewerParticipant =
+      activeThread.participants.find((participant) => participant.memberId === viewerMemberId) ??
+      null;
     const optimisticAttachments =
       buildOptimisticAttachmentsFromDraftAttachments(originalDraftAttachments);
     const optimisticMessage = buildOptimisticMessage({
@@ -1709,8 +1708,8 @@ export function MessagesPage() {
       body,
       attachments: optimisticAttachments,
       clientGeneratedId,
-      currentUserName: currentUser?.fullName,
-      currentUserAvatar: currentUser?.photo,
+      currentUserName: currentViewerParticipant?.fullName,
+      currentUserAvatar: currentViewerParticipant?.avatar,
       replyTo: originalReplyTarget,
     });
 

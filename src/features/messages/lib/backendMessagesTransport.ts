@@ -38,6 +38,7 @@ import {
 import { getRegisteredMessageRecipient } from './messageRecipientRegistry';
 import type {
   MessageAttachment,
+  MessagePresence,
   MessageParticipant,
   MessageThreadCategory,
   MessageThreadDetail,
@@ -57,6 +58,19 @@ type DirectDraftThreadEntry = {
   participantMemberId: string;
   topic?: string;
   thread: MessageThreadDetail;
+};
+type SessionUserSnapshot = {
+  id: string;
+  memberId: string;
+  role: string;
+  slug?: string;
+  fullName?: string;
+  otherNames?: string;
+  graduationYear?: number;
+  city?: string;
+  photo?: string;
+  avatarInitials?: string;
+  profileHref?: string;
 };
 
 const DRAFT_DIRECT_THREAD_PREFIX = 'draft-direct__';
@@ -145,8 +159,31 @@ function normalizeParticipantRole(value: unknown): MessageParticipant['roleInThr
   return 'member';
 }
 
-function getCurrentSessionUser() {
-  return useAuthStore.getState().user;
+function getCurrentSessionUser(): SessionUserSnapshot | null {
+  return useAuthStore.getState().user as SessionUserSnapshot | null;
+}
+
+function buildViewerParticipantFromSessionUser(
+  currentUser: SessionUserSnapshot,
+): MessageParticipant {
+  const fullName = currentUser.fullName?.trim() || 'You';
+  const firstName = currentUser.otherNames?.trim() || fullName.split(/\s+/)[0] || fullName;
+  const graduationYear = safeParseInt(currentUser.graduationYear) ?? 0;
+
+  return {
+    memberId: currentUser.memberId,
+    slug: currentUser.slug ?? generateSlug(fullName, currentUser.memberId, 'user'),
+    fullName,
+    firstName,
+    headline: graduationYear ? `Class of ${graduationYear}` : 'FGGC alumna',
+    location: currentUser.city || 'Nigeria',
+    graduationYear,
+    avatar: currentUser.photo,
+    initials: currentUser.avatarInitials ?? deriveInitials(fullName),
+    profileHref: currentUser.profileHref ?? `/alumni/profiles/${currentUser.memberId}`,
+    presence: 'offline',
+    roleInThread: 'member',
+  };
 }
 
 function getEnvelopeData(responseData: unknown) {
@@ -308,7 +345,7 @@ function applyApproximateDirectPresence(params: {
     participantMemberId: otherParticipant.memberId,
   });
 
-  const derivedPresence =
+  const derivedPresence: MessagePresence =
     latestActivityTimestamp && Date.now() - latestActivityTimestamp <= APPROXIMATE_ONLINE_WINDOW_MS
       ? 'online'
       : 'offline';
@@ -352,7 +389,8 @@ function buildParticipantFromBackend(
   const graduationYear =
     safeParseInt(rawParticipant.graduation_year ?? rawParticipant.year) ??
     (memberId === viewerMemberId ? currentUser?.graduationYear : undefined) ??
-    recipientRegistryEntry?.graduationYear;
+    recipientRegistryEntry?.graduationYear ??
+    0;
   const slug =
     (memberId === viewerMemberId ? currentUser?.slug : undefined) ??
     recipientRegistryEntry?.slug ??
@@ -603,28 +641,7 @@ function buildThreadSummaryFromBackend(params: {
   const participantsWithViewer =
     currentUser &&
     !participants.some((participant) => participant.memberId === params.viewerMemberId)
-      ? [
-          {
-            memberId: currentUser.memberId,
-            slug: currentUser.slug,
-            fullName: currentUser.fullName,
-            firstName:
-              currentUser.otherNames ||
-              currentUser.fullName.split(/\s+/)[0] ||
-              currentUser.fullName,
-            headline: currentUser.graduationYear
-              ? `Class of ${currentUser.graduationYear}`
-              : 'FGGC alumna',
-            location: currentUser.city || 'Nigeria',
-            graduationYear: currentUser.graduationYear,
-            avatar: currentUser.photo,
-            initials: currentUser.avatarInitials,
-            profileHref: currentUser.profileHref,
-            presence: 'offline',
-            roleInThread: 'member',
-          },
-          ...participants,
-        ]
+      ? [buildViewerParticipantFromSessionUser(currentUser), ...participants]
       : participants;
   const participantsWithPresence =
     type === 'direct'
@@ -1225,7 +1242,7 @@ export const backendMessagesTransport: MessagesTransport = {
         : API_ENDPOINTS.MESSAGES.SEND_MESSAGE,
       isDraftDirectThread
         ? {
-            recipient_id: normalizeBackendIdentifierValue(participantMemberId),
+            recipient_id: normalizeBackendIdentifierValue(participantMemberId!),
             body: bodyPayload,
             attachment_ids: safeAttachments.length
               ? buildAttachmentIdsPayload(safeAttachments)
