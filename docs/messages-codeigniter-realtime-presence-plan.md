@@ -1,17 +1,19 @@
-# Messages Realtime Presence Plan
+# Messages Realtime Plan
 
-This is the plan for how I want us to handle realtime presence and typing in chat.
+This is the simple version of the realtime plan for both of us.
 
-The goal is simple:
+The goal is:
 
-- show when a user is online, away, or offline
-- show typing indicators in the active chat
-- make new messages feel live
-- keep the current HTTP message flow intact
+- keep the current HTTP chat APIs as they are
+- add realtime on top for live updates
+- support:
+  - new message updates
+  - online / away / offline
+  - typing
 
-I do **not** want us to rebuild the whole messaging system around websockets.
+We are not rebuilding the whole chat system around websockets.
 
-For now, normal message actions should still go through the backend APIs we already have:
+The normal chat APIs should still handle:
 
 - `v2_get_threads`
 - `v2_get_thread`
@@ -20,195 +22,318 @@ For now, normal message actions should still go through the backend APIs we alre
 - `v2_upload_attachment`
 - `v2_delete_message`
 
-Realtime should sit on top of that and make the experience feel live.
+Realtime is only there to make the app feel live.
 
-## The Setup I Think We Should Use
+## Stack
 
-Since the backend is in PHP / CodeIgniter, I think the cleanest setup is:
+This is the stack I want us to use:
 
-- CodeIgniter stays the main backend
-- Soketi runs as the websocket server
-- the frontend uses `pusher-js`
-- we reuse the JWT we already have for realtime auth
+- backend stays in `PHP / CodeIgniter`
+- websocket server = `Soketi`
+- frontend client = `pusher-js`
 
-Why I think this is the best fit:
+## Exact Config We Can Start With
 
-- we do not need to change backend stack
-- we do not need to move chat logic out of PHP
-- we get private channels and presence channels without inventing our own websocket protocol from scratch
+These are the starter values I think we should use first.
 
-## What I Want To Handle In Frontend
+### Backend Soketi app values
 
-### 1. I will keep the current HTTP message flow
+```text
+APP ID     = alumni-app
+APP KEY    = alumni-key
+APP SECRET = alumni-secret-change-me
+```
 
-I want the frontend to continue using HTTP for:
+Important:
 
-- loading inbox
-- opening a thread
-- sending messages
-- uploading attachments
-- deleting messages
-- marking threads as read
+- `APP SECRET` stays backend-only
+- frontend should only know `APP KEY`
 
-That part is already working and I do not want to destabilize it.
+### Backend PHP config
 
-### 2. I will add one websocket client after login
+```php
+$config['soketi_app_id']     = 'alumni-app';
+$config['soketi_app_key']    = 'alumni-key';
+$config['soketi_app_secret'] = 'alumni-secret-change-me';
+$config['soketi_host']       = '127.0.0.1';
+$config['soketi_port']       = 6001;
+$config['soketi_scheme']     = 'http';
+```
 
-On the frontend, I will:
+### Example `soketi.json`
 
-- open one websocket connection after the user logs in
-- reconnect automatically if it drops
-- disconnect on logout
+```json
+{
+  "debug": true,
+  "host": "0.0.0.0",
+  "port": 6001,
+  "appManager": {
+    "driver": "array",
+    "array": {
+      "apps": [
+        {
+          "id": "alumni-app",
+          "key": "alumni-key",
+          "secret": "alumni-secret-change-me",
+          "enableUserAuthentication": true,
+          "webhooks": []
+        }
+      ]
+    }
+  }
+}
+```
 
-This should be an app-level connection, not something that only exists if the user opens `/messages`.
+### Frontend env values
 
-### 3. I do not want global subscriptions everywhere
+These are the values I would set on my side:
 
-I only want us to subscribe where it makes sense.
+```env
+VITE_SOKETI_APP_KEY=alumni-key
+VITE_SOKETI_HOST=127.0.0.1
+VITE_SOKETI_PORT=6001
+VITE_SOKETI_SCHEME=http
+VITE_SOKETI_AUTH_ENDPOINT=/chat_api/realtime_auth
+```
 
-What I want:
+### Production note
 
-- one personal channel for the logged-in user
-- one presence/thread channel only for the currently open thread
+For production, the public frontend host should usually become something like:
+
+```text
+ws.alumniportal.nubiaville.com
+```
 
 That means:
 
-- not every thread at once
-- not every alumna at once
-- not one giant global presence channel
+- Soketi can still run internally on `127.0.0.1:6001`
+- frontend should connect to the public websocket hostname
+- reverse proxy / SSL should sit in front of Soketi
 
-### 4. I will handle UI presence states in the frontend
+## Very Clear Split
 
-On the frontend side, I want to interpret presence like this:
+### What I will do in frontend
 
-- `online` = socket connected and tab is active
-- `away` = socket connected but tab is hidden or user is idle
-- `offline` = socket disconnected or user no longer present
+- connect to Soketi after login
+- disconnect on logout
+- subscribe only to the channels I need
+- update the UI when events come in
+- show online / away / offline
+- show typing
+- keep HTTP fallback in place
 
-I can handle:
+### What the backend guy needs to do
 
-- `document.visibilitychange`
-- idle timing
-- updating dots / labels in the UI
+- install and run Soketi
+- add Soketi config to backend env/config
+- create realtime auth endpoint in CodeIgniter
+- validate JWT in that auth endpoint
+- authorize which channels a user can join
+- publish realtime events after chat actions
+- publish presence / typing updates
 
-### 5. I will handle typing UI in the frontend
+## Backend Steps
 
-Frontend should:
+### Step 1. Install and run Soketi
 
-- send typing start / stop events from the active composer
-- show typing only in the active thread
-- clear typing on send, blur, or inactivity
+Backend side should install Soketi:
 
-Typing should stay ephemeral and should not be stored in the database.
+```bash
+npm install -g @soketi/soketi
+```
 
-### 6. I will keep HTTP fallback
+Then run it with config:
 
-Even after realtime is added, I still want:
+```bash
+soketi start --config=soketi.json
+```
 
-- HTTP initial load
-- HTTP fallback if socket fails
-- HTTP refresh after reconnect if needed
+Default port can stay:
 
-So realtime improves the app, but does not become the only thing the app depends on immediately.
+- `6001`
 
-## What I Need The Backend To Handle
+### Step 2. Add Soketi config in backend
 
-### 1. I need a realtime auth endpoint
+Backend needs config like this:
 
-I need the backend to expose an endpoint for websocket auth, something like:
+```php
+$config['soketi_app_id']     = 'alumni-app';
+$config['soketi_app_key']    = 'alumni-key';
+$config['soketi_app_secret'] = 'alumni-secret-change-me';
+$config['soketi_host']       = '127.0.0.1';
+$config['soketi_port']       = 6001;
+$config['soketi_scheme']     = 'http'; // use https in production
+```
 
-- `POST /chat_api/realtime/auth`
+Important:
+
+- backend keeps `soketi_app_secret`
+- frontend must never have the secret
+
+### Step 3. Create realtime auth endpoint
+
+Backend needs an endpoint like:
+
+- `POST /chat_api/realtime_auth`
 
 This endpoint should:
 
-- validate the current JWT
-- identify the current user
-- authorize which channels the user is allowed to join
-- return the correct auth response for the websocket server
+1. read the JWT
+2. validate the JWT
+3. identify the current user
+4. check if the user is allowed to join the requested channel
+5. return the signed Pusher-compatible auth response
 
-### 2. I need channel authorization to be strict
+### Step 4. Authorize channels correctly
 
-The backend should make sure:
+Backend should enforce:
 
-- a user can only subscribe to her own personal channel
-- a user can only subscribe to a thread presence channel if she is a participant in that thread
+- user can join only her own personal channel
+- user can join a thread channel only if she belongs to that thread
 
-That is important so presence and typing are not exposed to the wrong people.
+That means:
 
-### 3. I need the backend to publish events after successful actions
+- allow `private-user.{userId}` only for that exact user
+- allow `presence-thread.{threadId}` only if the user is a participant of that thread
 
-After the normal HTTP actions succeed, I need the backend to publish realtime events.
+### Step 5. Publish events after successful backend actions
+
+After normal chat APIs succeed, backend should publish realtime events.
 
 At minimum:
 
-- new message created
-- message deleted
-- thread read
-- presence changed
-- typing started
-- typing stopped
+- `message.created`
+- `message.deleted`
+- `thread.read`
+- `presence.changed`
+- `typing.started`
+- `typing.stopped`
 
-### 4. I need the backend to be the source of truth for live presence
+### Step 6. Backend should own live presence truth
 
-I do not want the frontend guessing who is online by itself.
+Backend / realtime layer should decide:
 
-The backend / realtime layer should decide:
-
-- who is currently connected
+- who is online
 - who is away
-- who has gone offline
+- who is offline
 
-If we want, `last_seen_at` can still exist in the database as a fallback, but live presence should come from the actual realtime connection.
+Frontend should only render what backend tells it.
 
-### 5. I need scoped broadcasting
+## Frontend Steps
 
-I do not want the backend broadcasting everything to everyone.
+### Step 1. Add frontend env values
 
-What I want:
+Once backend gives me the Soketi public values, I will add:
 
-- personal events go to the user’s personal channel
-- thread typing / active presence goes to that thread’s presence channel
+```env
+VITE_SOKETI_APP_KEY=alumni-key
+VITE_SOKETI_HOST=127.0.0.1
+VITE_SOKETI_PORT=6001
+VITE_SOKETI_SCHEME=http
+VITE_SOKETI_AUTH_ENDPOINT=/chat_api/realtime_auth
+```
 
-That keeps the app light and avoids unnecessary noise.
+Important:
 
-## The Channel Structure I Want
+- I only need the public values
+- I do not need `soketi_app_secret`
 
-### 1. Personal user channel
+### Step 2. Connect after login
 
-Channel:
+On frontend, I will:
 
-- `private-user.{userId}`
+1. create one websocket connection after login
+2. reconnect if it drops
+3. disconnect on logout
+
+This should be app-level, not messages-page-only.
+
+### Step 3. Subscribe only where needed
+
+I do not want global subscriptions everywhere.
+
+I only want:
+
+- `private-user.{userId}` for the logged-in user
+- `presence-thread.{threadId}` for the thread currently open on screen
+
+That means:
+
+- not every thread
+- not every alumna
+- not one global presence channel
+
+### Step 4. Handle new message events
+
+When the frontend receives:
+
+- `message.created`
+- `message.deleted`
+- `thread.read`
+
+I will:
+
+- refresh or patch inbox state
+- refresh or patch active thread state
+- show lightweight message notifications if needed
+
+### Step 5. Handle presence
+
+Frontend will render:
+
+- `online`
+- `away`
+- `offline`
+
+This should appear in:
+
+- direct thread header
+- inbox where useful
+
+### Step 6. Handle typing
+
+Frontend will:
+
+- send typing start / stop only in the active thread
+- show typing only in the active thread
+- clear typing on send, blur, or inactivity
+
+Typing should stay ephemeral.
+
+It should not be stored in SQL.
+
+## Channel Names
+
+### Personal user channel
+
+```text
+private-user.{userId}
+```
 
 Use this for:
 
-- new message notifications
-- inbox refresh hints
-- delete updates
-- read updates
+- new message notification
+- inbox refresh hint
+- delete update
+- read update
 
-This should exist for every logged-in user.
+### Active thread channel
 
-### 2. Active thread presence channel
-
-Channel:
-
-- `presence-thread.{threadId}`
+```text
+presence-thread.{threadId}
+```
 
 Use this for:
 
-- active presence in the open chat
-- typing indicator
-- direct-chat online / away / offline status
+- thread presence
+- online / away / offline in active chat
+- typing
 
-I only want this subscribed when the user is actively viewing that thread.
+## Event Shapes
 
-## The Event Shape I Want
+These are the simple event shapes I want.
 
-I want to keep this small and practical.
-
-### Server to frontend
-
-`message.created`
+### `message.created`
 
 ```json
 {
@@ -218,12 +343,7 @@ I want to keep this small and practical.
 }
 ```
 
-Frontend action:
-
-- refresh or patch inbox
-- refresh or patch active thread
-
-`message.deleted`
+### `message.deleted`
 
 ```json
 {
@@ -233,11 +353,7 @@ Frontend action:
 }
 ```
 
-Frontend action:
-
-- update or refetch active thread
-
-`thread.read`
+### `thread.read`
 
 ```json
 {
@@ -248,11 +364,7 @@ Frontend action:
 }
 ```
 
-Frontend action:
-
-- update read state in direct chat
-
-`presence.changed`
+### `presence.changed`
 
 ```json
 {
@@ -262,11 +374,7 @@ Frontend action:
 }
 ```
 
-Frontend action:
-
-- update presence dot and label
-
-`typing.started`
+### `typing.started`
 
 ```json
 {
@@ -276,7 +384,7 @@ Frontend action:
 }
 ```
 
-`typing.stopped`
+### `typing.stopped`
 
 ```json
 {
@@ -286,125 +394,94 @@ Frontend action:
 }
 ```
 
-### Frontend to backend
+## Order We Should Follow
 
-The frontend should send:
-
-- presence state updates
-- typing started
-- typing stopped
-
-I do not think typing needs a database table.
-
-## The Phases I Think We Should Follow
-
-### Phase 1: Authenticated websocket connection
+### Phase 1. Get the connection working
 
 Backend:
 
-- deploy Soketi
+- install Soketi
+- add backend Soketi config
 - create realtime auth endpoint
-- allow personal user channel auth
 
 Frontend:
 
-- connect socket after login
+- add env values
+- connect after login
 - subscribe to `private-user.{userId}`
 
-Goal:
+Done means:
 
-- app can receive personal realtime events
+- socket connects successfully
+- auth works
+- user can join her own personal channel
 
-### Phase 2: New messages feel live
+### Phase 2. Make message updates live
 
 Backend:
 
-- publish events after successful send / delete / read operations
+- publish `message.created`
+- publish `message.deleted`
+- publish `thread.read`
 
 Frontend:
 
-- refresh inbox and active thread when those events arrive
+- update inbox when events arrive
+- update open thread when events arrive
 
-Goal:
+Done means:
 
-- no need to wait for polling to see message activity
+- inbox changes immediately
+- open thread updates immediately
 
-### Phase 3: Online / away / offline presence
+### Phase 3. Add presence
 
 Backend:
 
 - support `presence-thread.{threadId}`
-- authorize only thread participants
-- publish presence updates
+- publish `presence.changed`
 
 Frontend:
 
 - subscribe only for active thread
-- show online / away / offline in direct chat header and relevant places in inbox
+- render online / away / offline
 
-Goal:
+Done means:
 
-- direct chats show real live presence
+- direct chat header shows live presence
 
-### Phase 4: Typing indicator
+### Phase 4. Add typing
 
 Backend:
 
-- accept typing start / stop and rebroadcast it to the right thread channel
+- accept typing start / stop
+- rebroadcast to correct thread channel
 
 Frontend:
 
 - send typing events from active composer
-- show typing only in the active thread
+- render typing in active thread only
 
-Goal:
+Done means:
 
-- typing feels live and lightweight
+- typing works without polling
 
-### Phase 5: Delivered receipts later
+## What We Should Not Do
 
-Delivered is still a separate thing.
+- do not subscribe to every thread at once
+- do not create one giant global presence channel
+- do not move all message sending to sockets first
+- do not store typing in SQL
+- do not expose Soketi secret to frontend
 
-I will speak to the backend dev about that separately, because I do not want us to block presence and typing on delivered receipts.
+## First Milestone
 
-## What I Do Not Want Us To Do
+The first milestone I want is:
 
-- I do not want every thread subscribed at once
-- I do not want one global presence channel for the whole platform
-- I do not want websocket-only message sending first
-- I do not want typing stored in SQL
-- I do not want to remove HTTP fallback immediately
+1. Soketi is running
+2. realtime auth endpoint works
+3. frontend connects after login
+4. `private-user.{userId}` works
+5. inbox updates immediately when a new message comes in
 
-## Straight To The Point Split
-
-### What I will do
-
-- keep the existing HTTP chat flow
-- add the websocket client in frontend
-- manage connection lifecycle after login
-- subscribe only where needed
-- handle tab visibility / idle state
-- render online / away / offline
-- render typing indicators
-- refresh or patch frontend state when realtime events arrive
-
-### What I need the backend guy to do
-
-- deploy websocket server
-- expose realtime auth endpoint
-- validate JWT for realtime auth
-- authorize private and presence channels correctly
-- publish realtime events after backend chat actions
-- maintain live presence state
-- rebroadcast typing events only to the correct thread
-
-## First Milestone I Want
-
-The first good milestone is:
-
-- websocket connection works after login
-- personal user channel works
-- inbox updates immediately when a new message comes in
-- direct thread header can show real online / away / offline presence
-
-Once that is stable, we can add typing cleanly.
+Once that works, presence and typing become much easier to add.

@@ -171,6 +171,14 @@ function createDraftComposerAttachmentId() {
   return `draft-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
 }
 
+function createClientGeneratedMessageId() {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return `client-${crypto.randomUUID()}`;
+  }
+
+  return `client-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
 function buildDraftComposerAttachment(file: File, viewerMemberId: string): DraftComposerAttachment {
   const uploadRequest = buildFileAttachmentUploadRequest(file, viewerMemberId);
   const previewUrl = file.type.startsWith('image/') ? URL.createObjectURL(file) : undefined;
@@ -218,6 +226,7 @@ function buildOptimisticMessage(params: {
 }): MessageItem {
   return {
     id: params.clientGeneratedId,
+    clientGeneratedId: params.clientGeneratedId,
     threadId: params.threadId,
     senderMemberId: params.viewerMemberId,
     senderDisplayName: params.currentUserName ?? 'You',
@@ -229,6 +238,52 @@ function buildOptimisticMessage(params: {
     isOwn: true,
     replyTo: params.replyTo ?? undefined,
   };
+}
+
+function buildOptimisticAttachmentsFromDraftAttachments(
+  draftAttachments: DraftComposerAttachment[],
+): MessageAttachment[] {
+  return draftAttachments.map((draftAttachment) => {
+    if (draftAttachment.uploadedAttachment) {
+      return draftAttachment.uploadedAttachment;
+    }
+
+    return {
+      id: draftAttachment.id,
+      kind: draftAttachment.kind,
+      fileName: draftAttachment.fileName,
+      mimeType: draftAttachment.mimeType,
+      sizeInBytes: draftAttachment.sizeInBytes,
+      sizeLabel: draftAttachment.sizeLabel,
+      durationSeconds: draftAttachment.durationSeconds,
+      uploadState: 'processing',
+      url: draftAttachment.previewUrl,
+    };
+  });
+}
+
+function mergeThreadMessagesWithOptimistic(
+  persistedMessages: MessageItem[],
+  optimisticMessages: MessageItem[],
+) {
+  if (optimisticMessages.length === 0) {
+    return persistedMessages;
+  }
+
+  const persistedIds = new Set(persistedMessages.map((message) => message.id));
+  const persistedClientGeneratedIds = new Set(
+    persistedMessages
+      .map((message) => message.clientGeneratedId)
+      .filter((value): value is string => typeof value === 'string' && value.length > 0),
+  );
+
+  const remainingOptimisticMessages = optimisticMessages.filter(
+    (message) =>
+      !persistedIds.has(message.id) &&
+      !persistedClientGeneratedIds.has(message.clientGeneratedId ?? message.id),
+  );
+
+  return [...persistedMessages, ...remainingOptimisticMessages];
 }
 
 function buildCopyTextFromMessage(message: MessageItem) {
@@ -939,6 +994,7 @@ export function MessagesPage() {
   const stopVoiceRecordingAfterStartRef = useRef(false);
   const hasShownRecordingFallbackToastRef = useRef(false);
   const voiceRecordingModeRef = useRef<'live' | 'simulated' | null>(null);
+  const sendInFlightRef = useRef(false);
   const deferredQuery = useDeferredValue(query);
   const requestedThreadId = searchParams.get('threadId');
   const requestedRecipientId = searchParams.get('recipient');
@@ -991,7 +1047,10 @@ export function MessagesPage() {
     activeThread && activeOptimisticMessages.length > 0
       ? {
           ...activeThread,
-          messages: [...activeThread.messages, ...activeOptimisticMessages],
+          messages: mergeThreadMessagesWithOptimistic(
+            activeThread.messages,
+            activeOptimisticMessages,
+          ),
         }
       : activeThread;
   const threadShell = activeThreadWithOptimisticMessages ?? resolvedThreadSummary;
@@ -1619,7 +1678,7 @@ export function MessagesPage() {
   }
 
   async function handleSendMessage() {
-    if (!viewerMemberId || !activeThread) return;
+    if (sendInFlightRef.current || !viewerMemberId || !activeThread) return;
 
     const currentThreadId = activeThread.id;
     const originalDraftMessage = draftMessage;
@@ -1628,51 +1687,28 @@ export function MessagesPage() {
     const body = originalDraftMessage.trim();
     if (!body && originalDraftAttachments.length === 0) return;
 
+    sendInFlightRef.current = true;
+
     const uploadedByDraftId = new Map<string, MessageAttachment>();
-    const preservePreviewUrls = new Set<string>();
-    const preserveUploadedAttachmentIds = new Set<string>();
-    const resolvedAttachments: MessageAttachment[] = [];
-
-    for (const draftAttachment of originalDraftAttachments) {
-      const uploadedAttachment =
-        draftAttachment.uploadedAttachment ??
-        (await uploadAttachment.mutateAsync({
-          ...draftAttachment.uploadRequest,
-          threadId: currentThreadId,
-        }));
-
-      uploadedByDraftId.set(draftAttachment.id, uploadedAttachment);
-      resolvedAttachments.push(uploadedAttachment);
-
-      if (draftAttachment.kind === 'image' && draftAttachment.previewUrl) {
-        registerMessageAttachmentPreview(uploadedAttachment.id, draftAttachment.previewUrl);
-        preservePreviewUrls.add(draftAttachment.previewUrl);
-        preserveUploadedAttachmentIds.add(uploadedAttachment.id);
-      }
-    }
-
-    if (uploadedByDraftId.size > 0) {
-      setDraftAttachments((previous) =>
-        previous.map((attachment) => ({
-          ...attachment,
-          uploadedAttachment: uploadedByDraftId.get(attachment.id) ?? attachment.uploadedAttachment,
-        })),
-      );
-    }
-
-    const request = buildSendMessageRequest({
-      viewerMemberId,
-      threadId: currentThreadId,
-      body,
-      attachments: resolvedAttachments,
-      replyToMessageId: originalReplyTarget?.messageId,
-    });
+    const preservePreviewUrls = new Set(
+      originalDraftAttachments
+        .map((attachment) => attachment.previewUrl)
+        .filter((value): value is string => typeof value === 'string' && value.length > 0),
+    );
+    const preserveUploadedAttachmentIds = new Set(
+      originalDraftAttachments
+        .map((attachment) => attachment.uploadedAttachment?.id)
+        .filter((value): value is string => typeof value === 'string' && value.length > 0),
+    );
+    const clientGeneratedId = createClientGeneratedMessageId();
+    const optimisticAttachments =
+      buildOptimisticAttachmentsFromDraftAttachments(originalDraftAttachments);
     const optimisticMessage = buildOptimisticMessage({
       viewerMemberId,
       threadId: currentThreadId,
       body,
-      attachments: resolvedAttachments,
-      clientGeneratedId: request.clientGeneratedId,
+      attachments: optimisticAttachments,
+      clientGeneratedId,
       currentUserName: currentUser?.fullName,
       currentUserAvatar: currentUser?.photo,
       replyTo: originalReplyTarget,
@@ -1685,6 +1721,34 @@ export function MessagesPage() {
     addOptimisticMessage(currentThreadId, optimisticMessage);
 
     try {
+      const resolvedAttachments: MessageAttachment[] = [];
+
+      for (const draftAttachment of originalDraftAttachments) {
+        const uploadedAttachment =
+          draftAttachment.uploadedAttachment ??
+          (await uploadAttachment.mutateAsync({
+            ...draftAttachment.uploadRequest,
+            threadId: currentThreadId,
+          }));
+
+        uploadedByDraftId.set(draftAttachment.id, uploadedAttachment);
+        resolvedAttachments.push(uploadedAttachment);
+
+        if (draftAttachment.previewUrl) {
+          registerMessageAttachmentPreview(uploadedAttachment.id, draftAttachment.previewUrl);
+          preservePreviewUrls.add(draftAttachment.previewUrl);
+          preserveUploadedAttachmentIds.add(uploadedAttachment.id);
+        }
+      }
+
+      const request = buildSendMessageRequest({
+        viewerMemberId,
+        threadId: currentThreadId,
+        body,
+        attachments: resolvedAttachments,
+        replyToMessageId: originalReplyTarget?.messageId,
+        clientGeneratedId,
+      });
       const response = await sendMessage.mutateAsync(request);
 
       removeOptimisticMessage(currentThreadId, optimisticMessage.id);
@@ -1711,7 +1775,8 @@ export function MessagesPage() {
           uploadedAttachment: uploadedByDraftId.get(attachment.id) ?? attachment.uploadedAttachment,
         })),
       );
-      return;
+    } finally {
+      sendInFlightRef.current = false;
     }
   }
 
@@ -1751,6 +1816,13 @@ export function MessagesPage() {
     uploadAttachment.isPending ||
     sendMessage.isPending ||
     voiceRecordingState === 'finishing';
+  const voiceRecordTooltip = !activeThread
+    ? 'Select a conversation first.'
+    : !activeThread.audioEnabled
+      ? 'Voice notes are not available in this conversation.'
+      : voiceRecordingBusy
+        ? 'Release to finish recording.'
+        : 'Hold to record a voice note.';
   const canSend =
     !!activeThread &&
     !sendMessage.isPending &&
@@ -2287,46 +2359,53 @@ export function MessagesPage() {
                             File
                           </button>
 
-                          <button
-                            type="button"
-                            ref={voiceRecordButtonRef}
-                            onPointerDown={handleVoiceRecordPointerDown}
-                            onPointerUp={handleVoiceRecordPointerUp}
-                            onPointerCancel={handleVoiceRecordPointerUp}
-                            onKeyDown={handleVoiceRecordKeyDown}
-                            onKeyUp={handleVoiceRecordKeyUp}
-                            disabled={audioDisabled}
-                            className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${
-                              voiceRecordingBusy
-                                ? 'border-rose-200 bg-rose-50 text-rose-700'
-                                : 'border-accent-200 bg-white text-accent-700 hover:border-primary-200 hover:text-primary-600'
-                            }`}
-                            aria-label="Hold to record a voice note and release to send"
-                          >
-                            <Icon
-                              icon={
-                                voiceRecordingState === 'starting' ||
-                                voiceRecordingState === 'finishing'
-                                  ? 'mdi:loading'
-                                  : voiceRecordingActive
-                                    ? 'mdi:microphone'
-                                    : 'mdi:microphone-outline'
-                              }
-                              className={`h-4 w-4 ${
-                                voiceRecordingState === 'starting' ||
-                                voiceRecordingState === 'finishing'
-                                  ? 'animate-spin'
-                                  : ''
+                          <div className="group relative">
+                            <button
+                              type="button"
+                              ref={voiceRecordButtonRef}
+                              onPointerDown={handleVoiceRecordPointerDown}
+                              onPointerUp={handleVoiceRecordPointerUp}
+                              onPointerCancel={handleVoiceRecordPointerUp}
+                              onKeyDown={handleVoiceRecordKeyDown}
+                              onKeyUp={handleVoiceRecordKeyUp}
+                              disabled={audioDisabled}
+                              title={voiceRecordTooltip}
+                              className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${
+                                voiceRecordingBusy
+                                  ? 'border-rose-200 bg-rose-50 text-rose-700'
+                                  : 'border-accent-200 bg-white text-accent-700 hover:border-primary-200 hover:text-primary-600'
                               }`}
-                            />
-                            {voiceRecordingState === 'starting'
-                              ? 'Starting...'
-                              : voiceRecordingState === 'finishing'
-                                ? 'Preparing...'
-                                : voiceRecordingActive
-                                  ? 'Release to preview'
-                                  : 'Hold to talk'}
-                          </button>
+                              aria-label="Hold to record a voice note and release to send"
+                            >
+                              <Icon
+                                icon={
+                                  voiceRecordingState === 'starting' ||
+                                  voiceRecordingState === 'finishing'
+                                    ? 'mdi:loading'
+                                    : voiceRecordingActive
+                                      ? 'mdi:microphone'
+                                      : 'mdi:microphone-outline'
+                                }
+                                className={`h-4 w-4 ${
+                                  voiceRecordingState === 'starting' ||
+                                  voiceRecordingState === 'finishing'
+                                    ? 'animate-spin'
+                                    : ''
+                                }`}
+                              />
+                              {voiceRecordingState === 'starting'
+                                ? 'Starting...'
+                                : voiceRecordingState === 'finishing'
+                                  ? 'Preparing...'
+                                  : voiceRecordingActive
+                                    ? 'Release to preview'
+                                    : 'Hold to talk'}
+                            </button>
+
+                            <span className="pointer-events-none absolute -top-10 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded-full bg-accent-900 px-3 py-1.5 text-xs font-medium text-white shadow-sm group-hover:inline-flex">
+                              {voiceRecordTooltip}
+                            </span>
+                          </div>
                         </div>
 
                         <button

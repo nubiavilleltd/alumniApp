@@ -86,9 +86,6 @@ export function useSendMessage() {
     },
     onSuccess: (_, request) => {
       queryClient.invalidateQueries({ queryKey: messageKeys.inbox(viewerMemberId) });
-      queryClient.invalidateQueries({
-        queryKey: messageKeys.thread(viewerMemberId, request.threadId),
-      });
     },
     onError: (error: any) => {
       toast.fromError(error);

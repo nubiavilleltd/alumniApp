@@ -281,6 +281,7 @@ export function buildSendMessageRequest(params: {
   body?: string;
   attachments?: MessageAttachment[];
   replyToMessageId?: string;
+  clientGeneratedId?: string;
 }): SendMessageRequest {
   return {
     viewerMemberId: params.viewerMemberId,
@@ -288,7 +289,8 @@ export function buildSendMessageRequest(params: {
     body: params.body?.trim() || undefined,
     attachments: params.attachments ?? [],
     replyToMessageId: params.replyToMessageId,
-    clientGeneratedId: `client-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    clientGeneratedId:
+      params.clientGeneratedId ?? `client-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
   };
 }
 

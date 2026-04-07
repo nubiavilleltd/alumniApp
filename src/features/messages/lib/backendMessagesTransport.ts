@@ -61,6 +61,7 @@ type DirectDraftThreadEntry = {
 
 const DRAFT_DIRECT_THREAD_PREFIX = 'draft-direct__';
 const directDraftThreads = new Map<string, DirectDraftThreadEntry>();
+const APPROXIMATE_ONLINE_WINDOW_MS = 60_000;
 
 function nowIso() {
   return new Date().toISOString();
@@ -157,6 +158,171 @@ function getEnvelopeData(responseData: unknown) {
   return (responseData as BackendEnvelope | null) ?? null;
 }
 
+function getLatestKnownParticipantActivityTimestamp(params: {
+  rawParticipant?: BackendThreadParticipant | null;
+  rawThread: BackendThreadLike;
+  rawMessages?: BackendMessageLike[];
+  participantMemberId: string;
+}) {
+  const candidateTimestamps: number[] = [];
+  const rawParticipant = params.rawParticipant ?? null;
+
+  const pushTimestamp = (value: unknown) => {
+    const normalized = normalizeBackendTimestamp(value);
+    const parsed = Date.parse(normalized);
+
+    if (!Number.isNaN(parsed)) {
+      candidateTimestamps.push(parsed);
+    }
+  };
+
+  pushTimestamp(rawParticipant?.last_seen_at);
+  pushTimestamp(rawParticipant?.last_read_at);
+  pushTimestamp(rawParticipant?.last_delivered_at);
+
+  const participantLastReadMessageId =
+    rawParticipant?.last_read_message_id !== undefined &&
+    rawParticipant?.last_read_message_id !== null
+      ? String(rawParticipant.last_read_message_id)
+      : '';
+  const participantLastDeliveredMessageId =
+    rawParticipant?.last_delivered_message_id !== undefined &&
+    rawParticipant?.last_delivered_message_id !== null
+      ? String(rawParticipant.last_delivered_message_id)
+      : '';
+
+  if (params.rawMessages && params.rawMessages.length > 0) {
+    const rawMessages = [...params.rawMessages].sort((left, right) => {
+      return (
+        Date.parse(normalizeBackendTimestamp(left.created_at)) -
+        Date.parse(normalizeBackendTimestamp(right.created_at))
+      );
+    });
+
+    const latestMessage = rawMessages[rawMessages.length - 1];
+    const latestMessageId = String(latestMessage?.id ?? latestMessage?.message_id ?? '');
+    const latestMessageSenderId = String(
+      latestMessage?.sender_member_id ??
+        latestMessage?.sender_id ??
+        latestMessage?.sender_user_id ??
+        latestMessage?.user_id ??
+        latestMessage?.member_id ??
+        '',
+    );
+
+    if (latestMessageSenderId === params.participantMemberId) {
+      pushTimestamp(latestMessage.created_at);
+    }
+
+    if (
+      latestMessageId &&
+      (participantLastReadMessageId === latestMessageId ||
+        participantLastDeliveredMessageId === latestMessageId)
+    ) {
+      pushTimestamp(latestMessage.created_at);
+    }
+
+    rawMessages.forEach((message) => {
+      const messageId = String(message.id ?? message.message_id ?? '');
+
+      if (
+        messageId &&
+        (messageId === participantLastReadMessageId ||
+          messageId === participantLastDeliveredMessageId)
+      ) {
+        pushTimestamp(message.created_at);
+      }
+    });
+  } else {
+    const latestMessagePayload = extractObject(
+      params.rawThread.last_message,
+      [],
+    ) as BackendMessageLike | null;
+    const latestMessageId = String(
+      params.rawThread.last_message_id ??
+        latestMessagePayload?.id ??
+        latestMessagePayload?.message_id ??
+        '',
+    );
+    const latestMessageSenderId = String(
+      latestMessagePayload?.sender_member_id ??
+        latestMessagePayload?.sender_id ??
+        latestMessagePayload?.sender_user_id ??
+        latestMessagePayload?.user_id ??
+        latestMessagePayload?.member_id ??
+        '',
+    );
+
+    if (latestMessageSenderId === params.participantMemberId) {
+      pushTimestamp(params.rawThread.last_message_at ?? latestMessagePayload?.created_at);
+    }
+
+    if (
+      latestMessageId &&
+      (participantLastReadMessageId === latestMessageId ||
+        participantLastDeliveredMessageId === latestMessageId)
+    ) {
+      pushTimestamp(params.rawThread.last_message_at ?? latestMessagePayload?.created_at);
+    }
+  }
+
+  if (candidateTimestamps.length === 0) {
+    return undefined;
+  }
+
+  return Math.max(...candidateTimestamps);
+}
+
+function applyApproximateDirectPresence(params: {
+  rawThread: BackendThreadLike;
+  rawParticipants: BackendThreadParticipant[];
+  participants: MessageParticipant[];
+  viewerMemberId: string;
+  rawMessages?: BackendMessageLike[];
+}) {
+  const otherParticipant =
+    params.participants.find((participant) => participant.memberId !== params.viewerMemberId) ??
+    null;
+
+  if (!otherParticipant) {
+    return params.participants;
+  }
+
+  const rawParticipant =
+    params.rawParticipants.find((participant) => {
+      const candidateId = String(
+        participant.user_id ??
+          participant.member_id ??
+          participant.id ??
+          participant.recipient_id ??
+          '',
+      );
+
+      return candidateId === otherParticipant.memberId;
+    }) ?? null;
+
+  const latestActivityTimestamp = getLatestKnownParticipantActivityTimestamp({
+    rawParticipant,
+    rawThread: params.rawThread,
+    rawMessages: params.rawMessages,
+    participantMemberId: otherParticipant.memberId,
+  });
+
+  const derivedPresence =
+    latestActivityTimestamp && Date.now() - latestActivityTimestamp <= APPROXIMATE_ONLINE_WINDOW_MS
+      ? 'online'
+      : 'offline';
+
+  return params.participants.map((participant) =>
+    participant.memberId === otherParticipant.memberId
+      ? {
+          ...participant,
+          presence: derivedPresence,
+        }
+      : participant,
+  );
+}
+
 function buildParticipantFromBackend(
   rawParticipant: BackendThreadParticipant,
   viewerMemberId: string,
@@ -186,8 +352,7 @@ function buildParticipantFromBackend(
   const graduationYear =
     safeParseInt(rawParticipant.graduation_year ?? rawParticipant.year) ??
     (memberId === viewerMemberId ? currentUser?.graduationYear : undefined) ??
-    recipientRegistryEntry?.graduationYear ??
-    new Date().getFullYear();
+    recipientRegistryEntry?.graduationYear;
   const slug =
     (memberId === viewerMemberId ? currentUser?.slug : undefined) ??
     recipientRegistryEntry?.slug ??
@@ -428,8 +593,11 @@ function buildThreadSummaryFromBackend(params: {
   viewerMemberId: string;
 }): MessageThreadSummary {
   const type = normalizeThreadType(params.rawThread.type);
-  const participants = extractList(params.rawThread.participants, []).map((participant) =>
-    buildParticipantFromBackend(participant as BackendThreadParticipant, params.viewerMemberId),
+  const rawParticipants = extractList(params.rawThread.participants, []).map(
+    (participant) => participant as BackendThreadParticipant,
+  );
+  const participants = rawParticipants.map((participant) =>
+    buildParticipantFromBackend(participant, params.viewerMemberId),
   );
   const currentUser = getCurrentSessionUser();
   const participantsWithViewer =
@@ -458,9 +626,19 @@ function buildThreadSummaryFromBackend(params: {
           ...participants,
         ]
       : participants;
+  const participantsWithPresence =
+    type === 'direct'
+      ? applyApproximateDirectPresence({
+          rawThread: params.rawThread,
+          rawParticipants,
+          participants: participantsWithViewer,
+          viewerMemberId: params.viewerMemberId,
+        })
+      : participantsWithViewer;
   const otherParticipant =
-    participantsWithViewer.find((participant) => participant.memberId !== params.viewerMemberId) ??
-    participantsWithViewer[0];
+    participantsWithPresence.find(
+      (participant) => participant.memberId !== params.viewerMemberId,
+    ) ?? participantsWithPresence[0];
   const title =
     type === 'direct'
       ? otherParticipant?.fullName ||
@@ -484,7 +662,7 @@ function buildThreadSummaryFromBackend(params: {
     subtitle:
       type === 'direct'
         ? (otherParticipant?.headline ?? 'FGGC alumna')
-        : `${participantsWithViewer.length} members`,
+        : `${participantsWithPresence.length} members`,
     topic:
       String(params.rawThread.description ?? params.rawThread.topic ?? '').trim() ||
       (type === 'direct' ? 'Direct conversation' : title),
@@ -514,8 +692,8 @@ function buildThreadSummaryFromBackend(params: {
           '',
       ).trim() || undefined,
     presence: type === 'direct' ? (otherParticipant?.presence ?? 'offline') : undefined,
-    memberCount: participantsWithViewer.length,
-    participants: participantsWithViewer,
+    memberCount: participantsWithPresence.length,
+    participants: participantsWithPresence,
   };
 }
 
@@ -609,6 +787,10 @@ function buildMessageItemsFromBackend(params: {
         id: String(
           rawMessage.id ?? rawMessage.message_id ?? rawMessage.created_at ?? Math.random(),
         ),
+        clientGeneratedId:
+          typeof rawMessage.client_generated_id === 'string'
+            ? rawMessage.client_generated_id
+            : undefined,
         threadId: params.threadId,
         senderMemberId,
         senderDisplayName: sender?.fullName ?? String(rawMessage.sender_name ?? 'Member'),
@@ -684,13 +866,39 @@ function buildThreadDetailFromBackend(params: {
   rawThreadPayload: BackendThreadLike;
   viewerMemberId: string;
 }) {
-  const summary = buildThreadSummaryFromBackend({
+  const summaryBase = buildThreadSummaryFromBackend({
     rawThread: params.rawThreadPayload,
     viewerMemberId: params.viewerMemberId,
   });
   const rawMessages = extractList(params.rawThreadPayload.messages, []).map(
     (message) => message as BackendMessageLike,
   );
+  const rawParticipants = extractList(params.rawThreadPayload.participants, []).map(
+    (participant) => participant as BackendThreadParticipant,
+  );
+  const participants =
+    summaryBase.type === 'direct'
+      ? applyApproximateDirectPresence({
+          rawThread: params.rawThreadPayload,
+          rawParticipants,
+          rawMessages,
+          participants: summaryBase.participants,
+          viewerMemberId: params.viewerMemberId,
+        })
+      : summaryBase.participants;
+  const otherParticipant =
+    participants.find((participant) => participant.memberId !== params.viewerMemberId) ?? null;
+  const summary =
+    summaryBase.type === 'direct'
+      ? {
+          ...summaryBase,
+          participants,
+          presence: otherParticipant?.presence ?? 'offline',
+        }
+      : {
+          ...summaryBase,
+          participants,
+        };
 
   return {
     ...summary,
@@ -700,7 +908,7 @@ function buildThreadDetailFromBackend(params: {
         ? params.rawThreadPayload.description
         : undefined,
     attachmentsEnabled: stringToBoolean(params.rawThreadPayload.attachment_enabled) ?? true,
-    audioEnabled: stringToBoolean(params.rawThreadPayload.audio_enabled) ?? true,
+    audioEnabled: true,
     messages: buildMessageItemsFromBackend({
       rawMessages,
       participants: summary.participants,

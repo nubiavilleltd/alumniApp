@@ -54,6 +54,7 @@ export interface MessageReplyPreview {
 
 export interface MessageItem {
   id: string;
+  clientGeneratedId?: string;
   threadId: string;
   senderMemberId: string;
   senderDisplayName: string;
