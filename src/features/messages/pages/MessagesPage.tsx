@@ -328,7 +328,7 @@ function presenceClasses(value?: MessageThreadSummary['presence']) {
 function presenceLabel(value?: MessageThreadSummary['presence']) {
   if (value === 'online') return 'Online now';
   if (value === 'away') return 'Away right now';
-  return 'Offline';
+  return '';
 }
 
 function formatThreadMeta(thread: MessageThreadSummary | MessageThreadDetail) {
@@ -336,7 +336,8 @@ function formatThreadMeta(thread: MessageThreadSummary | MessageThreadDetail) {
     return `${thread.memberCount} members • ${thread.topic}`;
   }
 
-  return `${presenceLabel(thread.presence)} • ${thread.topic}`;
+  const label = presenceLabel(thread.presence);
+  return label ? `${label} • ${thread.topic}` : thread.topic;
 }
 
 function getThreadPreview(thread: MessageThreadSummary) {
@@ -557,11 +558,13 @@ function ThreadAvatar({
           {thread.initials}
         </div>
       )}
-      <span
-        className={`absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-white ${presenceClasses(
-          thread.presence,
-        )}`}
-      />
+      {thread.presence ? (
+        <span
+          className={`absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-white ${presenceClasses(
+            thread.presence,
+          )}`}
+        />
+      ) : null}
     </div>
   );
 }

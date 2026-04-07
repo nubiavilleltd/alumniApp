@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import Button from '@/shared/components/ui/Button';
 import HeroBg from '/hero-bg.png';
@@ -14,6 +15,7 @@ const heroImages = [
 
 export default function HeroSection() {
   const [current, setCurrent] = useState(0);
+  const currentUser = useAuthStore((state) => state.user);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -56,11 +58,13 @@ export default function HeroSection() {
           The Connection is Real. Own Your Journey. Reconnect with your sisters, expand your
           network, and give back to the community that shaped us.
         </p>
-        <AppLink href={AUTH_ROUTES.REGISTER}>
-          <Button size="lg" className="px-14 py-3.5 rounded-full font-bold text-base shadow-lg">
-            Join us
-          </Button>
-        </AppLink>
+        {!currentUser ? (
+          <AppLink href={AUTH_ROUTES.REGISTER}>
+            <Button size="lg" className="px-14 py-3.5 rounded-full font-bold text-base shadow-lg">
+              Join us
+            </Button>
+          </AppLink>
+        ) : null}
       </div>
 
       {/* ── Dot indicators ────────────────────────────────────────────────── */}
