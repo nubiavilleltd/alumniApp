@@ -106,21 +106,53 @@ export const authApi = {
   },
 
   /** POST /verify_email — step 2: verify OTP */
+  // async verifyRegistrationEmail(
+  //   values: VerifyRegistrationRequest,
+  // ): Promise<CompleteRegistrationResponse> {
+  //   try {
+  //     const { data } = await apiClient.post(
+  //       API_ENDPOINTS.AUTH.VERIFY_EMAIL,
+  //       mapVerificationPayload(values.draft.email, values.code, values.userId),
+  //     );
+  //     return mapVerificationResponse(data);
+  //   } catch (error) {
+  //     throw handleApiError(
+  //       error,
+  //       'Verification failed. Please check the code and try again.',
+  //       'authApi.verifyRegistrationEmail',
+  //     );
+  //   }
+  // },
+
+  /** POST /verify_email — step 2: verify OTP */
   async verifyRegistrationEmail(
     values: VerifyRegistrationRequest,
   ): Promise<CompleteRegistrationResponse> {
     try {
-      const { data } = await apiClient.post(
+      const response = await apiClient.post(
         API_ENDPOINTS.AUTH.VERIFY_EMAIL,
         mapVerificationPayload(values.draft.email, values.code, values.userId),
       );
-      return mapVerificationResponse(data);
-    } catch (error) {
-      throw handleApiError(
-        error,
-        'Verification failed. Please check the code and try again.',
-        'authApi.verifyRegistrationEmail',
-      );
+
+      // Check if the response data indicates an error (even with 200 status)
+      if (response.data && (response.data.status === 400 || response.data.status === 'error')) {
+        console.log('Response indicates error despite 200 status');
+        throw new Error(response.data.message || 'Invalid verification code');
+      }
+
+      return mapVerificationResponse(response.data);
+    } catch (error: any) {
+      // Extract the error message from the response
+      let errorMessage = 'Verification failed. Please check the code and try again.';
+
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      // Throw a clear error that will be caught in the component
+      throw new Error(errorMessage);
     }
   },
 

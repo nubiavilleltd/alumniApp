@@ -154,7 +154,8 @@ export const adminDashboardApi = {
     return {
       stats: buildStatPlaceholders(pending.length),
       pendingApprovals: pending,
-      recentMembers: recent,
+      // recentMembers: recent,
+      recentMembers: Array.isArray(recent) ? recent.slice(0, 5) : [],
       upcomingEvents: [], // 🔴 TODO: real upcoming events endpoint
     };
   },

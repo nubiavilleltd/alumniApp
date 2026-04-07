@@ -139,6 +139,7 @@ export function RegisterForm() {
       password: '',
       confirmPassword: '',
     },
+    mode: 'onChange',
   });
 
   // emailVerificationSchema only has `code` — userId is NOT a form field
@@ -231,11 +232,38 @@ export function RegisterForm() {
   });
 
   // ── Step 2: Verify email ──────────────────────────────────────────────────
+  // const submitVerification = verificationForm.handleSubmit(async ({ code }) => {
+  //   // userId comes from flow state — never from the form
+  //   if (!flow.formValues || !flow.userId) {
+  //     // This should never happen in normal operation, but if it does (e.g.
+  //     // corrupted sessionStorage), send the user back to step 1 cleanly.
+  //     verificationForm.setError('root', {
+  //       message: 'Session data missing. Please go back and fill in your details again.',
+  //     });
+  //     return;
+  //   }
+
+  //   try {
+  //     const response = await authApi.verifyRegistrationEmail({
+  //       draft: flow.formValues,
+  //       code,
+  //       userId: flow.userId,
+  //     });
+
+  //     clearFlow();
+  //     updateFlow({
+  //       step: 'success',
+  //       completionResponse: response,
+  //     });
+  //   } catch (error: any) {
+  //     verificationForm.setError('root', {
+  //       message: error.message || 'Verification failed. Please check the code and try again.',
+  //     });
+  //   }
+  // });
+
   const submitVerification = verificationForm.handleSubmit(async ({ code }) => {
-    // userId comes from flow state — never from the form
     if (!flow.formValues || !flow.userId) {
-      // This should never happen in normal operation, but if it does (e.g.
-      // corrupted sessionStorage), send the user back to step 1 cleanly.
       verificationForm.setError('root', {
         message: 'Session data missing. Please go back and fill in your details again.',
       });
@@ -243,11 +271,18 @@ export function RegisterForm() {
     }
 
     try {
+      console.log('=== VERIFICATION ATTEMPT ===');
+      console.log('Code being verified:', code);
+      console.log('User ID:', flow.userId);
+
       const response = await authApi.verifyRegistrationEmail({
         draft: flow.formValues,
         code,
         userId: flow.userId,
       });
+
+      console.log('VERIFICATION RESPONSE (SUCCESS):', response);
+      console.log('This should NOT happen for invalid codes!');
 
       clearFlow();
       updateFlow({
@@ -255,6 +290,13 @@ export function RegisterForm() {
         completionResponse: response,
       });
     } catch (error: any) {
+      console.log('=== ERROR CAUGHT ===');
+      console.log('Error object:', error);
+      console.log('Error message:', error.message);
+      console.log('Error response:', error.response);
+      console.log('Error response data:', error.response?.data);
+      console.log('Error status:', error.response?.status);
+
       verificationForm.setError('root', {
         message: error.message || 'Verification failed. Please check the code and try again.',
       });
@@ -342,12 +384,14 @@ export function RegisterForm() {
             <FormInput
               label="Surname"
               id="surname"
+              required
               placeholder="e.g. Okonkwo"
               error={detailForm.formState.errors.surname?.message}
               {...detailForm.register('surname')}
             />
             <FormInput
               label="Other Names"
+              required
               id="otherNames"
               placeholder="e.g. Adaeze"
               error={detailForm.formState.errors.otherNames?.message}
@@ -358,6 +402,7 @@ export function RegisterForm() {
           <FormInput
             label="Name in School"
             id="nameInSchool"
+            required
             placeholder="First name + Surname as used in FGGC Owerri"
             hint="The name you used while in school — important for alumni identification."
             error={detailForm.formState.errors.nameInSchool?.message}
@@ -367,6 +412,7 @@ export function RegisterForm() {
           <FormInput
             label="Email Address"
             id="email"
+            required
             type="email"
             placeholder="you@example.com"
             error={detailForm.formState.errors.email?.message}
@@ -376,7 +422,7 @@ export function RegisterForm() {
           {/* WhatsApp — country code + number */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">
-              WhatsApp Phone Number
+              WhatsApp Phone Number <span className="text-red-500">*</span>
             </label>
             <div className="grid grid-cols-[10rem_1fr] gap-2">
               <SelectInput
@@ -401,6 +447,7 @@ export function RegisterForm() {
           <SelectInput
             label="Year of Graduation from FGGC Owerri"
             id="graduationYear"
+            required
             options={graduationYearOptions}
             placeholder="Select Graduation Year"
             error={detailForm.formState.errors.graduationYear?.message}
@@ -409,7 +456,9 @@ export function RegisterForm() {
 
           {/* Password */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              Password <span className="text-red-500">*</span>
+            </label>
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -438,7 +487,7 @@ export function RegisterForm() {
           {/* Confirm Password */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">
-              Confirm Password
+              Confirm Password <span className="text-red-500">*</span>
             </label>
             <div className="relative">
               <input
@@ -562,7 +611,7 @@ export function RegisterForm() {
               placeholder="Enter 6-digit code"
               hint=""
               error={verificationForm.formState.errors.code?.message}
-              className="text-center text-lg tracking-[0.4em]"
+              className="text-center text-lg tracking-[0.2em]"
               {...verificationForm.register('code')}
             />
 
@@ -646,9 +695,9 @@ export function RegisterForm() {
             ))}
           </ul>
           <div className="flex gap-3 pt-2">
-            <button type="button" onClick={resetFlow} className="btn btn-outline flex-1 text-sm">
+            {/* <button type="button" onClick={resetFlow} className="btn btn-outline flex-1 text-sm">
               Register another
-            </button>
+            </button> */}
             <AppLink
               href={AUTH_ROUTES.LOGIN}
               className="btn btn-primary flex-1 text-sm text-center"
