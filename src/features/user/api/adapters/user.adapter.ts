@@ -284,6 +284,7 @@ export function mapBackendResponseToFrontendUser(raw: unknown): Partial<AuthSess
 
     whatsappPhone: user.phone || undefined,
     alternativePhone: user.alternative_phone || undefined,
+    role: user.user_role === 'admin' ? 'admin' : 'member',
 
     // ✅ Photo: undefined preserves existing
     photo: hasRealPhoto ? String(avatarField) : undefined,

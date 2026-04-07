@@ -40,13 +40,13 @@ export const userManagementKeys = {
  * const { data: users, isLoading } = useAllUsers();
  * ```
  */
-export function useAllUsers() {
-  return useQuery({
-    queryKey: userManagementKeys.list(),
-    queryFn: () => userManagementApi.getAllUsers(),
-    staleTime: 1000 * 60 * 2, // 2 minutes
-  });
-}
+// export function useAllUsers() {
+//   return useQuery({
+//     queryKey: userManagementKeys.list(),
+//     queryFn: () => userManagementApi.getAllUsers(),
+//     staleTime: 1000 * 60 * 2, // 2 minutes
+//   });
+// }
 
 // ═══════════════════════════════════════════════════════════════════════════
 // MUTATIONS

@@ -34,11 +34,11 @@ export const userManagementApi = {
    * POST /api/get_users_by_action
    * { "action_type": "all_users" }
    */
-  async getAllUsers(): Promise<UserAccount[]> {
-    const payload = createGetAllUsersPayload();
-    const { data } = await apiClient.post(API_ENDPOINTS.ADMIN.MEMBER_LIST, payload);
-    return mapBackendUserList(data);
-  },
+  // async getAllUsers(): Promise<UserAccount[]> {
+  //   const payload = createGetAllUsersPayload();
+  //   const { data } = await apiClient.post(API_ENDPOINTS.ADMIN.MEMBER_LIST, payload);
+  //   return mapBackendUserList(data);
+  // },
 
   /**
    * Admin deactivates a user account

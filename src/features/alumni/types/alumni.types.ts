@@ -92,6 +92,7 @@ export interface Alumni {
   id: string;
   memberId: string;
   chapterId?: string;
+  role?: string;
 
   // ── Identity ──────────────────────────────────────────────────────────────
   slug: string;

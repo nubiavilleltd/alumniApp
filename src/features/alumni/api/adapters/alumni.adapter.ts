@@ -259,6 +259,7 @@ export function mapBackendAlumniToFrontend(raw: unknown): Alumni {
     isEmailVerified: stringToBoolean(d.email_verified) ?? false,
     isActive: stringToBoolean(d.active) ?? false,
     isVisible: profile.is_visible !== false,
+    role: d.user_role === 'admin' ? 'admin' : 'member',
 
     // ═══════════════════════════════════════════════════════════════════════
     // ✅ NEW: Privacy settings

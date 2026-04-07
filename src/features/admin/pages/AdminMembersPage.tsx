@@ -5,11 +5,8 @@
  *
  * Route: /admin/members
  *
- * Features:
- * - View all registered users
- * - Deactivate/Activate user accounts
- * - Filter by status (all, active, inactive)
- * - Search by name/email
+ * - Maps Alumni data to UserAccount format
+ * - Reuses existing hooks for activate/deactivate
  *
  * ============================================================================
  */
@@ -20,16 +17,14 @@ import { AppLink } from '@/shared/components/ui/AppLink';
 import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import {
-  useAllUsers,
   useAdminDeactivateUser,
   useAdminActivateUser,
 } from '@/features/admin/hooks/useUserManagement';
-import type {
-  UserAccount,
-  AccountStatus,
-} from '@/features/admin/api/adapters/user-management.adapter';
+import type { AccountStatus } from '@/features/admin/api/adapters/user-management.adapter';
 import { ROUTES } from '@/shared/constants/routes';
 import { ADMIN_ROUTES } from '../routes';
+import { useAlumni } from '@/features/alumni/hooks/useAlumni';
+import type { Alumni } from '@/features/alumni/types/alumni.types';
 
 const breadcrumbItems = [
   { label: 'Home', href: ROUTES.HOME },
@@ -38,10 +33,42 @@ const breadcrumbItems = [
 ];
 
 // ═══════════════════════════════════════════════════════════════════════════
+// TYPES
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Mapped user for display
+ * (converts Alumni to simpler format for this page)
+ */
+type DisplayUser = {
+  id: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  role: 'admin' | 'member';
+  accountStatus: AccountStatus;
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// HELPER: MAP ALUMNI TO DISPLAY USER
+// ═══════════════════════════════════════════════════════════════════════════
+
+function mapAlumniToDisplayUser(alumni: Alumni): DisplayUser {
+  return {
+    id: alumni.memberId,
+    fullName: alumni.name,
+    email: alumni.email,
+    phone: alumni.whatsappPhone,
+    role: alumni.role === 'admin' ? 'admin' : 'member',
+    accountStatus: alumni.isActive ? 'active' : 'inactive',
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
 // USER ROW COMPONENT
 // ═══════════════════════════════════════════════════════════════════════════
 
-function UserRow({ user }: { user: UserAccount }) {
+function UserRow({ user }: { user: DisplayUser }) {
   const [showConfirm, setShowConfirm] = useState(false);
   const [actionType, setActionType] = useState<'activate' | 'deactivate' | null>(null);
 
@@ -196,11 +223,16 @@ function UserRowSkeleton() {
 // ═══════════════════════════════════════════════════════════════════════════
 
 export function AdminMembersPage() {
-  //   const { data: users = [], isLoading } = useAllUsers();
-  const { data: users = [], isLoading } = useAllUsers();
+  // ✅ Use useAlumni() to fetch all users
+  const { data: alumniList = [], isLoading } = useAlumni();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | AccountStatus>('all');
+
+  // ✅ Map Alumni to DisplayUser format
+  const users = useMemo(() => {
+    return alumniList.map(mapAlumniToDisplayUser);
+  }, [alumniList]);
 
   // Filter and search users
   const filteredUsers = useMemo(() => {
