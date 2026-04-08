@@ -551,50 +551,43 @@ export function AlumniProfilePage() {
                 <SectionCard title="Social Links" icon="mdi:link-variant">
                   <div className="divide-y divide-gray-50">
                     {alum.linkedin && (
-                      <div className="flex items-center justify-between py-3">
-                        <div className="flex items-center gap-2 text-sm text-gray-400">
-                          <Icon icon="mdi:linkedin" className="w-4 h-4" />
-                          LinkedIn
-                        </div>
+                      <div className="flex items-center py-3">
                         <a
                           href={alum.linkedin}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-sm font-medium text-primary-500 hover:text-primary-600 hover:underline transition-colors"
+                          className="flex items-center gap-2 text-sm text-gray-400 hover:text-primary-500 transition-colors"
                         >
-                          View Profile
+                          <Icon icon="mdi:linkedin" className="w-4 h-4" />
+                          LinkedIn
                         </a>
                       </div>
                     )}
+
                     {alum.twitter && (
-                      <div className="flex items-center justify-between py-3">
-                        <div className="flex items-center gap-2 text-sm text-gray-400">
-                          <Icon icon="mdi:twitter" className="w-4 h-4" />
-                          Twitter / X
-                        </div>
+                      <div className="flex items-center py-3">
                         <a
                           href={alum.twitter}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-sm font-medium text-primary-500 hover:text-primary-600 hover:underline transition-colors"
+                          className="flex items-center gap-2 text-sm text-gray-400 hover:text-primary-500 transition-colors"
                         >
-                          View Profile
+                          <Icon icon="mdi:twitter" className="w-4 h-4" />
+                          Twitter / X
                         </a>
                       </div>
                     )}
+
                     {alum.instagram && (
-                      <div className="flex items-center justify-between py-3">
-                        <div className="flex items-center gap-2 text-sm text-gray-400">
-                          <Icon icon="mdi:instagram" className="w-4 h-4" />
-                          Instagram
-                        </div>
+                      <div className="flex items-center py-3">
                         <a
                           href={alum.instagram}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-sm font-medium text-primary-500 hover:text-primary-600 hover:underline transition-colors"
+                          className="flex items-center gap-2 text-sm text-gray-400 hover:text-primary-500 transition-colors"
                         >
-                          View Profile
+                          <Icon icon="mdi:instagram" className="w-4 h-4" />
+                          Instagram
                         </a>
                       </div>
                     )}

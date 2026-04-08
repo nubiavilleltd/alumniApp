@@ -1094,12 +1094,21 @@ export function RegisterForm() {
             />
           </div>
 
-          <FormInput
+          {/* <FormInput
             label="Name in School"
             id="nameInSchool"
             required
             placeholder="First name + Surname as used in FGGC Owerri"
             hint="The name you used while in school — important for alumni identification."
+            error={detailForm.formState.errors.nameInSchool?.message}
+            {...detailForm.register('nameInSchool')}
+          /> */}
+          <FormInput
+            label="Nickname"
+            id="nameInSchool"
+            required
+            placeholder=""
+            hint=""
             error={detailForm.formState.errors.nameInSchool?.message}
             {...detailForm.register('nameInSchool')}
           />
@@ -1368,7 +1377,8 @@ export function RegisterForm() {
               placeholder="Enter 6-digit code"
               hint=""
               error={verificationForm.formState.errors.code?.message}
-              className="text-center text-lg tracking-[0.2em]"
+              // className="text-center text-lg tracking-[0.2em]"
+              className="text-center text-lg"
               {...verificationForm.register('code')}
             />
 

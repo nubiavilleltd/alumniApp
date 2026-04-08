@@ -2205,7 +2205,7 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
                 { label: 'Yes, I am interested', value: 'yes' },
                 { label: 'No, not at this time', value: 'no' },
               ]}
-              placeholder="Are you a volunteer?"
+              placeholder="Would you like to volunteer for events/projects?"
             />
           </div>
         </div>
