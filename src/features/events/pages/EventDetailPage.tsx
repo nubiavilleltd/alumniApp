@@ -1001,7 +1001,9 @@ function RegistrationPanel({
                 <>
                   {attendeeCount}/{capacity} registered
                   {spotsLeft !== undefined && spotsLeft > 0 && spotsLeft <= 10 && (
-                    <span className="text-orange-500 ml-1 text-xs">({spotsLeft} spots left)</span>
+                    <span className="text-orange-500 ml-1 text-xs">
+                      ({spotsLeft} spot{`${spotsLeft == 0 || spotsLeft > 1 ? 's' : ''}`} left)
+                    </span>
                   )}
                 </>
               ) : (

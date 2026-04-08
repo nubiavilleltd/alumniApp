@@ -89,7 +89,97 @@ export function EventCard({
   };
 
   // ── Registration button logic ──────────────────────────────────────────────
+  //   const renderAction = () => {
+  //     if (isPast) {
+  //       return (
+  //         <AppLink
+  //           href={EVENT_ROUTES.DETAIL(event.id)}
+  //           className="inline-block border border-gray-300 text-gray-500 hover:border-primary-400 hover:text-primary-500 text-xs font-semibold px-5 py-1.5 rounded-md transition-colors"
+  //         >
+  //           View Details
+  //         </AppLink>
+  //       );
+  //     }
+
+  //     if (isCancelled) {
+  //       return (
+  //         <span className="inline-flex items-center gap-1 text-red-500 text-xs font-semibold">
+  //           <Icon icon="mdi:cancel" className="w-3.5 h-3.5" />
+  //           Cancelled
+  //         </span>
+  //       );
+  //     }
+
+  //     if (!isLoggedIn) {
+  //       return (
+  //         <AppLink
+  //           href={EVENT_ROUTES.DETAIL(event.id)}
+  //           className="inline-flex items-center gap-1 text-primary-500 hover:text-primary-600 text-xs font-semibold transition-colors"
+  //         >
+  //           View Details <Icon icon="mdi:arrow-right" className="w-3 h-3" />
+  //         </AppLink>
+  //       );
+  //     }
+
+  //     if (isRegistered) {
+  //       return (
+  //         <div className="flex items-center gap-2">
+  //           <button
+  //             type="button"
+  //             disabled
+  //             className="inline-flex items-center gap-1 border border-green-500 text-green-600 text-xs font-semibold px-4 py-1.5 rounded-md cursor-default"
+  //           >
+  //             <Icon icon="mdi:check-circle" className="w-3.5 h-3.5" />
+  //             Registered
+  //           </button>
+  //           <AppLink
+  //             href={EVENT_ROUTES.DETAIL(event.id)}
+  //             className="inline-flex items-center gap-1 text-gray-500 hover:text-primary-500 text-xs font-semibold transition-colors"
+  //           >
+  //             Details
+  //           </AppLink>
+  //         </div>
+  //       );
+  //     }
+
+  //     if (isFull) {
+  //       return (
+  //         <button
+  //           type="button"
+  //           disabled
+  //           className="inline-flex items-center gap-1 text-gray-400 text-xs font-semibold cursor-not-allowed"
+  //         >
+  //           Event Full
+  //         </button>
+  //       );
+  //     }
+
+  //     return (
+  //       <button
+  //         type="button"
+  //         onClick={onRegister}
+  //         className="inline-flex items-center gap-1 text-primary-500 hover:text-primary-600 text-xs font-semibold transition-colors"
+  //       >
+  //         Register <Icon icon="mdi:arrow-right" className="w-3 h-3" />
+  //       </button>
+  //     );
+  //   };
+
   const renderAction = () => {
+    // COMPACT MODE (Homepage) → always show Register → Details
+    if (compact) {
+      // Always show View Details on homepage compact cards
+      return (
+        <AppLink
+          href={EVENT_ROUTES.DETAIL(event.id)}
+          className="inline-flex items-center gap-1 text-primary-500 hover:text-primary-600 text-xs font-semibold transition-colors"
+        >
+          View Details <Icon icon="mdi:arrow-right" className="w-3 h-3" />
+        </AppLink>
+      );
+    }
+
+    // PAST EVENTS → View Details
     if (isPast) {
       return (
         <AppLink
@@ -101,15 +191,20 @@ export function EventCard({
       );
     }
 
+    // CANCELLED EVENTS → View Details
     if (isCancelled) {
       return (
-        <span className="inline-flex items-center gap-1 text-red-500 text-xs font-semibold">
+        <AppLink
+          href={EVENT_ROUTES.DETAIL(event.id)}
+          className="inline-flex items-center gap-1 text-red-500 hover:text-red-600 text-xs font-semibold transition-colors"
+        >
           <Icon icon="mdi:cancel" className="w-3.5 h-3.5" />
-          Cancelled
-        </span>
+          View Details
+        </AppLink>
       );
     }
 
+    // NOT LOGGED IN → View Details
     if (!isLoggedIn) {
       return (
         <AppLink
@@ -121,39 +216,21 @@ export function EventCard({
       );
     }
 
-    if (isRegistered) {
+    // REGISTERED OR FULL → View Details
+    if (isRegistered || isFull) {
       return (
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            disabled
-            className="inline-flex items-center gap-1 border border-green-500 text-green-600 text-xs font-semibold px-4 py-1.5 rounded-md cursor-default"
-          >
-            <Icon icon="mdi:check-circle" className="w-3.5 h-3.5" />
-            Registered
-          </button>
-          <AppLink
-            href={EVENT_ROUTES.DETAIL(event.id)}
-            className="inline-flex items-center gap-1 text-gray-500 hover:text-primary-500 text-xs font-semibold transition-colors"
-          >
-            Details
-          </AppLink>
-        </div>
-      );
-    }
-
-    if (isFull) {
-      return (
-        <button
-          type="button"
-          disabled
-          className="inline-flex items-center gap-1 text-gray-400 text-xs font-semibold cursor-not-allowed"
+        <AppLink
+          href={EVENT_ROUTES.DETAIL(event.id)}
+          className="inline-flex items-center gap-1 text-gray-500 hover:text-primary-500 text-xs font-semibold transition-colors"
         >
-          Event Full
-        </button>
+          {isRegistered && <Icon icon="mdi:check-circle" className="w-3.5 h-3.5" />}
+          {isFull && <span className="text-gray-400">Event Full</span>}
+          View Details
+        </AppLink>
       );
     }
 
+    // DEFAULT → available for registration
     return (
       <button
         type="button"
@@ -238,7 +315,9 @@ export function EventCard({
                   <>
                     <span className="font-semibold">{attendeeCount}</span>/{capacity} attending
                     {spotsLeft !== undefined && spotsLeft > 0 && spotsLeft <= 10 && (
-                      <span className="text-orange-500 ml-1">({spotsLeft} spots left)</span>
+                      <span className="text-orange-500 ml-1">
+                        ({spotsLeft} spot{`${spotsLeft == 0 || spotsLeft > 1 ? 's' : ''}`} left)
+                      </span>
                     )}
                   </>
                 ) : (
