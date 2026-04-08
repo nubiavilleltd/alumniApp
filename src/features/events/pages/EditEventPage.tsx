@@ -429,6 +429,7 @@ export default function EditEventPage() {
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [bannerPreview, setBannerPreview] = useState<string>('');
   const [bannerError, setBannerError] = useState<string>('');
+  const [isStatusManuallyChanged, setIsStatusManuallyChanged] = useState(false);
 
   const {
     register,
@@ -455,6 +456,7 @@ export default function EditEventPage() {
 
   const visibility = watch('visibility');
   const status = watch('status');
+  const eventDate = watch('event_date');
 
   // Populate form when event loads
   useEffect(() => {
@@ -472,8 +474,31 @@ export default function EditEventPage() {
       });
       // Pre-fill banner preview with current image if one exists
       if (event.image) setBannerPreview(event.image);
+      setIsStatusManuallyChanged(false);
     }
   }, [event, reset]);
+
+  useEffect(() => {
+    if (!eventDate || isStatusManuallyChanged) return;
+
+    const selectedDate = new Date(eventDate);
+    const today = new Date();
+
+    // Normalize today
+    today.setHours(0, 0, 0, 0);
+
+    let computedStatus: 'upcoming' | 'active' | 'completed';
+
+    if (selectedDate > today) {
+      computedStatus = 'upcoming';
+    } else if (selectedDate.getTime() === today.getTime()) {
+      computedStatus = 'active';
+    } else {
+      computedStatus = 'completed';
+    }
+
+    setValue('status', computedStatus);
+  }, [eventDate, isStatusManuallyChanged, setValue]);
 
   const handleImageChange = (files: File[], previews: string[]) => {
     setBannerError('');
@@ -693,7 +718,11 @@ export default function EditEventPage() {
                 required
                 options={statusOptions}
                 value={status}
-                onChange={(e) => setValue('status', e.target.value as any)}
+                // onChange={(e) => setValue('status', e.target.value as any)}
+                onChange={(e) => {
+                  setIsStatusManuallyChanged(true);
+                  setValue('status', e.target.value as any);
+                }}
                 error={errors.status?.message}
               />
               <FormInput
