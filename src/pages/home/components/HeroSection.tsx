@@ -2,16 +2,24 @@ import { useState, useEffect } from 'react';
 import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import Button from '@/shared/components/ui/Button';
-import HeroBg from '/hero-bg.png';
+// import HeroBg from '/hero-bg.png';
+import HeroBg1 from '../../../../public/alumni-hero-img1.jpg';
+// import HeroBg2 from '../../../../public/alumni-hero-img2.jpg'
+import HeroBg3 from '../../../../public/alumni-hero-img3.jpg';
+import HeroBg4 from '../../../../public/alumni-hero-img4.jpg';
+import HeroBg5 from '../../../../public/alumni-hero-img5.jpg';
+import HeroBg6 from '../../../../public/alumni-hero-img6.jpg';
+
 import { AUTH_ROUTES } from '@/features/authentication/routes';
 
-const heroImages = [
-  HeroBg,
-  'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1400&q=80', // group of women laughing together
-  'https://images.unsplash.com/photo-1607748862156-7c548e7e98f4?w=1400&q=80', // African women at a gathering
-  'https://images.unsplash.com/photo-1573497491765-dccce02b29df?w=1400&q=80', // professional women networking
-  'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=1400&q=80', // women in meeting, smiling
-];
+// const heroImages = [
+//   HeroBg,
+//   'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1400&q=80', // group of women laughing together
+//   'https://images.unsplash.com/photo-1607748862156-7c548e7e98f4?w=1400&q=80', // African women at a gathering
+//   'https://images.unsplash.com/photo-1573497491765-dccce02b29df?w=1400&q=80', // professional women networking
+//   'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=1400&q=80', // women in meeting, smiling
+// ];
+const heroImages = [HeroBg1, HeroBg3, HeroBg4, HeroBg5, HeroBg6];
 
 export default function HeroSection() {
   const [current, setCurrent] = useState(0);
