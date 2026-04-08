@@ -85,7 +85,7 @@ export function mapBusinessToCreatePayload(
   if (formData.images.length > 0) {
     const fd = new FormData();
     Object.entries(base).forEach(([k, v]) => fd.append(k, String(v ?? '')));
-    formData.images.forEach((img) => fd.append('images', img));
+    formData.images.forEach((img) => fd.append('images[]', img));
     return fd;
   }
 
