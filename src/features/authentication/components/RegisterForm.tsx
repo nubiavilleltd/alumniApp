@@ -718,7 +718,7 @@ import { useForm } from 'react-hook-form';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { FormInput } from '@/shared/components/ui/input/FormInput';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
-import { authApi, type Voucher } from '../services/auth.service';
+import { authApi } from '../services/auth.service';
 import {
   defaultPhoneCountry,
   formatPhoneNumberWithCountryCode,
@@ -733,6 +733,7 @@ import type {
   EmailVerificationFormValues,
   RegisterDetailsFormValues,
   StartRegistrationResponse,
+  Voucher,
 } from '../types/auth.types';
 import { PasswordStrengthMeter } from './PasswordStrengthMeter';
 import { AuthCard } from './AuthCard';
@@ -868,7 +869,7 @@ export function RegisterForm() {
   useEffect(() => {
     if (graduationYear) {
       const filtered = allVouchers.filter(
-        (voucher) => Number(voucher.graduation_year) === graduationYear,
+        (voucher) => Number(voucher.graduationYear) === graduationYear,
       );
       setFilteredVouchers(filtered);
 
@@ -935,7 +936,7 @@ export function RegisterForm() {
 
   // ── Voucher options ────────────────────────────────────────────────────────
   const voucherOptions = filteredVouchers.map((voucher) => ({
-    label: `${voucher.fullname} (${voucher.email})`,
+    label: `${voucher.fullName} (${voucher.email})`,
     value: String(voucher.id),
   }));
 

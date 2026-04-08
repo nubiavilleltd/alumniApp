@@ -186,3 +186,11 @@ export interface CompleteRegistrationResponse {
   message: string;
   draft: AuthUserSummary;
 }
+
+export interface Voucher {
+  id: string;
+  fullName: string;
+  email: string;
+  graduationYear: string;
+  chapterId: string;
+}

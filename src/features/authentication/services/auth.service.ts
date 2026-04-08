@@ -231,6 +231,7 @@ import type {
   ResetPasswordResponse,
   StartRegistrationResponse,
   VerifyRegistrationRequest,
+  Voucher,
 } from '../types/auth.types';
 import {
   mapRegistrationPayload,
@@ -257,6 +258,11 @@ import {
   mapChangePasswordError,
   mapChangePasswordPayload,
 } from '../../user/api/adapters/changepassword.adapter';
+import {
+  mapBackendVoucherList,
+  mapBackendVoucherToFrontend,
+} from '../api/adapters/voucher.adapter';
+import { extractList } from '@/lib/utils/adapters';
 
 function toUserSummary(values: RegisterDetailsFormValues): AuthUserSummary {
   return {
@@ -265,15 +271,6 @@ function toUserSummary(values: RegisterDetailsFormValues): AuthUserSummary {
     phoneNumber: formatPhoneNumberWithCountryCode(values.phoneCountry, values.whatsappPhone),
     graduationYear: Number(values.graduationYear),
   };
-}
-
-// Add this interface at the top with other types
-export interface Voucher {
-  id: number;
-  fullname: string;
-  email: string;
-  graduation_year: string;
-  chapter_id: string;
 }
 
 export const authApi = {
@@ -393,23 +390,28 @@ export const authApi = {
   async getVouchers(): Promise<Voucher[]> {
     try {
       // Use GET request - the apiClient will automatically add the token
-      const response = await apiClient.post(API_ENDPOINTS.AUTH.GET_VOUCHERS);
+      const { data } = await apiClient.post(API_ENDPOINTS.AUTH.GET_VOUCHERS);
+
+      const vouchers = extractList(data, ['vouchers', 'data']);
+
+      console.log('vouchers', { vouchers, res: mapBackendVoucherList(vouchers) });
+      return mapBackendVoucherList(vouchers);
 
       // Check response structure
-      if (response.data?.status === 200 && Array.isArray(response.data.vouchers)) {
-        return response.data.vouchers;
-      }
+      // if (response.data?.status === 200 && Array.isArray(response.data.vouchers)) {
+      //   return mapBackendVoucherToFrontend(response.data.vouchers);
+      // }
 
       // Some backends return vouchers directly without status wrapper
-      if (Array.isArray(response.data)) {
-        return response.data;
-      }
+      // if (Array.isArray(data)) {
+      //   return mapBackendVoucherToFrontend(data);
+      // }
 
-      if (Array.isArray(response.data?.vouchers)) {
-        return response.data.vouchers;
-      }
+      // if (Array.isArray(response.data?.vouchers)) {
+      //   return response.data.vouchers;
+      // }
 
-      return [];
+      // return [];
     } catch (error) {
       console.error('Failed to fetch vouchers:', error);
       // Don't throw - just return empty array so form still works
