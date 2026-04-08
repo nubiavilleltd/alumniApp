@@ -67,12 +67,15 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: A
   return (
     <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex flex-col">
       {/* <div className="h-57 w-full overflow-hidden bg-gray-100"> */}
-      <div className="h-57 w-full overflow-hidden bg-gray-100 min-h-[228px]">
+      {/* <div className="h-57 w-full overflow-hidden bg-gray-100 min-h-[228px]"> */}
+      {/* <div className="w-full aspect-[4/5] sm:aspect-[3/4] overflow-hidden bg-gray-100"> */}
+      <div className="w-full overflow-hidden bg-gray-100 h-48 sm:h-52 lg:h-56">
         {displayPhoto ? (
           <img
             src={displayPhoto}
             alt={entry.name}
-            className="w-full h-full object-cover object-top"
+            // className="w-full h-full object-cover object-top"
+            className="w-full h-full object-cover object-center"
             loading="lazy"
           />
         ) : (
@@ -240,13 +243,15 @@ export function AlumniDirectoryPage() {
 
           {/* Grid */}
           {isLoading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4 mb-10">
+            // <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4 mb-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-4 mb-10">
               {Array.from({ length: ITEMS_PER_PAGE }).map((_, i) => (
                 <AlumnaeCardSkeleton key={i} />
               ))}
             </div>
           ) : visibleAlumni.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4 mb-10">
+            // <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4 mb-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-4 mb-10">
               {visibleAlumni.map((entry) => (
                 <AlumnaeCard
                   key={entry.id}
