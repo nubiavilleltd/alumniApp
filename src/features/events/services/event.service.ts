@@ -412,11 +412,12 @@ export const eventsService = {
     throw new Error('Failed to get created event data');
   },
 
-  update: async (id: string, payload: Record<string, any>): Promise<Event> => {
+  update: async (id: string, payload: Record<string, any>): Promise<void> => {
     await apiClient.post(API_ENDPOINTS.EVENTS.MANAGE_EVENT, payload);
-    const updated = await eventsService.getById(id);
-    if (!updated) throw new Error('Failed to fetch updated event');
-    return updated;
+    // return { id, ...payload };
+    // const updated = await eventsService.getById(id);
+    // if (!updated) throw new Error('Failed to fetch updated event');
+    // return updated;
   },
 
   delete: async (id: string): Promise<void> => {
