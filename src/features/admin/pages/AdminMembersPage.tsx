@@ -224,7 +224,7 @@ function UserRowSkeleton() {
 
 export function AdminMembersPage() {
   // ✅ Use useAlumni() to fetch all users
-  const { data: alumniList = [], isLoading } = useAlumni();
+  const { data: alumniList = [], isLoading } = useAlumni({ action_type: 'approved' });
 
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | AccountStatus>('all');

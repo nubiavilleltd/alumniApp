@@ -164,7 +164,7 @@ export function UserDashboardPage() {
   // Real data
   const { data: upcomingEvents = [], isLoading: eventsLoading } = useUpcomingEvents();
   const { data: announcements = [], isLoading: announcementsLoading } = useLatestAnnouncements(3);
-  const { data: allAlumni = [], isLoading: alumniLoading } = useAlumni();
+  const { data: allAlumni = [], isLoading: alumniLoading } = useAlumni({ action_type: 'approved' });
 
   // TODO: myEvents is blocked on backend implementing POST /get_events { user_id }
   //       returning only RSVP'd events with rsvp_status per event.
