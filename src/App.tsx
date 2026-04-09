@@ -42,6 +42,8 @@ import ProjectDetailsPage from './features/projects/pages/ProjectDetail';
 import { ADMIN_ROUTES } from './features/admin/routes';
 import { AdminMembersPage } from './features/admin/pages/AdminMembersPage';
 import { AdminEventRegistrationsPage } from './features/events/pages/AdminEventRegistrationsPage';
+import { COMING_SOON_ROUTES } from './config/comingSoonRoutes';
+import { ComingSoonRouteHandler } from './pages/errors/ComingSoonRouteHandler';
 
 export default function App() {
   return (
@@ -289,6 +291,18 @@ export default function App() {
 
           {/* Redirects */}
           <Route path="/home" element={<Navigate to={ROUTES.HOME} replace />} />
+          {/* Coming Soon routes (dynamic) */}
+          {COMING_SOON_ROUTES.map(({ prefix, title }) => (
+            <Route
+              key={prefix}
+              path={`/${prefix}/*`}
+              element={
+                <ErrorBoundary>
+                  <ComingSoonRouteHandler title={title} />
+                </ErrorBoundary>
+              }
+            />
+          ))}
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
