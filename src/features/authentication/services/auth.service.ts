@@ -328,9 +328,14 @@ export const authApi = {
     values: VerifyRegistrationRequest,
   ): Promise<CompleteRegistrationResponse> {
     try {
+      const email = values.email ?? values.draft?.email;
+      if (!email) {
+        throw new Error('Missing verification email.');
+      }
+
       const response = await apiClient.post(
         API_ENDPOINTS.AUTH.VERIFY_EMAIL,
-        mapVerificationPayload(values.draft.email, values.code, values.userId),
+        mapVerificationPayload(email, values.code, values.userId),
       );
       if (response.data?.status === 400 || response.data?.status === 'error') {
         throw new Error(response.data.message || 'Invalid verification code');
@@ -341,6 +346,24 @@ export const authApi = {
         error.response?.data?.message ||
         error.message ||
         'Verification failed. Please check the code and try again.';
+      throw new Error(msg);
+    }
+  },
+
+  /** POST /resend_verify_email */
+  async resendVerificationEmail(values: { email: string; userId: string }): Promise<string> {
+    try {
+      const { data } = await apiClient.post(API_ENDPOINTS.AUTH.RESEND_VERIFY_EMAIL, {
+        email: values.email,
+        user_id: values.userId,
+      });
+
+      return data?.message ?? 'A new verification code has been sent to your email.';
+    } catch (error: any) {
+      const msg =
+        error.response?.data?.message ||
+        error.message ||
+        'Could not resend the verification code right now.';
       throw new Error(msg);
     }
   },

@@ -18,6 +18,9 @@ import ProjectsPage from './features/projects/pages/ProjectsPage';
 import LeadershipPage from './features/leadership/pages/LeadershipPage';
 
 import { AuthPage } from './features/authentication/pages/AuthPage';
+import { RegisterDetailsPage } from './features/authentication/pages/RegisterDetailsPage';
+import { RegisterVerificationPage } from './features/authentication/pages/RegisterVerificationPage';
+import { RegisterSuccessPage } from './features/authentication/pages/RegisterSuccessPage';
 
 import { AlumniRedirectPage } from './features/alumni/pages/AlumniRedirectPage';
 import { AlumniDirectoryPage } from './features/alumni/pages/AlumniDirectoryPage';
@@ -203,7 +206,9 @@ export default function App() {
           {/* Auth */}
           <Route path={ROUTES.AUTH.ROOT} element={<Navigate to={ROUTES.AUTH.LOGIN} replace />} />
           <Route path={ROUTES.AUTH.LOGIN} element={<AuthPage mode="login" />} />
-          <Route path={ROUTES.AUTH.REGISTER} element={<AuthPage mode="register" />} />
+          <Route path={ROUTES.AUTH.REGISTER} element={<RegisterDetailsPage />} />
+          <Route path={ROUTES.AUTH.REGISTER_VERIFY} element={<RegisterVerificationPage />} />
+          <Route path={ROUTES.AUTH.REGISTER_SUCCESS} element={<RegisterSuccessPage />} />
           <Route path={ROUTES.AUTH.FORGOT_PASSWORD} element={<AuthPage mode="forgot-password" />} />
           <Route path={ROUTES.AUTH.RESET_PASSWORD} element={<AuthPage mode="reset-password" />} />
           <Route

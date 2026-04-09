@@ -166,7 +166,8 @@ export interface StartRegistrationResponse {
 }
 
 export interface VerifyRegistrationRequest {
-  draft: RegisterDetailsFormValues;
+  email?: string;
+  draft?: RegisterDetailsFormValues;
   code: string;
   userId: string; // Passed from flow state, not form state
 }

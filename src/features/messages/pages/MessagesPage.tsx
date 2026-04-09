@@ -2412,7 +2412,7 @@ export function MessagesPage() {
                               >
                                 <div
                                   data-message-id={message.id}
-                                  className={`group relative w-full max-w-[42rem] rounded-[2rem] transition-all duration-300 ${
+                                  className={`group relative w-fit max-w-[42rem] rounded-[2rem] transition-all duration-300 ${
                                     highlightedMessageId === message.id
                                       ? 'ring-2 ring-primary-300 ring-offset-4 ring-offset-transparent'
                                       : ''

@@ -230,6 +230,11 @@ import { USER_ROUTES } from '@/features/user/routes';
 import { ADMIN_ROUTES } from '@/features/admin/routes';
 import { AUTH_ROUTES } from '../routes';
 import { mapCurrentUserResponse } from '../api/adapters/login.adapter';
+import {
+  formatVerificationResendDuration,
+  getVerificationResendStatus,
+  recordVerificationResendAttempt,
+} from '../lib/verificationResendThrottle';
 
 export function LoginForm() {
   const navigate = useNavigate();
@@ -246,8 +251,7 @@ export function LoginForm() {
     }
   }, [location.search, navigate]);
 
-  // Where to go after login — defaults to /dashboard
-  const from = (location.state as { from?: string } | null)?.from ?? USER_ROUTES.DASHBOARD;
+  const from = (location.state as { from?: string } | null)?.from;
 
   const {
     register,
@@ -286,12 +290,58 @@ export function LoginForm() {
       // Step 3: Persist full profile to localStorage — nav renders synchronously
       setSession(fullProfile, loginResponse.accessToken, loginResponse.refreshToken);
 
+      const fallbackDestination =
+        fullProfile.role === 'admin' ? ADMIN_ROUTES.DASHBOARD : USER_ROUTES.DASHBOARD;
+
       // Step 4: Navigate
-      navigate(fullProfile.role === 'admin' ? ADMIN_ROUTES.DASHBOARD : from, { replace: true });
+      navigate(from ?? fallbackDestination, { replace: true });
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Login failed. Please try again.';
+      const verificationUserId =
+        error instanceof Error
+          ? ((error as Error & { details?: { response?: { user_id?: string } } }).details?.response
+              ?.user_id ?? '')
+          : '';
 
-      if (message === 'EMAIL_NOT_VERIFIED') {
+      if (message.includes('not verified')) {
+        if (verificationUserId) {
+          const resendStatus = getVerificationResendStatus(String(verificationUserId));
+
+          if (resendStatus.isBlocked) {
+            toast.info(
+              `You have used all ${resendStatus.attempts} resend attempts. Try again in ${formatVerificationResendDuration(resendStatus.blockRemainingMs)}.`,
+            );
+          } else if (resendStatus.isCoolingDown) {
+            toast.info(
+              `You can request another verification code in ${formatVerificationResendDuration(resendStatus.cooldownRemainingMs)}.`,
+            );
+          } else {
+            try {
+              recordVerificationResendAttempt(String(verificationUserId));
+              const resendMessage = await authApi.resendVerificationEmail({
+                email: values.email,
+                userId: String(verificationUserId),
+              });
+              toast.info(resendMessage);
+            } catch (resendError) {
+              const resendErrorMessage =
+                resendError instanceof Error
+                  ? resendError.message
+                  : 'Could not resend the verification code right now.';
+              toast.error(resendErrorMessage);
+            }
+          }
+
+          const search = new URLSearchParams({
+            email: values.email,
+            userId: String(verificationUserId),
+            source: 'login',
+          });
+
+          navigate(`${AUTH_ROUTES.REGISTER_VERIFY}?${search.toString()}`, { replace: true });
+          return;
+        }
+
         setError('email', {
           type: 'manual',
           message: 'Your email is not verified. Please check your inbox.',
