@@ -1600,6 +1600,7 @@ import Button from '@/shared/components/ui/Button';
 import { toast } from '@/shared/components/ui/Toast';
 import type { AuthSessionUser, PrivacySettings } from '@/features/authentication/types/auth.types';
 import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
+import { currentUserKeys } from '@/features/authentication/hooks/useCurrentUser';
 import { userService } from '@/features/user/services/user.service';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
 import { FieldWithPrivacy } from './FieldWithPrivacy';
@@ -1612,6 +1613,15 @@ import {
   yearsOfExperienceOptions,
   houseColorOptions,
 } from '@/features/authentication/constants/profileOptions';
+import {
+  formatOptionalPhoneNumberWithCountryCode,
+  getPhoneCountryOption,
+  parseStoredPhoneNumber,
+  phoneCountryOptions,
+  type SupportedPhoneCountry,
+  validateNationalPhoneNumber,
+  normalizePhoneNumberForCountry,
+} from '@/features/authentication/constants/phoneCountries';
 import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
 
 interface Props {
@@ -1624,7 +1634,9 @@ interface FormState {
   firstName: string;
   lastName: string;
   nameInSchool: string;
+  whatsappPhoneCountry: SupportedPhoneCountry;
   whatsappPhone: string;
+  alternativePhoneCountry: SupportedPhoneCountry;
   alternativePhone: string;
   birthDate: string;
   bio: string;
@@ -1657,12 +1669,17 @@ function resolveYearsOfExperience(years: number | undefined): string {
 }
 
 function toFormState(user: AuthSessionUser | null): FormState {
+  const whatsappPhone = parseStoredPhoneNumber(user?.whatsappPhone);
+  const alternativePhone = parseStoredPhoneNumber(user?.alternativePhone);
+
   return {
     firstName: user?.otherNames ?? '',
     lastName: user?.surname ?? '',
     nameInSchool: user?.nameInSchool ?? '',
-    whatsappPhone: user?.whatsappPhone ?? '',
-    alternativePhone: user?.alternativePhone ?? '',
+    whatsappPhoneCountry: whatsappPhone.countryCode,
+    whatsappPhone: whatsappPhone.nationalNumber,
+    alternativePhoneCountry: alternativePhone.countryCode,
+    alternativePhone: alternativePhone.nationalNumber,
     birthDate: user?.birthDate ?? '',
     bio: user?.bio ?? '',
 
@@ -1692,10 +1709,14 @@ const yearsOfExperienceSelectOptions = yearsOfExperienceOptions.map((o) => ({
   label: o.label,
   value: String(o.value),
 }));
+const phoneCountrySelectOptions = phoneCountryOptions.map((option) => ({
+  label: `${option.dialCode} (${option.label})`,
+  value: option.code,
+}));
 
 export default function EditProfileModal({ isOpen, onClose, currentUser }: Props) {
   const queryClient = useQueryClient();
-  // const updateUser = useAuthStore((state) => state.updateUser);
+  const updateUser = useAuthStore((state) => state.updateUser);
 
   const { data: privacy, isLoading: privacyLoading } = usePrivacySettings();
 
@@ -1719,6 +1740,32 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
   ) => setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
+  const handlePhoneCountryChange =
+    (
+      phoneField: 'whatsappPhone' | 'alternativePhone',
+      countryField: 'whatsappPhoneCountry' | 'alternativePhoneCountry',
+    ) =>
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const nextCountry = e.target.value as SupportedPhoneCountry;
+      setForm((prev) => ({
+        ...prev,
+        [countryField]: nextCountry,
+        [phoneField]: normalizePhoneNumberForCountry(nextCountry, prev[phoneField]),
+      }));
+    };
+
+  const handlePhoneInputChange =
+    (
+      phoneField: 'whatsappPhone' | 'alternativePhone',
+      countryField: 'whatsappPhoneCountry' | 'alternativePhoneCountry',
+    ) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setForm((prev) => ({
+        ...prev,
+        [phoneField]: normalizePhoneNumberForCountry(prev[countryField], e.target.value),
+      }));
+    };
+
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -1735,6 +1782,22 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
   // ═══════════════════════════════════════════════════════════════════════
   const changedFields = useMemo(() => {
     const changes: Partial<AuthSessionUser> = {};
+    const currentWhatsappPhone = formatOptionalPhoneNumberWithCountryCode(
+      form.whatsappPhoneCountry,
+      form.whatsappPhone,
+    );
+    const initialWhatsappPhone = formatOptionalPhoneNumberWithCountryCode(
+      initialForm.whatsappPhoneCountry,
+      initialForm.whatsappPhone,
+    );
+    const currentAlternativePhone = formatOptionalPhoneNumberWithCountryCode(
+      form.alternativePhoneCountry,
+      form.alternativePhone,
+    );
+    const initialAlternativePhone = formatOptionalPhoneNumberWithCountryCode(
+      initialForm.alternativePhoneCountry,
+      initialForm.alternativePhone,
+    );
 
     // Only add field if it changed AND has a value
     // Empty string = intentional clear, so we include it
@@ -1747,11 +1810,11 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
     if (form.nameInSchool !== initialForm.nameInSchool) {
       changes.nameInSchool = form.nameInSchool;
     }
-    if (form.whatsappPhone !== initialForm.whatsappPhone) {
-      changes.whatsappPhone = form.whatsappPhone;
+    if (currentWhatsappPhone !== initialWhatsappPhone) {
+      changes.whatsappPhone = currentWhatsappPhone;
     }
-    if (form.alternativePhone !== initialForm.alternativePhone) {
-      changes.alternativePhone = form.alternativePhone;
+    if (currentAlternativePhone !== initialAlternativePhone) {
+      changes.alternativePhone = currentAlternativePhone;
     }
     if (form.birthDate !== initialForm.birthDate) {
       changes.birthDate = form.birthDate;
@@ -1825,9 +1888,25 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
   }, [form, initialForm]);
 
   const hasChanges = Object.keys(changedFields).length > 0 || photoFile !== null;
+  const selectedWhatsappPhoneCountry = getPhoneCountryOption(form.whatsappPhoneCountry);
+  const selectedAlternativePhoneCountry = getPhoneCountryOption(form.alternativePhoneCountry);
+  const whatsappPhoneError = validateNationalPhoneNumber(
+    form.whatsappPhoneCountry,
+    form.whatsappPhone,
+  );
+  const alternativePhoneError = form.alternativePhone
+    ? validateNationalPhoneNumber(form.alternativePhoneCountry, form.alternativePhone)
+    : null;
 
   const handleSave = async () => {
     if (!currentUser?.id) return;
+
+    if (whatsappPhoneError || alternativePhoneError) {
+      toast.error(
+        whatsappPhoneError ?? alternativePhoneError ?? 'Please correct the phone fields.',
+      );
+      return;
+    }
 
     if (!hasChanges) {
       toast.info('No changes to save');
@@ -1859,7 +1938,16 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
 
       console.log('🔄 Updating user with:', mergedUpdate);
 
-      // updateUser(mergedUpdate);
+      updateUser(mergedUpdate);
+
+      if (currentUser) {
+        const nextCurrentUser: AuthSessionUser = {
+          ...currentUser,
+          ...mergedUpdate,
+        };
+
+        queryClient.setQueryData(currentUserKeys.detail(currentUser.id), nextCurrentUser);
+      }
 
       queryClient.invalidateQueries({ queryKey: ['alumni'] });
       queryClient.invalidateQueries({ queryKey: ['user'] });
@@ -2032,13 +2120,25 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
               privacy={privacy!}
               onPrivacyChange={() => {}}
             >
-              <FormInput
-                name="whatsappPhone"
-                value={form.whatsappPhone}
-                onChange={handleChange}
-                placeholder="+234 000 000 0000"
-                required
-              />
+              <div className="grid grid-cols-[10rem_1fr] gap-2">
+                <SelectInput
+                  name="whatsappPhoneCountry"
+                  value={form.whatsappPhoneCountry}
+                  onChange={handlePhoneCountryChange('whatsappPhone', 'whatsappPhoneCountry')}
+                  options={phoneCountrySelectOptions}
+                  placeholder="Country"
+                />
+                <FormInput
+                  name="whatsappPhone"
+                  type="tel"
+                  inputMode="numeric"
+                  value={form.whatsappPhone}
+                  onChange={handlePhoneInputChange('whatsappPhone', 'whatsappPhoneCountry')}
+                  placeholder={selectedWhatsappPhoneCountry.placeholder}
+                  error={whatsappPhoneError ?? undefined}
+                  required
+                />
+              </div>
             </FieldWithPrivacy>
             <FieldWithPrivacy
               field="alternativePhone"
@@ -2046,12 +2146,24 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
               privacy={privacy!}
               onPrivacyChange={() => {}}
             >
-              <FormInput
-                name="alternativePhone"
-                value={form.alternativePhone}
-                onChange={handleChange}
-                placeholder="+234 000 000 0000"
-              />
+              <div className="grid grid-cols-[10rem_1fr] gap-2">
+                <SelectInput
+                  name="alternativePhoneCountry"
+                  value={form.alternativePhoneCountry}
+                  onChange={handlePhoneCountryChange('alternativePhone', 'alternativePhoneCountry')}
+                  options={phoneCountrySelectOptions}
+                  placeholder="Country"
+                />
+                <FormInput
+                  name="alternativePhone"
+                  type="tel"
+                  inputMode="numeric"
+                  value={form.alternativePhone}
+                  onChange={handlePhoneInputChange('alternativePhone', 'alternativePhoneCountry')}
+                  placeholder={selectedAlternativePhoneCountry.placeholder}
+                  error={alternativePhoneError ?? undefined}
+                />
+              </div>
             </FieldWithPrivacy>
             <FieldWithPrivacy
               field="birthDate"
@@ -2113,7 +2225,7 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
                   name="city"
                   value={form.city}
                   onChange={handleChange}
-                  placeholder="e.g. Lagos"
+                  placeholder="e.g. Ikeja"
                 />
               </FieldWithPrivacy>
             </div>

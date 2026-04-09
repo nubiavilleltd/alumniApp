@@ -262,12 +262,27 @@ import { Button } from '@/shared/components/ui/Button';
 import { FormInput } from '@/shared/components/ui/input/FormInput';
 import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
 import {
+  defaultPhoneCountry,
+  formatOptionalPhoneNumberWithCountryCode,
+  getPhoneCountryOption,
+  normalizePhoneNumberForCountry,
+  parseStoredPhoneNumber,
+  phoneCountryOptions,
+  type SupportedPhoneCountry,
+  validateNationalPhoneNumber,
+} from '@/features/authentication/constants/phoneCountries';
+import {
   useCreateListing,
   useUpdateListing,
   useMarketplaceCategories,
 } from '../hooks/useMarketplace';
 import { useImageManager } from '@/shared/hooks/useImageManager';
 import type { Business, CreateListingFormData } from '../types/marketplace.types';
+
+const supportedPhoneCountries = phoneCountryOptions.map((option) => option.code) as [
+  SupportedPhoneCountry,
+  ...SupportedPhoneCountry[],
+];
 
 // ─── Zod Schema ────────────────────────────────────────────────────────────────
 
@@ -280,39 +295,45 @@ import type { Business, CreateListingFormData } from '../types/marketplace.types
 //   website: z.string().optional(),
 // });
 
-const postBusinessSchema = z.object({
-  name: z
-    .string()
-    .min(1, 'Business name is required')
-    .min(2, 'Business name must be at least 2 characters')
-    .max(100, 'Business name is too long'),
+const postBusinessSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1, 'Business name is required')
+      .min(2, 'Business name must be at least 2 characters')
+      .max(100, 'Business name is too long'),
 
-  category: z.string().min(1, 'Please select a category'),
+    category: z.string().min(1, 'Please select a category'),
 
-  description: z
-    .string()
-    .min(1, 'Description is required')
-    .min(20, 'Please provide at least 20 characters')
-    .max(5000, 'Description is too long'),
+    description: z
+      .string()
+      .min(1, 'Description is required')
+      .min(20, 'Please provide at least 20 characters')
+      .max(5000, 'Description is too long'),
 
-  location: z.string().min(1, 'Location is required').min(2, 'Please provide a valid location'),
+    location: z.string().min(1, 'Location is required').min(2, 'Please provide a valid location'),
 
-  phone: z
-    .string()
-    .min(1, 'Phone number is required')
-    .regex(/^[\d\s\+\(\)\-]+$/, 'Enter a valid phone number'),
+    phoneCountry: z.enum(supportedPhoneCountries),
 
-  website: z
-    .string()
-    .optional()
-    .refine(
-      (val) => {
-        if (!val) return true;
-        return /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/.test(val);
-      },
-      { message: 'Enter a valid URL (e.g., example.com)' },
-    ),
-});
+    phone: z.string().trim().min(1, 'Phone number is required'),
+
+    website: z
+      .string()
+      .optional()
+      .refine(
+        (val) => {
+          if (!val) return true;
+          return /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/.test(val);
+        },
+        { message: 'Enter a valid URL (e.g., example.com)' },
+      ),
+  })
+  .superRefine((data, ctx) => {
+    const phoneError = validateNationalPhoneNumber(data.phoneCountry, data.phone);
+    if (phoneError) {
+      ctx.addIssue({ code: 'custom', path: ['phone'], message: phoneError });
+    }
+  });
 
 type PostBusinessFormValues = z.infer<typeof postBusinessSchema>;
 
@@ -333,16 +354,21 @@ function toFormState(data: Business | null | undefined): PostBusinessFormValues 
       category: '',
       description: '',
       location: '',
+      phoneCountry: defaultPhoneCountry,
       phone: '',
       website: '',
     };
   }
+
+  const parsedPhone = parseStoredPhoneNumber(data.phone);
+
   return {
     name: data.name,
     category: data.category,
     description: data.description,
     location: data.location,
-    phone: data.phone,
+    phoneCountry: parsedPhone.countryCode,
+    phone: parsedPhone.nationalNumber,
     website: data.website ?? '',
   };
 }
@@ -356,7 +382,7 @@ function toCreateListingFormData(
     category: form.category,
     description: form.description,
     location: form.location,
-    phone: form.phone,
+    phone: formatOptionalPhoneNumberWithCountryCode(form.phoneCountry, form.phone),
     website: form.website || undefined,
     images,
   };
@@ -384,6 +410,9 @@ export function PostBusinessModal({ isOpen, onClose, editData }: PostBusinessMod
     register,
     handleSubmit,
     reset,
+    setValue,
+    trigger,
+    watch,
     formState: { errors, isSubmitting },
     setError: setFormError,
   } = useForm<PostBusinessFormValues>({
@@ -406,6 +435,7 @@ export function PostBusinessModal({ isOpen, onClose, editData }: PostBusinessMod
         category: '',
         description: '',
         location: '',
+        phoneCountry: defaultPhoneCountry,
         phone: '',
         website: '',
       });
@@ -451,6 +481,27 @@ export function PostBusinessModal({ isOpen, onClose, editData }: PostBusinessMod
 
   const isLoading = createMutation.isPending || updateMutation.isPending || isSubmitting;
   const categoryOptions = categoriesList.map((cat) => ({ label: cat, value: cat }));
+  const phoneCountrySelectOptions = phoneCountryOptions.map((option) => ({
+    label: `${option.dialCode} (${option.label})`,
+    value: option.code,
+  }));
+  const phoneCountry = watch('phoneCountry') ?? defaultPhoneCountry;
+  const selectedPhoneCountry = getPhoneCountryOption(phoneCountry);
+  const phoneCountryRegistration = register('phoneCountry', {
+    onChange: (e) => {
+      const nextCountry = e.target.value as SupportedPhoneCountry;
+      setValue('phone', normalizePhoneNumberForCountry(nextCountry, watch('phone') ?? ''), {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+      void trigger('phone');
+    },
+  });
+  const phoneRegistration = register('phone', {
+    onChange: (e) => {
+      e.target.value = normalizePhoneNumberForCountry(phoneCountry, e.target.value);
+    },
+  });
 
   return (
     <Modal
@@ -504,16 +555,30 @@ export function PostBusinessModal({ isOpen, onClose, editData }: PostBusinessMod
           {...register('location')}
         />
 
-        <FormInput
-          label="Phone"
-          id="phone"
-          type="tel"
-          required
-          placeholder="Enter phone number"
-          icon="mdi:phone-outline"
-          error={errors.phone?.message}
-          {...register('phone')}
-        />
+        <div className="flex flex-col gap-1">
+          <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+            Phone <span className="text-red-500">*</span>
+          </label>
+          <div className="grid grid-cols-[10rem_1fr] gap-2">
+            <SelectInput
+              id="phoneCountry"
+              options={phoneCountrySelectOptions}
+              placeholder="Country"
+              error={undefined}
+              {...phoneCountryRegistration}
+            />
+            <FormInput
+              id="phone"
+              type="tel"
+              inputMode="numeric"
+              required
+              placeholder={selectedPhoneCountry.placeholder}
+              icon="mdi:phone-outline"
+              error={errors.phone?.message}
+              {...phoneRegistration}
+            />
+          </div>
+        </div>
 
         <FormInput
           label="Website URL"

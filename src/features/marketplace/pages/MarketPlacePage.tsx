@@ -186,6 +186,7 @@ export default function MarketPlacePage() {
     await startDirectConversation({
       participantMemberId: business.ownerId,
       topic: `Marketplace enquiry about ${business.name}`,
+      initialMessage: `Hey there, thanks for reaching out to ${business.name} what can we do for you?`,
       recipientProfile: {
         fullName: business.owner,
         headline: `Owner of ${business.name}`,
