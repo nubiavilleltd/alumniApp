@@ -18,6 +18,8 @@ import { useDeleteEvent } from '../hooks/useEvents';
 import { EVENT_ROUTES } from '../routes';
 import type { Event } from '../types/event.types';
 import { DeleteConfirmModal } from './DeleteConfirmModal';
+import { handleShare } from '@/shared/utils/share';
+import { toast } from '@/shared/components/ui/Toast';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
@@ -78,6 +80,25 @@ export function EventCard({
     month: 'short',
     year: 'numeric',
   });
+
+  const eventUrl =
+    typeof window !== 'undefined'
+      ? `${window.location.origin}${EVENT_ROUTES.DETAIL(event.id)}`
+      : EVENT_ROUTES.DETAIL(event.id);
+
+  const onShare = async () => {
+    const result = await handleShare({
+      title: event.title,
+      text: event.description?.slice(0, 100),
+      url: eventUrl,
+    });
+
+    if (result.success && result.copied) {
+      toast.success('Link copied to clipboard');
+    } else if (!result.success) {
+      toast.error('Failed to share event');
+    }
+  };
 
   const handleDelete = () => {
     deleteEvent.mutate(event.id, {
@@ -259,6 +280,21 @@ export function EventCard({
               <Icon icon="mdi:calendar-month-outline" className="w-12 h-12 text-primary-200" />
             </div>
           )}
+
+          {/* Share Button */}
+          <button
+            type="button"
+            onClick={onShare}
+            //   className="absolute top-3 right-3 z-10 bg-white/90 hover:bg-white text-gray-700 p-2 rounded-full shadow-sm transition"
+            className="absolute top-3 right-3 z-10 
+           bg-black/50 backdrop-blur-sm 
+           hover:bg-black/70 
+           text-white 
+           p-2 rounded-full 
+           shadow-md transition"
+          >
+            <Icon icon="mdi:share-variant-outline" className="w-4 h-4" />
+          </button>
 
           {/* Badges */}
           {!isPast && isRegistered && (
