@@ -625,7 +625,7 @@ type StatTone = 'primary' | 'accent' | 'secondary';
 const statToneClass: Record<StatTone, string> = {
   primary: 'from-primary-500 to-primary-700 text-white',
   accent: 'from-accent-800 to-accent-950 text-white',
-  secondary: 'from-secondary-500 to-secondary-700 text-white',
+  secondary: 'from-orange-500 to-orange-500 text-white',
 };
 
 function StatCard({
@@ -983,16 +983,16 @@ export function UserDashboardPage() {
               tone="primary"
               loading={isLoading}
             />
-            <StatCard
+            {/* <StatCard
               label="Announcements"
               value={String(announcements.length)}
               detail="Fresh updates to review"
               icon="mdi:bullhorn-outline"
               tone="accent"
               loading={announcementsLoading}
-            />
+            /> */}
 
-            {pendingVouches.length > 0 && (
+            {/* {pendingVouches.length > 0 && (
               <StatCard
                 label="Pending Vouches"
                 value={String(visiblePendingVouches.length)}
@@ -1001,14 +1001,23 @@ export function UserDashboardPage() {
                 tone="secondary"
                 loading={vouchesLoading}
               />
-            )}
+            )} */}
+
+            <StatCard
+              label="Pending Vouches"
+              value={String(visiblePendingVouches.length)}
+              detail="Awaiting your review"
+              icon="mdi:account-check-outline"
+              tone="secondary"
+              loading={vouchesLoading}
+            />
           </section>
 
           {/* ── Main grid ──────────────────────────────────────────────── */}
           <section className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
             {/* Left column */}
             <div className="space-y-6">
-              {pendingVouches.length > 0 && (
+              {/* {pendingVouches.length > 0 && (
                 <SectionCard
                   title={`Pending Vouches${visiblePendingVouches.length > 0 ? ` (${visiblePendingVouches.length})` : ''}`}
                 >
@@ -1035,7 +1044,35 @@ export function UserDashboardPage() {
                     </div>
                   )}
                 </SectionCard>
-              )}
+              )} */}
+
+              <SectionCard
+                title={`Pending Vouches${visiblePendingVouches.length > 0 ? ` (${visiblePendingVouches.length})` : ''}`}
+              >
+                {vouchesLoading ? (
+                  <SectionSkeleton rows={2} />
+                ) : visiblePendingVouches.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-10 text-center">
+                    <div className="w-12 h-12 rounded-full bg-primary-50 flex items-center justify-center mb-3">
+                      <Icon icon="mdi:check-all" className="w-6 h-6 text-primary-500" />
+                    </div>
+                    <p className="font-medium text-accent-800">All caught up!</p>
+                    <p className="mt-1 text-sm text-accent-500">No pending vouches to review.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {visiblePendingVouches.map((vouch) => (
+                      <PendingVouchRow
+                        key={vouch.vouchId}
+                        vouch={vouch}
+                        onApprove={handleVouchApprove}
+                        onReject={handleVouchReject}
+                      />
+                    ))}
+                  </div>
+                )}
+              </SectionCard>
+
               {/* Announcements */}
               {/* <SectionCard
                 title="Announcements"
@@ -1234,7 +1271,7 @@ export function UserDashboardPage() {
               </SectionCard>
 
               {/* Community updates — TODO: replace with real announcements once endpoint is live */}
-              <SectionCard title="Community Updates">
+              {/* <SectionCard title="Community Updates">
                 <div className="space-y-3">
                   {communityUpdates.map((item) => (
                     <AppLink
@@ -1247,7 +1284,7 @@ export function UserDashboardPage() {
                     </AppLink>
                   ))}
                 </div>
-              </SectionCard>
+              </SectionCard> */}
 
               {/* Quick links */}
               <SectionCard title="Quick Links">
