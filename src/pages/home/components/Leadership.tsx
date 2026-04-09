@@ -7,11 +7,13 @@ import { ROUTES } from '@/shared/constants/routes';
 function MemberCard({ member }: { member: LeadershipMember }) {
   return (
     <div className="rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex flex-col">
-      <div className="h-57 w-full overflow-hidden bg-gray-100">
+      {/* <div className="h-57 w-full overflow-hidden bg-gray-100"> */}
+      {/* <div className="w-full aspect-[4/5] sm:aspect-[3/4] overflow-hidden bg-gray-100"> */}
+      <div className="w-full overflow-hidden bg-gray-100 h-48 sm:h-52 lg:h-56">
         <img
           src={member.image}
           alt={member.name}
-          className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-300"
+          className="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-300"
         />
       </div>
       <div className="py-3 px-3 text-center bg-white">
@@ -25,7 +27,9 @@ function MemberCard({ member }: { member: LeadershipMember }) {
 function MemberCardSkeleton() {
   return (
     <div className="rounded-2xl overflow-hidden shadow-sm border border-gray-100 animate-pulse flex flex-col">
-      <div className="h-57 bg-gray-200" />
+      {/* <div className="h-57 bg-gray-200" /> */}
+      {/* <div className="aspect-[3/4] bg-gray-200" /> */}
+      <div className="h-56 w-full flex-shrink-0 bg-gray-200 sm:h-64" />
       <div className="py-3 px-3 flex flex-col items-center gap-2">
         <div className="h-4 bg-gray-200 rounded w-32" />
         <div className="h-3 bg-gray-200 rounded w-20" />
@@ -36,8 +40,6 @@ function MemberCardSkeleton() {
 
 export default function Leadership() {
   const { data: members = [], isLoading } = useLeadership();
-
-  console.log('leadership', { members });
 
   const president = members.find((m) => m.featured);
   const board = members.filter((m) => !m.featured);
@@ -95,12 +97,13 @@ export default function Leadership() {
         )}
 
         {/* Board grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
+        {/* <div className="grid grid-cols-2 sm:grid-cols-3 gap-6"> */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-4 mb-10">
           {isLoading
             ? Array.from({ length: 6 }).map((_, i) => <MemberCardSkeleton key={i} />)
             : board.map((member) => <MemberCard key={member.id} member={member} />)}
         </div>
-
+        {/* 
         <div className="mt-8 text-right">
           <AppLink
             href={ROUTES.LEADERSHIP}
@@ -108,7 +111,7 @@ export default function Leadership() {
           >
             See More →
           </AppLink>
-        </div>
+        </div> */}
       </div>
     </section>
   );
