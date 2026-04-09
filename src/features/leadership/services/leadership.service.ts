@@ -40,7 +40,6 @@
 
 import { apiClient } from '@/lib/api/client';
 import { API_ENDPOINTS } from '@/lib/api/endpoints';
-import { getLeadership, getLeaderById } from '@/data/site-data';
 import { handleApiError } from '@/lib/errors/apiErrorHandler';
 import type { LeadershipMember } from '../types/leadership.types';
 import {
@@ -72,9 +71,12 @@ export const leadershipService = {
     } catch (error) {
       console.error('Failed to fetch leadership:', error);
 
+      handleApiError(error, 'Failed to fetch leadership');
+      throw error;
+
       // Fallback to mock data
-      console.warn('⚠️ Using mock leadership data');
-      return getLeadership();
+      // console.warn('⚠️ Using mock leadership data');
+      // return getLeadership();
     }
   },
 
@@ -93,9 +95,8 @@ export const leadershipService = {
     } catch (error) {
       console.error('Failed to fetch featured leader:', error);
 
-      // Fallback to mock
-      const allLeaders = getLeadership();
-      return allLeaders.find((l) => l.featured) || null;
+      handleApiError(error, 'Failed to fetch featured leader');
+      throw error;
     }
   },
 
@@ -111,9 +112,8 @@ export const leadershipService = {
     } catch (error) {
       console.error('Failed to fetch leadership team:', error);
 
-      // Fallback to mock
-      const allLeaders = getLeadership();
-      return allLeaders.filter((l) => !l.featured);
+      handleApiError(error, 'Failed to fetch leadership team');
+      throw error;
     }
   },
 
@@ -146,8 +146,8 @@ export const leadershipService = {
     } catch (error) {
       console.error(`Failed to fetch leader ${id}:`, error);
 
-      // Fallback to mock
-      return getLeaderById(id);
+      handleApiError(error, `Failed to fetch leader ${id}`);
+      throw error;
     }
   },
 };
