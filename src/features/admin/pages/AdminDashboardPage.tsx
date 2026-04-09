@@ -16,6 +16,7 @@ import { EVENT_ROUTES } from '@/features/events/routes';
 import { MARKETPLACE_ROUTES } from '@/features/marketplace/routes';
 import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 import { toast } from '@/shared/components/ui/Toast';
+import { ADMIN_ROUTES } from '../routes';
 
 // ─── Tone map ─────────────────────────────────────────────────────────────────
 
@@ -469,6 +470,11 @@ export function AdminDashboardPage() {
                       label: 'Create Event',
                       href: EVENT_ROUTES.CREATE,
                       icon: 'mdi:calendar-plus-outline',
+                    },
+                    {
+                      label: 'View Event Registrations',
+                      href: ADMIN_ROUTES.EVENT_REGISTRATIONS,
+                      icon: 'mdi:clipboard-list-outline',
                     },
                     // {
                     //   label: 'Post Announcement',

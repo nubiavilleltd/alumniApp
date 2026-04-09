@@ -41,6 +41,7 @@ import { AdminDashboardPage } from './features/admin/pages/AdminDashboardPage';
 import ProjectDetailsPage from './features/projects/pages/ProjectDetail';
 import { ADMIN_ROUTES } from './features/admin/routes';
 import { AdminMembersPage } from './features/admin/pages/AdminMembersPage';
+import { AdminEventRegistrationsPage } from './features/events/pages/AdminEventRegistrationsPage';
 
 export default function App() {
   return (
@@ -270,6 +271,17 @@ export default function App() {
               <AdminRoute>
                 <ErrorBoundary>
                   <AdminMembersPage />
+                </ErrorBoundary>
+              </AdminRoute>
+            }
+          />
+
+          <Route
+            path={ADMIN_ROUTES.EVENT_REGISTRATIONS}
+            element={
+              <AdminRoute>
+                <ErrorBoundary>
+                  <AdminEventRegistrationsPage />
                 </ErrorBoundary>
               </AdminRoute>
             }
