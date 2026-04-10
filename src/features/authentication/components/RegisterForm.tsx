@@ -25,6 +25,8 @@ import type {
 import { PasswordStrengthMeter } from './PasswordStrengthMeter';
 import { AuthCard } from './AuthCard';
 import { AUTH_ROUTES } from '../routes';
+import { NIGERIA_STATES } from '../constants/nigerianStates';
+import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -37,6 +39,11 @@ const stepMeta: Record<RegistrationStep, { step: string; label: string }> = {
   verification: { step: 'Step 2 of 3', label: 'Verify Email' },
   success: { step: 'Step 3 of 3', label: 'Approval Pending' },
 };
+
+const stateOptions = NIGERIA_STATES.map((state) => ({
+  label: state,
+  value: state,
+}));
 
 // ─── Flow state ───────────────────────────────────────────────────────────────
 
@@ -123,6 +130,10 @@ export function RegisterForm() {
       password: '',
       confirmPassword: '',
       voucherId: '',
+      city: '',
+      state: 'Lagos',
+      nickName: '',
+      residentialAddress: '',
     },
     mode: 'onChange',
   });
@@ -145,7 +156,6 @@ export function RegisterForm() {
     const loadVouchers = async () => {
       setIsLoadingVouchers(true);
       const vouchers = await authApi.getVouchers();
-      console.log('vouchers', { vouchers });
       setAllVouchers(vouchers);
       setIsLoadingVouchers(false);
     };
@@ -324,6 +334,10 @@ export function RegisterForm() {
       password: '',
       confirmPassword: '',
       voucherId: '',
+      city: '',
+      state: 'Lagos',
+      nickName: '',
+      residentialAddress: '',
     });
     verificationForm.reset({ code: '' });
   };
@@ -391,13 +405,22 @@ export function RegisterForm() {
             {...detailForm.register('nameInSchool')}
           /> */}
           <FormInput
-            label="Nickname"
+            label="Name in School"
             id="nameInSchool"
             required
             placeholder=""
             hint=""
             error={detailForm.formState.errors.nameInSchool?.message}
             {...detailForm.register('nameInSchool')}
+          />
+          <FormInput
+            label="Nickname11k"
+            id="nickName"
+            required
+            placeholder=""
+            hint=""
+            error={detailForm.formState.errors.nickName?.message}
+            {...detailForm.register('nickName')}
           />
 
           <FormInput
@@ -444,6 +467,40 @@ export function RegisterForm() {
             error={detailForm.formState.errors.graduationYear?.message}
             {...detailForm.register('graduationYear')}
           /> */}
+
+          <TextareaInput
+            label="Residential Address"
+            id="residentialAddress"
+            rows={5}
+            placeholder="Tell us about yourself..."
+            error={detailForm.formState.errors.residentialAddress?.message}
+            {...detailForm.register('residentialAddress')}
+          />
+
+          <SelectInput
+            label="State of Residence"
+            id="state"
+            required
+            options={stateOptions}
+            placeholder="Select your state"
+            error={detailForm.formState.errors.state?.message}
+            value={detailForm.watch('state') || 'Lagos'}
+            onChange={(e) => {
+              detailForm.setValue('state', e.target.value, {
+                shouldValidate: true,
+                shouldDirty: true,
+              });
+            }}
+            onBlur={() => detailForm.trigger('state')}
+          />
+
+          <FormInput
+            label="City"
+            id="city"
+            placeholder="e.g. Ikeja"
+            error={detailForm.formState.errors.city?.message}
+            {...detailForm.register('city')}
+          />
 
           <SelectInput
             label="Year of Graduation from FGGC Owerri"

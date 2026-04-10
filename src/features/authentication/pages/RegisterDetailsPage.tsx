@@ -25,6 +25,13 @@ import {
   saveRegistrationFlow,
 } from '../lib/registrationFlow';
 import { markInitialVerificationSend } from '../lib/verificationResendThrottle';
+import { NIGERIA_STATES } from '../constants/nigerianStates';
+import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
+
+const stateOptions = NIGERIA_STATES.map((state) => ({
+  label: state,
+  value: state,
+}));
 
 function buildRegisterDefaultValues(
   currentYear: number,
@@ -34,6 +41,7 @@ function buildRegisterDefaultValues(
     surname: savedValues?.surname ?? '',
     otherNames: savedValues?.otherNames ?? '',
     nameInSchool: savedValues?.nameInSchool ?? '',
+    nickName: savedValues?.nickName ?? '',
     email: savedValues?.email ?? '',
     phoneCountry: savedValues?.phoneCountry ?? defaultPhoneCountry,
     whatsappPhone: savedValues?.whatsappPhone ?? '',
@@ -41,6 +49,9 @@ function buildRegisterDefaultValues(
     password: savedValues?.password ?? '',
     confirmPassword: savedValues?.confirmPassword ?? '',
     voucherId: savedValues?.voucherId ?? '',
+    city: savedValues?.city ?? '',
+    state: savedValues?.state ?? 'Lagos',
+    residentialAddress: savedValues?.residentialAddress ?? '',
   };
 }
 
@@ -214,15 +225,26 @@ export function RegisterDetailsPage() {
           />
         </div>
 
-        <FormInput
-          label="Nickname"
-          id="nameInSchool"
-          required
-          placeholder=""
-          hint=""
-          error={detailForm.formState.errors.nameInSchool?.message}
-          {...detailForm.register('nameInSchool')}
-        />
+        <div className="grid grid-cols-2 gap-3">
+          <FormInput
+            label="Name in School"
+            id="nameInSchool"
+            required
+            placeholder=""
+            hint=""
+            error={detailForm.formState.errors.nameInSchool?.message}
+            {...detailForm.register('nameInSchool')}
+          />
+          <FormInput
+            label="Nickname"
+            id="nickName"
+            required
+            placeholder=""
+            hint=""
+            error={detailForm.formState.errors.nickName?.message}
+            {...detailForm.register('nickName')}
+          />
+        </div>
 
         <FormInput
           label="Email Address"
@@ -232,72 +254,6 @@ export function RegisterDetailsPage() {
           placeholder="you@example.com"
           error={detailForm.formState.errors.email?.message}
           {...detailForm.register('email')}
-        />
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            WhatsApp Phone Number <span className="text-red-500">*</span>
-          </label>
-          <div className="grid grid-cols-[10rem_1fr] gap-2">
-            <SelectInput
-              id="phoneCountry"
-              options={phoneCountrySelectOptions}
-              placeholder="Country"
-              error={undefined}
-              {...phoneCountryRegistration}
-            />
-            <FormInput
-              id="whatsappPhone"
-              type="tel"
-              inputMode="numeric"
-              placeholder={selectedPhoneCountry.placeholder}
-              error={detailForm.formState.errors.whatsappPhone?.message}
-              {...whatsappRegistration}
-            />
-          </div>
-          <p className="mt-1 text-xs text-gray-400">Enter number without country code</p>
-        </div>
-
-        <SelectInput
-          label="Year of Graduation from FGGC Owerri"
-          id="graduationYear"
-          required
-          options={graduationYearOptions}
-          placeholder="Select Graduation Year"
-          error={detailForm.formState.errors.graduationYear?.message}
-          value={detailForm.watch('graduationYear')?.toString() || ''}
-          onChange={(event) => {
-            detailForm.setValue('graduationYear', parseInt(event.target.value, 10), {
-              shouldValidate: true,
-              shouldDirty: true,
-            });
-          }}
-          onBlur={() => detailForm.trigger('graduationYear')}
-        />
-
-        <SelectInput
-          label="Voucher (Someone to approve your registration)"
-          id="voucherId"
-          required
-          options={voucherOptions}
-          placeholder={
-            isLoadingVouchers
-              ? 'Loading vouchers...'
-              : filteredVouchers.length === 0 && graduationYear
-                ? 'No vouchers available for this graduation year'
-                : 'Select a voucher'
-          }
-          error={detailForm.formState.errors.voucherId?.message}
-          disabled={isLoadingVouchers || filteredVouchers.length === 0}
-          hint="Select a member who will vouch for you"
-          value={detailForm.watch('voucherId') || ''}
-          onChange={(event) => {
-            detailForm.setValue('voucherId', event.target.value, {
-              shouldValidate: true,
-              shouldDirty: true,
-            });
-          }}
-          onBlur={() => detailForm.trigger('voucherId')}
         />
 
         <div>
@@ -363,6 +319,108 @@ export function RegisterDetailsPage() {
         </div>
 
         {passwordValue && <PasswordStrengthMeter password={passwordValue} />}
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            WhatsApp Phone Number <span className="text-red-500">*</span>
+          </label>
+          <div className="grid grid-cols-[10rem_1fr] gap-2">
+            <SelectInput
+              id="phoneCountry"
+              options={phoneCountrySelectOptions}
+              placeholder="Country"
+              error={undefined}
+              {...phoneCountryRegistration}
+            />
+            <FormInput
+              id="whatsappPhone"
+              type="tel"
+              inputMode="numeric"
+              placeholder={selectedPhoneCountry.placeholder}
+              error={detailForm.formState.errors.whatsappPhone?.message}
+              {...whatsappRegistration}
+            />
+          </div>
+          <p className="mt-1 text-xs text-gray-400">Enter number without country code</p>
+        </div>
+
+        <TextareaInput
+          label="Residential Address"
+          id="residentialAddress"
+          rows={5}
+          placeholder="Tell us about yourself..."
+          error={detailForm.formState.errors.residentialAddress?.message}
+          {...detailForm.register('residentialAddress')}
+        />
+
+        <div className="grid grid-cols-2 gap-3">
+          <SelectInput
+            label="State of Residence"
+            id="state"
+            required
+            options={stateOptions}
+            placeholder="Select your state"
+            error={detailForm.formState.errors.state?.message}
+            value={detailForm.watch('state') || 'Lagos'}
+            onChange={(e) => {
+              detailForm.setValue('state', e.target.value, {
+                shouldValidate: true,
+                shouldDirty: true,
+              });
+            }}
+            onBlur={() => detailForm.trigger('state')}
+          />
+
+          <FormInput
+            label="City"
+            id="city"
+            placeholder="e.g. Ikeja"
+            error={detailForm.formState.errors.city?.message}
+            {...detailForm.register('city')}
+          />
+        </div>
+
+        <SelectInput
+          label="Year of Graduation from FGGC Owerri"
+          id="graduationYear"
+          required
+          options={graduationYearOptions}
+          placeholder="Select Graduation Year"
+          error={detailForm.formState.errors.graduationYear?.message}
+          value={detailForm.watch('graduationYear')?.toString() || ''}
+          onChange={(event) => {
+            detailForm.setValue('graduationYear', parseInt(event.target.value, 10), {
+              shouldValidate: true,
+              shouldDirty: true,
+            });
+          }}
+          onBlur={() => detailForm.trigger('graduationYear')}
+        />
+
+        <SelectInput
+          label="Voucher (Someone to approve your registration)"
+          id="voucherId"
+          required
+          options={voucherOptions}
+          placeholder={
+            isLoadingVouchers
+              ? 'Loading vouchers...'
+              : filteredVouchers.length === 0 && graduationYear
+                ? 'No vouchers available for this graduation year'
+                : 'Select a voucher'
+          }
+          error={detailForm.formState.errors.voucherId?.message}
+          disabled={isLoadingVouchers || filteredVouchers.length === 0}
+          hint="Select a member who will vouch for you"
+          value={detailForm.watch('voucherId') || ''}
+          onChange={(event) => {
+            detailForm.setValue('voucherId', event.target.value, {
+              shouldValidate: true,
+              shouldDirty: true,
+            });
+          }}
+          onBlur={() => detailForm.trigger('voucherId')}
+        />
 
         {detailForm.formState.errors.root && (
           <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3">

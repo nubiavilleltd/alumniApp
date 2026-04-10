@@ -10,7 +10,7 @@ interface AuthPageProps {
 
 export function AuthPage({ mode }: AuthPageProps) {
   if (mode === 'login') return <LoginForm />;
-  if (mode === 'register') return <RegisterForm />;
+  // if (mode === 'register') return <RegisterForm />;
   if (mode === 'forgot-password') return <ForgotPasswordForm />;
   return <ResetPasswordForm />;
 }
