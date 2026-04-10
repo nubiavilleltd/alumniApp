@@ -127,8 +127,9 @@ export const eventsService = {
     eventId: string,
     userId: string,
     status: 'going' | 'maybe' | 'not_going' = 'going',
+    additionalInfo: string,
   ): Promise<void> => {
-    const payload = mapRegisterEventPayload(userId, eventId, status);
+    const payload = mapRegisterEventPayload(userId, eventId, status, additionalInfo);
     await apiClient.post(API_ENDPOINTS.EVENTS.REGISTER_EVENT, payload);
   },
 

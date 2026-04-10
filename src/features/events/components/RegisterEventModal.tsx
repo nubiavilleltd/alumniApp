@@ -7,6 +7,7 @@ import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { useEventRegistration } from '../hooks/useEventRegistration';
 import type { Event } from '../types/event.types';
 import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
+import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
 
 interface RegisterEventModalProps {
   event: Event | null;
@@ -18,22 +19,47 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
   const { data: currentUser, isLoading: isLoadingProfile } = useCurrentUser();
   const { register, isLoading } = useEventRegistration(event?.id || '');
 
+  const [rsvpStatus, setRsvpStatus] = useState<'going' | 'maybe'>('going');
+  const [additionalInfo, setAdditionalInfo] = useState('');
+
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setError(null);
+
+  //   if (!currentUser || !event) {
+  //     console.error('User must be logged in to register');
+  //     setError('You must be logged in to register for events');
+  //     return;
+  //   }
+
+  //   try {
+  //     // Register with status 'going' (backend supports 'going', 'maybe', 'not_going')
+  //     register('going');
+  //     setSubmitted(true);
+  //   } catch (err) {
+  //     setError('Failed to register. Please try again.');
+  //     console.error('Registration error:', err);
+  //   }
+  // };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
     if (!currentUser || !event) {
-      console.error('User must be logged in to register');
       setError('You must be logged in to register for events');
       return;
     }
 
     try {
-      // Register with status 'going' (backend supports 'going', 'maybe', 'not_going')
-      register('going');
+      await register({
+        status: rsvpStatus,
+        additionalInfo,
+      });
+
       setSubmitted(true);
     } catch (err) {
       setError('Failed to register. Please try again.');
@@ -41,12 +67,23 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
     }
   };
 
+  // const handleClose = () => {
+  //   onClose();
+  //   // Reset state after modal closes
+  //   setTimeout(() => {
+  //     setSubmitted(false);
+  //     setError(null);
+  //   }, 300);
+  // };
+
   const handleClose = () => {
     onClose();
-    // Reset state after modal closes
+
     setTimeout(() => {
       setSubmitted(false);
       setError(null);
+      setRsvpStatus('going');
+      setAdditionalInfo('');
     }, 300);
   };
 
@@ -116,50 +153,6 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
             </div>
           </div>
 
-          {/* RSVP Status Selection */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Will you attend?</label>
-            <div className="space-y-2">
-              <label className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
-                <input
-                  type="radio"
-                  name="rsvpStatus"
-                  value="going"
-                  defaultChecked
-                  className="w-4 h-4 text-primary-500 focus:ring-primary-400"
-                />
-                <div>
-                  <span className="font-medium text-gray-700">Yes, I'm going</span>
-                  <p className="text-xs text-gray-500">I'll be there</p>
-                </div>
-              </label>
-              <label className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
-                <input
-                  type="radio"
-                  name="rsvpStatus"
-                  value="maybe"
-                  className="w-4 h-4 text-primary-500 focus:ring-primary-400"
-                />
-                <div>
-                  <span className="font-medium text-gray-700">Maybe</span>
-                  <p className="text-xs text-gray-500">I'm not sure yet</p>
-                </div>
-              </label>
-            </div>
-          </div>
-
-          {/* Note about guests - backend doesn't support guest count yet */}
-          {event.allowGuests && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-              <div className="flex items-start gap-2">
-                <Icon icon="mdi:information-outline" className="w-4 h-4 text-yellow-600 mt-0.5" />
-                <p className="text-xs text-yellow-700">
-                  This event allows guests. You can bring guests with you.
-                </p>
-              </div>
-            </div>
-          )}
-
           {/* Event Details Summary */}
           <div className="border-t border-gray-100 pt-4">
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
@@ -190,6 +183,84 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
               )}
             </div>
           </div>
+
+          {/* RSVP Status Selection */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Will you attend?</label>
+            <div className="space-y-2">
+              <label className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                {/* <input
+                  type="radio"
+                  name="rsvpStatus"
+                  value="going"
+                  defaultChecked
+                  className="w-4 h-4 text-primary-500 focus:ring-primary-400"
+                /> */}
+                <input
+                  type="radio"
+                  name="rsvpStatus"
+                  value="going"
+                  checked={rsvpStatus === 'going'}
+                  onChange={() => setRsvpStatus('going')}
+                  className="w-4 h-4 text-primary-500 focus:ring-primary-400"
+                />
+                <div>
+                  <span className="font-medium text-gray-700">Yes, I'm going</span>
+                  <p className="text-xs text-gray-500">I'll be there</p>
+                </div>
+              </label>
+              <label className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                {/* <input
+                  type="radio"
+                  name="rsvpStatus"
+                  value="maybe"
+                  className="w-4 h-4 text-primary-500 focus:ring-primary-400"
+                /> */}
+
+                <input
+                  type="radio"
+                  name="rsvpStatus"
+                  value="maybe"
+                  checked={rsvpStatus === 'maybe'}
+                  onChange={() => setRsvpStatus('maybe')}
+                  className="w-4 h-4 text-primary-500 focus:ring-primary-400"
+                />
+                <div>
+                  <span className="font-medium text-gray-700">Maybe</span>
+                  <p className="text-xs text-gray-500">I'm not sure yet</p>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          {/* Note about guests - backend doesn't support guest count yet */}
+          {event.allowGuests && (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+              <div className="flex items-start gap-2">
+                <Icon icon="mdi:information-outline" className="w-4 h-4 text-yellow-600 mt-0.5" />
+                <p className="text-xs text-yellow-700">
+                  This event allows guests. You can bring guests with you.
+                </p>
+              </div>
+            </div>
+          )}
+
+          <TextareaInput
+            label="Additional Info"
+            id="additionalInfo"
+            rows={5}
+            value={additionalInfo}
+            onChange={(e) => setAdditionalInfo(e.target.value)}
+          />
+
+          {/* <TextareaInput
+                    label="Additional Info"
+                    id="residentialAddress"
+                    rows={5}
+                    placeholder=""
+                    // error={detailForm.formState.errors.residentialAddress?.message}
+                    // {...detailForm.register('residentialAddress')}
+                  /> */}
 
           {/* Submit */}
           <button

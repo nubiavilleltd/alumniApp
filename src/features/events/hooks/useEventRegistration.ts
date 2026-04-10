@@ -8,7 +8,12 @@ import {
   useMyRegisteredEvents,
 } from './useEvents';
 import type { Event } from '../types/event.types';
+import { toast } from '@/shared/components/ui/Toast';
 
+type RegisterPayload = {
+  status?: 'going' | 'maybe' | 'not_going';
+  additionalInfo?: string;
+};
 /**
  * Hook for managing event registration for the current user
  * Uses API hooks to track registration status
@@ -39,13 +44,28 @@ export function useEventRegistration(eventId: string) {
       cancelMutation.isPending ||
       updateRSVPMutation.isPending,
 
-    register: (status: 'going' | 'maybe' | 'not_going' = 'going') => {
+    register: ({ status = 'going', additionalInfo = '' }: RegisterPayload) => {
       if (!currentUser?.id) {
         console.error('User must be logged in to register for events');
+        toast.error('User must be logged in to register for events');
         return;
       }
-      registerMutation.mutate({ eventId, status });
+
+      registerMutation.mutate({
+        eventId,
+        status,
+        additionalInfo,
+      });
     },
+
+    // register: (status: 'going' | 'maybe' | 'not_going' = 'going', additionalInfo:string) => {
+    //   if (!currentUser?.id) {
+    //     console.error('User must be logged in to register for events');
+    //     toast.error("User must be logged in to register for events")
+    //     return;
+    //   }
+    //   registerMutation.mutate({ eventId, status, additionalInfo });
+    // },
 
     unregister: () => {
       if (!currentUser?.id) return;

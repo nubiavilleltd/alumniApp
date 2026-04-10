@@ -217,12 +217,14 @@ export function mapRegisterEventPayload(
   userId: string,
   eventId: string,
   status: 'going' | 'maybe' | 'not_going' = 'going',
+  additionalInfo: string,
 ): Record<string, unknown> {
   return {
     user_id: userId,
     event_id: eventId,
     status,
     year: new Date().getFullYear().toString(),
+    additional_info: additionalInfo,
   };
 }
 

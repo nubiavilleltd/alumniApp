@@ -348,7 +348,7 @@ export function RegisterDetailsPage() {
           label="Residential Address"
           id="residentialAddress"
           rows={5}
-          placeholder="Tell us about yourself..."
+          placeholder=""
           error={detailForm.formState.errors.residentialAddress?.message}
           {...detailForm.register('residentialAddress')}
         />
