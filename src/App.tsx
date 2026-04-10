@@ -47,6 +47,7 @@ import { AdminMembersPage } from './features/admin/pages/AdminMembersPage';
 import { AdminEventRegistrationsPage } from './features/events/pages/AdminEventRegistrationsPage';
 import { COMING_SOON_ROUTES } from './config/comingSoonRoutes';
 import { ComingSoonRouteHandler } from './pages/errors/ComingSoonRouteHandler';
+import { GuestRoute } from './shared/components/routing/GuestRoute';
 
 export default function App() {
   return (
@@ -205,10 +206,39 @@ export default function App() {
 
           {/* Auth */}
           <Route path={ROUTES.AUTH.ROOT} element={<Navigate to={ROUTES.AUTH.LOGIN} replace />} />
-          <Route path={ROUTES.AUTH.LOGIN} element={<AuthPage mode="login" />} />
-          <Route path={ROUTES.AUTH.REGISTER} element={<RegisterDetailsPage />} />
-          <Route path={ROUTES.AUTH.REGISTER_VERIFY} element={<RegisterVerificationPage />} />
-          <Route path={ROUTES.AUTH.REGISTER_SUCCESS} element={<RegisterSuccessPage />} />
+          {/* <Route path={ROUTES.AUTH.LOGIN} element={<AuthPage mode="login" />} /> */}
+          <Route
+            path={ROUTES.AUTH.LOGIN}
+            element={
+              <GuestRoute>
+                <AuthPage mode="login" />
+              </GuestRoute>
+            }
+          />
+          <Route
+            path={ROUTES.AUTH.REGISTER}
+            element={
+              <GuestRoute>
+                <RegisterDetailsPage />
+              </GuestRoute>
+            }
+          />
+          <Route
+            path={ROUTES.AUTH.REGISTER_VERIFY}
+            element={
+              <GuestRoute>
+                <RegisterVerificationPage />
+              </GuestRoute>
+            }
+          />
+          <Route
+            path={ROUTES.AUTH.REGISTER_SUCCESS}
+            element={
+              <GuestRoute>
+                <RegisterSuccessPage />
+              </GuestRoute>
+            }
+          />
           <Route path={ROUTES.AUTH.FORGOT_PASSWORD} element={<AuthPage mode="forgot-password" />} />
           <Route path={ROUTES.AUTH.RESET_PASSWORD} element={<AuthPage mode="reset-password" />} />
           <Route
