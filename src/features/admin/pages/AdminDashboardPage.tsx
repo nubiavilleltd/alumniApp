@@ -16,6 +16,8 @@ import { EVENT_ROUTES } from '@/features/events/routes';
 import { MARKETPLACE_ROUTES } from '@/features/marketplace/routes';
 import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 import { toast } from '@/shared/components/ui/Toast';
+import { ADMIN_ROUTES } from '../routes';
+import { PROJECT_ROUTES } from '@/features/projects/routes';
 
 // ─── Tone map ─────────────────────────────────────────────────────────────────
 
@@ -470,6 +472,11 @@ export function AdminDashboardPage() {
                       href: EVENT_ROUTES.CREATE,
                       icon: 'mdi:calendar-plus-outline',
                     },
+                    {
+                      label: 'View Event Registrations',
+                      href: ADMIN_ROUTES.EVENT_REGISTRATIONS,
+                      icon: 'mdi:clipboard-list-outline',
+                    },
                     // {
                     //   label: 'Post Announcement',
                     //   href: '/admin/announcements',
@@ -479,6 +486,11 @@ export function AdminDashboardPage() {
                       label: 'View Marketplace',
                       href: MARKETPLACE_ROUTES.ROOT,
                       icon: 'mdi:store-outline',
+                    },
+                    {
+                      label: 'View Projects',
+                      href: PROJECT_ROUTES.ROOT,
+                      icon: 'mdi:briefcase-outline',
                     },
                     // { label: 'Site Settings', href: '/admin/settings', icon: 'mdi:cog-outline' },
                   ].map((link) => (

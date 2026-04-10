@@ -41,6 +41,7 @@ import {
   useSendMessage,
   useUploadMessageAttachment,
 } from '../hooks/useMessages';
+import { useStartDirectConversation } from '../hooks/useStartDirectConversation';
 import {
   getMessageAttachmentPreviewUrl,
   registerMessageAttachmentPreview,
@@ -291,11 +292,7 @@ function buildCopyTextFromMessage(message: MessageItem) {
     return '';
   }
 
-  const body = message.body.trim();
-  const attachmentLines = message.attachments.map((attachment) =>
-    describeAttachmentForPreview(attachment),
-  );
-  return [body, ...attachmentLines].filter(Boolean).join('\n');
+  return message.body.trim();
 }
 
 function buildReplyPreviewFromMessage(message: MessageItem): MessageReplyPreview {
@@ -418,6 +415,13 @@ function GroupParticipantsModal({
   participants: MessageParticipant[];
   viewerMemberId?: string;
 }) {
+  const navigate = useNavigate();
+  const { startDirectConversation, isPending: isStartingConversation } =
+    useStartDirectConversation();
+  const [pendingConversationMemberId, setPendingConversationMemberId] = useState<string | null>(
+    null,
+  );
+
   useEffect(() => {
     if (!isOpen) return undefined;
 
@@ -439,6 +443,40 @@ function GroupParticipantsModal({
   }, [isOpen, onClose]);
 
   if (!isOpen) return null;
+
+  function handleOpenProfile(participant: MessageParticipant) {
+    const profileHref = participant.profileHref || `/alumni/profiles/${participant.memberId}`;
+    onClose();
+    navigate(profileHref);
+  }
+
+  async function handleStartConversation(participant: MessageParticipant) {
+    if (!participant.memberId || participant.memberId === viewerMemberId) {
+      return;
+    }
+
+    setPendingConversationMemberId(participant.memberId);
+    onClose();
+
+    try {
+      await startDirectConversation({
+        participantMemberId: participant.memberId,
+        recipientProfile: {
+          fullName: participant.fullName,
+          avatar: participant.avatar,
+          headline: participant.headline,
+          location: participant.location,
+          graduationYear: participant.graduationYear || undefined,
+          slug: participant.slug,
+          profileHref: participant.profileHref,
+        },
+      });
+    } finally {
+      setPendingConversationMemberId((current) =>
+        current === participant.memberId ? null : current,
+      );
+    }
+  }
 
   return (
     <div
@@ -479,32 +517,69 @@ function GroupParticipantsModal({
               return (
                 <div
                   key={participant.memberId}
-                  className="flex items-center gap-3 rounded-[1.5rem] border border-accent-100 bg-accent-50 px-4 py-3"
+                  className="flex flex-col gap-3 rounded-[1.5rem] border border-accent-100 bg-accent-50 px-4 py-3 sm:flex-row sm:items-center"
                 >
-                  <ParticipantAvatar participant={participant} />
+                  <button
+                    type="button"
+                    onClick={() => handleOpenProfile(participant)}
+                    className="flex items-center gap-3 rounded-[1.25rem] text-left transition-colors hover:bg-white/70 sm:flex-1 sm:px-2 sm:py-2"
+                  >
+                    <ParticipantAvatar participant={participant} />
 
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <p className="truncate text-sm font-semibold text-accent-900">
-                        {participant.fullName}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="truncate text-sm font-semibold text-accent-900">
+                          {participant.fullName}
+                        </p>
+                        {isViewer ? (
+                          <span className="rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-accent-500">
+                            You
+                          </span>
+                        ) : null}
+                        {participant.roleInThread === 'admin' ? (
+                          <span className="rounded-full bg-primary-50 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-primary-600">
+                            Admin
+                          </span>
+                        ) : participant.roleInThread === 'moderator' ? (
+                          <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-amber-700">
+                            Moderator
+                          </span>
+                        ) : null}
+                      </div>
+                      <p className="mt-1 truncate text-sm text-accent-500">
+                        {participant.headline}
                       </p>
-                      {isViewer ? (
-                        <span className="rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-accent-500">
-                          You
-                        </span>
-                      ) : null}
-                      {participant.roleInThread === 'admin' ? (
-                        <span className="rounded-full bg-primary-50 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-primary-600">
-                          Admin
-                        </span>
-                      ) : participant.roleInThread === 'moderator' ? (
-                        <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-amber-700">
-                          Moderator
-                        </span>
-                      ) : null}
+                      <p className="mt-2 text-xs font-medium text-primary-600">View profile</p>
                     </div>
-                    <p className="mt-1 truncate text-sm text-accent-500">{participant.headline}</p>
-                  </div>
+                  </button>
+
+                  {!isViewer ? (
+                    <button
+                      type="button"
+                      onClick={() => void handleStartConversation(participant)}
+                      disabled={isStartingConversation}
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-600 disabled:cursor-not-allowed disabled:bg-primary-200 sm:w-auto"
+                    >
+                      <Icon
+                        icon={
+                          isStartingConversation &&
+                          pendingConversationMemberId === participant.memberId
+                            ? 'mdi:loading'
+                            : 'mdi:message-outline'
+                        }
+                        className={`h-4 w-4 ${
+                          isStartingConversation &&
+                          pendingConversationMemberId === participant.memberId
+                            ? 'animate-spin'
+                            : ''
+                        }`}
+                      />
+                      {isStartingConversation &&
+                      pendingConversationMemberId === participant.memberId
+                        ? 'Opening...'
+                        : 'Message'}
+                    </button>
+                  ) : null}
                 </div>
               );
             })}
@@ -573,10 +648,12 @@ function ReplyPreviewCard({
   replyTo,
   variant,
   onClear,
+  onOpenOriginal,
 }: {
   replyTo: MessageReplyPreview;
   variant: 'composer' | 'bubble';
   onClear?: () => void;
+  onOpenOriginal?: (messageId: string) => void;
 }) {
   const isComposer = variant === 'composer';
   const attachmentSummary =
@@ -603,27 +680,55 @@ function ReplyPreviewCard({
       }`}
     >
       <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <p
-            className={`truncate text-xs font-semibold uppercase tracking-[0.16em] ${
-              isComposer ? 'text-primary-700' : 'text-current/80'
-            }`}
+        {onOpenOriginal ? (
+          <button
+            type="button"
+            onClick={() => onOpenOriginal(replyTo.messageId)}
+            className="min-w-0 flex-1 text-left"
           >
-            Replying to {replyTo.senderDisplayName}
-          </p>
-          <p
-            className={`mt-1 line-clamp-2 text-sm ${
-              isComposer ? 'text-accent-700' : 'text-current/85'
-            }`}
-          >
-            {replyTo.bodyPreview}
-          </p>
-          {attachmentSummary ? (
-            <p className={`mt-1 text-xs ${isComposer ? 'text-accent-500' : 'text-current/70'}`}>
-              {attachmentSummary}
+            <p
+              className={`truncate text-xs font-semibold uppercase tracking-[0.16em] ${
+                isComposer ? 'text-primary-700' : 'text-current/80'
+              }`}
+            >
+              Replying to {replyTo.senderDisplayName}
             </p>
-          ) : null}
-        </div>
+            <p
+              className={`mt-1 line-clamp-2 text-sm ${
+                isComposer ? 'text-accent-700' : 'text-current/85'
+              }`}
+            >
+              {replyTo.bodyPreview}
+            </p>
+            {attachmentSummary ? (
+              <p className={`mt-1 text-xs ${isComposer ? 'text-accent-500' : 'text-current/70'}`}>
+                {attachmentSummary}
+              </p>
+            ) : null}
+          </button>
+        ) : (
+          <div className="min-w-0">
+            <p
+              className={`truncate text-xs font-semibold uppercase tracking-[0.16em] ${
+                isComposer ? 'text-primary-700' : 'text-current/80'
+              }`}
+            >
+              Replying to {replyTo.senderDisplayName}
+            </p>
+            <p
+              className={`mt-1 line-clamp-2 text-sm ${
+                isComposer ? 'text-accent-700' : 'text-current/85'
+              }`}
+            >
+              {replyTo.bodyPreview}
+            </p>
+            {attachmentSummary ? (
+              <p className={`mt-1 text-xs ${isComposer ? 'text-accent-500' : 'text-current/70'}`}>
+                {attachmentSummary}
+              </p>
+            ) : null}
+          </div>
+        )}
 
         {onClear ? (
           <button
@@ -972,6 +1077,7 @@ export function MessagesPage() {
   const [activeImageAttachment, setActiveImageAttachment] = useState<MessageAttachment | null>(
     null,
   );
+  const [highlightedMessageId, setHighlightedMessageId] = useState<string | null>(null);
   const [voiceRecordingState, setVoiceRecordingState] = useState<
     'idle' | 'starting' | 'recording' | 'finishing'
   >('idle');
@@ -984,6 +1090,7 @@ export function MessagesPage() {
   const messagePaneRef = useRef<HTMLDivElement | null>(null);
   const lastOpenedThreadIdRef = useRef<string | null>(null);
   const pendingDirectThreadIntentRef = useRef<string | null>(null);
+  const pendingInitialMessageIntentRef = useRef<string | null>(null);
   const activeVoicePointerIdRef = useRef<number | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
@@ -998,6 +1105,7 @@ export function MessagesPage() {
   const requestedThreadId = searchParams.get('threadId');
   const requestedRecipientId = searchParams.get('recipient');
   const requestedTopic = searchParams.get('topic') ?? undefined;
+  const requestedInitialMessage = searchParams.get('initialMessage')?.trim() ?? undefined;
 
   const inboxQuery = useMessagesInbox();
   const createDirectThread = useCreateDirectMessageThread();
@@ -1071,12 +1179,20 @@ export function MessagesPage() {
         : null,
     [activeThreadWithOptimisticMessages?.messages, openMessageActions],
   );
+  const canCopyOpenMessage =
+    !!openMessageActionsMessage && !openMessageActionsMessage.deletedAt
+      ? openMessageActionsMessage.body.trim().length > 0
+      : false;
 
-  function replaceMessagesSearch(nextThreadId?: string) {
+  function replaceMessagesSearch(nextThreadId?: string, nextInitialMessage?: string) {
     const nextSearch = new URLSearchParams();
 
     if (nextThreadId) {
       nextSearch.set('threadId', nextThreadId);
+    }
+
+    if (nextInitialMessage?.trim()) {
+      nextSearch.set('initialMessage', nextInitialMessage.trim());
     }
 
     navigate(
@@ -1169,6 +1285,23 @@ export function MessagesPage() {
 
       return previous.filter((attachment) => attachment.id !== attachmentId);
     });
+  }
+
+  function handleJumpToMessage(messageId: string) {
+    const messageElement = messagePaneRef.current?.querySelector<HTMLElement>(
+      `[data-message-id="${CSS.escape(messageId)}"]`,
+    );
+
+    if (!messageElement) {
+      toast.info('We could not find that original message in this view yet.');
+      return;
+    }
+
+    messageElement.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+    });
+    setHighlightedMessageId(messageId);
   }
 
   function resetVoiceRecordingSession(shouldResetTimer = true) {
@@ -1439,6 +1572,18 @@ export function MessagesPage() {
   }, []);
 
   useEffect(() => {
+    if (!highlightedMessageId) return undefined;
+
+    const timer = window.setTimeout(() => {
+      setHighlightedMessageId((current) => (current === highlightedMessageId ? null : current));
+    }, 1800);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [highlightedMessageId]);
+
+  useEffect(() => {
     function handlePointerDown(event: PointerEvent) {
       if (!(event.target instanceof Element)) return;
       if (event.target.closest('[data-message-actions-root="true"]')) return;
@@ -1485,6 +1630,18 @@ export function MessagesPage() {
   }, [requestedThreadId]);
 
   useEffect(() => {
+    if (!requestedRecipientId) {
+      pendingDirectThreadIntentRef.current = null;
+    }
+  }, [requestedRecipientId]);
+
+  useEffect(() => {
+    if (!requestedInitialMessage) {
+      pendingInitialMessageIntentRef.current = null;
+    }
+  }, [requestedInitialMessage]);
+
+  useEffect(() => {
     if (!currentUser?.memberId || !requestedRecipientId) return;
 
     if (requestedRecipientId === currentUser.memberId) {
@@ -1493,7 +1650,7 @@ export function MessagesPage() {
       return;
     }
 
-    const intentKey = `${requestedRecipientId}:${requestedTopic ?? ''}`;
+    const intentKey = `${requestedRecipientId}:${requestedTopic ?? ''}:${requestedInitialMessage ?? ''}`;
     if (pendingDirectThreadIntentRef.current === intentKey) return;
 
     pendingDirectThreadIntentRef.current = intentKey;
@@ -1506,12 +1663,70 @@ export function MessagesPage() {
       })
       .then((response) => {
         setSelectedThreadId(response.thread.id);
-        replaceMessagesSearch(response.thread.id);
+        replaceMessagesSearch(response.thread.id, requestedInitialMessage);
       })
       .catch(() => {
         pendingDirectThreadIntentRef.current = null;
       });
-  }, [createDirectThread, currentUser, requestedRecipientId, requestedTopic]);
+  }, [
+    createDirectThread,
+    currentUser,
+    requestedInitialMessage,
+    requestedRecipientId,
+    requestedTopic,
+  ]);
+
+  useEffect(() => {
+    if (!viewerMemberId || !activeThread || !requestedInitialMessage || sendMessage.isPending) {
+      return;
+    }
+
+    const initialMessage = requestedInitialMessage.trim();
+    if (!initialMessage) {
+      replaceMessagesSearch(activeThread.id);
+      return;
+    }
+
+    const intentKey = `${activeThread.id}:${initialMessage}`;
+    if (pendingInitialMessageIntentRef.current === intentKey) {
+      return;
+    }
+
+    pendingInitialMessageIntentRef.current = intentKey;
+
+    if (activeThread.messages.length > 0) {
+      replaceMessagesSearch(activeThread.id);
+      return;
+    }
+
+    sendInFlightRef.current = true;
+
+    void sendMessage
+      .mutateAsync(
+        buildSendMessageRequest({
+          viewerMemberId,
+          threadId: activeThread.id,
+          body: initialMessage,
+          attachments: [],
+        }),
+      )
+      .then((response) => {
+        queryClient.setQueryData(
+          messageKeys.thread(viewerMemberId, response.thread.id),
+          response.thread,
+        );
+        setSelectedThreadId(response.thread.id);
+        replaceMessagesSearch(response.thread.id);
+      })
+      .catch(() => {
+        pendingInitialMessageIntentRef.current = null;
+        setDraftMessage(initialMessage);
+        replaceMessagesSearch(activeThread.id);
+      })
+      .finally(() => {
+        sendInFlightRef.current = false;
+      });
+  }, [activeThread, queryClient, requestedInitialMessage, sendMessage, viewerMemberId]);
 
   useEffect(() => {
     // Each thread keeps its own draft so attachments and text do not leak across chats.
@@ -1913,6 +2128,8 @@ export function MessagesPage() {
                 <div className="mt-4 flex flex-wrap gap-2 xl:mt-3">
                   {inboxFilters.map((item) => {
                     const active = filter === item.key;
+                    const label =
+                      item.key === 'unread' ? `${item.label} (${unreadMessageCount})` : item.label;
 
                     return (
                       <button
@@ -1925,7 +2142,7 @@ export function MessagesPage() {
                             : 'bg-accent-100 text-accent-700 hover:bg-accent-200'
                         }`}
                       >
-                        {item.label}
+                        {label}
                       </button>
                     );
                   })}
@@ -2193,7 +2410,14 @@ export function MessagesPage() {
                               <div
                                 className={`flex ${message.isOwn ? 'justify-end' : 'justify-start'}`}
                               >
-                                <div className="group relative w-full max-w-[42rem]">
+                                <div
+                                  data-message-id={message.id}
+                                  className={`group relative w-fit max-w-[42rem] rounded-[2rem] transition-all duration-300 ${
+                                    highlightedMessageId === message.id
+                                      ? 'ring-2 ring-primary-300 ring-offset-4 ring-offset-transparent'
+                                      : ''
+                                  }`}
+                                >
                                   {showSenderName ? (
                                     <p className="mb-2 px-1 text-xs font-semibold uppercase tracking-[0.16em] text-accent-400">
                                       {message.senderDisplayName}
@@ -2203,9 +2427,7 @@ export function MessagesPage() {
                                   {message.status !== 'sending' && !message.deletedAt ? (
                                     <div
                                       data-message-actions-root="true"
-                                      className={`absolute top-3 z-10 ${
-                                        message.isOwn ? 'left-3' : 'right-3'
-                                      }`}
+                                      className="absolute right-3 top-3 z-10"
                                     >
                                       <button
                                         type="button"
@@ -2236,6 +2458,7 @@ export function MessagesPage() {
                                       <ReplyPreviewCard
                                         replyTo={message.replyTo}
                                         variant="bubble"
+                                        onOpenOriginal={handleJumpToMessage}
                                       />
                                     ) : null}
 
@@ -2449,14 +2672,16 @@ export function MessagesPage() {
                   <Icon icon="mdi:reply-outline" className="h-4 w-4" />
                   Reply
                 </button>
-                <button
-                  type="button"
-                  onClick={() => void handleCopyMessage(openMessageActionsMessage)}
-                  className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-accent-700 transition-colors hover:bg-accent-50"
-                >
-                  <Icon icon="mdi:content-copy" className="h-4 w-4" />
-                  Copy
-                </button>
+                {canCopyOpenMessage ? (
+                  <button
+                    type="button"
+                    onClick={() => void handleCopyMessage(openMessageActionsMessage)}
+                    className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-accent-700 transition-colors hover:bg-accent-50"
+                  >
+                    <Icon icon="mdi:content-copy" className="h-4 w-4" />
+                    Copy
+                  </button>
+                ) : null}
                 {openMessageActionsMessage.isOwn ? (
                   <button
                     type="button"

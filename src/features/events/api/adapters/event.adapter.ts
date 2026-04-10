@@ -8,7 +8,7 @@ import {
 } from '@/lib/utils/adapters';
 
 function mapRSVPStatus(status: unknown): 'going' | 'maybe' | 'not_going' | null {
-  if (!status || status === '') return null; // clean "unregistered"
+  if (!status || status === '') return 'not_going'; // clean "unregistered"
 
   const map: Record<string, 'going' | 'maybe' | 'not_going'> = {
     going: 'going',

@@ -23,16 +23,38 @@ export function stringToBoolean(value: unknown): boolean | undefined {
  * Convert Unix timestamp (seconds) or date string to ISO string.
  * Returns current time as fallback so UI never breaks on missing dates.
  */
+// export function safeParseDate(value: unknown): string {
+//   if (!value) return new Date().toISOString();
+
+//   if (typeof value === 'string' && value.includes('T')) return value;
+
+//   const asInt = parseInt(String(value), 10);
+//   if (!isNaN(asInt) && asInt > 1_000_000_000) {
+//     return new Date(asInt * 1000).toISOString();
+//   }
+
+//   const parsed = new Date(value as string);
+//   return isNaN(parsed.getTime()) ? new Date().toISOString() : parsed.toISOString();
+// }
+
 export function safeParseDate(value: unknown): string {
   if (!value) return new Date().toISOString();
 
+  // ✅ If already ISO (has time), keep it
   if (typeof value === 'string' && value.includes('T')) return value;
 
+  // ✅ If it's a date-only string (YYYY-MM-DD), KEEP IT AS IS
+  if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return value; // 🔥 CRITICAL FIX
+  }
+
+  // Unix timestamp
   const asInt = parseInt(String(value), 10);
   if (!isNaN(asInt) && asInt > 1_000_000_000) {
     return new Date(asInt * 1000).toISOString();
   }
 
+  // Fallback parsing
   const parsed = new Date(value as string);
   return isNaN(parsed.getTime()) ? new Date().toISOString() : parsed.toISOString();
 }

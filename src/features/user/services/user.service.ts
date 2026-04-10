@@ -41,7 +41,9 @@ export const userService = {
             createProfileUpdatePayload(userId, updates),
           );
 
-      return mapBackendResponseToFrontendUser(response.data);
+      const mappedUser = mapBackendResponseToFrontendUser(response.data);
+
+      return mappedUser;
     } catch (error) {
       throw handleApiError(
         error,

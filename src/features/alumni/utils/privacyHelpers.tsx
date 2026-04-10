@@ -6,22 +6,6 @@ import type { AuthSessionUser, PrivacySettings } from '@/features/authentication
 import { Alumni } from '../types/alumni.types';
 
 /**
- * Privacy Helper Utilities
- *
- * These functions handle privacy enforcement when displaying user/alumni data.
- * They check whether a field should be visible to the current viewer based on
- * the field owner's privacy settings.
- *
- * Privacy Rules (2-level system):
- * - 'public': Visible to everyone (including logged-out visitors)
- * - 'private': Visible only to the field owner themselves
- *
- * TODO: When backend is ready, privacy checks should be enforced server-side.
- * These client-side checks are for UI display only - the backend must not
- * return private data in API responses to unauthorized viewers.
- */
-
-/**
  * Check if a field is visible to the current viewer
  *
  * @param fieldOwner - The user whose field we're checking

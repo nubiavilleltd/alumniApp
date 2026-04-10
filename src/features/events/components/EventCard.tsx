@@ -18,6 +18,8 @@ import { useDeleteEvent } from '../hooks/useEvents';
 import { EVENT_ROUTES } from '../routes';
 import type { Event } from '../types/event.types';
 import { DeleteConfirmModal } from './DeleteConfirmModal';
+import { handleShare } from '@/shared/utils/share';
+import { toast } from '@/shared/components/ui/Toast';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
@@ -79,6 +81,25 @@ export function EventCard({
     year: 'numeric',
   });
 
+  const eventUrl =
+    typeof window !== 'undefined'
+      ? `${window.location.origin}${EVENT_ROUTES.DETAIL(event.id)}`
+      : EVENT_ROUTES.DETAIL(event.id);
+
+  const onShare = async () => {
+    const result = await handleShare({
+      title: event.title,
+      text: event.description?.slice(0, 100),
+      url: eventUrl,
+    });
+
+    if (result.success && result.copied) {
+      toast.success('Link copied to clipboard');
+    } else if (!result.success) {
+      toast.error('Failed to share event');
+    }
+  };
+
   const handleDelete = () => {
     deleteEvent.mutate(event.id, {
       onSuccess: () => {
@@ -88,8 +109,21 @@ export function EventCard({
     });
   };
 
-  // ── Registration button logic ──────────────────────────────────────────────
   const renderAction = () => {
+    // COMPACT MODE (Homepage) → always show Register → Details
+    if (compact) {
+      // Always show View Details on homepage compact cards
+      return (
+        <AppLink
+          href={EVENT_ROUTES.DETAIL(event.id)}
+          className="inline-flex items-center gap-1 text-primary-500 hover:text-primary-600 text-xs font-semibold transition-colors"
+        >
+          View Details <Icon icon="mdi:arrow-right" className="w-3 h-3" />
+        </AppLink>
+      );
+    }
+
+    // PAST EVENTS → View Details
     if (isPast) {
       return (
         <AppLink
@@ -101,15 +135,20 @@ export function EventCard({
       );
     }
 
+    // CANCELLED EVENTS → View Details
     if (isCancelled) {
       return (
-        <span className="inline-flex items-center gap-1 text-red-500 text-xs font-semibold">
+        <AppLink
+          href={EVENT_ROUTES.DETAIL(event.id)}
+          className="inline-flex items-center gap-1 text-red-500 hover:text-red-600 text-xs font-semibold transition-colors"
+        >
           <Icon icon="mdi:cancel" className="w-3.5 h-3.5" />
-          Cancelled
-        </span>
+          View Details
+        </AppLink>
       );
     }
 
+    // NOT LOGGED IN → View Details
     if (!isLoggedIn) {
       return (
         <AppLink
@@ -121,39 +160,21 @@ export function EventCard({
       );
     }
 
-    if (isRegistered) {
+    // REGISTERED OR FULL → View Details
+    if (isRegistered || isFull) {
       return (
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            disabled
-            className="inline-flex items-center gap-1 border border-green-500 text-green-600 text-xs font-semibold px-4 py-1.5 rounded-md cursor-default"
-          >
-            <Icon icon="mdi:check-circle" className="w-3.5 h-3.5" />
-            Registered
-          </button>
-          <AppLink
-            href={EVENT_ROUTES.DETAIL(event.id)}
-            className="inline-flex items-center gap-1 text-gray-500 hover:text-primary-500 text-xs font-semibold transition-colors"
-          >
-            Details
-          </AppLink>
-        </div>
-      );
-    }
-
-    if (isFull) {
-      return (
-        <button
-          type="button"
-          disabled
-          className="inline-flex items-center gap-1 text-gray-400 text-xs font-semibold cursor-not-allowed"
+        <AppLink
+          href={EVENT_ROUTES.DETAIL(event.id)}
+          className="inline-flex items-center gap-1 text-gray-500 hover:text-primary-500 text-xs font-semibold transition-colors"
         >
-          Event Full
-        </button>
+          {isRegistered && <Icon icon="mdi:check-circle" className="w-3.5 h-3.5" />}
+          {isFull && <span className="text-gray-400">Event Full</span>}
+          View Details
+        </AppLink>
       );
     }
 
+    // DEFAULT → available for registration
     return (
       <button
         type="button"
@@ -182,6 +203,21 @@ export function EventCard({
               <Icon icon="mdi:calendar-month-outline" className="w-12 h-12 text-primary-200" />
             </div>
           )}
+
+          {/* Share Button */}
+          <button
+            type="button"
+            onClick={onShare}
+            //   className="absolute top-3 right-3 z-10 bg-white/90 hover:bg-white text-gray-700 p-2 rounded-full shadow-sm transition"
+            className="absolute top-3 right-3 z-10 
+           bg-black/50 backdrop-blur-sm 
+           hover:bg-black/70 
+           text-white 
+           p-2 rounded-full 
+           shadow-md transition"
+          >
+            <Icon icon="mdi:share-variant-outline" className="w-4 h-4" />
+          </button>
 
           {/* Badges */}
           {!isPast && isRegistered && (
@@ -238,7 +274,9 @@ export function EventCard({
                   <>
                     <span className="font-semibold">{attendeeCount}</span>/{capacity} attending
                     {spotsLeft !== undefined && spotsLeft > 0 && spotsLeft <= 10 && (
-                      <span className="text-orange-500 ml-1">({spotsLeft} spots left)</span>
+                      <span className="text-orange-500 ml-1">
+                        ({spotsLeft} spot{`${spotsLeft == 0 || spotsLeft > 1 ? 's' : ''}`} left)
+                      </span>
                     )}
                   </>
                 ) : (

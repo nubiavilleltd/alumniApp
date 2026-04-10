@@ -118,7 +118,7 @@ export function createSelfDeactivatePayload(): Record<string, any> {
  */
 export function createChangeRolePayload(
   userId: string,
-  role: 'admin' | 'member',
+  role: 'admin' | 'alumni',
 ): Record<string, any> {
   return {
     user_id: userId,

@@ -92,7 +92,7 @@ export function mapProjectToCreatePayload(
     const fd = new FormData();
     Object.entries(base).forEach(([k, v]) => fd.append(k, String(v ?? '')));
     // Backend expects multiple "images" entries — browser names them images[0], images[1], etc.
-    formData.images.forEach((img) => fd.append('images', img));
+    formData.images.forEach((img) => fd.append('images[]', img));
     return fd;
   }
 

@@ -8,7 +8,6 @@ import { FilterDropdown } from '@/shared/components/ui/FilterDropdown';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import { useAlumni } from '@/features/alumni/hooks/useAlumni';
 import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
-import { defaultPrivacySettings } from '@/features/authentication/types/auth.types';
 import { isFieldVisible, getPhotoDisplay } from '@/features/alumni/utils/privacyHelpers';
 import { ALUMNI_ROUTES } from '../routes';
 import { ROUTES } from '@/shared/constants/routes';
@@ -18,14 +17,14 @@ import { Alumni } from '../types/alumni.types';
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 function AlumnaeCardSkeleton() {
   return (
-    <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 animate-pulse flex flex-col">
-      <div className="h-57 w-full bg-gray-200" />
-      <div className="p-3 flex flex-col gap-2">
+    <div className="flex h-full min-h-[24rem] flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm animate-pulse">
+      <div className="h-56 w-full flex-shrink-0 bg-gray-200 sm:h-64" />
+      <div className="flex flex-1 flex-col gap-2 p-3">
         <div className="h-4 bg-gray-200 rounded w-3/4" />
         <div className="h-3 bg-gray-200 rounded w-1/2" />
         <div className="h-3 bg-gray-200 rounded w-full" />
         <div className="h-3 bg-gray-200 rounded w-5/6" />
-        <div className="flex gap-1.5 mt-1">
+        <div className="mt-auto flex gap-1.5 pt-2">
           <div className="flex-1 h-7 bg-gray-200 rounded" />
           <div className="flex-1 h-7 bg-gray-200 rounded" />
         </div>
@@ -52,12 +51,6 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: A
   const photoVisible = isFieldVisible(entry, 'photo', currentUser);
   const cityVisible = isFieldVisible(entry, 'city', currentUser);
 
-  const initials = entry.name
-    .split(' ')
-    .map((s) => s[0])
-    .join('')
-    .toUpperCase();
-
   const classLabel = `Class '${String(entry.graduationYear).slice(-2)}`;
   const isOwnProfile = entry.memberId === currentUser?.memberId;
 
@@ -67,16 +60,18 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: A
   return (
     <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex flex-col">
       {/* <div className="h-57 w-full overflow-hidden bg-gray-100"> */}
-      <div className="h-57 w-full overflow-hidden bg-gray-100 min-h-[228px]">
+      {/* <div className="h-57 w-full overflow-hidden bg-gray-100 min-h-[228px]"> */}
+      {/* <div className="w-full aspect-[4/5] sm:aspect-[3/4] overflow-hidden bg-gray-100"> */}
+      <div className="w-full overflow-hidden bg-gray-100 h-48 sm:h-52 lg:h-56">
         {displayPhoto ? (
           <img
             src={displayPhoto}
             alt={entry.name}
-            className="w-full h-full object-cover object-top"
+            className="w-full h-full object-cover object-center"
             loading="lazy"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gray-100 relative">
+          <div className="relative flex h-full w-full items-center justify-center bg-gray-100">
             <Icon icon="mdi:account-circle" className="w-32 h-32 text-gray-300" />
             {!photoVisible && entry.photo && (
               <div className="absolute bottom-2 right-2 bg-gray-800 bg-opacity-80 rounded-full p-1.5">
@@ -86,7 +81,7 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: A
           </div>
         )}
       </div>
-      <div className="p-3 flex flex-col gap-1.5">
+      <div className="flex flex-1 flex-col gap-1.5 p-3">
         <h3 className="text-primary-500 font-bold text-sm leading-tight">{entry.name}</h3>
         <div className="flex items-center gap-2 text-gray-400 text-[11px]">
           <span>{classLabel}</span>
@@ -107,8 +102,10 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: A
             </>
           )}
         </div>
-        <p className="text-gray-500 text-[11px] leading-relaxed line-clamp-2">{entry.bio}</p>
-        <div className="flex items-center gap-1.5 mt-1">
+        <p className="min-h-[2.75rem] text-[11px] leading-relaxed text-gray-500 line-clamp-2">
+          {entry.bio}
+        </p>
+        <div className="mt-auto flex items-center gap-1.5 pt-2">
           <button
             type="button"
             onClick={() => onMessageClick(entry)}
@@ -240,13 +237,15 @@ export function AlumniDirectoryPage() {
 
           {/* Grid */}
           {isLoading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4 mb-10">
+            // <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4 mb-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-4 mb-10">
               {Array.from({ length: ITEMS_PER_PAGE }).map((_, i) => (
                 <AlumnaeCardSkeleton key={i} />
               ))}
             </div>
           ) : visibleAlumni.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4 mb-10">
+            // <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4 mb-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-4 mb-10">
               {visibleAlumni.map((entry) => (
                 <AlumnaeCard
                   key={entry.id}

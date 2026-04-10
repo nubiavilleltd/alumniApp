@@ -18,6 +18,9 @@ import ProjectsPage from './features/projects/pages/ProjectsPage';
 import LeadershipPage from './features/leadership/pages/LeadershipPage';
 
 import { AuthPage } from './features/authentication/pages/AuthPage';
+import { RegisterDetailsPage } from './features/authentication/pages/RegisterDetailsPage';
+import { RegisterVerificationPage } from './features/authentication/pages/RegisterVerificationPage';
+import { RegisterSuccessPage } from './features/authentication/pages/RegisterSuccessPage';
 
 import { AlumniRedirectPage } from './features/alumni/pages/AlumniRedirectPage';
 import { AlumniDirectoryPage } from './features/alumni/pages/AlumniDirectoryPage';
@@ -41,6 +44,9 @@ import { AdminDashboardPage } from './features/admin/pages/AdminDashboardPage';
 import ProjectDetailsPage from './features/projects/pages/ProjectDetail';
 import { ADMIN_ROUTES } from './features/admin/routes';
 import { AdminMembersPage } from './features/admin/pages/AdminMembersPage';
+import { AdminEventRegistrationsPage } from './features/events/pages/AdminEventRegistrationsPage';
+import { COMING_SOON_ROUTES } from './config/comingSoonRoutes';
+import { ComingSoonRouteHandler } from './pages/errors/ComingSoonRouteHandler';
 
 export default function App() {
   return (
@@ -200,7 +206,9 @@ export default function App() {
           {/* Auth */}
           <Route path={ROUTES.AUTH.ROOT} element={<Navigate to={ROUTES.AUTH.LOGIN} replace />} />
           <Route path={ROUTES.AUTH.LOGIN} element={<AuthPage mode="login" />} />
-          <Route path={ROUTES.AUTH.REGISTER} element={<AuthPage mode="register" />} />
+          <Route path={ROUTES.AUTH.REGISTER} element={<RegisterDetailsPage />} />
+          <Route path={ROUTES.AUTH.REGISTER_VERIFY} element={<RegisterVerificationPage />} />
+          <Route path={ROUTES.AUTH.REGISTER_SUCCESS} element={<RegisterSuccessPage />} />
           <Route path={ROUTES.AUTH.FORGOT_PASSWORD} element={<AuthPage mode="forgot-password" />} />
           <Route path={ROUTES.AUTH.RESET_PASSWORD} element={<AuthPage mode="reset-password" />} />
           <Route
@@ -275,8 +283,31 @@ export default function App() {
             }
           />
 
+          <Route
+            path={ADMIN_ROUTES.EVENT_REGISTRATIONS}
+            element={
+              <AdminRoute>
+                <ErrorBoundary>
+                  <AdminEventRegistrationsPage />
+                </ErrorBoundary>
+              </AdminRoute>
+            }
+          />
+
           {/* Redirects */}
           <Route path="/home" element={<Navigate to={ROUTES.HOME} replace />} />
+          {/* Coming Soon routes (dynamic) */}
+          {COMING_SOON_ROUTES.map(({ prefix, title }) => (
+            <Route
+              key={prefix}
+              path={`/${prefix}/*`}
+              element={
+                <ErrorBoundary>
+                  <ComingSoonRouteHandler title={title} />
+                </ErrorBoundary>
+              }
+            />
+          ))}
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>

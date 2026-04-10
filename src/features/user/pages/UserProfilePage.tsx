@@ -153,7 +153,6 @@ export default function UserProfilePage() {
 
   const { data: currentUser, isLoading } = useCurrentUser();
   const { data: privacyValue, isLoading: privacyLoading } = usePrivacySettings();
-  console.log('current user', { currentUser });
 
   const [showEdit, setShowEdit] = useState(false);
   const openEdit = () => setShowEdit(true);
@@ -179,8 +178,6 @@ export default function UserProfilePage() {
   //   ...currentUser?.privacy,
   // };
   const privacy: PrivacySettings = privacyValue as PrivacySettings;
-
-  console.log('privacy 1', { privacy });
 
   const occupationLabel = resolveLabel(currentUser?.occupations?.[0], occupationOptions);
   const employmentLabel = resolveLabel(currentUser?.employmentStatus, employmentStatusOptions);
@@ -389,50 +386,43 @@ export default function UserProfilePage() {
                 <SectionCard title="Social Links" icon="mdi:link-variant" onEdit={openEdit}>
                   <div className="divide-y divide-gray-50">
                     {currentUser.linkedin && (
-                      <div className="flex items-center justify-between py-3">
-                        <div className="flex items-center gap-2 text-sm text-gray-400">
-                          <Icon icon="mdi:linkedin" className="w-4 h-4" />
-                          LinkedIn
-                        </div>
+                      <div className="flex items-center py-3">
                         <a
                           href={currentUser.linkedin}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-sm font-medium text-primary-500 hover:text-primary-600 hover:underline transition-colors"
+                          className="flex items-center gap-2 text-sm text-gray-400 hover:text-primary-500 transition-colors"
                         >
-                          View Profile
+                          <Icon icon="mdi:linkedin" className="w-4 h-4" />
+                          LinkedIn
                         </a>
                       </div>
                     )}
+
                     {currentUser.twitter && (
-                      <div className="flex items-center justify-between py-3">
-                        <div className="flex items-center gap-2 text-sm text-gray-400">
-                          <Icon icon="mdi:twitter" className="w-4 h-4" />
-                          Twitter / X
-                        </div>
+                      <div className="flex items-center py-3">
                         <a
                           href={currentUser.twitter}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-sm font-medium text-primary-500 hover:text-primary-600 hover:underline transition-colors"
+                          className="flex items-center gap-2 text-sm text-gray-400 hover:text-primary-500 transition-colors"
                         >
-                          View Profile
+                          <Icon icon="mdi:twitter" className="w-4 h-4" />
+                          Twitter / X
                         </a>
                       </div>
                     )}
+
                     {currentUser.instagram && (
-                      <div className="flex items-center justify-between py-3">
-                        <div className="flex items-center gap-2 text-sm text-gray-400">
-                          <Icon icon="mdi:instagram" className="w-4 h-4" />
-                          Instagram
-                        </div>
+                      <div className="flex items-center py-3">
                         <a
                           href={currentUser.instagram}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-sm font-medium text-primary-500 hover:text-primary-600 hover:underline transition-colors"
+                          className="flex items-center gap-2 text-sm text-gray-400 hover:text-primary-500 transition-colors"
                         >
-                          View Profile
+                          <Icon icon="mdi:instagram" className="w-4 h-4" />
+                          Instagram
                         </a>
                       </div>
                     )}

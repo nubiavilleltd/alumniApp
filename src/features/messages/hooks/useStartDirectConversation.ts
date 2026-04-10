@@ -17,6 +17,7 @@ interface DirectConversationRecipientProfile {
 interface StartDirectConversationParams {
   participantMemberId: string;
   topic?: string;
+  initialMessage?: string;
   recipientProfile?: DirectConversationRecipientProfile;
 }
 
@@ -27,6 +28,10 @@ function buildMessagesIntent(params: StartDirectConversationParams) {
 
   if (params.topic) {
     search.set('topic', params.topic);
+  }
+
+  if (params.initialMessage?.trim()) {
+    search.set('initialMessage', params.initialMessage.trim());
   }
 
   return `/messages?${search.toString()}`;
@@ -70,7 +75,15 @@ export function useStartDirectConversation() {
         topic: params.topic,
       });
 
-      navigate(`/messages?threadId=${encodeURIComponent(response.thread.id)}`);
+      const search = new URLSearchParams({
+        threadId: response.thread.id,
+      });
+
+      if (params.initialMessage?.trim()) {
+        search.set('initialMessage', params.initialMessage.trim());
+      }
+
+      navigate(`/messages?${search.toString()}`);
     } catch {
       // The shared mutation hook already reports errors through toast notifications.
     }

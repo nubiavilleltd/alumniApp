@@ -16,6 +16,10 @@ import { MARKETPLACE_ROUTES } from '@/features/marketplace/routes';
 import { USER_ROUTES } from '../routes';
 import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 
+import { useState } from 'react';
+import { usePendingVouches, useApproveVouch, useRejectVouch } from '../hooks/useVoucher';
+import type { PendingVouch } from '../api/voucherApi';
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function formatEventDate(date: string) {
@@ -82,7 +86,7 @@ type StatTone = 'primary' | 'accent' | 'secondary';
 const statToneClass: Record<StatTone, string> = {
   primary: 'from-primary-500 to-primary-700 text-white',
   accent: 'from-accent-800 to-accent-950 text-white',
-  secondary: 'from-secondary-500 to-secondary-700 text-white',
+  secondary: 'from-orange-500 to-orange-500 text-white',
 };
 
 function StatCard({
@@ -154,17 +158,164 @@ function SectionSkeleton({ rows = 3 }: { rows?: number }) {
   );
 }
 
+function PendingVouchRow({
+  vouch,
+  onApprove,
+  onReject,
+}: {
+  vouch: PendingVouch;
+  onApprove: (vouchId: string) => void;
+  onReject: (vouchId: string, reason?: string) => void;
+}) {
+  const [showRejectInput, setShowRejectInput] = useState(false);
+  const [rejectReason, setRejectReason] = useState('');
+  const [actionError, setActionError] = useState('');
+
+  const approveMutation = useApproveVouch();
+  const rejectMutation = useRejectVouch();
+  const busy = approveMutation.isPending || rejectMutation.isPending;
+
+  const handleApprove = async () => {
+    setActionError('');
+    try {
+      await approveMutation.mutateAsync(vouch.vouchId);
+      onApprove(vouch.vouchId);
+    } catch (error: any) {
+      setActionError(error.message ?? 'Approval failed. Please try again.');
+    }
+  };
+
+  const handleRejectConfirm = async () => {
+    setActionError('');
+    try {
+      await rejectMutation.mutateAsync({
+        vouchId: vouch.vouchId,
+        reason: rejectReason.trim() || undefined,
+      });
+      onReject(vouch.vouchId, rejectReason.trim() || undefined);
+    } catch (error: any) {
+      setActionError(error.message ?? 'Rejection failed. Please try again.');
+    }
+  };
+
+  return (
+    <div className="flex flex-col gap-3 rounded-2xl border border-accent-100 bg-accent-50/60 px-4 py-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          <p className="font-medium text-accent-900">{vouch.fullName}</p>
+          <p className="mt-0.5 text-xs text-accent-500">
+            {vouch.department && (
+              <>
+                <span className="font-medium text-accent-700">{vouch.department}</span>
+                {' · '}
+              </>
+            )}
+            Class of {vouch.graduationYear}
+            {' · '}
+            {vouch.email}
+            {vouch.phone && (
+              <>
+                {' · '}
+                {vouch.phone}
+              </>
+            )}
+          </p>
+        </div>
+        {!showRejectInput && (
+          <div className="flex gap-2 flex-shrink-0">
+            <button
+              type="button"
+              disabled={busy}
+              onClick={handleApprove}
+              className="btn btn-primary btn-sm min-w-[80px]"
+            >
+              {approveMutation.isPending ? (
+                <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" />
+              ) : (
+                'Approve'
+              )}
+            </button>
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => {
+                setShowRejectInput(true);
+                setActionError('');
+              }}
+              className="btn btn-outline btn-sm text-red-600 border-red-200 hover:bg-red-50"
+            >
+              Reject
+            </button>
+          </div>
+        )}
+      </div>
+
+      {showRejectInput && (
+        <div className="space-y-2 border-t border-accent-100 pt-3">
+          <label className="block text-xs font-medium text-accent-700">
+            Reason for rejection <span className="font-normal text-accent-400">(optional)</span>
+          </label>
+          <textarea
+            rows={2}
+            placeholder="e.g. I do not recognise this person as an alumna of FGGC."
+            value={rejectReason}
+            onChange={(e) => setRejectReason(e.target.value)}
+            className="w-full rounded-xl border border-accent-200 bg-white px-3 py-2 text-sm text-accent-900 placeholder:text-accent-300 focus:border-primary-400 focus:outline-none focus:ring-1 focus:ring-primary-200 resize-none"
+          />
+          <div className="flex gap-2">
+            <button
+              type="button"
+              disabled={busy}
+              onClick={handleRejectConfirm}
+              className="btn btn-sm bg-red-500 text-white hover:bg-red-600 min-w-[100px]"
+            >
+              {rejectMutation.isPending ? (
+                <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" />
+              ) : (
+                'Confirm reject'
+              )}
+            </button>
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => {
+                setShowRejectInput(false);
+                setRejectReason('');
+                setActionError('');
+              }}
+              className="btn btn-outline btn-sm"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {actionError && (
+        <p className="text-xs text-red-500 bg-red-50 rounded-xl px-3 py-2">{actionError}</p>
+      )}
+    </div>
+  );
+}
+
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export function UserDashboardPage() {
   // const currentUser = useAuthStore((state) => state.user);
 
   const { data: currentUser, isLoading: isLoadingProfile } = useCurrentUser();
+  const { data: pendingVouches = [], isLoading: vouchesLoading } = usePendingVouches();
+
+  const [removedVouchIds, setRemovedVouchIds] = useState<Set<string>>(new Set());
+  const handleVouchApprove = (vouchId: string) =>
+    setRemovedVouchIds((prev) => new Set([...prev, vouchId]));
+  const handleVouchReject = (vouchId: string) =>
+    setRemovedVouchIds((prev) => new Set([...prev, vouchId]));
 
   // Real data
   const { data: upcomingEvents = [], isLoading: eventsLoading } = useUpcomingEvents();
   const { data: announcements = [], isLoading: announcementsLoading } = useLatestAnnouncements(3);
-  const { data: allAlumni = [], isLoading: alumniLoading } = useAlumni();
+  const { data: allAlumni = [], isLoading: alumniLoading } = useAlumni({ action_type: 'approved' });
 
   // TODO: myEvents is blocked on backend implementing POST /get_events { user_id }
   //       returning only RSVP'd events with rsvp_status per event.
@@ -231,7 +382,15 @@ export function UserDashboardPage() {
     { label: 'My Business', href: MARKETPLACE_ROUTES.MY_BUSINESS, icon: 'mdi:store-outline' },
   ];
 
-  const isLoading = eventsLoading || myEventsLoading;
+  const isLoading =
+    eventsLoading ||
+    myEventsLoading ||
+    isLoadingProfile ||
+    announcementsLoading ||
+    vouchesLoading ||
+    isLoadingProfile;
+
+  const visiblePendingVouches = pendingVouches.filter((v) => !removedVouchIds.has(v.vouchId));
 
   return (
     <>
@@ -285,13 +444,33 @@ export function UserDashboardPage() {
               tone="primary"
               loading={isLoading}
             />
-            <StatCard
+            {/* <StatCard
               label="Announcements"
               value={String(announcements.length)}
               detail="Fresh updates to review"
               icon="mdi:bullhorn-outline"
               tone="accent"
               loading={announcementsLoading}
+            /> */}
+
+            {/* {pendingVouches.length > 0 && (
+              <StatCard
+                label="Pending Vouches"
+                value={String(visiblePendingVouches.length)}
+                detail="Awaiting your review"
+                icon="mdi:account-check-outline"
+                tone="secondary"
+                loading={vouchesLoading}
+              />
+            )} */}
+
+            <StatCard
+              label="Pending Vouches"
+              value={String(visiblePendingVouches.length)}
+              detail="Awaiting your review"
+              icon="mdi:account-check-outline"
+              tone="secondary"
+              loading={vouchesLoading}
             />
           </section>
 
@@ -299,6 +478,62 @@ export function UserDashboardPage() {
           <section className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
             {/* Left column */}
             <div className="space-y-6">
+              {/* {pendingVouches.length > 0 && (
+                <SectionCard
+                  title={`Pending Vouches${visiblePendingVouches.length > 0 ? ` (${visiblePendingVouches.length})` : ''}`}
+                >
+                  {vouchesLoading ? (
+                    <SectionSkeleton rows={2} />
+                  ) : visiblePendingVouches.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-10 text-center">
+                      <div className="w-12 h-12 rounded-full bg-primary-50 flex items-center justify-center mb-3">
+                        <Icon icon="mdi:check-all" className="w-6 h-6 text-primary-500" />
+                      </div>
+                      <p className="font-medium text-accent-800">All caught up!</p>
+                      <p className="mt-1 text-sm text-accent-500">No pending vouches to review.</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {visiblePendingVouches.map((vouch) => (
+                        <PendingVouchRow
+                          key={vouch.vouchId}
+                          vouch={vouch}
+                          onApprove={handleVouchApprove}
+                          onReject={handleVouchReject}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </SectionCard>
+              )} */}
+
+              <SectionCard
+                title={`Pending Vouches${visiblePendingVouches.length > 0 ? ` (${visiblePendingVouches.length})` : ''}`}
+              >
+                {vouchesLoading ? (
+                  <SectionSkeleton rows={2} />
+                ) : visiblePendingVouches.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-10 text-center">
+                    <div className="w-12 h-12 rounded-full bg-primary-50 flex items-center justify-center mb-3">
+                      <Icon icon="mdi:check-all" className="w-6 h-6 text-primary-500" />
+                    </div>
+                    <p className="font-medium text-accent-800">All caught up!</p>
+                    <p className="mt-1 text-sm text-accent-500">No pending vouches to review.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {visiblePendingVouches.map((vouch) => (
+                      <PendingVouchRow
+                        key={vouch.vouchId}
+                        vouch={vouch}
+                        onApprove={handleVouchApprove}
+                        onReject={handleVouchReject}
+                      />
+                    ))}
+                  </div>
+                )}
+              </SectionCard>
+
               {/* Announcements */}
               {/* <SectionCard
                 title="Announcements"
@@ -497,7 +732,7 @@ export function UserDashboardPage() {
               </SectionCard>
 
               {/* Community updates — TODO: replace with real announcements once endpoint is live */}
-              <SectionCard title="Community Updates">
+              {/* <SectionCard title="Community Updates">
                 <div className="space-y-3">
                   {communityUpdates.map((item) => (
                     <AppLink
@@ -510,7 +745,7 @@ export function UserDashboardPage() {
                     </AppLink>
                   ))}
                 </div>
-              </SectionCard>
+              </SectionCard> */}
 
               {/* Quick links */}
               <SectionCard title="Quick Links">

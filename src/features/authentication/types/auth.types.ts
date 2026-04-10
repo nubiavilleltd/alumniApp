@@ -166,7 +166,8 @@ export interface StartRegistrationResponse {
 }
 
 export interface VerifyRegistrationRequest {
-  draft: RegisterDetailsFormValues;
+  email?: string;
+  draft?: RegisterDetailsFormValues;
   code: string;
   userId: string; // Passed from flow state, not form state
 }
@@ -185,4 +186,12 @@ export interface CompleteRegistrationResponse {
   status: 'pending_admin_approval';
   message: string;
   draft: AuthUserSummary;
+}
+
+export interface Voucher {
+  id: string;
+  fullName: string;
+  email: string;
+  graduationYear: string;
+  chapterId: string;
 }

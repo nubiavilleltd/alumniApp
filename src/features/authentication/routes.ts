@@ -5,6 +5,8 @@ export const AUTH_ROUTES = {
   ROOT: '/auth',
   LOGIN: '/auth/login',
   REGISTER: '/auth/register',
+  REGISTER_VERIFY: '/auth/register/verify',
+  REGISTER_SUCCESS: '/auth/register/success',
   FORGOT_PASSWORD: '/auth/forgot-password',
   // Route uses a path param for the reset code
   RESET_PASSWORD: '/auth/reset-password',

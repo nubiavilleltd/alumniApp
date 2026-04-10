@@ -100,4 +100,9 @@ export const API_ENDPOINTS = {
     MEMBER_LIST: '/api/get_users_by_action', // POST — action_type flag in body
     APPROVE_USER: '/api/approve_user', // POST — action: approve | reject
   },
+
+  VOUCHER: {
+    GET_PENDING: '/api/voucher_pending',
+    ACTION: '/api/vouch_action',
+  },
 } as const;

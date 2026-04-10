@@ -969,10 +969,20 @@ export const backendMessagesTransport: MessagesTransport = {
       throw new Error('Attachment data is missing. Please choose the file again.');
     }
 
-    if (!request.threadId || isDraftDirectThreadId(request.threadId)) {
-      throw new Error(
-        'Attachments can be sent once this conversation has a real thread. Send the first direct message as text first.',
-      );
+    if (!request.threadId) {
+      throw new Error('Choose a conversation before attaching a file.');
+    }
+
+    const isDraftDirectThread = isDraftDirectThreadId(request.threadId);
+    const draftEntry = isDraftDirectThread ? directDraftThreads.get(request.threadId) : undefined;
+    const parsedDraftThread = isDraftDirectThread
+      ? parseDirectDraftThreadId(request.threadId)
+      : null;
+    const participantMemberId =
+      draftEntry?.participantMemberId ?? parsedDraftThread?.participantMemberId;
+
+    if (isDraftDirectThread && !participantMemberId) {
+      throw new Error('This direct conversation could not be resolved for attachments yet.');
     }
 
     const formData = new FormData();
@@ -984,7 +994,14 @@ export const backendMessagesTransport: MessagesTransport = {
       type: normalizedMimeType,
     });
 
-    formData.append('thread_id', String(normalizeBackendIdentifierValue(request.threadId)));
+    if (isDraftDirectThread) {
+      formData.append(
+        'recipient_id',
+        String(normalizeBackendIdentifierValue(participantMemberId!)),
+      );
+    } else {
+      formData.append('thread_id', String(normalizeBackendIdentifierValue(request.threadId)));
+    }
     formData.append('file', uploadFile);
 
     const response = await apiClient.post(API_ENDPOINTS.MESSAGES.ATTACHMENTS, formData);

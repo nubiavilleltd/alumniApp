@@ -250,46 +250,7 @@ export function AlumniProfilePage() {
   // ── Check if viewing own profile ────────────────────────────────────────────
   const isOwnProfile = currentUser?.memberId === alumnus.memberId;
 
-  // ── Merge session data for own profile ────────────────────────────────────
-  // const displayAlumnus =
-  //   isOwnProfile && currentUser
-  //     ? {
-  //         ...alumnus,
-  //         photo: currentUser.photo || alumnus.photo,
-  //         alternativePhone: currentUser.alternativePhone || alumnus.alternativePhone,
-  //         birthDate: currentUser.birthDate || alumnus.birthDate,
-  //         residentialAddress: currentUser.residentialAddress || alumnus.residentialAddress,
-  //         area: currentUser.area || alumnus.area,
-  //         city: currentUser.city || alumnus.city,
-  //         employmentStatus: currentUser.employmentStatus || alumnus.employmentStatus,
-  //         occupations: currentUser.occupations || alumnus.occupations,
-  //         industrySectors: currentUser.industrySectors || alumnus.industrySectors,
-  //         yearsOfExperience: currentUser.yearsOfExperience ?? alumnus.yearsOfExperience,
-  //         isVolunteer: currentUser.isVolunteer ?? alumnus.isVolunteer,
-  //         linkedin: currentUser.linkedin || alumnus.linkedin,
-  //         twitter: currentUser.twitter || alumnus.twitter,
-  //         instagram: currentUser.instagram || alumnus.instagram,
-  //         whatsappPhone: currentUser.whatsappPhone || (alumnus as any).whatsappPhone,
-  //         privacy: currentUser.privacy || (alumnus as any).privacy,
-  //       }
-  //     : alumnus;
-
-  // // ── Resolve privacy settings ──────────────────────────────────────────────
-  // const alumnusAccount = displayAlumnus.memberId
-  //   ? getMockAccountByMemberId(displayAlumnus.memberId)
-  //   : undefined;
-
-  // const privacy: PrivacySettings = {
-  //   ...defaultPrivacySettings,
-  //   ...alumnusAccount?.privacy,
-  //   ...(isOwnProfile && currentUser?.privacy ? currentUser.privacy : {}),
-  // };
-
-  // const alum = { ...displayAlumnus, privacy };
-
   const alum = alumnus;
-
-  console.log('alum alum', { alum });
 
   // Resolved labels
   const occupationLabel = resolveLabel(alum.occupations?.[0], occupationOptions);
@@ -551,50 +512,43 @@ export function AlumniProfilePage() {
                 <SectionCard title="Social Links" icon="mdi:link-variant">
                   <div className="divide-y divide-gray-50">
                     {alum.linkedin && (
-                      <div className="flex items-center justify-between py-3">
-                        <div className="flex items-center gap-2 text-sm text-gray-400">
-                          <Icon icon="mdi:linkedin" className="w-4 h-4" />
-                          LinkedIn
-                        </div>
+                      <div className="flex items-center py-3">
                         <a
                           href={alum.linkedin}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-sm font-medium text-primary-500 hover:text-primary-600 hover:underline transition-colors"
+                          className="flex items-center gap-2 text-sm text-gray-400 hover:text-primary-500 transition-colors"
                         >
-                          View Profile
+                          <Icon icon="mdi:linkedin" className="w-4 h-4" />
+                          LinkedIn
                         </a>
                       </div>
                     )}
+
                     {alum.twitter && (
-                      <div className="flex items-center justify-between py-3">
-                        <div className="flex items-center gap-2 text-sm text-gray-400">
-                          <Icon icon="mdi:twitter" className="w-4 h-4" />
-                          Twitter / X
-                        </div>
+                      <div className="flex items-center py-3">
                         <a
                           href={alum.twitter}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-sm font-medium text-primary-500 hover:text-primary-600 hover:underline transition-colors"
+                          className="flex items-center gap-2 text-sm text-gray-400 hover:text-primary-500 transition-colors"
                         >
-                          View Profile
+                          <Icon icon="mdi:twitter" className="w-4 h-4" />
+                          Twitter / X
                         </a>
                       </div>
                     )}
+
                     {alum.instagram && (
-                      <div className="flex items-center justify-between py-3">
-                        <div className="flex items-center gap-2 text-sm text-gray-400">
-                          <Icon icon="mdi:instagram" className="w-4 h-4" />
-                          Instagram
-                        </div>
+                      <div className="flex items-center py-3">
                         <a
                           href={alum.instagram}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-sm font-medium text-primary-500 hover:text-primary-600 hover:underline transition-colors"
+                          className="flex items-center gap-2 text-sm text-gray-400 hover:text-primary-500 transition-colors"
                         >
-                          View Profile
+                          <Icon icon="mdi:instagram" className="w-4 h-4" />
+                          Instagram
                         </a>
                       </div>
                     )}

@@ -43,7 +43,6 @@ export const alumniService = {
         (!Array.isArray(data) && (data as any).user?.id === id ? (data as any).user : null);
 
       if (!match) return null;
-      console.log('match', { match });
 
       //Stop formatting once the backend is sending the correct format!!!!!!!. Just pass in the match directly to mapBackendAlumniToFrontend()
       const formattedData = {
@@ -53,7 +52,7 @@ export const alumniService = {
           field_visibility: parseFieldVisibility(match.profile.field_visibility),
         },
       };
-      console.log('formattedData', { formattedData });
+
       return mapBackendAlumniToFrontend(formattedData);
     } catch (error: any) {
       if (error.response?.status === 404) return null;
