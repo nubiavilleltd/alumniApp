@@ -20,6 +20,21 @@ type Tab = 'upcoming' | 'past';
 type ViewType = 'grid' | 'calendar';
 const ITEMS_PER_PAGE = 6;
 
+function parseDateOnly(dateStr: string) {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  return new Date(y, m - 1, d); // ✅ local date, no timezone shift
+}
+
+function formatDateKey(date: Date) {
+  return (
+    date.getFullYear() +
+    '-' +
+    String(date.getMonth() + 1).padStart(2, '0') +
+    '-' +
+    String(date.getDate()).padStart(2, '0')
+  );
+}
+
 // ─── Calendar Event Pill ──────────────────────────────────────────────────────
 function CalendarEventPill({
   event,
@@ -61,7 +76,9 @@ function CalendarView({
   const eventsByDate = useMemo(() => {
     const map = new Map<string, Event[]>();
     events.forEach((event) => {
-      const key = new Date(event.date).toISOString().split('T')[0];
+      // const key = new Date(event.date).toISOString().split('T')[0];
+      const key = formatDateKey(parseDateOnly(event.date));
+      // const key = formatDateKey(new Date(event.date));
       map.set(key, [...(map.get(key) || []), event]);
     });
     return map;
@@ -108,7 +125,8 @@ function CalendarView({
   for (let d = 1; days.length < 42; d++)
     days.push({ day: d, isCurrentMonth: false, date: new Date(year, month + 1, d) });
 
-  const today = new Date().toISOString().split('T')[0];
+  // const today = new Date().toISOString().split('T')[0];
+  const today = formatDateKey(new Date());
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
@@ -151,7 +169,8 @@ function CalendarView({
 
       <div className="grid grid-cols-7 gap-2">
         {days.map((calDay, idx) => {
-          const key = calDay.date.toISOString().split('T')[0];
+          // const key = calDay.date.toISOString().split('T')[0];
+          const key = formatDateKey(calDay.date);
           const dayEvents = eventsByDate.get(key) || [];
           const isToday = key === today;
 
@@ -217,6 +236,7 @@ export function EventsPage() {
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
 
   const { data: upcoming = [], isLoading: upcomingLoading } = useUpcomingEvents();
+  console.log('upcoming', { upcoming });
   const { data: past = [], isLoading: pastLoading } = usePastEvents();
 
   const isLoading = tab === 'upcoming' ? upcomingLoading : pastLoading;

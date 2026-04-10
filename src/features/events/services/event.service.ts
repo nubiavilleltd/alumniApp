@@ -48,6 +48,7 @@ export const eventsService = {
       });
       // const response = await apiClient.post(API_ENDPOINTS.EVENTS.GET_EVENTS, payload);
       const response = await apiClient.post(API_ENDPOINTS.EVENTS.GET_EVENTS);
+      console.log('response =>', { response });
       const events = extractDataArray(response.data);
       return mapBackendEventList(events);
     } catch (error) {
