@@ -61,12 +61,9 @@ export const leadershipService = {
     try {
       const response = await apiClient.post(API_ENDPOINTS.LEADERSHIP.GET_LEADERSHIP);
 
-      console.log('📥 Leadership response:', response.data);
-
       // Extract and transform data
       const { all } = extractLeadershipFromResponse(response.data);
 
-      console.log(`✅ Loaded ${all.length} leadership members`);
       return all;
     } catch (error) {
       console.error('Failed to fetch leadership:', error);

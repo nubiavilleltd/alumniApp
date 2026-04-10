@@ -250,46 +250,7 @@ export function AlumniProfilePage() {
   // ── Check if viewing own profile ────────────────────────────────────────────
   const isOwnProfile = currentUser?.memberId === alumnus.memberId;
 
-  // ── Merge session data for own profile ────────────────────────────────────
-  // const displayAlumnus =
-  //   isOwnProfile && currentUser
-  //     ? {
-  //         ...alumnus,
-  //         photo: currentUser.photo || alumnus.photo,
-  //         alternativePhone: currentUser.alternativePhone || alumnus.alternativePhone,
-  //         birthDate: currentUser.birthDate || alumnus.birthDate,
-  //         residentialAddress: currentUser.residentialAddress || alumnus.residentialAddress,
-  //         area: currentUser.area || alumnus.area,
-  //         city: currentUser.city || alumnus.city,
-  //         employmentStatus: currentUser.employmentStatus || alumnus.employmentStatus,
-  //         occupations: currentUser.occupations || alumnus.occupations,
-  //         industrySectors: currentUser.industrySectors || alumnus.industrySectors,
-  //         yearsOfExperience: currentUser.yearsOfExperience ?? alumnus.yearsOfExperience,
-  //         isVolunteer: currentUser.isVolunteer ?? alumnus.isVolunteer,
-  //         linkedin: currentUser.linkedin || alumnus.linkedin,
-  //         twitter: currentUser.twitter || alumnus.twitter,
-  //         instagram: currentUser.instagram || alumnus.instagram,
-  //         whatsappPhone: currentUser.whatsappPhone || (alumnus as any).whatsappPhone,
-  //         privacy: currentUser.privacy || (alumnus as any).privacy,
-  //       }
-  //     : alumnus;
-
-  // // ── Resolve privacy settings ──────────────────────────────────────────────
-  // const alumnusAccount = displayAlumnus.memberId
-  //   ? getMockAccountByMemberId(displayAlumnus.memberId)
-  //   : undefined;
-
-  // const privacy: PrivacySettings = {
-  //   ...defaultPrivacySettings,
-  //   ...alumnusAccount?.privacy,
-  //   ...(isOwnProfile && currentUser?.privacy ? currentUser.privacy : {}),
-  // };
-
-  // const alum = { ...displayAlumnus, privacy };
-
   const alum = alumnus;
-
-  console.log('alum alum', { alum });
 
   // Resolved labels
   const occupationLabel = resolveLabel(alum.occupations?.[0], occupationOptions);

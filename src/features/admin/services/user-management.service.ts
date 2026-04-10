@@ -18,28 +18,8 @@ import {
   mapBackendUserList,
   UserAccount,
 } from '../api/adapters/user-management.adapter';
-// import {
-//   mapBackendUserList,
-//   createAdminDeactivatePayload,
-//   createAdminActivatePayload,
-//   createSelfDeactivatePayload,
-//   createGetAllUsersPayload,
-//   type UserAccount,
-// } from '../api/adapters/user-management.adapter';
 
 export const userManagementApi = {
-  /**
-   * Get all users (admin only)
-   *
-   * POST /api/get_users_by_action
-   * { "action_type": "all_users" }
-   */
-  // async getAllUsers(): Promise<UserAccount[]> {
-  //   const payload = createGetAllUsersPayload();
-  //   const { data } = await apiClient.post(API_ENDPOINTS.ADMIN.MEMBER_LIST, payload);
-  //   return mapBackendUserList(data);
-  // },
-
   /**
    * Admin deactivates a user account
    *

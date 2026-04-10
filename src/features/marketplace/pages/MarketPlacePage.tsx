@@ -218,17 +218,6 @@ export default function MarketPlacePage() {
               </p>
             </div>
 
-            {/* {currentUser && (
-              <button
-                type="button"
-                onClick={() => setShowPostModal(true)}
-                className="flex-shrink-0 flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-colors"
-              >
-                <Icon icon="mdi:plus" className="w-4 h-4" />
-                Post Your Business
-              </button>
-            )} */}
-
             {currentUser && visible.length > 0 && (
               <button
                 type="button"

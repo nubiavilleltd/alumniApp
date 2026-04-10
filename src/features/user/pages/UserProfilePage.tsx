@@ -153,7 +153,6 @@ export default function UserProfilePage() {
 
   const { data: currentUser, isLoading } = useCurrentUser();
   const { data: privacyValue, isLoading: privacyLoading } = usePrivacySettings();
-  console.log('current user', { currentUser });
 
   const [showEdit, setShowEdit] = useState(false);
   const openEdit = () => setShowEdit(true);
@@ -179,8 +178,6 @@ export default function UserProfilePage() {
   //   ...currentUser?.privacy,
   // };
   const privacy: PrivacySettings = privacyValue as PrivacySettings;
-
-  console.log('privacy 1', { privacy });
 
   const occupationLabel = resolveLabel(currentUser?.occupations?.[0], occupationOptions);
   const employmentLabel = resolveLabel(currentUser?.employmentStatus, employmentStatusOptions);

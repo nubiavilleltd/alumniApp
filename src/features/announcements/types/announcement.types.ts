@@ -1,14 +1,3 @@
-// export interface NewsItem {
-//   id: number;
-//   title: string;
-//   slug: string;
-//   date: string;
-//   image: string;
-//   tag?: string;
-//   excerpt?: string;
-//   featured?: boolean;
-// }
-
 // features/announcements/types/announcement.types.ts
 
 export interface NewsItem {

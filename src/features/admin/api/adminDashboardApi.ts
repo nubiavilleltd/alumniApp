@@ -3,14 +3,6 @@
 // Admin-only API layer. Completely separate from userDashboardApi.
 // Only accessible via AdminRoute.
 //
-// ─── Integration status ───────────────────────────────────────────────────────
-//   ✅ getPendingMembers  → POST /api/admin/members/list  { action_type: "pending Approval" }
-//   ✅ getApprovedMembers → POST /api/admin/members/list  { action_type: "approved" }
-//   ✅ approveMember      → POST /api/approve_user        { action: "approve" }
-//   ✅ rejectMember       → POST /api/approve_user        { action: "reject" }
-//   🔴 getDashboardStats  → not yet available from backend (using placeholder values)
-//   🔴 getUpcomingEvents  → not yet available from backend
-// ─────────────────────────────────────────────────────────────────────────────
 
 import { apiClient } from '@/lib/api/client';
 import { API_ENDPOINTS } from '@/lib/api/endpoints';

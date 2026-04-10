@@ -16,22 +16,6 @@ export function mapChangePasswordResponse(res: any) {
   };
 }
 
-// export function mapChangePasswordError(error: any): string {
-//     const status = error.response?.status;
-//     const msg =
-//         error.response?.data?.message ||
-//         error.response?.data?.error ||
-//         error.response?.data?.detail;
-
-//     switch (status) {
-//         case 400: return 'Invalid or expired reset link. Please request a new one.';
-//         case 404: return 'No account found with this reset link.';
-//         case 422: return 'Invalid reset code.';
-//         case 500: return 'Server error. Please try again later.';
-//         default: return msg || 'Failed to reset password. Please try again.';
-//     }
-// }
-
 export function mapChangePasswordError(error: any): string {
   const status = error.response?.status;
 

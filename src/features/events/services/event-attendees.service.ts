@@ -17,12 +17,6 @@ import {
   EventAttendeeSummary,
   mapAttendeesResponse,
 } from '../api/adapters/event-attendees.adapter';
-// import {
-//   createGetAttendeesPayload,
-//   mapAttendeesResponse,
-//   type EventAttendeeSummary,
-//   type AttendeeStatus,
-// } from './adapters/event-attendees.adapter';
 
 export const eventAttendeesApi = {
   /**

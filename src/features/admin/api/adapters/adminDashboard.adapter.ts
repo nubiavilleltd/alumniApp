@@ -1,24 +1,4 @@
 // features/admin/api/adapters/adminDashboard.adapter.ts
-//
-// Maps between the backend's admin API responses and the clean frontend types.
-//
-// UPDATE THIS FILE when the backend changes — nothing else needs to touch.
-//
-// Backend contract (current — unstable, subject to change):
-//   POST /api/approve_user         → approve or reject a member
-//   POST /api/admin/members/list   → get members by action_type flag
-//     payload: { action_type: "pending Approval" | "approved" }
-//
-// ─── Notes on known backend quirks ───────────────────────────────────────────
-//   • user_id comes back as a number or numeric string — we always stringify
-//   • The approve/reject endpoint wants jwt in the body, but our axios
-//     interceptor injects it as `token`. We rename it here so we don't break
-//     the interceptor which other calls depend on.
-//   • submittedAt / joinedAt may be a Unix timestamp (seconds), an ISO string,
-//     or missing entirely — safeParseDate handles all three cases.
-//   • The member list response may come back as { users: [...] } or as a bare
-//     array — mapMembersResponse handles both.
-// ─────────────────────────────────────────────────────────────────────────────
 
 import type { PendingMember, RecentMember } from '../adminDashboardApi';
 
@@ -30,19 +10,14 @@ export type MemberActionType = 'pending Approval' | 'approved';
 export function buildMemberListPayload(actionType: MemberActionType) {
   return {
     action_type: actionType,
-    // jwt is intentionally absent — the axios interceptor injects `token`
-    // which the backend reads. If the backend later requires `jwt` instead,
-    // add: jwt: <token from store> and remove from interceptor.
   };
 }
 
-/** Body sent to POST /api/approve_user */
 export function buildApprovePayload(userId: string, rejectReason?: string) {
   return {
     user_id: userId,
     action: 'approve',
-    // jwt injected automatically by axios interceptor as `token`
-    ...(rejectReason ? {} : {}), // no extra fields for approve
+    ...(rejectReason ? {} : {}),
   };
 }
 
@@ -50,7 +25,6 @@ export function buildRejectPayload(userId: string, rejectReason?: string) {
   return {
     user_id: userId,
     action: 'reject',
-    // jwt injected automatically by axios interceptor as `token`
     ...(rejectReason ? { reject_reason: rejectReason } : {}),
   };
 }

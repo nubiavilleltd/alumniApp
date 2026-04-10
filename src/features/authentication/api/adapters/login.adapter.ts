@@ -17,65 +17,6 @@ export function mapLoginPayload(values: LoginFormValues) {
   };
 }
 
-// export function mapLoginResponse(res: any): {
-//   user: AuthSessionUser;
-//   accessToken: string;
-//   refreshToken: string;
-// } {
-//   const firstName = res.first_name || '';
-//   const lastName = res.last_name || '';
-//   const fullName = res.fullname || `${firstName} ${lastName}`.trim();
-
-//   const slug = generateSlug(res.email?.split('@')[0] || '', res.user_id, 'user');
-//   const DEFAULT_AVATAR = `https://ui-avatars.com/api/?name=${encodeURIComponent(
-//     `${firstName} ${lastName}`,
-//   )}&background=E5E7EB&color=6B7280&size=256`;
-
-//   return {
-//     accessToken: res.access_token || '',
-//     refreshToken: res.refresh_token || '',
-
-//     user: {
-//       id: String(res.user_id ?? ''),
-//       memberId: String(res.user_id ?? ''),
-//       slug,
-//       avatarInitials:
-//         [firstName[0], lastName[0]].filter(Boolean).join('').toUpperCase() ||
-//         res.email?.[0]?.toUpperCase() ||
-//         '?',
-
-//       profileHref: `/alumni/profiles/${res.user_id}`,
-//       createdAt: new Date().toISOString(),
-//       chapterId: res.chapter_id ? String(res.chapter_id) : undefined,
-
-//       role: res.user_role === 'admin' ? 'admin' : 'member',
-
-//       isEmailVerified: stringToBoolean(res.email_verified) ?? false,
-
-//       approvalStatus: res.is_approved ? 'approved' : 'pending',
-//       accountStatus: res.active ? 'active' : 'deactivated',
-
-//       duesStatus: mapBackendDues(res.dues_status),
-
-//       fullName,
-//       surname: lastName,
-//       otherNames: firstName,
-//       nameInSchool: res.name_in_school || '',
-//       email: res.email || '',
-//       whatsappPhone: res.phone || '',
-//       graduationYear: safeParseInt(res.graduation_year) ?? 0,
-
-//       photo: res.avatar && !res.avatar.includes('default.png') ? res.avatar : DEFAULT_AVATAR,
-//       bio: res.bio || undefined,
-
-//       linkedin: res.profile?.linkedin,
-//       twitter: res.profile?.twitter,
-//       city: res.profile?.city,
-//       residentialAddress: res.residential_address || '',
-//     } as AuthSessionUser,
-//   };
-// }
-
 export function mapLoginResponse(res: any): LoginResponse {
   return {
     accessToken: res.access_token || '',
@@ -90,7 +31,6 @@ export function mapLoginResponse(res: any): LoginResponse {
 }
 
 export function mapCurrentUserResponse(res: any): AuthSessionUser {
-  console.log('asdf res', { res });
   const firstName = res.first_name || '';
   const lastName = res.last_name || '';
   const fullName = res.fullname || `${firstName} ${lastName}`.trim();
@@ -100,8 +40,6 @@ export function mapCurrentUserResponse(res: any): AuthSessionUser {
   const DEFAULT_AVATAR = `https://ui-avatars.com/api/?name=${encodeURIComponent(
     `${firstName} ${lastName}`,
   )}&background=E5E7EB&color=6B7280&size=256`;
-
-  console.log('this is', { raw: res.profile, res: mapBackendPrivacyToFrontend(res.profile) });
 
   return {
     id: String(res.user_id ?? ''),

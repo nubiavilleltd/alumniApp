@@ -65,21 +65,6 @@ export function createGetAttendeesPayload(eventId: string, status?: AttendeeStat
 // INBOUND (Backend → Frontend)
 // ═══════════════════════════════════════════════════════════════════════════
 
-/**
- * Map single attendee from backend
- *
- * Backend structure (example):
- * {
- *   "user_id": "42",
- *   "fullname": "Jane Doe",
- *   "email": "jane@example.com",
- *   "phone": "+234 8012345678",
- *   "graduation_year": "2015",
- *   "status": "going",
- *   "registered_at": "2026-04-01 10:30:00",
- *   "guest_count": 2
- * }
- */
 export function mapBackendAttendee(raw: any): EventAttendee | null {
   try {
     const userId = raw?.user_id ?? raw?.userId ?? raw?.id;
@@ -101,26 +86,6 @@ export function mapBackendAttendee(raw: any): EventAttendee | null {
   }
 }
 
-/**
- * Map attendees list response
- *
- * Backend response:
- * {
- *   "status": 200,
- *   "event": {
- *     "id": "1",
- *     "title": "Annual Gala",
- *     "date": "2026-05-15"
- *   },
- *   "summary": {
- *     "total": 45,
- *     "going": 35,
- *     "maybe": 8,
- *     "not_going": 2
- *   },
- *   "attendees": [...]
- * }
- */
 export function mapAttendeesResponse(raw: any): EventAttendeeSummary | null {
   try {
     const event = raw?.event ?? {};
