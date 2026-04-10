@@ -221,7 +221,7 @@ export function EventCard({
 
           {/* Badges */}
           {!isPast && isRegistered && (
-            <div className="absolute top-3 right-3 bg-green-500 text-white text-[10px] font-semibold px-2.5 py-1 rounded-full flex items-center gap-1">
+            <div className="absolute top-3 left-3 bg-green-500 text-white text-[10px] font-semibold px-2.5 py-1 rounded-full flex items-center gap-1">
               <Icon icon="mdi:check-circle" className="w-3 h-3" />
               Registered
             </div>
