@@ -19,6 +19,7 @@ export function mapRegistrationPayload(values: RegisterDetailsFormValues) {
 
     // School
     name_in_school: values.nameInSchool,
+    nick_name: values.nickName,
     graduation_year: String(values.graduationYear),
 
     voucher_id: values.voucherId,
@@ -34,9 +35,10 @@ export function mapRegistrationPayload(values: RegisterDetailsFormValues) {
     birth_date: '',
     house_color: '',
     is_coordinator: '0',
-    residential_address: '',
+    residential_address: values.residentialAddress,
     area: '',
-    city: '',
+    state: values.state,
+    city: values.city,
     employment_status: '',
     occupation: '',
     industry_sector: '',
