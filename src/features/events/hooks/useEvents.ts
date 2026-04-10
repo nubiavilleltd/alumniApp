@@ -132,12 +132,19 @@ export function useRegisterEvent() {
     mutationFn: ({
       eventId,
       status,
+      additionalInfo,
     }: {
       eventId: string;
       status?: 'going' | 'maybe' | 'not_going';
+      additionalInfo: string;
     }) => {
       if (!currentUser?.memberId) throw new Error('You must be logged in to register for events');
-      return eventsService.register(eventId, currentUser.memberId, status || 'going');
+      return eventsService.register(
+        eventId,
+        currentUser.memberId,
+        status || 'going',
+        additionalInfo,
+      );
     },
     onSuccess: (_, { eventId }) => {
       queryClient.invalidateQueries({ queryKey: eventKeys.all });
