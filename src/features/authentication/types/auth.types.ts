@@ -33,6 +33,7 @@ export interface PrivacySettings {
   residentialAddress: FieldVisibility;
   area: FieldVisibility;
   city: FieldVisibility;
+  state: FieldVisibility;
   employmentStatus: FieldVisibility;
   occupations: FieldVisibility;
   industrySectors: FieldVisibility;
@@ -47,6 +48,7 @@ export const defaultPrivacySettings: PrivacySettings = {
   residentialAddress: 'private',
   area: 'public',
   city: 'public',
+  state: 'public',
   employmentStatus: 'public',
   occupations: 'public',
   industrySectors: 'public',
@@ -84,6 +86,7 @@ export interface AuthSessionUser {
   otherNames: string;
   fullName: string;
   nameInSchool: string;
+  nickName: string;
   email: string;
   whatsappPhone: string;
   graduationYear: number;
@@ -97,6 +100,7 @@ export interface AuthSessionUser {
   residentialAddress?: string;
   area?: string;
   city?: string;
+  state?: string;
   employmentStatus?: string;
   occupations?: string[];
   industrySectors?: string[];

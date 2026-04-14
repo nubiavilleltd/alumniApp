@@ -31,6 +31,7 @@ import {
   normalizePhoneNumberForCountry,
 } from '@/features/authentication/constants/phoneCountries';
 import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
+import { NIGERIA_STATES } from '@/features/authentication/constants/nigerianStates';
 
 interface Props {
   isOpen: boolean;
@@ -42,6 +43,7 @@ interface FormState {
   firstName: string;
   lastName: string;
   nameInSchool: string;
+  nickName: string;
   whatsappPhoneCountry: SupportedPhoneCountry;
   whatsappPhone: string;
   alternativePhoneCountry: SupportedPhoneCountry;
@@ -55,6 +57,7 @@ interface FormState {
   residentialAddress: string;
   area: string;
   city: string;
+  state: string;
 
   employmentStatus: string;
   occupation: string;
@@ -84,6 +87,7 @@ function toFormState(user: AuthSessionUser | null): FormState {
     firstName: user?.otherNames ?? '',
     lastName: user?.surname ?? '',
     nameInSchool: user?.nameInSchool ?? '',
+    nickName: user?.nickName ?? '',
     whatsappPhoneCountry: whatsappPhone.countryCode,
     whatsappPhone: whatsappPhone.nationalNumber,
     alternativePhoneCountry: alternativePhone.countryCode,
@@ -97,6 +101,7 @@ function toFormState(user: AuthSessionUser | null): FormState {
     residentialAddress: user?.residentialAddress ?? '',
     area: user?.area ?? '',
     city: user?.city ?? '',
+    state: user?.state ?? '',
 
     employmentStatus: user?.employmentStatus ?? '',
     occupation: user?.occupations?.[0] ?? '',
@@ -120,6 +125,11 @@ const yearsOfExperienceSelectOptions = yearsOfExperienceOptions.map((o) => ({
 const phoneCountrySelectOptions = phoneCountryOptions.map((option) => ({
   label: `${option.dialCode} (${option.label})`,
   value: option.code,
+}));
+
+const stateOptions = NIGERIA_STATES.map((state) => ({
+  label: state,
+  value: state,
 }));
 
 export default function EditProfileModal({ isOpen, onClose, currentUser }: Props) {
@@ -218,6 +228,9 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
     if (form.nameInSchool !== initialForm.nameInSchool) {
       changes.nameInSchool = form.nameInSchool;
     }
+    if (form.nickName !== initialForm.nickName) {
+      changes.nickName = form.nickName;
+    }
     if (currentWhatsappPhone !== initialWhatsappPhone) {
       changes.whatsappPhone = currentWhatsappPhone;
     }
@@ -243,6 +256,9 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
     }
     if (form.city !== initialForm.city) {
       changes.city = form.city;
+    }
+    if (form.state !== initialForm.state) {
+      changes.state = form.state;
     }
 
     if (form.employmentStatus !== initialForm.employmentStatus) {
@@ -476,7 +492,16 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
               name="nameInSchool"
               value={form.nameInSchool}
               onChange={handleChange}
-              placeholder="If different from current name"
+              // placeholder="If different from current name"
+              placeholder=""
+            />
+            <FormInput
+              label="Nickname"
+              name="nickName"
+              value={form.nickName}
+              onChange={handleChange}
+              // placeholder="If different from current name"
+              placeholder=""
             />
             <FormInput
               label="Graduation Year"
@@ -494,6 +519,20 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
               options={houseColorOptions}
               placeholder="Select house"
             />
+
+            <FieldWithPrivacy
+              field="birthDate"
+              label="Date of Birth"
+              privacy={privacy!}
+              onPrivacyChange={() => {}}
+            >
+              <FormInput
+                name="birthDate"
+                type="date"
+                value={form.birthDate}
+                onChange={handleChange}
+              />
+            </FieldWithPrivacy>
           </div>
           <div className="mt-4">
             <TextareaInput
@@ -512,7 +551,7 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
           <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
             Contact
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1  gap-4">
             <FieldWithPrivacy
               field="whatsappPhone"
               label="WhatsApp Phone"
@@ -564,19 +603,6 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
                 />
               </div>
             </FieldWithPrivacy>
-            <FieldWithPrivacy
-              field="birthDate"
-              label="Date of Birth"
-              privacy={privacy!}
-              onPrivacyChange={() => {}}
-            >
-              <FormInput
-                name="birthDate"
-                type="date"
-                value={form.birthDate}
-                onChange={handleChange}
-              />
-            </FieldWithPrivacy>
           </div>
         </div>
 
@@ -600,7 +626,7 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
               />
             </FieldWithPrivacy>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <FieldWithPrivacy
+              {/* <FieldWithPrivacy
                 field="area"
                 label="Area"
                 privacy={privacy!}
@@ -613,6 +639,20 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
                   options={areaOptions}
                   placeholder="Select area"
                 />
+              </FieldWithPrivacy> */}
+              <FieldWithPrivacy
+                field="state"
+                label="State"
+                privacy={privacy!}
+                onPrivacyChange={() => {}}
+              >
+                <SelectInput
+                  name="state"
+                  value={form.state}
+                  onChange={handleChange}
+                  options={stateOptions}
+                  placeholder="Select state"
+                />
               </FieldWithPrivacy>
               <FieldWithPrivacy
                 field="city"
@@ -623,6 +663,7 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
                 <FormInput
                   name="city"
                   value={form.city}
+                  required
                   onChange={handleChange}
                   placeholder="e.g. Ikeja"
                 />
@@ -708,7 +749,8 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
               placeholder="Job title"
             />
             <SelectInput
-              label="Volunteer Interest"
+              // label="Volunteer Interest"
+              label="Would you like to volunteer for events/projects?"
               name="isVolunteer"
               value={form.isVolunteer}
               onChange={handleChange}
@@ -716,7 +758,7 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
                 { label: 'Yes, I am interested', value: 'yes' },
                 { label: 'No, not at this time', value: 'no' },
               ]}
-              placeholder="Would you like to volunteer for events/projects?"
+              // placeholder=""
             />
           </div>
         </div>

@@ -17,6 +17,7 @@ export interface Alumni {
   // ── School ────────────────────────────────────────────────────────────────
   graduationYear: number;
   nameInSchool: string;
+  nickName: string;
   houseColor?: string;
 
   // ── Contact ───────────────────────────────────────────────────────────────
@@ -32,6 +33,7 @@ export interface Alumni {
   location: string;
   city?: string;
   area?: string;
+  state?: string;
   residentialAddress?: string;
 
   // ── Professional ──────────────────────────────────────────────────────────

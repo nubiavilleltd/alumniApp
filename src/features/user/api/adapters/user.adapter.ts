@@ -28,6 +28,7 @@ export function mapFrontendUserToBackendPayload(user: Partial<AuthSessionUser>) 
   if (user.alternativePhone !== undefined) payload.alternative_phone = user.alternativePhone || '';
 
   if (user.nameInSchool !== undefined) payload.name_in_school = user.nameInSchool;
+  if (user.nickName !== undefined) payload.nick_name = user.nickName;
   if (user.graduationYear !== undefined) payload.graduation_year = String(user.graduationYear);
   if (user.houseColor !== undefined) payload.house_color = user.houseColor || '';
 
@@ -38,6 +39,7 @@ export function mapFrontendUserToBackendPayload(user: Partial<AuthSessionUser>) 
     payload.residential_address = user.residentialAddress || '';
   if (user.area !== undefined) payload.area = user.area || '';
   if (user.city !== undefined) payload.city = user.city || '';
+  if (user.state !== undefined) payload.state = user.state || '';
 
   if (user.employmentStatus !== undefined) payload.employment_status = user.employmentStatus || '';
   if (user.occupations !== undefined) payload.occupation = user.occupations?.[0] || '';
@@ -103,6 +105,7 @@ export function mapBackendResponseToFrontendUser(raw: unknown): Partial<AuthSess
       undefined,
 
     nameInSchool: user.name_in_school || undefined,
+    nickName: user.nick_name || undefined,
     email: user.email || undefined,
 
     whatsappPhone: user.phone || undefined,
@@ -121,6 +124,7 @@ export function mapBackendResponseToFrontendUser(raw: unknown): Partial<AuthSess
     residentialAddress: user.residential_address || undefined,
     area: user.area || undefined,
     city: profile.city || user.city || undefined,
+    state: profile.state || user.state || undefined,
 
     employmentStatus: user.employment_status || undefined,
     position: profile.current_position || undefined,

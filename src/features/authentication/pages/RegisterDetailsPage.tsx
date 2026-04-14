@@ -227,7 +227,7 @@ export function RegisterDetailsPage() {
 
         <div className="grid grid-cols-2 gap-3">
           <FormInput
-            label="Name in School"
+            label="Maiden Name"
             id="nameInSchool"
             required
             placeholder=""

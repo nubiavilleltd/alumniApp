@@ -25,6 +25,7 @@ import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 import { mapCurrentUserResponse } from '@/features/authentication/api/adapters/login.adapter';
 import { ProfileSkeleton } from '../components/ProfileSkeleton';
 import { usePrivacySettings } from '../hooks/usePrivacySettings';
+import { NIGERIA_STATES } from '@/features/authentication/constants/nigerianStates';
 
 const breadcrumbItems = [
   { label: 'Home', href: ROUTES.HOME },
@@ -33,6 +34,11 @@ const breadcrumbItems = [
 ];
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
+
+const stateOptions = NIGERIA_STATES.map((state) => ({
+  label: state,
+  value: state,
+}));
 
 function resolveLabel(
   value: string | undefined,
@@ -181,9 +187,10 @@ export default function UserProfilePage() {
 
   const occupationLabel = resolveLabel(currentUser?.occupations?.[0], occupationOptions);
   const employmentLabel = resolveLabel(currentUser?.employmentStatus, employmentStatusOptions);
-  const areaLabel = resolveLabel(currentUser?.area, areaOptions);
+  // const areaLabel = resolveLabel(currentUser?.area, areaOptions);
+  const stateLabel = resolveLabel(currentUser?.state, areaOptions);
 
-  const locationParts = [areaLabel, currentUser?.city]
+  const locationParts = [stateLabel, currentUser?.city]
     .filter(Boolean)
     .filter((v, i, arr) => arr.indexOf(v) === i);
 
@@ -296,6 +303,11 @@ export default function UserProfilePage() {
                     value={currentUser?.nameInSchool}
                     icon="mdi:school-outline"
                   />
+                  <FieldRow
+                    label="Nickname"
+                    value={currentUser?.nickName}
+                    icon="mdi:school-outline"
+                  />
                   <FieldRow label="Email" value={currentUser?.email} icon="mdi:email-outline" />
                   <FieldRowWithPrivacy
                     label="WhatsApp"
@@ -330,11 +342,17 @@ export default function UserProfilePage() {
                     icon="mdi:home-outline"
                     privacy={privacy.residentialAddress}
                   />
-                  <FieldRowWithPrivacy
+                  {/* <FieldRowWithPrivacy
                     label="Area"
                     value={areaLabel}
                     icon="mdi:map-outline"
                     privacy={privacy.area}
+                  /> */}
+                  <FieldRowWithPrivacy
+                    label="State"
+                    value={stateLabel}
+                    icon="mdi:map-outline"
+                    privacy={privacy.state}
                   />
                   <FieldRowWithPrivacy
                     label="City"

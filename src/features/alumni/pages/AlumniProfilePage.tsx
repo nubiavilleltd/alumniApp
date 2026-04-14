@@ -329,11 +329,18 @@ export function AlumniProfilePage() {
                 )}
 
                 {/* Location */}
-                {alum.city && (
+                {/* {alum.city && (
                   <p className="text-xs text-gray-400 mt-1 flex items-center gap-1">
                     <Icon icon="mdi:map-marker-outline" className="w-3.5 h-3.5" />
                     {alum.city}
                     {areaLabel ? `, ${areaLabel}` : ''}
+                  </p>
+                )} */}
+                {alum.city && (
+                  <p className="text-xs text-gray-400 mt-1 flex items-center gap-1">
+                    <Icon icon="mdi:map-marker-outline" className="w-3.5 h-3.5" />
+                    {alum.city}
+                    {alum.state ? `, ${alum.state}` : ''}
                   </p>
                 )}
 
@@ -403,6 +410,7 @@ export function AlumniProfilePage() {
                     value={alum.nameInSchool}
                     icon="mdi:school-outline"
                   />
+                  <FieldRow label="Nickname" value={alum.nickName} icon="mdi:school-outline" />
                   <FieldRow label="Email" value={alum.email} icon="mdi:email-outline" />
                   <FieldRowWithPrivacy
                     label="WhatsApp"
@@ -442,11 +450,19 @@ export function AlumniProfilePage() {
                     currentUser={currentUser}
                     viewerIsOwner={isOwnProfile}
                   />
-                  <FieldRowWithPrivacy
+                  {/* <FieldRowWithPrivacy
                     label="Area"
                     value={areaLabel}
                     icon="mdi:map-outline"
                     privacy={alum.privacy?.area}
+                    currentUser={currentUser}
+                    viewerIsOwner={isOwnProfile}
+                  /> */}
+                  <FieldRowWithPrivacy
+                    label="State"
+                    value={areaLabel}
+                    icon="mdi:map-outline"
+                    privacy={alum.privacy?.state}
                     currentUser={currentUser}
                     viewerIsOwner={isOwnProfile}
                   />

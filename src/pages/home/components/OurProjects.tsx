@@ -4,9 +4,12 @@ import { AppLink } from '@/shared/components/ui/AppLink';
 import { useProjects } from '@/features/projects/hooks/useProjects';
 import { ProjectCard, ProjectCardSkeleton } from '@/features/projects/components/ProjectCard';
 import { ROUTES } from '@/shared/constants/routes';
+import EmptyState from '@/shared/components/ui/EmptyState';
 
 export default function OurProjects() {
   const { data: projects = [], isLoading } = useProjects();
+
+  const isEmpty = !isLoading && projects.length === 0;
 
   return (
     <section className="section">
@@ -20,23 +23,33 @@ export default function OurProjects() {
           school
         </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {isLoading
-            ? Array.from({ length: 3 }).map((_, i) => <ProjectCardSkeleton key={i} />)
-            : projects.slice(0, 3).map((project) => (
-                // Homepage is always view-only — no admin actions shown here
-                <ProjectCard key={project.id} project={project} showAdminActions={false} />
-              ))}
-        </div>
+        {isEmpty ? (
+          <EmptyState
+            icon="mdi:hammer-wrench-outline"
+            title="No projects available right now"
+            description="No projects to display yet. New initiatives to support and improve our school will appear here."
+          />
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {isLoading
+              ? Array.from({ length: 3 }).map((_, i) => <ProjectCardSkeleton key={i} />)
+              : projects.slice(0, 3).map((project) => (
+                  // Homepage is always view-only — no admin actions shown here
+                  <ProjectCard key={project.id} project={project} showAdminActions={false} />
+                ))}
+          </div>
+        )}
 
-        <div className="mt-6 text-right">
-          <AppLink
-            href={ROUTES.PROJECTS.ROOT}
-            className="text-primary-500 text-sm font-semibold hover:underline inline-flex items-center gap-1"
-          >
-            See More →
-          </AppLink>
-        </div>
+        {!isEmpty && (
+          <div className="mt-6 text-right">
+            <AppLink
+              href={ROUTES.PROJECTS.ROOT}
+              className="text-primary-500 text-sm font-semibold hover:underline inline-flex items-center gap-1"
+            >
+              See More →
+            </AppLink>
+          </div>
+        )}
       </div>
     </section>
   );
