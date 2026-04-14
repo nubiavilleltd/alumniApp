@@ -118,7 +118,7 @@
 // }
 
 import { AppLink } from '@/shared/components/ui/AppLink';
-import { EmptyState } from '@/shared/components/ui/EmptyState';
+// import { EmptyState } from '@/shared/components/ui/EmptyState';
 
 import { useLeadership } from '@/features/leadership/hooks/useLeadership';
 import { LeadershipMember } from '@/features/leadership/types/leadership.types';

@@ -108,6 +108,7 @@ export function mapBackendAlumniToFrontend(raw: unknown): Alumni {
 
     graduationYear: safeParseInt(d.graduation_year) ?? new Date().getFullYear(),
     nameInSchool: safeString(d.name_in_school),
+    nickName: safeString(d.nick_name),
     houseColor: safeString(d.house_color),
 
     whatsappPhone: safeString(d.phone),
@@ -122,6 +123,7 @@ export function mapBackendAlumniToFrontend(raw: unknown): Alumni {
     city,
     location: city,
     area: optionalString(d.area),
+    state: optionalString(d.state),
     residentialAddress: optionalString(d.residential_address),
 
     position: safeString(profile.current_position),
