@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
-import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
+// import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { ROUTES } from '@/shared/constants/routes';
 import { USER_ROUTES } from '../routes';
 import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
@@ -17,6 +17,7 @@ import { userService } from '../services/user.service';
 import { AUTH_ROUTES } from '@/features/authentication/routes';
 import { toast } from '@/shared/components/ui/Toast';
 import { useDeactivateOwnAccount } from '@/features/admin/hooks/useUserManagement';
+import { useTokenStore } from '@/features/authentication/stores/useTokenStore';
 
 const breadcrumbItems = [
   { label: 'Home', href: ROUTES.HOME },
@@ -99,7 +100,7 @@ function ChangePasswordSection() {
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   // const [success, setSuccess] = useState(false);
-  const clearSession = useAuthStore.getState().clearSession;
+  const clearTokens = useTokenStore.getState().clearTokens;
   const navigate = useNavigate();
 
   const {
@@ -128,7 +129,7 @@ function ChangePasswordSection() {
       toast.success('Password successfully updated', 'Successful');
 
       setTimeout(() => {
-        clearSession();
+        clearTokens();
         navigate(AUTH_ROUTES.LOGIN, { replace: true });
       }, 1500);
     } catch (error: any) {

@@ -4,7 +4,6 @@
 import { Icon } from '@iconify/react';
 import { useState } from 'react';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
-import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { defaultPrivacySettings } from '@/features/authentication/types/auth.types';
 import type {
   AuthSessionUser,
@@ -155,8 +154,6 @@ function SectionCard({
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function UserProfilePage() {
-  // const currentUser = useAuthStore((state) => state.user);
-
   const { data: currentUser, isLoading } = useCurrentUser();
   const { data: privacyValue, isLoading: privacyLoading } = usePrivacySettings();
 

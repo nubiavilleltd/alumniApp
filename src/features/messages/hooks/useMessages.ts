@@ -1,5 +1,4 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { toast } from '@/shared/components/ui/Toast';
 import { MESSAGE_POLLING_INTERVAL_MS } from '../api/messages.contract';
 import type {
@@ -11,6 +10,7 @@ import type {
   UploadMessageAttachmentRequest,
 } from '../api/messages.contract';
 import { messagesService } from '../services/messages.service';
+import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 
 export const messageKeys = {
   all: ['messages'] as const,
@@ -20,7 +20,7 @@ export const messageKeys = {
 };
 
 export function useMessagesInbox() {
-  const currentUser = useAuthStore((state) => state.user);
+  const currentUser = useIdentityStore((state) => state.user);
   const viewerMemberId = currentUser?.memberId ?? '';
 
   return useQuery({
@@ -35,7 +35,7 @@ export function useMessagesInbox() {
 }
 
 export function useMessageThread(threadId: string | null) {
-  const currentUser = useAuthStore((state) => state.user);
+  const currentUser = useIdentityStore((state) => state.user);
   const viewerMemberId = currentUser?.memberId ?? '';
 
   return useQuery({
@@ -54,7 +54,7 @@ export function useMessageThread(threadId: string | null) {
 }
 
 export function useUploadMessageAttachment() {
-  const currentUser = useAuthStore((state) => state.user);
+  const currentUser = useIdentityStore((state) => state.user);
 
   return useMutation({
     mutationFn: async (request: UploadMessageAttachmentRequest) => {
@@ -73,7 +73,7 @@ export function useUploadMessageAttachment() {
 
 export function useSendMessage() {
   const queryClient = useQueryClient();
-  const currentUser = useAuthStore((state) => state.user);
+  const currentUser = useIdentityStore((state) => state.user);
   const viewerMemberId = currentUser?.memberId ?? '';
 
   return useMutation({
@@ -95,7 +95,7 @@ export function useSendMessage() {
 
 export function useMarkMessageThreadRead() {
   const queryClient = useQueryClient();
-  const currentUser = useAuthStore((state) => state.user);
+  const currentUser = useIdentityStore((state) => state.user);
   const viewerMemberId = currentUser?.memberId ?? '';
 
   return useMutation({
@@ -117,7 +117,7 @@ export function useMarkMessageThreadRead() {
 
 export function useDeleteMessage() {
   const queryClient = useQueryClient();
-  const currentUser = useAuthStore((state) => state.user);
+  const currentUser = useIdentityStore((state) => state.user);
   const viewerMemberId = currentUser?.memberId ?? '';
 
   return useMutation({
@@ -142,7 +142,7 @@ export function useDeleteMessage() {
 
 export function useCreateDirectMessageThread() {
   const queryClient = useQueryClient();
-  const currentUser = useAuthStore((state) => state.user);
+  const currentUser = useIdentityStore((state) => state.user);
   const viewerMemberId = currentUser?.memberId ?? '';
 
   return useMutation({
@@ -158,7 +158,7 @@ export function useCreateDirectMessageThread() {
 
 export function useCreateGroupMessageThread() {
   const queryClient = useQueryClient();
-  const currentUser = useAuthStore((state) => state.user);
+  const currentUser = useIdentityStore((state) => state.user);
   const viewerMemberId = currentUser?.memberId ?? '';
 
   return useMutation({

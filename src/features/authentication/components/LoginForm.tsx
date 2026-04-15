@@ -7,7 +7,8 @@ import { AppLink } from '@/shared/components/ui/AppLink';
 import { FormInput } from '@/shared/components/ui/input/FormInput';
 import { authApi } from '../services/auth.service';
 import { loginSchema } from '../schemas/authSchema';
-import { useAuthStore } from '../stores/useAuthStore';
+import { useIdentityStore } from '../stores/useIdentityStore';
+import { useTokenStore } from '../stores/useTokenStore';
 import type { LoginFormValues } from '../types/auth.types';
 import { AuthCard } from './AuthCard';
 import { toast } from '@/shared/components/ui/Toast';
@@ -20,11 +21,14 @@ import {
   getVerificationResendStatus,
   recordVerificationResendAttempt,
 } from '../lib/verificationResendThrottle';
+import { boolean } from 'zod';
 
 export function LoginForm() {
   const navigate = useNavigate();
   const location = useLocation();
-  const setSession = useAuthStore((state) => state.setSession);
+  const setIdentity = useIdentityStore((state) => state.setIdentity);
+  const setTokens = useTokenStore((state) => state.setTokens);
+  const setRememberMe = useTokenStore((state) => state.setRememberMe);
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
@@ -73,7 +77,13 @@ export function LoginForm() {
       }
 
       // Step 3: Persist full profile to localStorage — nav renders synchronously
-      setSession(fullProfile, loginResponse.accessToken, loginResponse.refreshToken);
+      // setSession(fullProfile, loginResponse.accessToken, loginResponse.refreshToken, values.rememberMe);
+
+      setIdentity(fullProfile);
+
+      setTokens(loginResponse.accessToken, loginResponse.refreshToken);
+
+      setRememberMe(values.rememberMe as boolean);
 
       const fallbackDestination =
         fullProfile.role === 'admin' ? ADMIN_ROUTES.DASHBOARD : USER_ROUTES.DASHBOARD;

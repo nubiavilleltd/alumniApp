@@ -13,9 +13,9 @@ import {
   useMarketplaceCategories,
 } from '@/features/marketplace/hooks/useMarketplace';
 import type { Business } from '../types/marketplace.types';
-import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { ROUTES } from '@/shared/constants/routes';
 import { useStartDirectConversation } from '@/features/messages/hooks/useStartDirectConversation';
+import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 function BusinessCardSkeleton() {
@@ -154,7 +154,7 @@ export default function MarketPlacePage() {
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
   const [showPostModal, setShowPostModal] = useState(false);
   const [pendingBusinessId, setPendingBusinessId] = useState<string | null>(null);
-  const currentUser = useAuthStore((state) => state.user);
+  const currentUser = useIdentityStore((state) => state.user);
   const { startDirectConversation, isPending: isStartingConversation } =
     useStartDirectConversation();
 

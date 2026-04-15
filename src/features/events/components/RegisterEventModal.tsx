@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { Icon } from '@iconify/react';
 import { Modal } from '@/shared/components/ui/Modal';
-import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { useEventRegistration } from '../hooks/useEventRegistration';
 import type { Event } from '../types/event.types';
 import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';

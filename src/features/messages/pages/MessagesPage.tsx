@@ -13,7 +13,6 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import EmptyState from '@/shared/components/ui/EmptyState';
@@ -57,6 +56,7 @@ import type {
   MessageThreadFilter,
   MessageThreadSummary,
 } from '../types/messages.types';
+import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 
 const breadcrumbItems = [{ label: 'Home', href: '/' }, { label: 'Messages' }];
 const MIN_VOICE_NOTE_DURATION_MS = 600;
@@ -1064,7 +1064,7 @@ export function MessagesPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const queryClient = useQueryClient();
-  const currentUser = useAuthStore((state) => state.user);
+  const currentUser = useIdentityStore((state) => state.user);
   const viewerMemberId = currentUser?.memberId ?? '';
   const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null);
   const [filter, setFilter] = useState<MessageThreadFilter>('all');

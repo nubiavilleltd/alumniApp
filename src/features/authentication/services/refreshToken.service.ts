@@ -1,6 +1,7 @@
 import { apiClient } from '@/lib/api/client';
-import { useAuthStore } from '../stores/useAuthStore';
 import { API_ENDPOINTS } from '@/lib/api/endpoints';
+import { useTokenStore } from '../stores/useTokenStore';
+import { useIdentityStore } from '../stores/useIdentityStore';
 
 let isRefreshing = false;
 let subscribers: ((token: string) => void)[] = [];
@@ -14,11 +15,48 @@ function notify(newToken: string) {
   subscribers = [];
 }
 
+// export async function refreshAccessToken(): Promise<string | null> {
+// //   const { refreshToken, user, setSession, clearSession } = useAuthStore.getState();
+// const { refreshToken, clearTokens, setTokens } = useTokenStore.getState();
+
+// const {user, setIdentity} = useIdentityStore()
+
+//   if (!refreshToken) {
+//     clearTokens();
+//     return null;
+//   }
+
+//   try {
+//     const response = await apiClient.post(API_ENDPOINTS.AUTH.REFRESH_TOKEN, {
+//       refresh_token: refreshToken,
+//     });
+
+//     const newAccessToken = response.data?.accessToken;
+
+//     if (!newAccessToken) {
+//       clearTokens();
+//       return null;
+//     }
+
+//     // ✅ Silent update (no UI noise)
+//     setTokens(newAccessToken, refreshToken);
+
+//     return newAccessToken;
+//   } catch {
+//     clearTokens();
+//     return null;
+//   }
+// }
+
+// Queue logic for multiple 401s
+
 export async function refreshAccessToken(): Promise<string | null> {
-  const { refreshToken, user, setSession, clearSession } = useAuthStore.getState();
+  const { refreshToken, clearTokens, setTokens } = useTokenStore.getState();
+  const { clearIdentity } = useIdentityStore.getState();
 
   if (!refreshToken) {
-    clearSession();
+    clearTokens();
+    clearIdentity();
     return null;
   }
 
@@ -30,26 +68,22 @@ export async function refreshAccessToken(): Promise<string | null> {
     const newAccessToken = response.data?.accessToken;
 
     if (!newAccessToken) {
-      clearSession();
-      return null;
-    }
-
-    if (!user) {
-      clearSession();
+      clearTokens();
+      clearIdentity();
       return null;
     }
 
     // ✅ Silent update (no UI noise)
-    setSession(user, newAccessToken, refreshToken);
+    setTokens(newAccessToken, refreshToken);
 
     return newAccessToken;
   } catch {
-    clearSession();
+    clearTokens();
+    clearIdentity();
     return null;
   }
 }
 
-// Queue logic for multiple 401s
 export async function handleTokenRefresh(): Promise<string | null> {
   if (!isRefreshing) {
     isRefreshing = true;

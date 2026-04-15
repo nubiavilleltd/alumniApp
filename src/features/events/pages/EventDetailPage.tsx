@@ -10,11 +10,11 @@ import { RegisterEventModal } from '../components/RegisterEventModal';
 import { DeleteConfirmModal } from '../components/DeleteConfirmModal';
 import { useEvent, useDeleteEvent } from '../hooks/useEvents';
 import { useEventRegistration, useEventAttendeeCount } from '../hooks/useEventRegistration';
-import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { toast } from '@/shared/components/ui/Toast';
 import { EVENT_ROUTES } from '../routes';
 import type { Event } from '../types/event.types';
 import { renderMarkdown } from '@/data/content';
+import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 
 // ─── Skeleton ────────────────────────────────────────────────────────────────
 
@@ -281,7 +281,7 @@ function RegistrationPanel({
 export function EventDetailPage() {
   const { slug = '' } = useParams();
   const navigate = useNavigate();
-  const currentUser = useAuthStore((state) => state.user);
+  const currentUser = useIdentityStore((state) => state.user);
   const isLoggedIn = !!currentUser;
   const isAdmin = currentUser?.role === 'admin';
 

@@ -11,10 +11,10 @@ import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { FilterDropdown } from '@/shared/components/ui/FilterDropdown';
 import Button from '@/shared/components/ui/Button';
 import { useUpcomingEvents, usePastEvents } from '../hooks/useEvents';
-import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import type { Event } from '../types/event.types';
 import { EVENT_ROUTES } from '../routes';
 import { useEventRegistration } from '../hooks/useEventRegistration';
+import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 
 type Tab = 'upcoming' | 'past';
 type ViewType = 'grid' | 'calendar';
@@ -219,7 +219,7 @@ function CalendarView({
 // ─── Events Page ──────────────────────────────────────────────────────────────
 export function EventsPage() {
   const navigate = useNavigate();
-  const currentUser = useAuthStore((state) => state.user);
+  const currentUser = useIdentityStore((state) => state.user);
   const isAdmin = currentUser?.role === 'admin';
 
   const initialView =

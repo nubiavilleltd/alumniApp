@@ -14,7 +14,10 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { userManagementApi } from '../services/user-management.service';
-import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
+// import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
+
+import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
+import { useTokenStore } from '@/features/authentication/stores/useTokenStore';
 import { toast } from '@/shared/components/ui/Toast';
 import { ROUTES } from '@/shared/constants/routes';
 
@@ -121,8 +124,8 @@ export function useAdminActivateUser() {
  */
 export function useDeactivateOwnAccount() {
   const navigate = useNavigate();
-  const clearSession = useAuthStore((state) => state.clearSession);
-
+  const clearIdentity = useIdentityStore((state) => state.clearIdentity);
+  const clearTokens = useTokenStore((state) => state.clearTokens);
   return useMutation({
     mutationFn: () => userManagementApi.deactivateOwnAccount(),
 
@@ -131,7 +134,8 @@ export function useDeactivateOwnAccount() {
 
       // Clear session and redirect
       setTimeout(() => {
-        clearSession();
+        clearIdentity();
+        clearTokens();
         navigate(ROUTES.HOME, { replace: true });
       }, 1000);
     },

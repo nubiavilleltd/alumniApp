@@ -7,7 +7,7 @@ import { FormInput } from '@/shared/components/ui/input/FormInput';
 import Button from '@/shared/components/ui/Button';
 import { toast } from '@/shared/components/ui/Toast';
 import type { AuthSessionUser, PrivacySettings } from '@/features/authentication/types/auth.types';
-import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
+// import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { currentUserKeys } from '@/features/authentication/hooks/useCurrentUser';
 import { userService } from '@/features/user/services/user.service';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
@@ -32,6 +32,7 @@ import {
 } from '@/features/authentication/constants/phoneCountries';
 import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
 import { NIGERIA_STATES } from '@/features/authentication/constants/nigerianStates';
+import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 
 interface Props {
   isOpen: boolean;
@@ -134,7 +135,8 @@ const stateOptions = NIGERIA_STATES.map((state) => ({
 
 export default function EditProfileModal({ isOpen, onClose, currentUser }: Props) {
   const queryClient = useQueryClient();
-  const updateUser = useAuthStore((state) => state.updateUser);
+  // const updateUser = useAuthStore((state) => state.updateUser);
+  const updateUser = useIdentityStore((state) => state.updateUser);
 
   const { data: privacy, isLoading: privacyLoading } = usePrivacySettings();
 

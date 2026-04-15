@@ -15,12 +15,12 @@ import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
 import { ImageUpload } from '@/shared/components/ui/ImageUpload';
 import Button from '@/shared/components/ui/Button';
-import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { useEvent, useUpdateEvent, useDeleteEvent } from '../hooks/useEvents';
 import { mapEventToUpdatePayload } from '../api/adapters/event.adapter';
 import { DeleteConfirmModal } from '../components/DeleteConfirmModal';
 import { toast } from '@/shared/components/ui/Toast';
 import { EVENT_ROUTES } from '../routes';
+import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 
 // ─── Schema ───────────────────────────────────────────────────────────────────
 
@@ -67,7 +67,7 @@ const statusOptions = [
 export default function EditEventPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const currentUser = useAuthStore((state) => state.user);
+  const currentUser = useIdentityStore((state) => state.user);
 
   const { data: event, isLoading } = useEvent(id || '');
   const updateEvent = useUpdateEvent();

@@ -16,7 +16,6 @@ import { Icon } from '@iconify/react';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { getSiteConfig } from '@/data/content';
-import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { authApi } from '@/features/authentication/services/auth.service';
 import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 import { AppLink } from '../ui/AppLink';
@@ -28,6 +27,9 @@ import { EVENT_ROUTES } from '@/features/events/routes';
 import { ADMIN_ROUTES } from '@/features/admin/routes';
 import { USER_ROUTES } from '@/features/user/routes';
 import { AUTH_ROUTES } from '@/features/authentication/routes';
+import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
+import { useTokenStore } from '@/features/authentication/stores/useTokenStore';
+import { useAuth } from '@/features/authentication/hooks/useAuth';
 
 // ─── Nav Items ────────────────────────────────────────────────────────────────
 
@@ -263,14 +265,18 @@ export function Navigation() {
   const { pathname } = useLocation();
 
   // ① Read from store synchronously — always available from localStorage
-  const storeUser = useAuthStore((state) => state.user);
-  const clearSession = useAuthStore((state) => state.clearSession);
+  const { isAuthenticated, user: storeUser } = useAuth();
+  const clearTokens = useTokenStore((state) => state.clearTokens);
+  const clearIdentity = useIdentityStore((state) => state.clearIdentity);
+  // const accessToken = useTokenStore((s) => s.accessToken);
 
   // ② Background refresh — enriches data but never blocks initial render
   const { data: freshUser } = useCurrentUser();
 
   // Use the freshest data available; fall back to store if network hasn't responded yet
   const currentUser = freshUser ?? storeUser;
+
+  // const isAuthenticated = !!accessToken;
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -313,7 +319,8 @@ export function Navigation() {
         /* always continue */
       }
     }
-    clearSession();
+    clearTokens();
+    clearIdentity();
     setMobileOpen(false);
     navigate(ROUTES.HOME, { replace: true });
     setIsLoggingOut(false);
@@ -359,7 +366,7 @@ export function Navigation() {
 
           {/* Desktop Auth */}
           <div className="hidden lg:flex items-center gap-3">
-            {currentUser ? (
+            {isAuthenticated && currentUser ? (
               <UserDropdown
                 currentUser={currentUser}
                 onLogout={handleLogout}

@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom';
-import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { toast } from '@/shared/components/ui/Toast';
 import { registerMessageRecipient } from '../lib/messageRecipientRegistry';
 import { useCreateDirectMessageThread } from './useMessages';
+import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 
 interface DirectConversationRecipientProfile {
   fullName: string;
@@ -39,7 +39,7 @@ function buildMessagesIntent(params: StartDirectConversationParams) {
 
 export function useStartDirectConversation() {
   const navigate = useNavigate();
-  const currentUser = useAuthStore((state) => state.user);
+  const currentUser = useIdentityStore((state) => state.user);
   const createDirectThread = useCreateDirectMessageThread();
 
   async function startDirectConversation(params: StartDirectConversationParams) {
