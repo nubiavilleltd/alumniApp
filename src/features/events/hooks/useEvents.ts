@@ -5,6 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { eventsService, type GetEventsParams } from '../services/event.service';
 import type { Event } from '../types/event.types';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
+import { toast } from '@/shared/components/ui/Toast';
 
 // ─── Query Keys ───────────────────────────────────────────────────────────────
 export const eventKeys = {
@@ -204,7 +205,10 @@ export function useCreateEvent() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (payload: FormData | Record<string, any>) => eventsService.create(payload),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: eventKeys.all }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: eventKeys.all });
+      toast.success('Event created successfully.');
+    },
   });
 }
 
@@ -214,7 +218,10 @@ export function useUpdateEvent() {
   return useMutation({
     mutationFn: ({ id, payload }: { id: string; payload: Record<string, any> }) =>
       eventsService.update(id, payload),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: eventKeys.all }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: eventKeys.all });
+      toast.success('Event updated successfully.');
+    },
   });
 }
 
@@ -223,6 +230,9 @@ export function useDeleteEvent() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => eventsService.delete(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: eventKeys.all }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: eventKeys.all });
+      toast.success('Event deleted successfully.');
+    },
   });
 }

@@ -23,9 +23,15 @@ import {
 } from '../lib/verificationResendThrottle';
 import { boolean } from 'zod';
 
+interface LoginLocationState {
+  from?: string;
+  loginNotice?: string;
+}
+
 export function LoginForm() {
   const navigate = useNavigate();
   const location = useLocation();
+  const locationState = (location.state as LoginLocationState | null) ?? null;
   const setIdentity = useIdentityStore((state) => state.setIdentity);
   const setTokens = useTokenStore((state) => state.setTokens);
   const setRememberMe = useTokenStore((state) => state.setRememberMe);
@@ -40,7 +46,26 @@ export function LoginForm() {
     }
   }, [location.search, navigate]);
 
-  const from = (location.state as { from?: string } | null)?.from;
+  useEffect(() => {
+    if (!locationState?.loginNotice) {
+      return;
+    }
+
+    toast.info(locationState.loginNotice);
+
+    navigate(
+      {
+        pathname: location.pathname,
+        search: location.search,
+      },
+      {
+        replace: true,
+        state: locationState.from ? { from: locationState.from } : null,
+      },
+    );
+  }, [location.pathname, location.search, locationState, navigate]);
+
+  const from = locationState?.from;
 
   const {
     register,

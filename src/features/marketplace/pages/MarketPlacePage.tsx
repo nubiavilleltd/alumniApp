@@ -138,7 +138,7 @@ function BusinessCard({
           disabled={isOwnBusiness || isMessagePending}
           className="mt-2 w-full bg-primary-500 hover:bg-primary-600 text-white text-[11px] font-medium py-1.5 rounded transition-colors disabled:cursor-not-allowed disabled:bg-primary-200"
         >
-          {isOwnBusiness ? 'Your Listing' : isMessagePending ? 'Opening...' : 'Send Message'}
+          {isMessagePending ? 'Opening...' : 'Send Message'}
         </button>
       </div>
     </div>

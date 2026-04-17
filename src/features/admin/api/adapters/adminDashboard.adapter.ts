@@ -50,7 +50,9 @@ export function mapBackendMemberToPending(raw: any): PendingMember | null {
       id: String(id),
       fullName,
       nameInSchool: raw?.name_in_school ?? raw?.nameInSchool ?? fullName,
+      nickName: raw?.nick_name ?? raw?.nickName ?? 'ß',
       email: raw?.email ?? '',
+      residentialAddress: raw?.residential_address ?? raw?.residentialAddress ?? '',
       graduationYear: safeParseInt(raw?.graduation_year ?? raw?.graduationYear) ?? 0,
       submittedAt: safeParseDate(
         raw?.submitted_at ?? raw?.submittedAt ?? raw?.created_at ?? raw?.created_on,

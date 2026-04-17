@@ -65,9 +65,11 @@ export function useStartDirectConversation() {
     }
 
     if (!currentUser?.memberId) {
-      toast.info('Log in to start a conversation.');
       navigate('/auth/login', {
-        state: { from: buildMessagesIntent(params) },
+        state: {
+          from: buildMessagesIntent(params),
+          loginNotice: 'Log in to start a conversation.',
+        },
       });
       return;
     }

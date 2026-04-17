@@ -112,7 +112,7 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: A
             disabled={!entry.memberId || isOwnProfile || isMessagePending}
             className="flex-1 bg-primary-500 hover:bg-primary-600 text-white text-[11px] font-medium py-1.5 rounded transition-colors disabled:cursor-not-allowed disabled:bg-primary-200"
           >
-            {isOwnProfile ? 'Your Profile' : isMessagePending ? 'Opening...' : 'Send Message'}
+            {isMessagePending ? 'Opening...' : 'Send Message'}
           </button>
           <AppLink
             href={ALUMNI_ROUTES.PROFILE(entry.memberId as string)}
