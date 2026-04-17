@@ -182,15 +182,6 @@ export function RegisterVerificationPage() {
               </span>
             </div>
           ))}
-          {hasRegistrationDetails ? (
-            <button
-              type="button"
-              onClick={() => navigate(AUTH_ROUTES.REGISTER)}
-              className="text-xs text-primary-500 hover:text-primary-600 font-medium pt-1"
-            >
-              ← Edit details
-            </button>
-          ) : null}
         </div>
 
         <form className="space-y-4" onSubmit={submitVerification}>

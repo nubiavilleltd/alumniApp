@@ -38,6 +38,16 @@ const editEventSchema = z
     max_attendees: z.number({ error: 'Please enter a valid number' }).min(0).default(0),
   })
   .refine(
+    (data) => {
+      if (!data.event_date) return true;
+      const selectedDate = new Date(data.event_date);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return selectedDate >= today;
+    },
+    { message: 'Event date cannot be in the past', path: ['event_date'] },
+  )
+  .refine(
     (d) => {
       if (!d.start_time || !d.end_time) return true;
       return d.end_time > d.start_time;
@@ -327,6 +337,7 @@ export default function EditEventPage() {
                 id="event_date"
                 type="date"
                 required
+                min={new Date().toISOString().split('T')[0]}
                 error={errors.event_date?.message}
                 {...register('event_date')}
               />

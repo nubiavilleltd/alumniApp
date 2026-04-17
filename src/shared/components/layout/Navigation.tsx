@@ -183,11 +183,11 @@ function UserDropdown({
             <p className="text-sm font-semibold text-gray-800 truncate">{currentUser.fullName}</p>
             <div className="flex items-center gap-2 mt-0.5">
               <p className="text-xs text-gray-400 capitalize">{currentUser.role ?? 'Member'}</p>
-              {isAdmin && (
+              {/* {isAdmin && (
                 <span className="text-[10px] font-semibold px-1.5 py-0.5 bg-purple-100 text-purple-700 rounded-full">
                   Admin
                 </span>
-              )}
+              )} */}
             </div>
           </div>
 
@@ -448,11 +448,11 @@ export function Navigation() {
                       <p className="text-xs text-white/60 capitalize">
                         {currentUser.role ?? 'Member'}
                       </p>
-                      {isAdmin && (
+                      {/* {isAdmin && (
                         <span className="text-[10px] font-semibold px-1.5 py-0.5 bg-purple-500/30 text-white rounded-full">
                           Admin
                         </span>
-                      )}
+                      )} */}
                     </div>
                   </div>
                 </div>

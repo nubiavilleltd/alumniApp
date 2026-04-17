@@ -99,7 +99,7 @@ export function useCreateListing() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: marketplaceKeys.all });
-      toast.success('Your listing has been posted successfully.');
+      toast.success('Your business has been posted successfully.');
     },
     onError: (error: any) => {
       toast.fromError(error);
@@ -121,7 +121,7 @@ export function useUpdateListing() {
       if (currentUser?.id) {
         queryClient.invalidateQueries({ queryKey: marketplaceKeys.userListings(currentUser.id) });
       }
-      toast.success('Your listing has been updated.');
+      toast.success('Your business has been updated.');
     },
     onError: (error: any) => {
       toast.fromError(error);
@@ -141,7 +141,7 @@ export function useDeleteListing() {
       if (currentUser?.id) {
         queryClient.invalidateQueries({ queryKey: marketplaceKeys.userListings(currentUser.id) });
       }
-      toast.success('Your listing has been deleted.');
+      toast.success('Your business has been deleted.');
     },
     onError: (error: any) => {
       toast.fromError(error);

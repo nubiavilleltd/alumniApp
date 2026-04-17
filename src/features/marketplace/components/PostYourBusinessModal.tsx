@@ -65,17 +65,18 @@ const postBusinessSchema = z
     phoneCountry: z.enum(supportedPhoneCountries),
 
     phone: z.string().trim().min(1, 'Phone number is required'),
+    website: z.string().optional(),
 
-    website: z
-      .string()
-      .optional()
-      .refine(
-        (val) => {
-          if (!val) return true;
-          return /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/.test(val);
-        },
-        { message: 'Enter a valid URL (e.g., example.com)' },
-      ),
+    // website: z
+    //   .string()
+    //   .optional()
+    //   .refine(
+    //     (val) => {
+    //       if (!val) return true;
+    //       return /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/.test(val);
+    //     },
+    //     { message: 'Enter a valid URL (e.g., example.com)' },
+    //   ),
   })
   .superRefine((data, ctx) => {
     const phoneError = validateNationalPhoneNumber(data.phoneCountry, data.phone);
