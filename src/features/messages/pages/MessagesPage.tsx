@@ -46,6 +46,10 @@ import {
   registerMessageAttachmentPreview,
   revokeMessageAttachmentPreview,
 } from '../lib/messageAttachmentPreviewRegistry';
+import {
+  recordMarketplaceDraftPrefill,
+  shouldPrefillMarketplaceDraft,
+} from '../lib/marketplaceDraftPrefillStorage';
 import type {
   MessageAttachment,
   MessageDeliveryStatus,
@@ -78,6 +82,12 @@ interface DraftComposerAttachment {
 interface OpenMessageActionsMenu {
   messageId: string;
   style: CSSProperties;
+}
+
+interface ReplaceMessagesSearchOptions {
+  initialMessage?: string;
+  draftMessage?: string;
+  marketplaceBusinessId?: string;
 }
 
 function getParticipantRolePriority(role: MessageParticipant['roleInThread']) {
@@ -1106,6 +1116,9 @@ export function MessagesPage() {
   const requestedRecipientId = searchParams.get('recipient');
   const requestedTopic = searchParams.get('topic') ?? undefined;
   const requestedInitialMessage = searchParams.get('initialMessage')?.trim() ?? undefined;
+  const requestedDraftMessage = searchParams.get('draftMessage')?.trim() ?? undefined;
+  const requestedMarketplaceBusinessId =
+    searchParams.get('marketplaceBusinessId')?.trim() ?? undefined;
 
   const inboxQuery = useMessagesInbox();
   const createDirectThread = useCreateDirectMessageThread();
@@ -1184,15 +1197,23 @@ export function MessagesPage() {
       ? openMessageActionsMessage.body.trim().length > 0
       : false;
 
-  function replaceMessagesSearch(nextThreadId?: string, nextInitialMessage?: string) {
+  function replaceMessagesSearch(nextThreadId?: string, options?: ReplaceMessagesSearchOptions) {
     const nextSearch = new URLSearchParams();
 
     if (nextThreadId) {
       nextSearch.set('threadId', nextThreadId);
     }
 
-    if (nextInitialMessage?.trim()) {
-      nextSearch.set('initialMessage', nextInitialMessage.trim());
+    if (options?.initialMessage?.trim()) {
+      nextSearch.set('initialMessage', options.initialMessage.trim());
+    }
+
+    if (options?.draftMessage?.trim()) {
+      nextSearch.set('draftMessage', options.draftMessage.trim());
+    }
+
+    if (options?.marketplaceBusinessId?.trim()) {
+      nextSearch.set('marketplaceBusinessId', options.marketplaceBusinessId.trim());
     }
 
     navigate(
@@ -1650,7 +1671,7 @@ export function MessagesPage() {
       return;
     }
 
-    const intentKey = `${requestedRecipientId}:${requestedTopic ?? ''}:${requestedInitialMessage ?? ''}`;
+    const intentKey = `${requestedRecipientId}:${requestedTopic ?? ''}:${requestedInitialMessage ?? ''}:${requestedDraftMessage ?? ''}:${requestedMarketplaceBusinessId ?? ''}`;
     if (pendingDirectThreadIntentRef.current === intentKey) return;
 
     pendingDirectThreadIntentRef.current = intentKey;
@@ -1663,7 +1684,11 @@ export function MessagesPage() {
       })
       .then((response) => {
         setSelectedThreadId(response.thread.id);
-        replaceMessagesSearch(response.thread.id, requestedInitialMessage);
+        replaceMessagesSearch(response.thread.id, {
+          initialMessage: requestedInitialMessage,
+          draftMessage: requestedDraftMessage,
+          marketplaceBusinessId: requestedMarketplaceBusinessId,
+        });
       })
       .catch(() => {
         pendingDirectThreadIntentRef.current = null;
@@ -1671,7 +1696,9 @@ export function MessagesPage() {
   }, [
     createDirectThread,
     currentUser,
+    requestedDraftMessage,
     requestedInitialMessage,
+    requestedMarketplaceBusinessId,
     requestedRecipientId,
     requestedTopic,
   ]);
@@ -1732,6 +1759,46 @@ export function MessagesPage() {
     // Each thread keeps its own draft so attachments and text do not leak across chats.
     discardDraftComposer();
   }, [activeThreadId]);
+
+  useEffect(() => {
+    if (
+      !viewerMemberId ||
+      !activeThread ||
+      !requestedDraftMessage ||
+      !requestedMarketplaceBusinessId
+    ) {
+      return;
+    }
+
+    if (draftMessage.trim().length > 0 || draftAttachments.length > 0) {
+      replaceMessagesSearch(activeThread.id);
+      return;
+    }
+
+    if (
+      !shouldPrefillMarketplaceDraft({
+        buyerMemberId: viewerMemberId,
+        businessId: requestedMarketplaceBusinessId,
+      })
+    ) {
+      replaceMessagesSearch(activeThread.id);
+      return;
+    }
+
+    setDraftMessage(requestedDraftMessage);
+    recordMarketplaceDraftPrefill({
+      buyerMemberId: viewerMemberId,
+      businessId: requestedMarketplaceBusinessId,
+    });
+    replaceMessagesSearch(activeThread.id);
+  }, [
+    activeThread,
+    draftAttachments.length,
+    draftMessage,
+    requestedDraftMessage,
+    requestedMarketplaceBusinessId,
+    viewerMemberId,
+  ]);
 
   useEffect(() => {
     if (

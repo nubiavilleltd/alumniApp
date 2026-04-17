@@ -18,6 +18,8 @@ interface StartDirectConversationParams {
   participantMemberId: string;
   topic?: string;
   initialMessage?: string;
+  draftMessage?: string;
+  marketplaceBusinessId?: string;
   recipientProfile?: DirectConversationRecipientProfile;
 }
 
@@ -32,6 +34,14 @@ function buildMessagesIntent(params: StartDirectConversationParams) {
 
   if (params.initialMessage?.trim()) {
     search.set('initialMessage', params.initialMessage.trim());
+  }
+
+  if (params.draftMessage?.trim()) {
+    search.set('draftMessage', params.draftMessage.trim());
+  }
+
+  if (params.marketplaceBusinessId?.trim()) {
+    search.set('marketplaceBusinessId', params.marketplaceBusinessId.trim());
   }
 
   return `/messages?${search.toString()}`;
@@ -55,7 +65,7 @@ export function useStartDirectConversation() {
     }
 
     if (!currentUser?.memberId) {
-      toast.info('Sign in to start a conversation.');
+      toast.info('Log in to start a conversation.');
       navigate('/auth/login', {
         state: { from: buildMessagesIntent(params) },
       });
@@ -81,6 +91,14 @@ export function useStartDirectConversation() {
 
       if (params.initialMessage?.trim()) {
         search.set('initialMessage', params.initialMessage.trim());
+      }
+
+      if (params.draftMessage?.trim()) {
+        search.set('draftMessage', params.draftMessage.trim());
+      }
+
+      if (params.marketplaceBusinessId?.trim()) {
+        search.set('marketplaceBusinessId', params.marketplaceBusinessId.trim());
       }
 
       navigate(`/messages?${search.toString()}`);
