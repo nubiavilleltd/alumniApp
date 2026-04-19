@@ -49,7 +49,7 @@ export const SelectInput = forwardRef<HTMLSelectElement, SelectInputProps>(
             name={name}
             required={required}
             disabled={disabled}
-            className={`w-full appearance-none border rounded-lg px-4 py-2.5 pr-9 text-sm text-gray-700 outline-none cursor-pointer transition-colors shadow-sm
+            className={`w-full appearance-none border rounded-3xl px-4 py-2.5 pr-9 text-sm text-gray-700 outline-none cursor-pointer transition-colors shadow-sm
               ${error ? 'border-red-400 focus:border-red-400' : 'border-gray-200 focus:border-primary-400'}
               ${disabled ? 'opacity-50 bg-gray-50 cursor-not-allowed' : 'bg-white'}
             `}

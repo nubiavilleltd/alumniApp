@@ -19,12 +19,12 @@ const PLACEHOLDER = 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w
 
 function ProjectDetailsSkeleton() {
   return (
-    <div className="container-custom py-10 animate-pulse">
-      <div className="h-8 bg-gray-200 rounded w-3/4 mb-6" />
-      <div className="w-full h-80 bg-gray-200 rounded-lg mb-4" />
-      <div className="flex gap-2 mb-6">
+    <div className="container-custom py-6 sm:py-8 md:py-10 animate-pulse">
+      <div className="h-6 sm:h-8 bg-gray-200 rounded w-3/4 mb-4 sm:mb-6" />
+      <div className="w-full h-56 sm:h-72 md:h-80 bg-gray-200 rounded-lg mb-4" />
+      <div className="flex gap-2 mb-6 overflow-x-auto">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="h-16 w-16 bg-gray-200 rounded-md" />
+          <div key={i} className="h-14 w-14 sm:h-16 sm:w-16 bg-gray-200 rounded-md flex-shrink-0" />
         ))}
       </div>
       <div className="space-y-2">
@@ -46,21 +46,26 @@ function ProgressSection({ project }: { project: Project }) {
       : 0;
 
   return (
-    <div className="bg-primary-50 rounded-xl p-5 space-y-3">
-      <div className="flex items-center justify-between">
+    <div className="bg-primary-50 rounded-xl p-4 sm:p-5 space-y-3">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold">
             Amount Raised
           </p>
-          <p className="text-2xl font-bold text-primary-600">₦{amountRaised.toLocaleString()}</p>
+          <p className="text-xl sm:text-2xl font-bold text-primary-600">
+            ₦{amountRaised.toLocaleString()}
+          </p>
         </div>
         {targetAmount && (
-          <div className="text-right">
+          <div className="text-left sm:text-right">
             <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold">Goal</p>
-            <p className="text-xl font-bold text-gray-700">₦{targetAmount.toLocaleString()}</p>
+            <p className="text-lg sm:text-xl font-bold text-gray-700">
+              ₦{targetAmount.toLocaleString()}
+            </p>
           </div>
         )}
       </div>
+
       {targetAmount && (
         <>
           <div className="h-3 rounded-full bg-primary-100 overflow-hidden">
@@ -91,13 +96,13 @@ function DeleteConfirmModal({
 }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-      <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+      <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-5 sm:p-6">
         <div className="flex items-start gap-3 mb-4">
           <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
             <Icon icon="mdi:alert-circle-outline" className="w-5 h-5 text-red-600" />
           </div>
           <div>
-            <h3 className="text-gray-900 font-bold text-lg mb-1">Delete Project?</h3>
+            <h3 className="text-gray-900 font-bold text-base sm:text-lg mb-1">Delete Project?</h3>
             <p className="text-gray-600 text-sm">
               Are you sure you want to delete <span className="font-semibold">{title}</span>? This
               action cannot be undone.
@@ -117,7 +122,7 @@ function DeleteConfirmModal({
             type="button"
             onClick={onConfirm}
             disabled={isDeleting}
-            className="px-6 py-2 text-sm font-semibold bg-red-500 hover:bg-red-600 text-white rounded-lg flex items-center gap-2 disabled:opacity-50"
+            className="px-5 sm:px-6 py-2 text-sm font-semibold bg-red-500 hover:bg-red-600 text-white rounded-lg flex items-center gap-2 disabled:opacity-50"
           >
             {isDeleting && <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" />}
             Yes, Delete
@@ -183,10 +188,42 @@ export default function ProjectDetailsPage() {
 
       <section className="section">
         <div className="container-custom max-w-4xl">
+          {/* Image gallery */}
+          <div className="flex flex-col gap-3 mb-6 sm:mb-8">
+            {/* Main image */}
+            <div className="w-full aspect-[16/10] sm:aspect-[16/9] bg-gray-100 rounded-xl overflow-hidden">
+              <img
+                src={images[activeImage]}
+                alt={project.title}
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            {/* Thumbnails */}
+            {images.length > 1 && (
+              <div className="flex gap-2 overflow-x-auto pb-1">
+                {images.map((img, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    onClick={() => setActiveImage(index)}
+                    className={`h-14 w-14 sm:h-16 sm:w-16 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all ${
+                      activeImage === index
+                        ? 'border-primary-500 ring-2 ring-primary-200'
+                        : 'border-transparent hover:border-gray-300'
+                    }`}
+                  >
+                    <img src={img} alt="" className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
           {/* Header */}
-          <div className="flex items-start justify-between gap-4 mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-2">
+              {/* <div className="flex items-center gap-2 mb-2">
                 <span
                   className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${
                     project.status === 'completed'
@@ -201,10 +238,13 @@ export default function ProjectDetailsPage() {
                     Featured
                   </span>
                 )}
-              </div>
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-900">{project.title}</h1>
+              </div> */}
+
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
+                {project.title}
+              </h1>
               {project.createdByName && (
-                <p className="mt-1 text-sm text-gray-400 flex items-center gap-1">
+                <p className="mt-1 text-sm text-gray-400 flex items-center gap-1 flex-wrap">
                   <Icon icon="mdi:account-outline" className="w-4 h-4" />
                   {project.createdByName}
                   {project.chapterName && ` · ${project.chapterName}`}
@@ -214,7 +254,7 @@ export default function ProjectDetailsPage() {
 
             {/* Admin actions */}
             {isAdmin && (
-              <div className="flex items-center gap-2 flex-shrink-0">
+              <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
                 <button
                   type="button"
                   onClick={() => setShowEditModal(true)}
@@ -235,55 +275,21 @@ export default function ProjectDetailsPage() {
             )}
           </div>
 
-          {/* Image gallery */}
-          <div className="flex flex-col gap-3 mb-8">
-            {/* Main image */}
-            <div className="w-full h-[400px] md:h-[500px] bg-gray-100 rounded-xl overflow-hidden">
-              <img
-                src={images[activeImage]}
-                alt={project.title}
-                className="w-full h-full object-cover"
-              />
-            </div>
-
-            {/* Thumbnails — only when multiple images */}
-            {images.length > 1 && (
-              <div className="flex gap-2 overflow-x-auto pb-1">
-                {images.map((img, index) => (
-                  <button
-                    key={index}
-                    type="button"
-                    onClick={() => setActiveImage(index)}
-                    className={`h-16 w-16 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all ${
-                      activeImage === index
-                        ? 'border-primary-500 ring-2 ring-primary-200'
-                        : 'border-transparent hover:border-gray-300'
-                    }`}
-                  >
-                    <img
-                      src={img}
-                      alt={`Image ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
           {/* Progress */}
-          <ProgressSection project={project} />
+          {/* <ProgressSection project={project} /> */}
 
           {/* Description */}
-          <div className="mt-8">
-            <h2 className="text-lg font-bold text-gray-900 mb-3">About this project</h2>
-            <p className="text-gray-600 leading-relaxed whitespace-pre-wrap">
+          <div className="mt-6 sm:mt-8">
+            <h2 className="text-base sm:text-lg font-bold text-gray-900 mb-3">
+              About this project
+            </h2>
+            <p className="text-gray-600 leading-relaxed whitespace-pre-wrap text-sm sm:text-base">
               {project.description}
             </p>
           </div>
 
           {/* Back link */}
-          <div className="mt-10">
+          <div className="mt-8 sm:mt-10">
             <AppLink
               href={ROUTES.PROJECTS.ROOT}
               className="inline-flex items-center gap-1 text-primary-500 hover:text-primary-600 text-sm font-semibold"

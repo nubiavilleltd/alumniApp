@@ -145,7 +145,7 @@ export function ProjectFormModal({ isOpen, onClose, editData }: ProjectFormModal
           {...register('description')}
         />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <FormInput
             label="Target Amount (₦)"
             id="targetAmount"
@@ -164,7 +164,7 @@ export function ProjectFormModal({ isOpen, onClose, editData }: ProjectFormModal
             error={errors.amountRaised?.message}
             {...register('amountRaised', { valueAsNumber: true })}
           />
-        </div>
+        </div> */}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <SelectInput
@@ -176,7 +176,7 @@ export function ProjectFormModal({ isOpen, onClose, editData }: ProjectFormModal
             error={errors.status?.message}
             {...register('status')}
           />
-          <FormInput
+          {/* <FormInput
             label="Sort Order"
             id="sortOrder"
             type="number"
@@ -184,17 +184,17 @@ export function ProjectFormModal({ isOpen, onClose, editData }: ProjectFormModal
             hint="Lower = shown first"
             error={errors.sortOrder?.message}
             {...register('sortOrder', { valueAsNumber: true })}
-          />
+          /> */}
         </div>
 
-        <label className="flex items-center gap-3 cursor-pointer">
+        {/* <label className="flex items-center gap-3 cursor-pointer">
           <input
             type="checkbox"
             className="w-4 h-4 rounded border-gray-300 text-primary-500 focus:ring-primary-400"
             {...register('isFeatured')}
           />
           <span className="text-sm font-medium text-gray-700">Featured project</span>
-        </label>
+        </label> */}
 
         <ImageUpload
           label="Images"
@@ -212,7 +212,7 @@ export function ProjectFormModal({ isOpen, onClose, editData }: ProjectFormModal
           </p>
         )}
 
-        <div className="flex gap-3 pt-2">
+        <div className="flex flex-col sm:flex-row gap-3 pt-2">
           <Button type="submit" className="flex-1" disabled={isLoading}>
             {isLoading ? (
               <span className="flex items-center justify-center gap-2">
