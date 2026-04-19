@@ -1,21 +1,621 @@
+// // features/alumni/pages/AlumniProfilePage.tsx
+
+// import { Icon } from '@iconify/react';
+// import { useParams } from 'react-router-dom';
+// import { useAlumnus } from '@/features/alumni/hooks/useAlumni';
+// import { defaultPrivacySettings } from '@/features/authentication/types/auth.types';
+// import type { PrivacySettings, FieldVisibility } from '@/features/authentication/types/auth.types';
+// import { AppLink } from '@/shared/components/ui/AppLink';
+// import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
+// import { SEO } from '@/shared/common/SEO';
+// import { useStartDirectConversation } from '@/features/messages/hooks/useStartDirectConversation';
+// import {
+//   isFieldVisible,
+//   getPrivateFieldDisplay,
+//   getPhotoDisplay,
+// } from '@/features/alumni/utils/privacyHelpers';
+// import {
+//   areaOptions,
+//   employmentStatusOptions,
+//   industrySectorOptions,
+//   occupationOptions,
+// } from '@/features/authentication/constants/profileOptions';
+// import { ALUMNI_ROUTES } from '../routes';
+// import { ROUTES } from '@/shared/constants/routes';
+// import { AUTH_ROUTES } from '@/features/authentication/routes';
+// import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
+// import { mapCurrentUserResponse } from '@/features/authentication/api/adapters/login.adapter';
+
+// // ─── Helper Functions ─────────────────────────────────────────────────────────
+// function resolveLabel(
+//   value: string | undefined,
+//   options: readonly { label: string; value: string }[],
+// ): string | undefined {
+//   if (!value) return undefined;
+//   return options.find((o) => o.value === value)?.label ?? value;
+// }
+
+// function formatDate(iso: string | undefined): string | undefined {
+//   if (!iso) return undefined;
+//   return new Date(iso).toLocaleDateString('en-US', {
+//     year: 'numeric',
+//     month: 'long',
+//     day: 'numeric',
+//   });
+// }
+
+// // ─── Skeleton ─────────────────────────────────────────────────────────────────
+// function ProfileSkeleton() {
+//   return (
+//     <section className="section py-12">
+//       <div className="container mx-auto px-4">
+//         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-pulse">
+//           <aside className="lg:col-span-1 bg-white shadow-md rounded-2xl p-6 flex flex-col items-center gap-3">
+//             <div className="w-36 h-36 rounded-full bg-gray-200" />
+//             <div className="h-5 bg-gray-200 rounded w-2/3" />
+//             <div className="h-4 bg-gray-200 rounded w-1/3" />
+//             <div className="w-full mt-2 space-y-2">
+//               <div className="h-3 bg-gray-200 rounded w-full" />
+//               <div className="h-3 bg-gray-200 rounded w-5/6" />
+//               <div className="h-3 bg-gray-200 rounded w-4/6" />
+//             </div>
+//           </aside>
+//           <main className="lg:col-span-2 space-y-6">
+//             {Array.from({ length: 3 }).map((_, i) => (
+//               <div key={i} className="bg-white shadow-md rounded-2xl p-6 space-y-3">
+//                 <div className="h-5 bg-gray-200 rounded w-1/4" />
+//                 <div className="h-3 bg-gray-200 rounded w-full" />
+//                 <div className="h-3 bg-gray-200 rounded w-full" />
+//                 <div className="h-3 bg-gray-200 rounded w-3/4" />
+//               </div>
+//             ))}
+//           </main>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
+
+// // ─── Field Row Components ─────────────────────────────────────────────────────
+// function FieldRow({
+//   label,
+//   value,
+//   icon,
+// }: {
+//   label: string;
+//   value?: string | number;
+//   icon: string;
+// }) {
+//   return (
+//     <div className="flex items-center justify-between py-3">
+//       <div className="flex items-center gap-2 text-sm text-gray-400">
+//         <Icon icon={icon} className="w-4 h-4" />
+//         {label}
+//       </div>
+//       <p className={`text-sm font-medium ${value ? 'text-gray-700' : 'text-gray-300 italic'}`}>
+//         {value ?? 'Not added'}
+//       </p>
+//     </div>
+//   );
+// }
+
+// function FieldRowWithPrivacy({
+//   label,
+//   value,
+//   icon,
+//   privacy,
+//   currentUser,
+//   viewerIsOwner,
+// }: {
+//   label: string;
+//   value?: string | number;
+//   icon: string;
+//   privacy?: FieldVisibility;
+//   currentUser: any;
+//   viewerIsOwner: boolean;
+// }) {
+//   const isVisible = viewerIsOwner ? true : privacy === 'public';
+//   const displayValue = isVisible ? value : 'Private';
+//   const isValueEmpty = !value || (typeof value === 'string' && value.trim() === '');
+
+//   return (
+//     <div className="flex items-center justify-between py-3">
+//       <div className="flex items-center gap-2 text-sm text-gray-400">
+//         <Icon icon={icon} className="w-4 h-4" />
+//         {label}
+//       </div>
+//       <div className="flex items-center gap-2">
+//         <p
+//           className={`text-sm font-medium ${
+//             !isVisible
+//               ? 'text-gray-400 italic flex items-center gap-1'
+//               : isValueEmpty
+//                 ? 'text-gray-300 italic'
+//                 : 'text-gray-700'
+//           }`}
+//         >
+//           {!isVisible ? (
+//             <>
+//               <Icon icon="mdi:lock" className="w-3 h-3" />
+//               Private
+//             </>
+//           ) : isValueEmpty ? (
+//             'Not added'
+//           ) : (
+//             displayValue
+//           )}
+//         </p>
+//         {privacy && viewerIsOwner && (
+//           <span
+//             className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold ${
+//               privacy === 'public'
+//                 ? 'bg-green-50 text-green-600 border border-green-200'
+//                 : 'bg-gray-100 text-gray-600 border border-gray-300'
+//             }`}
+//             title={privacy === 'public' ? 'Visible to everyone' : 'Only visible to you'}
+//           >
+//             <Icon
+//               icon={privacy === 'public' ? 'mdi:eye-outline' : 'mdi:lock'}
+//               className="w-3 h-3"
+//             />
+//             {privacy === 'public' ? 'Public' : 'Private'}
+//           </span>
+//         )}
+//       </div>
+//     </div>
+//   );
+// }
+
+// function SectionCard({
+//   title,
+//   icon,
+//   children,
+// }: {
+//   title: string;
+//   icon: string;
+//   children: React.ReactNode;
+// }) {
+//   return (
+//     <section className="bg-white shadow-md rounded-2xl p-6">
+//       <h2 className="text-base font-bold text-gray-800 flex items-center gap-2 mb-5">
+//         <Icon icon={icon} className="w-5 h-5 text-primary-400" />
+//         {title}
+//       </h2>
+//       {children}
+//     </section>
+//   );
+// }
+
+// // ─── Main Page ────────────────────────────────────────────────────────────────
+// export function AlumniProfilePage() {
+//   const { slug = '' } = useParams(); // slug is actually the ID now (e.g., "16")
+//   // const currentUser = useAuthStore((state) => state.user);
+
+//   const { data: currentUser, isLoading: isLoadingProfile } = useCurrentUser();
+
+//   const isSignedIn = !!currentUser;
+//   const { startDirectConversation, isPending: isStartingConversation } =
+//     useStartDirectConversation();
+
+//   // Fetch alumnus by ID
+//   const { data: alumnus, isLoading, error } = useAlumnus(slug);
+
+//   if (isLoading || isLoadingProfile) return <ProfileSkeleton />;
+
+//   if (error) {
+//     return (
+//       <section className="section">
+//         <div className="container-custom text-center py-12">
+//           <Icon icon="mdi:alert-circle-outline" className="w-16 h-16 text-red-400 mx-auto mb-4" />
+//           <h1 className="text-3xl font-bold mb-4">Something went wrong</h1>
+//           <p className="text-gray-600 mb-6">
+//             There was an error loading this profile. Please try again later.
+//           </p>
+//           <div className="flex gap-4 justify-center">
+//             <AppLink href={ALUMNI_ROUTES.PROFILES} className="btn btn-primary">
+//               Browse Directory
+//             </AppLink>
+//             <button onClick={() => window.location.reload()} className="btn btn-outline">
+//               Try Again
+//             </button>
+//           </div>
+//         </div>
+//       </section>
+//     );
+//   }
+
+//   if (!alumnus) {
+//     return (
+//       <section className="section">
+//         <div className="container-custom text-center py-12">
+//           <Icon icon="mdi:account-alert" className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+//           <h1 className="text-3xl font-bold mb-4">Alumni profile not found</h1>
+//           <p className="text-gray-600 mb-6">
+//             The profile you're looking for doesn't exist or has been removed.
+//           </p>
+//           <div className="flex gap-4 justify-center">
+//             <AppLink href={ALUMNI_ROUTES.PROFILES} className="btn btn-primary">
+//               Browse Directory
+//             </AppLink>
+//             <button onClick={() => window.location.reload()} className="btn btn-outline">
+//               Try Again
+//             </button>
+//           </div>
+//         </div>
+//       </section>
+//     );
+//   }
+
+//   // ── Check if viewing own profile ────────────────────────────────────────────
+//   const isOwnProfile = currentUser?.memberId === alumnus.memberId;
+
+//   const alum = alumnus;
+
+//   // Resolved labels
+//   const occupationLabel = resolveLabel(alum.occupations?.[0], occupationOptions);
+//   const employmentLabel = resolveLabel(alum.employmentStatus, employmentStatusOptions);
+//   const areaLabel = resolveLabel(alum.area, areaOptions);
+
+//   const breadcrumbItems = [
+//     { label: 'Home', href: ROUTES.HOME },
+//     { label: 'Profiles', href: ALUMNI_ROUTES.PROFILES },
+//     { label: alum.name || 'Profile' },
+//   ];
+
+//   return (
+//     <>
+//       <SEO title={alum.name || 'Alumni Profile'} description={alum.bio} />
+//       <Breadcrumbs items={breadcrumbItems} />
+
+//       <section className="section py-12">
+//         <div className="container-custom">
+//           <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-3">
+//             {/* ── Sidebar ──────────────────────────────────────────────── */}
+//             <aside className="space-y-4 lg:col-span-1 h-fit">
+//               <div className="bg-white shadow-md rounded-2xl p-6 flex flex-col items-center text-center">
+//                 <div className="relative">
+//                   <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-primary-100 bg-primary-50 flex items-center justify-center mb-4">
+//                     {getPhotoDisplay(
+//                       alum.photo,
+//                       isOwnProfile || alum.privacy?.photo === 'public',
+//                     ) ? (
+//                       <img
+//                         src={alum.photo}
+//                         alt={alum.name}
+//                         className="w-full h-full object-cover"
+//                       />
+//                     ) : (
+//                       <span className="text-3xl font-bold text-primary-400">
+//                         {alum.name
+//                           ?.split(' ')
+//                           .map((n) => n[0])
+//                           .join('')
+//                           .toUpperCase() || '??'}
+//                       </span>
+//                     )}
+//                   </div>
+//                   {/* Photo Privacy Badge - only show for owner */}
+//                   {isOwnProfile && alum.privacy?.photo && (
+//                     <span
+//                       className={`absolute bottom-3 right-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+//                         alum.privacy.photo === 'public'
+//                           ? 'bg-green-50 text-green-600 border border-green-200'
+//                           : 'bg-gray-100 text-gray-600 border border-gray-300'
+//                       }`}
+//                     >
+//                       <Icon
+//                         icon={alum.privacy.photo === 'public' ? 'mdi:eye-outline' : 'mdi:lock'}
+//                         className="w-3 h-3"
+//                       />
+//                     </span>
+//                   )}
+//                 </div>
+
+//                 <h1 className="text-lg font-bold text-gray-800">{alum.name || 'Unknown'}</h1>
+
+//                 {alum.nameInSchool && alum.nameInSchool !== alum.name && (
+//                   <p className="text-xs text-gray-400 mt-0.5">née {alum.nameInSchool}</p>
+//                 )}
+
+//                 <p className="text-sm text-primary-500 mt-0.5">Class of {alum.graduationYear}</p>
+
+//                 {/* Employment summary */}
+//                 {occupationLabel && (
+//                   <p className="text-xs text-gray-500 mt-1">
+//                     {occupationLabel}
+//                     {employmentLabel ? ` · ${employmentLabel}` : ''}
+//                   </p>
+//                 )}
+
+//                 {/* Location */}
+//                 {/* {alum.city && (
+//                   <p className="text-xs text-gray-400 mt-1 flex items-center gap-1">
+//                     <Icon icon="mdi:map-marker-outline" className="w-3.5 h-3.5" />
+//                     {alum.city}
+//                     {areaLabel ? `, ${areaLabel}` : ''}
+//                   </p>
+//                 )} */}
+//                 {alum.city && (
+//                   <p className="text-xs text-gray-400 mt-1 flex items-center gap-1">
+//                     <Icon icon="mdi:map-marker-outline" className="w-3.5 h-3.5" />
+//                     {alum.city}
+//                     {alum.state ? `, ${alum.state}` : ''}
+//                   </p>
+//                 )}
+
+//                 {/* Volunteer Badge */}
+//                 {alum.isVolunteer && (
+//                   <div className="mt-4 bg-primary-50 border border-primary-100 rounded-2xl px-3 py-2 flex items-center gap-2">
+//                     <Icon icon="mdi:hand-heart-outline" className="w-4 h-4 text-primary-500" />
+//                     <p className="text-xs text-primary-700 font-medium">Volunteer</p>
+//                   </div>
+//                 )}
+
+//                 {!isOwnProfile ? (
+//                   <button
+//                     type="button"
+//                     onClick={() => {
+//                       const recipientHeadline =
+//                         alum.position && alum.company
+//                           ? `${alum.position} at ${alum.company}`
+//                           : occupationLabel
+//                             ? employmentLabel
+//                               ? `${occupationLabel} · ${employmentLabel}`
+//                               : occupationLabel
+//                             : `Class of ${alum.graduationYear}`;
+
+//                       void startDirectConversation({
+//                         participantMemberId: alum.memberId,
+//                         topic: `Alumni profile conversation with ${alum.name}`,
+//                         recipientProfile: {
+//                           fullName: alum.name,
+//                           avatar: alum.photo,
+//                           headline: recipientHeadline,
+//                           location: alum.location || alum.city,
+//                           graduationYear: alum.graduationYear,
+//                           slug: alum.slug,
+//                           profileHref: `/alumni/profiles/${alum.memberId}`,
+//                         },
+//                       });
+//                     }}
+//                     disabled={isStartingConversation}
+//                     className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary-500 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-600 disabled:cursor-not-allowed disabled:bg-primary-200"
+//                   >
+//                     <Icon
+//                       icon={isStartingConversation ? 'mdi:loading' : 'mdi:message-outline'}
+//                       className={`h-4 w-4 ${isStartingConversation ? 'animate-spin' : ''}`}
+//                     />
+//                     {isStartingConversation ? 'Opening conversation...' : 'Send Message'}
+//                   </button>
+//                 ) : null}
+//               </div>
+//             </aside>
+
+//             {/* ── Main content ─────────────────────────────────────────── */}
+//             <main className="space-y-6 lg:col-span-2">
+//               {/* About Section */}
+//               <SectionCard title="About" icon="mdi:information-outline">
+//                 <p className="text-gray-700 text-sm leading-relaxed">
+//                   {alum.bio || 'No bio available.'}
+//                 </p>
+//               </SectionCard>
+
+//               {/* Identity Section */}
+//               <SectionCard title="Identity" icon="mdi:account-outline">
+//                 <div className="divide-y divide-gray-50">
+//                   <FieldRow label="Full Name" value={alum.name} icon="mdi:account-outline" />
+//                   <FieldRow
+//                     label="Name in School"
+//                     value={alum.nameInSchool}
+//                     icon="mdi:school-outline"
+//                   />
+//                   <FieldRow label="Nickname" value={alum.nickName} icon="mdi:school-outline" />
+//                   <FieldRow label="Email" value={alum.email} icon="mdi:email-outline" />
+//                   <FieldRowWithPrivacy
+//                     label="WhatsApp"
+//                     value={alum.whatsappPhone}
+//                     icon="mdi:whatsapp"
+//                     privacy={alum.privacy?.whatsappPhone}
+//                     currentUser={currentUser}
+//                     viewerIsOwner={isOwnProfile}
+//                   />
+//                   <FieldRowWithPrivacy
+//                     label="Alt. Phone"
+//                     value={alum.alternativePhone}
+//                     icon="mdi:phone-outline"
+//                     privacy={alum.privacy?.alternativePhone}
+//                     currentUser={currentUser}
+//                     viewerIsOwner={isOwnProfile}
+//                   />
+//                   <FieldRowWithPrivacy
+//                     label="Date of Birth"
+//                     value={formatDate(alum.birthDate)}
+//                     icon="mdi:calendar-outline"
+//                     privacy={alum.privacy?.birthDate}
+//                     currentUser={currentUser}
+//                     viewerIsOwner={isOwnProfile}
+//                   />
+//                 </div>
+//               </SectionCard>
+
+//               {/* Address Section */}
+//               <SectionCard title="Address" icon="mdi:map-marker-outline">
+//                 <div className="divide-y divide-gray-50">
+//                   <FieldRowWithPrivacy
+//                     label="Residential Address"
+//                     value={alum.residentialAddress}
+//                     icon="mdi:home-outline"
+//                     privacy={alum.privacy?.residentialAddress}
+//                     currentUser={currentUser}
+//                     viewerIsOwner={isOwnProfile}
+//                   />
+//                   {/* <FieldRowWithPrivacy
+//                     label="Area"
+//                     value={areaLabel}
+//                     icon="mdi:map-outline"
+//                     privacy={alum.privacy?.area}
+//                     currentUser={currentUser}
+//                     viewerIsOwner={isOwnProfile}
+//                   /> */}
+//                   <FieldRowWithPrivacy
+//                     label="State"
+//                     value={areaLabel}
+//                     icon="mdi:map-outline"
+//                     privacy={alum.privacy?.state}
+//                     currentUser={currentUser}
+//                     viewerIsOwner={isOwnProfile}
+//                   />
+//                   <FieldRowWithPrivacy
+//                     label="City"
+//                     value={alum.city}
+//                     icon="mdi:city-variant-outline"
+//                     privacy={alum.privacy?.city}
+//                     currentUser={currentUser}
+//                     viewerIsOwner={isOwnProfile}
+//                   />
+//                 </div>
+//               </SectionCard>
+
+//               {/* Work Section */}
+//               <SectionCard title="Work" icon="mdi:briefcase-outline">
+//                 <div className="divide-y divide-gray-50">
+//                   <FieldRowWithPrivacy
+//                     label="Employment Status"
+//                     value={employmentLabel}
+//                     icon="mdi:briefcase-outline"
+//                     privacy={alum.privacy?.employmentStatus}
+//                     currentUser={currentUser}
+//                     viewerIsOwner={isOwnProfile}
+//                   />
+//                   <FieldRowWithPrivacy
+//                     label="Occupation"
+//                     value={alum.occupations
+//                       ?.map((o) => resolveLabel(o, occupationOptions))
+//                       .join(', ')}
+//                     icon="mdi:account-hard-hat-outline"
+//                     privacy={alum.privacy?.occupations}
+//                     currentUser={currentUser}
+//                     viewerIsOwner={isOwnProfile}
+//                   />
+//                   <FieldRowWithPrivacy
+//                     label="Industry Sector"
+//                     value={alum.industrySectors
+//                       ?.map((s) => resolveLabel(s, industrySectorOptions))
+//                       .join(', ')}
+//                     icon="mdi:domain"
+//                     privacy={alum.privacy?.industrySectors}
+//                     currentUser={currentUser}
+//                     viewerIsOwner={isOwnProfile}
+//                   />
+//                   <FieldRowWithPrivacy
+//                     label="Years of Experience"
+//                     value={
+//                       alum.yearsOfExperience !== undefined
+//                         ? `${alum.yearsOfExperience} years`
+//                         : undefined
+//                     }
+//                     icon="mdi:chart-timeline-variant"
+//                     privacy={alum.privacy?.yearsOfExperience}
+//                     currentUser={currentUser}
+//                     viewerIsOwner={isOwnProfile}
+//                   />
+//                 </div>
+//               </SectionCard>
+
+//               {/* Social Links */}
+//               {(alum.linkedin || alum.twitter || alum.instagram) && (
+//                 <SectionCard title="Social Links" icon="mdi:link-variant">
+//                   <div className="divide-y divide-gray-50">
+//                     {alum.linkedin && (
+//                       <div className="flex items-center py-3">
+//                         <a
+//                           href={alum.linkedin}
+//                           target="_blank"
+//                           rel="noopener noreferrer"
+//                           className="flex items-center gap-2 text-sm text-gray-400 hover:text-primary-500 transition-colors"
+//                         >
+//                           <Icon icon="mdi:linkedin" className="w-4 h-4" />
+//                           LinkedIn
+//                         </a>
+//                       </div>
+//                     )}
+
+//                     {alum.twitter && (
+//                       <div className="flex items-center py-3">
+//                         <a
+//                           href={alum.twitter}
+//                           target="_blank"
+//                           rel="noopener noreferrer"
+//                           className="flex items-center gap-2 text-sm text-gray-400 hover:text-primary-500 transition-colors"
+//                         >
+//                           <Icon icon="mdi:twitter" className="w-4 h-4" />
+//                           Twitter / X
+//                         </a>
+//                       </div>
+//                     )}
+
+//                     {alum.instagram && (
+//                       <div className="flex items-center py-3">
+//                         <a
+//                           href={alum.instagram}
+//                           target="_blank"
+//                           rel="noopener noreferrer"
+//                           className="flex items-center gap-2 text-sm text-gray-400 hover:text-primary-500 transition-colors"
+//                         >
+//                           <Icon icon="mdi:instagram" className="w-4 h-4" />
+//                           Instagram
+//                         </a>
+//                       </div>
+//                     )}
+//                   </div>
+//                 </SectionCard>
+//               )}
+
+//               {/* Privacy notice for non-owners */}
+//               {!isOwnProfile && isSignedIn && (
+//                 <p className="text-xs text-gray-400 text-center pb-2">
+//                   Some fields may be hidden based on this member's privacy settings.
+//                 </p>
+//               )}
+
+//               {/* Sign in prompt for non-logged in users */}
+//               {!isSignedIn && (
+//                 <div className="bg-primary-50 border border-primary-100 rounded-2xl p-6 text-center">
+//                   <Icon
+//                     icon="mdi:lock-outline"
+//                     className="w-10 h-10 text-primary-400 mx-auto mb-3"
+//                   />
+//                   <h3 className="text-lg font-semibold text-primary-800 mb-2">
+//                     Sign in to view full profile
+//                   </h3>
+//                   <p className="text-sm text-primary-600 mb-4">
+//                     Join our alumni network to connect with fellow alumnae and access complete
+//                     profiles.
+//                   </p>
+//                   <AppLink href={AUTH_ROUTES.LOGIN} className="btn btn-primary btn-sm">
+//                     Sign In
+//                   </AppLink>
+//                 </div>
+//               )}
+//             </main>
+//           </div>
+//         </div>
+//       </section>
+//     </>
+//   );
+// }
+
 // features/alumni/pages/AlumniProfilePage.tsx
+// NEW DESIGN: Sidebar (ProfileCard with message button) + right column (ProfileInfoPanel with copy).
 
 import { Icon } from '@iconify/react';
 import { useParams } from 'react-router-dom';
 import { useAlumnus } from '@/features/alumni/hooks/useAlumni';
-import { defaultPrivacySettings } from '@/features/authentication/types/auth.types';
-import type { PrivacySettings, FieldVisibility } from '@/features/authentication/types/auth.types';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { SEO } from '@/shared/common/SEO';
 import { useStartDirectConversation } from '@/features/messages/hooks/useStartDirectConversation';
 import {
-  isFieldVisible,
-  getPrivateFieldDisplay,
-  getPhotoDisplay,
-} from '@/features/alumni/utils/privacyHelpers';
-import {
-  areaOptions,
   employmentStatusOptions,
   industrySectorOptions,
   occupationOptions,
@@ -24,9 +624,11 @@ import { ALUMNI_ROUTES } from '../routes';
 import { ROUTES } from '@/shared/constants/routes';
 import { AUTH_ROUTES } from '@/features/authentication/routes';
 import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
-import { mapCurrentUserResponse } from '@/features/authentication/api/adapters/login.adapter';
+import { ProfileCard, type SocialLink } from '@/features/user/components/ui/ProfileCard';
+import { ProfileInfoPanel } from '@/features/user/components/ui/ProfileInfoPanel';
 
-// ─── Helper Functions ─────────────────────────────────────────────────────────
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
 function resolveLabel(
   value: string | undefined,
   options: readonly { label: string; value: string }[],
@@ -45,159 +647,35 @@ function formatDate(iso: string | undefined): string | undefined {
 }
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
+
 function ProfileSkeleton() {
   return (
-    <section className="section py-12">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-pulse">
-          <aside className="lg:col-span-1 bg-white shadow-md rounded-2xl p-6 flex flex-col items-center gap-3">
-            <div className="w-36 h-36 rounded-full bg-gray-200" />
-            <div className="h-5 bg-gray-200 rounded w-2/3" />
-            <div className="h-4 bg-gray-200 rounded w-1/3" />
-            <div className="w-full mt-2 space-y-2">
-              <div className="h-3 bg-gray-200 rounded w-full" />
-              <div className="h-3 bg-gray-200 rounded w-5/6" />
-              <div className="h-3 bg-gray-200 rounded w-4/6" />
-            </div>
-          </aside>
-          <main className="lg:col-span-2 space-y-6">
+    <section className="section py-8">
+      <div className="container-custom">
+        <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6 animate-pulse">
+          <div className="bg-white rounded-2xl h-72 shadow-sm" />
+          <div className="space-y-4">
             {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="bg-white shadow-md rounded-2xl p-6 space-y-3">
-                <div className="h-5 bg-gray-200 rounded w-1/4" />
+              <div key={i} className="bg-white rounded-2xl p-6 shadow-sm space-y-3">
+                <div className="h-4 bg-gray-200 rounded w-1/4" />
                 <div className="h-3 bg-gray-200 rounded w-full" />
-                <div className="h-3 bg-gray-200 rounded w-full" />
-                <div className="h-3 bg-gray-200 rounded w-3/4" />
+                <div className="h-3 bg-gray-200 rounded w-5/6" />
               </div>
             ))}
-          </main>
+          </div>
         </div>
       </div>
     </section>
   );
 }
 
-// ─── Field Row Components ─────────────────────────────────────────────────────
-function FieldRow({
-  label,
-  value,
-  icon,
-}: {
-  label: string;
-  value?: string | number;
-  icon: string;
-}) {
-  return (
-    <div className="flex items-center justify-between py-3">
-      <div className="flex items-center gap-2 text-sm text-gray-400">
-        <Icon icon={icon} className="w-4 h-4" />
-        {label}
-      </div>
-      <p className={`text-sm font-medium ${value ? 'text-gray-700' : 'text-gray-300 italic'}`}>
-        {value ?? 'Not added'}
-      </p>
-    </div>
-  );
-}
+// ─── Page ─────────────────────────────────────────────────────────────────────
 
-function FieldRowWithPrivacy({
-  label,
-  value,
-  icon,
-  privacy,
-  currentUser,
-  viewerIsOwner,
-}: {
-  label: string;
-  value?: string | number;
-  icon: string;
-  privacy?: FieldVisibility;
-  currentUser: any;
-  viewerIsOwner: boolean;
-}) {
-  const isVisible = viewerIsOwner ? true : privacy === 'public';
-  const displayValue = isVisible ? value : 'Private';
-  const isValueEmpty = !value || (typeof value === 'string' && value.trim() === '');
-
-  return (
-    <div className="flex items-center justify-between py-3">
-      <div className="flex items-center gap-2 text-sm text-gray-400">
-        <Icon icon={icon} className="w-4 h-4" />
-        {label}
-      </div>
-      <div className="flex items-center gap-2">
-        <p
-          className={`text-sm font-medium ${
-            !isVisible
-              ? 'text-gray-400 italic flex items-center gap-1'
-              : isValueEmpty
-                ? 'text-gray-300 italic'
-                : 'text-gray-700'
-          }`}
-        >
-          {!isVisible ? (
-            <>
-              <Icon icon="mdi:lock" className="w-3 h-3" />
-              Private
-            </>
-          ) : isValueEmpty ? (
-            'Not added'
-          ) : (
-            displayValue
-          )}
-        </p>
-        {privacy && viewerIsOwner && (
-          <span
-            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold ${
-              privacy === 'public'
-                ? 'bg-green-50 text-green-600 border border-green-200'
-                : 'bg-gray-100 text-gray-600 border border-gray-300'
-            }`}
-            title={privacy === 'public' ? 'Visible to everyone' : 'Only visible to you'}
-          >
-            <Icon
-              icon={privacy === 'public' ? 'mdi:eye-outline' : 'mdi:lock'}
-              className="w-3 h-3"
-            />
-            {privacy === 'public' ? 'Public' : 'Private'}
-          </span>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function SectionCard({
-  title,
-  icon,
-  children,
-}: {
-  title: string;
-  icon: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section className="bg-white shadow-md rounded-2xl p-6">
-      <h2 className="text-base font-bold text-gray-800 flex items-center gap-2 mb-5">
-        <Icon icon={icon} className="w-5 h-5 text-primary-400" />
-        {title}
-      </h2>
-      {children}
-    </section>
-  );
-}
-
-// ─── Main Page ────────────────────────────────────────────────────────────────
 export function AlumniProfilePage() {
-  const { slug = '' } = useParams(); // slug is actually the ID now (e.g., "16")
-  // const currentUser = useAuthStore((state) => state.user);
-
+  const { slug = '' } = useParams();
   const { data: currentUser, isLoading: isLoadingProfile } = useCurrentUser();
-
-  const isSignedIn = !!currentUser;
   const { startDirectConversation, isPending: isStartingConversation } =
     useStartDirectConversation();
-
-  // Fetch alumnus by ID
   const { data: alumnus, isLoading, error } = useAlumnus(slug);
 
   if (isLoading || isLoadingProfile) return <ProfileSkeleton />;
@@ -207,11 +685,9 @@ export function AlumniProfilePage() {
       <section className="section">
         <div className="container-custom text-center py-12">
           <Icon icon="mdi:alert-circle-outline" className="w-16 h-16 text-red-400 mx-auto mb-4" />
-          <h1 className="text-3xl font-bold mb-4">Something went wrong</h1>
-          <p className="text-gray-600 mb-6">
-            There was an error loading this profile. Please try again later.
-          </p>
-          <div className="flex gap-4 justify-center">
+          <h1 className="text-2xl font-bold mb-3">Something went wrong</h1>
+          <p className="text-gray-500 mb-6">There was an error loading this profile.</p>
+          <div className="flex gap-3 justify-center">
             <AppLink href={ALUMNI_ROUTES.PROFILES} className="btn btn-primary">
               Browse Directory
             </AppLink>
@@ -229,358 +705,187 @@ export function AlumniProfilePage() {
       <section className="section">
         <div className="container-custom text-center py-12">
           <Icon icon="mdi:account-alert" className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <h1 className="text-3xl font-bold mb-4">Alumni profile not found</h1>
-          <p className="text-gray-600 mb-6">
-            The profile you're looking for doesn't exist or has been removed.
-          </p>
-          <div className="flex gap-4 justify-center">
-            <AppLink href={ALUMNI_ROUTES.PROFILES} className="btn btn-primary">
-              Browse Directory
-            </AppLink>
-            <button onClick={() => window.location.reload()} className="btn btn-outline">
-              Try Again
-            </button>
-          </div>
+          <h1 className="text-2xl font-bold mb-3">Profile not found</h1>
+          <p className="text-gray-500 mb-6">This profile doesn't exist or has been removed.</p>
+          <AppLink href={ALUMNI_ROUTES.PROFILES} className="btn btn-primary">
+            Browse Directory
+          </AppLink>
         </div>
       </section>
     );
   }
 
-  // ── Check if viewing own profile ────────────────────────────────────────────
   const isOwnProfile = currentUser?.memberId === alumnus.memberId;
+  const isSignedIn = !!currentUser;
 
-  const alum = alumnus;
+  // ── Derived display values ─────────────────────────────────────────────────
+  const occupationLabel = resolveLabel(alumnus.occupations?.[0], occupationOptions);
+  const employmentLabel = resolveLabel(alumnus.employmentStatus, employmentStatusOptions);
+  const industrySectorLabel = resolveLabel(alumnus.industrySectors?.[0], industrySectorOptions);
 
-  // Resolved labels
-  const occupationLabel = resolveLabel(alum.occupations?.[0], occupationOptions);
-  const employmentLabel = resolveLabel(alum.employmentStatus, employmentStatusOptions);
-  const areaLabel = resolveLabel(alum.area, areaOptions);
+  const positionLine =
+    [alumnus.position || occupationLabel, alumnus.company ? `at ${alumnus.company}` : undefined]
+      .filter(Boolean)
+      .join(' ') || undefined;
+
+  const socials: SocialLink[] = [
+    alumnus.instagram && { icon: 'mdi:instagram', href: alumnus.instagram, label: 'Instagram' },
+    alumnus.facebook && { icon: 'mdi:facebook', href: alumnus.facebook, label: 'Facebook' },
+    alumnus.twitter && { icon: 'ri:twitter-x-fill', href: alumnus.twitter, label: 'X (Twitter)' },
+    alumnus.tiktok && { icon: 'ic:baseline-tiktok', href: alumnus.tiktok, label: 'TikTok' },
+  ].filter(Boolean) as SocialLink[];
+
+  const profileData = {
+    bio: alumnus.bio,
+    fullName: alumnus.name,
+    nicknameInSchool: alumnus.nickName,
+    email: isSignedIn ? alumnus.email : undefined,
+    whatsapp:
+      isSignedIn && (isOwnProfile || alumnus.privacy?.whatsappPhone === 'public')
+        ? alumnus.whatsappPhone
+        : undefined,
+    altPhone:
+      isSignedIn && (isOwnProfile || alumnus.privacy?.alternativePhone === 'public')
+        ? alumnus.alternativePhone
+        : undefined,
+    dateOfBirth:
+      isOwnProfile || alumnus.privacy?.birthDate === 'public'
+        ? formatDate(alumnus.birthDate)
+        : undefined,
+    streetAddress:
+      isOwnProfile || alumnus.privacy?.residentialAddress === 'public'
+        ? alumnus.residentialAddress
+        : undefined,
+    area: alumnus.area,
+    state: alumnus.state,
+    city: alumnus.city,
+    employmentStatus: employmentLabel,
+    occupation: alumnus.occupations
+      ?.map((o) => resolveLabel(o, occupationOptions))
+      .filter(Boolean)
+      .join(', '),
+    industrySector: alumnus.industrySectors
+      ?.map((s) => resolveLabel(s, industrySectorOptions))
+      .filter(Boolean)
+      .join(', '),
+    yearsOfExperience:
+      alumnus.yearsOfExperience !== undefined ? `${alumnus.yearsOfExperience}` : undefined,
+  };
 
   const breadcrumbItems = [
     { label: 'Home', href: ROUTES.HOME },
     { label: 'Profiles', href: ALUMNI_ROUTES.PROFILES },
-    { label: alum.name || 'Profile' },
+    { label: alumnus.name || 'Profile' },
   ];
+
+  const handleShare = () => {
+    const url = window.location.href;
+    if (navigator.share) {
+      navigator.share({ title: alumnus.name, url }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(url).catch(() => {});
+    }
+  };
+
+  const handleMessage = () => {
+    const recipientHeadline =
+      alumnus.position && alumnus.company
+        ? `${alumnus.position} at ${alumnus.company}`
+        : (occupationLabel ?? `Class of ${alumnus.graduationYear}`);
+
+    void startDirectConversation({
+      participantMemberId: alumnus.memberId,
+      topic: `Alumni profile conversation with ${alumnus.name}`,
+      recipientProfile: {
+        fullName: alumnus.name,
+        avatar: alumnus.photo,
+        headline: recipientHeadline,
+        location: alumnus.location || alumnus.city,
+        graduationYear: alumnus.graduationYear,
+        slug: alumnus.slug,
+        profileHref: `/alumni/profiles/${alumnus.memberId}`,
+      },
+    });
+  };
 
   return (
     <>
-      <SEO title={alum.name || 'Alumni Profile'} description={alum.bio} />
+      <SEO title={alumnus.name || 'Alumni Profile'} description={alumnus.bio} />
       <Breadcrumbs items={breadcrumbItems} />
 
-      <section className="section py-12">
+      <section className="section bg-gray-100 py-8">
         <div className="container-custom">
-          <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-3">
-            {/* ── Sidebar ──────────────────────────────────────────────── */}
-            <aside className="space-y-4 lg:col-span-1 h-fit">
-              <div className="bg-white shadow-md rounded-2xl p-6 flex flex-col items-center text-center">
-                <div className="relative">
-                  <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-primary-100 bg-primary-50 flex items-center justify-center mb-4">
-                    {getPhotoDisplay(
-                      alum.photo,
-                      isOwnProfile || alum.privacy?.photo === 'public',
-                    ) ? (
-                      <img
-                        src={alum.photo}
-                        alt={alum.name}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <span className="text-3xl font-bold text-primary-400">
-                        {alum.name
-                          ?.split(' ')
-                          .map((n) => n[0])
-                          .join('')
-                          .toUpperCase() || '??'}
-                      </span>
-                    )}
-                  </div>
-                  {/* Photo Privacy Badge - only show for owner */}
-                  {isOwnProfile && alum.privacy?.photo && (
-                    <span
-                      className={`absolute bottom-3 right-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold ${
-                        alum.privacy.photo === 'public'
-                          ? 'bg-green-50 text-green-600 border border-green-200'
-                          : 'bg-gray-100 text-gray-600 border border-gray-300'
-                      }`}
-                    >
-                      <Icon
-                        icon={alum.privacy.photo === 'public' ? 'mdi:eye-outline' : 'mdi:lock'}
-                        className="w-3 h-3"
-                      />
-                    </span>
-                  )}
-                </div>
+          <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6">
+            {/* ── Left: sidebar ──────────────────────────────────────── */}
+            <div className="space-y-4 lg:sticky lg:top-6 h-fit">
+              <ProfileCard
+                photo={alumnus.photo}
+                fullName={alumnus.name}
+                maidenName={
+                  alumnus.nameInSchool && alumnus.nameInSchool !== alumnus.name
+                    ? alumnus.nameInSchool
+                    : undefined
+                }
+                graduationYear={alumnus.graduationYear}
+                positionLine={positionLine}
+                city={alumnus.city}
+                isVolunteer={alumnus.isVolunteer}
+                socials={socials}
+                mode={isOwnProfile ? 'owner' : isSignedIn ? 'visitor' : 'public'}
+                onMessage={handleMessage}
+                isMessaging={isStartingConversation}
+                onShare={handleShare}
+              />
 
-                <h1 className="text-lg font-bold text-gray-800">{alum.name || 'Unknown'}</h1>
-
-                {alum.nameInSchool && alum.nameInSchool !== alum.name && (
-                  <p className="text-xs text-gray-400 mt-0.5">née {alum.nameInSchool}</p>
-                )}
-
-                <p className="text-sm text-primary-500 mt-0.5">Class of {alum.graduationYear}</p>
-
-                {/* Employment summary */}
-                {occupationLabel && (
-                  <p className="text-xs text-gray-500 mt-1">
-                    {occupationLabel}
-                    {employmentLabel ? ` · ${employmentLabel}` : ''}
-                  </p>
-                )}
-
-                {/* Location */}
-                {/* {alum.city && (
-                  <p className="text-xs text-gray-400 mt-1 flex items-center gap-1">
-                    <Icon icon="mdi:map-marker-outline" className="w-3.5 h-3.5" />
-                    {alum.city}
-                    {areaLabel ? `, ${areaLabel}` : ''}
-                  </p>
-                )} */}
-                {alum.city && (
-                  <p className="text-xs text-gray-400 mt-1 flex items-center gap-1">
-                    <Icon icon="mdi:map-marker-outline" className="w-3.5 h-3.5" />
-                    {alum.city}
-                    {alum.state ? `, ${alum.state}` : ''}
-                  </p>
-                )}
-
-                {/* Volunteer Badge */}
-                {alum.isVolunteer && (
-                  <div className="mt-4 bg-primary-50 border border-primary-100 rounded-2xl px-3 py-2 flex items-center gap-2">
-                    <Icon icon="mdi:hand-heart-outline" className="w-4 h-4 text-primary-500" />
-                    <p className="text-xs text-primary-700 font-medium">Volunteer</p>
+              {/* Address card in sidebar */}
+              {(alumnus.residentialAddress || alumnus.area || alumnus.city) &&
+                (isOwnProfile || alumnus.privacy?.residentialAddress === 'public') && (
+                  <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+                    <h3 className="text-sm font-bold text-gray-900 mb-3">Address</h3>
+                    <div className="space-y-2 text-sm text-gray-600">
+                      {alumnus.residentialAddress && (
+                        <div className="grid grid-cols-[auto_1fr] gap-x-3">
+                          <span className="text-gray-400 whitespace-nowrap">
+                            Street Number and Name:
+                          </span>
+                          <span>{alumnus.residentialAddress}</span>
+                        </div>
+                      )}
+                      {alumnus.state && (
+                        <div className="grid grid-cols-[auto_1fr] gap-x-3">
+                          <span className="text-gray-400">State:</span>
+                          <span>{alumnus.state}</span>
+                        </div>
+                      )}
+                      {alumnus.city && (
+                        <div className="grid grid-cols-[auto_1fr] gap-x-3">
+                          <span className="text-gray-400">City:</span>
+                          <span>{alumnus.city}</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
+            </div>
 
-                {!isOwnProfile ? (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const recipientHeadline =
-                        alum.position && alum.company
-                          ? `${alum.position} at ${alum.company}`
-                          : occupationLabel
-                            ? employmentLabel
-                              ? `${occupationLabel} · ${employmentLabel}`
-                              : occupationLabel
-                            : `Class of ${alum.graduationYear}`;
+            {/* ── Right: info panels ──────────────────────────────────── */}
+            <div>
+              <ProfileInfoPanel
+                data={profileData}
+                copyable={!isOwnProfile && isSignedIn} // copy buttons only on visitor view
+                isOwner={isOwnProfile}
+              />
 
-                      void startDirectConversation({
-                        participantMemberId: alum.memberId,
-                        topic: `Alumni profile conversation with ${alum.name}`,
-                        recipientProfile: {
-                          fullName: alum.name,
-                          avatar: alum.photo,
-                          headline: recipientHeadline,
-                          location: alum.location || alum.city,
-                          graduationYear: alum.graduationYear,
-                          slug: alum.slug,
-                          profileHref: `/alumni/profiles/${alum.memberId}`,
-                        },
-                      });
-                    }}
-                    disabled={isStartingConversation}
-                    className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary-500 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-600 disabled:cursor-not-allowed disabled:bg-primary-200"
-                  >
-                    <Icon
-                      icon={isStartingConversation ? 'mdi:loading' : 'mdi:message-outline'}
-                      className={`h-4 w-4 ${isStartingConversation ? 'animate-spin' : ''}`}
-                    />
-                    {isStartingConversation ? 'Opening conversation...' : 'Send Message'}
-                  </button>
-                ) : null}
-              </div>
-            </aside>
-
-            {/* ── Main content ─────────────────────────────────────────── */}
-            <main className="space-y-6 lg:col-span-2">
-              {/* About Section */}
-              <SectionCard title="About" icon="mdi:information-outline">
-                <p className="text-gray-700 text-sm leading-relaxed">
-                  {alum.bio || 'No bio available.'}
-                </p>
-              </SectionCard>
-
-              {/* Identity Section */}
-              <SectionCard title="Identity" icon="mdi:account-outline">
-                <div className="divide-y divide-gray-50">
-                  <FieldRow label="Full Name" value={alum.name} icon="mdi:account-outline" />
-                  <FieldRow
-                    label="Name in School"
-                    value={alum.nameInSchool}
-                    icon="mdi:school-outline"
-                  />
-                  <FieldRow label="Nickname" value={alum.nickName} icon="mdi:school-outline" />
-                  <FieldRow label="Email" value={alum.email} icon="mdi:email-outline" />
-                  <FieldRowWithPrivacy
-                    label="WhatsApp"
-                    value={alum.whatsappPhone}
-                    icon="mdi:whatsapp"
-                    privacy={alum.privacy?.whatsappPhone}
-                    currentUser={currentUser}
-                    viewerIsOwner={isOwnProfile}
-                  />
-                  <FieldRowWithPrivacy
-                    label="Alt. Phone"
-                    value={alum.alternativePhone}
-                    icon="mdi:phone-outline"
-                    privacy={alum.privacy?.alternativePhone}
-                    currentUser={currentUser}
-                    viewerIsOwner={isOwnProfile}
-                  />
-                  <FieldRowWithPrivacy
-                    label="Date of Birth"
-                    value={formatDate(alum.birthDate)}
-                    icon="mdi:calendar-outline"
-                    privacy={alum.privacy?.birthDate}
-                    currentUser={currentUser}
-                    viewerIsOwner={isOwnProfile}
-                  />
-                </div>
-              </SectionCard>
-
-              {/* Address Section */}
-              <SectionCard title="Address" icon="mdi:map-marker-outline">
-                <div className="divide-y divide-gray-50">
-                  <FieldRowWithPrivacy
-                    label="Residential Address"
-                    value={alum.residentialAddress}
-                    icon="mdi:home-outline"
-                    privacy={alum.privacy?.residentialAddress}
-                    currentUser={currentUser}
-                    viewerIsOwner={isOwnProfile}
-                  />
-                  {/* <FieldRowWithPrivacy
-                    label="Area"
-                    value={areaLabel}
-                    icon="mdi:map-outline"
-                    privacy={alum.privacy?.area}
-                    currentUser={currentUser}
-                    viewerIsOwner={isOwnProfile}
-                  /> */}
-                  <FieldRowWithPrivacy
-                    label="State"
-                    value={areaLabel}
-                    icon="mdi:map-outline"
-                    privacy={alum.privacy?.state}
-                    currentUser={currentUser}
-                    viewerIsOwner={isOwnProfile}
-                  />
-                  <FieldRowWithPrivacy
-                    label="City"
-                    value={alum.city}
-                    icon="mdi:city-variant-outline"
-                    privacy={alum.privacy?.city}
-                    currentUser={currentUser}
-                    viewerIsOwner={isOwnProfile}
-                  />
-                </div>
-              </SectionCard>
-
-              {/* Work Section */}
-              <SectionCard title="Work" icon="mdi:briefcase-outline">
-                <div className="divide-y divide-gray-50">
-                  <FieldRowWithPrivacy
-                    label="Employment Status"
-                    value={employmentLabel}
-                    icon="mdi:briefcase-outline"
-                    privacy={alum.privacy?.employmentStatus}
-                    currentUser={currentUser}
-                    viewerIsOwner={isOwnProfile}
-                  />
-                  <FieldRowWithPrivacy
-                    label="Occupation"
-                    value={alum.occupations
-                      ?.map((o) => resolveLabel(o, occupationOptions))
-                      .join(', ')}
-                    icon="mdi:account-hard-hat-outline"
-                    privacy={alum.privacy?.occupations}
-                    currentUser={currentUser}
-                    viewerIsOwner={isOwnProfile}
-                  />
-                  <FieldRowWithPrivacy
-                    label="Industry Sector"
-                    value={alum.industrySectors
-                      ?.map((s) => resolveLabel(s, industrySectorOptions))
-                      .join(', ')}
-                    icon="mdi:domain"
-                    privacy={alum.privacy?.industrySectors}
-                    currentUser={currentUser}
-                    viewerIsOwner={isOwnProfile}
-                  />
-                  <FieldRowWithPrivacy
-                    label="Years of Experience"
-                    value={
-                      alum.yearsOfExperience !== undefined
-                        ? `${alum.yearsOfExperience} years`
-                        : undefined
-                    }
-                    icon="mdi:chart-timeline-variant"
-                    privacy={alum.privacy?.yearsOfExperience}
-                    currentUser={currentUser}
-                    viewerIsOwner={isOwnProfile}
-                  />
-                </div>
-              </SectionCard>
-
-              {/* Social Links */}
-              {(alum.linkedin || alum.twitter || alum.instagram) && (
-                <SectionCard title="Social Links" icon="mdi:link-variant">
-                  <div className="divide-y divide-gray-50">
-                    {alum.linkedin && (
-                      <div className="flex items-center py-3">
-                        <a
-                          href={alum.linkedin}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2 text-sm text-gray-400 hover:text-primary-500 transition-colors"
-                        >
-                          <Icon icon="mdi:linkedin" className="w-4 h-4" />
-                          LinkedIn
-                        </a>
-                      </div>
-                    )}
-
-                    {alum.twitter && (
-                      <div className="flex items-center py-3">
-                        <a
-                          href={alum.twitter}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2 text-sm text-gray-400 hover:text-primary-500 transition-colors"
-                        >
-                          <Icon icon="mdi:twitter" className="w-4 h-4" />
-                          Twitter / X
-                        </a>
-                      </div>
-                    )}
-
-                    {alum.instagram && (
-                      <div className="flex items-center py-3">
-                        <a
-                          href={alum.instagram}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2 text-sm text-gray-400 hover:text-primary-500 transition-colors"
-                        >
-                          <Icon icon="mdi:instagram" className="w-4 h-4" />
-                          Instagram
-                        </a>
-                      </div>
-                    )}
-                  </div>
-                </SectionCard>
-              )}
-
-              {/* Privacy notice for non-owners */}
+              {/* Privacy notice */}
               {!isOwnProfile && isSignedIn && (
-                <p className="text-xs text-gray-400 text-center pb-2">
+                <p className="text-xs text-gray-400 text-center mt-4">
                   Some fields may be hidden based on this member's privacy settings.
                 </p>
               )}
 
-              {/* Sign in prompt for non-logged in users */}
+              {/* Sign-in prompt */}
               {!isSignedIn && (
-                <div className="bg-primary-50 border border-primary-100 rounded-2xl p-6 text-center">
+                <div className="bg-primary-50 border border-primary-100 rounded-2xl p-6 text-center mt-4">
                   <Icon
                     icon="mdi:lock-outline"
                     className="w-10 h-10 text-primary-400 mx-auto mb-3"
@@ -589,15 +894,14 @@ export function AlumniProfilePage() {
                     Sign in to view full profile
                   </h3>
                   <p className="text-sm text-primary-600 mb-4">
-                    Join our alumni network to connect with fellow alumnae and access complete
-                    profiles.
+                    Join our alumni network to connect and access complete profiles.
                   </p>
                   <AppLink href={AUTH_ROUTES.LOGIN} className="btn btn-primary btn-sm">
                     Sign In
                   </AppLink>
                 </div>
               )}
-            </main>
+            </div>
           </div>
         </div>
       </section>

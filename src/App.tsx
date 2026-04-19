@@ -48,6 +48,7 @@ import { AdminEventRegistrationsPage } from './features/events/pages/AdminEventR
 import { COMING_SOON_ROUTES } from './config/comingSoonRoutes';
 import { ComingSoonRouteHandler } from './pages/errors/ComingSoonRouteHandler';
 import { GuestRoute } from './shared/components/routing/GuestRoute';
+import EditProfilePage from './features/user/pages/EditProfilePage';
 
 export default function App() {
   return (
@@ -253,6 +254,17 @@ export default function App() {
               <ProtectedRoute>
                 <ErrorBoundary>
                   <UserDashboardPage />
+                </ErrorBoundary>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path={ROUTES.USER.EDIT_PROFILE}
+            element={
+              <ProtectedRoute>
+                <ErrorBoundary>
+                  <EditProfilePage />
                 </ErrorBoundary>
               </ProtectedRoute>
             }

@@ -47,6 +47,7 @@ export interface Alumni {
   // ── Social Links ──────────────────────────────────────────────────────────
   linkedin?: string;
   twitter?: string;
+  tiktok?: string;
   facebook?: string;
   website?: string;
   instagram?: string;
