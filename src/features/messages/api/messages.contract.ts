@@ -8,8 +8,6 @@ import type {
 
 export const MESSAGE_POLLING_INTERVAL_MS = 6_000;
 
-// This is the backend-facing contract for chat. The mock transport already
-// follows it, so the future API can replace the mock without changing the page.
 export const MESSAGES_API_CONTRACT = {
   LIST_THREADS: {
     method: 'POST',

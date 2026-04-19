@@ -39,7 +39,7 @@ export const marketplaceService = {
     } catch (error) {
       throw handleApiError(
         error,
-        'Unable to load marketplace listings. Please try again.',
+        'Unable to load marketplace businesses. Please try again.',
         'marketplaceService.getAll',
       );
     }
@@ -67,7 +67,7 @@ export const marketplaceService = {
       if (error.response?.status === 404) return null;
       throw handleApiError(
         error,
-        'Unable to load this listing. Please try again.',
+        'Unable to load this business. Please try again.',
         'marketplaceService.getById',
       );
     }
@@ -88,7 +88,7 @@ export const marketplaceService = {
     } catch (error) {
       throw handleApiError(
         error,
-        'Unable to load your business listings. Please try again.',
+        'Unable to load your businesses. Please try again.',
         'marketplaceService.getByOwner',
       );
     }
@@ -128,11 +128,11 @@ export const marketplaceService = {
         if (fetched) return fetched;
       }
 
-      throw new Error('Listing created but could not be retrieved.');
+      throw new Error('Business created but could not be retrieved.');
     } catch (error) {
       throw handleApiError(
         error,
-        'Failed to create your listing. Please check your details and try again.',
+        'Failed to create your business. Please check your details and try again.',
         'marketplaceService.create',
       );
     }
@@ -154,7 +154,7 @@ export const marketplaceService = {
     } catch (error) {
       throw handleApiError(
         error,
-        'Failed to update your listing. Please try again.',
+        'Failed to update your business. Please try again.',
         'marketplaceService.update',
       );
     }
@@ -171,7 +171,7 @@ export const marketplaceService = {
     } catch (error) {
       throw handleApiError(
         error,
-        'Failed to delete your listing. Please try again.',
+        'Failed to delete your business. Please try again.',
         'marketplaceService.delete',
       );
     }

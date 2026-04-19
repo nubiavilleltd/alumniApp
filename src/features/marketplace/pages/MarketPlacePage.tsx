@@ -13,9 +13,9 @@ import {
   useMarketplaceCategories,
 } from '@/features/marketplace/hooks/useMarketplace';
 import type { Business } from '../types/marketplace.types';
-import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { ROUTES } from '@/shared/constants/routes';
 import { useStartDirectConversation } from '@/features/messages/hooks/useStartDirectConversation';
+import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 function BusinessCardSkeleton() {
@@ -138,7 +138,7 @@ function BusinessCard({
           disabled={isOwnBusiness || isMessagePending}
           className="mt-2 w-full bg-primary-500 hover:bg-primary-600 text-white text-[11px] font-medium py-1.5 rounded transition-colors disabled:cursor-not-allowed disabled:bg-primary-200"
         >
-          {isOwnBusiness ? 'Your Listing' : isMessagePending ? 'Opening...' : 'Send Message'}
+          {isMessagePending ? 'Opening...' : 'Send Message'}
         </button>
       </div>
     </div>
@@ -154,7 +154,7 @@ export default function MarketPlacePage() {
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
   const [showPostModal, setShowPostModal] = useState(false);
   const [pendingBusinessId, setPendingBusinessId] = useState<string | null>(null);
-  const currentUser = useAuthStore((state) => state.user);
+  const currentUser = useIdentityStore((state) => state.user);
   const { startDirectConversation, isPending: isStartingConversation } =
     useStartDirectConversation();
 
@@ -186,7 +186,8 @@ export default function MarketPlacePage() {
     await startDirectConversation({
       participantMemberId: business.ownerId,
       topic: `Marketplace enquiry about ${business.name}`,
-      initialMessage: `Hey there, thanks for reaching out to ${business.name} what can we do for you?`,
+      draftMessage: `Hi, I'm interested in ${business.name}. I'd like to know more about your services.`,
+      marketplaceBusinessId: business.businessId,
       recipientProfile: {
         fullName: business.owner,
         headline: `Owner of ${business.name}`,

@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom';
-import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { toast } from '@/shared/components/ui/Toast';
 import { registerMessageRecipient } from '../lib/messageRecipientRegistry';
 import { useCreateDirectMessageThread } from './useMessages';
+import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 
 interface DirectConversationRecipientProfile {
   fullName: string;
@@ -18,6 +18,8 @@ interface StartDirectConversationParams {
   participantMemberId: string;
   topic?: string;
   initialMessage?: string;
+  draftMessage?: string;
+  marketplaceBusinessId?: string;
   recipientProfile?: DirectConversationRecipientProfile;
 }
 
@@ -34,12 +36,20 @@ function buildMessagesIntent(params: StartDirectConversationParams) {
     search.set('initialMessage', params.initialMessage.trim());
   }
 
+  if (params.draftMessage?.trim()) {
+    search.set('draftMessage', params.draftMessage.trim());
+  }
+
+  if (params.marketplaceBusinessId?.trim()) {
+    search.set('marketplaceBusinessId', params.marketplaceBusinessId.trim());
+  }
+
   return `/messages?${search.toString()}`;
 }
 
 export function useStartDirectConversation() {
   const navigate = useNavigate();
-  const currentUser = useAuthStore((state) => state.user);
+  const currentUser = useIdentityStore((state) => state.user);
   const createDirectThread = useCreateDirectMessageThread();
 
   async function startDirectConversation(params: StartDirectConversationParams) {
@@ -55,9 +65,11 @@ export function useStartDirectConversation() {
     }
 
     if (!currentUser?.memberId) {
-      toast.info('Sign in to start a conversation.');
       navigate('/auth/login', {
-        state: { from: buildMessagesIntent(params) },
+        state: {
+          from: buildMessagesIntent(params),
+          loginNotice: 'Log in to start a conversation.',
+        },
       });
       return;
     }
@@ -81,6 +93,14 @@ export function useStartDirectConversation() {
 
       if (params.initialMessage?.trim()) {
         search.set('initialMessage', params.initialMessage.trim());
+      }
+
+      if (params.draftMessage?.trim()) {
+        search.set('draftMessage', params.draftMessage.trim());
+      }
+
+      if (params.marketplaceBusinessId?.trim()) {
+        search.set('marketplaceBusinessId', params.marketplaceBusinessId.trim());
       }
 
       navigate(`/messages?${search.toString()}`);

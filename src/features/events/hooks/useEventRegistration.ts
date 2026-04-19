@@ -1,6 +1,5 @@
 // features/events/hooks/useEventRegistration.ts
 
-import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import {
   useRegisterEvent,
   useCancelRegistration,
@@ -9,6 +8,7 @@ import {
 } from './useEvents';
 import type { Event } from '../types/event.types';
 import { toast } from '@/shared/components/ui/Toast';
+import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 
 type RegisterPayload = {
   status?: 'going' | 'maybe' | 'not_going';
@@ -19,7 +19,7 @@ type RegisterPayload = {
  * Uses API hooks to track registration status
  */
 export function useEventRegistration(eventId: string) {
-  const currentUser = useAuthStore((state) => state.user);
+  const currentUser = useIdentityStore((state) => state.user);
   const { data: userEvents = [], isLoading: isUserEventsLoading } = useMyRegisteredEvents();
 
   const registerMutation = useRegisterEvent();
@@ -101,7 +101,7 @@ export function useEventAttendeeCount(event: Event | null | undefined) {
  * Hook to get all events the current user is registered for
  */
 export function useMyEvents() {
-  const currentUser = useAuthStore((state) => state.user);
+  const currentUser = useIdentityStore((state) => state.user);
   const { data: userEvents = [], isLoading } = useMyRegisteredEvents();
 
   if (!currentUser) {

@@ -25,6 +25,26 @@ import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 // Required: title, description, location, event_date, visibility, status
 // Optional: start_time, end_time, max_attendees, banner
 
+// const createEventSchema = z
+//   .object({
+//     title: z.string().min(3, 'Title must be at least 3 characters'),
+//     description: z.string().min(10, 'Description must be at least 10 characters'),
+//     location: z.string().min(2, 'Location is required'),
+//     event_date: z.string().min(1, 'Event date is required'),
+//     start_time: z.string().optional(),
+//     end_time: z.string().optional(),
+//     visibility: z.enum(['public', 'members', 'premium']),
+//     status: z.enum(['upcoming', 'active', 'completed']),
+//     max_attendees: z.number({ error: 'Please enter a valid number' }).min(0).default(0),
+//   })
+//   .refine(
+//     (d) => {
+//       if (!d.start_time || !d.end_time) return true;
+//       return d.end_time > d.start_time;
+//     },
+//     { message: 'End time must be after start time', path: ['end_time'] },
+//   );
+
 const createEventSchema = z
   .object({
     title: z.string().min(3, 'Title must be at least 3 characters'),
@@ -37,6 +57,16 @@ const createEventSchema = z
     status: z.enum(['upcoming', 'active', 'completed']),
     max_attendees: z.number({ error: 'Please enter a valid number' }).min(0).default(0),
   })
+  .refine(
+    (data) => {
+      if (!data.event_date) return true;
+      const selectedDate = new Date(data.event_date);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return selectedDate >= today;
+    },
+    { message: 'Event date cannot be in the past', path: ['event_date'] },
+  )
   .refine(
     (d) => {
       if (!d.start_time || !d.end_time) return true;
@@ -216,6 +246,7 @@ export default function CreateEventPage() {
                 label="Event Date"
                 id="event_date"
                 type="date"
+                min={new Date().toISOString().split('T')[0]}
                 required
                 error={errors.event_date?.message}
                 {...register('event_date')}

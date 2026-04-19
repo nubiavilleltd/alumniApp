@@ -6,9 +6,10 @@
 // but it no longer gates the initial render.
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useAuthStore } from '../stores/useAuthStore';
+
 import { authApi } from '../services/auth.service';
 import type { AuthSessionUser } from '../types/auth.types';
+import { useIdentityStore } from '../stores/useIdentityStore';
 
 export const currentUserKeys = {
   all: ['currentUser'] as const,
@@ -27,7 +28,7 @@ export const currentUserKeys = {
  *   // data is available immediately if the user was previously logged in
  */
 export function useCurrentUser() {
-  const storeUser = useAuthStore((state) => state.user);
+  const storeUser = useIdentityStore((state) => state.user);
 
   return useQuery<AuthSessionUser | null>({
     queryKey: currentUserKeys.detail(storeUser?.id || ''),

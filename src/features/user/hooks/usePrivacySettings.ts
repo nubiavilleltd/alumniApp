@@ -30,11 +30,10 @@ import type { PrivacySettings, FieldVisibility } from '@/features/authentication
 
 import { defaultPrivacySettings } from '@/features/authentication/types/auth.types';
 
-import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
-
 import { privacyService } from '../services/privacy.service';
 
 import { toast } from '@/shared/components/ui/Toast';
+import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 
 /**
 
@@ -59,7 +58,7 @@ export const privacyKeys = {
 */
 
 export function usePrivacySettings() {
-  const currentUser = useAuthStore((state) => state.user);
+  const currentUser = useIdentityStore((state) => state.user);
 
   const userId = currentUser?.id;
 
@@ -99,7 +98,7 @@ export function usePrivacySettings() {
 export function useUpdateFieldPrivacy() {
   const queryClient = useQueryClient();
 
-  const currentUser = useAuthStore((state) => state.user);
+  const currentUser = useIdentityStore((state) => state.user);
 
   //   const updateUser = useAuthStore((state) => state.updateUser);
 

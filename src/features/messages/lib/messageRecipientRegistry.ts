@@ -9,7 +9,7 @@ interface MessageRecipientRegistryEntry {
   profileHref?: string;
 }
 
-const STORAGE_KEY = 'openalumns.messages.recipientRegistry.v1';
+const STORAGE_KEY = 'alumniapp.messages.recipientRegistry.v1';
 
 function canUseStorage() {
   return typeof window !== 'undefined';

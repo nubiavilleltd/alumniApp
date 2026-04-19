@@ -32,6 +32,9 @@ export interface PendingVouch {
   fullName: string;
   email: string;
   graduationYear: number;
+  nameInSchool?: string;
+  nickName?: string;
+  residentialAddress?: string;
   department: string;
   phone: string;
   status: string;

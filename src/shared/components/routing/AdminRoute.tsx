@@ -11,10 +11,12 @@
 
 import type { ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 import { AUTH_ROUTES } from '@/features/authentication/routes';
 import { USER_ROUTES } from '@/features/user/routes';
+import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
+import { useTokenStore } from '@/features/authentication/stores/useTokenStore';
+import { useAuth } from '@/features/authentication/hooks/useAuth';
 
 interface AdminRouteProps {
   children: ReactNode;
@@ -24,19 +26,22 @@ export function AdminRoute({ children }: AdminRouteProps) {
   const location = useLocation();
 
   // Synchronous store read — immediately available from localStorage
-  const storeUser = useAuthStore((state) => state.user);
+  // const storeUser = useIdentityStore((state) => state.user);
+  // const isAuthenticated = useTokenStore((state) => state.accessToken);
+
+  const { isAdmin, isAuthenticated, user } = useAuth();
 
   // Background profile fetch — enriches data but never blocks the initial check
   const { data: freshUser, isLoading } = useCurrentUser();
 
   // ① Not logged in at all — redirect to login immediately
-  if (!storeUser) {
+  if (!isAuthenticated) {
     return <Navigate to={AUTH_ROUTES.LOGIN} state={{ from: location.pathname }} replace />;
   }
 
   // ② Store says admin — allow in immediately (no waiting for network)
   // The background fetch will still run and update the cache for freshness.
-  if (storeUser.role === 'admin') {
+  if (isAdmin) {
     return <>{children}</>;
   }
 
@@ -51,7 +56,7 @@ export function AdminRoute({ children }: AdminRouteProps) {
   }
 
   // ④ Fresh profile loaded — use it for the definitive role check
-  const effectiveUser = freshUser ?? storeUser;
+  const effectiveUser = freshUser ?? user;
 
   if (!effectiveUser || effectiveUser.role !== 'admin') {
     // Logged in but not admin — go to user dashboard, not login

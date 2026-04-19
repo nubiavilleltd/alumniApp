@@ -7,7 +7,8 @@ import { AppLink } from '@/shared/components/ui/AppLink';
 import { FormInput } from '@/shared/components/ui/input/FormInput';
 import { authApi } from '../services/auth.service';
 import { loginSchema } from '../schemas/authSchema';
-import { useAuthStore } from '../stores/useAuthStore';
+import { useIdentityStore } from '../stores/useIdentityStore';
+import { useTokenStore } from '../stores/useTokenStore';
 import type { LoginFormValues } from '../types/auth.types';
 import { AuthCard } from './AuthCard';
 import { toast } from '@/shared/components/ui/Toast';
@@ -20,11 +21,20 @@ import {
   getVerificationResendStatus,
   recordVerificationResendAttempt,
 } from '../lib/verificationResendThrottle';
+import { boolean } from 'zod';
+
+interface LoginLocationState {
+  from?: string;
+  loginNotice?: string;
+}
 
 export function LoginForm() {
   const navigate = useNavigate();
   const location = useLocation();
-  const setSession = useAuthStore((state) => state.setSession);
+  const locationState = (location.state as LoginLocationState | null) ?? null;
+  const setIdentity = useIdentityStore((state) => state.setIdentity);
+  const setTokens = useTokenStore((state) => state.setTokens);
+  const setRememberMe = useTokenStore((state) => state.setRememberMe);
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
@@ -36,7 +46,26 @@ export function LoginForm() {
     }
   }, [location.search, navigate]);
 
-  const from = (location.state as { from?: string } | null)?.from;
+  useEffect(() => {
+    if (!locationState?.loginNotice) {
+      return;
+    }
+
+    toast.info(locationState.loginNotice);
+
+    navigate(
+      {
+        pathname: location.pathname,
+        search: location.search,
+      },
+      {
+        replace: true,
+        state: locationState.from ? { from: locationState.from } : null,
+      },
+    );
+  }, [location.pathname, location.search, locationState, navigate]);
+
+  const from = locationState?.from;
 
   const {
     register,
@@ -73,7 +102,13 @@ export function LoginForm() {
       }
 
       // Step 3: Persist full profile to localStorage — nav renders synchronously
-      setSession(fullProfile, loginResponse.accessToken, loginResponse.refreshToken);
+      // setSession(fullProfile, loginResponse.accessToken, loginResponse.refreshToken, values.rememberMe);
+
+      setIdentity(fullProfile);
+
+      setTokens(loginResponse.accessToken, loginResponse.refreshToken);
+
+      setRememberMe(values.rememberMe as boolean);
 
       const fallbackDestination =
         fullProfile.role === 'admin' ? ADMIN_ROUTES.DASHBOARD : USER_ROUTES.DASHBOARD;

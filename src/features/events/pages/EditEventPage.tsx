@@ -15,12 +15,12 @@ import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
 import { ImageUpload } from '@/shared/components/ui/ImageUpload';
 import Button from '@/shared/components/ui/Button';
-import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { useEvent, useUpdateEvent, useDeleteEvent } from '../hooks/useEvents';
 import { mapEventToUpdatePayload } from '../api/adapters/event.adapter';
 import { DeleteConfirmModal } from '../components/DeleteConfirmModal';
 import { toast } from '@/shared/components/ui/Toast';
 import { EVENT_ROUTES } from '../routes';
+import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 
 // ─── Schema ───────────────────────────────────────────────────────────────────
 
@@ -37,6 +37,16 @@ const editEventSchema = z
     status: z.enum(['upcoming', 'active', 'cancelled', 'completed']),
     max_attendees: z.number({ error: 'Please enter a valid number' }).min(0).default(0),
   })
+  .refine(
+    (data) => {
+      if (!data.event_date) return true;
+      const selectedDate = new Date(data.event_date);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return selectedDate >= today;
+    },
+    { message: 'Event date cannot be in the past', path: ['event_date'] },
+  )
   .refine(
     (d) => {
       if (!d.start_time || !d.end_time) return true;
@@ -67,7 +77,7 @@ const statusOptions = [
 export default function EditEventPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const currentUser = useAuthStore((state) => state.user);
+  const currentUser = useIdentityStore((state) => state.user);
 
   const { data: event, isLoading } = useEvent(id || '');
   const updateEvent = useUpdateEvent();
@@ -327,6 +337,7 @@ export default function EditEventPage() {
                 id="event_date"
                 type="date"
                 required
+                min={new Date().toISOString().split('T')[0]}
                 error={errors.event_date?.message}
                 {...register('event_date')}
               />

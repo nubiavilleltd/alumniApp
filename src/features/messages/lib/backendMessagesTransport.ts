@@ -1,4 +1,3 @@
-import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { apiClient } from '@/lib/api/client';
 import { API_ENDPOINTS } from '@/lib/api/endpoints';
 import {
@@ -43,6 +42,7 @@ import type {
   MessageThreadDetail,
   MessageThreadSummary,
 } from '../types/messages.types';
+import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 
 type BackendEnvelope = Record<string, unknown> & {
   status?: number;
@@ -158,7 +158,7 @@ function normalizeParticipantRole(value: unknown): MessageParticipant['roleInThr
 }
 
 function getCurrentSessionUser(): SessionUserSnapshot | null {
-  return useAuthStore.getState().user as SessionUserSnapshot | null;
+  return useIdentityStore.getState().user as SessionUserSnapshot | null;
 }
 
 function buildViewerParticipantFromSessionUser(

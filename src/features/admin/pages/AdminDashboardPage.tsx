@@ -116,14 +116,31 @@ function PendingMemberRow({
   return (
     <div className="flex flex-col gap-3 rounded-2xl border border-accent-100 bg-accent-50/60 px-4 py-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="min-w-0">
-          <p className="font-medium text-accent-900">{member.fullName}</p>
-          <p className="mt-0.5 text-xs text-accent-500">
-            Name in school:{' '}
-            <span className="font-medium text-accent-700">{member.nameInSchool}</span>
-            {' · '}Class of {member.graduationYear}
-            {' · '}
-            {member.email}
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="font-medium text-accent-900">{member.fullName}</p>
+            <span className="rounded-full border border-accent-200 bg-white px-2.5 py-0.5 text-[11px] font-medium text-accent-700">
+              Class of {member.graduationYear}
+            </span>
+          </div>
+          <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-accent-600">
+            <span>
+              <span className="font-medium text-accent-800">School:</span> {member.nameInSchool}
+            </span>
+            <span>
+              <span className="font-medium text-accent-800">Email:</span> {member.email}
+            </span>
+            <span>
+              <span className="font-medium text-accent-800">Nickname:</span>{' '}
+              {member.nickName?.trim() || 'Not provided'}
+            </span>
+          </div>
+          <p className="mt-1 text-xs text-accent-600">
+            <span className="font-medium text-accent-800">Address:</span>{' '}
+            {member.residentialAddress?.trim() || 'Not provided'}
+          </p>
+          <p className="mt-1 text-[11px] text-accent-400">
+            Submitted {new Date(member.submittedAt).toLocaleDateString()}
           </p>
         </div>
         {!showRejectInput && (

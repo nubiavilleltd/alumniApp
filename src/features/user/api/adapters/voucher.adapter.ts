@@ -67,6 +67,9 @@ export function buildVouchRejectPayload(vouchId: string, reason?: string) {
  *   "user_id": 12,
  *   "fullname": "John Smith",
  *   "email": "john@example.com",
+ *   "name_in_school": "John Doe",
+ *   "nick_name": "JD",
+ *   "residential_address": "12 Palm Avenue, Lagos",
  *   "graduation_year": "2010",
  *   "department": "Science",
  *   "phone": "08012345678"
@@ -82,6 +85,10 @@ export function mapBackendVouchToPending(raw: any): PendingVouch | null {
       userId: String(raw?.user_id ?? ''),
       fullName: raw?.fullname ?? raw?.full_name ?? raw?.fullName ?? 'Unknown',
       email: raw?.email ?? '',
+      nameInSchool: raw?.name_in_school ?? raw?.nameInSchool ?? '',
+      nickName: raw?.nick_name ?? raw?.nickName ?? raw?.nickname ?? '',
+      residentialAddress:
+        raw?.residential_address ?? raw?.residentialAddress ?? raw?.location ?? '',
       graduationYear: safeParseInt(raw?.graduation_year ?? raw?.graduationYear) ?? 0,
       department: raw?.department ?? '',
       phone: raw?.phone ?? '',

@@ -13,11 +13,12 @@
  */
 
 import axios from 'axios';
-import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { logError } from '@/lib/errors/errorUtils';
 
 import { handleTokenRefresh } from '@/features/authentication/services/refreshToken.service';
 import { AUTH_ROUTES } from '@/features/authentication/routes';
+import { useTokenStore } from '@/features/authentication/stores/useTokenStore';
+import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 
 const configuredApiBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim() ?? '';
 // const shouldUseViteDevProxy = import.meta.env.DEV && /^https?:\/\//i.test(configuredApiBaseUrl);
@@ -50,7 +51,8 @@ apiClient.interceptors.request.use(
           }
 
           const token = apiKey;
-          const accessToken = useAuthStore.getState().accessToken;
+          // const accessToken = useAuthStore.getState().accessToken;
+          const accessToken = useTokenStore.getState().accessToken;
 
           config.data.append('token', token);
           if (accessToken) {
@@ -71,7 +73,7 @@ apiClient.interceptors.request.use(
 
           const payload: Record<string, unknown> = { ...existing, token: apiKey };
 
-          const accessToken = useAuthStore.getState().accessToken;
+          const accessToken = useTokenStore.getState().accessToken;
           if (accessToken) {
             payload.jwt = accessToken;
           }
@@ -126,15 +128,18 @@ apiClient.interceptors.response.use(
           if (error.config.data instanceof FormData) {
             error.config.data.set('jwt', newToken);
           } else if (typeof error.config.data === 'object') {
-            error.config.data.jwt = newToken;
+            // error.config.data.jwt = newToken;
+            error.config.data = { ...error.config.data, jwt: newToken };
           }
 
           return apiClient(error.config);
         }
 
         // ❌ Refresh failed → logout
-        const clearSession = useAuthStore.getState().clearSession;
-        clearSession();
+        const clearTokens = useTokenStore.getState().clearTokens;
+        const clearIdentity = useIdentityStore.getState().clearIdentity;
+        clearTokens();
+        clearIdentity();
 
         if (!window.location.pathname.startsWith(AUTH_ROUTES.LOGIN)) {
           window.location.href = `${AUTH_ROUTES.LOGIN}?session_expired=true`;

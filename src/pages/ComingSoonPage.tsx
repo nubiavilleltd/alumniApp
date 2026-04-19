@@ -23,7 +23,7 @@ export function ComingSoonPage({
           </div>
 
           {/* Title */}
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">{title}</h1>
+          {/* <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">{title}</h1> */}
 
           {/* Description */}
           <p className="text-gray-500 text-sm md:text-base mb-8">{description}</p>

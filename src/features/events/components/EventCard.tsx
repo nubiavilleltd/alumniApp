@@ -11,7 +11,6 @@
 import { useState } from 'react';
 import { Icon } from '@iconify/react';
 import { AppLink } from '@/shared/components/ui/AppLink';
-import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { useEventRegistration, useEventAttendeeCount } from '../hooks/useEventRegistration';
 import { useDeleteEvent } from '../hooks/useEvents';
 
@@ -20,6 +19,7 @@ import type { Event } from '../types/event.types';
 import { DeleteConfirmModal } from './DeleteConfirmModal';
 import { handleShare } from '@/shared/utils/share';
 import { toast } from '@/shared/components/ui/Toast';
+import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
@@ -63,7 +63,7 @@ export function EventCard({
   onDeleted,
   compact = false,
 }: EventCardProps) {
-  const currentUser = useAuthStore((state) => state.user);
+  const currentUser = useIdentityStore((state) => state.user);
   const isLoggedIn = !!currentUser;
 
   const { isRegistered } = useEventRegistration(event.id);

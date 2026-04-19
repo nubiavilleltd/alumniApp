@@ -63,6 +63,7 @@ export function mapCurrentUserResponse(res: any): AuthSessionUser {
     surname: lastName,
     otherNames: firstName,
     nameInSchool: res.name_in_school || '',
+    nickName: res.nick_name || '',
     email: res.email || '',
     whatsappPhone: res.phone || '',
     alternativePhone: res.alternative_phone || undefined,
@@ -77,6 +78,7 @@ export function mapCurrentUserResponse(res: any): AuthSessionUser {
     residentialAddress: res.residential_address || undefined,
     area: res.area || undefined,
     city: res.profile?.city || res.city || undefined,
+    state: res.state || res.state || undefined,
 
     employmentStatus: res.employment_status || undefined,
     occupations: res.occupation ? [res.occupation] : undefined,

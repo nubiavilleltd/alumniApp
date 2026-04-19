@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import Button from '@/shared/components/ui/Button';
 // import HeroBg from '/hero-bg.png';
@@ -11,6 +10,7 @@ import HeroBg5 from '../../../../public/alumni-hero-img5.jpg';
 import HeroBg6 from '../../../../public/alumni-hero-img6.jpg';
 
 import { AUTH_ROUTES } from '@/features/authentication/routes';
+import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 
 // const heroImages = [
 //   HeroBg,
@@ -23,7 +23,7 @@ const heroImages = [HeroBg1, HeroBg3, HeroBg4, HeroBg5, HeroBg6];
 
 export default function HeroSection() {
   const [current, setCurrent] = useState(0);
-  const currentUser = useAuthStore((state) => state.user);
+  const currentUser = useIdentityStore((state) => state.user);
 
   useEffect(() => {
     const interval = setInterval(() => {

@@ -3,7 +3,6 @@
 import { Icon } from '@iconify/react';
 import { useParams } from 'react-router-dom';
 import { useAlumnus } from '@/features/alumni/hooks/useAlumni';
-import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { defaultPrivacySettings } from '@/features/authentication/types/auth.types';
 import type { PrivacySettings, FieldVisibility } from '@/features/authentication/types/auth.types';
 import { AppLink } from '@/shared/components/ui/AppLink';

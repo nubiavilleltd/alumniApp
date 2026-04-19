@@ -7,7 +7,7 @@ import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { FilterDropdown } from '@/shared/components/ui/FilterDropdown';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import { useAlumni } from '@/features/alumni/hooks/useAlumni';
-import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
+import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 import { isFieldVisible, getPhotoDisplay } from '@/features/alumni/utils/privacyHelpers';
 import { ALUMNI_ROUTES } from '../routes';
 import { ROUTES } from '@/shared/constants/routes';
@@ -112,7 +112,7 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: A
             disabled={!entry.memberId || isOwnProfile || isMessagePending}
             className="flex-1 bg-primary-500 hover:bg-primary-600 text-white text-[11px] font-medium py-1.5 rounded transition-colors disabled:cursor-not-allowed disabled:bg-primary-200"
           >
-            {isOwnProfile ? 'Your Profile' : isMessagePending ? 'Opening...' : 'Send Message'}
+            {isMessagePending ? 'Opening...' : 'Send Message'}
           </button>
           <AppLink
             href={ALUMNI_ROUTES.PROFILE(entry.memberId as string)}
@@ -135,7 +135,7 @@ export function AlumniDirectoryPage() {
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
 
   // ── Get current user for privacy checks ───────────────────────────────────
-  const currentUser = useAuthStore((state) => state.user);
+  const currentUser = useIdentityStore((state) => state.user);
   const { startDirectConversation, isPending: isStartingConversation } =
     useStartDirectConversation();
   const [pendingConversationMemberId, setPendingConversationMemberId] = useState<string | null>(
