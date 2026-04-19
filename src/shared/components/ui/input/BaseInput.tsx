@@ -48,7 +48,7 @@ export const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>(
 
         {/* Input row */}
         <div
-          className={`flex items-center bg-white border rounded-lg overflow-hidden shadow-sm transition-colors
+          className={`flex items-center bg-white border rounded-3xl overflow-hidden shadow-sm transition-colors
             ${error ? 'border-red-400 focus-within:border-red-400' : 'border-gray-200 focus-within:border-primary-400'}
             ${disabled ? 'opacity-50 bg-gray-50 cursor-not-allowed' : ''}
           `}

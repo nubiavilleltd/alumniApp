@@ -5,56 +5,57 @@
 @tailwind utilities;
 
 :root {
-  /* Primary (Blue – exact header/nav color from screenshot) */
-  --color-primary-50: #f0f8ff;
-  --color-primary-100: #d9efff;
-  --color-primary-200: #bfe4ff;
-  --color-primary-300: #8fd1ff;
-  --color-primary-400: #4fb6ff;
-  --color-primary-500: #0077cc; /* Main brand color */
-  --color-primary-600: #0066b3; /* Hover */
-  --color-primary-700: #005599;
-  --color-primary-800: #00447a;
-  --color-primary-900: #00345c;
-  --color-primary-950: #001f38;
-  /* Secondary (Light Blue – "Excellence" accent text) */
-  --color-secondary-50: #f0f9ff;
-  --color-secondary-100: #e0f2fe;
-  --color-secondary-200: #bae6fd;
-  --color-secondary-300: #7dd3fc;
-  --color-secondary-400: #38bdf8;
-  --color-secondary-500: #0ea5e9;
-  --color-secondary-600: #0284c7;
-  --color-secondary-700: #0369a1;
-  --color-secondary-800: #075985;
-  --color-secondary-900: #0c4a6e;
-  --color-secondary-950: #082f49;
+  /* Primary */
+  --color-primary-50: 240 248 255;
+  --color-primary-100: 217 239 255;
+  --color-primary-200: 191 228 255;
+  --color-primary-300: 143 209 255;
+  --color-primary-400: 79 182 255;
+  --color-primary-500: 0 119 204;
+  --color-primary-600: 0 102 179;
+  --color-primary-700: 0 85 153;
+  --color-primary-800: 0 68 122;
+  --color-primary-900: 0 52 92;
+  --color-primary-950: 0 31 56;
 
-  /* Accent (Gray / Slate – cards, backgrounds) */
-  --color-accent-50: #f8fafc;
-  --color-accent-100: #f1f5f9;
-  --color-accent-200: #e2e8f0;
-  --color-accent-300: #cbd5e1;
-  --color-accent-400: #94a3b8;
-  --color-accent-500: #64748b;
-  --color-accent-600: #475569;
-  --color-accent-700: #334155;
-  --color-accent-800: #1e293b;
-  --color-accent-900: #0f172a;
-  --color-accent-950: #020617;
+  /* Secondary */
+  --color-secondary-50: 240 249 255;
+  --color-secondary-100: 224 242 254;
+  --color-secondary-200: 186 230 253;
+  --color-secondary-300: 125 211 252;
+  --color-secondary-400: 56 189 248;
+  --color-secondary-500: 14 165 233;
+  --color-secondary-600: 2 132 199;
+  --color-secondary-700: 3 105 161;
+  --color-secondary-800: 7 89 133;
+  --color-secondary-900: 12 74 110;
+  --color-secondary-950: 8 47 73;
 
-  /* Success/Green (Online status, unread badges) */
-  --color-success-50: #f0fdf4;
-  --color-success-100: #dcfce7;
-  --color-success-200: #bbf7d0;
-  --color-success-300: #86efac;
-  --color-success-400: #4ade80;
-  --color-success-500: #22c55e;
-  --color-success-600: #16a34a;
-  --color-success-700: #15803d;
-  --color-success-800: #166534;
-  --color-success-900: #14532d;
-  --color-success-950: #052e16;
+  /* Accent */
+  --color-accent-50: 248 250 252;
+  --color-accent-100: 241 245 249;
+  --color-accent-200: 226 232 240;
+  --color-accent-300: 203 213 225;
+  --color-accent-400: 148 163 184;
+  --color-accent-500: 100 116 139;
+  --color-accent-600: 71 85 105;
+  --color-accent-700: 51 65 85;
+  --color-accent-800: 30 41 59;
+  --color-accent-900: 15 23 42;
+  --color-accent-950: 2 6 23;
+
+  /* Success */
+  --color-success-50: 240 253 244;
+  --color-success-100: 220 252 231;
+  --color-success-200: 187 247 208;
+  --color-success-300: 134 239 172;
+  --color-success-400: 74 222 128;
+  --color-success-500: 34 197 94;
+  --color-success-600: 22 163 74;
+  --color-success-700: 21 128 61;
+  --color-success-800: 22 101 52;
+  --color-success-900: 20 83 45;
+  --color-success-950: 5 46 22;
 }
 
 /* Basic Component Classes */

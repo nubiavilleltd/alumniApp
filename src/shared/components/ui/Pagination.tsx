@@ -59,16 +59,19 @@ export function Pagination({
 
   const pages = buildPages(currentPage, totalPages, maxVisible);
 
-  const btn = (page: number, content: React.ReactNode, extra?: string) => (
+  const baseBtn =
+    'min-w-[40px] h-10 px-3 rounded-xl text-sm font-semibold flex items-center justify-center transition-all';
+
+  const btn = (page: number, content: React.ReactNode) => (
     <button
       key={page}
       type="button"
       onClick={() => onPageChange(page)}
-      className={`min-w-[2rem] h-8 px-2.5 rounded-full text-sm font-semibold transition-colors ${
+      className={`${baseBtn} ${
         page === currentPage
-          ? 'bg-primary-500 text-white shadow-sm'
-          : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800'
-      } ${extra ?? ''}`}
+          ? 'bg-primary-500 text-white shadow-md'
+          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+      }`}
     >
       {content}
     </button>
@@ -78,27 +81,23 @@ export function Pagination({
     <nav
       role="navigation"
       aria-label="Pagination"
-      className="flex items-center justify-center gap-1"
+      className="flex items-center justify-center gap-2 mt-6"
     >
       {/* Prev */}
       <button
         type="button"
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        aria-label="Previous page"
-        className="w-8 h-8 flex items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+        className={`${baseBtn} bg-gray-200 text-gray-600 hover:bg-gray-300 disabled:opacity-40 disabled:cursor-not-allowed`}
       >
-        <Icon icon="mdi:chevron-left" className="w-4 h-4" />
+        <Icon icon="mdi:chevron-left" className="w-5 h-5" />
       </button>
 
       {/* Pages */}
       {pages.map((p, i) =>
         p === null ? (
-          <span
-            key={`ellipsis-${i}`}
-            className="min-w-[2rem] h-8 flex items-center justify-center text-gray-400 text-sm select-none"
-          >
-            …
+          <span key={`ellipsis-${i}`} className="px-2 text-gray-500 text-sm">
+            ...
           </span>
         ) : (
           btn(p, p)
@@ -110,10 +109,9 @@ export function Pagination({
         type="button"
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        aria-label="Next page"
-        className="w-8 h-8 flex items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+        className={`${baseBtn} bg-gray-200 text-gray-600 hover:bg-gray-300 disabled:opacity-40 disabled:cursor-not-allowed`}
       >
-        <Icon icon="mdi:chevron-right" className="w-4 h-4" />
+        <Icon icon="mdi:chevron-right" className="w-5 h-5" />
       </button>
     </nav>
   );
