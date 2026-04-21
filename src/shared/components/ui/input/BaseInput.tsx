@@ -37,10 +37,13 @@ export const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>(
     };
 
     return (
-      <div className={`flex flex-col gap-1 ${className}`}>
+      <div className={`base-input flex flex-col gap-1 ${className}`}>
         {/* Label */}
         {label && (
-          <label htmlFor={inputId} className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor={inputId}
+            className="base-input__label block text-sm font-medium text-gray-700"
+          >
             {label}
             {required && <span className="text-red-500 ml-0.5">*</span>}
           </label>
@@ -53,7 +56,11 @@ export const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>(
             ${disabled ? 'opacity-50 bg-gray-50 cursor-not-allowed' : ''}
           `}
         >
-          {leadingSlot && <div className="pl-3 text-gray-400 flex-shrink-0">{leadingSlot}</div>}
+          {leadingSlot && (
+            <div className="base-input__leading pl-3 text-gray-400 flex-shrink-0">
+              {leadingSlot}
+            </div>
+          )}
 
           <input
             ref={ref}
@@ -62,21 +69,23 @@ export const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>(
             required={required}
             disabled={disabled}
             onChange={handleChange}
-            className="flex-1 px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 outline-none bg-transparent disabled:cursor-not-allowed"
+            className="base-input__field flex-1 px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 outline-none bg-transparent disabled:cursor-not-allowed"
             {...rest}
           />
 
-          {trailingSlot && <div className="flex-shrink-0">{trailingSlot}</div>}
+          {trailingSlot && <div className="base-input__trailing flex-shrink-0">{trailingSlot}</div>}
         </div>
 
         {/* Error or hint */}
         {error ? (
-          <p className="text-xs text-red-500 flex items-center gap-1">
+          <p className="base-input__message base-input__message--error text-xs text-red-500 flex items-center gap-1">
             <Icon icon="mdi:alert-circle-outline" className="w-3 h-3" />
             {error}
           </p>
         ) : hint ? (
-          <p className="text-xs text-gray-400">{hint}</p>
+          <p className="base-input__message base-input__message--hint text-xs text-gray-400">
+            {hint}
+          </p>
         ) : null}
       </div>
     );

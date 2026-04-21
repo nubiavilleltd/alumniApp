@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { FormInput } from '@/shared/components/ui/input/FormInput';
+import { PasswordInput } from '@/shared/components/ui/input/PasswordInput';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
 import { authApi } from '../services/auth.service';
 import {
@@ -76,8 +77,6 @@ export function RegisterDetailsPage() {
     value: option.code,
   }));
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [allVouchers, setAllVouchers] = useState<Voucher[]>([]);
   const [filteredVouchers, setFilteredVouchers] = useState<Voucher[]>([]);
   const [isLoadingVouchers, setIsLoadingVouchers] = useState(false);
@@ -205,8 +204,12 @@ export function RegisterDetailsPage() {
 
   return (
     <RegistrationShell step="details">
-      <form className="space-y-4" onSubmit={submitDetails} noValidate>
-        <div className="grid grid-cols-2 gap-3">
+      <form
+        className="auth-form auth-form--registration-details"
+        onSubmit={submitDetails}
+        noValidate
+      >
+        <div className="auth-form-grid auth-form-grid--two">
           <FormInput
             label="Surname"
             id="surname"
@@ -225,7 +228,7 @@ export function RegisterDetailsPage() {
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="auth-form-grid auth-form-grid--two">
           <FormInput
             label="Maiden Name"
             id="nameInSchool"
@@ -256,75 +259,44 @@ export function RegisterDetailsPage() {
           {...detailForm.register('email')}
         />
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            Password <span className="text-red-500">*</span>
-          </label>
-          <div className="relative">
-            <input
-              type={showPassword ? 'text' : 'password'}
-              placeholder="Create a secure password"
-              className={`input pr-10 ${detailForm.formState.errors.password ? 'border-red-400' : ''}`}
-              {...detailForm.register('password')}
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword((value) => !value)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-            >
-              <Icon
-                icon={showPassword ? 'mdi:eye-off-outline' : 'mdi:eye-outline'}
-                className="w-4 h-4"
-              />
-            </button>
-          </div>
-          {detailForm.formState.errors.password && (
-            <p className="mt-1 text-xs text-red-500">
-              {detailForm.formState.errors.password.message}
-            </p>
-          )}
-        </div>
+        <PasswordInput
+          label="Password"
+          id="password"
+          required
+          autoComplete="new-password"
+          placeholder="Create a secure password"
+          error={detailForm.formState.errors.password?.message}
+          {...detailForm.register('password')}
+        />
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            Confirm Password <span className="text-red-500">*</span>
-          </label>
-          <div className="relative">
-            <input
-              type={showConfirmPassword ? 'text' : 'password'}
-              placeholder="Re-enter your password"
-              className={`input pr-10 ${detailForm.formState.errors.confirmPassword ? 'border-red-400' : ''}`}
-              {...detailForm.register('confirmPassword')}
-            />
-            <button
-              type="button"
-              onClick={() => setShowConfirmPassword((value) => !value)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+          <PasswordInput
+            label="Confirm Password"
+            id="confirmPassword"
+            required
+            autoComplete="new-password"
+            placeholder="Re-enter your password"
+            error={detailForm.formState.errors.confirmPassword?.message}
+            {...detailForm.register('confirmPassword')}
+          />
+          {!detailForm.formState.errors.confirmPassword && confirmPasswordValue ? (
+            <p
+              className={`auth-field-hint ${
+                passwordsMatch ? 'auth-field-hint--success' : 'auth-field-hint--muted'
+              }`}
             >
-              <Icon
-                icon={showConfirmPassword ? 'mdi:eye-off-outline' : 'mdi:eye-outline'}
-                className="w-4 h-4"
-              />
-            </button>
-          </div>
-          {detailForm.formState.errors.confirmPassword ? (
-            <p className="mt-1 text-xs text-red-500">
-              {detailForm.formState.errors.confirmPassword.message}
-            </p>
-          ) : confirmPasswordValue ? (
-            <p className={`mt-1 text-xs ${passwordsMatch ? 'text-primary-600' : 'text-gray-400'}`}>
-              {passwordsMatch ? '✓ Passwords match' : 'Passwords must match exactly'}
+              {passwordsMatch ? 'Passwords match' : 'Passwords must match exactly'}
             </p>
           ) : null}
         </div>
 
         {passwordValue && <PasswordStrengthMeter password={passwordValue} />}
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">
+        <div className="auth-phone-field">
+          <label className="auth-field-label">
             WhatsApp Phone Number <span className="text-red-500">*</span>
           </label>
-          <div className="grid grid-cols-[10rem_1fr] gap-2">
+          <div className="auth-phone-grid">
             <SelectInput
               id="phoneCountry"
               options={phoneCountrySelectOptions}
@@ -341,7 +313,9 @@ export function RegisterDetailsPage() {
               {...whatsappRegistration}
             />
           </div>
-          <p className="mt-1 text-xs text-gray-400">Enter number without country code</p>
+          <p className="auth-field-hint auth-field-hint--muted">
+            Enter number without country code
+          </p>
         </div>
 
         <TextareaInput
@@ -353,7 +327,7 @@ export function RegisterDetailsPage() {
           {...detailForm.register('residentialAddress')}
         />
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="auth-form-grid auth-form-grid--two">
           <SelectInput
             label="State of Residence"
             id="state"
@@ -423,15 +397,15 @@ export function RegisterDetailsPage() {
         />
 
         {detailForm.formState.errors.root && (
-          <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3">
-            <p className="text-sm text-red-600">{detailForm.formState.errors.root.message}</p>
+          <div className="auth-alert auth-alert--error">
+            <p>{detailForm.formState.errors.root.message}</p>
           </div>
         )}
 
         <button
           type="submit"
           disabled={detailForm.formState.isSubmitting}
-          className="btn btn-primary w-full flex items-center justify-center gap-2 mt-2"
+          className="btn btn-primary w-full flex items-center justify-center gap-2 auth-submit-button"
         >
           {detailForm.formState.isSubmitting ? (
             <>
@@ -444,12 +418,9 @@ export function RegisterDetailsPage() {
           )}
         </button>
 
-        <p className="text-center text-sm text-gray-500">
+        <p className="auth-card__footer-text auth-card__footer-text--compact">
           Already have an account?{' '}
-          <AppLink
-            href={AUTH_ROUTES.LOGIN}
-            className="font-semibold text-primary-500 hover:text-primary-600"
-          >
+          <AppLink href={AUTH_ROUTES.LOGIN} className="auth-card__footer-link">
             Login
           </AppLink>
         </p>

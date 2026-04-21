@@ -110,10 +110,10 @@ function sortGroupParticipants(participants: MessageParticipant[]) {
   });
 }
 
+// Only All and Unread filters, matching Figma design
 const inboxFilters: { key: MessageThreadFilter; label: string }[] = [
   { key: 'all', label: 'All' },
   { key: 'unread', label: 'Unread' },
-  { key: 'pinned', label: 'Pinned' },
 ];
 
 function formatThreadTimestamp(value: string) {
@@ -329,7 +329,7 @@ function buildReplyPreviewFromMessage(message: MessageItem): MessageReplyPreview
 function presenceClasses(value?: MessageThreadSummary['presence']) {
   if (value === 'online') return 'bg-emerald-500';
   if (value === 'away') return 'bg-amber-400';
-  return 'bg-accent-300';
+  return 'bg-gray-300';
 }
 
 function presenceLabel(value?: MessageThreadSummary['presence']) {
@@ -338,13 +338,14 @@ function presenceLabel(value?: MessageThreadSummary['presence']) {
   return '';
 }
 
-function formatThreadMeta(thread: MessageThreadSummary | MessageThreadDetail) {
+function formatThreadHeaderSubtitle(thread: MessageThreadSummary | MessageThreadDetail) {
   if (thread.type === 'group') {
-    return `${thread.memberCount} members • ${thread.topic}`;
+    return `${thread.memberCount} members`;
   }
-
   const label = presenceLabel(thread.presence);
-  return label ? `${label} • ${thread.topic}` : thread.topic;
+  if (label) return label;
+  // Show last seen style subtitle from topic or fallback
+  return thread.topic || '';
 }
 
 function getThreadPreview(thread: MessageThreadSummary) {
@@ -390,7 +391,7 @@ function ParticipantAvatar({
 }) {
   const [hasImageError, setHasImageError] = useState(false);
   const sizeClasses =
-    size === 'sm' ? 'h-9 w-9 rounded-full text-xs' : 'h-11 w-11 rounded-2xl text-sm';
+    size === 'sm' ? 'h-9 w-9 rounded-full text-xs' : 'h-11 w-11 rounded-full text-sm';
 
   useEffect(() => {
     setHasImageError(false);
@@ -405,7 +406,7 @@ function ParticipantAvatar({
     />
   ) : (
     <div
-      className={`flex ${sizeClasses} items-center justify-center bg-primary-100 font-semibold text-primary-700`}
+      className={`flex ${sizeClasses} items-center justify-center bg-blue-100 font-semibold text-blue-700`}
     >
       {participant.initials}
     </div>
@@ -490,76 +491,76 @@ function GroupParticipantsModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/55 px-4 py-6 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 py-6 backdrop-blur-sm"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-label={`${threadTitle} members`}
     >
       <div
-        className="w-full max-w-2xl overflow-hidden rounded-[2rem] border border-accent-200 bg-white shadow-2xl"
+        className="w-full max-w-2xl overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-2xl"
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="flex items-start justify-between gap-4 border-b border-accent-100 px-5 py-5 sm:px-6">
+        <div className="flex items-start justify-between gap-4 border-b border-gray-100 px-6 py-5">
           <div className="min-w-0">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary-600">
+            <p className="text-xs font-semibold uppercase tracking-wider text-blue-600">
               Group Members
             </p>
-            <h3 className="mt-2 truncate text-xl font-semibold text-accent-900">{threadTitle}</h3>
-            <p className="mt-1 text-sm text-accent-500">{participants.length} participants</p>
+            <h3 className="mt-1.5 truncate text-xl font-semibold text-gray-900">{threadTitle}</h3>
+            <p className="mt-0.5 text-sm text-gray-500">{participants.length} participants</p>
           </div>
 
           <button
             type="button"
             onClick={onClose}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-accent-200 text-accent-500 transition-colors hover:border-accent-300 hover:text-accent-700"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
             aria-label="Close members list"
           >
             <Icon icon="mdi:close" className="h-5 w-5" />
           </button>
         </div>
 
-        <div className="max-h-[70vh] overflow-y-auto px-5 py-4 sm:px-6">
-          <div className="space-y-3">
+        <div className="max-h-[70vh] overflow-y-auto px-6 py-4">
+          <div className="space-y-2">
             {participants.map((participant) => {
               const isViewer = participant.memberId === viewerMemberId;
 
               return (
                 <div
                   key={participant.memberId}
-                  className="flex flex-col gap-3 rounded-[1.5rem] border border-accent-100 bg-accent-50 px-4 py-3 sm:flex-row sm:items-center"
+                  className="flex flex-col gap-3 rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 sm:flex-row sm:items-center"
                 >
                   <button
                     type="button"
                     onClick={() => handleOpenProfile(participant)}
-                    className="flex items-center gap-3 rounded-[1.25rem] text-left transition-colors hover:bg-white/70 sm:flex-1 sm:px-2 sm:py-2"
+                    className="flex items-center gap-3 rounded-xl text-left transition-colors hover:bg-white/70 sm:flex-1 sm:px-2 sm:py-1.5"
                   >
                     <ParticipantAvatar participant={participant} />
 
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <p className="truncate text-sm font-semibold text-accent-900">
+                        <p className="truncate text-sm font-semibold text-gray-900">
                           {participant.fullName}
                         </p>
                         {isViewer ? (
-                          <span className="rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-accent-500">
+                          <span className="rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold text-gray-500">
                             You
                           </span>
                         ) : null}
                         {participant.roleInThread === 'admin' ? (
-                          <span className="rounded-full bg-primary-50 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-primary-600">
+                          <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-semibold text-blue-600">
                             Admin
                           </span>
                         ) : participant.roleInThread === 'moderator' ? (
-                          <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-amber-700">
+                          <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-700">
                             Moderator
                           </span>
                         ) : null}
                       </div>
-                      <p className="mt-1 truncate text-sm text-accent-500">
+                      <p className="mt-0.5 truncate text-sm text-gray-500">
                         {participant.headline}
                       </p>
-                      <p className="mt-2 text-xs font-medium text-primary-600">View profile</p>
+                      <p className="mt-1.5 text-xs font-medium text-blue-600">View profile</p>
                     </div>
                   </button>
 
@@ -568,7 +569,7 @@ function GroupParticipantsModal({
                       type="button"
                       onClick={() => void handleStartConversation(participant)}
                       disabled={isStartingConversation}
-                      className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-600 disabled:cursor-not-allowed disabled:bg-primary-200 sm:w-auto"
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-200 sm:w-auto"
                     >
                       <Icon
                         icon={
@@ -608,10 +609,8 @@ function ThreadAvatar({
   size?: 'sm' | 'md';
 }) {
   const [hasImageError, setHasImageError] = useState(false);
-  const sizeClasses =
-    size === 'sm'
-      ? 'h-12 w-12 rounded-2xl'
-      : 'h-14 w-14 rounded-[1.25rem] sm:h-16 sm:w-16 sm:rounded-[1.5rem]';
+  // Figma: avatars are circles
+  const sizeClasses = size === 'sm' ? 'h-11 w-11 rounded-full' : 'h-12 w-12 rounded-full';
 
   useEffect(() => {
     setHasImageError(false);
@@ -620,9 +619,9 @@ function ThreadAvatar({
   if (thread.type === 'group') {
     return (
       <div
-        className={`flex ${sizeClasses} items-center justify-center bg-primary-50 text-primary-600`}
+        className={`flex ${sizeClasses} flex-shrink-0 items-center justify-center bg-blue-100 text-blue-600`}
       >
-        <Icon icon="mdi:account-group-outline" className="h-7 w-7" />
+        <Icon icon="mdi:account-group-outline" className="h-6 w-6" />
       </div>
     );
   }
@@ -638,14 +637,14 @@ function ThreadAvatar({
         />
       ) : (
         <div
-          className={`flex ${sizeClasses} items-center justify-center bg-primary-100 text-base font-semibold text-primary-700`}
+          className={`flex ${sizeClasses} items-center justify-center bg-blue-100 text-sm font-semibold text-blue-700`}
         >
           {thread.initials}
         </div>
       )}
       {thread.presence ? (
         <span
-          className={`absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-white ${presenceClasses(
+          className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-white ${presenceClasses(
             thread.presence,
           )}`}
         />
@@ -683,10 +682,10 @@ function ReplyPreviewCard({
 
   return (
     <div
-      className={`mb-3 rounded-2xl border-l-4 px-4 py-3 ${
+      className={`mb-3 rounded-xl border-l-4 px-3 py-2.5 ${
         isComposer
-          ? 'border-primary-500 bg-primary-50 text-accent-800'
-          : 'border-primary-300 bg-black/10 text-inherit'
+          ? 'border-blue-500 bg-blue-50 text-gray-800'
+          : 'border-blue-300 bg-black/10 text-inherit'
       }`}
     >
       <div className="flex items-start justify-between gap-3">
@@ -697,21 +696,21 @@ function ReplyPreviewCard({
             className="min-w-0 flex-1 text-left"
           >
             <p
-              className={`truncate text-xs font-semibold uppercase tracking-[0.16em] ${
-                isComposer ? 'text-primary-700' : 'text-current/80'
+              className={`truncate text-xs font-semibold ${
+                isComposer ? 'text-blue-700' : 'text-current/80'
               }`}
             >
-              Replying to {replyTo.senderDisplayName}
+              {replyTo.senderDisplayName}
             </p>
             <p
-              className={`mt-1 line-clamp-2 text-sm ${
-                isComposer ? 'text-accent-700' : 'text-current/85'
+              className={`mt-0.5 line-clamp-2 text-sm ${
+                isComposer ? 'text-gray-600' : 'text-current/85'
               }`}
             >
               {replyTo.bodyPreview}
             </p>
             {attachmentSummary ? (
-              <p className={`mt-1 text-xs ${isComposer ? 'text-accent-500' : 'text-current/70'}`}>
+              <p className={`mt-0.5 text-xs ${isComposer ? 'text-gray-500' : 'text-current/70'}`}>
                 {attachmentSummary}
               </p>
             ) : null}
@@ -719,21 +718,21 @@ function ReplyPreviewCard({
         ) : (
           <div className="min-w-0">
             <p
-              className={`truncate text-xs font-semibold uppercase tracking-[0.16em] ${
-                isComposer ? 'text-primary-700' : 'text-current/80'
+              className={`truncate text-xs font-semibold ${
+                isComposer ? 'text-blue-700' : 'text-current/80'
               }`}
             >
-              Replying to {replyTo.senderDisplayName}
+              {replyTo.senderDisplayName}
             </p>
             <p
-              className={`mt-1 line-clamp-2 text-sm ${
-                isComposer ? 'text-accent-700' : 'text-current/85'
+              className={`mt-0.5 line-clamp-2 text-sm ${
+                isComposer ? 'text-gray-600' : 'text-current/85'
               }`}
             >
               {replyTo.bodyPreview}
             </p>
             {attachmentSummary ? (
-              <p className={`mt-1 text-xs ${isComposer ? 'text-accent-500' : 'text-current/70'}`}>
+              <p className={`mt-0.5 text-xs ${isComposer ? 'text-gray-500' : 'text-current/70'}`}>
                 {attachmentSummary}
               </p>
             ) : null}
@@ -744,10 +743,10 @@ function ReplyPreviewCard({
           <button
             type="button"
             onClick={onClear}
-            className="inline-flex h-8 w-8 items-center justify-center rounded-full text-accent-400 transition-colors hover:bg-accent-100 hover:text-accent-700"
+            className="inline-flex h-7 w-7 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
             aria-label="Clear reply target"
           >
-            <Icon icon="mdi:close" className="h-4 w-4" />
+            <Icon icon="mdi:close" className="h-3.5 w-3.5" />
           </button>
         ) : null}
       </div>
@@ -765,7 +764,7 @@ function MessageAttachments({
   onOpenImage: (attachment: MessageAttachment) => void;
 }) {
   return (
-    <div className="mt-3 space-y-2">
+    <div className="mt-2.5 space-y-2">
       {attachments.map((attachment) => {
         const previewUrl = attachment.url ?? getMessageAttachmentPreviewUrl(attachment.id);
 
@@ -775,26 +774,22 @@ function MessageAttachments({
               key={attachment.id}
               type="button"
               onClick={() => onOpenImage(attachment)}
-              className={`group block w-full overflow-hidden rounded-[1.5rem] border text-left transition-transform hover:scale-[1.01] ${
-                isOwn
-                  ? 'border-primary-300/40 bg-white/10 text-white'
-                  : 'border-accent-200 bg-white text-accent-800'
-              }`}
+              className="group block w-full overflow-hidden rounded-xl text-left transition-transform hover:scale-[1.01]"
             >
               <div className="relative">
                 <img
                   src={previewUrl}
                   alt={attachment.fileName}
-                  className="max-h-80 w-full object-cover"
+                  className="max-h-72 w-full rounded-xl object-cover"
                 />
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent px-4 pb-4 pt-10 text-white">
-                  <div className="flex items-end justify-between gap-3">
+                <div className="absolute inset-x-0 bottom-0 rounded-b-xl bg-gradient-to-t from-black/70 via-black/20 to-transparent px-3 pb-3 pt-8 text-white">
+                  <div className="flex items-end justify-between gap-2">
                     <div className="min-w-0">
-                      <p className="truncate text-sm font-semibold">{attachment.fileName}</p>
-                      <p className="text-xs text-white/75">{attachment.sizeLabel}</p>
+                      <p className="truncate text-sm font-medium">{attachment.fileName}</p>
+                      <p className="text-xs text-white/70">{attachment.sizeLabel}</p>
                     </div>
-                    <span className="inline-flex items-center gap-1 rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-white/90">
-                      <Icon icon="mdi:arrow-expand-all" className="h-3.5 w-3.5" />
+                    <span className="inline-flex items-center gap-1 rounded-full bg-white/20 px-2.5 py-1 text-[11px] font-semibold text-white">
+                      <Icon icon="mdi:arrow-expand-all" className="h-3 w-3" />
                       Open
                     </span>
                   </div>
@@ -807,23 +802,23 @@ function MessageAttachments({
         return (
           <div
             key={attachment.id}
-            className={`rounded-2xl border px-4 py-3 ${
+            className={`rounded-xl border px-3 py-2.5 ${
               isOwn
-                ? 'border-primary-300/40 bg-white/10 text-white'
-                : 'border-accent-200 bg-white text-accent-800'
+                ? 'border-blue-200/60 bg-white/20 text-gray-900'
+                : 'border-gray-200 bg-white text-gray-800'
             }`}
           >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5">
               <div
-                className={`flex h-10 w-10 items-center justify-center rounded-2xl ${
-                  isOwn ? 'bg-white/15' : 'bg-primary-50 text-primary-600'
+                className={`flex h-9 w-9 items-center justify-center rounded-xl ${
+                  isOwn ? 'bg-white/30' : 'bg-blue-50 text-blue-600'
                 }`}
               >
-                <Icon icon={getAttachmentIcon(attachment.kind)} className="h-5 w-5" />
+                <Icon icon={getAttachmentIcon(attachment.kind)} className="h-4.5 w-4.5" />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold">{attachment.fileName}</p>
-                <p className={`text-xs ${isOwn ? 'text-white/70' : 'text-accent-500'}`}>
+                <p className="truncate text-sm font-medium">{attachment.fileName}</p>
+                <p className={`text-xs ${isOwn ? 'text-gray-600' : 'text-gray-500'}`}>
                   {attachment.kind === 'audio' && attachment.durationSeconds
                     ? `${formatAudioDuration(attachment.durationSeconds)} • ${attachment.sizeLabel}`
                     : attachment.sizeLabel}
@@ -832,12 +827,12 @@ function MessageAttachments({
             </div>
 
             {attachment.kind === 'audio' && attachment.waveform ? (
-              <div className="mt-3 flex h-9 items-end gap-1">
+              <div className="mt-2.5 flex h-8 items-end gap-0.5">
                 {attachment.waveform.map((barHeight, index) => (
                   <span
                     key={`${attachment.id}-${index}`}
-                    className={`block w-1 rounded-full ${isOwn ? 'bg-white/75' : 'bg-primary-200'}`}
-                    style={{ height: `${Math.max(10, Math.round(barHeight * 0.45))}px` }}
+                    className={`block w-1 rounded-full ${isOwn ? 'bg-blue-400' : 'bg-blue-200'}`}
+                    style={{ height: `${Math.max(8, Math.round(barHeight * 0.4))}px` }}
                   />
                 ))}
               </div>
@@ -845,27 +840,27 @@ function MessageAttachments({
 
             {attachment.kind === 'audio' ? (
               previewUrl ? (
-                <audio controls preload="metadata" src={previewUrl} className="mt-3 w-full" />
+                <audio controls preload="metadata" src={previewUrl} className="mt-2.5 w-full" />
               ) : (
-                <p className={`mt-3 text-xs ${isOwn ? 'text-white/70' : 'text-accent-500'}`}>
+                <p className={`mt-2.5 text-xs ${isOwn ? 'text-gray-500' : 'text-gray-400'}`}>
                   Audio playback is unavailable for this message right now.
                 </p>
               )
             ) : null}
 
             {attachment.kind === 'file' && previewUrl ? (
-              <div className="mt-3">
+              <div className="mt-2.5">
                 <a
                   href={previewUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
+                  className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
                     isOwn
-                      ? 'bg-white/15 text-white hover:bg-white/20'
-                      : 'bg-primary-50 text-primary-700 hover:bg-primary-100'
+                      ? 'bg-white/20 text-gray-700 hover:bg-white/30'
+                      : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
                   }`}
                 >
-                  <Icon icon="mdi:open-in-new" className="h-4 w-4" />
+                  <Icon icon="mdi:open-in-new" className="h-3.5 w-3.5" />
                   Open file
                 </a>
               </div>
@@ -887,31 +882,31 @@ function DraftComposerAttachments({
   if (attachments.length === 0) return null;
 
   return (
-    <div className="mb-4 space-y-3">
-      <div className={`grid gap-3 ${attachments.length > 1 ? 'sm:grid-cols-2' : ''}`}>
+    <div className="mb-3 space-y-2">
+      <div className={`grid gap-2.5 ${attachments.length > 1 ? 'sm:grid-cols-2' : ''}`}>
         {attachments.map((attachment) => {
           if (attachment.kind === 'image' && attachment.previewUrl) {
             return (
               <div
                 key={attachment.id}
-                className="relative overflow-hidden rounded-[1.5rem] border border-accent-200 bg-slate-900 shadow-sm"
+                className="relative overflow-hidden rounded-xl border border-gray-200 bg-gray-900 shadow-sm"
               >
                 <img
                   src={attachment.previewUrl}
                   alt={attachment.fileName}
-                  className="h-64 w-full object-cover sm:h-72"
+                  className="h-56 w-full object-cover sm:h-64"
                 />
                 <button
                   type="button"
                   onClick={() => onRemove(attachment.id)}
-                  className="absolute right-3 top-3 inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-950/75 text-white transition-colors hover:bg-slate-950"
+                  className="absolute right-2.5 top-2.5 inline-flex h-8 w-8 items-center justify-center rounded-full bg-black/60 text-white transition-colors hover:bg-black/80"
                   aria-label={`Remove ${attachment.fileName}`}
                 >
-                  <Icon icon="mdi:close" className="h-5 w-5" />
+                  <Icon icon="mdi:close" className="h-4 w-4" />
                 </button>
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent px-4 pb-4 pt-10 text-white">
-                  <p className="truncate text-sm font-semibold">{attachment.fileName}</p>
-                  <p className="text-xs text-white/70">{attachment.sizeLabel}</p>
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent px-3 pb-3 pt-8 text-white">
+                  <p className="truncate text-sm font-medium">{attachment.fileName}</p>
+                  <p className="text-xs text-white/60">{attachment.sizeLabel}</p>
                 </div>
               </div>
             );
@@ -921,24 +916,24 @@ function DraftComposerAttachments({
             return (
               <div
                 key={attachment.id}
-                className="relative rounded-[1.5rem] border border-accent-200 bg-white px-4 py-4 text-accent-800 shadow-sm"
+                className="relative rounded-xl border border-gray-200 bg-white px-4 py-3.5 text-gray-800 shadow-sm"
               >
                 <button
                   type="button"
                   onClick={() => onRemove(attachment.id)}
-                  className="absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-full text-accent-400 transition-colors hover:bg-accent-100 hover:text-accent-700"
+                  className="absolute right-2.5 top-2.5 inline-flex h-8 w-8 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
                   aria-label={`Remove ${attachment.fileName}`}
                 >
-                  <Icon icon="mdi:close" className="h-4 w-4" />
+                  <Icon icon="mdi:close" className="h-3.5 w-3.5" />
                 </button>
 
-                <div className="flex items-center gap-3 pr-12">
-                  <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl bg-primary-50 text-primary-600">
+                <div className="flex items-center gap-3 pr-10">
+                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
                     <Icon icon="mdi:waveform" className="h-5 w-5" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold">{attachment.fileName}</p>
-                    <p className="text-xs text-accent-500">
+                    <p className="truncate text-sm font-medium">{attachment.fileName}</p>
+                    <p className="text-xs text-gray-500">
                       {attachment.durationSeconds
                         ? `${formatAudioDuration(attachment.durationSeconds)} • ${attachment.sizeLabel}`
                         : attachment.sizeLabel}
@@ -951,10 +946,10 @@ function DraftComposerAttachments({
                     controls
                     preload="metadata"
                     src={attachment.previewUrl}
-                    className="mt-4 w-full"
+                    className="mt-3 w-full"
                   />
                 ) : (
-                  <p className="mt-4 text-xs text-accent-500">
+                  <p className="mt-3 text-xs text-gray-500">
                     Playback preview is unavailable for this recording in the current browser.
                   </p>
                 )}
@@ -965,22 +960,22 @@ function DraftComposerAttachments({
           return (
             <div
               key={attachment.id}
-              className="relative flex items-center gap-3 rounded-[1.5rem] border border-accent-200 bg-white px-4 py-4 text-accent-800 shadow-sm"
+              className="relative flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3.5 text-gray-800 shadow-sm"
             >
-              <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl bg-primary-50 text-primary-600">
+              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
                 <Icon icon={getAttachmentIcon(attachment.kind)} className="h-5 w-5" />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold">{attachment.fileName}</p>
-                <p className="text-xs text-accent-500">{attachment.sizeLabel}</p>
+                <p className="truncate text-sm font-medium">{attachment.fileName}</p>
+                <p className="text-xs text-gray-500">{attachment.sizeLabel}</p>
               </div>
               <button
                 type="button"
                 onClick={() => onRemove(attachment.id)}
-                className="inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-accent-400 transition-colors hover:bg-accent-100 hover:text-accent-700"
+                className="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
                 aria-label={`Remove ${attachment.fileName}`}
               >
-                <Icon icon="mdi:close" className="h-4 w-4" />
+                <Icon icon="mdi:close" className="h-3.5 w-3.5" />
               </button>
             </div>
           );
@@ -1023,7 +1018,7 @@ function ImageAttachmentLightbox({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 px-4 py-6 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 px-4 py-6 backdrop-blur-sm"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -1032,37 +1027,37 @@ function ImageAttachmentLightbox({
       <button
         type="button"
         onClick={onClose}
-        className="absolute right-5 top-5 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition-colors hover:bg-white/20"
+        className="absolute right-5 top-5 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
         aria-label="Close image preview"
       >
         <Icon icon="mdi:close" className="h-5 w-5" />
       </button>
 
       <div
-        className="w-full max-w-6xl overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900/90 shadow-2xl"
+        className="w-full max-w-5xl overflow-hidden rounded-2xl border border-white/10 bg-gray-900/90 shadow-2xl"
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="flex items-center justify-between gap-4 border-b border-white/10 px-5 py-4 text-white sm:px-6">
+        <div className="flex items-center justify-between gap-4 border-b border-white/10 px-5 py-4 text-white">
           <div className="min-w-0">
-            <p className="truncate text-sm font-semibold sm:text-base">{attachment.fileName}</p>
-            <p className="text-xs text-white/60 sm:text-sm">{attachment.sizeLabel}</p>
+            <p className="truncate text-sm font-semibold">{attachment.fileName}</p>
+            <p className="text-xs text-white/60">{attachment.sizeLabel}</p>
           </div>
 
           <button
             type="button"
             onClick={() => window.open(previewUrl, '_blank', 'noopener,noreferrer')}
-            className="inline-flex items-center gap-2 rounded-full border border-white/15 px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/80 transition-colors hover:border-white/30 hover:text-white"
+            className="inline-flex items-center gap-1.5 rounded-full border border-white/15 px-3 py-1.5 text-xs font-semibold text-white/80 transition-colors hover:border-white/30 hover:text-white"
           >
-            <Icon icon="mdi:open-in-new" className="h-4 w-4" />
-            Open separately
+            <Icon icon="mdi:open-in-new" className="h-3.5 w-3.5" />
+            Open
           </button>
         </div>
 
-        <div className="flex max-h-[80vh] items-center justify-center bg-slate-950/70 p-4 sm:p-6">
+        <div className="flex max-h-[80vh] items-center justify-center bg-black/50 p-4 sm:p-6">
           <img
             src={previewUrl}
             alt={attachment.fileName}
-            className="max-h-[72vh] w-auto max-w-full rounded-[1.5rem] object-contain"
+            className="max-h-[72vh] w-auto max-w-full rounded-xl object-contain"
           />
         </div>
       </div>
@@ -1146,18 +1141,16 @@ export function MessagesPage() {
       return;
     }
 
-    if (!selectedThreadId || !inboxThreads.some((thread) => thread.id === selectedThreadId)) {
-      setSelectedThreadId(visibleThreads[0]?.id ?? inboxThreads[0]?.id ?? null);
+    if (selectedThreadId && !inboxThreads.some((thread) => thread.id === selectedThreadId)) {
+      setSelectedThreadId(null);
     }
-  }, [inboxThreads, requestedThreadId, selectedThreadId, visibleThreads]);
+  }, [inboxThreads, requestedThreadId, selectedThreadId]);
 
   const activeThreadSummary = selectedThreadId
     ? (inboxThreads.find((thread) => thread.id === selectedThreadId) ?? null)
     : null;
-  const fallbackThreadSummary =
-    !requestedThreadId && !selectedThreadId ? (visibleThreads[0] ?? inboxThreads[0] ?? null) : null;
-  const resolvedThreadSummary = activeThreadSummary ?? fallbackThreadSummary;
-  const activeThreadId = requestedThreadId ?? selectedThreadId ?? resolvedThreadSummary?.id ?? null;
+  const resolvedThreadSummary = activeThreadSummary;
+  const activeThreadId = requestedThreadId ?? selectedThreadId ?? null;
   const threadQuery = useMessageThread(activeThreadId);
   const activeThread = threadQuery.data ?? null;
   const activeOptimisticMessages = activeThreadId
@@ -1756,7 +1749,6 @@ export function MessagesPage() {
   }, [activeThread, queryClient, requestedInitialMessage, sendMessage, viewerMemberId]);
 
   useEffect(() => {
-    // Each thread keeps its own draft so attachments and text do not leak across chats.
     discardDraftComposer();
   }, [activeThreadId]);
 
@@ -1810,7 +1802,6 @@ export function MessagesPage() {
       return;
     }
 
-    // Marking the active thread as read keeps the polling inbox state aligned with the open pane.
     markThreadRead.mutate({
       viewerMemberId,
       threadId: activeThread.id,
@@ -2119,18 +2110,20 @@ export function MessagesPage() {
         title="Messages"
         description="Stay in touch with alumnae conversations and follow-ups."
       />
-      <div className="xl:hidden">
+      <div className="lg:hidden">
         <Breadcrumbs items={breadcrumbItems} />
       </div>
 
+      {/* Page background matching Figma off-white */}
       <section
         {...pullToRefresh.bind}
-        className="section relative bg-[radial-gradient(circle_at_top_left,_rgba(0,119,204,0.12),_transparent_32%),radial-gradient(circle_at_bottom_right,_rgba(14,165,233,0.12),_transparent_24%),linear-gradient(180deg,_#f8fbff,_#ffffff)] xl:h-[calc(100dvh-4.75rem)] xl:overflow-hidden xl:py-2"
+        className="section relative bg-[#f0ede8] lg:h-[calc(100dvh-4.75rem)] lg:overflow-hidden lg:py-4"
       >
-        <div className="container-custom space-y-4 xl:flex xl:h-full xl:min-h-0 xl:flex-col xl:space-y-0">
-          <div className="flex justify-center xl:pointer-events-none xl:absolute xl:left-1/2 xl:top-2 xl:z-20 xl:w-fit xl:-translate-x-1/2">
+        <div className="container-custom space-y-4 lg:flex lg:h-full lg:min-h-0 lg:max-w-[1560px] lg:flex-col lg:space-y-0">
+          {/* Pull-to-refresh indicator */}
+          <div className="flex justify-center lg:pointer-events-none lg:absolute lg:left-1/2 lg:top-2 lg:z-20 lg:w-fit lg:-translate-x-1/2">
             <div
-              className={`flex items-center gap-2 rounded-full border border-primary-100 bg-white/90 px-4 py-2 text-xs font-medium text-primary-700 shadow-sm transition-all duration-200 ${
+              className={`flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-xs font-medium text-gray-600 shadow-sm transition-all duration-200 ${
                 refreshIndicatorVisible ? 'opacity-100' : 'pointer-events-none opacity-0'
               }`}
               style={{ transform: `translateY(${Math.min(pullToRefresh.pullDistance, 18)}px)` }}
@@ -2143,56 +2136,35 @@ export function MessagesPage() {
             </div>
           </div>
 
-          {/* The page stays intentionally simple: inbox on the left, active chat on the right. */}
-          <section className="grid gap-6 xl:min-h-0 xl:flex-1 xl:grid-cols-[340px_minmax(0,1fr)] xl:gap-4">
-            {/* Inbox pane */}
-            <aside className="flex min-h-[42rem] flex-col overflow-hidden rounded-[1.75rem] border border-accent-200 bg-white shadow-sm xl:h-full xl:min-h-0">
-              <div className="border-b border-accent-100 px-5 py-5 xl:px-4 xl:py-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary-500">
-                      Inbox
-                    </p>
-                    <h2 className="mt-1 text-xl font-semibold text-accent-900">Messages</h2>
-                    <p className="mt-1 text-sm text-accent-500">
-                      {unreadMessageCount} unread across your active conversations
-                    </p>
-                  </div>
+          {/* Page title */}
+          <div className="shrink-0 space-y-1 pt-1 lg:pb-3">
+            <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-950 sm:text-4xl lg:text-[2.5rem] xl:text-[2.75rem]">
+              Message Centre
+            </h1>
+          </div>
 
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => void refreshAll()}
-                      disabled={inboxQuery.isRefetching || threadQuery.isRefetching}
-                      className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-accent-200 text-accent-600 transition-colors hover:border-primary-200 hover:text-primary-600 disabled:cursor-not-allowed disabled:opacity-60"
-                      aria-label="Refresh messages"
-                    >
-                      <Icon
-                        icon="mdi:refresh"
-                        className={`h-5 w-5 ${
-                          inboxQuery.isRefetching || threadQuery.isRefetching ? 'animate-spin' : ''
-                        }`}
-                      />
-                    </button>
-                  </div>
-                </div>
-
-                <label className="relative mt-4 block xl:mt-3">
+          {/* Two-column layout */}
+          <section className="grid gap-4 lg:min-h-0 lg:flex-1 lg:grid-cols-[minmax(20rem,26rem)_minmax(0,1fr)] lg:gap-4 xl:grid-cols-[24rem_minmax(0,1fr)] 2xl:grid-cols-[26rem_minmax(0,1fr)]">
+            {/* ─── Inbox pane ─── */}
+            <aside className="flex min-h-[42rem] flex-col overflow-hidden rounded-2xl bg-white shadow-sm lg:h-full lg:min-h-0">
+              {/* Search + filters */}
+              <div className="px-4 pb-3 pt-4">
+                <label className="relative block">
                   <Icon
                     icon="mdi:magnify"
-                    className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-accent-400"
+                    className="pointer-events-none absolute left-3.5 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-gray-400"
                   />
                   <input
-                    // Browsers add their own search decoration to search inputs, so we use text here.
                     type="text"
                     value={query}
                     onChange={(event) => setQuery(event.target.value)}
-                    placeholder="Search names, topics, or notes"
-                    className="w-full rounded-xl border border-accent-200 bg-white py-3 pl-12 pr-4 text-accent-900 transition-all duration-200 placeholder:text-accent-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    placeholder="Search chats"
+                    className="w-full rounded-full border-0 bg-gray-100 py-3 pl-10 pr-4 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-blue-100"
                   />
                 </label>
 
-                <div className="mt-4 flex flex-wrap gap-2 xl:mt-3">
+                {/* Filters — only All + Unread per Figma */}
+                <div className="mt-3 flex flex-wrap gap-2">
                   {inboxFilters.map((item) => {
                     const active = filter === item.key;
                     const label =
@@ -2203,10 +2175,10 @@ export function MessagesPage() {
                         key={item.key}
                         type="button"
                         onClick={() => setFilter(item.key)}
-                        className={`rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
+                        className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
                           active
-                            ? 'bg-primary-600 text-white shadow-sm'
-                            : 'bg-accent-100 text-accent-700 hover:bg-accent-200'
+                            ? 'bg-blue-100 text-blue-700'
+                            : 'border border-gray-200 bg-white text-gray-600 hover:bg-gray-50'
                         }`}
                       >
                         {label}
@@ -2216,20 +2188,17 @@ export function MessagesPage() {
                 </div>
               </div>
 
-              <div className="flex-1 overflow-y-auto px-3 py-3 xl:px-2.5 xl:py-2.5">
+              {/* Thread list */}
+              <div className="flex-1 overflow-y-auto">
                 {inboxQuery.isLoading && !inboxQuery.data ? (
-                  <div className="space-y-2">
-                    {Array.from({ length: 4 }).map((_, index) => (
-                      <div
-                        key={index}
-                        className="animate-pulse rounded-[1.35rem] border border-accent-100 bg-accent-50 px-4 py-4"
-                      >
-                        <div className="flex items-start gap-3">
-                          <div className="h-12 w-12 rounded-2xl bg-accent-200" />
-                          <div className="flex-1 space-y-3">
-                            <div className="h-4 w-2/3 rounded-full bg-accent-200" />
-                            <div className="h-3 w-5/6 rounded-full bg-accent-100" />
-                            <div className="h-3 w-1/2 rounded-full bg-accent-100" />
+                  <div className="space-y-px px-2 py-1">
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <div key={index} className="animate-pulse rounded-xl px-3 py-3">
+                        <div className="flex items-center gap-3">
+                          <div className="h-11 w-11 flex-shrink-0 rounded-full bg-gray-100" />
+                          <div className="flex-1 space-y-2">
+                            <div className="h-3.5 w-1/2 rounded-full bg-gray-100" />
+                            <div className="h-3 w-3/4 rounded-full bg-gray-50" />
                           </div>
                         </div>
                       </div>
@@ -2238,8 +2207,8 @@ export function MessagesPage() {
                 ) : inboxQuery.error && !inboxQuery.data ? (
                   <EmptyState
                     icon="mdi:chat-alert-outline"
-                    title="We could not load your inbox"
-                    description="Refresh to try loading your conversations again."
+                    title="Could not load inbox"
+                    description="Pull down to retry."
                     actionLabel="Refresh"
                     onAction={() => void refreshAll()}
                   />
@@ -2247,16 +2216,16 @@ export function MessagesPage() {
                   <EmptyState
                     icon="mdi:message-outline"
                     title="No messages yet"
-                    description="Once conversations begin, they will appear here."
+                    description="Your conversations will appear here."
                   />
                 ) : visibleThreads.length === 0 ? (
                   <EmptyState
                     icon="mdi:message-text-outline"
-                    title="No conversations match that view"
+                    title="No results"
                     description="Try a different filter or search term."
                   />
                 ) : (
-                  <div className="space-y-2">
+                  <div className="py-1">
                     {visibleThreads.map((thread) => {
                       const isActive = activeThreadId === thread.id;
 
@@ -2268,53 +2237,37 @@ export function MessagesPage() {
                             setSelectedThreadId(thread.id);
                             replaceMessagesSearch(thread.id);
                           }}
-                          className={`w-full rounded-[1.35rem] border px-4 py-4 text-left transition-all ${
-                            isActive
-                              ? 'border-primary-300 bg-primary-50 shadow-sm'
-                              : 'border-transparent bg-white hover:border-accent-200 hover:bg-accent-50'
+                          className={`relative w-full px-4 py-3 text-left transition-colors ${
+                            isActive ? 'bg-gray-50' : 'hover:bg-gray-50'
                           }`}
                         >
-                          <div className="flex items-start gap-3">
+                          {/* Active indicator: blue left border like Figma */}
+                          {isActive ? (
+                            <span className="absolute inset-y-0 left-0 w-0.5 rounded-full bg-blue-600" />
+                          ) : null}
+
+                          <div className="flex items-center gap-3">
                             <ThreadAvatar thread={thread} size="sm" />
 
                             <div className="min-w-0 flex-1">
-                              <div className="flex items-start justify-between gap-3">
-                                <div className="min-w-0">
-                                  <p className="truncate text-base font-semibold text-accent-900">
-                                    {thread.title}
-                                  </p>
-                                  <p className="mt-0.5 truncate text-sm text-accent-500">
-                                    {thread.subtitle}
-                                  </p>
-                                </div>
-
-                                <div className="flex flex-shrink-0 flex-col items-end gap-2">
-                                  <span className="text-xs font-medium text-accent-400">
-                                    {formatThreadTimestamp(thread.lastActivityAt)}
-                                  </span>
-
-                                  {thread.unreadCount > 0 ? (
-                                    <span className="inline-flex min-w-6 items-center justify-center rounded-full bg-primary-600 px-2 py-0.5 text-xs font-semibold text-white">
-                                      {thread.unreadCount}
-                                    </span>
-                                  ) : thread.isPinned ? (
-                                    <span className="inline-flex items-center gap-1 rounded-full bg-accent-100 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-accent-500">
-                                      <Icon icon="mdi:pin" className="h-3.5 w-3.5" />
-                                      Pinned
-                                    </span>
-                                  ) : null}
-                                </div>
+                              <div className="flex items-start justify-between gap-2">
+                                <p className="truncate text-sm font-semibold text-gray-900">
+                                  {thread.title}
+                                </p>
+                                <span className="flex-shrink-0 text-xs text-gray-400">
+                                  {formatThreadTimestamp(thread.lastActivityAt)}
+                                </span>
                               </div>
 
-                              <p className="mt-3 line-clamp-2 text-sm leading-6 text-accent-600">
-                                {getThreadPreview(thread)}
-                              </p>
-
-                              <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-accent-500">
-                                <span className="rounded-full bg-accent-100 px-2.5 py-1 font-medium text-accent-600">
-                                  {thread.category}
-                                </span>
-                                <span className="truncate">{formatThreadMeta(thread)}</span>
+                              <div className="mt-0.5 flex items-center justify-between gap-2">
+                                <p className="line-clamp-1 text-sm text-gray-500">
+                                  {getThreadPreview(thread)}
+                                </p>
+                                {thread.unreadCount > 0 ? (
+                                  <span className="flex-shrink-0 inline-flex min-w-5 items-center justify-center rounded-full bg-blue-600 px-1.5 py-0.5 text-[11px] font-semibold text-white">
+                                    {thread.unreadCount}
+                                  </span>
+                                ) : null}
                               </div>
                             </div>
                           </div>
@@ -2326,114 +2279,87 @@ export function MessagesPage() {
               </div>
             </aside>
 
-            {/* Active thread pane */}
-            <article className="flex min-h-[42rem] flex-col overflow-hidden rounded-[1.75rem] border border-accent-200 bg-white shadow-sm xl:h-full xl:min-h-0">
+            {/* ─── Active thread pane ─── */}
+            <article className="flex min-h-[42rem] flex-col overflow-hidden rounded-2xl bg-white shadow-sm lg:h-full lg:min-h-0">
               {threadShell || (activeThreadId && threadQuery.isLoading) ? (
                 <>
+                  {/* Thread header */}
                   {threadShell ? (
-                    <header className="border-b border-accent-100 px-5 py-5 sm:px-7 xl:px-5 xl:py-4">
-                      <div className="flex items-center gap-4">
-                        <ThreadAvatar thread={threadShell} />
+                    <header className="flex items-center gap-4 border-b border-gray-100 px-5 py-4">
+                      <ThreadAvatar thread={threadShell} />
 
-                        <div className="min-w-0 flex-1">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <h2 className="truncate text-2xl font-semibold text-accent-900 sm:text-3xl">
-                              {threadShell.title}
-                            </h2>
-                            <span className="rounded-full bg-primary-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-primary-600">
-                              {threadShell.type === 'group' ? 'Group' : threadShell.category}
+                      <div className="min-w-0 flex-1">
+                        <h2 className="truncate text-base font-semibold text-gray-900">
+                          {threadShell.title}
+                        </h2>
+                        <p className="mt-0.5 truncate text-sm text-gray-500">
+                          {threadShell.subtitle || formatThreadHeaderSubtitle(threadShell)}
+                        </p>
+
+                        {/* Group participants button */}
+                        {threadShell.type === 'group' && groupParticipants.length > 0 ? (
+                          <button
+                            type="button"
+                            onClick={() => setParticipantsModalOpen(true)}
+                            className="mt-2 inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 text-left text-xs font-medium text-gray-600 transition-colors hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
+                          >
+                            <div className="flex -space-x-1.5">
+                              {previewGroupParticipants.map((participant) => (
+                                <div
+                                  key={participant.memberId}
+                                  className="rounded-full border border-white"
+                                >
+                                  <ParticipantAvatar participant={participant} size="sm" />
+                                </div>
+                              ))}
+                              {groupParticipants.length > previewGroupParticipants.length ? (
+                                <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white bg-gray-200 text-[10px] font-semibold text-gray-600">
+                                  +{groupParticipants.length - previewGroupParticipants.length}
+                                </span>
+                              ) : null}
+                            </div>
+                            <span>
+                              {groupAdminParticipant
+                                ? `${groupAdminParticipant.fullName} is admin`
+                                : `${groupParticipants.length} members`}
                             </span>
-                          </div>
+                            <Icon icon="mdi:chevron-right" className="h-3.5 w-3.5 text-gray-400" />
+                          </button>
+                        ) : null}
+                      </div>
 
-                          <p className="mt-1 truncate text-sm text-accent-500 sm:text-base">
-                            {threadShell.subtitle}
-                          </p>
-                          <p className="mt-2 text-sm text-accent-400">
-                            {formatThreadMeta(threadShell)}
-                          </p>
-                          {threadShell.type === 'group' && groupParticipants.length > 0 ? (
-                            <button
-                              type="button"
-                              onClick={() => setParticipantsModalOpen(true)}
-                              className="mt-3 inline-flex max-w-full items-center gap-3 rounded-full border border-accent-200 bg-accent-50 px-3 py-2 text-left transition-colors hover:border-primary-200 hover:bg-primary-50"
-                            >
-                              <div className="flex -space-x-2">
-                                {previewGroupParticipants.map((participant) => (
-                                  <div
-                                    key={participant.memberId}
-                                    className="rounded-full border-2 border-white shadow-sm"
-                                  >
-                                    <ParticipantAvatar participant={participant} size="sm" />
-                                  </div>
-                                ))}
-                                {groupParticipants.length > previewGroupParticipants.length ? (
-                                  <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border-2 border-white bg-accent-200 text-[11px] font-semibold text-accent-700 shadow-sm">
-                                    +{groupParticipants.length - previewGroupParticipants.length}
-                                  </span>
-                                ) : null}
-                              </div>
-
-                              <div className="min-w-0">
-                                <p className="truncate text-sm font-semibold text-accent-800">
-                                  View members
-                                </p>
-                                <p className="truncate text-xs text-accent-500">
-                                  {groupAdminParticipant
-                                    ? `${groupAdminParticipant.fullName} is admin`
-                                    : `${groupParticipants.length} members`}
-                                </p>
-                              </div>
-
-                              <Icon
-                                icon="mdi:chevron-right"
-                                className="h-4 w-4 flex-shrink-0 text-accent-400"
-                              />
-                            </button>
-                          ) : null}
-                        </div>
-
-                        <button
-                          type="button"
-                          onClick={() => void refreshAll()}
-                          disabled={inboxQuery.isRefetching || threadQuery.isRefetching}
-                          className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-accent-200 text-accent-600 transition-colors hover:border-primary-200 hover:text-primary-600 disabled:cursor-not-allowed disabled:opacity-60"
-                          aria-label="Refresh active conversation"
-                        >
-                          <Icon
-                            icon="mdi:refresh"
-                            className={`h-5 w-5 ${
-                              inboxQuery.isRefetching || threadQuery.isRefetching
-                                ? 'animate-spin'
-                                : ''
-                            }`}
-                          />
-                        </button>
+                      {/* Header action icons matching Figma (phone + video) */}
+                      <div className="flex items-center gap-1">
+                        <span className="inline-flex h-10 w-10 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100">
+                          <Icon icon="mdi:phone-outline" className="h-5 w-5" />
+                        </span>
+                        <span className="inline-flex h-10 w-10 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100">
+                          <Icon icon="mdi:video-outline" className="h-5 w-5" />
+                        </span>
                       </div>
                     </header>
                   ) : (
-                    <header className="border-b border-accent-100 px-5 py-5 sm:px-7 xl:px-5 xl:py-4">
-                      <div className="flex animate-pulse items-center gap-4">
-                        <div className="h-14 w-14 rounded-[1.25rem] bg-accent-100 sm:h-16 sm:w-16 sm:rounded-[1.5rem]" />
-                        <div className="min-w-0 flex-1 space-y-3">
-                          <div className="h-6 w-40 rounded-full bg-accent-100" />
-                          <div className="h-4 w-56 rounded-full bg-accent-50" />
+                    <header className="border-b border-gray-100 px-5 py-4">
+                      <div className="flex animate-pulse items-center gap-3">
+                        <div className="h-12 w-12 rounded-full bg-gray-100" />
+                        <div className="flex-1 space-y-2">
+                          <div className="h-4 w-36 rounded-full bg-gray-100" />
+                          <div className="h-3 w-48 rounded-full bg-gray-50" />
                         </div>
                       </div>
                     </header>
                   )}
 
-                  <div
-                    ref={messagePaneRef}
-                    className="flex-1 overflow-y-auto px-5 py-5 sm:px-7 xl:px-5 xl:py-4"
-                  >
+                  {/* Message pane */}
+                  <div ref={messagePaneRef} className="flex-1 overflow-y-auto bg-white px-5 py-5">
                     {threadQuery.isLoading && !activeThread ? (
-                      <div className="space-y-4">
+                      <div className="space-y-5">
                         {Array.from({ length: 3 }).map((_, index) => (
                           <div
                             key={index}
                             className={`flex ${index % 2 === 0 ? 'justify-start' : 'justify-end'}`}
                           >
-                            <div className="w-full max-w-[32rem] animate-pulse rounded-[1.75rem] bg-accent-100 px-5 py-6" />
+                            <div className="w-64 animate-pulse rounded-2xl bg-gray-100 px-4 py-5" />
                           </div>
                         ))}
                       </div>
@@ -2441,12 +2367,12 @@ export function MessagesPage() {
                       <EmptyState
                         icon="mdi:chat-remove-outline"
                         title="Conversation unavailable"
-                        description="Refresh to reload this conversation."
+                        description="Refresh to reload."
                         actionLabel="Refresh"
                         onAction={() => void refreshAll()}
                       />
                     ) : activeThreadWithOptimisticMessages ? (
-                      <div className="space-y-4">
+                      <div className="space-y-1">
                         {activeThreadWithOptimisticMessages.messages.map((message, index) => {
                           const previousMessage =
                             activeThreadWithOptimisticMessages.messages[index - 1];
@@ -2461,16 +2387,35 @@ export function MessagesPage() {
                               previousMessage.senderMemberId !== message.senderMemberId ||
                               showDayDivider);
 
+                          // Group messages by sender: show timestamp label above first in a cluster
+                          const isFirstInCluster =
+                            !previousMessage ||
+                            previousMessage.senderMemberId !== message.senderMemberId ||
+                            showDayDivider ||
+                            new Date(message.createdAt).getTime() -
+                              new Date(previousMessage.createdAt).getTime() >
+                              5 * 60 * 1000;
+
                           return (
                             <Fragment key={message.id}>
-                              {/* Day dividers make the polling timeline easier to scan. */}
+                              {/* Day divider — simple centered text like Figma */}
                               {showDayDivider ? (
-                                <div className="flex items-center gap-4 py-3">
-                                  <div className="h-px flex-1 bg-accent-100" />
-                                  <span className="text-xs font-semibold uppercase tracking-[0.2em] text-accent-400">
+                                <div className="py-4 text-center">
+                                  <span className="text-xs text-gray-400">
                                     {formatConversationDay(message.createdAt)}
                                   </span>
-                                  <div className="h-px flex-1 bg-accent-100" />
+                                </div>
+                              ) : null}
+
+                              {/* Timestamp above cluster — aligned by sender side */}
+                              {isFirstInCluster && !showDayDivider ? (
+                                <div
+                                  className={`pt-3 pb-1 text-xs text-gray-400 ${
+                                    message.isOwn ? 'text-right' : 'text-left'
+                                  }`}
+                                >
+                                  {formatConversationDay(message.createdAt)}{' '}
+                                  {formatMessageTime(message.createdAt)}
                                 </div>
                               ) : null}
 
@@ -2479,22 +2424,25 @@ export function MessagesPage() {
                               >
                                 <div
                                   data-message-id={message.id}
-                                  className={`group relative w-fit max-w-[42rem] rounded-[2rem] transition-all duration-300 ${
+                                  className={`group relative w-fit max-w-[75%] sm:max-w-[60%] transition-all duration-300 ${
                                     highlightedMessageId === message.id
-                                      ? 'ring-2 ring-primary-300 ring-offset-4 ring-offset-transparent'
+                                      ? 'ring-2 ring-blue-300 ring-offset-2 rounded-2xl'
                                       : ''
                                   }`}
                                 >
                                   {showSenderName ? (
-                                    <p className="mb-2 px-1 text-xs font-semibold uppercase tracking-[0.16em] text-accent-400">
+                                    <p className="mb-1 px-1 text-xs font-semibold text-gray-500">
                                       {message.senderDisplayName}
                                     </p>
                                   ) : null}
 
+                                  {/* Actions button */}
                                   {message.status !== 'sending' && !message.deletedAt ? (
                                     <div
                                       data-message-actions-root="true"
-                                      className="absolute right-3 top-3 z-10"
+                                      className={`absolute top-2 z-10 ${
+                                        message.isOwn ? 'left-2' : 'right-2'
+                                      }`}
                                     >
                                       <button
                                         type="button"
@@ -2502,23 +2450,24 @@ export function MessagesPage() {
                                           event.stopPropagation();
                                           handleToggleMessageActions(message, event.currentTarget);
                                         }}
-                                        className={`inline-flex h-8 w-8 items-center justify-center rounded-full border shadow-sm transition-all ${
+                                        className={`inline-flex h-7 w-7 items-center justify-center rounded-full border border-gray-200 bg-white shadow-sm transition-all ${
                                           openMessageActions?.messageId === message.id
-                                            ? 'border-accent-300 bg-white text-accent-700 opacity-100'
-                                            : 'border-accent-200 bg-white/95 text-accent-500 opacity-0 group-hover:opacity-100'
+                                            ? 'text-gray-700 opacity-100'
+                                            : 'text-gray-400 opacity-0 group-hover:opacity-100'
                                         }`}
                                         aria-label="Message actions"
                                       >
-                                        <Icon icon="mdi:dots-horizontal" className="h-4 w-4" />
+                                        <Icon icon="mdi:dots-horizontal" className="h-3.5 w-3.5" />
                                       </button>
                                     </div>
                                   ) : null}
 
+                                  {/* Bubble — Figma: received = white/light gray, sent = light blue */}
                                   <div
-                                    className={`rounded-[1.75rem] px-5 py-4 shadow-sm ${
+                                    className={`rounded-2xl px-4 py-2.5 ${
                                       message.isOwn
-                                        ? 'bg-primary-600 text-white'
-                                        : 'border border-accent-200 bg-white text-accent-800'
+                                        ? 'bg-[#dbeafe] text-gray-900'
+                                        : 'bg-[#f3f4f6] text-gray-900'
                                     }`}
                                   >
                                     {message.replyTo && !message.deletedAt ? (
@@ -2530,7 +2479,7 @@ export function MessagesPage() {
                                     ) : null}
 
                                     {message.body ? (
-                                      <p className="whitespace-pre-wrap text-[15px] leading-7">
+                                      <p className="whitespace-pre-wrap text-[14.5px] leading-6">
                                         {message.body}
                                       </p>
                                     ) : null}
@@ -2544,28 +2493,18 @@ export function MessagesPage() {
                                     ) : null}
                                   </div>
 
-                                  <div
-                                    className={`mt-2 flex items-center gap-2 px-1 text-xs ${
-                                      message.isOwn
-                                        ? 'justify-end text-accent-400'
-                                        : 'justify-start text-accent-400'
-                                    }`}
-                                  >
-                                    <span>{formatMessageTime(message.createdAt)}</span>
-                                    {message.isOwn ? (
-                                      <span className="inline-flex items-center gap-1">
-                                        <Icon
-                                          icon={
-                                            message.status === 'seen'
-                                              ? 'mdi:check-all'
-                                              : 'mdi:check'
-                                          }
-                                          className="h-3.5 w-3.5"
-                                        />
-                                        {deliveryLabel(message.status)}
-                                      </span>
-                                    ) : null}
-                                  </div>
+                                  {/* Delivery status — only for own messages, below bubble */}
+                                  {message.isOwn ? (
+                                    <div className="mt-1 flex items-center justify-end gap-1 px-1 text-[11px] text-gray-400">
+                                      <Icon
+                                        icon={
+                                          message.status === 'seen' ? 'mdi:check-all' : 'mdi:check'
+                                        }
+                                        className="h-3 w-3"
+                                      />
+                                      <span>{deliveryLabel(message.status)}</span>
+                                    </div>
+                                  ) : null}
                                 </div>
                               </div>
                             </Fragment>
@@ -2573,15 +2512,16 @@ export function MessagesPage() {
                         })}
                       </div>
                     ) : (
-                      <EmptyState
-                        icon="mdi:message-text-fast-outline"
-                        title="Select a conversation"
-                        description="Choose a message from the inbox to open the thread."
-                      />
+                      <div className="flex h-full min-h-[28rem] items-center justify-center">
+                        <div className="rounded-full bg-blue-50 px-6 py-3 text-sm font-medium text-blue-600">
+                          Select a chat to start messaging
+                        </div>
+                      </div>
                     )}
                   </div>
 
-                  <footer className="border-t border-accent-100 px-5 py-5 sm:px-7 xl:px-5 xl:py-4">
+                  {/* Composer footer */}
+                  <footer className="border-t border-gray-100 px-4 py-3">
                     <input
                       ref={fileInputRef}
                       type="file"
@@ -2591,7 +2531,7 @@ export function MessagesPage() {
                       onChange={handleFileSelection}
                     />
 
-                    <div className="rounded-[1.75rem] border border-accent-200 bg-accent-50 p-4 xl:p-3.5">
+                    <div className="rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3">
                       {replyTarget ? (
                         <ReplyPreviewCard
                           replyTo={replyTarget}
@@ -2606,10 +2546,10 @@ export function MessagesPage() {
                       />
 
                       {voiceRecordingBusy ? (
-                        <div className="mb-4 flex items-center justify-between gap-3 rounded-[1.5rem] border border-rose-200 bg-rose-50 px-4 py-3 text-rose-900">
-                          <div className="flex min-w-0 items-center gap-3">
+                        <div className="mb-3 flex items-center justify-between gap-3 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2.5 text-rose-900">
+                          <div className="flex min-w-0 items-center gap-2.5">
                             <span
-                              className={`h-3 w-3 flex-shrink-0 rounded-full ${
+                              className={`h-2.5 w-2.5 flex-shrink-0 rounded-full ${
                                 voiceRecordingActive ? 'animate-pulse bg-rose-500' : 'bg-rose-400'
                               }`}
                             />
@@ -2619,7 +2559,7 @@ export function MessagesPage() {
                             </div>
                           </div>
 
-                          <span className="rounded-full bg-white px-3 py-1 text-sm font-semibold text-rose-700 shadow-sm">
+                          <span className="rounded-full bg-white px-2.5 py-1 text-sm font-semibold text-rose-700 shadow-sm">
                             {formatRecordingDuration(voiceRecordingDurationMs)}
                           </span>
                         </div>
@@ -2633,24 +2573,26 @@ export function MessagesPage() {
                         rows={2}
                         placeholder={
                           activeThread
-                            ? `Message ${activeThread.title}...`
+                            ? 'Write a message...'
                             : 'Select a conversation to start typing'
                         }
-                        className="w-full resize-none border-0 bg-transparent text-[15px] text-accent-900 outline-none placeholder:text-accent-400 disabled:cursor-not-allowed disabled:opacity-60"
+                        className="w-full resize-none border-0 bg-transparent text-[14.5px] text-gray-900 outline-none placeholder:text-gray-400 disabled:cursor-not-allowed disabled:opacity-50"
                       />
 
-                      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 xl:mt-3">
-                        <div className="flex flex-wrap items-center gap-2">
+                      <div className="mt-2.5 flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-1.5">
+                          {/* Attach file */}
                           <button
                             type="button"
                             onClick={() => fileInputRef.current?.click()}
                             disabled={attachmentsDisabled}
-                            className="inline-flex items-center gap-2 rounded-full border border-accent-200 bg-white px-3 py-2 text-sm font-medium text-accent-700 transition-colors hover:border-primary-200 hover:text-primary-600 disabled:cursor-not-allowed disabled:opacity-60"
+                            className="inline-flex h-9 w-9 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-200 hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-50"
+                            aria-label="Attach file"
                           >
-                            <Icon icon="mdi:paperclip" className="h-4 w-4" />
-                            File
+                            <Icon icon="mdi:paperclip" className="h-4.5 w-4.5" />
                           </button>
 
+                          {/* Voice note */}
                           <div className="group relative">
                             <button
                               type="button"
@@ -2662,12 +2604,12 @@ export function MessagesPage() {
                               onKeyUp={handleVoiceRecordKeyUp}
                               disabled={audioDisabled}
                               title={voiceRecordTooltip}
-                              className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${
+                              className={`inline-flex h-9 w-9 items-center justify-center rounded-full transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
                                 voiceRecordingBusy
-                                  ? 'border-rose-200 bg-rose-50 text-rose-700'
-                                  : 'border-accent-200 bg-white text-accent-700 hover:border-primary-200 hover:text-primary-600'
+                                  ? 'bg-rose-100 text-rose-700'
+                                  : 'text-gray-400 hover:bg-gray-200 hover:text-gray-600'
                               }`}
-                              aria-label="Hold to record a voice note and release to send"
+                              aria-label="Hold to record a voice note"
                             >
                               <Icon
                                 icon={
@@ -2678,63 +2620,58 @@ export function MessagesPage() {
                                       ? 'mdi:microphone'
                                       : 'mdi:microphone-outline'
                                 }
-                                className={`h-4 w-4 ${
+                                className={`h-4.5 w-4.5 ${
                                   voiceRecordingState === 'starting' ||
                                   voiceRecordingState === 'finishing'
                                     ? 'animate-spin'
                                     : ''
                                 }`}
                               />
-                              {voiceRecordingState === 'starting'
-                                ? 'Starting...'
-                                : voiceRecordingState === 'finishing'
-                                  ? 'Preparing...'
-                                  : voiceRecordingActive
-                                    ? 'Release to preview'
-                                    : 'Hold to talk'}
                             </button>
 
-                            <span className="pointer-events-none absolute -top-10 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded-full bg-accent-900 px-3 py-1.5 text-xs font-medium text-white shadow-sm group-hover:inline-flex">
+                            <span className="pointer-events-none absolute -top-9 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded-lg bg-gray-800 px-2.5 py-1.5 text-xs text-white shadow-sm group-hover:inline-flex">
                               {voiceRecordTooltip}
                             </span>
                           </div>
                         </div>
 
+                        {/* Send button */}
                         <button
                           type="button"
                           onClick={() => void handleSendMessage()}
                           disabled={!canSend}
-                          className="inline-flex items-center gap-2 rounded-full bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-primary-700 disabled:cursor-not-allowed disabled:bg-primary-200"
+                          className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-white shadow-sm transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-200"
+                          aria-label="Send message"
                         >
                           <Icon
                             icon={sendMessage.isPending ? 'mdi:loading' : 'mdi:send'}
                             className={`h-4 w-4 ${sendMessage.isPending ? 'animate-spin' : ''}`}
                           />
-                          Send
                         </button>
                       </div>
                     </div>
                   </footer>
                 </>
               ) : (
-                <EmptyState
-                  icon="mdi:message-badge-outline"
-                  title="Your inbox is quiet"
-                  description="Once conversations start, the active thread will appear here."
-                />
+                <div className="flex h-full min-h-[42rem] items-center justify-center">
+                  <div className="rounded-full bg-blue-50 px-6 py-3 text-sm font-medium text-blue-600 shadow-sm">
+                    Select a chat to start messaging
+                  </div>
+                </div>
               )}
             </article>
 
+            {/* Message actions context menu */}
             {openMessageActions && openMessageActionsMessage ? (
               <div
                 data-message-actions-root="true"
                 style={openMessageActions.style}
-                className="z-50 w-40 rounded-2xl border border-accent-200 bg-white p-2 shadow-xl"
+                className="z-50 w-40 rounded-xl border border-gray-100 bg-white p-1.5 shadow-xl"
               >
                 <button
                   type="button"
                   onClick={() => void handleReplyToMessage()}
-                  className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-accent-700 transition-colors hover:bg-accent-50"
+                  className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50"
                 >
                   <Icon icon="mdi:reply-outline" className="h-4 w-4" />
                   Reply
@@ -2743,7 +2680,7 @@ export function MessagesPage() {
                   <button
                     type="button"
                     onClick={() => void handleCopyMessage(openMessageActionsMessage)}
-                    className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-accent-700 transition-colors hover:bg-accent-50"
+                    className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50"
                   >
                     <Icon icon="mdi:content-copy" className="h-4 w-4" />
                     Copy
@@ -2753,7 +2690,7 @@ export function MessagesPage() {
                   <button
                     type="button"
                     onClick={() => void handleDeleteMessage()}
-                    className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-rose-600 transition-colors hover:bg-rose-50"
+                    className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-rose-600 transition-colors hover:bg-rose-50"
                   >
                     <Icon icon="mdi:delete-outline" className="h-4 w-4" />
                     Delete

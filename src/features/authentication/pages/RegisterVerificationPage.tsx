@@ -1,10 +1,15 @@
 import { Icon } from '@iconify/react';
-import { useEffect, useMemo, useState } from 'react';
+import {
+  type ClipboardEvent,
+  type KeyboardEvent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useForm } from 'react-hook-form';
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
-import { FormInput } from '@/shared/components/ui/input/FormInput';
 import { authApi } from '../services/auth.service';
-import { formatPhoneNumberWithCountryCode } from '../constants/phoneCountries';
 import { emailVerificationSchema } from '../schemas/authSchema';
 import type { EmailVerificationFormValues } from '../types/auth.types';
 import { RegistrationShell } from '../components/RegistrationShell';
@@ -17,15 +22,16 @@ import {
   recordVerificationResendAttempt,
 } from '../lib/verificationResendThrottle';
 
+const VERIFICATION_CODE_LENGTH = 6;
+
 export function RegisterVerificationPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const flow = loadRegistrationFlow();
   const [resendMessage, setResendMessage] = useState('');
+  const codeInputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const verificationEmail = flow?.formValues?.email ?? searchParams.get('email') ?? '';
   const verificationUserId = flow?.userId ?? searchParams.get('userId') ?? '';
-  const cameFromLogin = searchParams.get('source') === 'login';
-  const hasRegistrationDetails = !!flow?.formValues;
   const [timerNow, setTimerNow] = useState(() => Date.now());
   const resendStatus = useMemo(
     () => getVerificationResendStatus(verificationUserId, timerNow),
@@ -36,6 +42,13 @@ export function RegisterVerificationPage() {
     resolver: zodResolver(emailVerificationSchema),
     defaultValues: { code: '' },
   });
+
+  const verificationCode = verificationForm.watch('code') ?? '';
+  const codeDigits = Array.from(
+    { length: VERIFICATION_CODE_LENGTH },
+    (_, index) => verificationCode[index] ?? '',
+  );
+  const codeErrorMessage = verificationForm.formState.errors.code?.message;
 
   useEffect(() => {
     setTimerNow(Date.now());
@@ -130,104 +143,163 @@ export function RegisterVerificationPage() {
     }
   };
 
-  const resendButtonLabel = resendStatus.isBlocked
-    ? `Try again in ${formatVerificationResendDuration(resendStatus.blockRemainingMs)}`
+  const resendCountdown = resendStatus.isBlocked
+    ? formatVerificationResendDuration(resendStatus.blockRemainingMs)
     : resendStatus.isCoolingDown
-      ? `Resend in ${formatVerificationResendDuration(resendStatus.cooldownRemainingMs)}`
-      : 'Resend code';
+      ? formatVerificationResendDuration(resendStatus.cooldownRemainingMs)
+      : '';
 
-  const resendStatusMessage = resendStatus.isBlocked
-    ? `You have used all ${resendStatus.attempts} resend attempts. You can request another code in ${formatVerificationResendDuration(resendStatus.blockRemainingMs)}.`
-    : resendStatus.isCoolingDown
-      ? `You can request another code in ${formatVerificationResendDuration(resendStatus.cooldownRemainingMs)}.`
-      : `You have ${resendStatus.attemptsRemaining} resend ${resendStatus.attemptsRemaining === 1 ? 'try' : 'tries'} left.`;
+  const resendStatusMessage = resendMessage
+    ? resendMessage
+    : resendStatus.isBlocked
+      ? `You have used all ${resendStatus.attempts} resend attempts. You can request another code in ${formatVerificationResendDuration(resendStatus.blockRemainingMs)}.`
+      : '';
+
+  const focusCodeInput = (index: number) => {
+    const boundedIndex = Math.max(0, Math.min(VERIFICATION_CODE_LENGTH - 1, index));
+    const input = codeInputRefs.current[boundedIndex];
+
+    if (!input) return;
+
+    input.focus();
+    input.select();
+  };
+
+  const getCurrentDigits = () =>
+    Array.from(
+      { length: VERIFICATION_CODE_LENGTH },
+      (_, index) => verificationForm.getValues('code')?.[index] ?? '',
+    );
+
+  const updateVerificationCode = (digits: string[]) => {
+    const nextCode = digits.join('').replace(/\D/g, '').slice(0, VERIFICATION_CODE_LENGTH);
+
+    verificationForm.setValue('code', nextCode, {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: nextCode.length === VERIFICATION_CODE_LENGTH,
+    });
+
+    if (nextCode.length > 0) {
+      verificationForm.clearErrors('code');
+    }
+
+    return nextCode;
+  };
+
+  const handleCodeInput = (index: number, rawValue: string) => {
+    const inputDigits = rawValue.replace(/\D/g, '');
+    const nextDigits = getCurrentDigits();
+
+    if (!inputDigits) {
+      nextDigits[index] = '';
+      updateVerificationCode(nextDigits);
+      return;
+    }
+
+    inputDigits
+      .slice(0, VERIFICATION_CODE_LENGTH - index)
+      .split('')
+      .forEach((digit, offset) => {
+        nextDigits[index + offset] = digit;
+      });
+
+    const nextCode = updateVerificationCode(nextDigits);
+
+    if (nextCode.length >= VERIFICATION_CODE_LENGTH) {
+      codeInputRefs.current[VERIFICATION_CODE_LENGTH - 1]?.blur();
+      return;
+    }
+
+    window.requestAnimationFrame(() =>
+      focusCodeInput(Math.min(index + inputDigits.length, VERIFICATION_CODE_LENGTH - 1)),
+    );
+  };
+
+  const handleCodeKeyDown = (index: number, event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'ArrowLeft' && index > 0) {
+      event.preventDefault();
+      focusCodeInput(index - 1);
+      return;
+    }
+
+    if (event.key === 'ArrowRight' && index < VERIFICATION_CODE_LENGTH - 1) {
+      event.preventDefault();
+      focusCodeInput(index + 1);
+      return;
+    }
+
+    if (event.key !== 'Backspace' && event.key !== 'Delete') {
+      return;
+    }
+
+    event.preventDefault();
+
+    const nextDigits = getCurrentDigits();
+    const deleteIndex = nextDigits[index] || event.key === 'Delete' ? index : index - 1;
+
+    if (deleteIndex < 0) return;
+
+    nextDigits.splice(deleteIndex, 1);
+    nextDigits.push('');
+    updateVerificationCode(nextDigits);
+    window.requestAnimationFrame(() => focusCodeInput(deleteIndex));
+  };
+
+  const handleCodePaste = (index: number, event: ClipboardEvent<HTMLInputElement>) => {
+    event.preventDefault();
+    handleCodeInput(index, event.clipboardData.getData('text'));
+  };
 
   return (
     <RegistrationShell step="verification">
-      <div className="space-y-5">
-        <div className="bg-primary-50 border border-primary-100 rounded-2xl p-4">
-          <p className="text-sm font-semibold text-primary-800 mb-1">Check your inbox</p>
-          <p className="text-xs text-primary-700 leading-relaxed">
-            {flow?.verificationResponse?.message ??
-              (cameFromLogin
-                ? 'Your email is not verified yet. Enter the verification code we sent to your inbox.'
-                : 'We sent a verification code to your email.')}
-          </p>
-        </div>
+      <div className="auth-verification">
+        <p className="auth-verification__copy">Please enter the code we sent to your email.</p>
 
-        <div className="bg-gray-50 rounded-2xl p-4 space-y-2.5 text-sm">
-          {(hasRegistrationDetails
-            ? [
-                {
-                  label: 'Full name',
-                  value: `${flow.formValues!.otherNames} ${flow.formValues!.surname}`,
-                },
-                { label: 'Nickname', value: flow.formValues!.nameInSchool },
-                { label: 'Email', value: flow.formValues!.email },
-                {
-                  label: 'WhatsApp',
-                  value: formatPhoneNumberWithCountryCode(
-                    flow.formValues!.phoneCountry,
-                    flow.formValues!.whatsappPhone,
-                  ),
-                },
-                { label: 'Graduation year', value: String(flow.formValues!.graduationYear) },
-              ]
-            : [{ label: 'Email', value: verificationEmail }]
-          ).map(({ label, value }) => (
-            <div key={label} className="flex justify-between items-center">
-              <span className="text-gray-500">{label}</span>
-              <span className="font-medium text-gray-800 text-right max-w-[60%] truncate">
-                {value}
-              </span>
+        <form className="auth-form" onSubmit={submitVerification}>
+          <fieldset className="auth-code-fieldset">
+            <legend className="auth-visually-hidden">Verification code</legend>
+            <div
+              className="auth-code-inputs"
+              aria-describedby={codeErrorMessage ? 'verification-code-error' : undefined}
+            >
+              {codeDigits.map((digit, index) => (
+                <input
+                  key={index}
+                  ref={(element) => {
+                    codeInputRefs.current[index] = element;
+                  }}
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  autoComplete={index === 0 ? 'one-time-code' : 'off'}
+                  value={digit}
+                  placeholder="-"
+                  aria-label={`Verification code digit ${index + 1} of ${VERIFICATION_CODE_LENGTH}`}
+                  aria-invalid={codeErrorMessage ? 'true' : 'false'}
+                  className="auth-code-input"
+                  onChange={(event) => handleCodeInput(index, event.target.value)}
+                  onKeyDown={(event) => handleCodeKeyDown(index, event)}
+                  onPaste={(event) => handleCodePaste(index, event)}
+                  onFocus={(event) => event.currentTarget.select()}
+                />
+              ))}
             </div>
-          ))}
-        </div>
-
-        <form className="space-y-4" onSubmit={submitVerification}>
-          <FormInput
-            label="Verification Code"
-            id="code"
-            type="text"
-            inputMode="numeric"
-            maxLength={6}
-            placeholder="Enter 6-digit code"
-            hint=""
-            error={verificationForm.formState.errors.code?.message}
-            className="text-center text-lg"
-            {...verificationForm.register('code')}
-          />
+            {codeErrorMessage && (
+              <p id="verification-code-error" className="auth-field-error auth-code-error">
+                {codeErrorMessage}
+              </p>
+            )}
+          </fieldset>
 
           {verificationForm.formState.errors.root && (
-            <div className="rounded-xl bg-red-50 border border-red-100 px-4 py-3">
-              <p className="text-sm text-red-600">
-                {verificationForm.formState.errors.root.message}
-              </p>
+            <div className="auth-alert auth-alert--error">
+              <p>{verificationForm.formState.errors.root.message}</p>
             </div>
           )}
 
-          {resendMessage && (
-            <p className="text-xs text-gray-500 bg-gray-50 rounded-xl px-3 py-2">{resendMessage}</p>
-          )}
-
-          <p className="text-xs text-gray-500 bg-gray-50 rounded-xl px-3 py-2">
-            {resendStatusMessage}
-          </p>
-
-          <div className="flex gap-3">
-            <button
-              type="submit"
-              disabled={verificationForm.formState.isSubmitting}
-              className="btn btn-primary flex-1 flex items-center justify-center gap-2"
-            >
-              {verificationForm.formState.isSubmitting ? (
-                <>
-                  <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" /> Verifying...
-                </>
-              ) : (
-                'Verify email'
-              )}
-            </button>
+          <div className="auth-verification__resend-row">
+            <span>Didn't receive a code?</span>
             <button
               type="button"
               onClick={resendCode}
@@ -236,11 +308,30 @@ export function RegisterVerificationPage() {
                 resendStatus.isCoolingDown ||
                 resendStatus.isBlocked
               }
-              className="btn btn-outline flex-1"
+              className="auth-verification__resend-button"
             >
-              {resendButtonLabel}
+              {resendStatus.isBlocked ? 'Try again' : 'Resend Code'}
             </button>
+            {resendCountdown && (
+              <span className="auth-verification__resend-time">({resendCountdown})</span>
+            )}
           </div>
+
+          {resendStatusMessage && <p className="auth-status-note">{resendStatusMessage}</p>}
+
+          <button
+            type="submit"
+            disabled={verificationForm.formState.isSubmitting}
+            className="btn btn-primary flex items-center justify-center gap-2 auth-submit-button auth-verification__submit"
+          >
+            {verificationForm.formState.isSubmitting ? (
+              <>
+                <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" /> Verifying...
+              </>
+            ) : (
+              'Verify Email'
+            )}
+          </button>
         </form>
       </div>
     </RegistrationShell>

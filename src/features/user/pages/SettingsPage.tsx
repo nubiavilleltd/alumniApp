@@ -22,6 +22,7 @@ import { useTokenStore } from '@/features/authentication/stores/useTokenStore';
 import { usePrivacyToggle } from '../hooks/usePrivacySettings';
 import type { PrivacySettings } from '@/features/authentication/types/auth.types';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
+import { PasswordInput } from '@/shared/components/ui/input/PasswordInput';
 
 const breadcrumbItems = [
   { label: 'Home', href: ROUTES.HOME },
@@ -53,52 +54,6 @@ const changePasswordSchema = z
   });
 
 type ChangePasswordValues = z.infer<typeof changePasswordSchema>;
-
-// ─── Password field ───────────────────────────────────────────────────────────
-
-function PasswordField({
-  label,
-  placeholder,
-  hint,
-  error,
-  show,
-  onToggle,
-  registration,
-  autoComplete,
-}: {
-  label: string;
-  placeholder: string;
-  hint?: string;
-  error?: string;
-  show: boolean;
-  onToggle: () => void;
-  registration: object;
-  autoComplete?: string;
-}) {
-  return (
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1.5">{label}</label>
-      <div className="relative">
-        <input
-          type={show ? 'text' : 'password'}
-          autoComplete={autoComplete ?? 'new-password'}
-          placeholder={placeholder}
-          className={`w-full px-4 py-2.5 pr-10 rounded-3xl border bg-gray-50 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-400 focus:bg-white transition-all ${error ? 'border-red-300' : 'border-gray-200'}`}
-          {...registration}
-        />
-        <button
-          type="button"
-          onClick={onToggle}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-        >
-          <Icon icon={show ? 'mdi:eye-off-outline' : 'mdi:eye-outline'} className="w-4 h-4" />
-        </button>
-      </div>
-      {hint && !error && <p className="mt-1.5 text-xs text-gray-400">{hint}</p>}
-      {error && <p className="mt-1.5 text-xs text-red-500">{error}</p>}
-    </div>
-  );
-}
 
 // ─── Privacy toggle row ───────────────────────────────────────────────────────
 
@@ -159,9 +114,6 @@ function PrivacyRow({
 // ─── Change Password section ──────────────────────────────────────────────────
 
 function ChangePasswordSection() {
-  const [showCurrent, setShowCurrent] = useState(false);
-  const [showNew, setShowNew] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
   const clearTokens = useTokenStore.getState().clearTokens;
   const clearIdentity = useIdentityStore.getState().clearIdentity;
   const navigate = useNavigate();
@@ -209,31 +161,30 @@ function ChangePasswordSection() {
       <p className="text-sm text-gray-400 mb-6">Update your account password</p>
 
       <form onSubmit={onSubmit} className="space-y-4">
-        <PasswordField
+        <PasswordInput
           label="Current Password"
+          id="currentPassword"
           placeholder="Enter your current password"
           error={errors.currentPassword?.message}
-          show={showCurrent}
-          onToggle={() => setShowCurrent((v) => !v)}
           autoComplete="current-password"
-          registration={register('currentPassword')}
+          {...register('currentPassword')}
         />
-        <PasswordField
+        <PasswordInput
           label="New Password"
+          id="newPassword"
           placeholder="Enter your new password"
           hint="Password must be at least 8 characters long with a mix of uppercase letters, lowercase letters, numbers, and symbols"
           error={errors.newPassword?.message}
-          show={showNew}
-          onToggle={() => setShowNew((v) => !v)}
-          registration={register('newPassword')}
+          autoComplete="new-password"
+          {...register('newPassword')}
         />
-        <PasswordField
+        <PasswordInput
           label="Confirm New Password"
+          id="confirmPassword"
           placeholder="Confirm your new password"
           error={errors.confirmPassword?.message}
-          show={showConfirm}
-          onToggle={() => setShowConfirm((v) => !v)}
-          registration={register('confirmPassword')}
+          autoComplete="new-password"
+          {...register('confirmPassword')}
         />
 
         <button
