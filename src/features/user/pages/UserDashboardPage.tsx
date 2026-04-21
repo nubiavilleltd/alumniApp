@@ -1236,14 +1236,14 @@ export function UserDashboardPage() {
             {/* Pending Attestation */}
             <PanelCard
               title="Pending your Attestation"
-              action={
-                <AppLink
-                  href="#"
-                  className="text-xs font-semibold text-primary-500 hover:text-primary-600 flex items-center gap-0.5"
-                >
-                  View All <Icon icon="mdi:chevron-right" className="w-3.5 h-3.5" />
-                </AppLink>
-              }
+              // action={
+              //   <AppLink
+              //     href="#"
+              //     className="text-xs font-semibold text-primary-500 hover:text-primary-600 flex items-center gap-0.5"
+              //   >
+              //     View All <Icon icon="mdi:chevron-right" className="w-3.5 h-3.5" />
+              //   </AppLink>
+              // }
             >
               {vouchesLoading ? (
                 <SkeletonRows n={2} />

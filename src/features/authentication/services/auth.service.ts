@@ -189,6 +189,8 @@ export const authApi = {
   async getCurrentUser(userId: string): Promise<AuthSessionUser> {
     try {
       const data = await authApi.getCurrentUserRaw(userId);
+
+      console.log('RAW DATA', { data }, { mappedData: mapCurrentUserResponse(data) });
       return mapCurrentUserResponse(data);
     } catch (error) {
       throw handleApiError(error, 'Unable to fetch user profile', 'authApi.getCurrentUser');

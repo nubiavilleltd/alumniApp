@@ -133,6 +133,27 @@ export function AlumniDirectoryPage() {
     );
   }, [alumni, searchTerm, yearFilter]);
 
+  //   const filtered = useMemo(() => {
+  //   const q = searchTerm.toLowerCase();
+
+  //   let result = alumni.filter(
+  //     (e) =>
+  //       (!q || e.name.toLowerCase().includes(q)) &&
+  //       (!yearFilter || e.graduationYear.toString() === yearFilter),
+  //   );
+
+  //   // ✅ PRIORITIZE USER'S GRADUATION YEAR (only when no filter is applied)
+  //   if (!yearFilter && currentUser?.graduationYear) {
+  //     result = [...result].sort((a, b) => {
+  //       if (a.graduationYear === currentUser.graduationYear) return -1;
+  //       if (b.graduationYear === currentUser.graduationYear) return 1;
+  //       return b.graduationYear - a.graduationYear; // fallback: newest first
+  //     });
+  //   }
+
+  //   return result;
+  // }, [alumni, searchTerm, yearFilter, currentUser]);
+
   const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
   const start = (currentPage - 1) * ITEMS_PER_PAGE;
   const visible = filtered.slice(start, start + ITEMS_PER_PAGE);
