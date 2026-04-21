@@ -49,6 +49,9 @@ import { COMING_SOON_ROUTES } from './config/comingSoonRoutes';
 import { ComingSoonRouteHandler } from './pages/errors/ComingSoonRouteHandler';
 import { GuestRoute } from './shared/components/routing/GuestRoute';
 import EditProfilePage from './features/user/pages/EditProfilePage';
+import ResourcesPage from './pages/resources/ResourcesPage';
+import WelfarePage from './pages/welfare/WelfarePage';
+import WelfareZonesPage from './pages/welfare/WelfareZonesPage';
 
 export default function App() {
   return (
@@ -80,6 +83,10 @@ export default function App() {
               </ErrorBoundary>
             }
           />
+
+          <Route path="/resources" element={<ResourcesPage />} />
+          <Route path="/welfare" element={<WelfarePage />} />
+          <Route path="/welfare/zones" element={<WelfareZonesPage />} />
           <Route
             path={ROUTES.TERMS}
             element={
