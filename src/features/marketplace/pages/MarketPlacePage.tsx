@@ -4,6 +4,7 @@ import { Icon } from '@iconify/react';
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SEO } from '@/shared/common/SEO';
+import { Button } from '@/shared/components/ui/Button';
 import { PostBusinessModal } from '../components/PostYourBusinessModal';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import {
@@ -195,18 +196,19 @@ function BusinessCard({
               <Icon icon="mdi:web" />
             </a>
           )}
-          <button
+          <Button
             type="button"
             onClick={(event) => {
               event.stopPropagation();
               onMessageClick(business);
             }}
             disabled={isOwnBusiness || isMessagePending}
+            loading={isMessagePending}
+            leftIcon={isMessagePending ? undefined : 'mdi:message-outline'}
             className="marketplace-card__message-button"
           >
-            <Icon icon="mdi:message-outline" />
             <span>{isMessagePending ? 'Opening...' : 'Send Message'}</span>
-          </button>
+          </Button>
         </div>
       </div>
     </article>
@@ -283,14 +285,14 @@ export default function MarketPlacePage() {
             </div>
 
             {currentUser && (
-              <button
+              <Button
                 type="button"
                 onClick={() => setShowPostModal(true)}
+                rightIcon="mdi:plus"
                 className="marketplace-post-button"
               >
-                <span>Post Your Business</span>
-                <Icon icon="mdi:plus" />
-              </button>
+                Post Your Business
+              </Button>
             )}
           </div>
 
@@ -366,13 +368,13 @@ export default function MarketPlacePage() {
           {/* Load More */}
           {hasMore && !isLoading && !error && (
             <div className="marketplace-load-more">
-              <button
+              <Button
                 type="button"
                 onClick={() => setVisibleCount((prev) => prev + ITEMS_PER_PAGE)}
                 className="marketplace-load-more__button"
               >
                 Load More Businesses
-              </button>
+              </Button>
             </div>
           )}
         </section>

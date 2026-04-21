@@ -1,9 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Icon } from '@iconify/react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AppLink } from '@/shared/components/ui/AppLink';
+import { Button } from '@/shared/components/ui/Button';
 import { FormInput } from '@/shared/components/ui/input/FormInput';
 import { PasswordInput } from '@/shared/components/ui/input/PasswordInput';
 import { authApi } from '../services/auth.service';
@@ -219,20 +219,14 @@ export function LoginForm() {
           </AppLink>
         </div>
 
-        <button
+        <Button
           type="submit"
-          disabled={isSubmitting}
-          className="btn btn-primary w-full flex items-center justify-center gap-2 auth-submit-button"
+          fullWidth
+          loading={isSubmitting}
+          className="auth-submit-button rounded-full"
         >
-          {isSubmitting ? (
-            <>
-              <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" />
-              Signing in...
-            </>
-          ) : (
-            'Sign In'
-          )}
-        </button>
+          {isSubmitting ? 'Signing in...' : 'Sign In'}
+        </Button>
 
         <p className="auth-card__footer-text">
           Don't have an account?{' '}

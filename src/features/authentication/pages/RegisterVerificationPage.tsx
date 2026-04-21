@@ -1,4 +1,3 @@
-import { Icon } from '@iconify/react';
 import {
   type ClipboardEvent,
   type KeyboardEvent,
@@ -9,6 +8,7 @@ import {
 } from 'react';
 import { useForm } from 'react-hook-form';
 import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
+import { Button } from '@/shared/components/ui/Button';
 import { authApi } from '../services/auth.service';
 import { emailVerificationSchema } from '../schemas/authSchema';
 import type { EmailVerificationFormValues } from '../types/auth.types';
@@ -319,19 +319,13 @@ export function RegisterVerificationPage() {
 
           {resendStatusMessage && <p className="auth-status-note">{resendStatusMessage}</p>}
 
-          <button
+          <Button
             type="submit"
-            disabled={verificationForm.formState.isSubmitting}
-            className="btn btn-primary flex items-center justify-center gap-2 auth-submit-button auth-verification__submit"
+            loading={verificationForm.formState.isSubmitting}
+            className="auth-submit-button auth-verification__submit rounded-full"
           >
-            {verificationForm.formState.isSubmitting ? (
-              <>
-                <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" /> Verifying...
-              </>
-            ) : (
-              'Verify Email'
-            )}
-          </button>
+            {verificationForm.formState.isSubmitting ? 'Verifying...' : 'Verify Email'}
+          </Button>
         </form>
       </div>
     </RegistrationShell>

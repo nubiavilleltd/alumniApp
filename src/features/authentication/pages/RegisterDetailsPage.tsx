@@ -1,9 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Icon } from '@iconify/react';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { AppLink } from '@/shared/components/ui/AppLink';
+import { Button } from '@/shared/components/ui/Button';
 import { FormInput } from '@/shared/components/ui/input/FormInput';
 import { PasswordInput } from '@/shared/components/ui/input/PasswordInput';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
@@ -402,21 +402,15 @@ export function RegisterDetailsPage() {
           </div>
         )}
 
-        <button
+        <Button
           type="submit"
-          disabled={detailForm.formState.isSubmitting}
-          className="btn btn-primary w-full flex items-center justify-center gap-2 auth-submit-button"
+          fullWidth
+          loading={detailForm.formState.isSubmitting}
+          rightIcon={detailForm.formState.isSubmitting ? undefined : 'mdi:arrow-right'}
+          className="auth-submit-button rounded-full"
         >
-          {detailForm.formState.isSubmitting ? (
-            <>
-              <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" /> Checking...
-            </>
-          ) : (
-            <>
-              Continue <Icon icon="mdi:arrow-right" className="w-4 h-4" />
-            </>
-          )}
-        </button>
+          {detailForm.formState.isSubmitting ? 'Checking...' : 'Continue'}
+        </Button>
 
         <p className="auth-card__footer-text auth-card__footer-text--compact">
           Already have an account?{' '}

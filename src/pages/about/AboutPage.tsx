@@ -1,7 +1,7 @@
 import { AUTH_ROUTES } from '@/features/authentication/routes';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 import { SEO } from '@/shared/common/SEO';
-import { AppLink } from '@/shared/components/ui/AppLink';
+import { ButtonLink } from '@/shared/components/ui/Button';
 
 const missionFeatures = [
   {
@@ -85,9 +85,9 @@ export function AboutPage() {
               </div>
 
               {!currentUser ? (
-                <AppLink href={AUTH_ROUTES.REGISTER} className="about-hero__cta">
+                <ButtonLink href={AUTH_ROUTES.REGISTER} size="lg" className="about-hero__cta">
                   Join Us
-                </AppLink>
+                </ButtonLink>
               ) : null}
             </div>
           </div>

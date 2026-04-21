@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { AppLink } from '@/shared/components/ui/AppLink';
+import { Button } from '@/shared/components/ui/Button';
 import { FormInput } from '@/shared/components/ui/input/FormInput';
 import { authApi } from '../services/auth.service';
 import { forgotPasswordSchema } from '../schemas/authSchema';
@@ -51,13 +52,14 @@ export function ForgotPasswordForm() {
           <div className="auth-message-panel__note">
             Please check your spam/junk folder if the email is not in your inbox
           </div>
-          <button
+          <Button
             type="button"
             onClick={() => navigate(ROUTES.HOME)}
-            className="btn btn-primary w-full auth-submit-button"
+            fullWidth
+            className="auth-submit-button rounded-full"
           >
             Return Home
-          </button>
+          </Button>
           <AppLink href={AUTH_ROUTES.LOGIN} className="auth-form-link auth-form-link--center">
             Back to login
           </AppLink>
@@ -81,20 +83,14 @@ export function ForgotPasswordForm() {
           error={errors.email?.message}
           {...register('email')}
         />
-        <button
+        <Button
           type="submit"
-          disabled={isSubmitting}
-          className="btn btn-primary w-full flex items-center justify-center gap-2 auth-submit-button"
+          fullWidth
+          loading={isSubmitting}
+          className="auth-submit-button rounded-full"
         >
-          {isSubmitting ? (
-            <>
-              <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" />
-              Sending...
-            </>
-          ) : (
-            'Reset Password'
-          )}
-        </button>
+          {isSubmitting ? 'Sending...' : 'Reset Password'}
+        </Button>
         <AppLink href={AUTH_ROUTES.LOGIN} className="auth-form-link auth-form-link--center">
           Back to login
         </AppLink>

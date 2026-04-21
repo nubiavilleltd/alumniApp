@@ -1,5 +1,6 @@
 import { Icon } from '@iconify/react';
 import { Navigate, useNavigate } from 'react-router-dom';
+import { Button } from '@/shared/components/ui/Button';
 import { RegistrationShell } from '../components/RegistrationShell';
 import { AUTH_ROUTES } from '../routes';
 import { clearRegistrationFlow, loadRegistrationFlow } from '../lib/registrationFlow';
@@ -43,13 +44,14 @@ export function RegisterSuccessPage() {
           ))}
         </ul>
 
-        <button
+        <Button
           type="button"
           onClick={handleGoToLogin}
-          className="btn btn-primary w-full auth-submit-button"
+          fullWidth
+          className="auth-submit-button rounded-full"
         >
           Continue to Login
-        </button>
+        </Button>
       </div>
     </RegistrationShell>
   );

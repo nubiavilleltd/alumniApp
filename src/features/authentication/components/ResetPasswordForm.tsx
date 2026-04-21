@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import { AppLink } from '@/shared/components/ui/AppLink';
+import { Button, ButtonLink } from '@/shared/components/ui/Button';
 import { PasswordInput } from '@/shared/components/ui/input/PasswordInput';
 import { resetPasswordSchema } from '../schemas/authSchema';
 import type { ResetPasswordFormValues } from '../types/auth.types';
@@ -59,12 +60,13 @@ export function ResetPasswordForm() {
           <p className="auth-message-panel__copy">
             This reset link is missing or invalid. Please request a new password reset email.
           </p>
-          <AppLink
+          <ButtonLink
             href={AUTH_ROUTES.FORGOT_PASSWORD}
-            className="btn btn-primary w-full block text-center auth-submit-button"
+            fullWidth
+            className="auth-submit-button rounded-full"
           >
             Request reset email
-          </AppLink>
+          </ButtonLink>
           <AppLink href={AUTH_ROUTES.LOGIN} className="auth-form-link auth-form-link--center">
             Back to login
           </AppLink>
@@ -85,12 +87,13 @@ export function ResetPasswordForm() {
           <p className="auth-message-panel__copy">
             Your password has been updated successfully. You can now sign in with your new password.
           </p>
-          <AppLink
+          <ButtonLink
             href={AUTH_ROUTES.LOGIN}
-            className="btn btn-primary w-full block text-center auth-submit-button"
+            fullWidth
+            className="auth-submit-button rounded-full"
           >
             Go to login
-          </AppLink>
+          </ButtonLink>
         </div>
       </AuthCard>
     );
@@ -136,20 +139,14 @@ export function ResetPasswordForm() {
 
         {passwordValue && <PasswordStrengthMeter password={passwordValue} />}
 
-        <button
+        <Button
           type="submit"
-          disabled={form.formState.isSubmitting}
-          className="btn btn-primary w-full flex items-center justify-center gap-2 auth-submit-button"
+          fullWidth
+          loading={form.formState.isSubmitting}
+          className="auth-submit-button rounded-full"
         >
-          {form.formState.isSubmitting ? (
-            <>
-              <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" />
-              Updating...
-            </>
-          ) : (
-            'Update Password'
-          )}
-        </button>
+          {form.formState.isSubmitting ? 'Updating...' : 'Update Password'}
+        </Button>
 
         <AppLink href={AUTH_ROUTES.LOGIN} className="auth-form-link auth-form-link--center">
           Back to login
