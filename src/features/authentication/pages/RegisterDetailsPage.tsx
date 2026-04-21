@@ -233,7 +233,7 @@ export function RegisterDetailsPage() {
             label="Maiden Name"
             id="nameInSchool"
             required
-            placeholder=""
+            placeholder="Ezegburu"
             hint=""
             error={detailForm.formState.errors.nameInSchool?.message}
             {...detailForm.register('nameInSchool')}
@@ -242,7 +242,7 @@ export function RegisterDetailsPage() {
             label="Nickname"
             id="nickName"
             required
-            placeholder=""
+            placeholder="MJ"
             hint=""
             error={detailForm.formState.errors.nickName?.message}
             {...detailForm.register('nickName')}
