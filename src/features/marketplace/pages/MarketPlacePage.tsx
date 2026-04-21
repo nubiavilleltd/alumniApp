@@ -66,11 +66,6 @@ function getWebsiteHref(website: string) {
   return /^https?:\/\//i.test(website) ? website : `https://${website}`;
 }
 
-function getPhoneHref(phone: string) {
-  const normalized = phone.replace(/[^\d+]/g, '');
-  return normalized ? `tel:${normalized}` : undefined;
-}
-
 function isRealProfilePhoto(photo?: string | null) {
   return Boolean(photo && !photo.includes('ui-avatars.com') && !photo.includes('default-avatar'));
 }
@@ -196,36 +191,18 @@ function BusinessCard({
 
         <p className="marketplace-card__description">{business.description}</p>
 
-        {(business.phone || business.location || business.website) && (
+        {business.website && (
           <div className="marketplace-card__details">
-            {business.phone && (
-              <a
-                href={getPhoneHref(business.phone)}
-                className="marketplace-card__detail marketplace-card__detail--link"
-                onClick={(event) => event.stopPropagation()}
-              >
-                <Icon icon="mdi:phone-outline" />
-                <span>{business.phone}</span>
-              </a>
-            )}
-            {business.location && (
-              <div className="marketplace-card__detail marketplace-card__detail--location">
-                <Icon icon="mdi:map-marker-outline" />
-                <span>{business.location}</span>
-              </div>
-            )}
-            {business.website && (
-              <a
-                href={getWebsiteHref(business.website)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="marketplace-card__detail marketplace-card__detail--link"
-                onClick={(event) => event.stopPropagation()}
-              >
-                <Icon icon="mdi:web" />
-                <span>{business.website}</span>
-              </a>
-            )}
+            <a
+              href={getWebsiteHref(business.website)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="marketplace-card__detail marketplace-card__detail--link"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <Icon icon="mdi:web" />
+              <span>{business.website}</span>
+            </a>
           </div>
         )}
 

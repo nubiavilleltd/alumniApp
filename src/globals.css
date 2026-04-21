@@ -1006,9 +1006,7 @@ input[type='password']::-webkit-caps-lock-indicator {
 
 .marketplace-card__image-wrap {
   position: relative;
-  width: auto;
   aspect-ratio: 448 / 292;
-  margin: var(--marketplace-card-inset) var(--marketplace-card-inset) 0;
   overflow: hidden;
   border-radius: 1.35rem;
   background: #d9dde2;
@@ -1222,10 +1220,6 @@ input[type='password']::-webkit-caps-lock-indicator {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.marketplace-card__detail--location span {
-  white-space: normal;
 }
 
 .marketplace-card__detail--link:hover {
