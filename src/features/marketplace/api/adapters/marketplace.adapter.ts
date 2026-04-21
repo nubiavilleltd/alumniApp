@@ -9,7 +9,6 @@
 //   seller_name → owner
 //   title       → name
 
-import { keyof } from 'zod';
 import type {
   Business,
   CreateListingFormData,
@@ -19,6 +18,62 @@ import { generateSlug, parseImages, extractList } from '@/lib/utils/adapters';
 
 // ─── Inbound (backend → frontend) ────────────────────────────────────────────
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL?.replace(/\/+$/, '') ?? '';
+
+function getNestedRecord(value: unknown): Record<string, unknown> {
+  return value && typeof value === 'object' && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : {};
+}
+
+function isRealPhotoUrl(value: unknown): value is string {
+  const photo = typeof value === 'string' ? value.trim() : '';
+
+  return Boolean(
+    photo &&
+    photo !== 'default.png' &&
+    !photo.includes('ui-avatars.com') &&
+    !photo.includes('default-avatar'),
+  );
+}
+
+function resolvePhotoUrl(value: unknown): string | undefined {
+  if (!isRealPhotoUrl(value)) return undefined;
+
+  const photo = value.trim();
+  const isAbsolute = /^(https?:)?\/\//i.test(photo) || /^(data|blob):/i.test(photo);
+
+  if (isAbsolute || !API_BASE_URL) return photo;
+  return photo.startsWith('/') ? `${API_BASE_URL}${photo}` : `${API_BASE_URL}/${photo}`;
+}
+
+function resolveOwnerPhoto(raw: Record<string, unknown>): string | undefined {
+  const profile = getNestedRecord(raw.profile);
+  const user = getNestedRecord(raw.user);
+  const seller = getNestedRecord(raw.seller);
+  const owner = getNestedRecord(raw.owner);
+
+  return resolvePhotoUrl(
+    raw.seller_avatar ??
+      raw.seller_photo ??
+      raw.owner_avatar ??
+      raw.owner_photo ??
+      raw.user_avatar ??
+      raw.user_photo ??
+      raw.profile_photo ??
+      raw.avatar ??
+      raw.photo ??
+      seller.avatar ??
+      seller.photo ??
+      owner.avatar ??
+      owner.photo ??
+      user.avatar ??
+      user.photo ??
+      profile.avatar ??
+      profile.photo,
+  );
+}
+
 export function mapBackendListingToBusiness(raw: unknown): Business {
   const d = raw as Record<string, unknown>;
 
@@ -26,6 +81,7 @@ export function mapBackendListingToBusiness(raw: unknown): Business {
     businessId: String(d.id ?? ''),
     ownerId: String(d.user_id ?? ''),
     owner: String(d.seller_name ?? 'Unknown'),
+    ownerPhoto: resolveOwnerPhoto(d),
     slug: generateSlug(String(d.title ?? ''), String(d.id ?? ''), 'business'),
     name: String(d.title ?? 'Untitled'),
     category: String(d.category ?? 'other'),

@@ -25,6 +25,8 @@ export default function HeroSection() {
   const [current, setCurrent] = useState(0);
   const currentUser = useIdentityStore((state) => state.user);
 
+  console.log('does current user exist', currentUser);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrent((prev) => (prev + 1) % heroImages.length);
