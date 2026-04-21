@@ -10,6 +10,7 @@ export interface Business {
   slug: string;
   name: string;
   owner: string; // display name — denormalised for convenience
+  ownerPhoto?: string;
 
   // ── Details ───────────────────────────────────────────────────────────────
   category: string;

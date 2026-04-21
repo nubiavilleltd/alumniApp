@@ -1,7 +1,7 @@
 // features/marketplace/pages/MarketPlacePage.tsx
 
 import { Icon } from '@iconify/react';
-import { useState, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SEO } from '@/shared/common/SEO';
 import { Button } from '@/shared/components/ui/Button';
@@ -15,6 +15,8 @@ import type { Business } from '../types/marketplace.types';
 import { useStartDirectConversation } from '@/features/messages/hooks/useStartDirectConversation';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 import { ALUMNI_ROUTES } from '@/features/alumni/routes';
+import { useAlumni } from '@/features/alumni/hooks/useAlumni';
+import { getPhotoDisplay, isFieldVisible } from '@/features/alumni/utils/privacyHelpers';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 function BusinessCardSkeleton() {
@@ -64,23 +66,40 @@ function getWebsiteHref(website: string) {
   return /^https?:\/\//i.test(website) ? website : `https://${website}`;
 }
 
+function getPhoneHref(phone: string) {
+  const normalized = phone.replace(/[^\d+]/g, '');
+  return normalized ? `tel:${normalized}` : undefined;
+}
+
+function isRealProfilePhoto(photo?: string | null) {
+  return Boolean(photo && !photo.includes('ui-avatars.com') && !photo.includes('default-avatar'));
+}
+
 // ─── Business Card ────────────────────────────────────────────────────────────
 function BusinessCard({
   business,
   currentUserMemberId,
+  ownerPhoto,
   onMessageClick,
   isMessagePending,
 }: {
   business: Business;
   currentUserMemberId?: string;
+  ownerPhoto?: string;
   onMessageClick: (business: Business) => void;
   isMessagePending: boolean;
 }) {
   const [imgIndex, setImgIndex] = useState(0);
+  const [ownerPhotoFailed, setOwnerPhotoFailed] = useState(false);
   const isOwnBusiness = business.ownerId === currentUserMemberId;
   const navigate = useNavigate();
   const profileHref = ALUMNI_ROUTES.PROFILE(business.ownerId);
   const ownerInitials = getOwnerInitials(business.owner);
+  const showOwnerPhoto = isRealProfilePhoto(ownerPhoto) && !ownerPhotoFailed;
+
+  useEffect(() => {
+    setOwnerPhotoFailed(false);
+  }, [ownerPhoto]);
 
   const openOwnerProfile = () => {
     navigate(profileHref);
@@ -157,7 +176,16 @@ function BusinessCard({
         <div className="marketplace-card__seller-row">
           <div className="marketplace-card__avatar-wrap">
             <div className="marketplace-card__avatar" aria-hidden="true">
-              <span>{ownerInitials}</span>
+              {showOwnerPhoto ? (
+                <img
+                  src={ownerPhoto}
+                  alt=""
+                  loading="lazy"
+                  onError={() => setOwnerPhotoFailed(true)}
+                />
+              ) : (
+                <span>{ownerInitials}</span>
+              )}
             </div>
           </div>
           <div className="marketplace-card__seller-copy">
@@ -168,34 +196,40 @@ function BusinessCard({
 
         <p className="marketplace-card__description">{business.description}</p>
 
-        {business.website && (
+        {(business.phone || business.location || business.website) && (
           <div className="marketplace-card__details">
-            <a
-              href={getWebsiteHref(business.website)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="marketplace-card__detail marketplace-card__detail--link"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <Icon icon="mdi:web" />
-              <span>{business.website}</span>
-            </a>
+            {business.phone && (
+              <a
+                href={getPhoneHref(business.phone)}
+                className="marketplace-card__detail marketplace-card__detail--link"
+                onClick={(event) => event.stopPropagation()}
+              >
+                <Icon icon="mdi:phone-outline" />
+                <span>{business.phone}</span>
+              </a>
+            )}
+            {business.location && (
+              <div className="marketplace-card__detail marketplace-card__detail--location">
+                <Icon icon="mdi:map-marker-outline" />
+                <span>{business.location}</span>
+              </div>
+            )}
+            {business.website && (
+              <a
+                href={getWebsiteHref(business.website)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="marketplace-card__detail marketplace-card__detail--link"
+                onClick={(event) => event.stopPropagation()}
+              >
+                <Icon icon="mdi:web" />
+                <span>{business.website}</span>
+              </a>
+            )}
           </div>
         )}
 
         <div className="marketplace-card__actions" aria-label={`Contact ${business.name}`}>
-          {business.website && (
-            <a
-              href={getWebsiteHref(business.website)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="marketplace-card__icon-action"
-              aria-label={`Visit ${business.name} website`}
-              onClick={(event) => event.stopPropagation()}
-            >
-              <Icon icon="mdi:web" />
-            </a>
-          )}
           <Button
             type="button"
             onClick={(event) => {
@@ -230,6 +264,22 @@ export default function MarketPlacePage() {
 
   const { data: businesses = [], isLoading, error } = useMarketplace();
   const { data: categoriesList = [] } = useMarketplaceCategories();
+  const { data: alumni = [] } = useAlumni({ action_type: 'approved' });
+
+  const ownerPhotoById = useMemo(() => {
+    const photos = new Map<string, string | null>();
+
+    alumni.forEach((entry) => {
+      const photoVisible = isFieldVisible(entry, 'photo', currentUser as any);
+      const displayPhoto = getPhotoDisplay(entry.photo, photoVisible);
+      const photo = isRealProfilePhoto(displayPhoto) ? displayPhoto : null;
+
+      photos.set(String(entry.id), photo);
+      photos.set(String(entry.memberId), photo);
+    });
+
+    return photos;
+  }, [alumni, currentUser]);
 
   const filtered = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
@@ -348,6 +398,11 @@ export default function MarketPlacePage() {
                   key={business.businessId}
                   business={business}
                   currentUserMemberId={currentUser?.memberId}
+                  ownerPhoto={
+                    ownerPhotoById.has(business.ownerId)
+                      ? (ownerPhotoById.get(business.ownerId) ?? undefined)
+                      : business.ownerPhoto
+                  }
                   onMessageClick={handleStartBusinessConversation}
                   isMessagePending={
                     isStartingConversation && pendingBusinessId === business.businessId
