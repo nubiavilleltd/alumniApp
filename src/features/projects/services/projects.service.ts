@@ -10,9 +10,7 @@
 // export const projectsService = {
 //   async getAll(): Promise<Project[]> {
 //     try {
-//       const { data } = await apiClient.post(API_ENDPOINTS.PROJECTS.LIST, {
-//         token: import.meta.env.VITE_API_TOKEN,
-//       });
+//       const { data } = await apiClient.post(API_ENDPOINTS.PROJECTS.LIST);
 
 //       console.log('from back', { data, projects: data.projects });
 

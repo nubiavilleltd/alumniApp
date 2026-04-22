@@ -4,7 +4,7 @@
  * ============================================================================
  *
  * Axios instance with:
- * - Automatic token injection
+ * - Automatic auth header injection
  * - FormData handling
  * - Enhanced error responses
  * - Request/response logging in dev
@@ -19,10 +19,31 @@ import { handleTokenRefresh } from '@/features/authentication/services/refreshTo
 import { AUTH_ROUTES } from '@/features/authentication/routes';
 import { useTokenStore } from '@/features/authentication/stores/useTokenStore';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
+import { API_ENDPOINTS } from './endpoints';
 
 const configuredApiBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim() ?? '';
 // const shouldUseViteDevProxy = import.meta.env.DEV && /^https?:\/\//i.test(configuredApiBaseUrl);
 // const resolvedApiBaseUrl = shouldUseViteDevProxy ? '' : configuredApiBaseUrl;
+
+const BEARER_EXCLUDED_ENDPOINTS = new Set<string>([
+  API_ENDPOINTS.AUTH.LOGIN,
+  API_ENDPOINTS.AUTH.REGISTER,
+  API_ENDPOINTS.AUTH.FORGOT_PASSWORD,
+  API_ENDPOINTS.AUTH.RESET_PASSWORD,
+  API_ENDPOINTS.AUTH.VERIFY_EMAIL,
+  API_ENDPOINTS.AUTH.RESEND_VERIFY_EMAIL,
+  API_ENDPOINTS.AUTH.REFRESH_TOKEN,
+]);
+
+function getPathname(url?: string) {
+  if (!url) return '';
+
+  try {
+    return new URL(url, configuredApiBaseUrl || window.location.origin).pathname;
+  } catch {
+    return url;
+  }
+}
 
 export const apiClient = axios.create({
   baseURL: configuredApiBaseUrl,
@@ -34,57 +55,34 @@ export const apiClient = axios.create({
 apiClient.interceptors.request.use(
   (config) => {
     const apiKey = import.meta.env.VITE_API_TOKEN;
+    const accessToken = useTokenStore.getState().accessToken;
+    const pathname = getPathname(config.url);
+    const shouldSendBearer = accessToken && !BEARER_EXCLUDED_ENDPOINTS.has(pathname);
+    const isFormData = config.data instanceof FormData;
 
     if (apiKey) {
-      config.headers.Authorization = `Bearer ${apiKey}`;
+      config.headers['X-API-Key'] = apiKey;
+    }
 
-      // Only modify POST requests
-      if (config.method === 'post') {
-        const isFormData = config.data instanceof FormData;
+    if (shouldSendBearer) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    } else {
+      delete config.headers.Authorization;
+    }
 
-        if (isFormData) {
-          // ═══════════════════════════════════════════════════════════════
-          // FORMDATA REQUEST
-          // ═══════════════════════════════════════════════════════════════
-          if (import.meta.env.DEV) {
-            console.log('📤 FormData Request:', config.url);
-          }
+    if (isFormData) {
+      // Let browser set Content-Type with boundary.
+      delete config.headers['Content-Type'];
+    }
 
-          const token = apiKey;
-          // const accessToken = useAuthStore.getState().accessToken;
-          const accessToken = useTokenStore.getState().accessToken;
-
-          config.data.append('token', token);
-          if (accessToken) {
-            config.data.append('jwt', accessToken);
-          }
-
-          // Let browser set Content-Type with boundary
-          delete config.headers['Content-Type'];
-        } else {
-          // ═══════════════════════════════════════════════════════════════
-          // JSON REQUEST
-          // ═══════════════════════════════════════════════════════════════
-          const existing = config.data
-            ? typeof config.data === 'string'
-              ? JSON.parse(config.data)
-              : config.data
-            : {};
-
-          const payload: Record<string, unknown> = { ...existing, token: apiKey };
-
-          const accessToken = useTokenStore.getState().accessToken;
-          if (accessToken) {
-            payload.jwt = accessToken;
-          }
-
-          if (import.meta.env.DEV) {
-            console.log('📤 JSON Request:', config.url, payload);
-          }
-
-          config.data = payload;
-        }
-      }
+    if (import.meta.env.DEV) {
+      console.log('📤 API Request:', {
+        url: config.url,
+        method: config.method,
+        hasApiKey: Boolean(apiKey),
+        hasBearer: Boolean(shouldSendBearer),
+        isFormData,
+      });
     }
 
     return config;
@@ -118,19 +116,17 @@ apiClient.interceptors.response.use(
         });
       }
 
-      if (status === 401 && !error.config._retry) {
+      const pathname = getPathname(error.config?.url);
+      const isRefreshRequest = pathname === API_ENDPOINTS.AUTH.REFRESH_TOKEN;
+      const isBearerExcludedRequest = BEARER_EXCLUDED_ENDPOINTS.has(pathname);
+
+      if (status === 401 && !error.config._retry && !isRefreshRequest && !isBearerExcludedRequest) {
         error.config._retry = true;
 
         const newToken = await handleTokenRefresh();
 
         if (newToken) {
-          // 🔁 Retry original request with new token
-          if (error.config.data instanceof FormData) {
-            error.config.data.set('jwt', newToken);
-          } else if (typeof error.config.data === 'object') {
-            // error.config.data.jwt = newToken;
-            error.config.data = { ...error.config.data, jwt: newToken };
-          }
+          error.config.headers.Authorization = `Bearer ${newToken}`;
 
           return apiClient(error.config);
         }

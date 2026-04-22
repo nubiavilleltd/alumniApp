@@ -49,6 +49,7 @@ import {
   mapBackendVoucherToFrontend,
 } from '../api/adapters/voucher.adapter';
 import { extractList } from '@/lib/utils/adapters';
+import { useTokenStore } from '../stores/useTokenStore';
 
 function toUserSummary(values: RegisterDetailsFormValues): AuthUserSummary {
   return {
@@ -71,9 +72,13 @@ export const authApi = {
   },
 
   /** POST /logout */
-  async logout(userId: string): Promise<void> {
+  async logout(): Promise<void> {
     try {
-      await apiClient.post('/logout', { user_id: userId });
+      const { refreshToken } = useTokenStore.getState();
+      await apiClient.post(
+        API_ENDPOINTS.AUTH.LOGOUT,
+        refreshToken ? { refresh_token: refreshToken } : {},
+      );
     } catch (error) {
       if (import.meta.env.DEV) console.warn('[authApi.logout]', error);
     }

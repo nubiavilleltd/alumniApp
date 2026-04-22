@@ -350,11 +350,10 @@ export function Navigation() {
   }, []);
 
   const handleLogout = async () => {
-    const userId = authenticatedUser?.id ?? authenticatedUser?.memberId;
     setIsLoggingOut(true);
-    if (userId) {
+    if (authenticatedUser) {
       try {
-        await authApi.logout(userId);
+        await authApi.logout();
       } catch {
         /* Always clear local auth state even if the server session has expired. */
       }
