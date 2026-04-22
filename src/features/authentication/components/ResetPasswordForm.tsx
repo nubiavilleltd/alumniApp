@@ -4,53 +4,14 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import { AppLink } from '@/shared/components/ui/AppLink';
+import { Button, ButtonLink } from '@/shared/components/ui/Button';
+import { PasswordInput } from '@/shared/components/ui/input/PasswordInput';
 import { resetPasswordSchema } from '../schemas/authSchema';
 import type { ResetPasswordFormValues } from '../types/auth.types';
 import { PasswordStrengthMeter } from './PasswordStrengthMeter';
 import { AuthCard } from './AuthCard';
 import { AUTH_ROUTES } from '../routes';
 import { authApi } from '../services/auth.service';
-
-// ─── Reusable password field ──────────────────────────────────────────────────
-
-function PasswordField({
-  label,
-  placeholder,
-  error,
-  show,
-  onToggle,
-  registration,
-}: {
-  label: string;
-  placeholder: string;
-  error?: string;
-  show: boolean;
-  onToggle: () => void;
-  registration: object;
-}) {
-  return (
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1.5">{label}</label>
-      <div className="relative">
-        <input
-          type={show ? 'text' : 'password'}
-          autoComplete="new-password"
-          placeholder={placeholder}
-          className={`input pr-10 ${error ? 'border-red-400' : ''}`}
-          {...registration}
-        />
-        <button
-          type="button"
-          onClick={onToggle}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-        >
-          <Icon icon={show ? 'mdi:eye-off-outline' : 'mdi:eye-outline'} className="w-4 h-4" />
-        </button>
-      </div>
-      {error && <p className="mt-1.5 text-xs text-red-500">{error}</p>}
-    </div>
-  );
-}
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
@@ -60,8 +21,6 @@ export function ResetPasswordForm() {
   const hasValidLink = code.trim().length > 0;
 
   const [success, setSuccess] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const form = useForm<ResetPasswordFormValues>({
     resolver: zodResolver(resetPasswordSchema),
@@ -94,23 +53,21 @@ export function ResetPasswordForm() {
   if (!hasValidLink) {
     return (
       <AuthCard title="Invalid" titleAccent="Link">
-        <div className="text-center space-y-4">
-          <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto">
-            <Icon icon="mdi:link-off" className="w-8 h-8 text-red-400" />
+        <div className="auth-message-panel">
+          <div className="auth-message-panel__icon auth-message-panel__icon--danger">
+            <Icon icon="mdi:link-off" />
           </div>
-          <p className="text-sm text-gray-500 leading-relaxed">
+          <p className="auth-message-panel__copy">
             This reset link is missing or invalid. Please request a new password reset email.
           </p>
-          <AppLink
+          <ButtonLink
             href={AUTH_ROUTES.FORGOT_PASSWORD}
-            className="btn btn-primary w-full block text-center"
+            fullWidth
+            className="auth-submit-button rounded-full"
           >
             Request reset email
-          </AppLink>
-          <AppLink
-            href={AUTH_ROUTES.LOGIN}
-            className="block text-sm text-center text-gray-500 hover:text-primary-500"
-          >
+          </ButtonLink>
+          <AppLink href={AUTH_ROUTES.LOGIN} className="auth-form-link auth-form-link--center">
             Back to login
           </AppLink>
         </div>
@@ -123,16 +80,20 @@ export function ResetPasswordForm() {
   if (success) {
     return (
       <AuthCard title="Password" titleAccent="Updated">
-        <div className="text-center space-y-4">
-          <div className="w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mx-auto">
-            <Icon icon="mdi:check-circle-outline" className="w-8 h-8 text-primary-500" />
+        <div className="auth-message-panel">
+          <div className="auth-message-panel__icon">
+            <Icon icon="mdi:check-circle-outline" />
           </div>
-          <p className="text-sm text-gray-600 leading-relaxed">
+          <p className="auth-message-panel__copy">
             Your password has been updated successfully. You can now sign in with your new password.
           </p>
-          <AppLink href={AUTH_ROUTES.LOGIN} className="btn btn-primary w-full block text-center">
+          <ButtonLink
+            href={AUTH_ROUTES.LOGIN}
+            fullWidth
+            className="auth-submit-button rounded-full"
+          >
             Go to login
-          </AppLink>
+          </ButtonLink>
         </div>
       </AuthCard>
     );
@@ -146,55 +107,48 @@ export function ResetPasswordForm() {
       titleAccent="Password"
       subtitle="Create a new secure password for your account."
     >
-      <form className="space-y-4" onSubmit={onSubmit}>
-        <PasswordField
+      <form className="auth-form" onSubmit={onSubmit}>
+        <PasswordInput
           label="New Password"
+          id="password"
+          autoComplete="new-password"
           placeholder="Create a secure password"
           error={form.formState.errors.password?.message}
-          show={showPassword}
-          onToggle={() => setShowPassword((v) => !v)}
-          registration={form.register('password')}
+          {...form.register('password')}
         />
 
         <div>
-          <PasswordField
+          <PasswordInput
             label="Confirm Password"
+            id="confirmPassword"
+            autoComplete="new-password"
             placeholder="Re-enter your new password"
             error={form.formState.errors.confirmPassword?.message}
-            show={showConfirmPassword}
-            onToggle={() => setShowConfirmPassword((v) => !v)}
-            registration={form.register('confirmPassword')}
+            {...form.register('confirmPassword')}
           />
           {!form.formState.errors.confirmPassword && confirmPasswordValue && (
             <p
-              className={`mt-1.5 text-xs ${passwordsMatch ? 'text-primary-600' : 'text-gray-400'}`}
+              className={`auth-field-hint ${
+                passwordsMatch ? 'auth-field-hint--success' : 'auth-field-hint--muted'
+              }`}
             >
-              {passwordsMatch ? '✓ Passwords match' : 'Passwords must match exactly'}
+              {passwordsMatch ? 'Passwords match' : 'Passwords must match exactly'}
             </p>
           )}
         </div>
 
         {passwordValue && <PasswordStrengthMeter password={passwordValue} />}
 
-        <button
+        <Button
           type="submit"
-          disabled={form.formState.isSubmitting}
-          className="btn btn-primary w-full flex items-center justify-center gap-2"
+          fullWidth
+          loading={form.formState.isSubmitting}
+          className="auth-submit-button rounded-full"
         >
-          {form.formState.isSubmitting ? (
-            <>
-              <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" />
-              Updating...
-            </>
-          ) : (
-            'Update Password'
-          )}
-        </button>
+          {form.formState.isSubmitting ? 'Updating...' : 'Update Password'}
+        </Button>
 
-        <AppLink
-          href={AUTH_ROUTES.LOGIN}
-          className="block text-sm text-center text-gray-500 hover:text-primary-500"
-        >
+        <AppLink href={AUTH_ROUTES.LOGIN} className="auth-form-link auth-form-link--center">
           Back to login
         </AppLink>
       </form>

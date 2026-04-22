@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Icon } from '@iconify/react';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import Button from '@/shared/components/ui/Button';
 // import HeroBg from '/hero-bg.png';
@@ -33,7 +34,7 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-[72vh] lg:min-h-[78vh] flex items-center overflow-hidden">
       {/* ── Background Images ─────────────────────────────────────────────── */}
       {heroImages.map((src, i) => (
         <div
@@ -46,47 +47,41 @@ export default function HeroSection() {
         </div>
       ))}
 
-      {/* ── Dark overlay ──────────────────────────────────────────────────── */}
-      <div className="absolute inset-0 z-[1] bg-black/50" />
-
-      {/* ── Est. Badge ────────────────────────────────────────────────────── */}
-      <div className="absolute top-6 left-6 z-10">
-        <span className="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-sm border border-white/30 text-white text-xs font-medium px-3 py-1.5 rounded-full">
-          <span className="w-1.5 h-1.5 rounded-full bg-primary-400 inline-block" />
-          Est. 1966 · Nigeria
-        </span>
-      </div>
+      {/* ── Blue overlay ──────────────────────────────────────────────────── */}
+      <div className="absolute inset-0 z-[1] bg-gradient-to-r from-primary-700/90 via-primary-600/72 to-primary-900/28" />
+      <div className="absolute inset-0 z-[1] bg-primary-500/20" />
 
       {/* ── Content ───────────────────────────────────────────────────────── */}
-      <div className="relative z-10 text-center px-4 max-w-3xl mx-auto">
-        <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold italic text-white mb-6 leading-tight">
-          Welcome Home.
-        </h1>
-        <p className="text-lg md:text-xl text-white/85 mb-10 leading-relaxed max-w-2xl mx-auto">
-          The Connection is Real. Own Your Journey. Reconnect with your sisters, expand your
-          network, and give back to the community that shaped us.
-        </p>
-        {!currentUser ? (
-          <AppLink href={AUTH_ROUTES.REGISTER}>
-            <Button size="lg" className="px-14 py-3.5 rounded-full font-bold text-base shadow-lg">
-              Join us
-            </Button>
-          </AppLink>
-        ) : null}
-      </div>
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-3xl text-left">
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
+            Welcome home
+          </h1>
+          <p className="text-lg md:text-xl text-white/90 mb-8 leading-relaxed max-w-2xl">
+            A global sisterhood of Federal Government Girls' College alumnae connected by shared
+            memories, driven by purpose, and committed to lifting the next generation.
+          </p>
+          <div className="flex flex-col items-start gap-4">
+            {!currentUser ? (
+              <AppLink href={AUTH_ROUTES.REGISTER}>
+                <Button
+                  size="lg"
+                  className="min-w-52 rounded-full bg-white px-12 py-3.5 text-base font-bold text-primary-500 shadow-none hover:bg-white/90"
+                >
+                  Join Us
+                </Button>
+              </AppLink>
+            ) : null}
 
-      {/* ── Dot indicators ────────────────────────────────────────────────── */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2">
-        {heroImages.map((_, i) => (
-          <button
-            key={i}
-            type="button"
-            onClick={() => setCurrent(i)}
-            className={`rounded-full transition-all duration-300 ${
-              i === current ? 'w-6 h-2 bg-white' : 'w-2 h-2 bg-white/40 hover:bg-white/70'
-            }`}
-          />
-        ))}
+            <Button
+              size="lg"
+              className="min-w-60 rounded-full border-0 bg-[#7c3aed] px-9 py-3.5 text-base font-bold text-white shadow-none hover:bg-[#6d28d9]"
+            >
+              Make a Donation
+              <Icon icon="mdi:hand-heart-outline" className="w-5 h-5" />
+            </Button>
+          </div>
+        </div>
       </div>
     </section>
   );

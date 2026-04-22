@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { AppLink } from '@/shared/components/ui/AppLink';
+import { Button } from '@/shared/components/ui/Button';
 import { FormInput } from '@/shared/components/ui/input/FormInput';
 import { authApi } from '../services/auth.service';
 import { forgotPasswordSchema } from '../schemas/authSchema';
@@ -40,28 +41,26 @@ export function ForgotPasswordForm() {
   if (result) {
     return (
       <AuthCard title="Email" titleAccent="Sent">
-        <div className="text-center space-y-4">
-          <div className="w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mx-auto">
-            <Icon icon="mdi:email-check-outline" className="w-8 h-8 text-primary-500" />
+        <div className="auth-message-panel">
+          <div className="auth-message-panel__icon">
+            <Icon icon="mdi:email-check-outline" />
           </div>
-          <p className="text-sm text-gray-600 leading-relaxed">
+          <p className="auth-message-panel__copy">
             We have sent an email to the address associated with your account. Please check your
             inbox for further instructions on how to reset your password.
           </p>
-          <div className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-xs text-gray-500">
+          <div className="auth-message-panel__note">
             Please check your spam/junk folder if the email is not in your inbox
           </div>
-          <button
+          <Button
             type="button"
             onClick={() => navigate(ROUTES.HOME)}
-            className="btn btn-primary w-full"
+            fullWidth
+            className="auth-submit-button rounded-full"
           >
             Return Home
-          </button>
-          <AppLink
-            href={AUTH_ROUTES.LOGIN}
-            className="block text-sm text-center text-gray-500 hover:text-primary-500"
-          >
+          </Button>
+          <AppLink href={AUTH_ROUTES.LOGIN} className="auth-form-link auth-form-link--center">
             Back to login
           </AppLink>
         </div>
@@ -71,38 +70,28 @@ export function ForgotPasswordForm() {
 
   return (
     <AuthCard
-      title="Forgot"
-      titleAccent="Password"
+      title="Forgot Password"
       subtitle="Enter the email address associated with your account. We'll send you instructions on how to reset your password."
     >
-      <form className="space-y-4" onSubmit={onSubmit}>
+      <form className="auth-form" onSubmit={onSubmit}>
         <FormInput
           label="Email Address"
           id="email"
           type="email"
           autoComplete="email"
-          placeholder="you@example.com"
+          placeholder="Enter your email address"
           error={errors.email?.message}
           {...register('email')}
         />
-        <button
+        <Button
           type="submit"
-          disabled={isSubmitting}
-          className="btn btn-primary w-full flex items-center justify-center gap-2"
+          fullWidth
+          loading={isSubmitting}
+          className="auth-submit-button rounded-full"
         >
-          {isSubmitting ? (
-            <>
-              <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" />
-              Sending...
-            </>
-          ) : (
-            'Reset Password'
-          )}
-        </button>
-        <AppLink
-          href={AUTH_ROUTES.LOGIN}
-          className="block text-sm text-center text-gray-500 hover:text-primary-500"
-        >
+          {isSubmitting ? 'Sending...' : 'Reset Password'}
+        </Button>
+        <AppLink href={AUTH_ROUTES.LOGIN} className="auth-form-link auth-form-link--center">
           Back to login
         </AppLink>
       </form>

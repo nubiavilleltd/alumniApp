@@ -1,27 +1,90 @@
-// pages/home/components/UpcomingEvents.tsx
-// MODIFIED: Uses shared EventCard + EventCardSkeleton — no local duplicates.
-
+import { Icon } from '@iconify/react';
 import { AppLink } from '@/shared/components/ui/AppLink';
-import { EventCard, EventCardSkeleton } from '@/features/events/components/EventCard';
-import { useLatestEvents } from '@/features/events/hooks/useEvents';
+import { useUpcomingEvents } from '@/features/events/hooks/useEvents';
+import type { Event } from '@/features/events/types/event.types';
 import EmptyState from '@/shared/components/ui/EmptyState';
+import { EVENT_ROUTES } from '@/features/events/routes';
+import { HomeSectionHeader } from './HomeSectionHeader';
+
+function formatEventDate(date: string) {
+  const parsed = new Date(date);
+  if (Number.isNaN(parsed.getTime())) return date;
+
+  return parsed.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+}
+
+function HomeEventCard({ event }: { event: Event }) {
+  return (
+    <article className="home-event-card">
+      <div className="home-event-card__image-wrap">
+        {event.image ? (
+          <img src={event.image} alt="" className="home-event-card__image" />
+        ) : (
+          <div className="home-event-card__placeholder">
+            <Icon icon="mdi:calendar-month-outline" aria-hidden="true" />
+          </div>
+        )}
+      </div>
+
+      <div className="home-event-card__body">
+        <h3>{event.title}</h3>
+        <p>{event.description}</p>
+
+        <div className="home-event-card__meta">
+          {event.location && (
+            <span>
+              <Icon icon="mdi:map-marker-outline" aria-hidden="true" />
+              {event.location}
+            </span>
+          )}
+          <span>
+            <Icon icon="mdi:clock-outline" aria-hidden="true" />
+            {formatEventDate(event.date)}
+          </span>
+        </div>
+
+        <AppLink
+          href={EVENT_ROUTES.DETAIL(event.id)}
+          className="home-card-link home-card-link--blue"
+        >
+          View Details
+          <Icon icon="mdi:chevron-right" aria-hidden="true" />
+        </AppLink>
+      </div>
+    </article>
+  );
+}
+
+function HomeEventSkeleton() {
+  return (
+    <div className="home-event-card home-event-card--skeleton">
+      <div className="home-event-card__image-wrap" />
+      <div className="home-event-card__body">
+        <span />
+        <span />
+        <span />
+      </div>
+    </div>
+  );
+}
 
 export default function UpcomingEvents() {
-  const { data: events = [], isLoading } = useLatestEvents(4);
+  const { data: events = [], isLoading } = useUpcomingEvents();
 
   const isEmpty = !isLoading && events.length === 0;
 
   return (
-    <section className="section">
+    <section className="home-feature-section">
       <div className="container-custom">
-        <p className="text-primary-500 text-sm font-semibold uppercase tracking-widest mb-1 flex items-center gap-2">
-          <span className="inline-block w-6 h-px bg-primary-500" />
-          Upcoming Events
-        </p>
-        <p className="text-gray-600 text-sm mb-8">
-          Through the generosity of our alumni, we continue to support and improve our beloved
-          school
-        </p>
+        <HomeSectionHeader
+          eyebrow="Upcoming Events"
+          title="Stay updated on upcoming alumnae gatherings"
+          href={EVENT_ROUTES.ROOT}
+        />
 
         {isEmpty ? (
           <EmptyState
@@ -30,21 +93,10 @@ export default function UpcomingEvents() {
             description="Check back soon for new events."
           />
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="home-events-grid">
             {isLoading
-              ? Array.from({ length: 4 }).map((_, i) => <EventCardSkeleton key={i} />)
-              : events.map((event) => <EventCard key={event.id} event={event} compact />)}
-          </div>
-        )}
-
-        {!isEmpty && (
-          <div className="mt-6 text-right">
-            <AppLink
-              href="/events"
-              className="text-primary-500 text-sm font-semibold hover:underline inline-flex items-center gap-1"
-            >
-              See More →
-            </AppLink>
+              ? Array.from({ length: 3 }).map((_, i) => <HomeEventSkeleton key={i} />)
+              : events.slice(0, 3).map((event) => <HomeEventCard key={event.id} event={event} />)}
           </div>
         )}
       </div>

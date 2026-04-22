@@ -1,147 +1,228 @@
 // features/marketplace/pages/MarketPlacePage.tsx
 
 import { Icon } from '@iconify/react';
-import { useState, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { SEO } from '@/shared/common/SEO';
-import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
+import { Button } from '@/shared/components/ui/Button';
 import { PostBusinessModal } from '../components/PostYourBusinessModal';
-import { SearchInput } from '@/shared/components/ui/input/SearchInput';
-import { FilterDropdown } from '@/shared/components/ui/FilterDropdown';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import {
   useMarketplace,
   useMarketplaceCategories,
 } from '@/features/marketplace/hooks/useMarketplace';
 import type { Business } from '../types/marketplace.types';
-import { ROUTES } from '@/shared/constants/routes';
 import { useStartDirectConversation } from '@/features/messages/hooks/useStartDirectConversation';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
+import { ALUMNI_ROUTES } from '@/features/alumni/routes';
+import { useAlumni } from '@/features/alumni/hooks/useAlumni';
+import { getPhotoDisplay, isFieldVisible } from '@/features/alumni/utils/privacyHelpers';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 function BusinessCardSkeleton() {
   return (
-    <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 animate-pulse flex flex-col">
-      <div className="h-44 w-full bg-gray-200" />
-      <div className="p-3 flex flex-col gap-2">
-        <div className="h-4 bg-gray-200 rounded w-3/4" />
-        <div className="h-3 bg-gray-200 rounded w-full" />
-        <div className="h-3 bg-gray-200 rounded w-5/6" />
-        <div className="h-3 bg-gray-200 rounded w-full" />
-        <div className="flex flex-col gap-1.5 mt-1">
-          <div className="h-3 bg-gray-200 rounded w-2/3" />
-          <div className="h-3 bg-gray-200 rounded w-1/2" />
-          <div className="h-3 bg-gray-200 rounded w-1/2" />
+    <div className="marketplace-card marketplace-card--skeleton" aria-hidden="true">
+      <div className="marketplace-card__image-wrap marketplace-skeleton-block" />
+      <div className="marketplace-card__body">
+        <div className="marketplace-card__seller-row">
+          <div className="marketplace-card__avatar marketplace-skeleton-block" />
+          <div className="marketplace-card__seller-copy">
+            <div className="marketplace-skeleton-line marketplace-skeleton-line--title" />
+            <div className="marketplace-skeleton-line marketplace-skeleton-line--short" />
+          </div>
         </div>
-        <div className="h-7 bg-gray-200 rounded w-full mt-1" />
+        <div className="marketplace-skeleton-line" />
+        <div className="marketplace-skeleton-line marketplace-skeleton-line--wide" />
+        <div className="marketplace-skeleton-line marketplace-skeleton-line--mid" />
+        <div className="marketplace-card__details">
+          <div className="marketplace-skeleton-line marketplace-skeleton-line--detail" />
+          <div className="marketplace-skeleton-line marketplace-skeleton-line--detail" />
+          <div className="marketplace-skeleton-line marketplace-skeleton-line--detail" />
+        </div>
       </div>
     </div>
   );
+}
+
+function formatCategoryLabel(category: string) {
+  return category
+    .split(/[\s_-]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
+}
+
+function getOwnerInitials(ownerName: string) {
+  const parts = ownerName.trim().split(/\s+/).filter(Boolean);
+
+  if (parts.length >= 2) {
+    return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
+  }
+
+  return parts[0]?.slice(0, 2).toUpperCase() || '?';
+}
+
+function getWebsiteHref(website: string) {
+  return /^https?:\/\//i.test(website) ? website : `https://${website}`;
+}
+
+function isRealProfilePhoto(photo?: string | null) {
+  return Boolean(photo && !photo.includes('ui-avatars.com') && !photo.includes('default-avatar'));
 }
 
 // ─── Business Card ────────────────────────────────────────────────────────────
 function BusinessCard({
   business,
   currentUserMemberId,
+  ownerPhoto,
   onMessageClick,
   isMessagePending,
 }: {
   business: Business;
   currentUserMemberId?: string;
+  ownerPhoto?: string;
   onMessageClick: (business: Business) => void;
   isMessagePending: boolean;
 }) {
   const [imgIndex, setImgIndex] = useState(0);
+  const [ownerPhotoFailed, setOwnerPhotoFailed] = useState(false);
   const isOwnBusiness = business.ownerId === currentUserMemberId;
+  const navigate = useNavigate();
+  const profileHref = ALUMNI_ROUTES.PROFILE(business.ownerId);
+  const ownerInitials = getOwnerInitials(business.owner);
+  const showOwnerPhoto = isRealProfilePhoto(ownerPhoto) && !ownerPhotoFailed;
+
+  useEffect(() => {
+    setOwnerPhotoFailed(false);
+  }, [ownerPhoto]);
+
+  const openOwnerProfile = () => {
+    navigate(profileHref);
+  };
+
+  const handleCardKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
+    if (event.target !== event.currentTarget) return;
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      openOwnerProfile();
+    }
+  };
 
   const prev = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     setImgIndex((i) => (i === 0 ? business.images.length - 1 : i - 1));
   };
 
   const next = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     setImgIndex((i) => (i === business.images.length - 1 ? 0 : i + 1));
   };
 
   return (
-    <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex flex-col">
+    <article
+      className="marketplace-card"
+      role="link"
+      tabIndex={0}
+      aria-label={`View ${business.owner}'s profile`}
+      onClick={openOwnerProfile}
+      onKeyDown={handleCardKeyDown}
+    >
       {/* Image carousel */}
-      <div className="relative h-44 w-full overflow-hidden bg-gray-100 group">
+      <div className="marketplace-card__image-wrap group">
         {business.images.length > 0 ? (
           <img
             src={business.images[imgIndex]}
             alt={business.name}
-            className="w-full h-full object-cover transition-all duration-300"
+            className="marketplace-card__image"
             loading="lazy"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gray-50">
-            <Icon icon="mdi:storefront-outline" className="w-12 h-12 text-gray-300" />
+          <div className="marketplace-card__image-placeholder">
+            <Icon icon="mdi:storefront-outline" className="marketplace-card__placeholder-icon" />
           </div>
         )}
         {business.images.length > 1 && (
           <>
             <button
+              type="button"
+              aria-label={`Previous image for ${business.name}`}
               onClick={prev}
-              className="absolute left-2 top-1/2 -translate-y-1/2 w-6 h-6 bg-white/80 rounded-full flex items-center justify-center shadow opacity-0 group-hover:opacity-100 transition-opacity"
+              className="marketplace-card__carousel marketplace-card__carousel--prev"
             >
-              <Icon icon="mdi:chevron-left" className="w-4 h-4 text-gray-700" />
+              <Icon icon="mdi:chevron-left" />
             </button>
             <button
+              type="button"
+              aria-label={`Next image for ${business.name}`}
               onClick={next}
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 bg-white/80 rounded-full flex items-center justify-center shadow opacity-0 group-hover:opacity-100 transition-opacity"
+              className="marketplace-card__carousel marketplace-card__carousel--next"
             >
-              <Icon icon="mdi:chevron-right" className="w-4 h-4 text-gray-700" />
+              <Icon icon="mdi:chevron-right" />
             </button>
           </>
         )}
-        <span className="absolute top-2 left-2 bg-primary-500 text-white text-[10px] font-semibold px-2 py-0.5 rounded">
-          {business.category}
-        </span>
+        <span className="marketplace-card__category">{formatCategoryLabel(business.category)}</span>
       </div>
 
       {/* Info */}
-      <div className="p-3 flex flex-col gap-1.5 flex-1">
-        <h3 className="text-gray-900 font-bold text-sm leading-tight">{business.name}</h3>
-        <p className="text-gray-500 text-[11px] leading-relaxed line-clamp-3">
-          {business.description}
-        </p>
-        <div className="flex flex-col gap-1 mt-1">
-          <span className="flex items-center gap-1 text-gray-400 text-[11px]">
-            <Icon icon="mdi:map-marker-outline" className="w-3 h-3 flex-shrink-0" />
-            {business.location}
-          </span>
-          <span className="flex items-center gap-1 text-gray-400 text-[11px]">
-            <Icon icon="mdi:phone-outline" className="w-3 h-3 flex-shrink-0" />
-            {business.phone}
-          </span>
-          {business.website && (
+      <div className="marketplace-card__body">
+        <div className="marketplace-card__seller-row">
+          <div className="marketplace-card__avatar-wrap">
+            <div className="marketplace-card__avatar" aria-hidden="true">
+              {showOwnerPhoto ? (
+                <img
+                  src={ownerPhoto}
+                  alt=""
+                  loading="lazy"
+                  onError={() => setOwnerPhotoFailed(true)}
+                />
+              ) : (
+                <span>{ownerInitials}</span>
+              )}
+            </div>
+          </div>
+          <div className="marketplace-card__seller-copy">
+            <h3 className="marketplace-card__title">{business.name}</h3>
+            <p className="marketplace-card__owner">{business.owner}</p>
+          </div>
+        </div>
+
+        <p className="marketplace-card__description">{business.description}</p>
+
+        {business.website && (
+          <div className="marketplace-card__details">
             <a
-              href={business.website}
+              href={getWebsiteHref(business.website)}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1 text-primary-500 hover:text-primary-600 text-[11px] truncate"
-              onClick={(e) => e.stopPropagation()}
+              className="marketplace-card__detail marketplace-card__detail--link"
+              onClick={(event) => event.stopPropagation()}
             >
-              <Icon icon="mdi:web" className="w-3 h-3 flex-shrink-0" />
-              {business.website}
+              <Icon icon="mdi:web" />
+              <span>{business.website}</span>
             </a>
-          )}
-          <span className="flex items-center gap-1 text-gray-400 text-[11px]">
-            <Icon icon="mdi:account-outline" className="w-3 h-3 flex-shrink-0" />
-            {business.owner}
-          </span>
+          </div>
+        )}
+
+        <div className="marketplace-card__actions" aria-label={`Contact ${business.name}`}>
+          <Button
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation();
+              onMessageClick(business);
+            }}
+            disabled={isOwnBusiness || isMessagePending}
+            loading={isMessagePending}
+            leftIcon={isMessagePending ? undefined : 'mdi:message-outline'}
+            className="marketplace-card__message-button"
+          >
+            <span>{isMessagePending ? 'Opening...' : 'Send Message'}</span>
+          </Button>
         </div>
-        <button
-          type="button"
-          onClick={() => onMessageClick(business)}
-          disabled={isOwnBusiness || isMessagePending}
-          className="mt-2 w-full bg-primary-500 hover:bg-primary-600 text-white text-[11px] font-medium py-1.5 rounded transition-colors disabled:cursor-not-allowed disabled:bg-primary-200"
-        >
-          {isMessagePending ? 'Opening...' : 'Send Message'}
-        </button>
       </div>
-    </div>
+    </article>
   );
 }
 
@@ -160,6 +241,22 @@ export default function MarketPlacePage() {
 
   const { data: businesses = [], isLoading, error } = useMarketplace();
   const { data: categoriesList = [] } = useMarketplaceCategories();
+  const { data: alumni = [] } = useAlumni({ action_type: 'approved' });
+
+  const ownerPhotoById = useMemo(() => {
+    const photos = new Map<string, string | null>();
+
+    alumni.forEach((entry) => {
+      const photoVisible = isFieldVisible(entry, 'photo', currentUser as any);
+      const displayPhoto = getPhotoDisplay(entry.photo, photoVisible);
+      const photo = isRealProfilePhoto(displayPhoto) ? displayPhoto : null;
+
+      photos.set(String(entry.id), photo);
+      photos.set(String(entry.memberId), photo);
+    });
+
+    return photos;
+  }, [alumni, currentUser]);
 
   const filtered = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
@@ -178,8 +275,6 @@ export default function MarketPlacePage() {
     setter(value);
     setVisibleCount(ITEMS_PER_PAGE);
   };
-
-  const breadcrumbItems = [{ label: 'Home', href: ROUTES.HOME }, { label: 'Marketplace' }];
 
   async function handleStartBusinessConversation(business: Business) {
     setPendingBusinessId(business.businessId);
@@ -204,75 +299,87 @@ export default function MarketPlacePage() {
         title="Marketplace"
         description="Discover and support businesses owned by Our Sisters."
       />
-      <Breadcrumbs items={breadcrumbItems} />
 
-      <section className="section">
-        <div className="container-custom">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-8">
-            <div className="text-center flex-1">
-              <h1 className="text-3xl md:text-4xl font-bold italic mb-1">
-                Market <span className="text-primary-500">Place</span>
-              </h1>
-              <p className="text-gray-500 text-sm">
-                Discover and support businesses owned by Our Sisters.
+      <main className="marketplace-page">
+        <section className="marketplace-shell">
+          <div className="marketplace-header">
+            <div>
+              <h1 className="marketplace-title">Marketplace</h1>
+              <p className="marketplace-subtitle">
+                <span>Discover and support businesses owned by</span>
+                <span> our sisters</span>
               </p>
             </div>
 
-            {currentUser && visible.length > 0 && (
-              <button
+            {currentUser && (
+              <Button
                 type="button"
                 onClick={() => setShowPostModal(true)}
-                className="flex-shrink-0 flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-colors"
+                rightIcon="mdi:plus"
+                className="marketplace-post-button"
               >
-                <Icon icon="mdi:plus" className="w-4 h-4" />
                 Post Your Business
-              </button>
+              </Button>
             )}
           </div>
 
-          {/* Filters */}
-          <div className="flex flex-col sm:flex-row items-end gap-3 mb-8">
-            <SearchInput
-              label="Search"
-              value={searchTerm}
-              onValueChange={handleFilterChange(setSearchTerm)}
-              placeholder="Search for service, product, or business"
-              className="flex-1"
-            />
-            <FilterDropdown
-              label="Select Category"
-              value={category}
-              onChange={handleFilterChange(setCategory)}
-              options={categoriesList.map((cat) => ({ label: cat, value: cat }))}
-            />
+          <div className="marketplace-toolbar">
+            <label className="marketplace-search" htmlFor="marketplace-search">
+              <Icon icon="mdi:magnify" />
+              <input
+                id="marketplace-search"
+                type="search"
+                value={searchTerm}
+                onChange={(event) => handleFilterChange(setSearchTerm)(event.target.value)}
+                placeholder="Search here"
+              />
+            </label>
+
+            <label className="marketplace-category" htmlFor="marketplace-category">
+              <select
+                id="marketplace-category"
+                aria-label="Filter by Category"
+                value={category}
+                onChange={(event) => handleFilterChange(setCategory)(event.target.value)}
+              >
+                <option value="">Filter by Category</option>
+                {categoriesList.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {formatCategoryLabel(cat)}
+                  </option>
+                ))}
+              </select>
+              <Icon icon="mdi:chevron-down" />
+            </label>
           </div>
 
           {/* Error State */}
           {error && (
-            <div className="text-center py-12">
-              <Icon
-                icon="mdi:alert-circle-outline"
-                className="w-16 h-16 text-red-400 mx-auto mb-4"
-              />
-              <p className="text-gray-500">Failed to load businesses. Please try again later.</p>
+            <div className="marketplace-feedback">
+              <Icon icon="mdi:alert-circle-outline" />
+              <p>Failed to load businesses. Please try again later.</p>
             </div>
           )}
 
           {/* Grid */}
           {isLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
+            <div className="marketplace-grid">
               {Array.from({ length: ITEMS_PER_PAGE }).map((_, i) => (
                 <BusinessCardSkeleton key={i} />
               ))}
             </div>
           ) : !error && visible.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
+            <div className="marketplace-grid">
               {visible.map((business) => (
                 <BusinessCard
                   key={business.businessId}
                   business={business}
                   currentUserMemberId={currentUser?.memberId}
+                  ownerPhoto={
+                    ownerPhotoById.has(business.ownerId)
+                      ? (ownerPhotoById.get(business.ownerId) ?? undefined)
+                      : business.ownerPhoto
+                  }
                   onMessageClick={handleStartBusinessConversation}
                   isMessagePending={
                     isStartingConversation && pendingBusinessId === business.businessId
@@ -292,18 +399,18 @@ export default function MarketPlacePage() {
 
           {/* Load More */}
           {hasMore && !isLoading && !error && (
-            <div className="text-center">
-              <button
+            <div className="marketplace-load-more">
+              <Button
                 type="button"
                 onClick={() => setVisibleCount((prev) => prev + ITEMS_PER_PAGE)}
-                className="bg-primary-500 hover:bg-primary-600 text-white text-sm font-semibold px-8 py-3 rounded-full transition-colors"
+                className="marketplace-load-more__button"
               >
                 Load More Businesses
-              </button>
+              </Button>
             </div>
           )}
-        </div>
-      </section>
+        </section>
+      </main>
 
       <PostBusinessModal isOpen={showPostModal} onClose={() => setShowPostModal(false)} />
     </>

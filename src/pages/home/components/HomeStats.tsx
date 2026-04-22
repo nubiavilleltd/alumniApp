@@ -1,44 +1,62 @@
 import { Icon } from '@iconify/react';
-import { getSiteConfig } from '@/data/content';
 import { useAlumni } from '@/features/alumni/hooks/useAlumni';
+import { useAllEvents } from '@/features/events/hooks/useEvents';
+
+function formatCount(count: number) {
+  if (count > 100) return `${Math.floor(count / 100) * 100}+`;
+  if (count > 50) return `${Math.floor(count / 10) * 10}+`;
+  return String(count);
+}
+
+function formatEventCount(count: number) {
+  if (count === 0) return '0';
+  return formatCount(count).endsWith('+') ? formatCount(count) : `${count}+`;
+}
 
 export default function HomeStats() {
-  const config = getSiteConfig();
   const { data: alumni = [] } = useAlumni();
+  const { data: events = [] } = useAllEvents();
+
+  const stats = [
+    {
+      label: 'Active Members',
+      value: formatCount(alumni.length),
+      icon: 'mdi:account-group-outline',
+      className: 'home-stats-card--light',
+    },
+    {
+      label: 'Founded',
+      value: '1985',
+      icon: 'mdi:bank-outline',
+      className: 'home-stats-card--dark',
+    },
+    {
+      label: 'Annual Events',
+      value: formatEventCount(events.length),
+      icon: 'mdi:calendar-sync-outline',
+      className: 'home-stats-card--blue',
+    },
+    {
+      label: 'Raised for Welfare',
+      value: '-',
+      icon: 'mdi:hand-heart-outline',
+      className: 'home-stats-card--navy',
+    },
+  ];
 
   return (
-    <section className="section-sm bg-gradient-to-r from-accent-50 to-accent-100">
+    <section className="home-stats-section">
       <div className="container-custom">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="text-center">
-            <div className="w-16 h-16 bg-primary-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-              <Icon icon="mdi:account-group" className="w-8 h-8 text-white" />
-            </div>
-            {/* <h3 className="text-3xl font-bold text-primary-900 mb-2">{alumni.length}+</h3> */}
-
-            <h3 className="text-3xl font-bold text-primary-900 mb-2">
-              {alumni.length > 100 ? `${Math.floor(alumni.length / 100) * 100}+` : alumni.length}
-            </h3>
-            <p className="text-accent-700 font-medium">Registered Alumnae</p>
-          </div>
-
-          <div className="text-center">
-            <div className="w-16 h-16 bg-primary-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-              <Icon icon="mdi:calendar" className="w-8 h-8 text-white" />
-            </div>
-            <h3 className="text-3xl font-bold text-primary-900 mb-2">
-              {config.years.end - config.years.start + 1}
-            </h3>
-            <p className="text-accent-700 font-medium">Years</p>
-          </div>
-
-          <div className="text-center">
-            <div className="w-16 h-16 bg-primary-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-              <Icon icon="mdi:map-marker" className="w-8 h-8 text-white" />
-            </div>
-            <h3 className="text-3xl font-bold text-primary-900 mb-2">Global</h3>
-            <p className="text-accent-700 font-medium">Network</p>
-          </div>
+        <div className="home-stats-grid">
+          {stats.map((stat) => (
+            <article key={stat.label} className={`home-stats-card ${stat.className}`}>
+              <Icon icon={stat.icon} className="home-stats-card__icon" />
+              <div className="home-stats-card__copy">
+                <h3>{stat.value}</h3>
+                <p>{stat.label}</p>
+              </div>
+            </article>
+          ))}
         </div>
       </div>
     </section>

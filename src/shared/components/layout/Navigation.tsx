@@ -1,25 +1,9 @@
-// shared/components/layout/Navigation.tsx
-//
-// CHANGE: Navigation now reads the user from the Zustand store synchronously
-// for the initial render (so the correct UI shows immediately), and uses
-// useCurrentUser() only to get enriched / refreshed data in the background.
-//
-// Before: const { data: currentUser, isLoading } = useCurrentUser()
-//         → currentUser was undefined until the network request finished
-//         → nav flashed "Login" button even while logged in
-//
-// After:  const storeUser = useAuthStore(state => state.user)   // immediate
-//         const { data: freshUser } = useCurrentUser()           // background
-//         const currentUser = freshUser ?? storeUser             // best available
-
 import { Icon } from '@iconify/react';
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { getSiteConfig } from '@/data/content';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { authApi } from '@/features/authentication/services/auth.service';
 import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 import { AppLink } from '../ui/AppLink';
-import Button from '../ui/Button';
 import { ROUTES } from '@/shared/constants/routes';
 import { MARKETPLACE_ROUTES } from '@/features/marketplace/routes';
 import { ALUMNI_ROUTES } from '@/features/alumni/routes';
@@ -31,90 +15,165 @@ import { useIdentityStore } from '@/features/authentication/stores/useIdentitySt
 import { useTokenStore } from '@/features/authentication/stores/useTokenStore';
 import { useAuth } from '@/features/authentication/hooks/useAuth';
 
-// ─── Nav Items ────────────────────────────────────────────────────────────────
+type NavChild = {
+  label: string;
+  url: string;
+  icon?: string;
+};
 
-const navItems = [
-  { label: 'Home', url: ROUTES.HOME },
-  { label: 'About Us', url: ROUTES.ABOUT },
-  { label: 'Market Place', url: MARKETPLACE_ROUTES.ROOT },
-  {
-    label: 'Alumnae Connect',
-    url: '#',
-    children: [
-      { label: 'Messages', url: '/messages', icon: 'mdi:message-outline' },
-      { label: 'Alumni Directory', url: ALUMNI_ROUTES.PROFILES, icon: 'mdi:account-group-outline' },
-    ],
-  },
-  { label: 'Events', url: EVENT_ROUTES.ROOT },
+type NavItem = NavChild & {
+  children?: NavChild[];
+};
+
+type CurrentUser = {
+  fullName?: string;
+  email?: string;
+  avatarInitials?: string;
+  photo?: string | null;
+  role?: string;
+  memberId?: string;
+  id?: string;
+};
+
+const secondaryNavItems: NavItem[] = [
+  { label: 'Resources', url: ROUTES.RESOURCES },
+  { label: 'Welfare', url: ROUTES.WELFARE },
+  { label: 'Contact Us', url: ROUTES.CONTACT },
 ];
 
-function useIsActive(url: string) {
-  const { pathname } = useLocation();
-  if (url === ROUTES.HOME) return pathname === '/';
-  return pathname.startsWith(url);
+const primaryNavItems: NavItem[] = [
+  { label: 'About Us', url: ROUTES.ABOUT },
+  { label: 'Alumnae Directory', url: ALUMNI_ROUTES.PROFILES },
+  {
+    label: 'News & Events',
+    url: ROUTES.NEWS,
+    children: [
+      { label: 'Announcements', url: ROUTES.NEWS, icon: 'mdi:newspaper-variant-outline' },
+      { label: 'Events', url: EVENT_ROUTES.ROOT, icon: 'mdi:calendar-month-outline' },
+      { label: 'Our Projects', url: ROUTES.PROJECTS.ROOT, icon: 'mdi:folder-star-outline' },
+    ],
+  },
+  {
+    label: 'Marketplace',
+    url: MARKETPLACE_ROUTES.ROOT,
+    children: [
+      { label: 'Marketplace', url: MARKETPLACE_ROUTES.ROOT, icon: 'mdi:storefront-outline' },
+      { label: 'Job Vacancies', url: ROUTES.JOB_VACANCIES, icon: 'mdi:briefcase-outline' },
+    ],
+  },
+];
+
+const authenticatedMenuItems: NavChild[] = [
+  { label: 'View Profile', url: USER_ROUTES.PROFILE, icon: 'mdi:account-outline' },
+  { label: 'Dashboard', url: USER_ROUTES.DASHBOARD, icon: 'mdi:view-dashboard-outline' },
+  { label: 'Messaging Center', url: ROUTES.MESSAGES, icon: 'mdi:message-outline' },
+  {
+    label: 'My Registered Events',
+    url: EVENT_ROUTES.MY_EVENTS,
+    icon: 'mdi:calendar-check-outline',
+  },
+  { label: 'My Business', url: MARKETPLACE_ROUTES.MY_BUSINESS, icon: 'mdi:store-cog-outline' },
+  { label: 'Settings', url: USER_ROUTES.SETTINGS, icon: 'mdi:cog-outline' },
+];
+
+function getDisplayName(user: CurrentUser) {
+  return user.fullName?.trim() || user.email?.split('@')[0] || 'Member';
 }
 
-function NavLink({ label, url }: { label: string; url: string }) {
-  const active = useIsActive(url);
+function getInitials(user: CurrentUser) {
+  const storedInitials = user.avatarInitials?.trim();
+  if (storedInitials) return storedInitials;
+
+  const name = getDisplayName(user);
+  const parts = name.split(/\s+/).filter(Boolean);
+  if (parts.length >= 2) return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
+  return parts[0]?.slice(0, 2).toUpperCase() || '?';
+}
+
+function isPathActive(pathname: string, url: string) {
+  if (url === ROUTES.HOME) return pathname === ROUTES.HOME;
+  return pathname === url || pathname.startsWith(`${url}/`);
+}
+
+function BrandMark({ className = '' }: { className?: string }) {
   return (
-    <AppLink
-      href={url}
-      className={`relative py-1 text-sm font-medium text-white transition-colors hover:text-white/80
-        after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-white after:transition-all after:duration-200
-        ${active ? 'after:w-full' : 'after:w-0 hover:after:w-full'}`}
-    >
-      {label}
+    <AppLink href={ROUTES.HOME} className={`site-nav__brand ${className}`}>
+      <span className="site-nav__brand-art" aria-hidden="true" />
+      <span className="site-nav__brand-content">
+        <img src="/logo.png" alt="" className="site-nav__crest" />
+        <span className="site-nav__brand-name">
+          <span className="site-nav__letters">FGGC</span>
+          <span className="site-nav__association">Alumnae Association</span>
+        </span>
+        <span className="site-nav__brand-divider" aria-hidden="true" />
+        <span className="site-nav__chapter">
+          <span>Lagos</span>
+          <span>Chapter</span>
+        </span>
+      </span>
     </AppLink>
   );
 }
 
-function DropdownNavItem({
-  label,
-  children,
-}: {
-  label: string;
-  children: { label: string; url: string; icon?: string }[];
-}) {
+function DesktopNavLink({ item }: { item: NavItem }) {
+  const { pathname } = useLocation();
+  const active = isPathActive(pathname, item.url);
+
+  return (
+    <AppLink
+      href={item.url}
+      className={`site-nav__primary-link ${active ? 'site-nav__primary-link--active' : ''}`}
+    >
+      {item.label}
+    </AppLink>
+  );
+}
+
+function DesktopDropdown({ item }: { item: NavItem }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const { pathname } = useLocation();
-  const isActive = children.some((c) => pathname.startsWith(c.url));
+  const isActive = item.children?.some((child) => isPathActive(pathname, child.url)) ?? false;
 
   useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (!ref.current?.contains(e.target as Node)) setOpen(false);
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (!ref.current?.contains(event.target as Node)) setOpen(false);
     };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
+
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
   }, []);
 
   return (
-    <div ref={ref} className="relative">
+    <div
+      ref={ref}
+      className={`site-nav__dropdown ${
+        item.label === 'Marketplace' ? 'site-nav__dropdown--right' : ''
+      }`}
+    >
       <button
         type="button"
+        className={`site-nav__primary-link site-nav__dropdown-trigger ${
+          isActive ? 'site-nav__primary-link--active' : ''
+        }`}
+        aria-expanded={open}
         onClick={() => setOpen((prev) => !prev)}
-        className={`flex items-center gap-1 py-1 text-sm font-medium text-white transition-colors hover:text-white/80
-          relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-white after:transition-all after:duration-200
-          ${isActive ? 'after:w-full' : 'after:w-0 hover:after:w-full'}`}
       >
-        {label}
-        <Icon
-          icon="mdi:chevron-down"
-          className={`w-4 h-4 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
-        />
+        {item.label}
+        <Icon icon="mdi:chevron-down" className="site-nav__chevron" />
       </button>
 
       {open && (
-        <div className="absolute top-full left-0 mt-2 w-52 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50">
-          {children.map((child) => (
+        <div className="site-nav__dropdown-menu">
+          {item.children?.map((child) => (
             <AppLink
               key={child.url}
               href={child.url}
+              className="site-nav__dropdown-link"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors"
             >
-              {child.icon && <Icon icon={child.icon} className="w-4 h-4 text-primary-400" />}
-              {child.label}
+              {child.icon && <Icon icon={child.icon} />}
+              <span>{child.label}</span>
             </AppLink>
           ))}
         </div>
@@ -123,200 +182,180 @@ function DropdownNavItem({
   );
 }
 
+function UserAvatar({ user, className = '' }: { user: CurrentUser; className?: string }) {
+  const displayName = getDisplayName(user);
+  const initials = getInitials(user);
+
+  return (
+    <span className={`site-nav__avatar ${className}`}>
+      {user.photo ? (
+        <img src={user.photo} alt={displayName} />
+      ) : (
+        <span className="site-nav__avatar-fallback">{initials}</span>
+      )}
+    </span>
+  );
+}
+
 function UserDropdown({
   currentUser,
   onLogout,
   isLoggingOut,
 }: {
-  currentUser: {
-    fullName?: string;
-    avatarInitials?: string;
-    photo?: string;
-    role?: string;
-    memberId?: string;
-    id?: string;
-  };
+  currentUser: CurrentUser;
   onLogout: () => void;
   isLoggingOut: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const isAdmin = currentUser?.role === 'admin';
+  const isAdmin = currentUser.role === 'admin';
+  const displayName = getDisplayName(currentUser);
 
   useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (!ref.current?.contains(e.target as Node)) setOpen(false);
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (!ref.current?.contains(event.target as Node)) setOpen(false);
     };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
+
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
   }, []);
 
+  const menuItems = isAdmin
+    ? [
+        {
+          label: 'Admin Dashboard',
+          url: ADMIN_ROUTES.DASHBOARD,
+          icon: 'mdi:shield-account-outline',
+        },
+        ...authenticatedMenuItems,
+      ]
+    : authenticatedMenuItems;
+
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className="site-nav__user">
       <button
         type="button"
+        className="site-nav__user-trigger"
+        aria-expanded={open}
         onClick={() => setOpen((prev) => !prev)}
-        className="flex items-center gap-1.5 rounded-xl border border-white/20 bg-white/10 hover:bg-white/20 px-2 py-1.5 transition-colors"
       >
-        <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-white flex-shrink-0">
-          {currentUser.photo ? (
-            <img
-              src={currentUser.photo}
-              alt={currentUser.fullName}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="w-full h-full bg-white flex items-center justify-center text-primary-600 text-xs font-bold">
-              {currentUser.avatarInitials ?? '?'}
-            </div>
-          )}
-        </div>
-        <Icon
-          icon="mdi:chevron-down"
-          className={`w-4 h-4 text-white transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
-        />
+        <UserAvatar user={currentUser} />
+        <span className="site-nav__user-copy">
+          <span>Welcome,</span>
+          <strong>{displayName}</strong>
+        </span>
+        <Icon icon="mdi:chevron-down" className="site-nav__user-chevron" />
       </button>
 
       {open && (
-        <div className="absolute top-full right-0 mt-2 w-52 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-50">
-          <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
-            <p className="text-sm font-semibold text-gray-800 truncate">{currentUser.fullName}</p>
-            <div className="flex items-center gap-2 mt-0.5">
-              <p className="text-xs text-gray-400 capitalize">{currentUser.role ?? 'Member'}</p>
-              {/* {isAdmin && (
-                <span className="text-[10px] font-semibold px-1.5 py-0.5 bg-purple-100 text-purple-700 rounded-full">
-                  Admin
-                </span>
-              )} */}
-            </div>
-          </div>
+        <div className="site-nav__user-menu">
+          {menuItems.map((item) => (
+            <AppLink
+              key={item.url}
+              href={item.url}
+              className="site-nav__user-menu-link"
+              onClick={() => setOpen(false)}
+            >
+              <Icon icon={item.icon ?? 'mdi:circle-outline'} />
+              <span>{item.label}</span>
+            </AppLink>
+          ))}
 
-          <div className="py-1">
-            {isAdmin && (
-              <>
-                <AppLink
-                  href={ADMIN_ROUTES.DASHBOARD}
-                  onClick={() => setOpen(false)}
-                  className="flex items-center gap-2.5 px-4 py-2.5 text-sm bg-purple-50 text-purple-700 hover:bg-purple-100 transition-colors border-l-2 border-purple-500"
-                >
-                  <Icon icon="mdi:shield-account-outline" className="w-4 h-4 text-purple-500" />
-                  <span className="font-semibold">Admin Dashboard</span>
-                </AppLink>
-                <div className="border-t border-gray-100 my-1" />
-              </>
-            )}
-            <AppLink
-              href={USER_ROUTES.PROFILE}
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors"
-            >
-              <Icon icon="mdi:account-outline" className="w-4 h-4 text-primary-400" /> View Profile
-            </AppLink>
-            <AppLink
-              href={USER_ROUTES.DASHBOARD}
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors"
-            >
-              <Icon icon="mdi:view-dashboard-outline" className="w-4 h-4 text-primary-400" />{' '}
-              Dashboard
-            </AppLink>
-            <AppLink
-              href={MARKETPLACE_ROUTES.MY_BUSINESS}
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors"
-            >
-              <Icon icon="mdi:storefront-outline" className="w-4 h-4 text-primary-400" /> My
-              Business
-            </AppLink>
-            <AppLink
-              href={USER_ROUTES.SETTINGS}
-              onClick={() => setOpen(false)}
-              className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors"
-            >
-              <Icon icon="mdi:cog-outline" className="w-4 h-4 text-primary-400" /> Settings
-            </AppLink>
-          </div>
-
-          <div className="border-t border-gray-100 py-1">
-            <button
-              type="button"
-              onClick={() => {
-                setOpen(false);
-                onLogout();
-              }}
-              disabled={isLoggingOut}
-              className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors disabled:opacity-50"
-            >
-              <Icon icon="mdi:logout" className="w-4 h-4" />
-              {isLoggingOut ? 'Logging out...' : 'Logout'}
-            </button>
-          </div>
+          <button
+            type="button"
+            className="site-nav__user-menu-link site-nav__user-menu-link--danger"
+            disabled={isLoggingOut}
+            onClick={() => {
+              setOpen(false);
+              onLogout();
+            }}
+          >
+            <Icon icon="mdi:logout" />
+            <span>{isLoggingOut ? 'Logging out...' : 'Logout'}</span>
+          </button>
         </div>
       )}
     </div>
   );
 }
 
-// ─── Main Navigation ──────────────────────────────────────────────────────────
+function MobileNavGroup({ item }: { item: NavItem }) {
+  const { pathname } = useLocation();
+  const isActive = item.children?.some((child) => isPathActive(pathname, child.url)) ?? false;
+
+  return (
+    <div className="site-nav__mobile-group">
+      <p
+        className={`site-nav__mobile-group-label ${isActive ? 'site-nav__mobile-link--active' : ''}`}
+      >
+        {item.label}
+      </p>
+      <div className="site-nav__mobile-subnav">
+        {item.children?.map((child) => (
+          <AppLink
+            key={child.url}
+            href={child.url}
+            className={`site-nav__mobile-link site-nav__mobile-link--sub ${
+              isPathActive(pathname, child.url) ? 'site-nav__mobile-link--active' : ''
+            }`}
+          >
+            {child.icon && <Icon icon={child.icon} />}
+            <span>{child.label}</span>
+          </AppLink>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export function Navigation() {
-  const config = getSiteConfig();
   const navigate = useNavigate();
   const { pathname } = useLocation();
-
-  // ① Read from store synchronously — always available from localStorage
   const { isAuthenticated, user: storeUser } = useAuth();
   const clearTokens = useTokenStore((state) => state.clearTokens);
   const clearIdentity = useIdentityStore((state) => state.clearIdentity);
-  // const accessToken = useTokenStore((s) => s.accessToken);
-
-  // ② Background refresh — enriches data but never blocks initial render
   const { data: freshUser } = useCurrentUser();
-
-  // Use the freshest data available; fall back to store if network hasn't responded yet
-  const currentUser = freshUser ?? storeUser;
-
-  // const isAuthenticated = !!accessToken;
-
+  const currentUser = (freshUser ?? storeUser) as CurrentUser | null;
+  const authenticatedUser = isAuthenticated && currentUser ? currentUser : null;
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const mobileButtonRef = useRef<HTMLButtonElement>(null);
-
-  const isAdmin = currentUser?.role === 'admin';
+  const isAdmin = authenticatedUser?.role === 'admin';
 
   useEffect(() => {
     setMobileOpen(false);
   }, [pathname]);
 
   useEffect(() => {
-    const onOutsideClick = (e: MouseEvent) => {
+    const handleOutsideClick = (event: MouseEvent) => {
       if (
-        !mobileMenuRef.current?.contains(e.target as Node) &&
-        !mobileButtonRef.current?.contains(e.target as Node)
+        !mobileMenuRef.current?.contains(event.target as Node) &&
+        !mobileButtonRef.current?.contains(event.target as Node)
       ) {
         setMobileOpen(false);
       }
     };
-    const onResize = () => {
+
+    const handleResize = () => {
       if (window.innerWidth >= 1024) setMobileOpen(false);
     };
-    document.addEventListener('click', onOutsideClick);
-    window.addEventListener('resize', onResize);
+
+    document.addEventListener('click', handleOutsideClick);
+    window.addEventListener('resize', handleResize);
     return () => {
-      document.removeEventListener('click', onOutsideClick);
-      window.removeEventListener('resize', onResize);
+      document.removeEventListener('click', handleOutsideClick);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
   const handleLogout = async () => {
-    const userId = currentUser?.id ?? currentUser?.memberId;
     setIsLoggingOut(true);
-    if (userId) {
+    if (authenticatedUser) {
       try {
-        await authApi.logout(userId);
+        await authApi.logout();
       } catch {
-        /* always continue */
+        /* Always clear local auth state even if the server session has expired. */
       }
     }
     clearTokens();
@@ -326,196 +365,142 @@ export function Navigation() {
     setIsLoggingOut(false);
   };
 
+  const mobileMenuItems = isAdmin
+    ? [
+        {
+          label: 'Admin Dashboard',
+          url: ADMIN_ROUTES.DASHBOARD,
+          icon: 'mdi:shield-account-outline',
+        },
+        ...authenticatedMenuItems,
+      ]
+    : authenticatedMenuItems;
+
   return (
-    <nav className="bg-primary-500 sticky top-0 z-50 text-white shadow-sm">
-      <div className="container-custom">
-        <div className="flex items-center justify-between h-16 lg:h-20">
-          {/* Logo */}
-          <AppLink href={ROUTES.HOME} className="flex items-center gap-3 group flex-shrink-0">
-            <div className="w-10 h-10">
-              {config.site.logo ? (
-                <img
-                  src={config.site.logo}
-                  alt={`${config.site.name} logo`}
-                  className="w-full h-full object-cover rounded-full border-2 border-white group-hover:scale-105 transition-transform duration-300"
-                />
-              ) : (
-                <Icon icon="mdi:account-group" className="w-7 h-7 text-white" />
-              )}
-            </div>
-            <div>
-              <h1 className="text-lg font-bold text-white group-hover:text-white/80 transition-colors">
-                {config.site.name}
-              </h1>
-              <p className="text-xs text-white/70 hidden sm:block">
-                Federal Government Girls College
-              </p>
-            </div>
-          </AppLink>
+    <nav className="site-nav" aria-label="Primary navigation">
+      <div className="site-nav__desktop">
+        <BrandMark className="site-nav__brand--desktop" />
 
-          {/* Desktop Links */}
-          <div className="hidden lg:flex items-center gap-6">
-            {navItems.map((item) =>
-              item.children ? (
-                <DropdownNavItem key={item.label} label={item.label} children={item.children} />
-              ) : (
-                <NavLink key={item.label} label={item.label} url={item.url} />
-              ),
-            )}
-          </div>
+        <div className="site-nav__body">
+          <div className="site-nav__secondary-row">
+            <div className="site-nav__secondary-links">
+              {secondaryNavItems.map((item) => (
+                <AppLink key={item.url} href={item.url} className="site-nav__secondary-link">
+                  {item.label}
+                </AppLink>
+              ))}
+            </div>
 
-          {/* Desktop Auth */}
-          <div className="hidden lg:flex items-center gap-3">
-            {isAuthenticated && currentUser ? (
+            {authenticatedUser ? (
               <UserDropdown
-                currentUser={currentUser}
+                currentUser={authenticatedUser}
                 onLogout={handleLogout}
                 isLoggingOut={isLoggingOut}
               />
             ) : (
-              <AppLink href={AUTH_ROUTES.LOGIN}>
-                <Button variant="white">Login</Button>
+              <AppLink href={AUTH_ROUTES.LOGIN} className="site-nav__login">
+                Login
               </AppLink>
             )}
           </div>
 
-          {/* Mobile Hamburger */}
+          <div className="site-nav__primary-row">
+            {primaryNavItems.map((item) =>
+              item.children ? (
+                <DesktopDropdown key={item.label} item={item} />
+              ) : (
+                <DesktopNavLink key={item.label} item={item} />
+              ),
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="site-nav__mobile">
+        <div className="site-nav__mobile-bar">
+          <BrandMark className="site-nav__brand--mobile" />
           <button
             ref={mobileButtonRef}
             type="button"
-            aria-label="Toggle mobile menu"
+            className="site-nav__mobile-toggle"
+            aria-label="Toggle navigation menu"
+            aria-expanded={mobileOpen}
             onClick={() => setMobileOpen((prev) => !prev)}
-            className="lg:hidden p-2 rounded-lg text-white hover:bg-white/10 transition-colors"
           >
-            <Icon icon={mobileOpen ? 'mdi:close' : 'mdi:menu'} className="w-6 h-6" />
+            <Icon icon={mobileOpen ? 'mdi:close' : 'mdi:menu'} />
           </button>
         </div>
 
-        {/* Mobile Menu */}
         <div
           ref={mobileMenuRef}
-          className={`lg:hidden overflow-hidden transition-all duration-200 ${mobileOpen ? 'max-h-screen py-4' : 'max-h-0'}`}
+          className={`site-nav__mobile-menu ${mobileOpen ? 'site-nav__mobile-menu--open' : ''}`}
         >
-          <div className="space-y-1 border-t border-white/20 pt-4">
-            {navItems.map((item) =>
+          <div className="site-nav__mobile-section">
+            {secondaryNavItems.map((item) => (
+              <AppLink
+                key={item.url}
+                href={item.url}
+                className={`site-nav__mobile-link ${
+                  isPathActive(pathname, item.url) ? 'site-nav__mobile-link--active' : ''
+                }`}
+              >
+                {item.label}
+              </AppLink>
+            ))}
+          </div>
+
+          <div className="site-nav__mobile-section">
+            {primaryNavItems.map((item) =>
               item.children ? (
-                <div key={item.label}>
-                  <p className="px-4 pt-2 pb-1 text-xs font-semibold text-white/50 uppercase tracking-wider">
-                    {item.label}
-                  </p>
-                  {item.children.map((child) => (
-                    <AppLink
-                      key={child.url}
-                      href={child.url}
-                      className={`flex items-center gap-2.5 px-6 py-2.5 text-sm transition-colors ${pathname.startsWith(child.url) ? 'text-white font-semibold' : 'text-white/80 hover:text-white'}`}
-                    >
-                      {child.icon && <Icon icon={child.icon} className="w-4 h-4" />}
-                      {child.label}
-                    </AppLink>
-                  ))}
-                </div>
+                <MobileNavGroup key={item.label} item={item} />
               ) : (
                 <AppLink
-                  key={item.label}
+                  key={item.url}
                   href={item.url}
-                  className={`block px-4 py-2.5 text-sm rounded-lg transition-colors ${(item.url === '/' ? pathname === '/' : pathname.startsWith(item.url)) ? 'bg-white/20 text-white font-semibold' : 'text-white/80 hover:bg-white/10 hover:text-white'}`}
+                  className={`site-nav__mobile-link ${
+                    isPathActive(pathname, item.url) ? 'site-nav__mobile-link--active' : ''
+                  }`}
                 >
                   {item.label}
                 </AppLink>
               ),
             )}
-
-            {/* Mobile Auth */}
-            {currentUser ? (
-              <div className="space-y-1 px-4 pt-4 border-t border-white/20 mt-2">
-                <div className="flex items-center gap-3 px-2 py-2 mb-1">
-                  <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white flex-shrink-0">
-                    {currentUser.photo ? (
-                      <img
-                        src={currentUser.photo}
-                        alt={currentUser.fullName}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-white flex items-center justify-center text-primary-600 text-sm font-bold">
-                        {currentUser.avatarInitials ?? '?'}
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    <p className="font-semibold text-white text-sm">{currentUser.fullName}</p>
-                    <div className="flex items-center gap-1.5">
-                      <p className="text-xs text-white/60 capitalize">
-                        {currentUser.role ?? 'Member'}
-                      </p>
-                      {/* {isAdmin && (
-                        <span className="text-[10px] font-semibold px-1.5 py-0.5 bg-purple-500/30 text-white rounded-full">
-                          Admin
-                        </span>
-                      )} */}
-                    </div>
-                  </div>
-                </div>
-
-                {isAdmin && (
-                  <AppLink
-                    href={ADMIN_ROUTES.DASHBOARD}
-                    className="flex items-center gap-2.5 px-3 py-2.5 text-sm bg-purple-500/20 text-white hover:bg-purple-500/30 rounded-lg transition-colors"
-                  >
-                    <Icon icon="mdi:shield-account-outline" className="w-4 h-4" /> Admin Dashboard
-                  </AppLink>
-                )}
-                <AppLink
-                  href={USER_ROUTES.PROFILE}
-                  className="flex items-center gap-2.5 px-3 py-2.5 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
-                >
-                  <Icon icon="mdi:account-outline" className="w-4 h-4" /> View Profile
-                </AppLink>
-                <AppLink
-                  href={USER_ROUTES.DASHBOARD}
-                  className="flex items-center gap-2.5 px-3 py-2.5 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
-                >
-                  <Icon icon="mdi:view-dashboard-outline" className="w-4 h-4" /> Dashboard
-                </AppLink>
-                <AppLink
-                  href={MARKETPLACE_ROUTES.MY_BUSINESS}
-                  className="flex items-center gap-2.5 px-3 py-2.5 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
-                >
-                  <Icon icon="mdi:storefront-outline" className="w-4 h-4" /> My Business
-                </AppLink>
-                <AppLink
-                  href={USER_ROUTES.SETTINGS}
-                  className="flex items-center gap-2.5 px-3 py-2.5 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
-                >
-                  <Icon icon="mdi:cog-outline" className="w-4 h-4" /> Settings
-                </AppLink>
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  disabled={isLoggingOut}
-                  className="flex items-center gap-2.5 w-full px-3 py-2.5 text-sm text-red-300 hover:text-red-200 hover:bg-white/10 rounded-lg transition-colors disabled:opacity-50"
-                >
-                  <Icon icon="mdi:logout" className="w-4 h-4" />
-                  {isLoggingOut ? 'Logging out...' : 'Logout'}
-                </button>
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 gap-3 px-4 pt-4 border-t border-white/20 mt-2">
-                <AppLink
-                  href={AUTH_ROUTES.LOGIN}
-                  className="btn btn-outline btn-sm w-full justify-center text-white border-white hover:bg-white hover:text-primary-600"
-                >
-                  Login
-                </AppLink>
-                <AppLink
-                  href={AUTH_ROUTES.REGISTER}
-                  className="btn btn-sm w-full justify-center bg-white text-primary-600 hover:bg-white/90"
-                >
-                  Register
-                </AppLink>
-              </div>
-            )}
           </div>
+
+          {authenticatedUser ? (
+            <div className="site-nav__mobile-section site-nav__mobile-account">
+              <div className="site-nav__mobile-user">
+                <UserAvatar user={authenticatedUser} />
+                <div>
+                  <span>Welcome,</span>
+                  <strong>{getDisplayName(authenticatedUser)}</strong>
+                </div>
+              </div>
+
+              {mobileMenuItems.map((item) => (
+                <AppLink key={item.url} href={item.url} className="site-nav__mobile-link">
+                  <Icon icon={item.icon ?? 'mdi:circle-outline'} />
+                  <span>{item.label}</span>
+                </AppLink>
+              ))}
+
+              <button
+                type="button"
+                className="site-nav__mobile-link site-nav__mobile-link--danger"
+                disabled={isLoggingOut}
+                onClick={handleLogout}
+              >
+                <Icon icon="mdi:logout" />
+                <span>{isLoggingOut ? 'Logging out...' : 'Logout'}</span>
+              </button>
+            </div>
+          ) : (
+            <div className="site-nav__mobile-section">
+              <AppLink href={AUTH_ROUTES.LOGIN} className="site-nav__mobile-login">
+                Login
+              </AppLink>
+            </div>
+          )}
         </div>
       </div>
     </nav>

@@ -11,11 +11,13 @@ import { ROUTES } from '@/shared/constants/routes';
 // Pages
 import { HomePage } from './pages/home/HomePage';
 import { AboutPage } from './pages/about/AboutPage';
+import { ContactUsPage } from './features/contactUs/pages/ContactUsPage';
 import { PrivacyPage } from './pages/legal/PrivacyPage';
 import { TermsPage } from './pages/legal/TermsPage';
 import { NotFoundPage } from './pages/errors/NotFoundPage';
 import ProjectsPage from './features/projects/pages/ProjectsPage';
 import LeadershipPage from './features/leadership/pages/LeadershipPage';
+import AnnouncementsPage from './features/announcements/pages/BlogIndexPage';
 
 import { AuthPage } from './features/authentication/pages/AuthPage';
 import { RegisterDetailsPage } from './features/authentication/pages/RegisterDetailsPage';
@@ -48,6 +50,10 @@ import { AdminEventRegistrationsPage } from './features/events/pages/AdminEventR
 import { COMING_SOON_ROUTES } from './config/comingSoonRoutes';
 import { ComingSoonRouteHandler } from './pages/errors/ComingSoonRouteHandler';
 import { GuestRoute } from './shared/components/routing/GuestRoute';
+import EditProfilePage from './features/user/pages/EditProfilePage';
+import ResourcesPage from './pages/resources/ResourcesPage';
+import WelfarePage from './pages/welfare/WelfarePage';
+import WelfareZonesPage from './pages/welfare/WelfareZonesPage';
 
 export default function App() {
   return (
@@ -72,6 +78,22 @@ export default function App() {
             }
           />
           <Route
+            path={ROUTES.CONTACT}
+            element={
+              <ErrorBoundary>
+                <ContactUsPage />
+              </ErrorBoundary>
+            }
+          />
+          <Route
+            path={ROUTES.NEWS}
+            element={
+              <ErrorBoundary>
+                <AnnouncementsPage />
+              </ErrorBoundary>
+            }
+          />
+          <Route
             path={ROUTES.PRIVACY}
             element={
               <ErrorBoundary>
@@ -79,6 +101,10 @@ export default function App() {
               </ErrorBoundary>
             }
           />
+
+          <Route path="/resources" element={<ResourcesPage />} />
+          <Route path="/welfare" element={<WelfarePage />} />
+          <Route path="/welfare/zones" element={<WelfareZonesPage />} />
           <Route
             path={ROUTES.TERMS}
             element={
@@ -259,6 +285,17 @@ export default function App() {
           />
 
           <Route
+            path={ROUTES.USER.EDIT_PROFILE}
+            element={
+              <ProtectedRoute>
+                <ErrorBoundary>
+                  <EditProfilePage />
+                </ErrorBoundary>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
             path={ROUTES.USER.PROFILE}
             element={
               <ProtectedRoute>
@@ -280,7 +317,7 @@ export default function App() {
             }
           />
           <Route
-            path="/messages"
+            path={ROUTES.MESSAGES}
             element={
               <ProtectedRoute>
                 <ErrorBoundary>

@@ -1,10 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Icon } from '@iconify/react';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AppLink } from '@/shared/components/ui/AppLink';
+import { Button } from '@/shared/components/ui/Button';
 import { FormInput } from '@/shared/components/ui/input/FormInput';
+import { PasswordInput } from '@/shared/components/ui/input/PasswordInput';
 import { authApi } from '../services/auth.service';
 import { loginSchema } from '../schemas/authSchema';
 import { useIdentityStore } from '../stores/useIdentityStore';
@@ -21,7 +22,6 @@ import {
   getVerificationResendStatus,
   recordVerificationResendAttempt,
 } from '../lib/verificationResendThrottle';
-import { boolean } from 'zod';
 
 interface LoginLocationState {
   from?: string;
@@ -35,7 +35,6 @@ export function LoginForm() {
   const setIdentity = useIdentityStore((state) => state.setIdentity);
   const setTokens = useTokenStore((state) => state.setTokens);
   const setRememberMe = useTokenStore((state) => state.setRememberMe);
-  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -185,100 +184,54 @@ export function LoginForm() {
   });
 
   return (
-    <AuthCard title="Welcome back" subtitle="Sign in to your alumni account">
-      <form onSubmit={onSubmit} className="flex flex-col gap-5">
+    <AuthCard title="Welcome Back" subtitle="Glad to see you again. Sign in to your account below.">
+      <form onSubmit={onSubmit} className="auth-form auth-form--login">
         {/* Email */}
         <FormInput
-          label="Email address"
+          label="Email Address"
           id="email"
           type="email"
           autoComplete="email"
-          placeholder="Enter your email"
+          placeholder="Enter your email address"
           error={errors.email?.message}
           {...register('email')}
         />
 
         {/* Password */}
-        <div className="flex flex-col gap-1.5">
-          <div className="flex items-center justify-between">
-            <label htmlFor="password" className="text-sm font-medium text-gray-700">
-              Password
-            </label>
-            <AppLink
-              href={AUTH_ROUTES.FORGOT_PASSWORD}
-              className="text-xs font-medium text-primary-500 hover:text-primary-600"
-            >
-              Forgot password?
-            </AppLink>
-          </div>
-          <div className="relative">
-            <input
-              id="password"
-              type={showPassword ? 'text' : 'password'}
-              autoComplete="current-password"
-              placeholder="Enter your password"
-              className={`input pr-10 ${errors.password ? 'border-red-400' : ''}`}
-              {...register('password')}
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword((v) => !v)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-            >
-              <Icon
-                icon={showPassword ? 'mdi:eye-off-outline' : 'mdi:eye-outline'}
-                className="w-4 h-4"
-              />
-            </button>
-          </div>
-          {errors.password && (
-            <p className="mt-1.5 text-xs text-red-500">{errors.password.message}</p>
-          )}
+        <PasswordInput
+          label="Password"
+          id="password"
+          autoComplete="current-password"
+          placeholder="Enter your password"
+          error={errors.password?.message}
+          {...register('password')}
+        />
+
+        <div className="auth-form-options">
+          {/* Remember me */}
+          <label className="auth-checkbox-row">
+            <input type="checkbox" {...register('rememberMe')} />
+            Remember me
+          </label>
+
+          <AppLink href={AUTH_ROUTES.FORGOT_PASSWORD} className="auth-form-link">
+            Forgot password?
+          </AppLink>
         </div>
 
-        {/* Remember me */}
-        <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
-          <input
-            type="checkbox"
-            className="w-4 h-4 rounded border-gray-300 text-primary-500 focus:ring-primary-400"
-            {...register('rememberMe')}
-          />
-          Remember me
-        </label>
-
-        <button
+        <Button
           type="submit"
-          disabled={isSubmitting}
-          className="btn btn-primary w-full flex items-center justify-center gap-2"
+          fullWidth
+          loading={isSubmitting}
+          className="auth-submit-button rounded-full"
         >
-          {isSubmitting ? (
-            <>
-              <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" />
-              Signing in...
-            </>
-          ) : (
-            <>
-              Login <Icon icon="mdi:arrow-right" className="w-4 h-4" />
-            </>
-          )}
-        </button>
+          {isSubmitting ? 'Signing in...' : 'Sign In'}
+        </Button>
 
-        <div className="relative my-1">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-100" />
-          </div>
-          <div className="relative flex justify-center">
-            <span className="bg-white px-3 text-xs text-gray-400">or</span>
-          </div>
-        </div>
-
-        <p className="text-center text-sm text-gray-500">
+        <p className="auth-card__footer-text">
           Don't have an account?{' '}
-          <AppLink
-            href={AUTH_ROUTES.REGISTER}
-            className="font-semibold text-primary-500 hover:text-primary-600"
-          >
-            Sign up
+          <AppLink href={AUTH_ROUTES.REGISTER} className="auth-card__footer-link">
+            Sign Up
           </AppLink>
         </p>
       </form>

@@ -109,6 +109,7 @@ export interface AuthSessionUser {
 
   linkedin?: string;
   twitter?: string;
+  tiktok?: string;
   instagram?: string;
   facebook?: string;
   website?: string;
