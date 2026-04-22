@@ -11,11 +11,13 @@ import { ROUTES } from '@/shared/constants/routes';
 // Pages
 import { HomePage } from './pages/home/HomePage';
 import { AboutPage } from './pages/about/AboutPage';
+import { ContactUsPage } from './features/contactUs/pages/ContactUsPage';
 import { PrivacyPage } from './pages/legal/PrivacyPage';
 import { TermsPage } from './pages/legal/TermsPage';
 import { NotFoundPage } from './pages/errors/NotFoundPage';
 import ProjectsPage from './features/projects/pages/ProjectsPage';
 import LeadershipPage from './features/leadership/pages/LeadershipPage';
+import AnnouncementsPage from './features/announcements/pages/BlogIndexPage';
 
 import { AuthPage } from './features/authentication/pages/AuthPage';
 import { RegisterDetailsPage } from './features/authentication/pages/RegisterDetailsPage';
@@ -72,6 +74,22 @@ export default function App() {
             element={
               <ErrorBoundary>
                 <AboutPage />
+              </ErrorBoundary>
+            }
+          />
+          <Route
+            path={ROUTES.CONTACT}
+            element={
+              <ErrorBoundary>
+                <ContactUsPage />
+              </ErrorBoundary>
+            }
+          />
+          <Route
+            path={ROUTES.NEWS}
+            element={
+              <ErrorBoundary>
+                <AnnouncementsPage />
               </ErrorBoundary>
             }
           />
@@ -299,7 +317,7 @@ export default function App() {
             }
           />
           <Route
-            path="/messages"
+            path={ROUTES.MESSAGES}
             element={
               <ProtectedRoute>
                 <ErrorBoundary>

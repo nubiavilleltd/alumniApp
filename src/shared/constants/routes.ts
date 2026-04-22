@@ -9,6 +9,12 @@ import { PROJECT_ROUTES } from '@/features/projects/routes';
 export const ROUTES = {
   HOME: '/',
   ABOUT: '/about',
+  CONTACT: '/contact',
+  NEWS: '/news',
+  RESOURCES: '/resources',
+  WELFARE: '/welfare',
+  JOB_VACANCIES: '/job-vacancies',
+  MESSAGES: '/messages',
   PRIVACY: '/privacy',
   TERMS: '/terms',
   LEADERSHIP: '/leadership',
