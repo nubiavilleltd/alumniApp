@@ -55,6 +55,7 @@ import ResourcesPage from './pages/resources/ResourcesPage';
 import WelfarePage from './pages/welfare/WelfarePage';
 import WelfareZonesPage from './pages/welfare/WelfareZonesPage';
 import JobVacanciesPage from './features/jobVacancies/pages/JobVacanciesPage';
+import { DonationPage } from './features/donation/pages/DonationPage';
 
 export default function App() {
   return (
@@ -103,9 +104,10 @@ export default function App() {
             }
           />
 
-          <Route path="/resources" element={<ResourcesPage />} />
-          <Route path="/welfare" element={<WelfarePage />} />
-          <Route path="/welfare/zones" element={<WelfareZonesPage />} />
+          <Route path={ROUTES.RESOURCES} element={<ResourcesPage />} />
+          <Route path={ROUTES.WELFARE} element={<WelfarePage />} />
+          <Route path={ROUTES.WELFARE_ZONES} element={<WelfareZonesPage />} />
+          <Route path={ROUTES.DONATION} element={<DonationPage />} />
           <Route
             path={ROUTES.JOB_VACANCIES}
             element={

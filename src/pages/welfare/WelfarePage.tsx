@@ -6,9 +6,10 @@
 // Cards are clickable (link or action).
 
 import { Icon } from '@iconify/react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { SEO } from '@/shared/common/SEO';
 import { DonationButton } from '@/shared/components/ui/DonationButton';
+import { ROUTES } from '@/shared/constants/routes';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -130,23 +131,19 @@ export default function WelfarePage() {
             </div>
 
             {/* Right: action buttons (stacked) */}
-            <div className="flex flex-row sm:flex-col gap-3 flex-shrink-0">
-              <button
-                type="button"
-                onClick={() => {
-                  /* open contact modal / mailto */
-                }}
-                className="border border-primary-500 text-primary-500 hover:bg-primary-50 font-semibold text-sm px-5 py-2.5 rounded-full transition-colors whitespace-nowrap"
+            <div className="flex flex-col gap-3 flex-shrink-0">
+              <Link
+                to={ROUTES.CONTACT}
+                className="text-center border border-primary-500 text-primary-500 hover:bg-primary-50 font-semibold text-sm px-5 py-2.5 rounded-full transition-colors whitespace-nowrap"
               >
                 Contact the Committee
-              </button>
-              <button
-                type="button"
-                onClick={() => navigate('/welfare/zones')}
-                className="border border-primary-500 text-primary-500 hover:bg-primary-50 font-semibold text-sm px-5 py-2.5 rounded-full transition-colors whitespace-nowrap"
+              </Link>
+              <Link
+                to={ROUTES.WELFARE_ZONES}
+                className="text-center border border-primary-500 text-primary-500 hover:bg-primary-50 font-semibold text-sm px-5 py-2.5 rounded-full transition-colors whitespace-nowrap"
               >
                 Welfare Zones
-              </button>
+              </Link>
             </div>
           </div>
 
@@ -165,8 +162,6 @@ export default function WelfarePage() {
           </div>
         </div>
       </div>
-
-      <DonationButton href="#donate" />
     </>
   );
 }

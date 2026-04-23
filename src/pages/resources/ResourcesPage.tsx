@@ -200,8 +200,6 @@ export default function ResourcesPage() {
           </div>
         </div>
       </div>
-
-      <DonationButton href="#donate" />
     </>
   );
 }

@@ -131,8 +131,11 @@
   @apply py-8 md:py-12 lg:py-16;
 }
 
-.container-custom {
+/* .container-custom {
   @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+} */
+.container-custom {
+  @apply px-4 sm:px-6 lg:px-8;
 }
 
 .home-stats-section {

@@ -6,10 +6,19 @@ import { useEffect, useState } from 'react';
 import { Navigation } from './Navigation';
 import { Footer } from './Footer';
 import { ToastContainer } from '@/shared/components/ui/Toast';
+import { DonationButton } from '../ui/DonationButton';
+import { ROUTES } from '@/shared/constants/routes';
 
 export function RootLayout() {
   const [showBackToTop, setShowBackToTop] = useState(false);
   const { pathname } = useLocation();
+
+  console.log('pathname', { pathname });
+
+  const isHomePage = pathname === ROUTES.HOME;
+  const isDonationPage = pathname.includes(ROUTES.DONATION);
+
+  const showDonationButton = !isHomePage && !isDonationPage;
 
   useEffect(() => {
     const onScroll = (): void => {
@@ -41,16 +50,23 @@ export function RootLayout() {
       <ToastContainer />
 
       {/* Back to Top */}
-      <button
-        type="button"
-        className={`fixed bottom-8 right-8 bg-primary-600 hover:bg-primary-700 text-white p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-50 ${
-          showBackToTop ? 'opacity-100 visible' : 'opacity-0 invisible'
-        }`}
-        aria-label="Back to top"
-        onClick={scrollToTop}
-      >
-        <Icon icon="mdi:arrow-up" className="w-6 h-6" />
-      </button>
+
+      <div className="fixed bottom-8 right-8 flex flex-col items-end gap-3 z-50">
+        {showDonationButton && <DonationButton />}
+
+        <button
+          type="button"
+          className={`bg-primary-600 hover:bg-primary-700 text-white p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 ${
+            showBackToTop
+              ? 'opacity-100 translate-y-0'
+              : 'opacity-0 translate-y-4 pointer-events-none'
+          }`}
+          aria-label="Back to top"
+          onClick={scrollToTop}
+        >
+          <Icon icon="mdi:arrow-up" className="w-6 h-6" />
+        </button>
+      </div>
     </div>
   );
 }

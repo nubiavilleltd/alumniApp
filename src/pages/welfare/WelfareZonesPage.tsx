@@ -170,8 +170,6 @@ export default function WelfareZonesPage() {
           </div>
         </div>
       </div>
-
-      <DonationButton href="#donate" />
     </>
   );
 }

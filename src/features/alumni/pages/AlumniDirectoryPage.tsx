@@ -115,7 +115,6 @@ export function AlumniDirectoryPage() {
 
   const ITEMS_PER_PAGE = useItemsPerPage();
 
-  console.log('current user', { currentUser });
   const { startDirectConversation, isPending } = useStartDirectConversation();
   const [pendingId, setPendingId] = useState<string | null>(null);
 
@@ -125,15 +124,6 @@ export function AlumniDirectoryPage() {
     () => [...new Set(alumni.map((e) => e.graduationYear))].sort((a, b) => b - a),
     [alumni],
   );
-
-  // const filtered = useMemo(() => {
-  //   const q = searchTerm.toLowerCase();
-  //   return alumni.filter(
-  //     (e) =>
-  //       (!q || e.name.toLowerCase().includes(q)) &&
-  //       (!yearFilter || e.graduationYear.toString() === yearFilter),
-  //   );
-  // }, [alumni, searchTerm, yearFilter]);
 
   const filtered = useMemo(() => {
     const q = searchTerm.toLowerCase();
