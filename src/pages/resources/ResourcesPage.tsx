@@ -6,6 +6,8 @@
 import { Icon } from '@iconify/react';
 import { SEO } from '@/shared/common/SEO';
 import { DonationButton } from '@/shared/components/ui/DonationButton';
+import { Link } from 'react-router-dom';
+import { ROUTES } from '@/shared/constants/routes';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -68,6 +70,7 @@ const categories: ResourceCategory[] = [
       {
         label: 'Job Vacancies',
         description: 'Exclusive job listings for FGGC Owerri alumnae.',
+        href: ROUTES.JOB_VACANCIES,
       },
     ],
   },
@@ -143,9 +146,9 @@ function ResourceCard({ category }: { category: ResourceCategory }) {
           <div key={i} className="space-y-1">
             {link.label ? (
               link.href ? (
-                <a
-                  href={link.href}
-                  target={link.external ? '_blank' : undefined}
+                <Link
+                  to={link.href}
+                  //   target={link.external ? '_blank' : undefined}
                   rel={link.external ? 'noopener noreferrer' : undefined}
                   className="inline-flex items-center gap-1.5 text-primary-500 hover:text-primary-600 font-semibold text-sm transition-colors"
                 >
@@ -153,7 +156,7 @@ function ResourceCard({ category }: { category: ResourceCategory }) {
                   {link.external && (
                     <Icon icon="mdi:open-in-new" className="w-3.5 h-3.5 flex-shrink-0" />
                   )}
-                </a>
+                </Link>
               ) : (
                 <button
                   type="button"

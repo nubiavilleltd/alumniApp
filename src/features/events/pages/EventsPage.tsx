@@ -4,7 +4,7 @@
 // Handles hundreds of events via incremental "load more" within the scroll panel.
 
 import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import { SEO } from '@/shared/common/SEO';
 import { RegisterEventModal } from '../components/RegisterEventModal';
@@ -13,6 +13,7 @@ import { useIdentityStore } from '@/features/authentication/stores/useIdentitySt
 import { EVENT_ROUTES } from '../routes';
 import type { Event } from '../types/event.types';
 import { MonthYearPicker } from '@/shared/components/ui/MonthYearPicker';
+import { ROUTES } from '@/shared/constants/routes';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -381,7 +382,25 @@ export function EventsPage() {
 
       <div className="min-h-screen bg-[#f5f4f0]">
         <div className="container-custom py-5 sm:py-7">
-          <h1 className="text-2xl md:text-3xl font-bold mb-6">Events</h1>
+          <div className="flex flex-col sm:flex-row sm:justify-between mb-12">
+            <h1 className="text-2xl md:text-3xl font-bold mb-6">Events</h1>
+
+            <div className="flex flex-wrap justify-center items-center gap-3 flex-shrink-0">
+              <Link
+                to={ROUTES.PROJECTS.ROOT}
+                className="flex-1 text-center border border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white font-semibold text-sm px-5 py-2.5 rounded-full transition-colors whitespace-nowrap"
+              >
+                Go to Our Projects
+              </Link>
+              <Link
+                to={ROUTES.NEWS}
+                className="flex-1 text-center border border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white font-semibold text-sm px-5 py-2.5 rounded-full transition-colors whitespace-nowrap"
+              >
+                Go to Announcement
+              </Link>
+            </div>
+          </div>
+
           {/* ── Top bar ──────────────────────────────────────────────── */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
             {/* Month nav */}
