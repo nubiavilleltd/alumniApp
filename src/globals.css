@@ -884,8 +884,7 @@
 
 /* Main navigation */
 .site-nav {
-  position: sticky;
-  top: 0;
+  position: relative;
   z-index: 50;
   background: #003c5f;
   color: #ffffff;
