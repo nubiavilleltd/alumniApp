@@ -107,13 +107,15 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: a
 /* ───────────────────────────────────────────────────────────── */
 
 export function AlumniDirectoryPage() {
+  const currentUser = useIdentityStore((state) => state.user);
+
   const [searchTerm, setSearchTerm] = useState('');
   const [yearFilter, setYearFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 
   const ITEMS_PER_PAGE = useItemsPerPage();
 
-  const currentUser = useIdentityStore((state) => state.user);
+  console.log('current user', { currentUser });
   const { startDirectConversation, isPending } = useStartDirectConversation();
   const [pendingId, setPendingId] = useState<string | null>(null);
 
@@ -124,35 +126,35 @@ export function AlumniDirectoryPage() {
     [alumni],
   );
 
-  const filtered = useMemo(() => {
-    const q = searchTerm.toLowerCase();
-    return alumni.filter(
-      (e) =>
-        (!q || e.name.toLowerCase().includes(q)) &&
-        (!yearFilter || e.graduationYear.toString() === yearFilter),
-    );
-  }, [alumni, searchTerm, yearFilter]);
-
-  //   const filtered = useMemo(() => {
+  // const filtered = useMemo(() => {
   //   const q = searchTerm.toLowerCase();
-
-  //   let result = alumni.filter(
+  //   return alumni.filter(
   //     (e) =>
   //       (!q || e.name.toLowerCase().includes(q)) &&
   //       (!yearFilter || e.graduationYear.toString() === yearFilter),
   //   );
+  // }, [alumni, searchTerm, yearFilter]);
 
-  //   // ✅ PRIORITIZE USER'S GRADUATION YEAR (only when no filter is applied)
-  //   if (!yearFilter && currentUser?.graduationYear) {
-  //     result = [...result].sort((a, b) => {
-  //       if (a.graduationYear === currentUser.graduationYear) return -1;
-  //       if (b.graduationYear === currentUser.graduationYear) return 1;
-  //       return b.graduationYear - a.graduationYear; // fallback: newest first
-  //     });
-  //   }
+  const filtered = useMemo(() => {
+    const q = searchTerm.toLowerCase();
 
-  //   return result;
-  // }, [alumni, searchTerm, yearFilter, currentUser]);
+    let result = alumni.filter(
+      (e) =>
+        (!q || e.name.toLowerCase().includes(q)) &&
+        (!yearFilter || e.graduationYear.toString() === yearFilter),
+    );
+
+    // ✅ PRIORITIZE USER'S GRADUATION YEAR (only when no filter is applied)
+    if (!yearFilter && currentUser?.graduationYear) {
+      result = [...result].sort((a, b) => {
+        if (a.graduationYear === currentUser.graduationYear) return -1;
+        if (b.graduationYear === currentUser.graduationYear) return 1;
+        return b.graduationYear - a.graduationYear; // fallback: newest first
+      });
+    }
+
+    return result;
+  }, [alumni, searchTerm, yearFilter, currentUser]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
   const start = (currentPage - 1) * ITEMS_PER_PAGE;

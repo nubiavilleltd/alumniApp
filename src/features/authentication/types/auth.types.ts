@@ -148,8 +148,13 @@ export interface AuthUserSummary {
 //   user: AuthSessionUser;
 // }
 
+// export interface LoginResponse {
+//   user: { id: string; memberId: string; role: string };
+//   accessToken: string;
+//   refreshToken: string;
+// }
 export interface LoginResponse {
-  user: { id: string; memberId: string; role: string };
+  user: AuthSessionUser;
   accessToken: string;
   refreshToken: string;
 }

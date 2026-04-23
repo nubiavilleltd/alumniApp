@@ -10,7 +10,7 @@ import { authApi } from '../services/auth.service';
 import { loginSchema } from '../schemas/authSchema';
 import { useIdentityStore } from '../stores/useIdentityStore';
 import { useTokenStore } from '../stores/useTokenStore';
-import type { LoginFormValues } from '../types/auth.types';
+import type { AuthSessionUser, LoginFormValues } from '../types/auth.types';
 import { AuthCard } from './AuthCard';
 import { toast } from '@/shared/components/ui/Toast';
 import { USER_ROUTES } from '@/features/user/routes';
@@ -81,24 +81,29 @@ export function LoginForm() {
       // Step 1: Authenticate — get tokens + minimal user
       const loginResponse = await authApi.login(values);
 
+      console.log('loginResponse', { loginResponse });
+
       // Step 2: Fetch the full profile using the returned user ID
       // This gives us fullName, photo, role, etc. for the nav to render immediately.
-      let fullProfile;
-      try {
-        const rawProfile = await authApi.getCurrentUserRaw(loginResponse.user.id);
-        fullProfile = mapCurrentUserResponse(rawProfile);
-      } catch {
-        // If the profile fetch fails, fall back to constructing a minimal user
-        // so login still succeeds — the profile will load later via useCurrentUser.
-        fullProfile = {
-          ...loginResponse.user,
-          fullName: '',
-          avatarInitials: '',
-          email: values.email,
-          graduationYear: 0,
-          createdAt: new Date().toISOString(),
-        } as any;
-      }
+      let fullProfile = loginResponse.user;
+      // try {
+      //   const rawProfile = await authApi.getCurrentUserRaw(loginResponse.user.id);
+      //   fullProfile = mapCurrentUserResponse(rawProfile);
+      // } catch {
+      //   // If the profile fetch fails, fall back to constructing a minimal user
+      //   // so login still succeeds — the profile will load later via useCurrentUser.
+      //   // fullProfile = {
+      //   //   ...loginResponse.user,
+      //   //   fullName: '',
+      //   //   avatarInitials: '',
+      //   //   email: values.email,
+      //   //   graduationYear: 0,
+      //   //   createdAt: new Date().toISOString(),
+      //   // } as any;
+
+      //   console.log("Profile could not be fetched")
+      //   throw new Error("Profile could not be fetched")
+      // }
 
       // Step 3: Persist full profile to localStorage — nav renders synchronously
       // setSession(fullProfile, loginResponse.accessToken, loginResponse.refreshToken, values.rememberMe);
@@ -110,7 +115,7 @@ export function LoginForm() {
       setRememberMe(values.rememberMe as boolean);
 
       const fallbackDestination =
-        fullProfile.role === 'admin' ? ADMIN_ROUTES.DASHBOARD : USER_ROUTES.DASHBOARD;
+        fullProfile?.role === 'admin' ? ADMIN_ROUTES.DASHBOARD : USER_ROUTES.DASHBOARD;
 
       // Step 4: Navigate
       navigate(from ?? fallbackDestination, { replace: true });

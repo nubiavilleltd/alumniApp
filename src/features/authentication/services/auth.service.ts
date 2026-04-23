@@ -65,6 +65,8 @@ export const authApi = {
   async login(values: LoginFormValues): Promise<LoginResponse> {
     try {
       const { data } = await apiClient.post(API_ENDPOINTS.AUTH.LOGIN, mapLoginPayload(values));
+
+      console.log(' login raw', { data, mapped: mapLoginResponse(data) });
       return mapLoginResponse(data);
     } catch (error) {
       throw handleApiError(error, mapLoginError(error), 'authApi.login');
