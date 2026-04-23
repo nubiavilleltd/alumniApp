@@ -54,6 +54,7 @@ import EditProfilePage from './features/user/pages/EditProfilePage';
 import ResourcesPage from './pages/resources/ResourcesPage';
 import WelfarePage from './pages/welfare/WelfarePage';
 import WelfareZonesPage from './pages/welfare/WelfareZonesPage';
+import JobVacanciesPage from './features/jobVacancies/pages/JobVacanciesPage';
 
 export default function App() {
   return (
@@ -105,6 +106,14 @@ export default function App() {
           <Route path="/resources" element={<ResourcesPage />} />
           <Route path="/welfare" element={<WelfarePage />} />
           <Route path="/welfare/zones" element={<WelfareZonesPage />} />
+          <Route
+            path={ROUTES.JOB_VACANCIES}
+            element={
+              <ErrorBoundary>
+                <JobVacanciesPage />
+              </ErrorBoundary>
+            }
+          />
           <Route
             path={ROUTES.TERMS}
             element={

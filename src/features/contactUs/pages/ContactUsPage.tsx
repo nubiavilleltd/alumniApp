@@ -25,6 +25,7 @@ const contactMethods = [
 export function ContactUsPage() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    event.stopPropagation();
   };
 
   return (
@@ -93,7 +94,7 @@ export function ContactUsPage() {
                 />
               </div>
 
-              <Button type="submit" size="lg" className="contact-form-card__button">
+              <Button type="button" size="lg" className="contact-form-card__button">
                 Send message
               </Button>
             </form>

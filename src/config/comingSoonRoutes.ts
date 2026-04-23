@@ -4,5 +4,4 @@ export const COMING_SOON_ROUTES = [
   { prefix: 'news', title: 'Announcements' },
   { prefix: 'resources', title: 'Resources' },
   { prefix: 'welfare', title: 'Welfare' },
-  { prefix: 'job-vacancies', title: 'Job Vacancies' },
 ];

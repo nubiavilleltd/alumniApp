@@ -10,4 +10,4 @@ About Us . Alumnae Directory . News & Events (Dropdown) . Marketplace (Dropdown)
 News and Events dropdown will have Announcements, Events and Our Projects
 Marketplace has Marketplace and job vacancies
 
-What we are not changing
+The user profile dropdown now contains messaging center and my registered events, be very careful with this its important we make no mistakes
