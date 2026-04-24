@@ -282,10 +282,10 @@ export default function EditEventPage() {
   return (
     <>
       <SEO title={`Edit — ${event.title}`} description="Edit event details" />
-      <Breadcrumbs items={breadcrumbItems} />
+      {/* <Breadcrumbs items={breadcrumbItems} /> */}
 
       <section className="section">
-        <div className="container-custom max-w-3xl">
+        <div className="container-custom ">
           <div className="mb-8 flex items-center justify-between">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold italic mb-2">Edit Event</h1>

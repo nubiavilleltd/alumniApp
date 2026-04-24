@@ -202,10 +202,10 @@ export default function CreateEventPage() {
   return (
     <>
       <SEO title="Create Event" description="Create a new event" />
-      <Breadcrumbs items={breadcrumbItems} />
+      {/* <Breadcrumbs items={breadcrumbItems} /> */}
 
       <section className="section">
-        <div className="container-custom max-w-3xl">
+        <div className="container-custom">
           <div className="mb-8">
             <h1 className="text-3xl md:text-4xl font-bold italic mb-2">Create Event</h1>
             <p className="text-gray-500 text-sm">Add a new event to the alumni calendar</p>

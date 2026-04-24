@@ -227,7 +227,7 @@ export function AdminEventRegistrationsPage() {
   return (
     <>
       <SEO title="Event Registrations" description="View and manage event registrations" />
-      <Breadcrumbs items={breadcrumbItems} />
+      {/* <Breadcrumbs items={breadcrumbItems} /> */}
 
       <section className="section py-8">
         <div className="container-custom max-w-7xl">

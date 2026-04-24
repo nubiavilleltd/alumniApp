@@ -339,7 +339,7 @@ export default function SettingsPage() {
       <Breadcrumbs items={breadcrumbItems} />
 
       <section className="section py-8">
-        <div className="container-custom max-w-5xl">
+        <div className="container-custom">
           <div className="mb-7">
             <h1 className="text-2xl font-bold text-gray-900">Account Settings</h1>
             <p className="text-sm text-gray-500 mt-1">Manage security and account preferences</p>

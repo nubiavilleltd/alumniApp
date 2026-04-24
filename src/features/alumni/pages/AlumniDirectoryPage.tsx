@@ -166,8 +166,8 @@ export function AlumniDirectoryPage() {
     <>
       <SEO title="Alumnae Directory" />
 
-      <section className="bg-gray-100 min-h-screen py-6">
-        <div className="max-w-7xl mx-auto px-4">
+      <section className="bg-gray-100 min-h-screen py-8">
+        <div className="container-custom mx-auto px-4">
           {/* Title */}
           <h1 className="text-2xl md:text-3xl font-bold mb-6">Alumnae Directory</h1>
 
