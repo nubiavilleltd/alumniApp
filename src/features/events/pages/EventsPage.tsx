@@ -89,31 +89,31 @@ function CalendarBlock({
       onClick={onClick}
       title={event.title}
       className={`
-        w-full text-left rounded-xl p-2 sm:p-2.5
+        w-full text-left rounded-md
+        px-1.5 py-1
+        sm:rounded-xl sm:p-2 sm:p-2.5
         transition-all duration-200
         hover:brightness-95
       `}
       style={{
-        backgroundColor: color + '30', // soft background
+        backgroundColor: color + '30',
         border: `1px solid ${color}20`,
         ...(isActive && { outline: `2px solid ${color}` }),
       }}
     >
-      {/* Date badge (dark pill like screenshot) */}
-      <div className="inline-flex items-center gap-1 px-2 py-[3px] rounded-md text-[10px] font-medium text-white bg-gray-800 mb-1.5">
+      {/* Hidden on mobile, visible on desktop */}
+      <div className="hidden sm:inline-flex items-center gap-1 px-2 py-[3px] rounded-md text-[10px] font-medium text-white bg-gray-800 mb-1.5">
         <span>📅</span>
         {formatShort(event.date)}
       </div>
 
-      {/* Title */}
-      <p className="text-[11px] sm:text-xs font-semibold text-gray-800 leading-tight line-clamp-2">
+      {/* Compact title */}
+      <p className="text-[10px] sm:text-xs font-semibold text-gray-800 leading-tight truncate">
         {event.title}
       </p>
     </button>
   );
 }
-
-// ─── Calendar ─────────────────────────────────────────────────────────────────
 
 function Calendar({
   events,
@@ -130,6 +130,8 @@ function Calendar({
 }) {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
+
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
 
   const eventsByDate = useMemo(() => {
     const map = new Map<string, Event[]>();
@@ -178,18 +180,24 @@ function Calendar({
           return (
             <div
               key={idx}
-              className={`min-h-[60px] sm:min-h-[80px] p-0.5 sm:p-1 rounded-lg flex items-center justify-center ${
-                calDay.isCurrentMonth ? 'bg-white' : 'bg-gray-50/60'
-              } ${isToday ? 'ring-1 ring-primary-400' : 'ring-1 ring-gray-100'}`}
+              className={`
+    min-h-[60px] sm:min-h-[80px]
+    p-1
+    rounded-lg
+    flex flex-col items-start gap-1
+    ${calDay.isCurrentMonth ? 'bg-white' : 'bg-gray-50/60'}
+    ${isToday ? 'ring-1 ring-primary-400' : 'ring-1 ring-gray-100'}
+  `}
             >
               <span
-                className={`block text-right text-[10px] sm:text-xs font-semibold mb-0.5 ${
+                className={`text-[10px] sm:text-xs font-semibold ${
                   calDay.isCurrentMonth ? 'text-gray-700' : 'text-gray-300'
                 } ${isToday ? 'text-primary-600' : ''}`}
               >
-                {dayEvents.length == 0 ? calDay.day : ''}
+                {calDay.day}
               </span>
-              {dayEvents.slice(0, 2).map((ev) => (
+
+              {dayEvents.slice(0, isMobile ? 1 : 2).map((ev) => (
                 <CalendarBlock
                   key={ev.id}
                   event={ev}
@@ -197,8 +205,15 @@ function Calendar({
                   onClick={() => onEventClick(ev)}
                 />
               ))}
-              {dayEvents.length > 2 && (
-                <span className="text-[9px] text-gray-400">+{dayEvents.length - 2}</span>
+
+              {dayEvents.length > (isMobile ? 1 : 2) && (
+                <button
+                  type="button"
+                  onClick={() => onEventClick(dayEvents[0])}
+                  className="text-[9px] text-primary-500 font-medium"
+                >
+                  +{dayEvents.length - (isMobile ? 1 : 2)}
+                </button>
               )}
             </div>
           );
@@ -427,10 +442,6 @@ export function EventsPage() {
               >
                 <Icon icon="mdi:arrow-right" className="w-5 h-5 text-primary-500" />
               </button>
-              {/* <span className="font-bold text-gray-900 text-lg flex items-center gap-1 ml-1">
-                {MONTH_NAMES[calendarDate.getMonth()]}
-                <Icon icon="mdi:chevron-down" className="w-6 h-6 text-gray-400" />
-              </span> */}
 
               <MonthYearPicker value={calendarDate} onChange={handleDateChange} />
             </div>
