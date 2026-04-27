@@ -21,6 +21,8 @@ import { DeleteConfirmModal } from '../components/DeleteConfirmModal';
 import { toast } from '@/shared/components/ui/Toast';
 import { EVENT_ROUTES } from '../routes';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
+import { TimePicker } from '@/shared/components/ui/input/TimePicker';
+import { DatePicker } from '@/shared/components/ui/input/DatePicker';
 
 // ─── Schema ───────────────────────────────────────────────────────────────────
 
@@ -332,31 +334,33 @@ export default function EditEventPage() {
                 error={errors.location?.message}
                 {...register('location')}
               />
-              <FormInput
+
+              <DatePicker
                 label="Event Date"
                 id="event_date"
-                type="date"
                 required
-                min={new Date().toISOString().split('T')[0]}
+                min={new Date().toISOString().split('T')[0]} // same as before
                 error={errors.event_date?.message}
-                {...register('event_date')}
+                value={watch('event_date')} // controlled
+                onValueChange={(val) => setValue('event_date', val, { shouldValidate: true })}
               />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormInput
+              <TimePicker
                 label="Start Time"
                 id="start_time"
-                type="time"
                 error={errors.start_time?.message}
-                {...register('start_time')}
+                value={watch('start_time')}
+                onValueChange={(val) => setValue('start_time', val, { shouldValidate: true })}
               />
-              <FormInput
+
+              <TimePicker
                 label="End Time"
                 id="end_time"
-                type="time"
                 error={errors.end_time?.message}
-                {...register('end_time')}
+                value={watch('end_time')}
+                onValueChange={(val) => setValue('end_time', val, { shouldValidate: true })}
               />
             </div>
 
