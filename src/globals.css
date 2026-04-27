@@ -2412,76 +2412,55 @@ input[type='password']::-webkit-caps-lock-indicator {
 .contact-page {
   min-height: calc(100vh - 5rem);
   overflow: hidden;
-  background: #f8f8f7;
+  background: #f8f6f2;
   color: #071116;
 }
 
 .contact-page__shell {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(16rem, 0.82fr) minmax(0, 1.5fr);
-  align-items: center;
-  gap: clamp(2rem, 4vw, 4rem);
-  width: min(100%, 80rem);
+  grid-template-columns: minmax(18rem, 0.92fr) minmax(0, 1.38fr);
+  align-items: start;
+  gap: clamp(2.5rem, 4vw, 4.5rem);
+  width: min(100%, 87.5rem);
   margin: 0 auto;
-  padding: clamp(2.25rem, 4.5vw, 3.5rem) 1rem clamp(3rem, 5vw, 4rem);
-}
-
-.contact-page__arrow {
-  position: absolute;
-  top: clamp(0.85rem, 1.8vw, 1.35rem);
-  left: clamp(25rem, 34vw, 29rem);
-  z-index: 1;
-  width: clamp(5.75rem, 8vw, 7.5rem);
-  height: clamp(3.9rem, 5.5vw, 4.9rem);
-  border-top: 0.5rem solid rgb(var(--color-primary-500));
-  border-left: 0.5rem solid rgb(var(--color-primary-500));
-  border-radius: 999px 0 0 0;
-  transform: rotate(16deg);
-  pointer-events: none;
-}
-
-.contact-page__arrow::after {
-  content: '';
-  position: absolute;
-  right: -0.7rem;
-  bottom: -0.55rem;
-  width: 1.45rem;
-  height: 1.45rem;
-  border-right: 0.5rem solid rgb(var(--color-primary-500));
-  border-bottom: 0.5rem solid rgb(var(--color-primary-500));
-  transform: rotate(7deg);
+  padding: clamp(2.75rem, 5vw, 4.75rem) clamp(1rem, 2vw, 1.5rem) clamp(4rem, 7vw, 6rem);
 }
 
 .contact-intro {
   position: relative;
   z-index: 2;
+  padding-top: 0;
 }
 
 .contact-intro__title {
-  max-width: 30rem;
+  max-width: 33rem;
   margin: 0;
   color: #071116;
-  font-size: clamp(2rem, 3vw, 2.9rem);
+  font-size: clamp(2.65rem, 4vw, 4rem);
   font-weight: 800;
-  line-height: 1.08;
-  letter-spacing: 0;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
 }
 
 .contact-intro__copy {
-  max-width: 27rem;
-  margin: 0.9rem 0 0;
-  color: #535b66;
-  font-size: clamp(1rem, 1.55vw, 1.25rem);
+  max-width: 26rem;
+  margin: 1rem 0 0;
+  color: #4e5d72;
+  font-size: clamp(1.15rem, 1.6vw, 1.4rem);
   font-weight: 500;
-  line-height: 1.36;
+  line-height: 1.25;
   letter-spacing: 0;
 }
 
 .contact-intro__details {
   display: grid;
-  gap: clamp(1.35rem, 2.5vw, 2rem);
-  margin-top: clamp(2.25rem, 4vw, 3.25rem);
+  gap: clamp(1.75rem, 2.75vw, 2.35rem);
+  margin-top: clamp(2.5rem, 4vw, 3.5rem);
+}
+
+.contact-detail {
+  max-width: 25rem;
 }
 
 .contact-detail__header {
@@ -2492,26 +2471,27 @@ input[type='password']::-webkit-caps-lock-indicator {
 
 .contact-detail__icon {
   display: inline-flex;
-  width: 3.05rem;
-  height: 3.05rem;
+  width: 2.95rem;
+  height: 2.95rem;
   flex: 0 0 auto;
   align-items: center;
   justify-content: center;
   border: 1px solid #dceafe;
-  border-radius: 0.75rem;
+  border-radius: 0.85rem;
   background: #ffffff;
-  color: #071116;
+  box-shadow: 0 1px 0 rgba(7, 17, 22, 0.03);
+  color: #10202e;
 }
 
 .contact-detail__icon svg {
-  width: 1.35rem;
-  height: 1.35rem;
+  width: 1.3rem;
+  height: 1.3rem;
 }
 
 .contact-detail__label {
   margin: 0;
   color: #071116;
-  font-size: clamp(1rem, 1.35vw, 1.15rem);
+  font-size: clamp(1.05rem, 1.3vw, 1.2rem);
   font-weight: 800;
   line-height: 1.15;
   letter-spacing: 0;
@@ -2519,21 +2499,38 @@ input[type='password']::-webkit-caps-lock-indicator {
 
 .contact-detail__value {
   max-width: 23rem;
-  margin: 0.7rem 0 0;
-  color: #535b66;
-  font-size: clamp(0.95rem, 1.25vw, 1.12rem);
+  margin: 0.8rem 0 0;
+  color: #4e5d72;
+  font-size: clamp(1rem, 1.18vw, 1.16rem);
   font-weight: 500;
   line-height: 1.35;
   letter-spacing: 0;
+}
+
+.contact-detail__line {
+  display: block;
 }
 
 .contact-form-card {
   position: relative;
   z-index: 2;
   width: 100%;
-  border-radius: clamp(1.25rem, 2vw, 1.7rem);
+  border-radius: clamp(1.55rem, 2.5vw, 2rem);
   background: #ffffff;
-  padding: clamp(1.5rem, 3vw, 2.25rem) clamp(1.25rem, 2.7vw, 2rem);
+  padding: clamp(1.8rem, 3vw, 2.4rem) clamp(1.45rem, 2.7vw, 2rem) clamp(1.55rem, 2.75vw, 1.95rem);
+  box-shadow: 0 0 0 1px rgba(7, 17, 22, 0.02);
+}
+
+.contact-form-card__arrow {
+  position: absolute;
+  top: clamp(-3.8rem, -5vw, -2.65rem);
+  left: clamp(-6rem, -6vw, -4.25rem);
+  z-index: 1;
+  display: block;
+  width: clamp(8.5rem, 11vw, 10.5rem);
+  height: auto;
+  pointer-events: none;
+  user-select: none;
 }
 
 .contact-form-card__form {
@@ -2544,7 +2541,7 @@ input[type='password']::-webkit-caps-lock-indicator {
 .contact-form-card__grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(1.1rem, 2vw, 1.65rem) clamp(1.25rem, 2.5vw, 2rem);
+  gap: clamp(1.2rem, 2vw, 1.65rem) clamp(1.25rem, 2.2vw, 1.85rem);
 }
 
 .contact-form-card__field--full {
@@ -2560,29 +2557,29 @@ input[type='password']::-webkit-caps-lock-indicator {
 .contact-form-card .textarea-input__label {
   margin: 0;
   color: #858585;
-  font-size: clamp(0.9rem, 1.1vw, 1rem);
+  font-size: clamp(0.94rem, 1.05vw, 1rem);
   font-weight: 600;
   line-height: 1.2;
   letter-spacing: 0;
 }
 
 .contact-form-card .base-input__control {
-  min-height: clamp(3rem, 4vw, 3.45rem);
+  min-height: clamp(3.05rem, 4vw, 3.45rem);
   border: 0;
   border-radius: 999px;
-  background: #f8f8f7;
+  background: #f7f5f1;
   box-shadow: none;
 }
 
 .contact-form-card .base-input__field {
-  height: clamp(3rem, 4vw, 3.45rem);
+  height: clamp(3.05rem, 4vw, 3.45rem);
   border: 0;
   background: transparent;
   color: #071116;
-  font-size: clamp(0.95rem, 1.15vw, 1.05rem);
+  font-size: clamp(0.98rem, 1.08vw, 1.05rem);
   font-weight: 500;
   letter-spacing: 0;
-  padding: 0 clamp(1rem, 1.5vw, 1.25rem);
+  padding: 0 clamp(1rem, 1.4vw, 1.2rem);
 }
 
 .contact-form-card .base-input__field::placeholder,
@@ -2592,17 +2589,17 @@ input[type='password']::-webkit-caps-lock-indicator {
 }
 
 .contact-form-card .textarea-input__field {
-  min-height: clamp(8rem, 12vw, 9.75rem);
+  min-height: clamp(8.8rem, 12vw, 10rem);
   border: 0;
-  border-radius: clamp(1.1rem, 2vw, 1.45rem);
-  background: #f8f8f7;
+  border-radius: clamp(1.25rem, 2vw, 1.55rem);
+  background: #f7f5f1;
   box-shadow: none;
   color: #071116;
-  font-size: clamp(0.95rem, 1.15vw, 1.05rem);
+  font-size: clamp(0.98rem, 1.08vw, 1.05rem);
   font-weight: 500;
   line-height: 1.45;
   letter-spacing: 0;
-  padding: clamp(0.95rem, 1.5vw, 1.2rem);
+  padding: clamp(1rem, 1.5vw, 1.2rem);
 }
 
 .contact-form-card .base-input__control:focus-within,
@@ -2612,17 +2609,17 @@ input[type='password']::-webkit-caps-lock-indicator {
 
 .contact-form-card__button {
   align-self: flex-start;
-  min-width: min(13rem, 100%);
-  min-height: 3.1rem;
-  margin-top: clamp(1.5rem, 3vw, 2.25rem);
+  min-width: min(11.75rem, 100%);
+  min-height: 2.9rem;
+  margin-top: clamp(1.55rem, 2.6vw, 2rem);
   border: 0;
   border-radius: 999px;
   background: rgb(var(--color-primary-500));
   color: #ffffff;
-  font-size: clamp(0.95rem, 1.1vw, 1.05rem);
+  font-size: clamp(0.96rem, 1.05vw, 1.02rem);
   font-weight: 700;
   letter-spacing: 0;
-  box-shadow: none;
+  box-shadow: 0 18px 30px rgba(0, 119, 204, 0.16);
 }
 
 .contact-form-card__button:hover {
@@ -2636,7 +2633,7 @@ input[type='password']::-webkit-caps-lock-indicator {
     width: min(100%, 58rem);
   }
 
-  .contact-page__arrow {
+  .contact-form-card__arrow {
     display: none;
   }
 

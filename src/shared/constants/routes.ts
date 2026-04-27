@@ -5,13 +5,14 @@ import { USER_ROUTES } from '@/features/user/routes';
 import { ADMIN_ROUTES } from '@/features/admin/routes';
 import { MARKETPLACE_ROUTES } from '@/features/marketplace/routes';
 import { PROJECT_ROUTES } from '@/features/projects/routes';
+import { ANNOUNCEMENT_ROUTES } from '@/features/announcements/routes';
 
 export const ROUTES = {
   HOME: '/',
   ABOUT: '/about',
   CONTACT: '/contact',
   DONATION: '/donation',
-  NEWS: '/news',
+  NEWS: ANNOUNCEMENT_ROUTES.ROOT,
   RESOURCES: '/resources',
   WELFARE: '/welfare',
   WELFARE_ZONES: '/welfare/zones',

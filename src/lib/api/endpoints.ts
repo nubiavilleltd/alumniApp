@@ -82,6 +82,11 @@ export const API_ENDPOINTS = {
     DONATE: (id: string) => `/projects/${id}/donate`,
   },
 
+  // ─── Contact ─────────────────────────────────────────────────────────────
+  CONTACT: {
+    CREATE: '/api/contact_us',
+  },
+
   // ─── Leadership ───────────────────────────────────────────────────────────
   LEADERSHIP: {
     GET_LEADERSHIP: '/api/get_leadership',
@@ -92,8 +97,9 @@ export const API_ENDPOINTS = {
 
   // ─── Announcements ────────────────────────────────────────────────────────
   ANNOUNCEMENTS: {
-    LIST: '/announcements',
-    DETAIL: (slug: string) => `/announcements/${slug}`,
+    LIST: '/api/get_announcements',
+    CREATE: '/api/create_announcement',
+    MANAGE: '/api/manage_announcement',
   },
 
   ADMIN_ENDPOINTS: {

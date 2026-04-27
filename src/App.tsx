@@ -18,6 +18,8 @@ import { NotFoundPage } from './pages/errors/NotFoundPage';
 import ProjectsPage from './features/projects/pages/ProjectsPage';
 import LeadershipPage from './features/leadership/pages/LeadershipPage';
 import AnnouncementsPage from './features/announcements/pages/BlogIndexPage';
+import BlogPostPage from './features/announcements/pages/BlogPostPage';
+import { ANNOUNCEMENT_ROUTES } from './features/announcements/routes';
 
 import { AuthPage } from './features/authentication/pages/AuthPage';
 import { RegisterDetailsPage } from './features/authentication/pages/RegisterDetailsPage';
@@ -47,6 +49,7 @@ import ProjectDetailsPage from './features/projects/pages/ProjectDetail';
 import { ADMIN_ROUTES } from './features/admin/routes';
 import { AdminMembersPage } from './features/admin/pages/AdminMembersPage';
 import { AdminEventRegistrationsPage } from './features/events/pages/AdminEventRegistrationsPage';
+import { AdminAnnouncementsPage } from './features/announcements/pages/AdminAnnouncementsPage';
 import { COMING_SOON_ROUTES } from './config/comingSoonRoutes';
 import { ComingSoonRouteHandler } from './pages/errors/ComingSoonRouteHandler';
 import { GuestRoute } from './shared/components/routing/GuestRoute';
@@ -92,6 +95,14 @@ export default function App() {
             element={
               <ErrorBoundary>
                 <AnnouncementsPage />
+              </ErrorBoundary>
+            }
+          />
+          <Route
+            path={ANNOUNCEMENT_ROUTES.DETAIL_PATH}
+            element={
+              <ErrorBoundary>
+                <BlogPostPage />
               </ErrorBoundary>
             }
           />
@@ -367,6 +378,17 @@ export default function App() {
               <AdminRoute>
                 <ErrorBoundary>
                   <AdminEventRegistrationsPage />
+                </ErrorBoundary>
+              </AdminRoute>
+            }
+          />
+
+          <Route
+            path={ADMIN_ROUTES.ANNOUNCEMENTS}
+            element={
+              <AdminRoute>
+                <ErrorBoundary>
+                  <AdminAnnouncementsPage />
                 </ErrorBoundary>
               </AdminRoute>
             }

@@ -11,6 +11,7 @@ interface DeleteConfirmModalProps {
   isDeleting: boolean;
   onConfirm: () => void;
   onCancel: () => void;
+  heading?: string;
   /** Override the description text if needed */
   description?: string;
 }
@@ -20,6 +21,7 @@ export function DeleteConfirmModal({
   isDeleting,
   onConfirm,
   onCancel,
+  heading = 'Delete Item?',
   description,
 }: DeleteConfirmModalProps) {
   return (
@@ -30,7 +32,7 @@ export function DeleteConfirmModal({
             <Icon icon="mdi:alert-circle-outline" className="w-5 h-5 text-red-600" />
           </div>
           <div>
-            <h3 className="text-gray-900 font-bold text-lg mb-1">Delete Event?</h3>
+            <h3 className="text-gray-900 font-bold text-lg mb-1">{heading}</h3>
             <p className="text-gray-600 text-sm">
               {description ?? (
                 <>

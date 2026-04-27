@@ -494,11 +494,11 @@ export function AdminDashboardPage() {
                       href: ADMIN_ROUTES.EVENT_REGISTRATIONS,
                       icon: 'mdi:clipboard-list-outline',
                     },
-                    // {
-                    //   label: 'Post Announcement',
-                    //   href: '/admin/announcements',
-                    //   icon: 'mdi:bullhorn-outline',
-                    // },
+                    {
+                      label: 'Manage Announcements',
+                      href: ADMIN_ROUTES.ANNOUNCEMENTS,
+                      icon: 'mdi:bullhorn-outline',
+                    },
                     {
                       label: 'View Marketplace',
                       href: MARKETPLACE_ROUTES.ROOT,
