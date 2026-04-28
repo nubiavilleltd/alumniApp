@@ -15,6 +15,7 @@ export const API_ENDPOINTS = {
     VERIFY_EMAIL: '/api/verify_email',
     RESEND_VERIFY_EMAIL: '/api/resend_verify_email',
     GET_VOUCHERS: '/api/get_vouchers',
+    GET_CITIES: '/api/get_cities',
   },
 
   // ─── Alumni ───────────────────────────────────────────────────────────────
