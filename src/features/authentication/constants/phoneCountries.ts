@@ -68,6 +68,9 @@ export const defaultPhoneCountry: SupportedPhoneCountry = 'NG';
 const phoneCountryByCode = Object.fromEntries(
   phoneCountryOptions.map((option) => [option.code, option]),
 ) as Record<SupportedPhoneCountry, (typeof phoneCountryOptions)[number]>;
+const phoneCountriesByDialCode = [...phoneCountryOptions].sort(
+  (left, right) => right.dialCode.length - left.dialCode.length,
+);
 
 export function getPhoneCountryOption(countryCode: SupportedPhoneCountry) {
   return phoneCountryByCode[countryCode];
@@ -77,8 +80,29 @@ export function normalizeNationalPhoneNumber(value: string) {
   return value.replace(/\D/g, '');
 }
 
-export function validateNationalPhoneNumber(countryCode: SupportedPhoneCountry, value: string) {
+function stripNationalTrunkPrefix(countryCode: SupportedPhoneCountry, value: string) {
+  const country = getPhoneCountryOption(countryCode);
+  if (country.pattern.test(value)) {
+    return value;
+  }
+
+  if (value.startsWith('0') && country.pattern.test(value.slice(1))) {
+    return value.slice(1);
+  }
+
+  return value;
+}
+
+export function normalizePhoneNumberForCountry(countryCode: SupportedPhoneCountry, value: string) {
   const digits = normalizeNationalPhoneNumber(value);
+  const normalized = stripNationalTrunkPrefix(countryCode, digits);
+  const country = getPhoneCountryOption(countryCode);
+
+  return normalized.slice(0, country.maxLength);
+}
+
+export function validateNationalPhoneNumber(countryCode: SupportedPhoneCountry, value: string) {
+  const digits = stripNationalTrunkPrefix(countryCode, normalizeNationalPhoneNumber(value));
   const country = getPhoneCountryOption(countryCode);
 
   if (!digits) {
@@ -96,8 +120,50 @@ export function formatPhoneNumberWithCountryCode(
   countryCode: SupportedPhoneCountry,
   value: string,
 ) {
-  const digits = normalizeNationalPhoneNumber(value);
+  const digits = normalizePhoneNumberForCountry(countryCode, value);
   const country = getPhoneCountryOption(countryCode);
 
   return digits ? `${country.dialCode} ${digits}` : country.dialCode;
+}
+
+export function formatOptionalPhoneNumberWithCountryCode(
+  countryCode: SupportedPhoneCountry,
+  value: string,
+) {
+  const digits = normalizePhoneNumberForCountry(countryCode, value);
+  return digits ? formatPhoneNumberWithCountryCode(countryCode, digits) : '';
+}
+
+export function parseStoredPhoneNumber(
+  value: string | null | undefined,
+  fallbackCountry: SupportedPhoneCountry = defaultPhoneCountry,
+) {
+  const digits = normalizeNationalPhoneNumber(value ?? '');
+
+  if (!digits) {
+    return {
+      countryCode: fallbackCountry,
+      nationalNumber: '',
+    };
+  }
+
+  for (const option of phoneCountriesByDialCode) {
+    const dialDigits = normalizeNationalPhoneNumber(option.dialCode);
+    if (!digits.startsWith(dialDigits)) {
+      continue;
+    }
+
+    const candidate = stripNationalTrunkPrefix(option.code, digits.slice(dialDigits.length));
+    if (!candidate || option.pattern.test(candidate)) {
+      return {
+        countryCode: option.code,
+        nationalNumber: candidate.slice(0, option.maxLength),
+      };
+    }
+  }
+
+  return {
+    countryCode: fallbackCountry,
+    nationalNumber: normalizePhoneNumberForCountry(fallbackCountry, digits),
+  };
 }

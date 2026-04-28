@@ -3,36 +3,21 @@
 import React from 'react';
 import { Icon } from '@iconify/react';
 import type { AuthSessionUser, PrivacySettings } from '@/features/authentication/types/auth.types';
-
-/**
- * Privacy Helper Utilities
- *
- * These functions handle privacy enforcement when displaying user/alumni data.
- * They check whether a field should be visible to the current viewer based on
- * the field owner's privacy settings.
- *
- * Privacy Rules (2-level system):
- * - 'public': Visible to everyone (including logged-out visitors)
- * - 'private': Visible only to the field owner themselves
- *
- * TODO: When backend is ready, privacy checks should be enforced server-side.
- * These client-side checks are for UI display only - the backend must not
- * return private data in API responses to unauthorized viewers.
- */
+import { Alumni } from '../types/alumni.types';
 
 /**
  * Check if a field is visible to the current viewer
  *
  * @param fieldOwner - The user whose field we're checking
- * @param fieldName - The field to check (e.g., 'photo', 'whatsappPhone')
+ * @param fieldName - The field to check (e.g., 'photo', 'phone')
  * @param currentViewer - The logged-in user viewing the field (or null if not logged in)
  * @returns true if the field should be visible, false otherwise
  */
 
 export function isFieldVisible(
-  fieldOwner: AuthSessionUser | { privacy?: PrivacySettings; id?: string },
+  fieldOwner: Alumni,
   fieldName: keyof PrivacySettings,
-  currentViewer: AuthSessionUser | null,
+  currentViewer: Alumni | null,
 ): boolean {
   // User can always see their own fields
   if (currentViewer?.memberId === fieldOwner.id) {
@@ -102,10 +87,7 @@ export function getPhotoDisplay(photoUrl: string | undefined, isVisible: boolean
  * Check if ANY contact info is visible
  * Useful for determining whether to show a "Contact" section at all
  */
-export function hasVisibleContactInfo(
-  fieldOwner: AuthSessionUser | { privacy?: PrivacySettings; id?: string },
-  currentViewer: AuthSessionUser | null,
-): boolean {
+export function hasVisibleContactInfo(fieldOwner: Alumni, currentViewer: Alumni | null): boolean {
   const contactFields: (keyof PrivacySettings)[] = ['whatsappPhone', 'alternativePhone'];
 
   return contactFields.some((field) => isFieldVisible(fieldOwner, field, currentViewer));
@@ -115,10 +97,7 @@ export function hasVisibleContactInfo(
  * Check if ANY location info is visible
  * Useful for determining whether to show a "Location" section at all
  */
-export function hasVisibleLocationInfo(
-  fieldOwner: AuthSessionUser | { privacy?: PrivacySettings; id?: string },
-  currentViewer: AuthSessionUser | null,
-): boolean {
+export function hasVisibleLocationInfo(fieldOwner: Alumni, currentViewer: Alumni | null): boolean {
   const locationFields: (keyof PrivacySettings)[] = ['residentialAddress', 'area', 'city'];
 
   return locationFields.some((field) => isFieldVisible(fieldOwner, field, currentViewer));
@@ -129,8 +108,8 @@ export function hasVisibleLocationInfo(
  * Useful for determining whether to show a "Professional" section at all
  */
 export function hasVisibleProfessionalInfo(
-  fieldOwner: AuthSessionUser | { privacy?: PrivacySettings; id?: string },
-  currentViewer: AuthSessionUser | null,
+  fieldOwner: Alumni,
+  currentViewer: Alumni | null,
 ): boolean {
   const professionalFields: (keyof PrivacySettings)[] = [
     'employmentStatus',
@@ -140,4 +119,14 @@ export function hasVisibleProfessionalInfo(
   ];
 
   return professionalFields.some((field) => isFieldVisible(fieldOwner, field, currentViewer));
+}
+
+export function parseFieldVisibility(value?: string | null) {
+  if (!value) return {};
+
+  try {
+    return JSON.parse(value);
+  } catch {
+    return {};
+  }
 }

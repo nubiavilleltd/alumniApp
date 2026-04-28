@@ -1,7 +1,5 @@
 // features/events/hooks/useEventRegistration.ts
 
-import { useEventStore } from '../stores/useEventStore';
-import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import {
   useRegisterEvent,
   useCancelRegistration,
@@ -9,41 +7,73 @@ import {
   useMyRegisteredEvents,
 } from './useEvents';
 import type { Event } from '../types/event.types';
+import { toast } from '@/shared/components/ui/Toast';
+import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 
+type RegisterPayload = {
+  status?: 'going' | 'maybe' | 'not_going';
+  additionalInfo?: string;
+};
 /**
  * Hook for managing event registration for the current user
- * Uses real API calls for registration
+ * Uses API hooks to track registration status
  */
 export function useEventRegistration(eventId: string) {
-  const currentUser = useAuthStore((state) => state.user);
-  const { getRegistration } = useEventStore();
+  const currentUser = useIdentityStore((state) => state.user);
+  const { data: userEvents = [], isLoading: isUserEventsLoading } = useMyRegisteredEvents();
+
   const registerMutation = useRegisterEvent();
   const cancelMutation = useCancelRegistration();
   const updateRSVPMutation = useUpdateRSVP();
 
-  const memberId = currentUser?.memberId || '';
-  const registration = getRegistration(eventId, memberId);
+  const memberId = currentUser?.id || '';
+
+  // Determine if the user is registered for this event
+  const registration = userEvents.find((event) => event.id === eventId);
   const isRegistered = !!registration;
+  const rsvpStatus = registration?.rsvpStatus || null;
 
   return {
     isRegistered,
     registration,
+    rsvpStatus,
     currentUser,
     isLoading:
-      registerMutation.isPending || cancelMutation.isPending || updateRSVPMutation.isPending,
-    register: (status: 'going' | 'maybe' | 'not_going' = 'going') => {
-      if (!currentUser) {
+      isUserEventsLoading ||
+      registerMutation.isPending ||
+      cancelMutation.isPending ||
+      updateRSVPMutation.isPending,
+
+    register: ({ status = 'going', additionalInfo = '' }: RegisterPayload) => {
+      if (!currentUser?.id) {
         console.error('User must be logged in to register for events');
+        toast.error('User must be logged in to register for events');
         return;
       }
-      registerMutation.mutate({ eventId, status });
+
+      registerMutation.mutate({
+        eventId,
+        status,
+        additionalInfo,
+      });
     },
+
+    // register: (status: 'going' | 'maybe' | 'not_going' = 'going', additionalInfo:string) => {
+    //   if (!currentUser?.id) {
+    //     console.error('User must be logged in to register for events');
+    //     toast.error("User must be logged in to register for events")
+    //     return;
+    //   }
+    //   registerMutation.mutate({ eventId, status, additionalInfo });
+    // },
+
     unregister: () => {
-      if (!currentUser) return;
+      if (!currentUser?.id) return;
       cancelMutation.mutate(eventId);
     },
+
     updateStatus: (status: 'going' | 'maybe' | 'not_going') => {
-      if (!currentUser) return;
+      if (!currentUser?.id) return;
       updateRSVPMutation.mutate({ eventId, status });
     },
   };
@@ -51,21 +81,12 @@ export function useEventRegistration(eventId: string) {
 
 /**
  * Hook to get attendee count for an event
- * Accepts Event | null | undefined and handles null/undefined gracefully
  */
 export function useEventAttendeeCount(event: Event | null | undefined) {
-  // Handle null or undefined event gracefully
   if (!event) {
-    return {
-      attendeeCount: 0,
-      capacity: 0,
-      isFull: false,
-      spotsLeft: undefined,
-    };
+    return { attendeeCount: 0, capacity: 0, isFull: false, spotsLeft: undefined };
   }
 
-  // Get attendee count from the event object
-  // The backend returns attendee_count directly
   const attendeeCount = (event as any).attendeeCount || (event as any).attendee_count || 0;
 
   return {
@@ -78,19 +99,13 @@ export function useEventAttendeeCount(event: Event | null | undefined) {
 
 /**
  * Hook to get all events the current user is registered for
- * Uses real API call to get user's registered events
  */
 export function useMyEvents() {
-  const currentUser = useAuthStore((state) => state.user);
+  const currentUser = useIdentityStore((state) => state.user);
   const { data: userEvents = [], isLoading } = useMyRegisteredEvents();
 
   if (!currentUser) {
-    return {
-      registrations: [],
-      registeredEventIds: [],
-      events: [],
-      isLoading: false,
-    };
+    return { registrations: [], registeredEventIds: [], events: [], isLoading: false };
   }
 
   const registeredEventIds = userEvents.map((event: Event) => event.id);

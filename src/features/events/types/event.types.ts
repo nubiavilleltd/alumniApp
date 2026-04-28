@@ -29,6 +29,7 @@ export type Event = {
   // ── Registration ──────────────────────────────────────────────────────
   capacity?: number; // ➕ NEW
   allowGuests?: boolean; // ➕ NEW
+  attendeeCount?: number;
 
   // ── Relations ─────────────────────────────────────────────────────────
   createdBy?: string;
@@ -41,4 +42,6 @@ export type Event = {
 
   // ── Legacy ────────────────────────────────────────────────────────────
   type?: string; // @deprecated - kept for backward compatibility
+
+  rsvpStatus?: 'going' | 'maybe' | 'not_going' | null;
 };

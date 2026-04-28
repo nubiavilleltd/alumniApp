@@ -11,10 +11,14 @@ import type {
   loginSchema,
   registerDetailsSchema,
   resetPasswordSchema,
+  changePasswordSchema,
 } from '../schemas/authSchema';
-import type { ApprovalStatus, AccountStatus, DuesStatus } from '../constants/mockAccounts';
 
 export type AuthMode = 'login' | 'register' | 'forgot-password' | 'reset-password';
+export type ApprovalStatus = 'pending' | 'approved' | 'rejected';
+export type AccountStatus = 'active' | 'suspended' | 'closed' | 'deactivated';
+// export type DuesStatus = 'paid' | 'owing' | 'exempt';
+export type DuesStatus = 'paid' | 'owing' | 'overdue' | 'exempt' | 'unknown';
 
 // ─── Privacy ──────────────────────────────────────────────────────────────────
 
@@ -29,6 +33,7 @@ export interface PrivacySettings {
   residentialAddress: FieldVisibility;
   area: FieldVisibility;
   city: FieldVisibility;
+  state: FieldVisibility;
   employmentStatus: FieldVisibility;
   occupations: FieldVisibility;
   industrySectors: FieldVisibility;
@@ -43,6 +48,7 @@ export const defaultPrivacySettings: PrivacySettings = {
   residentialAddress: 'private',
   area: 'public',
   city: 'public',
+  state: 'public',
   employmentStatus: 'public',
   occupations: 'public',
   industrySectors: 'public',
@@ -54,6 +60,7 @@ export const defaultPrivacySettings: PrivacySettings = {
 export interface AuthSessionUser {
   memberId: string;
   id: string;
+  userCode: string;
   slug: string;
   avatarInitials: string;
   profileHref: string;
@@ -79,6 +86,7 @@ export interface AuthSessionUser {
   otherNames: string;
   fullName: string;
   nameInSchool: string;
+  nickName: string;
   email: string;
   whatsappPhone: string;
   graduationYear: number;
@@ -86,11 +94,13 @@ export interface AuthSessionUser {
   photo?: string;
   alternativePhone?: string;
   birthDate?: string;
+  bio: string;
   houseColor?: string;
   isClassCoordinator?: boolean;
   residentialAddress?: string;
   area?: string;
   city?: string;
+  state?: string;
   employmentStatus?: string;
   occupations?: string[];
   industrySectors?: string[];
@@ -99,7 +109,11 @@ export interface AuthSessionUser {
 
   linkedin?: string;
   twitter?: string;
+  tiktok?: string;
   instagram?: string;
+  facebook?: string;
+  website?: string;
+  country?: string;
 
   privacy?: PrivacySettings;
 
@@ -113,6 +127,7 @@ export type LoginFormValues = z.input<typeof loginSchema>;
 export type ForgotPasswordFormValues = z.input<typeof forgotPasswordSchema>;
 export type RegisterDetailsFormValues = z.input<typeof registerDetailsSchema>;
 export type ResetPasswordFormValues = z.input<typeof resetPasswordSchema>;
+export type ChangePasswordFormValues = z.input<typeof changePasswordSchema>;
 
 // userId is intentionally absent — it is server state, not a form field.
 // It lives in RegistrationFlowState inside RegisterForm.tsx.
@@ -133,6 +148,11 @@ export interface AuthUserSummary {
 //   user: AuthSessionUser;
 // }
 
+// export interface LoginResponse {
+//   user: { id: string; memberId: string; role: string };
+//   accessToken: string;
+//   refreshToken: string;
+// }
 export interface LoginResponse {
   user: AuthSessionUser;
   accessToken: string;
@@ -156,15 +176,20 @@ export interface StartRegistrationResponse {
 }
 
 export interface VerifyRegistrationRequest {
-  draft: RegisterDetailsFormValues;
+  email?: string;
+  draft?: RegisterDetailsFormValues;
   code: string;
   userId: string; // Passed from flow state, not form state
 }
 
 export interface ResetPasswordRequest {
   token: string;
-  email?: string;
   password: string;
+  confirmPassword: string;
+}
+export interface ResetPasswordResponse {
+  status: 'success';
+  message: string;
 }
 
 export interface CompleteRegistrationResponse {
@@ -173,8 +198,10 @@ export interface CompleteRegistrationResponse {
   draft: AuthUserSummary;
 }
 
-export interface ResetPasswordResponse {
-  status: 'success';
-  message: string;
-  email?: string;
+export interface Voucher {
+  id: string;
+  fullName: string;
+  email: string;
+  graduationYear: string;
+  chapterId: string;
 }

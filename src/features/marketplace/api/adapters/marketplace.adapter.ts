@@ -9,10 +9,70 @@
 //   seller_name → owner
 //   title       → name
 
-import type { Business } from '../../types/marketplace.types';
+import type {
+  Business,
+  CreateListingFormData,
+  UpdateListingFormData,
+} from '../../types/marketplace.types';
 import { generateSlug, parseImages, extractList } from '@/lib/utils/adapters';
 
 // ─── Inbound (backend → frontend) ────────────────────────────────────────────
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL?.replace(/\/+$/, '') ?? '';
+
+function getNestedRecord(value: unknown): Record<string, unknown> {
+  return value && typeof value === 'object' && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : {};
+}
+
+function isRealPhotoUrl(value: unknown): value is string {
+  const photo = typeof value === 'string' ? value.trim() : '';
+
+  return Boolean(
+    photo &&
+    photo !== 'default.png' &&
+    !photo.includes('ui-avatars.com') &&
+    !photo.includes('default-avatar'),
+  );
+}
+
+function resolvePhotoUrl(value: unknown): string | undefined {
+  if (!isRealPhotoUrl(value)) return undefined;
+
+  const photo = value.trim();
+  const isAbsolute = /^(https?:)?\/\//i.test(photo) || /^(data|blob):/i.test(photo);
+
+  if (isAbsolute || !API_BASE_URL) return photo;
+  return photo.startsWith('/') ? `${API_BASE_URL}${photo}` : `${API_BASE_URL}/${photo}`;
+}
+
+function resolveOwnerPhoto(raw: Record<string, unknown>): string | undefined {
+  const profile = getNestedRecord(raw.profile);
+  const user = getNestedRecord(raw.user);
+  const seller = getNestedRecord(raw.seller);
+  const owner = getNestedRecord(raw.owner);
+
+  return resolvePhotoUrl(
+    raw.seller_avatar ??
+      raw.seller_photo ??
+      raw.owner_avatar ??
+      raw.owner_photo ??
+      raw.user_avatar ??
+      raw.user_photo ??
+      raw.profile_photo ??
+      raw.avatar ??
+      raw.photo ??
+      seller.avatar ??
+      seller.photo ??
+      owner.avatar ??
+      owner.photo ??
+      user.avatar ??
+      user.photo ??
+      profile.avatar ??
+      profile.photo,
+  );
+}
 
 export function mapBackendListingToBusiness(raw: unknown): Business {
   const d = raw as Record<string, unknown>;
@@ -21,6 +81,7 @@ export function mapBackendListingToBusiness(raw: unknown): Business {
     businessId: String(d.id ?? ''),
     ownerId: String(d.user_id ?? ''),
     owner: String(d.seller_name ?? 'Unknown'),
+    ownerPhoto: resolveOwnerPhoto(d),
     slug: generateSlug(String(d.title ?? ''), String(d.id ?? ''), 'business'),
     name: String(d.title ?? 'Untitled'),
     category: String(d.category ?? 'other'),
@@ -47,16 +108,6 @@ export function mapBackendListingList(rawResponse: unknown): Business[] {
 }
 
 // ─── Outbound (frontend → backend) ───────────────────────────────────────────
-
-export interface CreateListingFormData {
-  name: string;
-  category: string;
-  description: string;
-  location: string;
-  phone: string;
-  website?: string;
-  images: File[];
-}
 
 /**
  * Build the create-listing payload.
@@ -101,9 +152,55 @@ export function mapBusinessToCreatePayload(
  * Build the update-listing payload.
  * Sends to /manage_listing with function_type: "update".
  */
+// export function mapBusinessToUpdatePayload(
+//   businessId: string,
+//   formData: UpdateListingFormData,
+// ): FormData | Record<string, unknown> {
+//   const base: Record<string, unknown> = {
+//     id: businessId,
+//     function_type: 'update',
+//     title: formData.name,
+//     description: formData.description,
+//     category: formData.category,
+//     location: formData.location,
+//     phone: formData.phone,
+//     status: 'active',
+//     image_action: formData.imageAction
+//   };
+
+//   console.log("formData", {formData})
+
+//   if (formData.website?.trim()) base.website = formData.website.trim();
+
+//     if (formData.removeImages?.length) {
+//     base.remove_images = JSON.stringify(formData.removeImages);
+//   }
+
+//     const hasNewImages = (formData.images?.length ?? 0) > 0;
+// //   if (formData.images.length > 0) {
+// //     const fd = new FormData();
+// //     Object.entries(base).forEach(([k, v]) => fd.append(k, String(v ?? '')));
+// //     formData.images.forEach((img) => fd.append('images[]', img));
+// //     return fd;
+// //   }
+
+//   if (hasNewImages) {
+//     const fd = new FormData();
+//     Object.entries(base).forEach(([k, v]) => fd.append(k, String(v ?? '')));
+//     formData.images!.forEach((img) => fd.append('images', img));
+
+//      console.log("fd => ", {fd})
+//     return fd;
+//   }
+
+//   console.log("base => ", {base})
+
+//   return base;
+// }
+
 export function mapBusinessToUpdatePayload(
   businessId: string,
-  formData: CreateListingFormData,
+  formData: UpdateListingFormData,
 ): FormData | Record<string, unknown> {
   const base: Record<string, unknown> = {
     id: businessId,
@@ -116,15 +213,40 @@ export function mapBusinessToUpdatePayload(
     status: 'active',
   };
 
-  if (formData.website?.trim()) base.website = formData.website.trim();
+  if (formData.website?.trim()) {
+    base.website = formData.website.trim();
+  }
 
-  if (formData.images.length > 0) {
+  // ✅ Only set if defined
+  if (formData.imageAction) {
+    base.image_action = formData.imageAction;
+  }
+
+  // ✅ Required for deletion
+  if (formData.removeImages?.length) {
+    base.remove_images = JSON.stringify(formData.removeImages);
+  }
+
+  const hasNewImages = (formData.images?.length ?? 0) > 0;
+
+  if (hasNewImages) {
     const fd = new FormData();
-    Object.entries(base).forEach(([k, v]) => fd.append(k, String(v ?? '')));
-    formData.images.forEach((img) => fd.append('images[]', img));
+
+    Object.entries(base).forEach(([k, v]) => {
+      fd.append(k, String(v ?? ''));
+    });
+
+    // ✅ FIXED HERE
+    formData.images!.forEach((img) => {
+      fd.append('images', img);
+    });
+
+    console.log('fd => ', { fd });
+
     return fd;
   }
 
+  console.log('base => ', { base, formData });
   return base;
 }
 

@@ -8,6 +8,8 @@ import EmptyState from '@/shared/components/ui/EmptyState';
 import { PostBusinessModal } from '../components/PostYourBusinessModal';
 import { useMyBusinesses, useDeleteListing } from '../hooks/useMarketplace';
 import type { Business } from '../types/marketplace.types';
+import { MARKETPLACE_ROUTES } from '../routes';
+import { ROUTES } from '@/shared/constants/routes';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 function MyBusinessCardSkeleton() {
@@ -220,8 +222,8 @@ export default function MyBusinessPage() {
   };
 
   const breadcrumbItems = [
-    { label: 'Home', href: '/' },
-    { label: 'Marketplace', href: '/marketplace' },
+    { label: 'Home', href: ROUTES.HOME },
+    { label: 'Marketplace', href: MARKETPLACE_ROUTES.ROOT },
     { label: 'My Business' },
   ];
 
@@ -245,14 +247,16 @@ export default function MyBusinessPage() {
                 Manage and update your business listings in the Alumnae Marketplace.
               </p>
             </div>
-            <button
-              type="button"
-              onClick={() => setShowPostModal(true)}
-              className="flex-shrink-0 flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-colors"
-            >
-              <Icon icon="mdi:plus" className="w-4 h-4" />
-              Add Business
-            </button>
+            {myBusinesses.length > 0 && (
+              <button
+                type="button"
+                onClick={() => setShowPostModal(true)}
+                className="flex-shrink-0 flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-colors"
+              >
+                <Icon icon="mdi:plus" className="w-4 h-4" />
+                Add Business
+              </button>
+            )}
           </div>
 
           {/* Grid */}
@@ -277,7 +281,7 @@ export default function MyBusinessPage() {
           ) : (
             <EmptyState
               icon="mdi:storefront-outline"
-              title="You have no business listings yet"
+              title="You have no businesses posted yet"
               description="Add your business to the Alumnae Marketplace and let your sisters find and support you."
               actionLabel="Add Your Business"
               onAction={() => setShowPostModal(true)}

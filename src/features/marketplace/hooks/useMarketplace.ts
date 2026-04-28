@@ -1,11 +1,15 @@
 // features/marketplace/hooks/useMarketplace.ts
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
 import { toast } from '@/shared/components/ui/Toast';
 import { marketplaceService } from '../services/marketplace.service';
-import type { GetMarketplaceParams } from '../types/marketplace.types';
-import type { CreateListingFormData } from '../api/adapters/marketplace.adapter';
+import type {
+  CreateListingFormData,
+  GetMarketplaceParams,
+  UpdateListingFormData,
+} from '../types/marketplace.types';
+import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
+import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 
 // ─── Query keys ───────────────────────────────────────────────────────────────
 
@@ -46,7 +50,7 @@ export function useMarketplaceListing(id: string) {
  * not the frontend MBR-{year}-{hex} format.
  */
 export function useMyBusinesses() {
-  const currentUser = useAuthStore((state) => state.user);
+  const currentUser = useIdentityStore((state) => state.user);
   // user.id is the legacy numeric backend ID — this is what the backend's
   // user_id field contains. memberId is the frontend-format key and will
   // never match backend user_id values.
@@ -84,7 +88,7 @@ export function useLatestListings(count = 6) {
 /** Create a new listing. Caller passes form data; hook reads userId from store. */
 export function useCreateListing() {
   const queryClient = useQueryClient();
-  const currentUser = useAuthStore((state) => state.user);
+  const { data: currentUser, isLoading } = useCurrentUser();
 
   return useMutation({
     mutationFn: (formData: CreateListingFormData) => {
@@ -95,7 +99,7 @@ export function useCreateListing() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: marketplaceKeys.all });
-      toast.success('Your listing has been posted successfully.');
+      toast.success('Your business has been posted successfully.');
     },
     onError: (error: any) => {
       toast.fromError(error);
@@ -106,10 +110,10 @@ export function useCreateListing() {
 /** Update an existing listing. */
 export function useUpdateListing() {
   const queryClient = useQueryClient();
-  const currentUser = useAuthStore((state) => state.user);
+  const currentUser = useIdentityStore((state) => state.user);
 
   return useMutation({
-    mutationFn: ({ id, formData }: { id: string; formData: CreateListingFormData }) =>
+    mutationFn: ({ id, formData }: { id: string; formData: UpdateListingFormData }) =>
       marketplaceService.update(id, formData),
     onSuccess: (_, { id }) => {
       queryClient.invalidateQueries({ queryKey: marketplaceKeys.detail(id) });
@@ -117,7 +121,7 @@ export function useUpdateListing() {
       if (currentUser?.id) {
         queryClient.invalidateQueries({ queryKey: marketplaceKeys.userListings(currentUser.id) });
       }
-      toast.success('Your listing has been updated.');
+      toast.success('Your business has been updated.');
     },
     onError: (error: any) => {
       toast.fromError(error);
@@ -128,7 +132,7 @@ export function useUpdateListing() {
 /** Delete a listing. */
 export function useDeleteListing() {
   const queryClient = useQueryClient();
-  const currentUser = useAuthStore((state) => state.user);
+  const currentUser = useIdentityStore((state) => state.user);
 
   return useMutation({
     mutationFn: (id: string) => marketplaceService.delete(id),
@@ -137,7 +141,7 @@ export function useDeleteListing() {
       if (currentUser?.id) {
         queryClient.invalidateQueries({ queryKey: marketplaceKeys.userListings(currentUser.id) });
       }
-      toast.success('Your listing has been deleted.');
+      toast.success('Your business has been deleted.');
     },
     onError: (error: any) => {
       toast.fromError(error);

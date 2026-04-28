@@ -1,0 +1,322 @@
+// features/projects/pages/ProjectDetailsPage.tsx
+
+import { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Icon } from '@iconify/react';
+import { SEO } from '@/shared/common/SEO';
+import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
+import { AppLink } from '@/shared/components/ui/AppLink';
+import { useProjects, useDeleteProject } from '../hooks/useProjects';
+import { ProjectFormModal } from '../components/ProjectFormModal';
+import { ProjectNotFoundPage } from '../components/ProjectNotFoundPage';
+import type { Project } from '../types/project.types';
+import { ROUTES } from '@/shared/constants/routes';
+import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
+
+const PLACEHOLDER = 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=700&q=80';
+
+// ─── Skeleton ─────────────────────────────────────────────────────────────────
+
+function ProjectDetailsSkeleton() {
+  return (
+    <div className="container-custom py-6 sm:py-8 md:py-10 animate-pulse">
+      <div className="h-6 sm:h-8 bg-gray-200 rounded w-3/4 mb-4 sm:mb-6" />
+      <div className="w-full h-56 sm:h-72 md:h-80 bg-gray-200 rounded-lg mb-4" />
+      <div className="flex gap-2 mb-6 overflow-x-auto">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="h-14 w-14 sm:h-16 sm:w-16 bg-gray-200 rounded-md flex-shrink-0" />
+        ))}
+      </div>
+      <div className="space-y-2">
+        <div className="h-4 bg-gray-200 rounded w-full" />
+        <div className="h-4 bg-gray-200 rounded w-5/6" />
+        <div className="h-4 bg-gray-200 rounded w-3/4" />
+      </div>
+    </div>
+  );
+}
+
+// ─── Progress bar ─────────────────────────────────────────────────────────────
+
+function ProgressSection({ project }: { project: Project }) {
+  const { amountRaised, targetAmount } = project;
+  const pct =
+    targetAmount && targetAmount > 0
+      ? Math.min(100, Math.round((amountRaised / targetAmount) * 100))
+      : 0;
+
+  return (
+    <div className="bg-primary-50 rounded-xl p-4 sm:p-5 space-y-3">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold">
+            Amount Raised
+          </p>
+          <p className="text-xl sm:text-2xl font-bold text-primary-600">
+            ₦{amountRaised.toLocaleString()}
+          </p>
+        </div>
+        {targetAmount && (
+          <div className="text-left sm:text-right">
+            <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold">Goal</p>
+            <p className="text-lg sm:text-xl font-bold text-gray-700">
+              ₦{targetAmount.toLocaleString()}
+            </p>
+          </div>
+        )}
+      </div>
+
+      {targetAmount && (
+        <>
+          <div className="h-3 rounded-full bg-primary-100 overflow-hidden">
+            <div
+              className="h-full rounded-full bg-primary-500 transition-all duration-700"
+              style={{ width: `${pct}%` }}
+            />
+          </div>
+          <p className="text-xs text-gray-500 text-right">{pct}% of goal reached</p>
+        </>
+      )}
+    </div>
+  );
+}
+
+// ─── Delete confirmation ──────────────────────────────────────────────────────
+
+function DeleteConfirmModal({
+  title,
+  onConfirm,
+  onCancel,
+  isDeleting,
+}: {
+  title: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+  isDeleting: boolean;
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+      <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-5 sm:p-6">
+        <div className="flex items-start gap-3 mb-4">
+          <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+            <Icon icon="mdi:alert-circle-outline" className="w-5 h-5 text-red-600" />
+          </div>
+          <div>
+            <h3 className="text-gray-900 font-bold text-base sm:text-lg mb-1">Delete Project?</h3>
+            <p className="text-gray-600 text-sm">
+              Are you sure you want to delete <span className="font-semibold">{title}</span>? This
+              action cannot be undone.
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 justify-end mt-6">
+          <button
+            type="button"
+            onClick={onCancel}
+            disabled={isDeleting}
+            className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 disabled:opacity-50"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={onConfirm}
+            disabled={isDeleting}
+            className="px-5 sm:px-6 py-2 text-sm font-semibold bg-red-500 hover:bg-red-600 text-white rounded-lg flex items-center gap-2 disabled:opacity-50"
+          >
+            {isDeleting && <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" />}
+            Yes, Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
+
+export default function ProjectDetailsPage() {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+
+  const currentUser = useIdentityStore((state) => state.user);
+  const isAdmin = currentUser?.role === 'admin';
+
+  const { data: projects = [], isLoading } = useProjects();
+  const deleteMutation = useDeleteProject();
+
+  const [activeImage, setActiveImage] = useState(0);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  //   const placeholderImages = [
+  //   "https://dummyimage.com/200x200/ccc/000?text=1",
+  //   "https://dummyimage.com/200x200/ccc/000?text=2",
+  //   "https://dummyimage.com/200x200/ccc/000?text=3",
+  //   "https://dummyimage.com/200x200/ccc/000?text=4",
+  // ];
+  const placeholderImages = [
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=700&q=80',
+    'https://images.unsplash.com/photo-1518770660439-4636190af475?w=700&q=80',
+    'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=700&q=80',
+    ,
+  ];
+
+  if (isLoading) return <ProjectDetailsSkeleton />;
+
+  const project = projects.find((p) => String(p.id) === id);
+  if (!project) return <ProjectNotFoundPage />;
+
+  const images = project.images?.length ? project.images : placeholderImages;
+
+  const breadcrumbItems = [
+    { label: 'Home', href: ROUTES.HOME },
+    { label: 'Projects', href: ROUTES.PROJECTS.ROOT },
+    { label: project.title },
+  ];
+
+  const handleDelete = () => {
+    deleteMutation.mutate(project.id, {
+      onSuccess: () => navigate(ROUTES.PROJECTS.ROOT),
+    });
+  };
+
+  return (
+    <>
+      <SEO title={project.title} description={project.description} />
+      <Breadcrumbs items={breadcrumbItems} />
+
+      <section className="section">
+        <div className="container-custom max-w-4xl">
+          {/* Image gallery */}
+          <div className="flex flex-col gap-3 mb-6 sm:mb-8">
+            {/* Main image */}
+            <div className="w-full aspect-[16/10] sm:aspect-[16/9] bg-gray-100 rounded-xl overflow-hidden">
+              <img
+                src={images[activeImage]}
+                alt={project.title}
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            {/* Thumbnails */}
+            {images.length > 1 && (
+              <div className="flex gap-2 overflow-x-auto pb-1">
+                {images.map((img, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    onClick={() => setActiveImage(index)}
+                    className={`h-14 w-14 sm:h-16 sm:w-16 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all ${
+                      activeImage === index
+                        ? 'border-primary-500 ring-2 ring-primary-200'
+                        : 'border-transparent hover:border-gray-300'
+                    }`}
+                  >
+                    <img src={img} alt="" className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
+            <div className="flex-1 min-w-0">
+              {/* <div className="flex items-center gap-2 mb-2">
+                <span
+                  className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${
+                    project.status === 'completed'
+                      ? 'bg-green-100 text-green-700'
+                      : 'bg-primary-100 text-primary-700'
+                  }`}
+                >
+                  {project.status === 'completed' ? 'Completed' : 'Active'}
+                </span>
+                {Boolean(project.isFeatured) && (
+                  <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-700">
+                    Featured
+                  </span>
+                )}
+              </div> */}
+
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
+                {project.title}
+              </h1>
+              {project.createdByName && (
+                <p className="mt-1 text-sm text-gray-400 flex items-center gap-1 flex-wrap">
+                  <Icon icon="mdi:account-outline" className="w-4 h-4" />
+                  {project.createdByName}
+                  {project.chapterName && ` · ${project.chapterName}`}
+                </p>
+              )}
+            </div>
+
+            {/* Admin actions */}
+            {isAdmin && (
+              <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+                <button
+                  type="button"
+                  onClick={() => setShowEditModal(true)}
+                  className="flex items-center gap-1.5 border border-primary-200 text-primary-500 hover:bg-primary-50 text-xs font-semibold px-3 py-2 rounded-lg transition-colors"
+                >
+                  <Icon icon="mdi:pencil-outline" className="w-3.5 h-3.5" />
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowDeleteModal(true)}
+                  className="flex items-center gap-1.5 border border-red-200 text-red-500 hover:bg-red-50 text-xs font-semibold px-3 py-2 rounded-lg transition-colors"
+                >
+                  <Icon icon="mdi:trash-can-outline" className="w-3.5 h-3.5" />
+                  Delete
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Progress */}
+          {/* <ProgressSection project={project} /> */}
+
+          {/* Description */}
+          <div className="mt-6 sm:mt-8">
+            <h2 className="text-base sm:text-lg font-bold text-gray-900 mb-3">
+              About this project
+            </h2>
+            <p className="text-gray-600 leading-relaxed whitespace-pre-wrap text-sm sm:text-base">
+              {project.description}
+            </p>
+          </div>
+
+          {/* Back link */}
+          <div className="mt-8 sm:mt-10">
+            <AppLink
+              href={ROUTES.PROJECTS.ROOT}
+              className="inline-flex items-center gap-1 text-primary-500 hover:text-primary-600 text-sm font-semibold"
+            >
+              <Icon icon="mdi:arrow-left" className="w-4 h-4" />
+              Back to all projects
+            </AppLink>
+          </div>
+        </div>
+      </section>
+
+      {/* Edit modal */}
+      <ProjectFormModal
+        isOpen={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        editData={project}
+      />
+
+      {/* Delete confirmation */}
+      {showDeleteModal && (
+        <DeleteConfirmModal
+          title={project.title}
+          onConfirm={handleDelete}
+          onCancel={() => setShowDeleteModal(false)}
+          isDeleting={deleteMutation.isPending}
+        />
+      )}
+    </>
+  );
+}

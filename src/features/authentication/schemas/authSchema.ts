@@ -6,6 +6,7 @@
 
 import { z } from 'zod';
 import { phoneCountryOptions, validateNationalPhoneNumber } from '../constants/phoneCountries';
+import { NIGERIA_STATES } from '../constants/nigerianStates';
 
 const currentYear = new Date().getFullYear();
 const supportedPhoneCountries = phoneCountryOptions.map((option) => option.code) as [
@@ -55,10 +56,23 @@ export const registerDetailsSchema = z
       .regex(/^[A-Za-z][A-Za-z\s'.-]*$/, 'Please enter a valid name'),
 
     email: z.string().trim().email('Please enter a valid email address'),
+    state: z.string().refine((val) => NIGERIA_STATES.includes(val as any), {
+      message: 'Please select a valid state',
+    }),
 
     phoneCountry: z.enum(supportedPhoneCountries),
 
     whatsappPhone: z.string().trim().min(1, 'WhatsApp phone number is required'),
+    city: z
+      .string()
+      .trim()
+      .min(2, 'City must be at least 2 characters')
+      .regex(/^[A-Za-z][A-Za-z\s'.-]*$/, 'Please enter a valid city name'),
+    residentialAddress: z
+      .string()
+      .trim()
+      .min(2, 'Residential Address must be at least 2 characters'),
+    nickName: z.string().trim().min(1, 'Nickname is required'),
 
     graduationYear: z.coerce
       .number()
@@ -68,6 +82,7 @@ export const registerDetailsSchema = z
 
     password: passwordSchema,
     confirmPassword: z.string().min(1, 'Please confirm your password'),
+    voucherId: z.string().min(1, 'Please select a voucher who will approve your registration'),
   })
   .superRefine((data, ctx) => {
     const phoneError = validateNationalPhoneNumber(data.phoneCountry, data.whatsappPhone);
@@ -95,6 +110,17 @@ export const resetPasswordSchema = z
     confirmPassword: z.string().min(1, 'Please confirm your password'),
   })
   .refine((data) => data.password === data.confirmPassword, {
+    path: ['confirmPassword'],
+    message: 'Passwords do not match',
+  });
+
+export const changePasswordSchema = z
+  .object({
+    currentPassword: passwordSchema,
+    newPassword: passwordSchema,
+    confirmPassword: z.string().min(1, 'Please confirm your password'),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
     path: ['confirmPassword'],
     message: 'Passwords do not match',
   });

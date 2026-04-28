@@ -1,6 +1,14 @@
-import { DuesStatus } from '../../constants/mockAccounts';
-import type { LoginFormValues, AuthSessionUser } from '../../types/auth.types';
+import { mapBackendPrivacyToFrontend } from '@/features/user/api/adapters/privacy.adapter';
+
+import {
+  type LoginFormValues,
+  type AuthSessionUser,
+  defaultPrivacySettings,
+  LoginResponse,
+} from '../../types/auth.types';
 import { generateSlug, safeParseInt, stringToBoolean } from '@/lib/utils/adapters';
+
+export type DuesStatus = 'paid' | 'owing' | 'overdue' | 'exempt' | 'unknown';
 
 export function mapLoginPayload(values: LoginFormValues) {
   return {
@@ -9,61 +17,96 @@ export function mapLoginPayload(values: LoginFormValues) {
   };
 }
 
-export function mapLoginResponse(res: any): {
-  user: AuthSessionUser;
-  accessToken: string;
-  refreshToken: string;
-} {
+// export function mapLoginResponse(res: any): LoginResponse {
+//   return {
+//     accessToken: res.access_token || '',
+//     refreshToken: res.refresh_token || '',
+
+//     user: {
+//       id: String(res.user_id ?? ''),
+//       memberId: String(res.user_id ?? ''),
+//       role: res.user_role === 'admin' ? 'admin' : 'member',
+//     },
+//   };
+// }
+export function mapLoginResponse(res: any): LoginResponse {
+  return {
+    accessToken: res.access_token || '',
+    refreshToken: res.refresh_token || '',
+
+    user: mapCurrentUserResponse(res),
+  };
+}
+
+export function mapCurrentUserResponse(res: any): AuthSessionUser {
   const firstName = res.first_name || '';
   const lastName = res.last_name || '';
   const fullName = res.fullname || `${firstName} ${lastName}`.trim();
 
   const slug = generateSlug(res.email?.split('@')[0] || '', res.user_id, 'user');
+
   const DEFAULT_AVATAR = `https://ui-avatars.com/api/?name=${encodeURIComponent(
     `${firstName} ${lastName}`,
   )}&background=E5E7EB&color=6B7280&size=256`;
 
   return {
-    accessToken: res.access_token || '',
-    refreshToken: res.refresh_token || '',
+    id: String(res.user_id ?? ''),
+    memberId: String(res.user_id ?? ''),
+    userCode: res.user_code || undefined,
+    slug,
+    avatarInitials:
+      [firstName[0], lastName[0]].filter(Boolean).join('').toUpperCase() ||
+      res.email?.[0]?.toUpperCase() ||
+      '?',
+    profileHref: `/alumni/profiles/${res.user_id}`,
+    createdAt: new Date().toISOString(),
 
-    user: {
-      id: String(res.user_id ?? ''),
-      memberId: String(res.user_id ?? ''),
-      slug,
-      avatarInitials:
-        [firstName[0], lastName[0]].filter(Boolean).join('').toUpperCase() ||
-        res.email?.[0]?.toUpperCase() ||
-        '?',
+    chapterId: res.chapter_id ? String(res.chapter_id) : undefined,
+    role: res.user_role === 'admin' ? 'admin' : 'member',
+    isEmailVerified: stringToBoolean(res.email_verified) ?? false,
+    approvalStatus: res.is_approved ? 'approved' : 'pending',
+    accountStatus: res.active ? 'active' : 'deactivated',
+    duesStatus: mapBackendDues(res.dues_status),
+    fullName: res.fullname || fullName,
+    surname: lastName,
+    otherNames: firstName,
+    nameInSchool: res.name_in_school || '',
+    nickName: res.nick_name || '',
+    email: res.email || '',
+    whatsappPhone: res.phone || '',
+    alternativePhone: res.alternative_phone || undefined,
+    birthDate: res.birth_date || undefined,
 
-      profileHref: `/alumni/${slug}`,
-      createdAt: new Date().toISOString(),
-      chapterId: res.chapter_id ? String(res.chapter_id) : undefined,
+    graduationYear: safeParseInt(res.graduation_year) ?? 0,
+    houseColor: res.house_color || undefined,
 
-      role: res.user_role === 'admin' ? 'admin' : 'member',
+    photo: res.avatar && !res.avatar.includes('default.png') ? res.avatar : DEFAULT_AVATAR,
 
-      isEmailVerified: stringToBoolean(res.email_verified) ?? false,
+    bio: res.bio || '',
+    residentialAddress: res.residential_address || undefined,
+    area: res.area || undefined,
+    city: res.profile?.city || res.city || undefined,
+    state: res.state || res.state || undefined,
 
-      approvalStatus: res.is_approved ? 'approved' : 'pending',
-      accountStatus: res.active ? 'active' : 'deactivated',
+    employmentStatus: res.employment_status || undefined,
+    occupations: res.occupation ? [res.occupation] : undefined,
+    industrySectors: res.industry_sector ? [res.industry_sector] : undefined,
+    yearsOfExperience: safeParseInt(res.years_of_experience),
 
-      duesStatus: mapBackendDues(res.dues_status),
+    isClassCoordinator: stringToBoolean(res.is_coordinator),
+    isVolunteer: stringToBoolean(res.is_volunteer),
 
-      fullName,
-      surname: lastName,
-      otherNames: firstName,
-      nameInSchool: res.name_in_school || '',
-      email: res.email || '',
-      whatsappPhone: res.phone || '',
-      graduationYear: safeParseInt(res.graduation_year) ?? 0,
+    company: res.profile?.current_company || undefined,
+    position: res.profile?.current_position || undefined,
+    linkedin: res.profile?.linkedin || undefined,
+    twitter: res.profile?.twitter || undefined,
+    instagram: res.profile?.instagram || undefined,
+    facebook: res.profile?.facebook || undefined,
+    website: res.profile?.website || undefined,
+    country: res.profile?.country || undefined,
 
-      photo: res.avatar && !res.avatar.includes('default.png') ? res.avatar : DEFAULT_AVATAR,
-      bio: res.bio || undefined,
-
-      linkedin: res.profile?.linkedin,
-      twitter: res.profile?.twitter,
-      city: res.profile?.city,
-    } as AuthSessionUser,
+    // ✅ Always include privacy with defaults
+    privacy: mapBackendPrivacyToFrontend(res.profile),
   };
 }
 

@@ -1,38 +1,66 @@
+import { Icon } from '@iconify/react';
 import { AppLink } from '@/shared/components/ui/AppLink';
-
 import { useProjects } from '@/features/projects/hooks/useProjects';
-import { Project } from '@/features/projects/types/project.types';
+import type { Project } from '@/features/projects/types/project.types';
+import { ROUTES } from '@/shared/constants/routes';
+import EmptyState from '@/shared/components/ui/EmptyState';
+import { HomeSectionHeader } from './HomeSectionHeader';
 
-function ProjectCard({ project }: { project: Project }) {
+const PROJECT_FALLBACK_IMAGES = [
+  '/project-1.png',
+  '/project-2.png',
+  '/project-3.png',
+  '/news-3.png',
+];
+
+function getProjectImage(project: Project, index: number) {
+  return project.images?.[0] || PROJECT_FALLBACK_IMAGES[index % PROJECT_FALLBACK_IMAGES.length];
+}
+
+function getProjectMeta(project: Project) {
+  const location = project.chapterName || 'FGGC Owerri';
+  const year = project.createdAt ? new Date(project.createdAt).getFullYear().toString() : 'Ongoing';
+  return { location, year };
+}
+
+function HomeProjectCard({ project, index }: { project: Project; index: number }) {
+  const meta = getProjectMeta(project);
+
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
-      <div className="h-44 overflow-hidden bg-gray-100">
-        <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
-      </div>
-      <div className="p-4">
-        <AppLink
-          href={`/projects/${project.id}`}
-          className="text-primary-500 font-semibold text-sm hover:underline"
-        >
-          {project.title}
-        </AppLink>
-        <p className="text-gray-500 text-xs mt-1 mb-3">{project.description}</p>
-        <span className="inline-block bg-primary-500 text-white text-xs px-3 py-1 rounded-full">
-          {project.budget}
+    <AppLink href={ROUTES.PROJECTS.DETAIL(project.id)} className="home-project-card">
+      <img src={getProjectImage(project, index)} alt="" className="home-project-card__image" />
+
+      <div className="home-project-card__panel">
+        <h3>{project.title}</h3>
+        <p>{project.description}</p>
+
+        <div className="home-project-card__meta">
+          <span>
+            <Icon icon="mdi:map-marker-outline" aria-hidden="true" />
+            {meta.location}
+          </span>
+          <span>
+            <Icon icon="mdi:clock-outline" aria-hidden="true" />
+            {meta.year}
+          </span>
+        </div>
+
+        <span className="home-card-link">
+          View Details
+          <Icon icon="mdi:chevron-right" aria-hidden="true" />
         </span>
       </div>
-    </div>
+    </AppLink>
   );
 }
 
-function ProjectCardSkeleton() {
+function HomeProjectSkeleton() {
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden animate-pulse">
-      <div className="h-44 bg-gray-200" />
-      <div className="p-4 flex flex-col gap-3">
-        <div className="h-4 bg-gray-200 rounded w-3/4" />
-        <div className="h-3 bg-gray-200 rounded w-full" />
-        <div className="h-6 bg-gray-200 rounded w-24 rounded-full" />
+    <div className="home-project-card home-project-card--skeleton">
+      <div className="home-project-card__panel">
+        <span />
+        <span />
+        <span />
       </div>
     </div>
   );
@@ -41,34 +69,34 @@ function ProjectCardSkeleton() {
 export default function OurProjects() {
   const { data: projects = [], isLoading } = useProjects();
 
+  const isEmpty = !isLoading && projects.length === 0;
+
   return (
-    <section className="section">
+    <section className="home-feature-section">
       <div className="container-custom">
-        <p className="text-primary-500 text-sm font-semibold uppercase tracking-widest mb-1 flex items-center gap-2">
-          <span className="inline-block w-6 h-px bg-primary-500" />
-          Our Projects
-        </p>
-        <p className="text-gray-600 text-sm mb-8">
-          Through the generosity of our alumni, we continue to support and improve our beloved
-          school
-        </p>
+        <HomeSectionHeader
+          eyebrow="Our Projects"
+          title="Through the generosity of our alumnae, we continue to support and improve our beloved school"
+          href={ROUTES.PROJECTS.ROOT}
+        />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {isLoading
-            ? Array.from({ length: 3 }).map((_, i) => <ProjectCardSkeleton key={i} />)
-            : projects
-                .slice(0, 3)
-                .map((project) => <ProjectCard key={project.id} project={project} />)}
-        </div>
-
-        <div className="mt-6 text-right">
-          <AppLink
-            href="/projects"
-            className="text-primary-500 text-sm font-semibold hover:underline inline-flex items-center gap-1"
-          >
-            See More →
-          </AppLink>
-        </div>
+        {isEmpty ? (
+          <EmptyState
+            icon="mdi:hammer-wrench-outline"
+            title="No projects available right now"
+            description="No projects to display yet. New initiatives to support and improve our school will appear here."
+          />
+        ) : (
+          <div className="home-projects-grid">
+            {isLoading
+              ? Array.from({ length: 4 }).map((_, i) => <HomeProjectSkeleton key={i} />)
+              : projects
+                  .slice(0, 4)
+                  .map((project, index) => (
+                    <HomeProjectCard key={project.id} project={project} index={index} />
+                  ))}
+          </div>
+        )}
       </div>
     </section>
   );

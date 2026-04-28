@@ -27,7 +27,7 @@ export function SearchInput({
   return (
     <BaseInput
       type="search"
-      leadingSlot={<Icon icon="mdi:magnify" className="w-4 h-4" />}
+      leadingSlot={<Icon icon="mdi:magnify" className="w-6 h-6" />}
       trailingSlot={
         showSearchButton ? (
           <button

@@ -1,29 +1,38 @@
 // features/user/components/ui/EditProfileModal.tsx
-
 import { Icon } from '@iconify/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { Modal } from '@/shared/components/ui/Modal';
 import { FormInput } from '@/shared/components/ui/input/FormInput';
 import Button from '@/shared/components/ui/Button';
 import { toast } from '@/shared/components/ui/Toast';
-import type {
-  AuthSessionUser,
-  PrivacySettings,
-  FieldVisibility,
-} from '@/features/authentication/types/auth.types';
-import { defaultPrivacySettings } from '@/features/authentication/types/auth.types';
-import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
+import type { AuthSessionUser, PrivacySettings } from '@/features/authentication/types/auth.types';
+// import { useAuthStore } from '@/features/authentication/stores/useAuthStore';
+import { currentUserKeys } from '@/features/authentication/hooks/useCurrentUser';
 import { userService } from '@/features/user/services/user.service';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
 import { FieldWithPrivacy } from './FieldWithPrivacy';
-import { PrivacyToggle } from './PrivacyToggle';
+import { usePrivacySettings } from '@/features/user/hooks/usePrivacySettings';
 import {
   areaOptions,
   employmentStatusOptions,
   industrySectorOptions,
   occupationOptions,
   yearsOfExperienceOptions,
+  houseColorOptions,
 } from '@/features/authentication/constants/profileOptions';
+import {
+  formatOptionalPhoneNumberWithCountryCode,
+  getPhoneCountryOption,
+  parseStoredPhoneNumber,
+  phoneCountryOptions,
+  type SupportedPhoneCountry,
+  validateNationalPhoneNumber,
+  normalizePhoneNumberForCountry,
+} from '@/features/authentication/constants/phoneCountries';
+import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
+import { NIGERIA_STATES } from '@/features/authentication/constants/nigerianStates';
+import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 
 interface Props {
   isOpen: boolean;
@@ -32,16 +41,34 @@ interface Props {
 }
 
 interface FormState {
+  firstName: string;
+  lastName: string;
+  nameInSchool: string;
+  nickName: string;
+  whatsappPhoneCountry: SupportedPhoneCountry;
+  whatsappPhone: string;
+  alternativePhoneCountry: SupportedPhoneCountry;
   alternativePhone: string;
   birthDate: string;
+  bio: string;
+
+  graduationYear: string;
+  houseColor: string;
+
   residentialAddress: string;
   area: string;
   city: string;
+  state: string;
+
   employmentStatus: string;
   occupation: string;
   industrySector: string;
   yearsOfExperience: string;
+  company: string;
+  position: string;
+
   isVolunteer: string;
+
   linkedin: string;
   twitter: string;
   instagram: string;
@@ -54,22 +81,41 @@ function resolveYearsOfExperience(years: number | undefined): string {
 }
 
 function toFormState(user: AuthSessionUser | null): FormState {
+  const whatsappPhone = parseStoredPhoneNumber(user?.whatsappPhone);
+  const alternativePhone = parseStoredPhoneNumber(user?.alternativePhone);
+
   return {
-    alternativePhone: user?.alternativePhone ?? '',
+    firstName: user?.otherNames ?? '',
+    lastName: user?.surname ?? '',
+    nameInSchool: user?.nameInSchool ?? '',
+    nickName: user?.nickName ?? '',
+    whatsappPhoneCountry: whatsappPhone.countryCode,
+    whatsappPhone: whatsappPhone.nationalNumber,
+    alternativePhoneCountry: alternativePhone.countryCode,
+    alternativePhone: alternativePhone.nationalNumber,
     birthDate: user?.birthDate ?? '',
+    bio: user?.bio ?? '',
+
+    graduationYear: user?.graduationYear ? String(user.graduationYear) : '',
+    houseColor: user?.houseColor ?? '',
+
     residentialAddress: user?.residentialAddress ?? '',
     area: user?.area ?? '',
     city: user?.city ?? '',
+    state: user?.state ?? '',
+
     employmentStatus: user?.employmentStatus ?? '',
     occupation: user?.occupations?.[0] ?? '',
     industrySector: user?.industrySectors?.[0] ?? '',
     yearsOfExperience: resolveYearsOfExperience(user?.yearsOfExperience),
+    company: user?.company ?? '',
+    position: user?.position ?? '',
+
     isVolunteer: user?.isVolunteer === true ? 'yes' : user?.isVolunteer === false ? 'no' : '',
+
     linkedin: user?.linkedin ?? '',
     twitter: user?.twitter ?? '',
     instagram: user?.instagram ?? '',
-    // NOTE: photo is NOT in FormState — it's handled separately via photoFile
-    // to avoid sending a base64 data URL to the backend as a JSON field.
   };
 }
 
@@ -77,91 +123,264 @@ const yearsOfExperienceSelectOptions = yearsOfExperienceOptions.map((o) => ({
   label: o.label,
   value: String(o.value),
 }));
+const phoneCountrySelectOptions = phoneCountryOptions.map((option) => ({
+  label: `${option.dialCode} (${option.label})`,
+  value: option.code,
+}));
+
+const stateOptions = NIGERIA_STATES.map((state) => ({
+  label: state,
+  value: state,
+}));
 
 export default function EditProfileModal({ isOpen, onClose, currentUser }: Props) {
-  const updateUser = useAuthStore((state) => state.updateUser);
+  const queryClient = useQueryClient();
+  // const updateUser = useAuthStore((state) => state.updateUser);
+  const updateUser = useIdentityStore((state) => state.updateUser);
+
+  const { data: privacy, isLoading: privacyLoading } = usePrivacySettings();
 
   const [form, setForm] = useState<FormState>(() => toFormState(currentUser));
+  const [initialForm, setInitialForm] = useState<FormState>(() => toFormState(currentUser));
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
-  const [privacy, setPrivacy] = useState<PrivacySettings>(() => ({
-    ...defaultPrivacySettings,
-    ...currentUser?.privacy,
-  }));
-
-  const updatePrivacy = (field: keyof PrivacySettings, value: FieldVisibility) =>
-    setPrivacy((prev) => ({ ...prev, [field]: value }));
 
   useEffect(() => {
-    setForm(toFormState(currentUser));
-    setPhotoFile(null);
-    setPhotoPreview(null);
-    setPrivacy({ ...defaultPrivacySettings, ...currentUser?.privacy });
-  }, [currentUser]);
+    if (isOpen) {
+      const formState = toFormState(currentUser);
+      setForm(formState);
+      setInitialForm(formState);
+      setPhotoFile(null);
+      setPhotoPreview(null);
+    }
+  }, [currentUser, isOpen]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
   ) => setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
+  const handlePhoneCountryChange =
+    (
+      phoneField: 'whatsappPhone' | 'alternativePhone',
+      countryField: 'whatsappPhoneCountry' | 'alternativePhoneCountry',
+    ) =>
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const nextCountry = e.target.value as SupportedPhoneCountry;
+      setForm((prev) => ({
+        ...prev,
+        [countryField]: nextCountry,
+        [phoneField]: normalizePhoneNumberForCountry(nextCountry, prev[phoneField]),
+      }));
+    };
+
+  const handlePhoneInputChange =
+    (
+      phoneField: 'whatsappPhone' | 'alternativePhone',
+      countryField: 'whatsappPhoneCountry' | 'alternativePhoneCountry',
+    ) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setForm((prev) => ({
+        ...prev,
+        [phoneField]: normalizePhoneNumberForCountry(prev[countryField], e.target.value),
+      }));
+    };
+
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
     setPhotoFile(file);
+
     const reader = new FileReader();
     reader.onload = () => setPhotoPreview(reader.result as string);
     reader.readAsDataURL(file);
   };
 
+  // ═══════════════════════════════════════════════════════════════════════
+  // ✅ CLEAN PARTIAL UPDATE: Only changed fields, no undefined
+  // ═══════════════════════════════════════════════════════════════════════
+  const changedFields = useMemo(() => {
+    const changes: Partial<AuthSessionUser> = {};
+    const currentWhatsappPhone = formatOptionalPhoneNumberWithCountryCode(
+      form.whatsappPhoneCountry,
+      form.whatsappPhone,
+    );
+    const initialWhatsappPhone = formatOptionalPhoneNumberWithCountryCode(
+      initialForm.whatsappPhoneCountry,
+      initialForm.whatsappPhone,
+    );
+    const currentAlternativePhone = formatOptionalPhoneNumberWithCountryCode(
+      form.alternativePhoneCountry,
+      form.alternativePhone,
+    );
+    const initialAlternativePhone = formatOptionalPhoneNumberWithCountryCode(
+      initialForm.alternativePhoneCountry,
+      initialForm.alternativePhone,
+    );
+
+    // Only add field if it changed AND has a value
+    // Empty string = intentional clear, so we include it
+    if (form.firstName !== initialForm.firstName) {
+      changes.otherNames = form.firstName;
+    }
+    if (form.lastName !== initialForm.lastName) {
+      changes.surname = form.lastName;
+    }
+    if (form.nameInSchool !== initialForm.nameInSchool) {
+      changes.nameInSchool = form.nameInSchool;
+    }
+    if (form.nickName !== initialForm.nickName) {
+      changes.nickName = form.nickName;
+    }
+    if (currentWhatsappPhone !== initialWhatsappPhone) {
+      changes.whatsappPhone = currentWhatsappPhone;
+    }
+    if (currentAlternativePhone !== initialAlternativePhone) {
+      changes.alternativePhone = currentAlternativePhone;
+    }
+    if (form.birthDate !== initialForm.birthDate) {
+      changes.birthDate = form.birthDate;
+    }
+
+    if (form.graduationYear !== initialForm.graduationYear) {
+      changes.graduationYear = form.graduationYear ? Number(form.graduationYear) : undefined;
+    }
+    if (form.houseColor !== initialForm.houseColor) {
+      changes.houseColor = form.houseColor;
+    }
+
+    if (form.residentialAddress !== initialForm.residentialAddress) {
+      changes.residentialAddress = form.residentialAddress;
+    }
+    if (form.area !== initialForm.area) {
+      changes.area = form.area;
+    }
+    if (form.city !== initialForm.city) {
+      changes.city = form.city;
+    }
+    if (form.state !== initialForm.state) {
+      changes.state = form.state;
+    }
+
+    if (form.employmentStatus !== initialForm.employmentStatus) {
+      changes.employmentStatus = form.employmentStatus;
+    }
+    if (form.occupation !== initialForm.occupation) {
+      changes.occupations = form.occupation ? [form.occupation] : [];
+    }
+    if (form.industrySector !== initialForm.industrySector) {
+      changes.industrySectors = form.industrySector ? [form.industrySector] : [];
+    }
+    if (form.yearsOfExperience !== initialForm.yearsOfExperience) {
+      changes.yearsOfExperience = form.yearsOfExperience
+        ? Number(form.yearsOfExperience)
+        : undefined;
+    }
+    if (form.company !== initialForm.company) {
+      changes.company = form.company;
+    }
+    if (form.position !== initialForm.position) {
+      changes.position = form.position;
+    }
+
+    if (form.isVolunteer !== initialForm.isVolunteer) {
+      changes.isVolunteer =
+        form.isVolunteer === 'yes' ? true : form.isVolunteer === 'no' ? false : undefined;
+    }
+
+    if (form.linkedin !== initialForm.linkedin) {
+      changes.linkedin = form.linkedin;
+    }
+    if (form.twitter !== initialForm.twitter) {
+      changes.twitter = form.twitter;
+    }
+    if (form.instagram !== initialForm.instagram) {
+      changes.instagram = form.instagram;
+    }
+
+    changes.bio = form.bio;
+    changes.residentialAddress = form.residentialAddress;
+
+    // ✅ Filter out undefined values completely
+    const cleanedChanges: Partial<AuthSessionUser> = {};
+    for (const [key, value] of Object.entries(changes)) {
+      if (value !== undefined) {
+        cleanedChanges[key as keyof AuthSessionUser] = value as any;
+      }
+    }
+
+    return cleanedChanges;
+  }, [form, initialForm]);
+
+  const hasChanges = Object.keys(changedFields).length > 0 || photoFile !== null;
+  const selectedWhatsappPhoneCountry = getPhoneCountryOption(form.whatsappPhoneCountry);
+  const selectedAlternativePhoneCountry = getPhoneCountryOption(form.alternativePhoneCountry);
+  const whatsappPhoneError = validateNationalPhoneNumber(
+    form.whatsappPhoneCountry,
+    form.whatsappPhone,
+  );
+  const alternativePhoneError = form.alternativePhone
+    ? validateNationalPhoneNumber(form.alternativePhoneCountry, form.alternativePhone)
+    : null;
+
   const handleSave = async () => {
     if (!currentUser?.id) return;
-    setIsSaving(true);
 
-    // Build profile field updates — photo is intentionally excluded here.
-    // If a new photo was chosen, photoFile is passed separately to the service
-    // and sent as a File via FormData. The base64 preview is only for local display.
-    const updates: Partial<AuthSessionUser> = {
-      alternativePhone: form.alternativePhone || undefined,
-      birthDate: form.birthDate || undefined,
-      residentialAddress: form.residentialAddress || undefined,
-      area: form.area || undefined,
-      city: form.city || undefined,
-      employmentStatus: form.employmentStatus || undefined,
-      occupations: form.occupation ? [form.occupation] : undefined,
-      industrySectors: form.industrySector ? [form.industrySector] : undefined,
-      yearsOfExperience: form.yearsOfExperience ? Number(form.yearsOfExperience) : undefined,
-      isVolunteer:
-        form.isVolunteer === 'yes' ? true : form.isVolunteer === 'no' ? false : undefined,
-      linkedin: form.linkedin || undefined,
-      twitter: form.twitter || undefined,
-      instagram: form.instagram || undefined,
-      // privacy is applied locally below — never sent to backend
-    };
+    if (whatsappPhoneError || alternativePhoneError) {
+      toast.error(
+        whatsappPhoneError ?? alternativePhoneError ?? 'Please correct the phone fields.',
+      );
+      return;
+    }
+
+    if (!hasChanges) {
+      toast.info('No changes to save');
+      return;
+    }
+
+    setIsSaving(true);
 
     try {
       const updatedFromBackend = await userService.updateProfile({
         userId: currentUser.id,
-        updates,
+        updates: changedFields,
         photoFile: photoFile ?? undefined,
       });
 
-      // updateUser does a defined-only merge (see useAuthStore):
-      // - Fields from the backend response overwrite existing values
-      // - undefined fields in the response are ignored (photo stays intact)
-      // - If a new photo was uploaded, the backend returns the new URL in `photo`
-      // - If no photo was uploaded, `photo` is undefined in the response → kept as-is
-      // - Privacy is applied locally and merged by updateUser
-      updateUser({ ...updatedFromBackend, privacy });
+      const mergedUpdate: Partial<AuthSessionUser> = {
+        ...updatedFromBackend,
+        privacy,
+      };
 
-      // If user picked a new photo but backend didn't return a URL yet,
-      // show the local preview so the UI doesn't go blank
       if (photoPreview && !updatedFromBackend.photo) {
-        updateUser({ photo: photoPreview });
+        mergedUpdate.photo = photoPreview;
       }
 
+      updateUser(mergedUpdate);
+
+      if (currentUser) {
+        const nextCurrentUser: AuthSessionUser = {
+          ...currentUser,
+          ...mergedUpdate,
+        };
+
+        queryClient.setQueryData(currentUserKeys.detail(currentUser.id), nextCurrentUser);
+      }
+
+      queryClient.invalidateQueries({ queryKey: ['alumni'] });
+      queryClient.invalidateQueries({ queryKey: ['user'] });
+      queryClient.invalidateQueries({ queryKey: ['marketplace'] });
+      queryClient.invalidateQueries({ queryKey: ['events'] });
+
       toast.success('Your profile has been updated.');
+
+      setPhotoFile(null);
+      setPhotoPreview(null);
+
       onClose();
     } catch (error: any) {
+      console.error('❌ Profile update error:', error);
       toast.fromError(error);
     } finally {
       setIsSaving(false);
@@ -172,17 +391,26 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
     setPhotoFile(null);
     setPhotoPreview(null);
     setForm(toFormState(currentUser));
-    setPrivacy({ ...defaultPrivacySettings, ...currentUser?.privacy });
+    setInitialForm(toFormState(currentUser));
     onClose();
   };
 
-  // Display priority: new local preview > existing stored photo > initials
   const displayPhoto = photoPreview ?? currentUser?.photo ?? null;
+
+  if (privacyLoading) {
+    return (
+      <Modal isOpen={isOpen} onClose={handleClose} title="Edit Profile">
+        <div className="py-12 flex items-center justify-center">
+          <Icon icon="mdi:loading" className="w-8 h-8 animate-spin text-primary-500" />
+        </div>
+      </Modal>
+    );
+  }
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose} title="Edit Profile">
-      <div className="flex flex-col gap-6">
-        {/* ── Photo ──────────────────────────────────────────────────── */}
+      <div className="flex flex-col gap-6 max-h-[70vh] overflow-y-auto pr-2">
+        {/* Photo section */}
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="relative flex-shrink-0">
@@ -192,6 +420,13 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
                     src={displayPhoto}
                     alt={currentUser?.fullName}
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      const parent = e.currentTarget.parentElement;
+                      if (parent) {
+                        parent.innerHTML = `<span class="text-xl font-bold text-primary-400">${currentUser?.avatarInitials || 'U'}</span>`;
+                      }
+                    }}
                   />
                 ) : (
                   <span className="text-xl font-bold text-primary-400">
@@ -213,40 +448,85 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
               <p className="text-sm font-semibold text-gray-800">{currentUser?.fullName}</p>
               <p className="text-xs text-gray-400">{currentUser?.email}</p>
               <p className="text-xs text-gray-400 mt-0.5">Class of {currentUser?.graduationYear}</p>
+              {photoPreview && (
+                <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
+                  <Icon icon="mdi:check-circle" className="w-3 h-3" />
+                  New photo selected
+                </p>
+              )}
             </div>
           </div>
           <div className="flex flex-col gap-1">
             <p className="text-xs text-gray-500">Photo visibility</p>
-            <PrivacyToggle value={privacy.photo} onChange={(v) => updatePrivacy('photo', v)} />
+            <FieldWithPrivacy
+              field="photo"
+              privacy={privacy!}
+              onPrivacyChange={() => {}}
+              hideLabel
+            />
           </div>
         </div>
 
         <hr className="border-gray-100" />
 
-        {/* ── Contact ────────────────────────────────────────────────── */}
+        {/* Basic Information */}
         <div>
           <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
-            Contact
+            Basic Information
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <FieldWithPrivacy
-              field="alternativePhone"
-              label="Alternative Phone"
-              privacy={privacy}
-              onPrivacyChange={updatePrivacy}
-            >
-              <FormInput
-                name="alternativePhone"
-                value={form.alternativePhone}
-                onChange={handleChange}
-                placeholder="+234 000 000 0000"
-              />
-            </FieldWithPrivacy>
+            <FormInput
+              label="First Name"
+              name="firstName"
+              value={form.firstName}
+              onChange={handleChange}
+              required
+            />
+            <FormInput
+              label="Last Name"
+              name="lastName"
+              value={form.lastName}
+              onChange={handleChange}
+              required
+            />
+            <FormInput
+              label="Name in School"
+              name="nameInSchool"
+              value={form.nameInSchool}
+              onChange={handleChange}
+              // placeholder="If different from current name"
+              placeholder=""
+            />
+            <FormInput
+              label="Nickname"
+              name="nickName"
+              value={form.nickName}
+              onChange={handleChange}
+              // placeholder="If different from current name"
+              placeholder=""
+            />
+            <FormInput
+              label="Graduation Year"
+              name="graduationYear"
+              type="number"
+              value={form.graduationYear}
+              onChange={handleChange}
+              required
+            />
+            <SelectInput
+              label="House Color"
+              name="houseColor"
+              value={form.houseColor}
+              onChange={handleChange}
+              options={houseColorOptions}
+              placeholder="Select house"
+            />
+
             <FieldWithPrivacy
               field="birthDate"
               label="Date of Birth"
-              privacy={privacy}
-              onPrivacyChange={updatePrivacy}
+              privacy={privacy!}
+              onPrivacyChange={() => {}}
             >
               <FormInput
                 name="birthDate"
@@ -256,9 +536,79 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
               />
             </FieldWithPrivacy>
           </div>
+          <div className="mt-4">
+            <TextareaInput
+              label="Bio"
+              name="bio"
+              rows={5}
+              placeholder="Tell us about yourself..."
+              value={form.bio}
+              onChange={handleChange}
+            />
+          </div>
         </div>
 
-        {/* ── Address ────────────────────────────────────────────────── */}
+        {/* Contact */}
+        <div>
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+            Contact
+          </p>
+          <div className="grid grid-cols-1  gap-4">
+            <FieldWithPrivacy
+              field="whatsappPhone"
+              label="WhatsApp Phone"
+              privacy={privacy!}
+              onPrivacyChange={() => {}}
+            >
+              <div className="grid grid-cols-[10rem_1fr] gap-2">
+                <SelectInput
+                  name="whatsappPhoneCountry"
+                  value={form.whatsappPhoneCountry}
+                  onChange={handlePhoneCountryChange('whatsappPhone', 'whatsappPhoneCountry')}
+                  options={phoneCountrySelectOptions}
+                  placeholder="Country"
+                />
+                <FormInput
+                  name="whatsappPhone"
+                  type="tel"
+                  inputMode="numeric"
+                  value={form.whatsappPhone}
+                  onChange={handlePhoneInputChange('whatsappPhone', 'whatsappPhoneCountry')}
+                  placeholder={selectedWhatsappPhoneCountry.placeholder}
+                  error={whatsappPhoneError ?? undefined}
+                  required
+                />
+              </div>
+            </FieldWithPrivacy>
+            <FieldWithPrivacy
+              field="alternativePhone"
+              label="Alternative Phone"
+              privacy={privacy!}
+              onPrivacyChange={() => {}}
+            >
+              <div className="grid grid-cols-[10rem_1fr] gap-2">
+                <SelectInput
+                  name="alternativePhoneCountry"
+                  value={form.alternativePhoneCountry}
+                  onChange={handlePhoneCountryChange('alternativePhone', 'alternativePhoneCountry')}
+                  options={phoneCountrySelectOptions}
+                  placeholder="Country"
+                />
+                <FormInput
+                  name="alternativePhone"
+                  type="tel"
+                  inputMode="numeric"
+                  value={form.alternativePhone}
+                  onChange={handlePhoneInputChange('alternativePhone', 'alternativePhoneCountry')}
+                  placeholder={selectedAlternativePhoneCountry.placeholder}
+                  error={alternativePhoneError ?? undefined}
+                />
+              </div>
+            </FieldWithPrivacy>
+          </div>
+        </div>
+
+        {/* Address */}
         <div>
           <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
             Address
@@ -267,8 +617,8 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
             <FieldWithPrivacy
               field="residentialAddress"
               label="Residential Address"
-              privacy={privacy}
-              onPrivacyChange={updatePrivacy}
+              privacy={privacy!}
+              onPrivacyChange={() => {}}
             >
               <FormInput
                 name="residentialAddress"
@@ -278,11 +628,11 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
               />
             </FieldWithPrivacy>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <FieldWithPrivacy
+              {/* <FieldWithPrivacy
                 field="area"
                 label="Area"
-                privacy={privacy}
-                onPrivacyChange={updatePrivacy}
+                privacy={privacy!}
+                onPrivacyChange={() => {}}
               >
                 <SelectInput
                   name="area"
@@ -291,33 +641,50 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
                   options={areaOptions}
                   placeholder="Select area"
                 />
+              </FieldWithPrivacy> */}
+              <FieldWithPrivacy
+                field="state"
+                label="State"
+                privacy={privacy!}
+                onPrivacyChange={() => {}}
+              >
+                <SelectInput
+                  name="state"
+                  value={form.state}
+                  onChange={handleChange}
+                  options={stateOptions}
+                  placeholder="Select state"
+                />
               </FieldWithPrivacy>
               <FieldWithPrivacy
                 field="city"
                 label="City"
-                privacy={privacy}
-                onPrivacyChange={updatePrivacy}
+                privacy={privacy!}
+                onPrivacyChange={() => {}}
               >
                 <FormInput
                   name="city"
                   value={form.city}
+                  required
                   onChange={handleChange}
-                  placeholder="e.g. Lagos"
+                  placeholder="e.g. Ikeja"
                 />
               </FieldWithPrivacy>
             </div>
           </div>
         </div>
 
-        {/* ── Work ───────────────────────────────────────────────────── */}
+        {/* Professional */}
         <div>
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Work</p>
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+            Professional Information
+          </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <FieldWithPrivacy
               field="employmentStatus"
               label="Employment Status"
-              privacy={privacy}
-              onPrivacyChange={updatePrivacy}
+              privacy={privacy!}
+              onPrivacyChange={() => {}}
             >
               <SelectInput
                 name="employmentStatus"
@@ -330,8 +697,8 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
             <FieldWithPrivacy
               field="occupations"
               label="Occupation"
-              privacy={privacy}
-              onPrivacyChange={updatePrivacy}
+              privacy={privacy!}
+              onPrivacyChange={() => {}}
             >
               <SelectInput
                 name="occupation"
@@ -344,8 +711,8 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
             <FieldWithPrivacy
               field="industrySectors"
               label="Industry Sector"
-              privacy={privacy}
-              onPrivacyChange={updatePrivacy}
+              privacy={privacy!}
+              onPrivacyChange={() => {}}
             >
               <SelectInput
                 name="industrySector"
@@ -358,8 +725,8 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
             <FieldWithPrivacy
               field="yearsOfExperience"
               label="Years of Experience"
-              privacy={privacy}
-              onPrivacyChange={updatePrivacy}
+              privacy={privacy!}
+              onPrivacyChange={() => {}}
             >
               <SelectInput
                 name="yearsOfExperience"
@@ -369,8 +736,23 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
                 placeholder="Select range"
               />
             </FieldWithPrivacy>
+            <FormInput
+              label="Current Company"
+              name="company"
+              value={form.company}
+              onChange={handleChange}
+              placeholder="Company name"
+            />
+            <FormInput
+              label="Current Position"
+              name="position"
+              value={form.position}
+              onChange={handleChange}
+              placeholder="Job title"
+            />
             <SelectInput
-              label="Volunteer Interest"
+              // label="Volunteer Interest"
+              label="Would you like to volunteer for events/projects?"
               name="isVolunteer"
               value={form.isVolunteer}
               onChange={handleChange}
@@ -378,12 +760,12 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
                 { label: 'Yes, I am interested', value: 'yes' },
                 { label: 'No, not at this time', value: 'no' },
               ]}
-              placeholder="Are you a volunteer?"
+              // placeholder=""
             />
           </div>
         </div>
 
-        {/* ── Social Links ───────────────────────────────────────────── */}
+        {/* Social Links */}
         <div>
           <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
             Social Links
@@ -413,8 +795,9 @@ export default function EditProfileModal({ isOpen, onClose, currentUser }: Props
           </div>
         </div>
 
-        {/* ── Actions ────────────────────────────────────────────────── */}
-        <div className="flex gap-3 pt-2">
+        {/* Actions */}
+        <div className="flex gap-3 pt-2 sticky bottom-0 bg-white pb-2 border-t border-gray-100 mt-4">
+          {/* <Button onClick={handleSave} disabled={isSaving || !hasChanges} className="flex-1"> */}
           <Button onClick={handleSave} disabled={isSaving} className="flex-1">
             {isSaving ? (
               <span className="flex items-center justify-center gap-2">

@@ -3,16 +3,9 @@
 // Admin-only API layer. Completely separate from userDashboardApi.
 // Only accessible via AdminRoute.
 //
-// ─── Integration status ───────────────────────────────────────────────────────
-//   ✅ getPendingMembers  → POST /api/admin/members/list  { action_type: "pending Approval" }
-//   ✅ getApprovedMembers → POST /api/admin/members/list  { action_type: "approved" }
-//   ✅ approveMember      → POST /api/approve_user        { action: "approve" }
-//   ✅ rejectMember       → POST /api/approve_user        { action: "reject" }
-//   🔴 getDashboardStats  → not yet available from backend (using placeholder values)
-//   🔴 getUpcomingEvents  → not yet available from backend
-// ─────────────────────────────────────────────────────────────────────────────
 
 import { apiClient } from '@/lib/api/client';
+import { API_ENDPOINTS } from '@/lib/api/endpoints';
 import {
   buildApprovePayload,
   buildMemberListPayload,
@@ -39,7 +32,9 @@ export interface PendingMember {
   nameInSchool: string;
   email: string;
   graduationYear: number;
+  residentialAddress: string;
   submittedAt: string; // ISO date string
+  nickName?: string; // Optional nickname for display purposes
 }
 
 export interface RecentMember {
@@ -63,11 +58,6 @@ export interface ApproveResult {
 
 // ─── Endpoints ────────────────────────────────────────────────────────────────
 // Centralised here so one-line changes cover both the payload builder and call.
-
-const ADMIN_ENDPOINTS = {
-  MEMBER_LIST: '/get_users_by_action', // POST — action_type flag in body
-  APPROVE_USER: '/approve_user', // POST — action: approve | reject
-} as const;
 
 // ─── Stat placeholders ────────────────────────────────────────────────────────
 // These are shown while the real counts aren't available from the backend yet.
@@ -119,7 +109,13 @@ export const adminDashboardApi = {
    */
   async getPendingMembers(): Promise<PendingMember[]> {
     const payload = buildMemberListPayload('pending Approval');
-    const { data } = await apiClient.post(ADMIN_ENDPOINTS.MEMBER_LIST, payload);
+    const { data } = await apiClient.post(API_ENDPOINTS.ADMIN_ENDPOINTS.MEMBER_LIST, payload);
+    console.log(
+      'Raw pending members response:',
+      data,
+      'mapped:',
+      mapMemberListResponse(data, mapBackendMemberToPending) as PendingMember[],
+    ); // Debug log to inspect backend response
     return mapMemberListResponse(data, mapBackendMemberToPending) as PendingMember[];
   },
 
@@ -129,7 +125,7 @@ export const adminDashboardApi = {
    */
   async getApprovedMembers(): Promise<RecentMember[]> {
     const payload = buildMemberListPayload('approved');
-    const { data } = await apiClient.post(ADMIN_ENDPOINTS.MEMBER_LIST, payload);
+    const { data } = await apiClient.post(API_ENDPOINTS.ADMIN_ENDPOINTS.MEMBER_LIST, payload);
     return mapMemberListResponse(data, mapBackendMemberToRecent) as RecentMember[];
   },
 
@@ -158,7 +154,8 @@ export const adminDashboardApi = {
     return {
       stats: buildStatPlaceholders(pending.length),
       pendingApprovals: pending,
-      recentMembers: recent,
+      // recentMembers: recent,
+      recentMembers: Array.isArray(recent) ? recent.slice(0, 5) : [],
       upcomingEvents: [], // 🔴 TODO: real upcoming events endpoint
     };
   },
@@ -172,7 +169,7 @@ export const adminDashboardApi = {
   async approveMember(userId: string): Promise<ApproveResult> {
     try {
       const payload = buildApprovePayload(userId);
-      const { data } = await apiClient.post(ADMIN_ENDPOINTS.APPROVE_USER, payload);
+      const { data } = await apiClient.post(API_ENDPOINTS.ADMIN_ENDPOINTS.APPROVE_USER, payload);
 
       return {
         success: true,
@@ -205,7 +202,7 @@ export const adminDashboardApi = {
   async rejectMember(userId: string, reason?: string): Promise<ApproveResult> {
     try {
       const payload = buildRejectPayload(userId, reason);
-      const { data } = await apiClient.post(ADMIN_ENDPOINTS.APPROVE_USER, payload);
+      const { data } = await apiClient.post(API_ENDPOINTS.ADMIN_ENDPOINTS.APPROVE_USER, payload);
 
       return {
         success: true,

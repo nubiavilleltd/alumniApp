@@ -6,8 +6,7 @@ import HomeStats from './components/HomeStats';
 import OurStory from './components/OurStory';
 import OurProjects from './components/OurProjects';
 import UpcomingEvents from './components/UpcomingEvents';
-import NewsAndStories from './components/NewsAndStories';
-import Leadership from './components/Leadership';
+import HomeAnnouncements from './components/NewsAndStories';
 
 export function HomePage() {
   const config = getSiteConfig();
@@ -30,11 +29,7 @@ export function HomePage() {
       </SectionErrorBoundary>
 
       <SectionErrorBoundary>
-        <NewsAndStories />
-      </SectionErrorBoundary>
-
-      <SectionErrorBoundary>
-        <Leadership />
+        <HomeAnnouncements />
       </SectionErrorBoundary>
     </>
   );
