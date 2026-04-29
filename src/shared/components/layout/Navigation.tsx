@@ -81,7 +81,9 @@ const authenticatedMenuItems: NavChild[] = [
 const navSurfaceClassName =
   'bg-[linear-gradient(106deg,_rgb(var(--color-primary-500))_0%,_#003a5d_92%)]';
 const desktopLinkBaseClassName =
-  'no-underline font-bold tracking-[0.1em] text-[#c4d0d9] transition-colors duration-200 hover:text-white';
+  'relative no-underline font-bold tracking-[0.1em] text-[#c4d0d9] transition-colors duration-200 hover:text-white';
+const desktopActiveLinkClassName =
+  'text-white after:absolute after:left-0 after:right-0 after:-bottom-[0.45rem] after:h-[2px] after:rounded-full after:bg-white/85';
 const desktopPrimaryLinkClassName = `${desktopLinkBaseClassName} whitespace-nowrap text-[clamp(1.05rem,1.36vw,1.75rem)]`;
 const desktopSecondaryLinkClassName = `${desktopLinkBaseClassName} text-[clamp(0.95rem,1.18vw,1.35rem)]`;
 const desktopPanelClassName =
@@ -199,7 +201,10 @@ function DesktopNavLink({ item }: { item: NavItem }) {
   const active = isPathActive(pathname, item.url);
 
   return (
-    <AppLink href={item.url} className={cn(desktopPrimaryLinkClassName, active && 'text-white')}>
+    <AppLink
+      href={item.url}
+      className={cn(desktopPrimaryLinkClassName, active && desktopActiveLinkClassName)}
+    >
       {item.label}
     </AppLink>
   );
@@ -227,7 +232,7 @@ function DesktopDropdown({ item }: { item: NavItem }) {
         className={cn(
           desktopPrimaryLinkClassName,
           'inline-flex cursor-pointer items-center gap-[0.45rem] border-0 bg-transparent',
-          isActive && 'text-white',
+          isActive && desktopActiveLinkClassName,
         )}
         aria-expanded={open}
         onClick={() => setOpen((prev) => !prev)}
@@ -248,7 +253,10 @@ function DesktopDropdown({ item }: { item: NavItem }) {
             <AppLink
               key={child.url}
               href={child.url}
-              className={desktopMenuLinkClassName}
+              className={cn(
+                desktopMenuLinkClassName,
+                isPathActive(pathname, child.url) && 'bg-primary-50 text-primary-700',
+              )}
               onClick={() => setOpen(false)}
             >
               {child.icon && (
@@ -383,18 +391,31 @@ function UserDropdown({
 function MobileNavGroup({ item }: { item: NavItem }) {
   const { pathname } = useLocation();
   const isActive = item.children?.some((child) => isPathActive(pathname, child.url)) ?? false;
+  const [open, setOpen] = useState(isActive);
+
+  useEffect(() => {
+    if (isActive) setOpen(true);
+  }, [isActive]);
 
   return (
     <div className="grid gap-1">
-      <p
+      <button
+        type="button"
+        aria-expanded={open}
+        onClick={() => setOpen((prev) => !prev)}
         className={cn(
-          'm-0 flex items-center gap-[0.65rem] rounded-[0.85rem] px-[0.95rem] pb-[0.35rem] pt-[0.75rem] text-[0.98rem] font-bold tracking-[0.04em] leading-[1.25] text-[#d0d9e0]',
+          mobileLinkClassName,
+          'w-full cursor-pointer justify-between border-0 bg-transparent text-left',
           isActive && 'bg-white/10 text-white',
         )}
       >
-        {item.label}
-      </p>
-      <div className="grid gap-1">
+        <span>{item.label}</span>
+        <Icon
+          icon={open ? 'mdi:chevron-up' : 'mdi:chevron-down'}
+          className="h-[1.15rem] w-[1.15rem] flex-none"
+        />
+      </button>
+      <div className={cn('grid gap-1 overflow-hidden', open ? 'mt-1' : 'hidden')}>
         {item.children?.map((child) => (
           <AppLink
             key={child.url}
@@ -494,7 +515,14 @@ export function Navigation() {
           <div className="flex items-center justify-end gap-[clamp(1.5rem,3vw,3rem)] px-[clamp(2rem,4.6vw,5rem)]">
             <div className="flex items-center gap-[clamp(2rem,4.5vw,4rem)]">
               {secondaryNavItems.map((item) => (
-                <AppLink key={item.url} href={item.url} className={desktopSecondaryLinkClassName}>
+                <AppLink
+                  key={item.url}
+                  href={item.url}
+                  className={cn(
+                    desktopSecondaryLinkClassName,
+                    isPathActive(pathname, item.url) && desktopActiveLinkClassName,
+                  )}
+                >
                   {item.label}
                 </AppLink>
               ))}
