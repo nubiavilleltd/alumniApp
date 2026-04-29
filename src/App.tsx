@@ -56,8 +56,8 @@ import { ComingSoonRouteHandler } from './pages/errors/ComingSoonRouteHandler';
 import { GuestRoute } from './shared/components/routing/GuestRoute';
 import EditProfilePage from './features/user/pages/EditProfilePage';
 import ResourcesPage from './pages/resources/ResourcesPage';
-import WelfarePage from './pages/welfare/WelfarePage';
-import WelfareZonesPage from './pages/welfare/WelfareZonesPage';
+import WelfarePage from './features/welfare/pages/WelfarePage';
+import WelfareZonesPage from './features/welfare/pages/WelfareZonesPage';
 import JobVacanciesPage from './features/jobVacancies/pages/JobVacanciesPage';
 import { DonationPage } from './features/donation/pages/DonationPage';
 

@@ -68,6 +68,10 @@ export const API_ENDPOINTS = {
     POLL: '/chat_api/v2_get_threads',
   },
 
+  WELFARE: {
+    GET_ZONES: '/api/get_zones',
+  },
+
   // ─── Admin ────────────────────────────────────────────────────────────────
   ADMIN: {
     MEMBER_LIST: '/api/admin/members/list',
