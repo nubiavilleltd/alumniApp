@@ -193,9 +193,11 @@ export default function App() {
           <Route
             path={ROUTES.EVENTS.ATTENDEES(':id')}
             element={
-              <ErrorBoundary>
-                <AttendeesPage />
-              </ErrorBoundary>
+              <AdminRoute>
+                <ErrorBoundary>
+                  <AttendeesPage />
+                </ErrorBoundary>
+              </AdminRoute>
             }
           />
           <Route

@@ -65,8 +65,6 @@ export const authApi = {
   async login(values: LoginFormValues): Promise<LoginResponse> {
     try {
       const { data } = await apiClient.post(API_ENDPOINTS.AUTH.LOGIN, mapLoginPayload(values));
-
-      console.log(' login raw', { data, mapped: mapLoginResponse(data) });
       return mapLoginResponse(data);
     } catch (error) {
       throw handleApiError(error, mapLoginError(error), 'authApi.login');
@@ -81,9 +79,7 @@ export const authApi = {
         API_ENDPOINTS.AUTH.LOGOUT,
         refreshToken ? { refresh_token: refreshToken } : {},
       );
-    } catch (error) {
-      if (import.meta.env.DEV) console.warn('[authApi.logout]', error);
-    }
+    } catch {}
   },
 
   /** POST /forgot_password */
@@ -196,8 +192,6 @@ export const authApi = {
   async getCurrentUser(userId: string): Promise<AuthSessionUser> {
     try {
       const data = await authApi.getCurrentUserRaw(userId);
-
-      console.log('RAW DATA', { data }, { mappedData: mapCurrentUserResponse(data) });
       return mapCurrentUserResponse(data);
     } catch (error) {
       throw handleApiError(error, 'Unable to fetch user profile', 'authApi.getCurrentUser');
