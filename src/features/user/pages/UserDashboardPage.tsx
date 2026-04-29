@@ -965,9 +965,9 @@ function AttestationRow({
           <p className="text-xs text-gray-500">Class of {vouch.graduationYear}</p>
           {vouch.nickName && <p className="text-xs text-gray-500">A.K.A {vouch.nickName}</p>}
           <p className="text-xs text-gray-500 mt-1">{vouch.email}</p>
-          {vouch.department && (
+          {/* {vouch.department && (
             <p className="text-xs text-gray-500">Position Held in School: {vouch.department}</p>
-          )}
+          )} */}
         </div>
 
         {/* Confirm + Deny stacked */}
