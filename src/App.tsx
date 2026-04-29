@@ -34,6 +34,7 @@ import { EventsPage } from './features/events/pages/EventsPage';
 import { EventDetailPage } from './features/events/pages/EventDetailPage';
 import { MyEventsPage } from './features/events/pages/MyEventsPage';
 import AttendeesPage from './features/events/pages/AttendeesPage';
+import AdminEventsPage from './features/events/pages/AdminEventsPage';
 import CreateEventPage from '@/features/events/pages/CreateEventPage';
 import EditEventPage from '@/features/events/pages/EditEventPage';
 
@@ -378,6 +379,17 @@ export default function App() {
               <AdminRoute>
                 <ErrorBoundary>
                   <AdminMembersPage />
+                </ErrorBoundary>
+              </AdminRoute>
+            }
+          />
+
+          <Route
+            path={ADMIN_ROUTES.EVENTS}
+            element={
+              <AdminRoute>
+                <ErrorBoundary>
+                  <AdminEventsPage />
                 </ErrorBoundary>
               </AdminRoute>
             }

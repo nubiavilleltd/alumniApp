@@ -7,6 +7,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { SEO } from '@/shared/common/SEO';
+import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { RegisterEventModal } from '../components/RegisterEventModal';
 import { DeleteConfirmModal } from '../components/DeleteConfirmModal';
 import { useEvent, useDeleteEvent } from '../hooks/useEvents';
@@ -17,6 +18,8 @@ import { EVENT_ROUTES } from '../routes';
 import type { Event } from '../types/event.types';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 import { renderMarkdown } from '@/data/content';
+import { ROUTES } from '@/shared/constants/routes';
+import { ADMIN_ROUTES } from '@/features/admin/routes';
 
 // ─── Countdown ────────────────────────────────────────────────────────────────
 
@@ -269,10 +272,17 @@ export function EventDetailPage() {
     const start = new Date(event.date).toLocaleDateString('en-US', opts);
     return event.startTime ? `${start}` : start;
   })();
+  const adminBreadcrumbItems = [
+    { label: 'Home', href: ROUTES.HOME },
+    { label: 'Admin Dashboard', href: ADMIN_ROUTES.DASHBOARD },
+    { label: 'Events', href: ADMIN_ROUTES.EVENTS },
+    { label: event.title },
+  ];
 
   return (
     <>
       <SEO title={event.title} description={event.description} />
+      {isAdmin && <Breadcrumbs items={adminBreadcrumbItems} />}
 
       <div className="min-h-screen bg-[#f5f4f0]">
         <div className="container-custom py-6">

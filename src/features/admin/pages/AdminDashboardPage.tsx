@@ -548,7 +548,6 @@ import { ROUTES } from '@/shared/constants/routes';
 import { ADMIN_ROUTES } from '../routes';
 import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 import { toast } from '@/shared/components/ui/Toast';
-import { EVENT_ROUTES } from '@/features/events/routes';
 import { PROJECT_ROUTES } from '@/features/projects/routes';
 import type { PendingMember } from '../api/adminDashboardApi';
 import { useAlumni } from '@/features/alumni/hooks/useAlumni';
@@ -853,7 +852,7 @@ export function AdminDashboardPage() {
   const tabs = [
     { id: 'dashboard', label: 'Admin Dashboard', href: ADMIN_ROUTES.DASHBOARD },
     { id: 'members', label: 'Members', href: ADMIN_ROUTES.MEMBERS },
-    { id: 'events', label: 'Events', href: EVENT_ROUTES.ROOT },
+    { id: 'events', label: 'Events', href: ADMIN_ROUTES.EVENTS },
     { id: 'announcements', label: 'Announcements', href: ADMIN_ROUTES.ANNOUNCEMENTS },
     { id: 'projects', label: 'Projects', href: PROJECT_ROUTES.ROOT },
   ];

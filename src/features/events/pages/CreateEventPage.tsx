@@ -22,6 +22,8 @@ import { EVENT_ROUTES } from '../routes';
 import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 import { DatePicker } from '@/shared/components/ui/input/DatePicker';
 import { TimePicker } from '@/shared/components/ui/input/TimePicker';
+import { ROUTES } from '@/shared/constants/routes';
+import { ADMIN_ROUTES } from '@/features/admin/routes';
 import {
   EventRegistrationFormBuilderModal,
   type EventRegistrationFormDraft,
@@ -230,8 +232,9 @@ export default function CreateEventPage() {
   }
 
   const breadcrumbItems = [
-    { label: 'Home', href: '/' },
-    { label: 'Events', href: EVENT_ROUTES.ROOT },
+    { label: 'Home', href: ROUTES.HOME },
+    { label: 'Admin Dashboard', href: ADMIN_ROUTES.DASHBOARD },
+    { label: 'Events', href: ADMIN_ROUTES.EVENTS },
     { label: 'Create Event' },
   ];
 
@@ -244,7 +247,7 @@ export default function CreateEventPage() {
   return (
     <>
       <SEO title="Create Event" description="Create a new event" />
-      {/* <Breadcrumbs items={breadcrumbItems} /> */}
+      <Breadcrumbs items={breadcrumbItems} />
 
       <section className="section">
         <div className="container-custom">

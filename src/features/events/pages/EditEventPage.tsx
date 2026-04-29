@@ -23,6 +23,8 @@ import { EVENT_ROUTES } from '../routes';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 import { TimePicker } from '@/shared/components/ui/input/TimePicker';
 import { DatePicker } from '@/shared/components/ui/input/DatePicker';
+import { ROUTES } from '@/shared/constants/routes';
+import { ADMIN_ROUTES } from '@/features/admin/routes';
 
 // ─── Schema ───────────────────────────────────────────────────────────────────
 
@@ -238,8 +240,9 @@ export default function EditEventPage() {
 
   if (isLoading) {
     const breadcrumbItems = [
-      { label: 'Home', href: '/' },
-      { label: 'Events', href: EVENT_ROUTES.ROOT },
+      { label: 'Home', href: ROUTES.HOME },
+      { label: 'Admin Dashboard', href: ADMIN_ROUTES.DASHBOARD },
+      { label: 'Events', href: ADMIN_ROUTES.EVENTS },
       { label: 'Edit Event' },
     ];
     return (
@@ -275,16 +278,17 @@ export default function EditEventPage() {
   }
 
   const breadcrumbItems = [
-    { label: 'Home', href: '/' },
-    { label: 'Events', href: EVENT_ROUTES.ROOT },
-    { label: event.title },
+    { label: 'Home', href: ROUTES.HOME },
+    { label: 'Admin Dashboard', href: ADMIN_ROUTES.DASHBOARD },
+    { label: 'Events', href: ADMIN_ROUTES.EVENTS },
+    { label: event.title, href: EVENT_ROUTES.DETAIL(event.id) },
     { label: 'Edit' },
   ];
 
   return (
     <>
       <SEO title={`Edit — ${event.title}`} description="Edit event details" />
-      {/* <Breadcrumbs items={breadcrumbItems} /> */}
+      <Breadcrumbs items={breadcrumbItems} />
 
       <section className="section">
         <div className="container-custom ">

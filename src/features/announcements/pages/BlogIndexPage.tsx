@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { SEO } from '@/shared/common/SEO';
 import { ButtonLink } from '@/shared/components/ui/Button';
 import { AppLink } from '@/shared/components/ui/AppLink';
@@ -26,7 +26,7 @@ const actionClassName =
   'min-h-10 rounded-full border-[1.5px] border-primary-500 bg-white px-[1.1rem] text-sm font-bold text-primary-500';
 const boardClassName =
   'hidden gap-5 min-[1181px]:grid min-[1181px]:grid-cols-2 min-[1181px]:items-start';
-const sideListClassName = 'grid gap-5 content-start';
+const sideListClassName = 'grid gap-3.5 min-[1181px]:grid-rows-3 [&>*]:h-full';
 const continuationGridClassName = 'mt-5 hidden gap-5 min-[1181px]:grid min-[1181px]:grid-cols-2';
 const stackedListClassName = 'grid gap-5 min-[1181px]:hidden';
 
@@ -53,21 +53,34 @@ function getAnnouncementSummary(item: NewsItem) {
   return item.excerpt?.trim() || item.content?.trim() || 'Read the latest community update.';
 }
 
-function AnnouncementCard({ item }: { item: NewsItem }) {
+function AnnouncementCard({ item, compact = false }: { item: NewsItem; compact?: boolean }) {
+  const rootClassName = compact
+    ? 'flex h-full min-h-0 min-w-0 overflow-hidden rounded-2xl border border-[#eef2f5] bg-white p-2.5 shadow-[0_1px_2px_rgba(7,17,22,0.04)] no-underline transition-colors duration-200 hover:border-primary-100'
+    : cardClassName;
+  const imageWrapClassName = compact
+    ? 'w-[min(34%,9rem)] basis-[min(34%,9rem)] flex-shrink-0 overflow-hidden rounded-[0.9rem] bg-[#e9edf1]'
+    : cardImageWrapClassName;
+  const bodyClassName = compact
+    ? 'flex min-h-0 min-w-0 flex-1 flex-col justify-center px-2.5 py-0 pr-0'
+    : cardBodyClassName;
+  const titleClassName = compact
+    ? 'm-0 line-clamp-2 text-[0.92rem] font-bold leading-[1.12] text-[#071116]'
+    : 'm-0 text-[clamp(0.95rem,1.15vw,1.1rem)] font-bold leading-[1.18] text-[#071116]';
+  const summaryClassName = compact
+    ? 'mt-1 overflow-hidden text-[0.76rem] font-medium leading-[1.2] text-[#59626c] [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:1]'
+    : 'mt-[0.45rem] overflow-hidden text-sm font-medium leading-[1.35] text-[#59626c] [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2]';
+  const metaRowClassName = compact ? `${metaClassName} mt-1.5 text-[0.76rem]` : metaClassName;
+
   return (
-    <AppLink href={ANNOUNCEMENT_ROUTES.DETAIL(item.slug)} className={cardClassName}>
-      <div className={cardImageWrapClassName}>
+    <AppLink href={ANNOUNCEMENT_ROUTES.DETAIL(item.slug)} className={rootClassName}>
+      <div className={imageWrapClassName}>
         <img src={item.image || FALLBACK_IMAGE} alt="" className="h-full w-full object-cover" />
       </div>
 
-      <div className={cardBodyClassName}>
-        <h3 className="m-0 text-[clamp(0.95rem,1.15vw,1.1rem)] font-bold leading-[1.18] text-[#071116]">
-          {item.title}
-        </h3>
-        <p className="mt-[0.45rem] overflow-hidden text-sm font-medium leading-[1.35] text-[#59626c] [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2]">
-          {getAnnouncementSummary(item)}
-        </p>
-        <p className={metaClassName}>
+      <div className={bodyClassName}>
+        <h3 className={titleClassName}>{item.title}</h3>
+        <p className={summaryClassName}>{getAnnouncementSummary(item)}</p>
+        <p className={metaRowClassName}>
           <Icon icon="mdi:clock-time-three-outline" className="h-4 w-4 flex-shrink-0" />
           {formatAnnouncementDate(item.startsAt || item.date)}
         </p>
@@ -76,15 +89,27 @@ function AnnouncementCard({ item }: { item: NewsItem }) {
   );
 }
 
-function AnnouncementCardSkeleton() {
+function AnnouncementCardSkeleton({ compact = false }: { compact?: boolean }) {
+  const rootClassName = compact
+    ? 'flex h-full min-w-0 overflow-hidden rounded-2xl border border-[#eef2f5] bg-white p-3 shadow-[0_1px_2px_rgba(7,17,22,0.04)]'
+    : cardClassName;
+  const imageWrapClassName = compact
+    ? 'w-[min(35%,10.5rem)] basis-[min(35%,10.5rem)] flex-shrink-0 overflow-hidden rounded-[1rem] bg-accent-100'
+    : `${cardImageWrapClassName} bg-accent-100`;
+  const bodyClassName = compact
+    ? 'flex min-w-0 flex-1 flex-col justify-center px-3 py-0 pr-0'
+    : cardBodyClassName;
+
   return (
-    <div className={`${cardClassName} animate-pulse`}>
-      <div className={`${cardImageWrapClassName} bg-accent-100`} />
-      <div className={cardBodyClassName}>
-        <div className="h-4 w-2/3 rounded bg-accent-100" />
-        <div className="mt-3 h-3 w-full rounded bg-accent-100" />
-        <div className="mt-2 h-3 w-5/6 rounded bg-accent-100" />
-        <div className="mt-4 h-3 w-1/3 rounded bg-accent-100" />
+    <div className={`${rootClassName} animate-pulse`}>
+      <div className={imageWrapClassName} />
+      <div className={bodyClassName}>
+        <div className={`rounded bg-accent-100 ${compact ? 'h-4 w-4/5' : 'h-4 w-2/3'}`} />
+        <div
+          className={`rounded bg-accent-100 ${compact ? 'mt-2 h-3 w-full' : 'mt-3 h-3 w-full'}`}
+        />
+        <div className={`rounded bg-accent-100 ${compact ? 'mt-2 h-3 w-1/2' : 'mt-2 h-3 w-5/6'}`} />
+        {!compact && <div className="mt-4 h-3 w-1/3 rounded bg-accent-100" />}
       </div>
     </div>
   );
@@ -93,6 +118,8 @@ function AnnouncementCardSkeleton() {
 export default function BlogIndexPage() {
   const user = useIdentityStore((state) => state.user);
   const [selectedType, setSelectedType] = useState<'all' | AnnouncementType>('all');
+  const featuredCardRef = useRef<HTMLElement | null>(null);
+  const [featuredCardHeight, setFeaturedCardHeight] = useState<number | null>(null);
 
   const { data: announcements = [], isLoading } = useAnnouncements(
     selectedType === 'all' ? undefined : { type: selectedType },
@@ -109,6 +136,40 @@ export default function BlogIndexPage() {
 
   const [featured, ...latest] = sortedAnnouncements;
   const isAdmin = user?.role === 'admin';
+
+  useEffect(() => {
+    const element = featuredCardRef.current;
+
+    if (!element || typeof window === 'undefined') {
+      setFeaturedCardHeight(null);
+      return;
+    }
+
+    const updateHeight = () => {
+      if (window.innerWidth < 1181) {
+        setFeaturedCardHeight(null);
+        return;
+      }
+
+      setFeaturedCardHeight(element.getBoundingClientRect().height);
+    };
+
+    updateHeight();
+
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', updateHeight);
+      return () => window.removeEventListener('resize', updateHeight);
+    }
+
+    const observer = new ResizeObserver(updateHeight);
+    observer.observe(element);
+    window.addEventListener('resize', updateHeight);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', updateHeight);
+    };
+  }, [featured?.slug, featured?.title, featured?.image, featured?.content, featured?.excerpt]);
 
   return (
     <>
@@ -187,8 +248,8 @@ export default function BlogIndexPage() {
                   </div>
                 </div>
                 <div className={sideListClassName}>
-                  {Array.from({ length: 2 }).map((_, index) => (
-                    <AnnouncementCardSkeleton key={index} />
+                  {Array.from({ length: 3 }).map((_, index) => (
+                    <AnnouncementCardSkeleton key={index} compact />
                   ))}
                 </div>
               </div>
@@ -202,7 +263,10 @@ export default function BlogIndexPage() {
           ) : featured ? (
             <>
               <div className={boardClassName}>
-                <article className="flex flex-col overflow-hidden rounded-2xl border border-[#eef2f5] bg-white shadow-[0_1px_2px_rgba(7,17,22,0.04)]">
+                <article
+                  ref={featuredCardRef}
+                  className="flex flex-col overflow-hidden rounded-2xl border border-[#eef2f5] bg-white shadow-[0_1px_2px_rgba(7,17,22,0.04)]"
+                >
                   <div className="aspect-[16/9] overflow-hidden bg-[#e9edf1]">
                     <img
                       src={featured.image || FALLBACK_IMAGE}
@@ -236,9 +300,12 @@ export default function BlogIndexPage() {
                   </div>
                 </article>
 
-                <div className={sideListClassName}>
-                  {latest.slice(0, 2).map((item) => (
-                    <AnnouncementCard key={item.slug} item={item} />
+                <div
+                  className={sideListClassName}
+                  style={featuredCardHeight ? { height: `${featuredCardHeight}px` } : undefined}
+                >
+                  {latest.slice(0, 3).map((item) => (
+                    <AnnouncementCard key={item.slug} item={item} compact />
                   ))}
                 </div>
               </div>
@@ -261,13 +328,13 @@ export default function BlogIndexPage() {
             </div>
           )}
 
-          {(isLoading || latest.length > 2) && (
+          {(isLoading || latest.length > 3) && (
             <div className={continuationGridClassName}>
               {isLoading
                 ? Array.from({ length: 4 }).map((_, index) => (
                     <AnnouncementCardSkeleton key={index} />
                   ))
-                : latest.slice(2).map((item) => <AnnouncementCard key={item.slug} item={item} />)}
+                : latest.slice(3).map((item) => <AnnouncementCard key={item.slug} item={item} />)}
             </div>
           )}
         </section>
