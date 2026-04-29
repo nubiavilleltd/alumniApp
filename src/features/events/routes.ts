@@ -7,4 +7,5 @@ export const EVENT_ROUTES = {
   MY_EVENTS: '/my-events',
   DETAIL: (id: string) => `/events/${id}`,
   EDIT: (id: string) => `/events/${id}/edit`,
+  ATTENDEES: (id: string) => `/events/${id}/attendees`,
 } as const;

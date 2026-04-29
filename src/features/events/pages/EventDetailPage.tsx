@@ -535,6 +535,16 @@ export function EventDetailPage() {
                 )}
               </div>
 
+              <div className="mb-6">
+                <AppLink
+                  href={EVENT_ROUTES.ATTENDEES(event.id)}
+                  className="inline-flex items-center gap-2 rounded-full border border-primary-200 bg-white px-5 py-2.5 text-sm font-semibold text-primary-700 transition-colors hover:bg-primary-50"
+                >
+                  <Icon icon="mdi:account-group-outline" className="h-4 w-4" />
+                  View attendees
+                </AppLink>
+              </div>
+
               {/* ─── Countdown ───────────────────────── */}
               {isUpcoming && (
                 <div className="mb-6">

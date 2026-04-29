@@ -13,6 +13,7 @@ import type {
 } from '@/features/announcements/types/announcement.types';
 
 const ANNOUNCEMENT_FALLBACK_IMAGE = '/news-1.png';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL?.replace(/\/+$/, '') ?? '';
 
 function toStringOrUndefined(value: unknown) {
   if (value === null || value === undefined || value === '') return undefined;
@@ -38,6 +39,18 @@ function createExcerpt(value: string, maxLength = 180) {
   return `${normalized.slice(0, maxLength).trimEnd()}...`;
 }
 
+function resolveAnnouncementImage(value: unknown): string | undefined {
+  const image = toStringOrUndefined(value)?.trim();
+  if (!image) return undefined;
+
+  if (image === ANNOUNCEMENT_FALLBACK_IMAGE) return image;
+
+  const isAbsolute = /^(https?:)?\/\//i.test(image) || /^(data|blob):/i.test(image);
+  if (isAbsolute || !API_BASE_URL) return image;
+
+  return image.startsWith('/') ? `${API_BASE_URL}${image}` : `${API_BASE_URL}/${image}`;
+}
+
 export function mapGetAnnouncementsPayload(params?: GetAnnouncementsParams) {
   if (!params) return {};
 
@@ -60,7 +73,7 @@ export function mapAnnouncementToCreatePayload(input: AnnouncementMutationInput)
   if (input.year?.trim()) payload.append('year', input.year.trim());
   if (input.startsAt?.trim()) payload.append('starts_at', input.startsAt.trim());
   if (input.endsAt?.trim()) payload.append('ends_at', input.endsAt.trim());
-  if (input.image) payload.append('image', input.image);
+  if (input.image) payload.append('image', input.image, input.image.name);
 
   return payload;
 }
@@ -80,7 +93,7 @@ export function mapAnnouncementToUpdatePayload(
   if (input.year?.trim()) payload.append('year', input.year.trim());
   if (input.startsAt?.trim()) payload.append('starts_at', input.startsAt.trim());
   if (input.endsAt?.trim()) payload.append('ends_at', input.endsAt.trim());
-  if (input.image) payload.append('image', input.image);
+  if (input.image) payload.append('image', input.image, input.image.name);
 
   return payload;
 }
@@ -116,10 +129,12 @@ export function mapBackendAnnouncement(raw: any): Announcement | null {
     const createdAt =
       raw?.created_at ?? raw?.createdAt ?? raw?.published_at ?? raw?.publishedAt ?? startsAt;
     const image =
-      toStringOrUndefined(raw?.image) ??
-      toStringOrUndefined(raw?.image_url) ??
-      toStringOrUndefined(raw?.imageUrl) ??
-      toStringOrUndefined(raw?.banner) ??
+      resolveAnnouncementImage(raw?.image) ??
+      resolveAnnouncementImage(raw?.imag) ??
+      resolveAnnouncementImage(raw?.images) ??
+      resolveAnnouncementImage(raw?.image_url) ??
+      resolveAnnouncementImage(raw?.imageUrl) ??
+      resolveAnnouncementImage(raw?.banner) ??
       ANNOUNCEMENT_FALLBACK_IMAGE;
 
     return {

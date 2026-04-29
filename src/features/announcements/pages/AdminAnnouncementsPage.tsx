@@ -42,6 +42,7 @@ const announcementTypeOptions = [
 ] as const;
 
 const filterOptions = [{ label: 'All types', value: 'all' }, ...announcementTypeOptions] as const;
+const ANNOUNCEMENT_FALLBACK_IMAGE = '/news-1.png';
 
 const breadcrumbItems = [
   { label: 'Home', href: ROUTES.HOME },
@@ -66,6 +67,31 @@ function formatAnnouncementDate(date?: string) {
 
 function buildSummary(item: NewsItem) {
   return item.excerpt?.trim() || item.content?.trim() || 'No summary provided yet.';
+}
+
+function canReuseAnnouncementImage(preview?: string) {
+  if (!preview) return false;
+  if (preview === ANNOUNCEMENT_FALLBACK_IMAGE) return false;
+  return !preview.startsWith('blob:') && !preview.startsWith('data:');
+}
+
+async function imageUrlToFile(imageUrl: string) {
+  const response = await fetch(imageUrl);
+  if (!response.ok) {
+    throw new Error('Unable to prepare the cover image for upload. Please select it again.');
+  }
+
+  const blob = await response.blob();
+  const extension = blob.type.split('/')[1] || 'jpg';
+  const pathname = imageUrl.split('?')[0]?.split('#')[0] ?? '';
+  const filename =
+    pathname.split('/').pop()?.trim() ||
+    `announcement-cover.${extension.replace(/[^a-z0-9]/gi, '')}`;
+
+  return new File([blob], filename, {
+    type: blob.type || 'image/jpeg',
+    lastModified: Date.now(),
+  });
 }
 
 function toInputDateTime(value?: string) {
@@ -170,6 +196,22 @@ function AnnouncementEditorModal({
       return;
     }
 
+    let submitImage = imageFile;
+
+    if (!submitImage && canReuseAnnouncementImage(imagePreviews[0])) {
+      try {
+        submitImage = await imageUrlToFile(imagePreviews[0]);
+      } catch (error: any) {
+        setFormError(error.message ?? 'Please select a cover image before saving.');
+        return;
+      }
+    }
+
+    if (!submitImage) {
+      setFormError('Cover image is required.');
+      return;
+    }
+
     const payload: AnnouncementMutationInput = {
       title: form.title.trim(),
       content: form.content.trim(),
@@ -178,7 +220,7 @@ function AnnouncementEditorModal({
       year: form.year.trim() || undefined,
       startsAt: toBackendDateTime(form.startsAt),
       endsAt: toBackendDateTime(form.endsAt),
-      image: imageFile,
+      image: submitImage,
     };
 
     try {
@@ -356,7 +398,7 @@ export function AdminAnnouncementsPage() {
       <Breadcrumbs items={breadcrumbItems} />
 
       <section className="section py-8">
-        <div className="container-custom max-w-7xl space-y-6">
+        <div className="container-custom w-full space-y-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
               <h1 className="text-3xl font-bold text-accent-950">Manage Announcements</h1>
@@ -436,7 +478,7 @@ export function AdminAnnouncementsPage() {
           </div>
 
           {isLoading ? (
-            <div className="grid gap-4">
+            <div className="grid gap-4 lg:grid-cols-2">
               {Array.from({ length: 4 }).map((_, index) => (
                 <div
                   key={index}
@@ -455,18 +497,18 @@ export function AdminAnnouncementsPage() {
               </p>
             </div>
           ) : (
-            <div className="grid gap-4">
+            <div className="grid gap-4 lg:grid-cols-2">
               {filteredAnnouncements.map((item) => (
                 <article
                   key={item.slug}
-                  className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-accent-100"
+                  className="h-full overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-accent-100"
                 >
-                  <div className="grid gap-0 lg:grid-cols-[240px_1fr]">
+                  <div className="grid gap-0 lg:h-full lg:grid-cols-[240px_1fr] lg:items-stretch">
                     <div className="h-52 bg-accent-100 lg:h-full">
                       <img src={item.image} alt="" className="h-full w-full object-cover" />
                     </div>
 
-                    <div className="flex flex-col justify-between gap-5 p-5">
+                    <div className="flex h-full flex-col gap-5 p-5">
                       <div>
                         <div className="flex flex-wrap items-center gap-2">
                           <span
@@ -495,7 +537,7 @@ export function AdminAnnouncementsPage() {
                         </p>
                       </div>
 
-                      <div className="flex flex-wrap items-center justify-between gap-3">
+                      <div className="mt-auto flex flex-wrap items-center justify-between gap-3">
                         <ButtonLink
                           href={ANNOUNCEMENT_ROUTES.DETAIL(item.slug)}
                           variant="outline"

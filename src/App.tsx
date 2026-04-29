@@ -33,6 +33,7 @@ import { AlumniProfilePage } from './features/alumni/pages/AlumniProfilePage';
 import { EventsPage } from './features/events/pages/EventsPage';
 import { EventDetailPage } from './features/events/pages/EventDetailPage';
 import { MyEventsPage } from './features/events/pages/MyEventsPage';
+import AttendeesPage from './features/events/pages/AttendeesPage';
 import CreateEventPage from '@/features/events/pages/CreateEventPage';
 import EditEventPage from '@/features/events/pages/EditEventPage';
 
@@ -186,6 +187,14 @@ export default function App() {
             element={
               <ErrorBoundary>
                 <EventsPage />
+              </ErrorBoundary>
+            }
+          />
+          <Route
+            path={ROUTES.EVENTS.ATTENDEES(':id')}
+            element={
+              <ErrorBoundary>
+                <AttendeesPage />
               </ErrorBoundary>
             }
           />

@@ -1,12 +1,23 @@
 // features/events/components/RegisterEventModal.tsx
 
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Icon } from '@iconify/react';
 import { Modal } from '@/shared/components/ui/Modal';
 import { useEventRegistration } from '../hooks/useEventRegistration';
 import type { Event } from '../types/event.types';
 import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
+import { EventRegistrationQuestionField } from './EventRegistrationQuestionField';
+import {
+  getEventRegistrationForms,
+  getEventRegistrationResponse,
+  saveEventRegistrationResponse,
+  serializeRegistrationAnswersForAdditionalInfo,
+} from '../lib/eventRegistrationFormStorage';
+import type {
+  EventRegistrationAnswerValue,
+  StoredEventRegistrationAnswer,
+} from '../types/eventRegistrationForm.types';
 
 interface RegisterEventModalProps {
   event: Event | null;
@@ -20,9 +31,154 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
 
   const [rsvpStatus, setRsvpStatus] = useState<'going' | 'maybe'>('going');
   const [additionalInfo, setAdditionalInfo] = useState('');
+  const [formAnswers, setFormAnswers] = useState<Record<string, EventRegistrationAnswerValue>>({});
+  const [questionErrors, setQuestionErrors] = useState<Record<string, string>>({});
 
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const registrationForms = useMemo(
+    () => (event?.id ? getEventRegistrationForms(event.id) : []),
+    [event?.id],
+  );
+
+  const formQuestions = useMemo(
+    () =>
+      registrationForms.flatMap((form) =>
+        form.questions
+          .slice()
+          .sort((a, b) => a.order - b.order)
+          .map((question) => ({
+            ...question,
+            formName: form.name,
+            formVersion: form.version,
+          })),
+      ),
+    [registrationForms],
+  );
+
+  useEffect(() => {
+    if (!event || !currentUser?.id) {
+      setFormAnswers({});
+      setQuestionErrors({});
+      setAdditionalInfo('');
+      return;
+    }
+
+    const savedResponse = getEventRegistrationResponse(event.id, currentUser.id);
+    const nextAnswers = formQuestions.reduce<Record<string, EventRegistrationAnswerValue>>(
+      (answers, question) => {
+        const savedAnswer = savedResponse?.answers.find(
+          (answer) => answer.questionId === question.id,
+        );
+        answers[question.id] = savedAnswer?.value ?? (question.type === 'checkbox' ? [] : '');
+        return answers;
+      },
+      {},
+    );
+
+    setFormAnswers(nextAnswers);
+    setQuestionErrors({});
+    setAdditionalInfo(savedResponse?.additionalInfo ?? '');
+  }, [currentUser?.id, event, formQuestions]);
+
+  const updateAnswer = (questionId: string, value: EventRegistrationAnswerValue) => {
+    setFormAnswers((current) => ({ ...current, [questionId]: value }));
+    setQuestionErrors((current) => {
+      if (!current[questionId]) {
+        return current;
+      }
+
+      const nextErrors = { ...current };
+      delete nextErrors[questionId];
+      return nextErrors;
+    });
+  };
+
+  const toggleCheckboxAnswer = (questionId: string, option: string) => {
+    setFormAnswers((current) => {
+      const currentValues = Array.isArray(current[questionId]) ? current[questionId] : [];
+      const nextValues = currentValues.includes(option)
+        ? currentValues.filter((value) => value !== option)
+        : [...currentValues, option];
+
+      return {
+        ...current,
+        [questionId]: nextValues,
+      };
+    });
+    setQuestionErrors((current) => {
+      if (!current[questionId]) {
+        return current;
+      }
+
+      const nextErrors = { ...current };
+      delete nextErrors[questionId];
+      return nextErrors;
+    });
+  };
+
+  const buildStructuredAnswers = (): StoredEventRegistrationAnswer[] => {
+    return formQuestions.map((question) => {
+      const rawValue = formAnswers[question.id];
+      const normalizedValue = Array.isArray(rawValue)
+        ? rawValue.map((value) => value.trim()).filter(Boolean)
+        : String(rawValue ?? '').trim();
+
+      return {
+        formId: question.formId,
+        formName: question.formName,
+        formVersion: question.formVersion,
+        questionId: question.id,
+        questionLabel: question.label,
+        questionType: question.type,
+        order: question.order,
+        required: question.required,
+        value: normalizedValue,
+      };
+    });
+  };
+
+  const validateStructuredAnswers = (answers: StoredEventRegistrationAnswer[]) => {
+    const nextErrors: Record<string, string> = {};
+
+    for (const answer of answers) {
+      const question = formQuestions.find((item) => item.id === answer.questionId);
+      if (!question) {
+        continue;
+      }
+
+      if (question.required) {
+        const isEmpty = Array.isArray(answer.value)
+          ? answer.value.length === 0
+          : answer.value.trim().length === 0;
+
+        if (isEmpty) {
+          nextErrors[question.id] = 'This question is required.';
+          continue;
+        }
+      }
+
+      if (
+        (question.type === 'multiple_choice' || question.type === 'dropdown') &&
+        !Array.isArray(answer.value) &&
+        answer.value &&
+        !question.options.includes(answer.value)
+      ) {
+        nextErrors[question.id] = 'Please select one of the provided options.';
+      }
+
+      if (question.type === 'checkbox' && Array.isArray(answer.value)) {
+        const hasInvalidOption = answer.value.some((value) => !question.options.includes(value));
+        if (hasInvalidOption) {
+          nextErrors[question.id] = 'Please choose only from the listed options.';
+        }
+      }
+    }
+
+    setQuestionErrors(nextErrors);
+    return Object.keys(nextErrors).length === 0;
+  };
 
   // const handleSubmit = async (e: React.FormEvent) => {
   //   e.preventDefault();
@@ -54,10 +210,42 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
     }
 
     try {
+      const structuredAnswers = buildStructuredAnswers();
+
+      if (registrationForms.length > 0 && !validateStructuredAnswers(structuredAnswers)) {
+        setError('Please complete the required registration questions.');
+        return;
+      }
+
+      const apiAdditionalInfo =
+        registrationForms.length > 0
+          ? serializeRegistrationAnswersForAdditionalInfo({
+              forms: registrationForms,
+              answers: structuredAnswers,
+              additionalInfo,
+            })
+          : additionalInfo;
+
       await register({
         status: rsvpStatus,
-        additionalInfo,
+        additionalInfo: apiAdditionalInfo,
       });
+
+      if (registrationForms.length > 0) {
+        saveEventRegistrationResponse({
+          eventId: event.id,
+          eventTitle: event.title,
+          forms: registrationForms,
+          user: {
+            id: currentUser.id,
+            fullName: currentUser.fullName,
+            email: currentUser.email,
+          },
+          rsvpStatus,
+          additionalInfo,
+          answers: structuredAnswers,
+        });
+      }
 
       setSubmitted(true);
     } catch (err) {
@@ -83,6 +271,8 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
       setError(null);
       setRsvpStatus('going');
       setAdditionalInfo('');
+      setFormAnswers({});
+      setQuestionErrors({});
     }, 300);
   };
 
@@ -244,12 +434,58 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
             </div>
           )}
 
+          {registrationForms.length > 0 ? (
+            <div className="space-y-4">
+              {registrationForms.map((form) => {
+                const questions = form.questions.slice().sort((a, b) => a.order - b.order);
+
+                return (
+                  <div
+                    key={form.id}
+                    className="rounded-2xl border border-primary-100 bg-primary-50/60 p-4"
+                  >
+                    <div className="mb-4 flex items-start gap-3">
+                      <div className="mt-0.5 rounded-full bg-white p-2 text-primary-500 shadow-sm">
+                        <Icon icon="mdi:clipboard-text-outline" className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-gray-900">{form.name}</p>
+                        <p className="text-xs text-gray-500">
+                          Please answer the following questions before confirming your registration.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      {questions.map((question, index) => (
+                        <EventRegistrationQuestionField
+                          key={question.id}
+                          question={question}
+                          index={index}
+                          value={formAnswers[question.id]}
+                          error={questionErrors[question.id]}
+                          onValueChange={(value) => updateAnswer(question.id, value)}
+                          onCheckboxToggle={(option) => toggleCheckboxAnswer(question.id, option)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : null}
+
           <TextareaInput
-            label="Additional Info"
+            label={registrationForms.length > 0 ? 'Extra Note' : 'Additional Info'}
             id="additionalInfo"
             rows={5}
             value={additionalInfo}
             onChange={(e) => setAdditionalInfo(e.target.value)}
+            hint={
+              registrationForms.length > 0
+                ? 'Optional extra note to go along with your saved form responses.'
+                : undefined
+            }
           />
 
           {/* <TextareaInput
@@ -264,7 +500,7 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
           {/* Submit */}
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || isLoadingProfile}
             className="mt-2 w-full bg-primary-500 hover:bg-primary-600 text-white text-sm font-semibold py-3 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? (

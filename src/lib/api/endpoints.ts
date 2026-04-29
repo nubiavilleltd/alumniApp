@@ -88,6 +88,13 @@ export const API_ENDPOINTS = {
     CREATE: '/api/contact_us',
   },
 
+  // ─── JOB VACANCIES ─────────────────────────────────────────────────────────────
+  JOB_VACANCIES: {
+    GET: '/api/get_vacancies',
+    CREATE: '/api/create_vacancy',
+    MANAGE: '/api/manage_vacancy',
+  },
+
   // ─── Leadership ───────────────────────────────────────────────────────────
   LEADERSHIP: {
     GET_LEADERSHIP: '/api/get_leadership',

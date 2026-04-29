@@ -25,7 +25,7 @@ export function DeleteConfirmModal({
   description,
 }: DeleteConfirmModalProps) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50">
       <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
         <div className="flex items-start gap-3 mb-4">
           <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">

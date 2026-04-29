@@ -46,12 +46,13 @@ export function useEventRegistration(eventId: string) {
 
     register: ({ status = 'going', additionalInfo = '' }: RegisterPayload) => {
       if (!currentUser?.id) {
-        console.error('User must be logged in to register for events');
-        toast.error('User must be logged in to register for events');
-        return;
+        const error = new Error('User must be logged in to register for events');
+        console.error(error.message);
+        toast.error(error.message);
+        return Promise.reject(error);
       }
 
-      registerMutation.mutate({
+      return registerMutation.mutateAsync({
         eventId,
         status,
         additionalInfo,

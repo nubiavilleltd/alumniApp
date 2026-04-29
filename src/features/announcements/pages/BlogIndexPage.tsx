@@ -12,6 +12,23 @@ import type { AnnouncementType, NewsItem } from '@/features/announcements/types/
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 
 const FALLBACK_IMAGE = '/news-1.png';
+const pageShellClassName =
+  'mx-auto w-full max-w-[80rem] px-4 pb-16 pt-4 max-[1180px]:max-w-[64rem] sm:pb-14 sm:pt-5';
+const cardClassName =
+  'flex min-w-0 overflow-hidden rounded-2xl border border-[#eef2f5] bg-white p-3.5 shadow-[0_1px_2px_rgba(7,17,22,0.04)] no-underline transition-colors duration-200 hover:border-primary-100 max-sm:flex-col max-sm:p-0';
+const cardImageWrapClassName =
+  'w-[min(38%,14rem)] basis-[min(38%,14rem)] flex-shrink-0 overflow-hidden rounded-xl bg-[#e9edf1] max-sm:w-full max-sm:basis-auto max-sm:aspect-[16/9] max-sm:rounded-none';
+const cardBodyClassName =
+  'flex min-w-0 flex-1 flex-col justify-center px-4 py-[0.2rem] pr-[0.1rem] max-sm:p-[1.15rem]';
+const metaClassName =
+  'm-0 flex items-center gap-[0.55rem] text-sm font-semibold leading-[1.2] text-[#59626c]';
+const actionClassName =
+  'min-h-10 rounded-full border-[1.5px] border-primary-500 bg-white px-[1.1rem] text-sm font-bold text-primary-500';
+const boardClassName =
+  'hidden gap-5 min-[1181px]:grid min-[1181px]:grid-cols-2 min-[1181px]:items-start';
+const sideListClassName = 'grid gap-5 content-start';
+const continuationGridClassName = 'mt-5 hidden gap-5 min-[1181px]:grid min-[1181px]:grid-cols-2';
+const stackedListClassName = 'grid gap-5 min-[1181px]:hidden';
 
 const typeFilters: Array<{ label: string; value: 'all' | AnnouncementType }> = [
   { label: 'All updates', value: 'all' },
@@ -38,16 +55,20 @@ function getAnnouncementSummary(item: NewsItem) {
 
 function AnnouncementCard({ item }: { item: NewsItem }) {
   return (
-    <AppLink href={ANNOUNCEMENT_ROUTES.DETAIL(item.slug)} className="announcements-card">
-      <div className="announcements-card__image-wrap">
-        <img src={item.image || FALLBACK_IMAGE} alt="" className="announcements-card__image" />
+    <AppLink href={ANNOUNCEMENT_ROUTES.DETAIL(item.slug)} className={cardClassName}>
+      <div className={cardImageWrapClassName}>
+        <img src={item.image || FALLBACK_IMAGE} alt="" className="h-full w-full object-cover" />
       </div>
 
-      <div className="announcements-card__body">
-        <h3 className="announcements-card__title">{item.title}</h3>
-        <p className="announcements-card__summary">{getAnnouncementSummary(item)}</p>
-        <p className="announcements-time">
-          <Icon icon="mdi:clock-time-three-outline" />
+      <div className={cardBodyClassName}>
+        <h3 className="m-0 text-[clamp(0.95rem,1.15vw,1.1rem)] font-bold leading-[1.18] text-[#071116]">
+          {item.title}
+        </h3>
+        <p className="mt-[0.45rem] overflow-hidden text-sm font-medium leading-[1.35] text-[#59626c] [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2]">
+          {getAnnouncementSummary(item)}
+        </p>
+        <p className={metaClassName}>
+          <Icon icon="mdi:clock-time-three-outline" className="h-4 w-4 flex-shrink-0" />
           {formatAnnouncementDate(item.startsAt || item.date)}
         </p>
       </div>
@@ -57,9 +78,9 @@ function AnnouncementCard({ item }: { item: NewsItem }) {
 
 function AnnouncementCardSkeleton() {
   return (
-    <div className="announcements-card animate-pulse">
-      <div className="announcements-card__image-wrap bg-accent-100" />
-      <div className="announcements-card__body">
+    <div className={`${cardClassName} animate-pulse`}>
+      <div className={`${cardImageWrapClassName} bg-accent-100`} />
+      <div className={cardBodyClassName}>
         <div className="h-4 w-2/3 rounded bg-accent-100" />
         <div className="mt-3 h-3 w-full rounded bg-accent-100" />
         <div className="mt-2 h-3 w-5/6 rounded bg-accent-100" />
@@ -96,13 +117,17 @@ export default function BlogIndexPage() {
         description="Read the latest FGGC Owerri Alumnae Association updates, event notices, welfare reminders, and project news."
       />
 
-      <main className="announcements-page">
-        <section className="announcements-shell" aria-labelledby="announcements-title">
-          <header className="announcements-header">
+      <main className="min-h-full bg-[#f8f8f7] text-[#071116]">
+        <section className={pageShellClassName} aria-labelledby="announcements-title">
+          <header className="mb-6 flex flex-col items-start justify-between gap-4 min-[761px]:flex-row min-[761px]:items-center">
             <div>
-              <h1 id="announcements-title" className="announcements-title">
+              <h1
+                id="announcements-title"
+                className="m-0 text-2xl font-bold leading-tight text-[#071116] md:text-3xl"
+              >
                 Announcements
               </h1>
+
               <div className="mt-4 flex flex-wrap gap-2">
                 {typeFilters.map((filter) => (
                   <button
@@ -121,12 +146,12 @@ export default function BlogIndexPage() {
               </div>
             </div>
 
-            <div className="announcements-actions">
+            <div className="flex w-full flex-wrap justify-start gap-3 min-[761px]:w-auto min-[761px]:justify-end">
               {isAdmin && (
                 <ButtonLink
                   href={ADMIN_ROUTES.ANNOUNCEMENTS}
                   variant="primary"
-                  className="announcements-action"
+                  className={`${actionClassName} max-[760px]:basis-[11rem] max-[760px]:flex-1`}
                 >
                   Manage announcements
                 </ButtonLink>
@@ -134,54 +159,71 @@ export default function BlogIndexPage() {
               <ButtonLink
                 href={ROUTES.PROJECTS.ROOT}
                 variant="outline"
-                className="announcements-action"
+                className={`${actionClassName} max-[760px]:basis-[11rem] max-[760px]:flex-1`}
               >
                 Go to our Projects
               </ButtonLink>
               <ButtonLink
                 href={EVENT_ROUTES.ROOT}
                 variant="outline"
-                className="announcements-action"
+                className={`${actionClassName} max-[760px]:basis-[11rem] max-[760px]:flex-1`}
               >
                 Go to Events
               </ButtonLink>
             </div>
           </header>
 
-          <div className="announcements-board">
-            {isLoading ? (
-              <>
-                <AnnouncementCardSkeleton />
-                <div className="announcements-side-list">
-                  {Array.from({ length: 3 }).map((_, index) => (
+          {isLoading ? (
+            <>
+              <div className={boardClassName}>
+                <div className="flex flex-col overflow-hidden rounded-2xl border border-[#eef2f5] bg-white shadow-[0_1px_2px_rgba(7,17,22,0.04)]">
+                  <div className="aspect-[16/9] bg-accent-100" />
+                  <div className="space-y-4 p-[1.15rem_1.25rem_1.35rem]">
+                    <div className="h-4 w-40 rounded bg-accent-100" />
+                    <div className="h-8 w-4/5 rounded bg-accent-100" />
+                    <div className="h-4 w-full rounded bg-accent-100" />
+                    <div className="h-4 w-5/6 rounded bg-accent-100" />
+                    <div className="h-4 w-1/3 rounded bg-accent-100" />
+                  </div>
+                </div>
+                <div className={sideListClassName}>
+                  {Array.from({ length: 2 }).map((_, index) => (
                     <AnnouncementCardSkeleton key={index} />
                   ))}
                 </div>
-                <div className="announcements-continuation">
-                  {Array.from({ length: 3 }).map((_, index) => (
-                    <AnnouncementCardSkeleton key={index} />
-                  ))}
-                </div>
-              </>
-            ) : featured ? (
-              <>
-                <article className="announcements-featured">
-                  <div className="announcements-featured__image-wrap">
+              </div>
+
+              <div className={stackedListClassName}>
+                {Array.from({ length: 4 }).map((_, index) => (
+                  <AnnouncementCardSkeleton key={index} />
+                ))}
+              </div>
+            </>
+          ) : featured ? (
+            <>
+              <div className={boardClassName}>
+                <article className="flex flex-col overflow-hidden rounded-2xl border border-[#eef2f5] bg-white shadow-[0_1px_2px_rgba(7,17,22,0.04)]">
+                  <div className="aspect-[16/9] overflow-hidden bg-[#e9edf1]">
                     <img
                       src={featured.image || FALLBACK_IMAGE}
                       alt=""
-                      className="announcements-featured__image"
+                      className="h-full w-full object-cover"
                     />
                   </div>
 
-                  <div className="announcements-featured__body">
-                    <p className="announcements-time">
-                      <Icon icon="mdi:clock-time-three-outline" />
+                  <div className="flex flex-col p-[1.15rem_1.25rem_1.35rem]">
+                    <p className={metaClassName}>
+                      <Icon icon="mdi:clock-time-three-outline" className="h-4 w-4 flex-shrink-0" />
                       {formatAnnouncementDate(featured.startsAt || featured.date)}
                     </p>
-                    <h2 className="announcements-featured__title">{featured.title}</h2>
-                    <p className="announcements-featured__summary">
-                      {getAnnouncementSummary(featured)} <span>read more</span>
+                    <h2 className="mt-4 text-[clamp(1.35rem,2vw,1.75rem)] font-bold leading-[1.24] text-[#071116]">
+                      {featured.title}
+                    </h2>
+                    <p className="mt-[0.65rem] text-base font-medium leading-[1.32] text-[#59626c]">
+                      {getAnnouncementSummary(featured)}{' '}
+                      <span className="whitespace-nowrap font-extrabold text-primary-500">
+                        read more
+                      </span>
                     </p>
                     <div className="mt-5">
                       <ButtonLink
@@ -194,30 +236,40 @@ export default function BlogIndexPage() {
                   </div>
                 </article>
 
-                <div className="announcements-side-list">
-                  {latest.slice(0, 3).map((item) => (
+                <div className={sideListClassName}>
+                  {latest.slice(0, 2).map((item) => (
                     <AnnouncementCard key={item.slug} item={item} />
                   ))}
                 </div>
-
-                <div className="announcements-continuation">
-                  {latest.slice(3).map((item) => (
-                    <AnnouncementCard key={item.slug} item={item} />
-                  ))}
-                </div>
-              </>
-            ) : (
-              <div className="rounded-[2rem] bg-white p-10 text-center shadow-sm ring-1 ring-accent-100">
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary-50">
-                  <Icon icon="mdi:bullhorn-outline" className="h-7 w-7 text-primary-500" />
-                </div>
-                <h2 className="mt-4 text-2xl font-bold text-accent-900">No announcements yet</h2>
-                <p className="mt-2 text-sm text-accent-500">
-                  Fresh updates will appear here as soon as the admin team publishes them.
-                </p>
               </div>
-            )}
-          </div>
+
+              <div className={stackedListClassName}>
+                {sortedAnnouncements.map((item) => (
+                  <AnnouncementCard key={item.slug} item={item} />
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className="rounded-[2rem] bg-white p-10 text-center shadow-sm ring-1 ring-accent-100">
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary-50">
+                <Icon icon="mdi:bullhorn-outline" className="h-7 w-7 text-primary-500" />
+              </div>
+              <h2 className="mt-4 text-2xl font-bold text-accent-900">No announcements yet</h2>
+              <p className="mt-2 text-sm text-accent-500">
+                Fresh updates will appear here as soon as the admin team publishes them.
+              </p>
+            </div>
+          )}
+
+          {(isLoading || latest.length > 2) && (
+            <div className={continuationGridClassName}>
+              {isLoading
+                ? Array.from({ length: 4 }).map((_, index) => (
+                    <AnnouncementCardSkeleton key={index} />
+                  ))
+                : latest.slice(2).map((item) => <AnnouncementCard key={item.slug} item={item} />)}
+            </div>
+          )}
         </section>
       </main>
     </>

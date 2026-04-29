@@ -22,6 +22,20 @@ import { EVENT_ROUTES } from '../routes';
 import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 import { DatePicker } from '@/shared/components/ui/input/DatePicker';
 import { TimePicker } from '@/shared/components/ui/input/TimePicker';
+import {
+  EventRegistrationFormBuilderModal,
+  type EventRegistrationFormDraft,
+} from '../components/EventRegistrationFormBuilderModal';
+import { saveEventRegistrationForms } from '../lib/eventRegistrationFormStorage';
+
+type LocalRegistrationFormDraft = {
+  localId: string;
+  draft: EventRegistrationFormDraft;
+};
+
+function createLocalRegistrationFormId() {
+  return `event-registration-draft-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
 
 // ─── Schema ───────────────────────────────────────────────────────────────────
 // Required: title, description, location, event_date, visibility, status
@@ -105,6 +119,11 @@ export default function CreateEventPage() {
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [bannerPreview, setBannerPreview] = useState<string>('');
   const [bannerError, setBannerError] = useState<string>('');
+  const [isRegistrationBuilderOpen, setIsRegistrationBuilderOpen] = useState(false);
+  const [registrationFormDrafts, setRegistrationFormDrafts] = useState<
+    LocalRegistrationFormDraft[]
+  >([]);
+  const [activeRegistrationFormId, setActiveRegistrationFormId] = useState<string | null>(null);
 
   const {
     register,
@@ -148,7 +167,7 @@ export default function CreateEventPage() {
     }
   };
 
-  const onSubmit = (data: CreateEventFormData) => {
+  const onSubmit = async (data: CreateEventFormData) => {
     if (!currentUser?.id) {
       toast.error('You must be logged in to create events.');
       return;
@@ -171,10 +190,25 @@ export default function CreateEventPage() {
       currentUser.chapterId,
     );
 
-    createEvent.mutate(payload, {
-      onSuccess: () => navigate(EVENT_ROUTES.ROOT),
-      onError: (error: any) => toast.fromError(error),
-    });
+    try {
+      const createdEvent = await createEvent.mutateAsync(payload);
+
+      if (registrationFormDrafts.length > 0) {
+        saveEventRegistrationForms({
+          eventId: createdEvent.id,
+          eventTitle: createdEvent.title || data.title,
+          drafts: registrationFormDrafts.map((item) => item.draft),
+          createdBy: {
+            id: currentUser.id,
+            fullName: currentUser.fullName,
+          },
+        });
+      }
+
+      navigate(EVENT_ROUTES.ROOT);
+    } catch (error: any) {
+      toast.fromError(error);
+    }
   };
 
   const isAdmin = currentUser?.role === 'admin';
@@ -200,6 +234,12 @@ export default function CreateEventPage() {
     { label: 'Events', href: EVENT_ROUTES.ROOT },
     { label: 'Create Event' },
   ];
+
+  const activeRegistrationFormDraft =
+    activeRegistrationFormId === null
+      ? null
+      : (registrationFormDrafts.find((item) => item.localId === activeRegistrationFormId)?.draft ??
+        null);
 
   return (
     <>
@@ -329,8 +369,110 @@ export default function CreateEventPage() {
               </Button>
             </div>
           </form>
+
+          <div className="mt-7 px-2">
+            <p className="max-w-5xl text-[1.4rem] font-medium leading-tight tracking-[0.01em] text-[#8a8a8a] md:text-[1.7rem]">
+              Would you like to request for information from attendees regarding this event?
+            </p>
+
+            <button
+              type="button"
+              onClick={() => {
+                setActiveRegistrationFormId(null);
+                setIsRegistrationBuilderOpen(true);
+              }}
+              className="mt-5 inline-flex min-h-[3.2rem] items-center rounded-full border-[3px] border-primary-500 px-8 text-[1.1rem] font-semibold text-primary-500 transition-colors hover:bg-primary-50 md:min-h-[3.35rem] md:px-9 md:text-[1.2rem]"
+            >
+              {registrationFormDrafts.length > 0 ? 'Add another request form' : 'Yes, request info'}
+            </button>
+
+            {registrationFormDrafts.length > 0 ? (
+              <div className="mt-5 grid max-w-4xl gap-4">
+                {registrationFormDrafts.map((item, index) => (
+                  <div
+                    key={item.localId}
+                    onClick={() => {
+                      setActiveRegistrationFormId(item.localId);
+                      setIsRegistrationBuilderOpen(true);
+                    }}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        setActiveRegistrationFormId(item.localId);
+                        setIsRegistrationBuilderOpen(true);
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
+                    className="rounded-[1.6rem] border border-primary-100 bg-primary-50/70 px-5 py-4 text-left transition-colors hover:border-primary-300 hover:bg-primary-50 focus:outline-none focus:ring-2 focus:ring-primary-300"
+                  >
+                    <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-primary-500">
+                          Request Form {index + 1}
+                        </p>
+                        <p className="mt-1 text-base font-semibold text-gray-900">
+                          {item.draft.name}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          {item.draft.questions.length} question
+                          {item.draft.questions.length === 1 ? '' : 's'} ready for this event
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-3 self-start md:self-center">
+                        <span className="inline-flex items-center gap-2 rounded-full border border-primary-200 bg-white px-3 py-1.5 text-sm font-semibold text-primary-500">
+                          <Icon icon="mdi:pencil-outline" className="h-4 w-4" />
+                          Open form
+                        </span>
+                        <button
+                          type="button"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            setRegistrationFormDrafts((current) =>
+                              current.filter((draftItem) => draftItem.localId !== item.localId),
+                            );
+                            if (activeRegistrationFormId === item.localId) {
+                              setActiveRegistrationFormId(null);
+                            }
+                          }}
+                          className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 transition-colors hover:text-red-500"
+                        >
+                          <Icon icon="mdi:delete-outline" className="h-4 w-4" />
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : null}
+          </div>
         </div>
       </section>
+
+      <EventRegistrationFormBuilderModal
+        isOpen={isRegistrationBuilderOpen}
+        value={activeRegistrationFormDraft}
+        onClose={() => {
+          setIsRegistrationBuilderOpen(false);
+          setActiveRegistrationFormId(null);
+        }}
+        onSave={(draft) => {
+          setRegistrationFormDrafts((current) => {
+            if (activeRegistrationFormId) {
+              return current.map((item) =>
+                item.localId === activeRegistrationFormId ? { ...item, draft } : item,
+              );
+            }
+
+            return [...current, { localId: createLocalRegistrationFormId(), draft }];
+          });
+          setIsRegistrationBuilderOpen(false);
+          setActiveRegistrationFormId(null);
+          toast.success('Registration form added to this event draft.');
+        }}
+      />
     </>
   );
 }
