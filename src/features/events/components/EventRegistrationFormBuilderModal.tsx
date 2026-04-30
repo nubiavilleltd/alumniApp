@@ -540,9 +540,7 @@ export function EventRegistrationFormBuilderModal({
                             <textarea
                               rows={2}
                               value={question.placeholder}
-                              onChange={(event) =>
-                                updateQuestion(question.id, { placeholder: event.target.value })
-                              }
+                              readOnly
                               placeholder="Enter a longer response"
                               className="w-full resize-none border-0 bg-transparent text-base text-gray-400 outline-none placeholder:text-gray-400"
                             />
@@ -550,9 +548,7 @@ export function EventRegistrationFormBuilderModal({
                             <input
                               type="text"
                               value={question.placeholder}
-                              onChange={(event) =>
-                                updateQuestion(question.id, { placeholder: event.target.value })
-                              }
+                              readOnly
                               placeholder="Enter your answer"
                               className="w-full border-0 bg-transparent text-base text-gray-400 outline-none placeholder:text-gray-400"
                             />
