@@ -180,9 +180,11 @@
 // Skeleton cards shown while fetching. Error state with retry.
 // Responsive: 1-col mobile → 2-col desktop. Matches the design in the screenshot exactly.
 
+import { useState } from 'react';
 import { Icon } from '@iconify/react';
 import { SEO } from '@/shared/common/SEO';
 import { DonationButton } from '@/shared/components/ui/DonationButton';
+import { useStartDirectConversation } from '@/features/messages/hooks/useStartDirectConversation';
 import { useZones } from '../hooks/useZones';
 import { WelfareZone } from '../types/welfare.type';
 
@@ -262,6 +264,33 @@ function ZoneCardSkeleton() {
 
 function ZoneCard({ zone, index }: { zone: WelfareZone; index: number }) {
   const hasCoordinator = zone.coordinator !== null;
+  const coordinatorMemberId =
+    zone.coordinator?.userId != null ? String(zone.coordinator.userId) : undefined;
+  const canMessageCoordinator = Boolean(coordinatorMemberId);
+  const { startDirectConversation } = useStartDirectConversation();
+  const [isStartingConversation, setIsStartingConversation] = useState(false);
+
+  async function handleMessageCoordinator() {
+    if (!zone.coordinator || !coordinatorMemberId) return;
+
+    setIsStartingConversation(true);
+
+    try {
+      await startDirectConversation({
+        participantMemberId: coordinatorMemberId,
+        topic: `Welfare enquiry for ${zone.zone}`,
+        draftMessage: `Hello ${zone.coordinator.firstName || zone.coordinator.name}, I'm reaching out through the welfare page regarding ${zone.zone}. I would appreciate your guidance and support.`,
+        recipientProfile: {
+          fullName: zone.coordinator.name,
+          avatar: zone.coordinator.avatar ?? undefined,
+          headline: `Welfare coordinator for ${zone.zone}`,
+          profileHref: `/alumni/profiles/${coordinatorMemberId}`,
+        },
+      });
+    } finally {
+      setIsStartingConversation(false);
+    }
+  }
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex">
@@ -318,15 +347,30 @@ function ZoneCard({ zone, index }: { zone: WelfareZone; index: number }) {
             )}
           </div>
 
-          {/* Send Message button — matches screenshot */}
-          {hasCoordinator && zone.coordinator!.email && (
+          {/* Send Message button */}
+          {hasCoordinator && canMessageCoordinator && (
             <div className="mt-4 flex justify-end">
-              <a
-                href={`mailto:${zone.coordinator!.email}`}
+              <button
+                type="button"
+                onClick={() => {
+                  void handleMessageCoordinator();
+                }}
+                disabled={isStartingConversation}
                 className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-primary-400 text-primary-500 text-sm font-medium hover:bg-primary-50 transition-colors"
               >
+                <Icon icon="mdi:message-outline" className="h-4 w-4" />
+                {isStartingConversation ? 'Opening chat...' : 'Send Message'}
+              </button>
+            </div>
+          )}
+          {hasCoordinator && !canMessageCoordinator && (
+            <div className="mt-4 flex justify-end">
+              <span
+                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-gray-200 text-gray-400 text-sm font-medium"
+                title="This coordinator does not have an in-app messaging profile yet."
+              >
                 Send Message
-              </a>
+              </span>
             </div>
           )}
         </div>

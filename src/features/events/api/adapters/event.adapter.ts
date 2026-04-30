@@ -6,6 +6,7 @@ import {
   extractList,
   safeParseDate,
 } from '@/lib/utils/adapters';
+import { EVENT_SURVEY_TAG } from '../../lib/eventSurveyAvailability';
 
 function mapRSVPStatus(status: unknown): 'going' | 'maybe' | 'not_going' | null {
   if (!status || status === '') return 'not_going'; // clean "unregistered"
@@ -25,6 +26,10 @@ function mapRSVPStatus(status: unknown): 'going' | 'maybe' | 'not_going' | null 
 
 export function mapBackendEventToFrontend(raw: unknown): Event {
   const d = raw as Record<string, any>;
+  const normalizedTags = parseTags(d.tags).map((tag) => tag.trim().toLowerCase());
+  const hasRegistrationQuestions =
+    readRegistrationQuestionFlag(d, normalizedTags) ??
+    (normalizedTags.includes(EVENT_SURVEY_TAG) ? true : null);
 
   return {
     id: String(d.id ?? ''),
@@ -47,7 +52,7 @@ export function mapBackendEventToFrontend(raw: unknown): Event {
     virtualLink: d.virtual_link || undefined,
     attire: d.attire || undefined,
     category: d.category || undefined,
-    tags: parseTags(d.tags).map((tag) => tag.trim().toLowerCase()),
+    tags: normalizedTags.filter((tag) => tag !== EVENT_SURVEY_TAG),
 
     featured: stringToBoolean(d.is_featured) ?? false,
 
@@ -55,6 +60,7 @@ export function mapBackendEventToFrontend(raw: unknown): Event {
 
     capacity: safeParseInt(d.max_attendees),
     allowGuests: stringToBoolean(d.allow_guests) ?? false,
+    hasRegistrationQuestions,
 
     createdBy: d.created_by_name || d.created_by || 'Organizer',
     attendeeCount: safeParseInt(d.attendee_count),
@@ -101,6 +107,7 @@ export function mapEventToCreatePayload(
     status: string;
     max_attendees?: number;
     event_banner?: File | null;
+    tags?: string[];
   },
   userId: string,
   chapterId?: string,
@@ -122,6 +129,7 @@ export function mapEventToCreatePayload(
   if (formData.end_time) base.end_time = formData.end_time;
   if (formData.color) base.color = formData.color;
   if (formData.max_attendees) base.max_attendees = String(formData.max_attendees);
+  if (formData.tags?.length) base.tags = JSON.stringify(formData.tags);
 
   if (formData.event_banner) {
     const fd = new FormData();
@@ -154,6 +162,7 @@ export function mapEventToUpdatePayload(
     visibility?: string;
     max_attendees?: number;
     status?: string;
+    tags?: string[];
   },
 ): Record<string, unknown> {
   const base: Record<string, unknown> = {
@@ -171,6 +180,7 @@ export function mapEventToUpdatePayload(
   if (formData.visibility) base.visibility = formData.visibility;
   if (formData.max_attendees) base.max_attendees = String(formData.max_attendees);
   if (formData.status) base.status = formData.status;
+  if (formData.tags?.length) base.tags = JSON.stringify(formData.tags);
 
   return base;
 }
@@ -311,4 +321,44 @@ function parseTags(v: unknown): string[] {
   }
 
   return [];
+}
+
+function readRegistrationQuestionFlag(
+  raw: Record<string, any>,
+  normalizedTags: string[],
+): boolean | null {
+  const explicitBooleanCandidates = [
+    raw.has_registration_questions,
+    raw.has_registration_forms,
+    raw.has_survey_forms,
+    raw.has_forms,
+  ];
+
+  for (const candidate of explicitBooleanCandidates) {
+    const parsed = stringToBoolean(candidate);
+    if (parsed !== null) {
+      return parsed;
+    }
+  }
+
+  const formCountCandidates = [
+    raw.registration_form_count,
+    raw.registration_forms_count,
+    raw.survey_form_count,
+    raw.survey_forms_count,
+  ];
+
+  for (const candidate of formCountCandidates) {
+    if (candidate === undefined || candidate === null || candidate === '') continue;
+    const parsed = safeParseInt(candidate);
+    if (typeof parsed === 'number' && Number.isFinite(parsed)) {
+      return parsed > 0;
+    }
+  }
+
+  if (normalizedTags.includes(EVENT_SURVEY_TAG)) {
+    return true;
+  }
+
+  return null;
 }

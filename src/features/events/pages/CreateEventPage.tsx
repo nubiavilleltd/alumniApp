@@ -16,7 +16,7 @@ import { SelectInput } from '@/shared/components/ui/SelectInput';
 import { ImageUpload } from '@/shared/components/ui/ImageUpload';
 import Button from '@/shared/components/ui/Button';
 import { useCreateEvent } from '../hooks/useEvents';
-import { mapEventToCreatePayload } from '../api/adapters/event.adapter';
+import { mapEventToCreatePayload, mapEventToUpdatePayload } from '../api/adapters/event.adapter';
 import { toast } from '@/shared/components/ui/Toast';
 import { EVENT_ROUTES } from '../routes';
 import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
@@ -24,11 +24,18 @@ import { DatePicker } from '@/shared/components/ui/input/DatePicker';
 import { TimePicker } from '@/shared/components/ui/input/TimePicker';
 import { ROUTES } from '@/shared/constants/routes';
 import { ADMIN_ROUTES } from '@/features/admin/routes';
+import { useUpsertEventSurveyForm } from '../hooks/useEventSurvey';
+import { eventsService } from '../services/event.service';
+import {
+  clearStoredEventSurveyAvailability,
+  EVENT_SURVEY_TAG,
+  setStoredEventSurveyAvailability,
+} from '../lib/eventSurveyAvailability';
 import {
   EventRegistrationFormBuilderModal,
   type EventRegistrationFormDraft,
+  type EventRegistrationQuestionDraft,
 } from '../components/EventRegistrationFormBuilderModal';
-import { saveEventRegistrationForms } from '../lib/eventRegistrationFormStorage';
 
 type LocalRegistrationFormDraft = {
   localId: string;
@@ -37,6 +44,18 @@ type LocalRegistrationFormDraft = {
 
 function createLocalRegistrationFormId() {
   return `event-registration-draft-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function toSurveyQuestionPayload(question: EventRegistrationQuestionDraft, index: number) {
+  return {
+    id: question.id,
+    label: question.label.trim(),
+    type: question.type,
+    required: question.required,
+    placeholder: question.placeholder.trim(),
+    options: question.options.map((option) => option.trim()).filter(Boolean),
+    order: index + 1,
+  };
 }
 
 // ─── Schema ───────────────────────────────────────────────────────────────────
@@ -117,6 +136,7 @@ export default function CreateEventPage() {
   //   const currentUser = useAuthStore((state) => state.user);
   const { data: currentUser, isLoading } = useCurrentUser();
   const createEvent = useCreateEvent();
+  const upsertSurveyForm = useUpsertEventSurveyForm();
 
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [bannerPreview, setBannerPreview] = useState<string>('');
@@ -126,6 +146,7 @@ export default function CreateEventPage() {
     LocalRegistrationFormDraft[]
   >([]);
   const [activeRegistrationFormId, setActiveRegistrationFormId] = useState<string | null>(null);
+  const [isSavingSurveyForms, setIsSavingSurveyForms] = useState(false);
 
   const {
     register,
@@ -196,19 +217,60 @@ export default function CreateEventPage() {
       const createdEvent = await createEvent.mutateAsync(payload);
 
       if (registrationFormDrafts.length > 0) {
-        saveEventRegistrationForms({
-          eventId: createdEvent.id,
-          eventTitle: createdEvent.title || data.title,
-          drafts: registrationFormDrafts.map((item) => item.draft),
-          createdBy: {
-            id: currentUser.id,
-            fullName: currentUser.fullName,
-          },
-        });
+        setIsSavingSurveyForms(true);
+
+        try {
+          for (const [index, item] of registrationFormDrafts.entries()) {
+            await upsertSurveyForm.mutateAsync({
+              eventId: createdEvent.id,
+              eventTitleSnapshot: createdEvent.title || data.title,
+              name: item.draft.name.trim(),
+              sortOrder: index + 1,
+              questions: item.draft.questions.map((question, questionIndex) =>
+                toSurveyQuestionPayload(question, questionIndex),
+              ),
+            });
+          }
+
+          setStoredEventSurveyAvailability(createdEvent.id, true);
+
+          try {
+            await eventsService.update(
+              createdEvent.id,
+              mapEventToUpdatePayload(createdEvent.id, {
+                title: data.title,
+                description: data.description,
+                location: data.location,
+                event_date: data.event_date,
+                start_time: data.start_time,
+                end_time: data.end_time,
+                visibility: data.visibility,
+                max_attendees: data.max_attendees,
+                status: data.status,
+                tags: [EVENT_SURVEY_TAG],
+              }),
+            );
+          } catch {
+            toast.error(
+              'Event and registration forms were saved, but survey metadata sync failed. Survey questions may be unavailable on other devices until this is fixed.',
+            );
+          }
+        } catch (surveyError: any) {
+          clearStoredEventSurveyAvailability(createdEvent.id);
+          toast.error(
+            surveyError?.message ||
+              'Event created, but we could not save the registration forms. Please try again from the event management area.',
+          );
+        } finally {
+          setIsSavingSurveyForms(false);
+        }
+      } else {
+        setStoredEventSurveyAvailability(createdEvent.id, false);
       }
 
       navigate(EVENT_ROUTES.ROOT);
     } catch (error: any) {
+      setIsSavingSurveyForms(false);
       toast.fromError(error);
     }
   };
@@ -364,7 +426,7 @@ export default function CreateEventPage() {
             </div>
 
             <div className="flex gap-3 pt-4">
-              <Button type="submit" loading={createEvent.isPending}>
+              <Button type="submit" loading={createEvent.isPending || isSavingSurveyForms}>
                 Create Event
               </Button>
               <Button type="button" variant="outline" onClick={() => navigate(EVENT_ROUTES.ROOT)}>

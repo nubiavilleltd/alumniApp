@@ -180,43 +180,48 @@ export function TimePicker({
       )}
 
       {/* Trigger */}
-      <button
-        type="button"
-        id={inputId}
-        disabled={disabled}
-        onClick={() => !disabled && setOpen((o) => !o)}
-        className={[
-          'flex items-center gap-2 w-full px-3 py-2.5 text-sm text-left',
-          'bg-white border rounded-3xl shadow-sm transition-colors outline-none',
-          error
-            ? 'border-red-400 focus:border-red-400'
-            : open
-              ? 'border-primary-400'
-              : 'border-gray-200 hover:border-gray-300',
-          disabled ? 'opacity-50 cursor-not-allowed bg-gray-50' : 'cursor-pointer',
-        ].join(' ')}
-      >
-        <Icon icon="mdi:clock-outline" className="w-4 h-4 text-gray-400 flex-shrink-0" />
-        <span className={`flex-1 ${value ? 'text-gray-700' : 'text-gray-400'}`}>
-          {value ? formatDisplay(value) : placeholder}
-        </span>
-        {value && (
+      <div className="relative">
+        <button
+          type="button"
+          id={inputId}
+          disabled={disabled}
+          onClick={() => !disabled && setOpen((o) => !o)}
+          className={[
+            'flex items-center gap-2 w-full px-3 py-2.5 text-sm text-left',
+            value ? 'pr-16' : 'pr-10',
+            'bg-white border rounded-3xl shadow-sm transition-colors outline-none',
+            error
+              ? 'border-red-400 focus:border-red-400'
+              : open
+                ? 'border-primary-400'
+                : 'border-gray-200 hover:border-gray-300',
+            disabled ? 'opacity-50 cursor-not-allowed bg-gray-50' : 'cursor-pointer',
+          ].join(' ')}
+        >
+          <Icon icon="mdi:clock-outline" className="w-4 h-4 text-gray-400 flex-shrink-0" />
+          <span className={`flex-1 ${value ? 'text-gray-700' : 'text-gray-400'}`}>
+            {value ? formatDisplay(value) : placeholder}
+          </span>
+          <Icon
+            icon="mdi:chevron-down"
+            className={`w-4 h-4 text-gray-400 transition-transform duration-200 flex-shrink-0 ${open ? 'rotate-180' : ''}`}
+          />
+        </button>
+
+        {value && !disabled && (
           <button
             type="button"
+            aria-label="Clear time"
             onClick={(e) => {
               e.stopPropagation();
               clear();
             }}
-            className="p-0.5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
+            className="absolute right-9 top-1/2 -translate-y-1/2 p-0.5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
           >
             <Icon icon="mdi:close" className="w-3.5 h-3.5" />
           </button>
         )}
-        <Icon
-          icon="mdi:chevron-down"
-          className={`w-4 h-4 text-gray-400 transition-transform duration-200 flex-shrink-0 ${open ? 'rotate-180' : ''}`}
-        />
-      </button>
+      </div>
 
       {/* Dropdown */}
       {open && (
