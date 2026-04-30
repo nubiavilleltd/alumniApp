@@ -1,3 +1,3 @@
 // src/config/comingSoonRoutes.ts
 
-export const COMING_SOON_ROUTES = [{ prefix: 'news', title: 'Announcements' }];
+export const COMING_SOON_ROUTES = [{ prefix: 'code-of-conduct', title: 'Code of Conduct' }];
