@@ -205,6 +205,21 @@ const ACCENT_COLORS = [
   'bg-pink-200',
 ];
 
+const zonesCitiesMapping = {
+  'Zone 1': 'Badagry, Ojo, Amuwo Odofin, Ajeromi Ifelodun, Apapa (including Festac & Ijanikin)',
+  'Zone 2':
+    'Surulere, Mushin, Shomolu, Palmgroove, Obanikoro, Onipanu, Yaba, Ebute Metta, Orile Iganmu, Ijesha',
+  'Zone 3':
+    'Alimosho, Oshodi/Isolo, Egbeda, Iyana Ipaja, Ikotun, Okota, Iba, Abule Egba, Ijaiye, Alagbado',
+  'Zone 4': 'Ifako Ijaiye, Agege, Ikeja, Ojodu/Berger, Ikorodu, Magodo, Isheri',
+  'Zone 5a': 'Lagos Island, Obalende, Ikoyi, Victoria Island, Oniru',
+  'Zone 5b': 'Lekki Phase 1-5, Ikota, VGC, Ilaje',
+  'Zone 5c':
+    'Ajah, Abraham Adesanya, Sangotedo, Awoyaya, Lakowe, Ibeju-Lekki & environs (Bogije to Eleko)',
+  'Zone 6': 'Ikosi, Alapere, Ketu, Gbagada, Anthony, Maryland, Ogudu, Oworonshoki, Ojota, Ilupeju',
+  'Zone 7': 'Outskirt Communities: Mowe, RCCG Camp, Ogun State and surrounding areas',
+};
+
 function accentFor(index: number): string {
   return ACCENT_COLORS[index % ACCENT_COLORS.length];
 }
@@ -260,9 +275,13 @@ function ZoneCard({ zone, index }: { zone: WelfareZone; index: number }) {
           <span className="font-bold text-gray-900 text-base whitespace-nowrap flex-shrink-0">
             {zone.zone}
           </span>
+
+          {/* TODO */}
           {/* The backend doesn't return area names in this endpoint — the zone
               name itself is what the API provides. If the backend adds an
               "areas" field later, render it here. */}
+
+          <span>{zonesCitiesMapping[zone.zone as keyof typeof zonesCitiesMapping]}</span>
         </div>
 
         {/* Divider */}
