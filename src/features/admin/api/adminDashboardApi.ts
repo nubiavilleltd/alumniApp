@@ -110,12 +110,6 @@ export const adminDashboardApi = {
   async getPendingMembers(): Promise<PendingMember[]> {
     const payload = buildMemberListPayload('pending Approval');
     const { data } = await apiClient.post(API_ENDPOINTS.ADMIN_ENDPOINTS.MEMBER_LIST, payload);
-    console.log(
-      'Raw pending members response:',
-      data,
-      'mapped:',
-      mapMemberListResponse(data, mapBackendMemberToPending) as PendingMember[],
-    ); // Debug log to inspect backend response
     return mapMemberListResponse(data, mapBackendMemberToPending) as PendingMember[];
   },
 

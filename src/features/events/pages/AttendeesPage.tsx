@@ -2,11 +2,14 @@ import { Icon } from '@iconify/react';
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { SEO } from '@/shared/common/SEO';
+import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { useEvent } from '../hooks/useEvents';
 import { useEventAttendees } from '../hooks/useEventAttendees';
 import { EVENT_ROUTES } from '../routes';
 import type { EventAttendee } from '../api/adapters/event-attendees.adapter';
+import { ROUTES } from '@/shared/constants/routes';
+import { ADMIN_ROUTES } from '@/features/admin/routes';
 
 function formatEventDate(date?: string) {
   if (!date) return '';
@@ -105,10 +108,18 @@ export default function AttendeesPage() {
       : event?.title) || 'Event attendees';
   const eventDate = attendeeData?.eventDate || event?.date || '';
   const totalCount = attendeeData?.goingCount ?? attendees.length;
+  const breadcrumbItems = [
+    { label: 'Home', href: ROUTES.HOME },
+    { label: 'Admin Dashboard', href: ADMIN_ROUTES.DASHBOARD },
+    { label: 'Events', href: ADMIN_ROUTES.EVENTS },
+    ...(id ? [{ label: pageTitle, href: EVENT_ROUTES.DETAIL(id) }] : []),
+    { label: 'Attendees' },
+  ];
 
   return (
     <>
       <SEO title={`${pageTitle} Attendees`} description={`View attendees for ${pageTitle}.`} />
+      <Breadcrumbs items={breadcrumbItems} />
 
       <main className="min-h-screen bg-[#faf9f7]">
         <div className="container-custom py-8">

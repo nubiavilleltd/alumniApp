@@ -178,7 +178,17 @@ export function isRetryableError(error: any): boolean {
  */
 export function logError(error: any, context?: string) {
   if (import.meta.env.DEV) {
-    console.error(`[Error${context ? ` - ${context}` : ''}]:`, error);
+    const message =
+      error instanceof Error
+        ? error.message
+        : typeof error === 'string'
+          ? error
+          : 'An unexpected error occurred';
+    const status = error?.response?.status ?? error?.status;
+
+    console.error(
+      `[Error${context ? ` - ${context}` : ''}${status ? ` (${status})` : ''}]: ${message}`,
+    );
   } else {
     // TODO: Send to error reporting service (Sentry, etc.)
     // Example: Sentry.captureException(error, { tags: { context } });

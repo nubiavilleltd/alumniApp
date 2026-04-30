@@ -22,62 +22,9 @@ import type {
 
 const ANNOUNCEMENT_TYPES: AnnouncementType[] = ['info', 'warning', 'success', 'event'];
 
-function serializeFormData(payload: FormData) {
-  const serialized: Record<string, unknown> = {};
-
-  payload.forEach((value, key) => {
-    const nextValue =
-      value instanceof File
-        ? {
-            name: value.name,
-            size: value.size,
-            type: value.type,
-            lastModified: value.lastModified,
-          }
-        : value;
-
-    const currentValue = serialized[key];
-    if (currentValue === undefined) {
-      serialized[key] = nextValue;
-      return;
-    }
-
-    serialized[key] = Array.isArray(currentValue)
-      ? [...currentValue, nextValue]
-      : [currentValue, nextValue];
-  });
-
-  return serialized;
-}
-
-function serializePayload(payload: FormData | Record<string, unknown>) {
-  return payload instanceof FormData ? serializeFormData(payload) : payload;
-}
-
-function logAnnouncementRequest(
-  action: string,
-  endpoint: string,
-  payload: FormData | Record<string, unknown>,
-) {
-  console.log(`[announcementService] ${action} request`, {
-    endpoint,
-    payload: serializePayload(payload),
-  });
-}
-
-function logAnnouncementResponse(action: string, data: unknown) {
-  console.log(`[announcementService] ${action} response`, data);
-}
-
-function logAnnouncementError(action: string, error: unknown) {
-  console.error(`[announcementService] ${action} error`, error);
-}
-
 async function fetchAnnouncements(params?: GetAnnouncementsParams): Promise<NewsItem[]> {
   const payload = mapGetAnnouncementsPayload(params);
-  logAnnouncementRequest('getAll', API_ENDPOINTS.ANNOUNCEMENTS.LIST, payload);
   const { data } = await apiClient.post(API_ENDPOINTS.ANNOUNCEMENTS.LIST, payload);
-  logAnnouncementResponse('getAll', data);
   return mapBackendAnnouncementList(data);
 }
 
@@ -118,22 +65,12 @@ export const announcementService = {
       // Some backend environments only return data when `type` is explicit.
       if (items.length > 0 || !canUseTypeFallback) return items;
 
-      console.log('[announcementService] getAll fallback', {
-        reason: 'empty unfiltered response',
-        params,
-      });
       return await fetchAnnouncementsByTypeFallback(params);
     } catch (error) {
-      logAnnouncementError('getAll', error);
       if (canUseTypeFallback) {
         try {
-          console.log('[announcementService] getAll fallback', {
-            reason: 'request error on unfiltered response',
-            params,
-          });
           return await fetchAnnouncementsByTypeFallback(params);
         } catch (fallbackError) {
-          logAnnouncementError('getAll fallback', fallbackError);
           throw handleApiError(
             fallbackError,
             'Unable to load announcements.',
@@ -172,9 +109,7 @@ export const announcementService = {
   async create(input: AnnouncementMutationInput): Promise<NewsItem> {
     try {
       const payload = mapAnnouncementToCreatePayload(input);
-      logAnnouncementRequest('create', API_ENDPOINTS.ANNOUNCEMENTS.CREATE, payload);
       const { data } = await apiClient.post(API_ENDPOINTS.ANNOUNCEMENTS.CREATE, payload);
-      logAnnouncementResponse('create', data);
       const created = extractAnnouncementFromResponse(data);
 
       if (created) return created;
@@ -187,7 +122,6 @@ export const announcementService = {
 
       throw new Error('Announcement created but the response did not include announcement data.');
     } catch (error) {
-      logAnnouncementError('create', error);
       throw handleApiError(
         error,
         'Unable to create the announcement.',
@@ -199,9 +133,7 @@ export const announcementService = {
   async update(id: string, input: Partial<AnnouncementMutationInput>): Promise<NewsItem> {
     try {
       const payload = mapAnnouncementToUpdatePayload(id, input);
-      logAnnouncementRequest('update', API_ENDPOINTS.ANNOUNCEMENTS.MANAGE, payload);
       const { data } = await apiClient.post(API_ENDPOINTS.ANNOUNCEMENTS.MANAGE, payload);
-      logAnnouncementResponse('update', data);
       const updated = extractAnnouncementFromResponse(data);
 
       if (updated) return updated;
@@ -211,7 +143,6 @@ export const announcementService = {
 
       throw new Error('Announcement updated but could not be reloaded.');
     } catch (error) {
-      logAnnouncementError('update', error);
       throw handleApiError(
         error,
         'Unable to update the announcement.',
@@ -223,13 +154,10 @@ export const announcementService = {
   async delete(id: string): Promise<void> {
     try {
       const payload = mapAnnouncementToDeletePayload(id);
-      logAnnouncementRequest('delete', API_ENDPOINTS.ANNOUNCEMENTS.MANAGE, payload);
-      const { data } = await apiClient.post(API_ENDPOINTS.ANNOUNCEMENTS.MANAGE, payload, {
+      await apiClient.post(API_ENDPOINTS.ANNOUNCEMENTS.MANAGE, payload, {
         headers: { 'Content-Type': 'application/json' },
       });
-      logAnnouncementResponse('delete', data);
     } catch (error) {
-      logAnnouncementError('delete', error);
       throw handleApiError(
         error,
         'Unable to delete the announcement.',

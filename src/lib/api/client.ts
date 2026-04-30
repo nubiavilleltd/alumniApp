@@ -7,8 +7,6 @@
  * - Automatic auth header injection
  * - FormData handling
  * - Enhanced error responses
- * - Request/response logging in dev
- *
  * ============================================================================
  */
 
@@ -76,16 +74,6 @@ apiClient.interceptors.request.use(
       delete config.headers['Content-Type'];
     }
 
-    if (import.meta.env.DEV) {
-      console.log('📤 API Request:', {
-        url: config.url,
-        method: config.method,
-        hasApiKey: Boolean(apiKey),
-        hasBearer: Boolean(shouldSendBearer),
-        isFormData,
-      });
-    }
-
     return config;
   },
   (error) => {
@@ -96,26 +84,12 @@ apiClient.interceptors.request.use(
 
 // ─── Response Interceptor ─────────────────────────────────────────────────────
 apiClient.interceptors.response.use(
-  (response) => {
-    // Log successful responses in development
-    if (import.meta.env.DEV) {
-      console.log('📥 Response:', response.config.url, response.status);
-    }
-    return response;
-  },
+  (response) => response,
   async (error) => {
     // Enhanced error handling
     if (error.response) {
       // Server responded with error status
-      const { status, data } = error.response;
-
-      if (import.meta.env.DEV) {
-        console.error('❌ API Error:', {
-          url: error.config?.url,
-          status,
-          data,
-        });
-      }
+      const { status } = error.response;
 
       const pathname = getPathname(error.config?.url);
       const isRefreshRequest = pathname === API_ENDPOINTS.AUTH.REFRESH_TOKEN;
@@ -159,15 +133,7 @@ apiClient.interceptors.response.use(
       }
     } else if (error.request) {
       // Request made but no response received - network error
-      if (import.meta.env.DEV) {
-        console.error('❌ Network Error:', error.message);
-      }
       error.message = 'Network error. Please check your connection';
-    } else {
-      // Something else happened
-      if (import.meta.env.DEV) {
-        console.error('❌ Unexpected Error:', error.message);
-      }
     }
 
     // Log all errors

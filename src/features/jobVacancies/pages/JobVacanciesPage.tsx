@@ -887,7 +887,6 @@ export default function JobVacanciesPage() {
   };
 
   const handleDeleteVacancy = async () => {
-    console.log('Attempting to delete vacancy:', jobToDelete);
     if (!jobToDelete) return;
     if (!canDeleteVacancy(jobToDelete)) {
       toast.error('Only the person who posted this vacancy can delete it.');

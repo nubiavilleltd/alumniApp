@@ -13,8 +13,6 @@ export function RootLayout() {
   const [showBackToTop, setShowBackToTop] = useState(false);
   const { pathname } = useLocation();
 
-  console.log('pathname', { pathname });
-
   const isHomePage = pathname === ROUTES.HOME;
   const isDonationPage = pathname.includes(ROUTES.DONATION);
 

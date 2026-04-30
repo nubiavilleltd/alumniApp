@@ -81,8 +81,6 @@ export function LoginForm() {
       // Step 1: Authenticate — get tokens + minimal user
       const loginResponse = await authApi.login(values);
 
-      console.log('loginResponse', { loginResponse });
-
       // Step 2: Fetch the full profile using the returned user ID
       // This gives us fullName, photo, role, etc. for the nav to render immediately.
       let fullProfile = loginResponse.user;
