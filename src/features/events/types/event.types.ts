@@ -30,6 +30,7 @@ export type Event = {
   capacity?: number; // ➕ NEW
   allowGuests?: boolean; // ➕ NEW
   attendeeCount?: number;
+  hasRegistrationQuestions?: boolean | null;
 
   // ── Relations ─────────────────────────────────────────────────────────
   createdBy?: string;

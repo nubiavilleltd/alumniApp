@@ -1,19 +1,21 @@
 import { Icon } from '@iconify/react';
+import { clsx } from 'clsx';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { authApi } from '@/features/authentication/services/auth.service';
+import { twMerge } from 'tailwind-merge';
 import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
-import { AppLink } from '../ui/AppLink';
-import { ROUTES } from '@/shared/constants/routes';
-import { MARKETPLACE_ROUTES } from '@/features/marketplace/routes';
-import { ALUMNI_ROUTES } from '@/features/alumni/routes';
-import { EVENT_ROUTES } from '@/features/events/routes';
-import { ADMIN_ROUTES } from '@/features/admin/routes';
-import { USER_ROUTES } from '@/features/user/routes';
+import { useAuth } from '@/features/authentication/hooks/useAuth';
 import { AUTH_ROUTES } from '@/features/authentication/routes';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 import { useTokenStore } from '@/features/authentication/stores/useTokenStore';
-import { useAuth } from '@/features/authentication/hooks/useAuth';
+import { authApi } from '@/features/authentication/services/auth.service';
+import { ADMIN_ROUTES } from '@/features/admin/routes';
+import { ALUMNI_ROUTES } from '@/features/alumni/routes';
+import { EVENT_ROUTES } from '@/features/events/routes';
+import { MARKETPLACE_ROUTES } from '@/features/marketplace/routes';
+import { ROUTES } from '@/shared/constants/routes';
+import { USER_ROUTES } from '@/features/user/routes';
+import { AppLink } from '../ui/AppLink';
 
 type NavChild = {
   label: string;
@@ -76,6 +78,29 @@ const authenticatedMenuItems: NavChild[] = [
   { label: 'Settings', url: USER_ROUTES.SETTINGS, icon: 'mdi:cog-outline' },
 ];
 
+const navSurfaceClassName =
+  'bg-[linear-gradient(106deg,_rgb(var(--color-primary-500))_0%,_#003a5d_92%)]';
+const desktopLinkBaseClassName =
+  'relative no-underline font-bold tracking-[0.1em] text-[#c4d0d9] transition-colors duration-200 hover:text-white';
+const desktopActiveLinkClassName =
+  'text-white after:absolute after:left-0 after:right-0 after:-bottom-[0.45rem] after:h-[2px] after:rounded-full after:bg-white/85';
+const desktopPrimaryLinkClassName = `${desktopLinkBaseClassName} whitespace-nowrap text-[clamp(1.05rem,1.36vw,1.75rem)]`;
+const desktopSecondaryLinkClassName = `${desktopLinkBaseClassName} text-[clamp(0.95rem,1.18vw,1.35rem)]`;
+const desktopPanelClassName =
+  'absolute top-[calc(100%+1rem)] z-[60] overflow-hidden border border-[#d7e6ef] bg-white shadow-[0_1.25rem_2.5rem_rgba(7,17,22,0.14)]';
+const desktopMenuLinkClassName =
+  'flex items-center gap-3 px-6 py-[0.95rem] text-[clamp(1.05rem,1.3vw,1.35rem)] font-bold leading-[1.25] text-[#4f5864] no-underline transition-colors duration-200 hover:bg-primary-50 hover:text-primary-700';
+const accountPillClassName =
+  'inline-flex min-h-[3.35rem] items-center rounded-full border border-white/25 bg-[#001f38]/20 text-white no-underline transition-colors duration-200 hover:bg-white/10';
+const mobileSectionClassName =
+  'mt-[0.85rem] grid gap-[0.35rem] border-t border-white/15 pt-[0.85rem] first:mt-0 first:border-t-0';
+const mobileLinkClassName =
+  'flex items-center gap-[0.65rem] rounded-[0.85rem] px-[0.95rem] py-[0.85rem] text-[0.98rem] font-bold tracking-[0.04em] leading-[1.25] text-[#d0d9e0] no-underline transition-colors duration-200 hover:bg-white/10 hover:text-white';
+
+function cn(...inputs: Array<string | false | null | undefined>) {
+  return twMerge(clsx(inputs));
+}
+
 function getDisplayName(user: CurrentUser) {
   return user.fullName?.trim() || user.email?.split('@')[0] || 'Member';
 }
@@ -95,18 +120,74 @@ function isPathActive(pathname: string, url: string) {
   return pathname === url || pathname.startsWith(`${url}/`);
 }
 
-function BrandMark({ className = '' }: { className?: string }) {
+function BrandMark({ mobile = false }: { mobile?: boolean }) {
   return (
-    <AppLink href={ROUTES.HOME} className={`site-nav__brand ${className}`}>
-      <span className="site-nav__brand-art" aria-hidden="true" />
-      <span className="site-nav__brand-content">
-        <img src="/logo.png" alt="" className="site-nav__crest" />
-        <span className="site-nav__brand-name">
-          <span className="site-nav__letters">FGGC</span>
-          <span className="site-nav__association">Alumnae Association</span>
+    <AppLink
+      href={ROUTES.HOME}
+      className={cn(
+        'relative isolate flex overflow-hidden bg-white text-primary-500 no-underline',
+        mobile
+          ? 'min-h-[5.25rem] items-center px-[0.85rem] py-[0.6rem]'
+          : 'items-center justify-center px-[clamp(0.9rem,1.8vw,1.6rem)] py-[clamp(0.75rem,1.4vw,1.25rem)]',
+      )}
+    >
+      <span
+        className="absolute inset-0 -z-10 bg-[url('/navbarImage.png')] bg-cover bg-right bg-no-repeat"
+        aria-hidden="true"
+      />
+      <span
+        className={cn(
+          'flex w-full items-center',
+          mobile ? 'max-w-[22rem] gap-[0.65rem]' : 'justify-center gap-[clamp(0.65rem,1.1vw,1rem)]',
+        )}
+      >
+        <img
+          src="/logo.png"
+          alt=""
+          className={cn(
+            'h-auto flex-none object-contain',
+            mobile
+              ? 'h-[2.8rem] w-[2.8rem]'
+              : 'h-[clamp(2.75rem,4vw,4.15rem)] w-[clamp(2.75rem,4vw,4.15rem)]',
+          )}
+        />
+        <span className="flex min-w-0 flex-col justify-center">
+          <span
+            className={cn(
+              "[font-family:Georgia,'Times_New_Roman',serif] block whitespace-nowrap font-bold leading-[0.9] tracking-[0.34em] text-primary-500",
+              mobile
+                ? 'text-[1.55rem] max-[420px]:text-[1.35rem]'
+                : 'text-[clamp(1.75rem,2.65vw,3.45rem)]',
+            )}
+          >
+            FGGC
+          </span>
+          <span
+            className={cn(
+              "[font-family:Georgia,'Times_New_Roman',serif] mt-[0.35rem] block whitespace-nowrap font-bold leading-none text-primary-500",
+              mobile ? 'text-[0.75rem]' : 'text-[clamp(0.85rem,1.1vw,1.35rem)]',
+            )}
+          >
+            Alumnae Association
+          </span>
         </span>
-        <span className="site-nav__brand-divider" aria-hidden="true" />
-        <span className="site-nav__chapter">
+        <span
+          className={cn(
+            'w-px flex-none bg-[rgba(0,119,204,0.6)]',
+            mobile
+              ? 'mx-[0.35rem] h-[2.75rem] max-[420px]:hidden'
+              : 'mx-[clamp(0.8rem,1.5vw,1.35rem)] hidden h-[clamp(3rem,5vw,4.6rem)] min-[1361px]:block',
+          )}
+          aria-hidden="true"
+        />
+        <span
+          className={cn(
+            "[font-family:'Segoe_Script','Brush_Script_MT',cursive] flex flex-none rotate-[-2deg] flex-col whitespace-nowrap font-bold leading-[1.2] text-primary-500",
+            mobile
+              ? 'text-[0.85rem] max-[420px]:hidden'
+              : 'hidden text-[clamp(0.95rem,1.35vw,1.55rem)] min-[1361px]:flex',
+          )}
+        >
           <span>Lagos</span>
           <span>Chapter</span>
         </span>
@@ -122,7 +203,7 @@ function DesktopNavLink({ item }: { item: NavItem }) {
   return (
     <AppLink
       href={item.url}
-      className={`site-nav__primary-link ${active ? 'site-nav__primary-link--active' : ''}`}
+      className={cn(desktopPrimaryLinkClassName, active && desktopActiveLinkClassName)}
     >
       {item.label}
     </AppLink>
@@ -145,34 +226,45 @@ function DesktopDropdown({ item }: { item: NavItem }) {
   }, []);
 
   return (
-    <div
-      ref={ref}
-      className={`site-nav__dropdown ${
-        item.label === 'Marketplace' ? 'site-nav__dropdown--right' : ''
-      }`}
-    >
+    <div ref={ref} className="relative">
       <button
         type="button"
-        className={`site-nav__primary-link site-nav__dropdown-trigger ${
-          isActive ? 'site-nav__primary-link--active' : ''
-        }`}
+        className={cn(
+          desktopPrimaryLinkClassName,
+          'inline-flex cursor-pointer items-center gap-[0.45rem] border-0 bg-transparent',
+          isActive && desktopActiveLinkClassName,
+        )}
         aria-expanded={open}
         onClick={() => setOpen((prev) => !prev)}
       >
         {item.label}
-        <Icon icon="mdi:chevron-down" className="site-nav__chevron" />
+        <Icon icon="mdi:chevron-down" className="h-5 w-5 flex-none" />
       </button>
 
       {open && (
-        <div className="site-nav__dropdown-menu">
+        <div
+          className={cn(
+            desktopPanelClassName,
+            'w-[min(19.5rem,calc(100vw-2rem))] rounded-[1.05rem] py-4',
+            item.label === 'Marketplace' ? 'right-0 left-auto' : 'left-0',
+          )}
+        >
           {item.children?.map((child) => (
             <AppLink
               key={child.url}
               href={child.url}
-              className="site-nav__dropdown-link"
+              className={cn(
+                desktopMenuLinkClassName,
+                isPathActive(pathname, child.url) && 'bg-primary-50 text-primary-700',
+              )}
               onClick={() => setOpen(false)}
             >
-              {child.icon && <Icon icon={child.icon} />}
+              {child.icon && (
+                <Icon
+                  icon={child.icon}
+                  className="h-[1.15rem] w-[1.15rem] flex-none text-primary-500"
+                />
+              )}
               <span>{child.label}</span>
             </AppLink>
           ))}
@@ -187,11 +279,18 @@ function UserAvatar({ user, className = '' }: { user: CurrentUser; className?: s
   const initials = getInitials(user);
 
   return (
-    <span className={`site-nav__avatar ${className}`}>
+    <span
+      className={cn(
+        'inline-flex h-[2.65rem] w-[2.65rem] flex-none items-center justify-center overflow-hidden rounded-full border-2 border-white/15 bg-white',
+        className,
+      )}
+    >
       {user.photo ? (
-        <img src={user.photo} alt={displayName} />
+        <img src={user.photo} alt={displayName} className="h-full w-full object-cover" />
       ) : (
-        <span className="site-nav__avatar-fallback">{initials}</span>
+        <span className="flex h-full w-full items-center justify-center bg-primary-50 text-[0.8rem] font-extrabold text-primary-700">
+          {initials}
+        </span>
       )}
     </span>
   );
@@ -232,45 +331,55 @@ function UserDropdown({
     : authenticatedMenuItems;
 
   return (
-    <div ref={ref} className="site-nav__user">
+    <div ref={ref} className="relative flex-none">
       <button
         type="button"
-        className="site-nav__user-trigger"
+        className={cn(
+          accountPillClassName,
+          'cursor-pointer gap-3 px-[1.2rem] py-[0.35rem] pl-[0.45rem]',
+        )}
         aria-expanded={open}
         onClick={() => setOpen((prev) => !prev)}
       >
         <UserAvatar user={currentUser} />
-        <span className="site-nav__user-copy">
-          <span>Welcome,</span>
-          <strong>{displayName}</strong>
+        <span className="flex flex-col gap-[0.1rem] text-left text-[0.95rem] leading-[1.05] text-white">
+          <span className="font-medium text-[#c4d0d9]">Welcome,</span>
+          <strong className="max-w-[8.5rem] overflow-hidden text-[1.05rem] font-extrabold text-ellipsis whitespace-nowrap text-white">
+            {displayName}
+          </strong>
         </span>
-        <Icon icon="mdi:chevron-down" className="site-nav__user-chevron" />
+        <Icon icon="mdi:chevron-down" className="h-5 w-5 flex-none" />
       </button>
 
       {open && (
-        <div className="site-nav__user-menu">
+        <div
+          className={cn(desktopPanelClassName, 'right-0 w-[17.5rem] rounded-[0.9rem] py-[0.45rem]')}
+        >
           {menuItems.map((item) => (
             <AppLink
               key={item.url}
               href={item.url}
-              className="site-nav__user-menu-link"
+              className="flex items-center gap-[0.65rem] px-4 py-[0.8rem] text-left text-[0.92rem] font-bold text-[#4f5864] transition-colors duration-200 hover:bg-primary-50 hover:text-primary-700"
               onClick={() => setOpen(false)}
             >
-              <Icon icon={item.icon ?? 'mdi:circle-outline'} />
+              <Icon
+                icon={item.icon ?? 'mdi:circle-outline'}
+                className="h-[1.15rem] w-[1.15rem] flex-none text-primary-500"
+              />
               <span>{item.label}</span>
             </AppLink>
           ))}
 
           <button
             type="button"
-            className="site-nav__user-menu-link site-nav__user-menu-link--danger"
+            className="flex w-full cursor-pointer items-center gap-[0.65rem] border-0 bg-transparent px-4 py-[0.8rem] text-left text-[0.92rem] font-bold text-red-600 transition-colors duration-200 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-55"
             disabled={isLoggingOut}
             onClick={() => {
               setOpen(false);
               onLogout();
             }}
           >
-            <Icon icon="mdi:logout" />
+            <Icon icon="mdi:logout" className="h-[1.15rem] w-[1.15rem] flex-none text-red-600" />
             <span>{isLoggingOut ? 'Logging out...' : 'Logout'}</span>
           </button>
         </div>
@@ -282,24 +391,42 @@ function UserDropdown({
 function MobileNavGroup({ item }: { item: NavItem }) {
   const { pathname } = useLocation();
   const isActive = item.children?.some((child) => isPathActive(pathname, child.url)) ?? false;
+  const [open, setOpen] = useState(isActive);
+
+  useEffect(() => {
+    if (isActive) setOpen(true);
+  }, [isActive]);
 
   return (
-    <div className="site-nav__mobile-group">
-      <p
-        className={`site-nav__mobile-group-label ${isActive ? 'site-nav__mobile-link--active' : ''}`}
+    <div className="grid gap-1">
+      <button
+        type="button"
+        aria-expanded={open}
+        onClick={() => setOpen((prev) => !prev)}
+        className={cn(
+          mobileLinkClassName,
+          'w-full cursor-pointer justify-between border-0 bg-transparent text-left',
+          isActive && 'bg-white/10 text-white',
+        )}
       >
-        {item.label}
-      </p>
-      <div className="site-nav__mobile-subnav">
+        <span>{item.label}</span>
+        <Icon
+          icon={open ? 'mdi:chevron-up' : 'mdi:chevron-down'}
+          className="h-[1.15rem] w-[1.15rem] flex-none"
+        />
+      </button>
+      <div className={cn('grid gap-1 overflow-hidden', open ? 'mt-1' : 'hidden')}>
         {item.children?.map((child) => (
           <AppLink
             key={child.url}
             href={child.url}
-            className={`site-nav__mobile-link site-nav__mobile-link--sub ${
-              isPathActive(pathname, child.url) ? 'site-nav__mobile-link--active' : ''
-            }`}
+            className={cn(
+              mobileLinkClassName,
+              'pl-[1.45rem]',
+              isPathActive(pathname, child.url) && 'bg-white/10 text-white',
+            )}
           >
-            {child.icon && <Icon icon={child.icon} />}
+            {child.icon && <Icon icon={child.icon} className="h-[1.15rem] w-[1.15rem] flex-none" />}
             <span>{child.label}</span>
           </AppLink>
         ))}
@@ -377,15 +504,25 @@ export function Navigation() {
     : authenticatedMenuItems;
 
   return (
-    <nav className="site-nav" aria-label="Primary navigation">
-      <div className="site-nav__desktop">
-        <BrandMark className="site-nav__brand--desktop" />
+    <nav
+      className="relative z-50 bg-[#003c5f] text-white shadow-[0_1px_0_rgba(7,17,22,0.12)]"
+      aria-label="Primary navigation"
+    >
+      <div className="hidden min-h-[clamp(8.5rem,11.8vw,11.8rem)] grid-cols-[minmax(20rem,28.5vw)_minmax(0,1fr)] lg:grid lg:max-[1360px]:grid-cols-[minmax(18rem,31vw)_minmax(0,1fr)]">
+        <BrandMark />
 
-        <div className="site-nav__body">
-          <div className="site-nav__secondary-row">
-            <div className="site-nav__secondary-links">
+        <div className={cn(navSurfaceClassName, 'grid grid-rows-[44%_56%]')}>
+          <div className="flex items-center justify-end gap-[clamp(1.5rem,3vw,3rem)] px-[clamp(2rem,4.6vw,5rem)]">
+            <div className="flex items-center gap-[clamp(2rem,4.5vw,4rem)]">
               {secondaryNavItems.map((item) => (
-                <AppLink key={item.url} href={item.url} className="site-nav__secondary-link">
+                <AppLink
+                  key={item.url}
+                  href={item.url}
+                  className={cn(
+                    desktopSecondaryLinkClassName,
+                    isPathActive(pathname, item.url) && desktopActiveLinkClassName,
+                  )}
+                >
                   {item.label}
                 </AppLink>
               ))}
@@ -398,13 +535,19 @@ export function Navigation() {
                 isLoggingOut={isLoggingOut}
               />
             ) : (
-              <AppLink href={AUTH_ROUTES.LOGIN} className="site-nav__login">
+              <AppLink
+                href={AUTH_ROUTES.LOGIN}
+                className={cn(
+                  accountPillClassName,
+                  'px-[1.65rem] py-[0.7rem] text-base font-bold tracking-[0.08em]',
+                )}
+              >
                 Login
               </AppLink>
             )}
           </div>
 
-          <div className="site-nav__primary-row">
+          <div className="flex items-center justify-center gap-[clamp(2.25rem,5vw,6.25rem)] px-[clamp(2rem,4vw,4.5rem)] pb-[clamp(0.75rem,1.2vw,1.25rem)] lg:max-[1360px]:gap-[clamp(1.4rem,3vw,2.75rem)]">
             {primaryNavItems.map((item) =>
               item.children ? (
                 <DesktopDropdown key={item.label} item={item} />
@@ -416,40 +559,44 @@ export function Navigation() {
         </div>
       </div>
 
-      <div className="site-nav__mobile">
-        <div className="site-nav__mobile-bar">
-          <BrandMark className="site-nav__brand--mobile" />
+      <div className={cn(navSurfaceClassName, 'block lg:hidden')}>
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-stretch">
+          <BrandMark mobile />
           <button
             ref={mobileButtonRef}
             type="button"
-            className="site-nav__mobile-toggle"
+            className="inline-flex w-[4.75rem] cursor-pointer items-center justify-center border-0 bg-transparent text-white"
             aria-label="Toggle navigation menu"
             aria-expanded={mobileOpen}
             onClick={() => setMobileOpen((prev) => !prev)}
           >
-            <Icon icon={mobileOpen ? 'mdi:close' : 'mdi:menu'} />
+            <Icon icon={mobileOpen ? 'mdi:close' : 'mdi:menu'} className="h-8 w-8" />
           </button>
         </div>
 
         <div
           ref={mobileMenuRef}
-          className={`site-nav__mobile-menu ${mobileOpen ? 'site-nav__mobile-menu--open' : ''}`}
+          className={cn(
+            'overflow-hidden transition-[max-height,padding] duration-200',
+            mobileOpen ? 'max-h-[90vh] overflow-y-auto px-4 pb-5 pt-3' : 'max-h-0 px-0 py-0',
+          )}
         >
-          <div className="site-nav__mobile-section">
+          <div className={mobileSectionClassName}>
             {secondaryNavItems.map((item) => (
               <AppLink
                 key={item.url}
                 href={item.url}
-                className={`site-nav__mobile-link ${
-                  isPathActive(pathname, item.url) ? 'site-nav__mobile-link--active' : ''
-                }`}
+                className={cn(
+                  mobileLinkClassName,
+                  isPathActive(pathname, item.url) && 'bg-white/10 text-white',
+                )}
               >
                 {item.label}
               </AppLink>
             ))}
           </div>
 
-          <div className="site-nav__mobile-section">
+          <div className={mobileSectionClassName}>
             {primaryNavItems.map((item) =>
               item.children ? (
                 <MobileNavGroup key={item.label} item={item} />
@@ -457,9 +604,10 @@ export function Navigation() {
                 <AppLink
                   key={item.url}
                   href={item.url}
-                  className={`site-nav__mobile-link ${
-                    isPathActive(pathname, item.url) ? 'site-nav__mobile-link--active' : ''
-                  }`}
+                  className={cn(
+                    mobileLinkClassName,
+                    isPathActive(pathname, item.url) && 'bg-white/10 text-white',
+                  )}
                 >
                   {item.label}
                 </AppLink>
@@ -468,35 +616,43 @@ export function Navigation() {
           </div>
 
           {authenticatedUser ? (
-            <div className="site-nav__mobile-section site-nav__mobile-account">
-              <div className="site-nav__mobile-user">
+            <div className={mobileSectionClassName}>
+              <div className="flex items-center gap-3 px-[0.95rem] pb-[0.75rem] pt-[0.5rem]">
                 <UserAvatar user={authenticatedUser} />
-                <div>
+                <div className="flex min-w-0 flex-col text-[0.85rem] text-[#c4d0d9]">
                   <span>Welcome,</span>
-                  <strong>{getDisplayName(authenticatedUser)}</strong>
+                  <strong className="overflow-hidden whitespace-nowrap text-ellipsis text-base font-bold text-white">
+                    {getDisplayName(authenticatedUser)}
+                  </strong>
                 </div>
               </div>
 
               {mobileMenuItems.map((item) => (
-                <AppLink key={item.url} href={item.url} className="site-nav__mobile-link">
-                  <Icon icon={item.icon ?? 'mdi:circle-outline'} />
+                <AppLink key={item.url} href={item.url} className={mobileLinkClassName}>
+                  <Icon
+                    icon={item.icon ?? 'mdi:circle-outline'}
+                    className="h-[1.15rem] w-[1.15rem] flex-none"
+                  />
                   <span>{item.label}</span>
                 </AppLink>
               ))}
 
               <button
                 type="button"
-                className="site-nav__mobile-link site-nav__mobile-link--danger"
+                className="flex w-full cursor-pointer items-center gap-[0.65rem] rounded-[0.85rem] border-0 bg-transparent px-[0.95rem] py-[0.85rem] text-left text-[0.98rem] font-bold tracking-[0.04em] text-red-200 transition-colors duration-200 hover:bg-white/10 hover:text-red-100"
                 disabled={isLoggingOut}
                 onClick={handleLogout}
               >
-                <Icon icon="mdi:logout" />
+                <Icon icon="mdi:logout" className="h-[1.15rem] w-[1.15rem] flex-none" />
                 <span>{isLoggingOut ? 'Logging out...' : 'Logout'}</span>
               </button>
             </div>
           ) : (
-            <div className="site-nav__mobile-section">
-              <AppLink href={AUTH_ROUTES.LOGIN} className="site-nav__mobile-login">
+            <div className={mobileSectionClassName}>
+              <AppLink
+                href={AUTH_ROUTES.LOGIN}
+                className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/30 px-6 text-center text-base font-extrabold tracking-[0.08em] text-white no-underline transition-colors duration-200 hover:bg-white/10"
+              >
                 Login
               </AppLink>
             </div>

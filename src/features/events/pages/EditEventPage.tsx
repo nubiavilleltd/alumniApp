@@ -21,6 +21,10 @@ import { DeleteConfirmModal } from '../components/DeleteConfirmModal';
 import { toast } from '@/shared/components/ui/Toast';
 import { EVENT_ROUTES } from '../routes';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
+import { TimePicker } from '@/shared/components/ui/input/TimePicker';
+import { DatePicker } from '@/shared/components/ui/input/DatePicker';
+import { ROUTES } from '@/shared/constants/routes';
+import { ADMIN_ROUTES } from '@/features/admin/routes';
 
 // ─── Schema ───────────────────────────────────────────────────────────────────
 
@@ -236,8 +240,9 @@ export default function EditEventPage() {
 
   if (isLoading) {
     const breadcrumbItems = [
-      { label: 'Home', href: '/' },
-      { label: 'Events', href: EVENT_ROUTES.ROOT },
+      { label: 'Home', href: ROUTES.HOME },
+      { label: 'Admin Dashboard', href: ADMIN_ROUTES.DASHBOARD },
+      { label: 'Events', href: ADMIN_ROUTES.EVENTS },
       { label: 'Edit Event' },
     ];
     return (
@@ -273,9 +278,10 @@ export default function EditEventPage() {
   }
 
   const breadcrumbItems = [
-    { label: 'Home', href: '/' },
-    { label: 'Events', href: EVENT_ROUTES.ROOT },
-    { label: event.title },
+    { label: 'Home', href: ROUTES.HOME },
+    { label: 'Admin Dashboard', href: ADMIN_ROUTES.DASHBOARD },
+    { label: 'Events', href: ADMIN_ROUTES.EVENTS },
+    { label: event.title, href: EVENT_ROUTES.DETAIL(event.id) },
     { label: 'Edit' },
   ];
 
@@ -285,7 +291,7 @@ export default function EditEventPage() {
       <Breadcrumbs items={breadcrumbItems} />
 
       <section className="section">
-        <div className="container-custom max-w-3xl">
+        <div className="container-custom ">
           <div className="mb-8 flex items-center justify-between">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold italic mb-2">Edit Event</h1>
@@ -332,31 +338,33 @@ export default function EditEventPage() {
                 error={errors.location?.message}
                 {...register('location')}
               />
-              <FormInput
+
+              <DatePicker
                 label="Event Date"
                 id="event_date"
-                type="date"
                 required
-                min={new Date().toISOString().split('T')[0]}
+                min={new Date().toISOString().split('T')[0]} // same as before
                 error={errors.event_date?.message}
-                {...register('event_date')}
+                value={watch('event_date')} // controlled
+                onValueChange={(val) => setValue('event_date', val, { shouldValidate: true })}
               />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormInput
+              <TimePicker
                 label="Start Time"
                 id="start_time"
-                type="time"
                 error={errors.start_time?.message}
-                {...register('start_time')}
+                value={watch('start_time')}
+                onValueChange={(val) => setValue('start_time', val, { shouldValidate: true })}
               />
-              <FormInput
+
+              <TimePicker
                 label="End Time"
                 id="end_time"
-                type="time"
                 error={errors.end_time?.message}
-                {...register('end_time')}
+                value={watch('end_time')}
+                onValueChange={(val) => setValue('end_time', val, { shouldValidate: true })}
               />
             </div>
 

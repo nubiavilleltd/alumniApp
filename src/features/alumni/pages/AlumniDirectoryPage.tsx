@@ -107,13 +107,14 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: a
 /* ───────────────────────────────────────────────────────────── */
 
 export function AlumniDirectoryPage() {
+  const currentUser = useIdentityStore((state) => state.user);
+
   const [searchTerm, setSearchTerm] = useState('');
   const [yearFilter, setYearFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 
   const ITEMS_PER_PAGE = useItemsPerPage();
 
-  const currentUser = useIdentityStore((state) => state.user);
   const { startDirectConversation, isPending } = useStartDirectConversation();
   const [pendingId, setPendingId] = useState<string | null>(null);
 
@@ -126,33 +127,24 @@ export function AlumniDirectoryPage() {
 
   const filtered = useMemo(() => {
     const q = searchTerm.toLowerCase();
-    return alumni.filter(
+
+    let result = alumni.filter(
       (e) =>
         (!q || e.name.toLowerCase().includes(q)) &&
         (!yearFilter || e.graduationYear.toString() === yearFilter),
     );
-  }, [alumni, searchTerm, yearFilter]);
 
-  //   const filtered = useMemo(() => {
-  //   const q = searchTerm.toLowerCase();
+    // ✅ PRIORITIZE USER'S GRADUATION YEAR (only when no filter is applied)
+    if (!yearFilter && currentUser?.graduationYear) {
+      result = [...result].sort((a, b) => {
+        if (a.graduationYear === currentUser.graduationYear) return -1;
+        if (b.graduationYear === currentUser.graduationYear) return 1;
+        return b.graduationYear - a.graduationYear; // fallback: newest first
+      });
+    }
 
-  //   let result = alumni.filter(
-  //     (e) =>
-  //       (!q || e.name.toLowerCase().includes(q)) &&
-  //       (!yearFilter || e.graduationYear.toString() === yearFilter),
-  //   );
-
-  //   // ✅ PRIORITIZE USER'S GRADUATION YEAR (only when no filter is applied)
-  //   if (!yearFilter && currentUser?.graduationYear) {
-  //     result = [...result].sort((a, b) => {
-  //       if (a.graduationYear === currentUser.graduationYear) return -1;
-  //       if (b.graduationYear === currentUser.graduationYear) return 1;
-  //       return b.graduationYear - a.graduationYear; // fallback: newest first
-  //     });
-  //   }
-
-  //   return result;
-  // }, [alumni, searchTerm, yearFilter, currentUser]);
+    return result;
+  }, [alumni, searchTerm, yearFilter, currentUser]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
   const start = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -174,8 +166,8 @@ export function AlumniDirectoryPage() {
     <>
       <SEO title="Alumnae Directory" />
 
-      <section className="bg-gray-100 min-h-screen py-6">
-        <div className="max-w-7xl mx-auto px-4">
+      <section className="bg-gray-100 min-h-screen py-8">
+        <div className="container-custom mx-auto px-4">
           {/* Title */}
           <h1 className="text-2xl md:text-3xl font-bold mb-6">Alumnae Directory</h1>
 

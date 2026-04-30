@@ -241,12 +241,9 @@ export function mapBusinessToUpdatePayload(
       fd.append('images', img);
     });
 
-    console.log('fd => ', { fd });
-
     return fd;
   }
 
-  console.log('base => ', { base, formData });
   return base;
 }
 

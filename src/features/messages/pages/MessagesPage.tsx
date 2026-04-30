@@ -2327,16 +2327,6 @@ export function MessagesPage() {
                           </button>
                         ) : null}
                       </div>
-
-                      {/* Header action icons matching Figma (phone + video) */}
-                      <div className="flex items-center gap-1">
-                        <span className="inline-flex h-10 w-10 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100">
-                          <Icon icon="mdi:phone-outline" className="h-5 w-5" />
-                        </span>
-                        <span className="inline-flex h-10 w-10 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100">
-                          <Icon icon="mdi:video-outline" className="h-5 w-5" />
-                        </span>
-                      </div>
                     </header>
                   ) : (
                     <header className="border-b border-gray-100 px-5 py-4">

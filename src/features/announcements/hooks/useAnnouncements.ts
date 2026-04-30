@@ -1,8 +1,10 @@
-import { useQuery } from '@tanstack/react-query';
-import {
-  announcementService,
-  type GetAnnouncementsParams,
-} from '@/features/announcements/services/announcement.service';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { announcementService } from '@/features/announcements/services/announcement.service';
+import { toast } from '@/shared/components/ui/Toast';
+import type {
+  AnnouncementMutationInput,
+  GetAnnouncementsParams,
+} from '@/features/announcements/types/announcement.types';
 
 // ─── Query Keys ───────────────────────────────────────────────────────────────
 export const announcementKeys = {
@@ -42,5 +44,51 @@ export function useLatestAnnouncements(count = 5) {
       [...data]
         .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
         .slice(0, count),
+  });
+}
+
+export function useCreateAnnouncement() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: AnnouncementMutationInput) => announcementService.create(input),
+    onSuccess: () => {
+      toast.success('Announcement created successfully');
+      queryClient.invalidateQueries({ queryKey: announcementKeys.all });
+    },
+    onError: (error: any) => {
+      toast.fromError(error);
+    },
+  });
+}
+
+export function useUpdateAnnouncement() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, input }: { id: string; input: Partial<AnnouncementMutationInput> }) =>
+      announcementService.update(id, input),
+    onSuccess: () => {
+      toast.success('Announcement updated successfully');
+      queryClient.invalidateQueries({ queryKey: announcementKeys.all });
+    },
+    onError: (error: any) => {
+      toast.fromError(error);
+    },
+  });
+}
+
+export function useDeleteAnnouncement() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => announcementService.delete(id),
+    onSuccess: () => {
+      toast.success('Announcement deleted successfully');
+      queryClient.invalidateQueries({ queryKey: announcementKeys.all });
+    },
+    onError: (error: any) => {
+      toast.fromError(error);
+    },
   });
 }

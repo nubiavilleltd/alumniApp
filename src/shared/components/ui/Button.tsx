@@ -38,10 +38,15 @@ const variantStyles: Record<ButtonVariant, string> = {
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
-  sm: 'px-4 py-1.5 text-xs rounded-md',
-  md: 'px-6 py-2.5 text-sm rounded-lg',
-  lg: 'px-8 py-3 text-base rounded-lg',
+  sm: 'px-4 py-1.5 text-xs rounded-3xl',
+  md: 'px-6 py-2.5 text-sm rounded-3xl',
+  lg: 'px-8 py-3 text-base rounded-3xl',
 };
+// const sizeStyles: Record<ButtonSize, string> = {
+//   sm: 'px-4 py-1.5 text-xs rounded-md',
+//   md: 'px-6 py-2.5 text-sm rounded-lg',
+//   lg: 'px-8 py-3 text-base rounded-lg',
+// };
 
 function getButtonClassName({
   variant = 'primary',

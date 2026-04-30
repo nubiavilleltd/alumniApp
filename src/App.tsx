@@ -18,6 +18,8 @@ import { NotFoundPage } from './pages/errors/NotFoundPage';
 import ProjectsPage from './features/projects/pages/ProjectsPage';
 import LeadershipPage from './features/leadership/pages/LeadershipPage';
 import AnnouncementsPage from './features/announcements/pages/BlogIndexPage';
+import BlogPostPage from './features/announcements/pages/BlogPostPage';
+import { ANNOUNCEMENT_ROUTES } from './features/announcements/routes';
 
 import { AuthPage } from './features/authentication/pages/AuthPage';
 import { RegisterDetailsPage } from './features/authentication/pages/RegisterDetailsPage';
@@ -31,6 +33,8 @@ import { AlumniProfilePage } from './features/alumni/pages/AlumniProfilePage';
 import { EventsPage } from './features/events/pages/EventsPage';
 import { EventDetailPage } from './features/events/pages/EventDetailPage';
 import { MyEventsPage } from './features/events/pages/MyEventsPage';
+import AttendeesPage from './features/events/pages/AttendeesPage';
+import AdminEventsPage from './features/events/pages/AdminEventsPage';
 import CreateEventPage from '@/features/events/pages/CreateEventPage';
 import EditEventPage from '@/features/events/pages/EditEventPage';
 
@@ -47,13 +51,16 @@ import ProjectDetailsPage from './features/projects/pages/ProjectDetail';
 import { ADMIN_ROUTES } from './features/admin/routes';
 import { AdminMembersPage } from './features/admin/pages/AdminMembersPage';
 import { AdminEventRegistrationsPage } from './features/events/pages/AdminEventRegistrationsPage';
+import { AdminAnnouncementsPage } from './features/announcements/pages/AdminAnnouncementsPage';
 import { COMING_SOON_ROUTES } from './config/comingSoonRoutes';
 import { ComingSoonRouteHandler } from './pages/errors/ComingSoonRouteHandler';
 import { GuestRoute } from './shared/components/routing/GuestRoute';
 import EditProfilePage from './features/user/pages/EditProfilePage';
 import ResourcesPage from './pages/resources/ResourcesPage';
-import WelfarePage from './pages/welfare/WelfarePage';
-import WelfareZonesPage from './pages/welfare/WelfareZonesPage';
+import WelfarePage from './features/welfare/pages/WelfarePage';
+import WelfareZonesPage from './features/welfare/pages/WelfareZonesPage';
+import JobVacanciesPage from './features/jobVacancies/pages/JobVacanciesPage';
+import { DonationPage } from './features/donation/pages/DonationPage';
 
 export default function App() {
   return (
@@ -94,6 +101,14 @@ export default function App() {
             }
           />
           <Route
+            path={ANNOUNCEMENT_ROUTES.DETAIL_PATH}
+            element={
+              <ErrorBoundary>
+                <BlogPostPage />
+              </ErrorBoundary>
+            }
+          />
+          <Route
             path={ROUTES.PRIVACY}
             element={
               <ErrorBoundary>
@@ -102,9 +117,18 @@ export default function App() {
             }
           />
 
-          <Route path="/resources" element={<ResourcesPage />} />
-          <Route path="/welfare" element={<WelfarePage />} />
-          <Route path="/welfare/zones" element={<WelfareZonesPage />} />
+          <Route path={ROUTES.RESOURCES} element={<ResourcesPage />} />
+          <Route path={ROUTES.WELFARE} element={<WelfarePage />} />
+          <Route path={ROUTES.WELFARE_ZONES} element={<WelfareZonesPage />} />
+          <Route path={ROUTES.DONATION} element={<DonationPage />} />
+          <Route
+            path={ROUTES.JOB_VACANCIES}
+            element={
+              <ErrorBoundary>
+                <JobVacanciesPage />
+              </ErrorBoundary>
+            }
+          />
           <Route
             path={ROUTES.TERMS}
             element={
@@ -165,6 +189,16 @@ export default function App() {
               <ErrorBoundary>
                 <EventsPage />
               </ErrorBoundary>
+            }
+          />
+          <Route
+            path={ROUTES.EVENTS.ATTENDEES(':id')}
+            element={
+              <AdminRoute>
+                <ErrorBoundary>
+                  <AttendeesPage />
+                </ErrorBoundary>
+              </AdminRoute>
             }
           />
           <Route
@@ -351,11 +385,33 @@ export default function App() {
           />
 
           <Route
+            path={ADMIN_ROUTES.EVENTS}
+            element={
+              <AdminRoute>
+                <ErrorBoundary>
+                  <AdminEventsPage />
+                </ErrorBoundary>
+              </AdminRoute>
+            }
+          />
+
+          <Route
             path={ADMIN_ROUTES.EVENT_REGISTRATIONS}
             element={
               <AdminRoute>
                 <ErrorBoundary>
                   <AdminEventRegistrationsPage />
+                </ErrorBoundary>
+              </AdminRoute>
+            }
+          />
+
+          <Route
+            path={ADMIN_ROUTES.ANNOUNCEMENTS}
+            element={
+              <AdminRoute>
+                <ErrorBoundary>
+                  <AdminAnnouncementsPage />
                 </ErrorBoundary>
               </AdminRoute>
             }

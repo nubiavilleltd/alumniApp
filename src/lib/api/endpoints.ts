@@ -15,6 +15,7 @@ export const API_ENDPOINTS = {
     VERIFY_EMAIL: '/api/verify_email',
     RESEND_VERIFY_EMAIL: '/api/resend_verify_email',
     GET_VOUCHERS: '/api/get_vouchers',
+    GET_CITIES: '/api/get_cities',
   },
 
   // ─── Alumni ───────────────────────────────────────────────────────────────
@@ -67,6 +68,10 @@ export const API_ENDPOINTS = {
     POLL: '/chat_api/v2_get_threads',
   },
 
+  WELFARE: {
+    GET_ZONES: '/api/get_zones',
+  },
+
   // ─── Admin ────────────────────────────────────────────────────────────────
   ADMIN: {
     MEMBER_LIST: '/api/admin/members/list',
@@ -82,6 +87,18 @@ export const API_ENDPOINTS = {
     DONATE: (id: string) => `/projects/${id}/donate`,
   },
 
+  // ─── Contact ─────────────────────────────────────────────────────────────
+  CONTACT: {
+    CREATE: '/api/contact_us',
+  },
+
+  // ─── JOB VACANCIES ─────────────────────────────────────────────────────────────
+  JOB_VACANCIES: {
+    GET: '/api/get_vacancies',
+    CREATE: '/api/create_vacancy',
+    MANAGE: '/api/manage_vacancy',
+  },
+
   // ─── Leadership ───────────────────────────────────────────────────────────
   LEADERSHIP: {
     GET_LEADERSHIP: '/api/get_leadership',
@@ -92,8 +109,9 @@ export const API_ENDPOINTS = {
 
   // ─── Announcements ────────────────────────────────────────────────────────
   ANNOUNCEMENTS: {
-    LIST: '/announcements',
-    DETAIL: (slug: string) => `/announcements/${slug}`,
+    LIST: '/api/get_announcements',
+    CREATE: '/api/create_announcement',
+    MANAGE: '/api/manage_announcement',
   },
 
   ADMIN_ENDPOINTS: {

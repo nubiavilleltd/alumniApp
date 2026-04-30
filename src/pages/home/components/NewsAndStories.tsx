@@ -2,8 +2,10 @@ import { Icon } from '@iconify/react';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { useLatestAnnouncements } from '@/features/announcements/hooks/useAnnouncements';
 import type { NewsItem } from '@/features/announcements/types/announcement.types';
-import { ROUTES } from '@/shared/constants/routes';
+import { ANNOUNCEMENT_ROUTES } from '@/features/announcements/routes';
 import { HomeSectionHeader } from './HomeSectionHeader';
+
+const FALLBACK_IMAGE = '/news-1.png';
 
 function formatAnnouncementDate(date: string) {
   const parsed = new Date(date);
@@ -18,9 +20,13 @@ function formatAnnouncementDate(date: string) {
 
 function FeaturedAnnouncementCard({ item }: { item: NewsItem }) {
   return (
-    <AppLink href={`${ROUTES.NEWS}/${item.slug}`} className="home-announcement-featured">
+    <AppLink href={ANNOUNCEMENT_ROUTES.DETAIL(item.slug)} className="home-announcement-featured">
       <div className="home-announcement-featured__image-wrap">
-        <img src={item.image} alt="" className="home-announcement-featured__image" />
+        <img
+          src={item.image || FALLBACK_IMAGE}
+          alt=""
+          className="home-announcement-featured__image"
+        />
       </div>
 
       <div className="home-announcement-featured__body">
@@ -38,9 +44,9 @@ function FeaturedAnnouncementCard({ item }: { item: NewsItem }) {
 
 function AnnouncementListCard({ item }: { item: NewsItem }) {
   return (
-    <AppLink href={`${ROUTES.NEWS}/${item.slug}`} className="home-announcement-card">
+    <AppLink href={ANNOUNCEMENT_ROUTES.DETAIL(item.slug)} className="home-announcement-card">
       <div className="home-announcement-card__image-wrap">
-        <img src={item.image} alt="" className="home-announcement-card__image" />
+        <img src={item.image || FALLBACK_IMAGE} alt="" className="home-announcement-card__image" />
       </div>
 
       <div className="home-announcement-card__body">
@@ -93,7 +99,7 @@ export default function HomeAnnouncements() {
         <HomeSectionHeader
           eyebrow="Announcements"
           title="Important news and updates from the alumnae community"
-          href={ROUTES.NEWS}
+          href={ANNOUNCEMENT_ROUTES.ROOT}
         />
 
         <div className="home-announcements-grid">
@@ -106,6 +112,17 @@ export default function HomeAnnouncements() {
                 ))}
               </div>
             </>
+          ) : !featured ? (
+            <div className="home-announcement-featured">
+              <div className="home-announcement-featured__body">
+                <p className="home-announcement-time">
+                  <Icon icon="mdi:bullhorn-outline" aria-hidden="true" />
+                  Updates
+                </p>
+                <h3>No announcements yet</h3>
+                <p>New community updates will appear here as soon as they are published.</p>
+              </div>
+            </div>
           ) : (
             <>
               {featured && <FeaturedAnnouncementCard item={featured} />}

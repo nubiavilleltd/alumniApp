@@ -3,37 +3,166 @@
 import { apiClient } from '@/lib/api/client';
 import { API_ENDPOINTS } from '@/lib/api/endpoints';
 import { handleApiError } from '@/lib/errors/apiErrorHandler';
-import { getAnnouncements, getAnnouncementBySlug } from '@/data/site-data';
-import type { NewsItem } from '@/features/announcements/types/announcement.types';
+import { useTokenStore } from '@/features/authentication/stores/useTokenStore';
+import {
+  extractAnnouncementFromResponse,
+  extractAnnouncementIdFromSlug,
+  mapAnnouncementToCreatePayload,
+  mapAnnouncementToDeletePayload,
+  mapAnnouncementToUpdatePayload,
+  mapBackendAnnouncementList,
+  mapGetAnnouncementsPayload,
+} from '@/features/announcements/api/adapters/announcement.adapter';
+import type {
+  AnnouncementMutationInput,
+  AnnouncementType,
+  GetAnnouncementsParams,
+  NewsItem,
+} from '@/features/announcements/types/announcement.types';
 
-export interface GetAnnouncementsParams {
-  search?: string;
-  tag?: string;
-  page?: number;
-  limit?: number;
+const ANNOUNCEMENT_TYPES: AnnouncementType[] = ['info', 'warning', 'success', 'event'];
+
+async function fetchAnnouncements(params?: GetAnnouncementsParams): Promise<NewsItem[]> {
+  const payload = mapGetAnnouncementsPayload(params);
+  const { data } = await apiClient.post(API_ENDPOINTS.ANNOUNCEMENTS.LIST, payload);
+  return mapBackendAnnouncementList(data);
+}
+
+function dedupeAnnouncements(items: NewsItem[]): NewsItem[] {
+  const seen = new Set<string>();
+
+  return items.filter((item) => {
+    const key = String(item.id);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+async function fetchAnnouncementsByTypeFallback(
+  params?: GetAnnouncementsParams,
+): Promise<NewsItem[]> {
+  const baseParams = params ? { ...params } : {};
+  delete baseParams.type;
+
+  const results = await Promise.all(
+    ANNOUNCEMENT_TYPES.map((type) => fetchAnnouncements({ ...baseParams, type })),
+  );
+
+  return dedupeAnnouncements(results.flat());
 }
 
 export const announcementService = {
   async getAll(params?: GetAnnouncementsParams): Promise<NewsItem[]> {
-    // 🔴 TODO: replace mock with real API call when endpoint is available
-    // try {
-    //   const { data } = await apiClient.post(API_ENDPOINTS.ANNOUNCEMENTS.LIST, params ?? {});
-    //   return data.announcements ?? data.data ?? data;
-    // } catch (error) {
-    //   throw handleApiError(error, 'Unable to load announcements.', 'announcementService.getAll');
-    // }
-    return getAnnouncements();
+    const accessToken = useTokenStore.getState().accessToken;
+    if (!accessToken) return [];
+
+    const canUseTypeFallback = !params?.type;
+
+    try {
+      const items = await fetchAnnouncements(params);
+
+      // Some backend environments only return data when `type` is explicit.
+      if (items.length > 0 || !canUseTypeFallback) return items;
+
+      return await fetchAnnouncementsByTypeFallback(params);
+    } catch (error) {
+      if (canUseTypeFallback) {
+        try {
+          return await fetchAnnouncementsByTypeFallback(params);
+        } catch (fallbackError) {
+          throw handleApiError(
+            fallbackError,
+            'Unable to load announcements.',
+            'announcementService.getAll',
+          );
+        }
+      }
+
+      throw handleApiError(error, 'Unable to load announcements.', 'announcementService.getAll');
+    }
   },
 
   async getBySlug(slug: string): Promise<NewsItem | undefined> {
-    // 🔴 TODO: replace mock with real API call when endpoint is available
-    // try {
-    //   const { data } = await apiClient.get(API_ENDPOINTS.ANNOUNCEMENTS.DETAIL(slug));
-    //   return data.announcement ?? data.data ?? data;
-    // } catch (error: any) {
-    //   if (error.response?.status === 404) return undefined;
-    //   throw handleApiError(error, 'Unable to load this announcement.', 'announcementService.getBySlug');
-    // }
-    return getAnnouncementBySlug(slug);
+    const accessToken = useTokenStore.getState().accessToken;
+    if (!accessToken) return undefined;
+
+    try {
+      const id = extractAnnouncementIdFromSlug(slug);
+      if (id) {
+        const items = await announcementService.getAll({ id });
+        return items[0];
+      }
+
+      const items = await announcementService.getAll();
+      return items.find((item) => item.slug === slug);
+    } catch (error: any) {
+      if (error.response?.status === 404) return undefined;
+      throw handleApiError(
+        error,
+        'Unable to load this announcement.',
+        'announcementService.getBySlug',
+      );
+    }
+  },
+
+  async create(input: AnnouncementMutationInput): Promise<NewsItem> {
+    try {
+      const payload = mapAnnouncementToCreatePayload(input);
+      const { data } = await apiClient.post(API_ENDPOINTS.ANNOUNCEMENTS.CREATE, payload);
+      const created = extractAnnouncementFromResponse(data);
+
+      if (created) return created;
+
+      const createdId = data?.data?.id ?? data?.id;
+      if (createdId) {
+        const items = await announcementService.getAll({ id: String(createdId) });
+        if (items[0]) return items[0];
+      }
+
+      throw new Error('Announcement created but the response did not include announcement data.');
+    } catch (error) {
+      throw handleApiError(
+        error,
+        'Unable to create the announcement.',
+        'announcementService.create',
+      );
+    }
+  },
+
+  async update(id: string, input: Partial<AnnouncementMutationInput>): Promise<NewsItem> {
+    try {
+      const payload = mapAnnouncementToUpdatePayload(id, input);
+      const { data } = await apiClient.post(API_ENDPOINTS.ANNOUNCEMENTS.MANAGE, payload);
+      const updated = extractAnnouncementFromResponse(data);
+
+      if (updated) return updated;
+
+      const items = await announcementService.getAll({ id });
+      if (items[0]) return items[0];
+
+      throw new Error('Announcement updated but could not be reloaded.');
+    } catch (error) {
+      throw handleApiError(
+        error,
+        'Unable to update the announcement.',
+        'announcementService.update',
+      );
+    }
+  },
+
+  async delete(id: string): Promise<void> {
+    try {
+      const payload = mapAnnouncementToDeletePayload(id);
+      await apiClient.post(API_ENDPOINTS.ANNOUNCEMENTS.MANAGE, payload, {
+        headers: { 'Content-Type': 'application/json' },
+      });
+    } catch (error) {
+      throw handleApiError(
+        error,
+        'Unable to delete the announcement.',
+        'announcementService.delete',
+      );
+    }
   },
 };

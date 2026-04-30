@@ -17,16 +17,24 @@ export function mapLoginPayload(values: LoginFormValues) {
   };
 }
 
+// export function mapLoginResponse(res: any): LoginResponse {
+//   return {
+//     accessToken: res.access_token || '',
+//     refreshToken: res.refresh_token || '',
+
+//     user: {
+//       id: String(res.user_id ?? ''),
+//       memberId: String(res.user_id ?? ''),
+//       role: res.user_role === 'admin' ? 'admin' : 'member',
+//     },
+//   };
+// }
 export function mapLoginResponse(res: any): LoginResponse {
   return {
     accessToken: res.access_token || '',
     refreshToken: res.refresh_token || '',
 
-    user: {
-      id: String(res.user_id ?? ''),
-      memberId: String(res.user_id ?? ''),
-      role: res.user_role === 'admin' ? 'admin' : 'member',
-    },
+    user: mapCurrentUserResponse(res),
   };
 }
 

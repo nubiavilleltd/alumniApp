@@ -164,8 +164,6 @@ export function useUpdateFieldPrivacy() {
 
       //   }
 
-      console.log(`🔄 Optimistic update: ${field} → ${visibility}`);
-
       // Return context for rollback
 
       return { previousPrivacy };
@@ -177,10 +175,8 @@ export function useUpdateFieldPrivacy() {
 
     // ═══════════════════════════════════════════════════════════════════
 
-    onSuccess: (updatedPrivacy, { field, visibility }) => {
+    onSuccess: (updatedPrivacy) => {
       if (!userId) return;
-
-      console.log('✅ Privacy update confirmed by backend');
 
       // Update cache with backend response
 

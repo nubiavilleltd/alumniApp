@@ -16,10 +16,47 @@ import { SelectInput } from '@/shared/components/ui/SelectInput';
 import { ImageUpload } from '@/shared/components/ui/ImageUpload';
 import Button from '@/shared/components/ui/Button';
 import { useCreateEvent } from '../hooks/useEvents';
-import { mapEventToCreatePayload } from '../api/adapters/event.adapter';
+import { mapEventToCreatePayload, mapEventToUpdatePayload } from '../api/adapters/event.adapter';
 import { toast } from '@/shared/components/ui/Toast';
 import { EVENT_ROUTES } from '../routes';
 import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
+import { DatePicker } from '@/shared/components/ui/input/DatePicker';
+import { TimePicker } from '@/shared/components/ui/input/TimePicker';
+import { ROUTES } from '@/shared/constants/routes';
+import { ADMIN_ROUTES } from '@/features/admin/routes';
+import { useUpsertEventSurveyForm } from '../hooks/useEventSurvey';
+import { eventsService } from '../services/event.service';
+import {
+  clearStoredEventSurveyAvailability,
+  EVENT_SURVEY_TAG,
+  setStoredEventSurveyAvailability,
+} from '../lib/eventSurveyAvailability';
+import {
+  EventRegistrationFormBuilderModal,
+  type EventRegistrationFormDraft,
+  type EventRegistrationQuestionDraft,
+} from '../components/EventRegistrationFormBuilderModal';
+
+type LocalRegistrationFormDraft = {
+  localId: string;
+  draft: EventRegistrationFormDraft;
+};
+
+function createLocalRegistrationFormId() {
+  return `event-registration-draft-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function toSurveyQuestionPayload(question: EventRegistrationQuestionDraft, index: number) {
+  return {
+    id: question.id,
+    label: question.label.trim(),
+    type: question.type,
+    required: question.required,
+    placeholder: question.placeholder.trim(),
+    options: question.options.map((option) => option.trim()).filter(Boolean),
+    order: index + 1,
+  };
+}
 
 // ─── Schema ───────────────────────────────────────────────────────────────────
 // Required: title, description, location, event_date, visibility, status
@@ -99,10 +136,17 @@ export default function CreateEventPage() {
   //   const currentUser = useAuthStore((state) => state.user);
   const { data: currentUser, isLoading } = useCurrentUser();
   const createEvent = useCreateEvent();
+  const upsertSurveyForm = useUpsertEventSurveyForm();
 
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [bannerPreview, setBannerPreview] = useState<string>('');
   const [bannerError, setBannerError] = useState<string>('');
+  const [isRegistrationBuilderOpen, setIsRegistrationBuilderOpen] = useState(false);
+  const [registrationFormDrafts, setRegistrationFormDrafts] = useState<
+    LocalRegistrationFormDraft[]
+  >([]);
+  const [activeRegistrationFormId, setActiveRegistrationFormId] = useState<string | null>(null);
+  const [isSavingSurveyForms, setIsSavingSurveyForms] = useState(false);
 
   const {
     register,
@@ -146,7 +190,7 @@ export default function CreateEventPage() {
     }
   };
 
-  const onSubmit = (data: CreateEventFormData) => {
+  const onSubmit = async (data: CreateEventFormData) => {
     if (!currentUser?.id) {
       toast.error('You must be logged in to create events.');
       return;
@@ -169,10 +213,66 @@ export default function CreateEventPage() {
       currentUser.chapterId,
     );
 
-    createEvent.mutate(payload, {
-      onSuccess: () => navigate(EVENT_ROUTES.ROOT),
-      onError: (error: any) => toast.fromError(error),
-    });
+    try {
+      const createdEvent = await createEvent.mutateAsync(payload);
+
+      if (registrationFormDrafts.length > 0) {
+        setIsSavingSurveyForms(true);
+
+        try {
+          for (const [index, item] of registrationFormDrafts.entries()) {
+            await upsertSurveyForm.mutateAsync({
+              eventId: createdEvent.id,
+              eventTitleSnapshot: createdEvent.title || data.title,
+              name: item.draft.name.trim(),
+              sortOrder: index + 1,
+              questions: item.draft.questions.map((question, questionIndex) =>
+                toSurveyQuestionPayload(question, questionIndex),
+              ),
+            });
+          }
+
+          setStoredEventSurveyAvailability(createdEvent.id, true);
+
+          try {
+            await eventsService.update(
+              createdEvent.id,
+              mapEventToUpdatePayload(createdEvent.id, {
+                title: data.title,
+                description: data.description,
+                location: data.location,
+                event_date: data.event_date,
+                start_time: data.start_time,
+                end_time: data.end_time,
+                visibility: data.visibility,
+                max_attendees: data.max_attendees,
+                status: data.status,
+                tags: [EVENT_SURVEY_TAG],
+              }),
+            );
+          } catch {
+            toast.error(
+              'Event and registration forms were saved, but survey metadata sync failed. Survey questions may be unavailable on other devices until this is fixed.',
+            );
+          }
+        } catch (surveyError: any) {
+          clearStoredEventSurveyAvailability(createdEvent.id);
+          toast.error(
+            surveyError?.message ||
+              'Event created, but we could not save the registration forms. Please try again from the event management area.',
+          );
+        } finally {
+          setIsSavingSurveyForms(false);
+        }
+      } else {
+        setStoredEventSurveyAvailability(createdEvent.id, false);
+      }
+
+      navigate(EVENT_ROUTES.ROOT);
+    } catch (error: any) {
+      setIsSavingSurveyForms(false);
+      toast.fromError(error);
+    }
   };
 
   const isAdmin = currentUser?.role === 'admin';
@@ -194,10 +294,17 @@ export default function CreateEventPage() {
   }
 
   const breadcrumbItems = [
-    { label: 'Home', href: '/' },
-    { label: 'Events', href: EVENT_ROUTES.ROOT },
+    { label: 'Home', href: ROUTES.HOME },
+    { label: 'Admin Dashboard', href: ADMIN_ROUTES.DASHBOARD },
+    { label: 'Events', href: ADMIN_ROUTES.EVENTS },
     { label: 'Create Event' },
   ];
+
+  const activeRegistrationFormDraft =
+    activeRegistrationFormId === null
+      ? null
+      : (registrationFormDrafts.find((item) => item.localId === activeRegistrationFormId)?.draft ??
+        null);
 
   return (
     <>
@@ -205,7 +312,7 @@ export default function CreateEventPage() {
       <Breadcrumbs items={breadcrumbItems} />
 
       <section className="section">
-        <div className="container-custom max-w-3xl">
+        <div className="container-custom">
           <div className="mb-8">
             <h1 className="text-3xl md:text-4xl font-bold italic mb-2">Create Event</h1>
             <p className="text-gray-500 text-sm">Add a new event to the alumni calendar</p>
@@ -242,31 +349,33 @@ export default function CreateEventPage() {
                 error={errors.location?.message}
                 {...register('location')}
               />
-              <FormInput
+
+              <DatePicker
                 label="Event Date"
                 id="event_date"
-                type="date"
-                min={new Date().toISOString().split('T')[0]}
                 required
+                min={new Date().toISOString().split('T')[0]} // same as before
                 error={errors.event_date?.message}
-                {...register('event_date')}
+                value={watch('event_date')} // controlled
+                onValueChange={(val) => setValue('event_date', val, { shouldValidate: true })}
               />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormInput
+              <TimePicker
                 label="Start Time"
                 id="start_time"
-                type="time"
                 error={errors.start_time?.message}
-                {...register('start_time')}
+                value={watch('start_time')}
+                onValueChange={(val) => setValue('start_time', val, { shouldValidate: true })}
               />
-              <FormInput
+
+              <TimePicker
                 label="End Time"
                 id="end_time"
-                type="time"
                 error={errors.end_time?.message}
-                {...register('end_time')}
+                value={watch('end_time')}
+                onValueChange={(val) => setValue('end_time', val, { shouldValidate: true })}
               />
             </div>
 
@@ -317,7 +426,7 @@ export default function CreateEventPage() {
             </div>
 
             <div className="flex gap-3 pt-4">
-              <Button type="submit" loading={createEvent.isPending}>
+              <Button type="submit" loading={createEvent.isPending || isSavingSurveyForms}>
                 Create Event
               </Button>
               <Button type="button" variant="outline" onClick={() => navigate(EVENT_ROUTES.ROOT)}>
@@ -325,8 +434,110 @@ export default function CreateEventPage() {
               </Button>
             </div>
           </form>
+
+          <div className="mt-7 px-2">
+            <p className="max-w-5xl text-[1.4rem] font-medium leading-tight tracking-[0.01em] text-[#8a8a8a] md:text-[1.7rem]">
+              Would you like to request for information from attendees regarding this event?
+            </p>
+
+            <button
+              type="button"
+              onClick={() => {
+                setActiveRegistrationFormId(null);
+                setIsRegistrationBuilderOpen(true);
+              }}
+              className="mt-5 inline-flex min-h-[3.2rem] items-center rounded-full border-[3px] border-primary-500 px-8 text-[1.1rem] font-semibold text-primary-500 transition-colors hover:bg-primary-50 md:min-h-[3.35rem] md:px-9 md:text-[1.2rem]"
+            >
+              {registrationFormDrafts.length > 0 ? 'Add another request form' : 'Yes, request info'}
+            </button>
+
+            {registrationFormDrafts.length > 0 ? (
+              <div className="mt-5 grid max-w-4xl gap-4">
+                {registrationFormDrafts.map((item, index) => (
+                  <div
+                    key={item.localId}
+                    onClick={() => {
+                      setActiveRegistrationFormId(item.localId);
+                      setIsRegistrationBuilderOpen(true);
+                    }}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        setActiveRegistrationFormId(item.localId);
+                        setIsRegistrationBuilderOpen(true);
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
+                    className="rounded-[1.6rem] border border-primary-100 bg-primary-50/70 px-5 py-4 text-left transition-colors hover:border-primary-300 hover:bg-primary-50 focus:outline-none focus:ring-2 focus:ring-primary-300"
+                  >
+                    <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-primary-500">
+                          Request Form {index + 1}
+                        </p>
+                        <p className="mt-1 text-base font-semibold text-gray-900">
+                          {item.draft.name}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          {item.draft.questions.length} question
+                          {item.draft.questions.length === 1 ? '' : 's'} ready for this event
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-3 self-start md:self-center">
+                        <span className="inline-flex items-center gap-2 rounded-full border border-primary-200 bg-white px-3 py-1.5 text-sm font-semibold text-primary-500">
+                          <Icon icon="mdi:pencil-outline" className="h-4 w-4" />
+                          Open form
+                        </span>
+                        <button
+                          type="button"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            setRegistrationFormDrafts((current) =>
+                              current.filter((draftItem) => draftItem.localId !== item.localId),
+                            );
+                            if (activeRegistrationFormId === item.localId) {
+                              setActiveRegistrationFormId(null);
+                            }
+                          }}
+                          className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 transition-colors hover:text-red-500"
+                        >
+                          <Icon icon="mdi:delete-outline" className="h-4 w-4" />
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : null}
+          </div>
         </div>
       </section>
+
+      <EventRegistrationFormBuilderModal
+        isOpen={isRegistrationBuilderOpen}
+        value={activeRegistrationFormDraft}
+        onClose={() => {
+          setIsRegistrationBuilderOpen(false);
+          setActiveRegistrationFormId(null);
+        }}
+        onSave={(draft) => {
+          setRegistrationFormDrafts((current) => {
+            if (activeRegistrationFormId) {
+              return current.map((item) =>
+                item.localId === activeRegistrationFormId ? { ...item, draft } : item,
+              );
+            }
+
+            return [...current, { localId: createLocalRegistrationFormId(), draft }];
+          });
+          setIsRegistrationBuilderOpen(false);
+          setActiveRegistrationFormId(null);
+          toast.success('Registration form added to this event draft.');
+        }}
+      />
     </>
   );
 }

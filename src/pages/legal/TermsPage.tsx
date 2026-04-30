@@ -1,7 +1,6 @@
 // import { Layout } from '@/components/Layout';
 
 import { SEO } from '@/shared/common/SEO';
-import { Layout } from '@/shared/components/layout/Layout';
 
 export function TermsPage() {
   return (
