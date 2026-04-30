@@ -322,7 +322,13 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
         }
       }
 
+      //This is a workaround for get_events CORS error. Work on it Remove it once it fixed
+      toast.success('You have successfully for registered for this event');
+
       setSubmitted(true);
+
+      //This is a workaround for get_events CORS error. Work on it. Work on it Remove it once it fixed
+      setTimeout(window.location.reload, 3000);
     } catch (err) {
       setError('Failed to register. Please try again.');
     }
