@@ -8,11 +8,15 @@ import { Modal } from '@/shared/components/ui/Modal';
 import { useEvent } from '../hooks/useEvents';
 import { useEventAttendees } from '../hooks/useEventAttendees';
 import { useEventSurveySubmissionDetail, useEventSurveySubmissions } from '../hooks/useEventSurvey';
+import { eventSurveyFunctionsApi } from '../api/firebase/survey.functions';
 import { EVENT_ROUTES } from '../routes';
 import type { EventAttendee } from '../api/adapters/event-attendees.adapter';
 import { ROUTES } from '@/shared/constants/routes';
 import { ADMIN_ROUTES } from '@/features/admin/routes';
-import { getStoredEventSurveyAvailability } from '../lib/eventSurveyAvailability';
+import {
+  getStoredEventSurveyAvailability,
+  setStoredEventSurveyAvailability,
+} from '../lib/eventSurveyAvailability';
 import type {
   EventSurveySubmissionFormView,
   EventSurveySubmissionListItem,
@@ -45,6 +49,31 @@ function formatRegisteredAt(date?: string) {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  });
+}
+
+function formatRegisteredDateForExport(date?: string) {
+  if (!date) return '';
+
+  const parsed = new Date(date);
+  if (Number.isNaN(parsed.getTime())) return date;
+
+  return parsed.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+}
+
+function formatRegisteredTimeForExport(date?: string) {
+  if (!date) return '';
+
+  const parsed = new Date(date);
+  if (Number.isNaN(parsed.getTime())) return '';
+
+  return parsed.toLocaleTimeString('en-US', {
     hour: 'numeric',
     minute: '2-digit',
   });
@@ -209,6 +238,46 @@ function renderQuestionValue(question: EventSurveySubmissionQuestionView) {
   );
 }
 
+function formatSurveyAnswerForExport(question: EventSurveySubmissionQuestionView) {
+  if (Array.isArray(question.value)) {
+    return question.value.join(', ');
+  }
+
+  return typeof question.value === 'string' ? question.value.trim() : '';
+}
+
+function sanitizeFilename(value: string) {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function escapeCsvCell(value: string) {
+  return `"${value.replace(/"/g, '""')}"`;
+}
+
+function downloadCsvFile(filename: string, headers: string[], rows: Record<string, string>[]) {
+  const csvRows = [
+    headers.map(escapeCsvCell).join(','),
+    ...rows.map((row) => headers.map((header) => escapeCsvCell(row[header] ?? '')).join(',')),
+  ];
+
+  const blob = new Blob(['\ufeff', csvRows.join('\r\n')], {
+    type: 'text/csv;charset=utf-8;',
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
 function SurveyResponseModal({
   attendee,
   isLoading,
@@ -347,16 +416,19 @@ export default function AttendeesPage() {
     attendee: EventAttendee;
     submissionUserId: string;
   } | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
 
   const { data: event } = useEvent(id);
   const cachedSurveyAvailability = useMemo(() => getStoredEventSurveyAvailability(id), [id]);
-  const shouldUseSurvey =
-    event?.hasRegistrationQuestions === true || cachedSurveyAvailability === 'enabled';
   const { data: attendeeData, isLoading } = useEventAttendees(id, 'going');
-  const { data: surveySubmissions = [], error: surveySubmissionsError } = useEventSurveySubmissions(
-    id,
-    !!id && shouldUseSurvey,
-  );
+  const attendees = useMemo(() => attendeeData?.attendees ?? [], [attendeeData?.attendees]);
+  const shouldAttemptSurveyLookup =
+    !!id && attendees.length > 0 && cachedSurveyAvailability !== 'disabled';
+  const {
+    data: surveySubmissions = [],
+    error: surveySubmissionsError,
+    isLoading: isLoadingSurveySubmissions,
+  } = useEventSurveySubmissions(id, shouldAttemptSurveyLookup);
   const {
     data: selectedSubmissionDetail,
     isLoading: isLoadingSubmissionDetail,
@@ -364,10 +436,8 @@ export default function AttendeesPage() {
   } = useEventSurveySubmissionDetail(
     id,
     selectedSurveyTarget?.submissionUserId || '',
-    !!id && shouldUseSurvey && !!selectedSurveyTarget?.submissionUserId,
+    !!id && !!selectedSurveyTarget?.submissionUserId,
   );
-
-  const attendees = useMemo(() => attendeeData?.attendees ?? [], [attendeeData?.attendees]);
   const surveySubmissionsByUserId = useMemo(
     () =>
       new Map(
@@ -402,6 +472,28 @@ export default function AttendeesPage() {
 
     return undefined;
   };
+
+  useEffect(() => {
+    console.log('[AttendeesPage] survey lookup gate', {
+      eventId: id,
+      eventHasRegistrationQuestions: event?.hasRegistrationQuestions ?? null,
+      cachedSurveyAvailability,
+      attendeeCount: attendees.length,
+      shouldAttemptSurveyLookup,
+    });
+  }, [
+    attendees.length,
+    cachedSurveyAvailability,
+    event?.hasRegistrationQuestions,
+    id,
+    shouldAttemptSurveyLookup,
+  ]);
+
+  useEffect(() => {
+    if (id && surveySubmissions.length > 0) {
+      setStoredEventSurveyAvailability(id, true);
+    }
+  }, [id, surveySubmissions.length]);
 
   useEffect(() => {
     console.log('[AttendeesPage] survey submission match debug', {
@@ -461,6 +553,105 @@ export default function AttendeesPage() {
     { label: 'Attendees' },
   ];
 
+  async function handleExportAttendees() {
+    if (!attendees.length || !id || isExporting) {
+      return;
+    }
+
+    setIsExporting(true);
+
+    try {
+      const questionColumns: string[] = [];
+      const questionColumnSet = new Set<string>();
+      const incompleteSurveyExports: string[] = [];
+      const rows = await Promise.all(
+        attendees.map(async (attendee) => {
+          const matchedSubmission = getMatchedSubmission(attendee);
+          let detail: GetEventSurveySubmissionDetailResponse | undefined;
+
+          if (matchedSubmission) {
+            try {
+              detail = await eventSurveyFunctionsApi.getEventSurveySubmissionDetail({
+                eventId: id,
+                userId: matchedSubmission.userId,
+              });
+            } catch (error) {
+              console.error('[AttendeesPage] failed to export survey submission detail', {
+                attendee,
+                matchedSubmission,
+                error,
+              });
+              incompleteSurveyExports.push(attendee.fullName);
+            }
+          }
+
+          const resolvedForms =
+            detail?.forms && detail.forms.length > 0
+              ? detail.forms
+              : buildFallbackFormsFromRegistration(detail);
+
+          const row: Record<string, string> = {
+            Name: attendee.fullName,
+            Email: attendee.email || '',
+            Phone: attendee.phone || '',
+            'Graduation Year': attendee.graduationYear ? String(attendee.graduationYear) : '',
+            'Registration Date': formatRegisteredDateForExport(attendee.registeredAt),
+            'Registration Time': formatRegisteredTimeForExport(attendee.registeredAt),
+            'RSVP Status': attendee.status || 'going',
+            'Additional Info': detail?.registration.additionalInfo?.trim() ?? '',
+          };
+
+          resolvedForms.forEach((form: EventSurveySubmissionFormView) => {
+            form.questions.forEach((question: EventSurveySubmissionQuestionView) => {
+              const columnName = `${form.formName}: ${question.label}`;
+              if (!questionColumnSet.has(columnName)) {
+                questionColumnSet.add(columnName);
+                questionColumns.push(columnName);
+              }
+
+              row[columnName] = formatSurveyAnswerForExport(question);
+            });
+          });
+
+          return row;
+        }),
+      );
+
+      const headers = [
+        'Name',
+        'Email',
+        'Phone',
+        'Graduation Year',
+        'Registration Date',
+        'Registration Time',
+        'RSVP Status',
+        'Additional Info',
+        ...questionColumns,
+      ];
+
+      downloadCsvFile(
+        `${sanitizeFilename(pageTitle || 'event-attendees') || 'event-attendees'}-${new Date()
+          .toISOString()
+          .slice(0, 10)}.csv`,
+        headers,
+        rows,
+      );
+
+      if (incompleteSurveyExports.length > 0) {
+        window.alert(
+          `Attendee export completed, but survey answers could not be loaded for: ${incompleteSurveyExports.join(
+            ', ',
+          )}.`,
+        );
+      }
+    } catch (error) {
+      console.error('[AttendeesPage] failed to export attendees', error);
+      window.alert('Unable to export the attendee list right now. Please try again.');
+    } finally {
+      setIsExporting(false);
+    }
+  }
+
   return (
     <>
       <SEO title={`${pageTitle} Attendees`} description={`View attendees for ${pageTitle}.`} />
@@ -496,6 +687,24 @@ export default function AttendeesPage() {
                     {totalCount} going attendee{totalCount === 1 ? '' : 's'}
                   </span>
                 </div>
+              </div>
+
+              <div className="flex items-center">
+                <button
+                  type="button"
+                  onClick={handleExportAttendees}
+                  disabled={
+                    isLoading || isExporting || attendees.length === 0 || isLoadingSurveySubmissions
+                  }
+                  className="inline-flex items-center gap-2 rounded-full bg-primary-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-600 disabled:cursor-not-allowed disabled:bg-primary-200"
+                >
+                  {isExporting ? (
+                    <Icon icon="mdi:loading" className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Icon icon="mdi:download-outline" className="h-4 w-4" />
+                  )}
+                  <span>{isExporting ? 'Exporting...' : 'Export List'}</span>
+                </button>
               </div>
             </header>
           </div>
