@@ -63,11 +63,12 @@ export const registerDetailsSchema = z
     phoneCountry: z.enum(supportedPhoneCountries),
 
     whatsappPhone: z.string().trim().min(1, 'WhatsApp phone number is required'),
-    city: z
-      .string()
-      .trim()
-      .min(2, 'City must be at least 2 characters')
-      .regex(/^[A-Za-z][A-Za-z\s'.-]*$/, 'Please enter a valid city name'),
+    city: z.string().min(1, 'Please select a city'),
+    // city: z
+    //   .string()
+    //   .trim()
+    //   .min(2, 'City must be at least 2 characters')
+    //   .regex(/^[A-Za-z][A-Za-z\s'.-]*$/, 'Please enter a valid city name'),
     residentialAddress: z
       .string()
       .trim()
