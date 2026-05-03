@@ -101,6 +101,7 @@ export interface AuthSessionUser {
   area?: string;
   city?: string;
   state?: string;
+  zone?: string;
   employmentStatus?: string;
   occupations?: string[];
   industrySectors?: string[];

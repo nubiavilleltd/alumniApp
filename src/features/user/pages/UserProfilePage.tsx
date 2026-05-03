@@ -121,6 +121,7 @@ export default function UserProfilePage() {
     area: currentUser?.area,
     state: currentUser?.state,
     city: currentUser?.city,
+    zone: currentUser?.zone,
     employmentStatus: employmentLabel,
     occupation: occupationLabel,
     industrySector: industrySectorLabel,
@@ -189,6 +190,12 @@ export default function UserProfilePage() {
                       <div className="grid grid-cols-[auto_1fr] gap-x-3">
                         <span className="text-gray-400">City:</span>
                         <span>{currentUser.city}</span>
+                      </div>
+                    )}
+                    {currentUser?.zone && (
+                      <div className="grid grid-cols-[auto_1fr] gap-x-3">
+                        <span className="text-gray-400">Zone:</span>
+                        <span>{currentUser.zone}</span>
                       </div>
                     )}
                   </div>

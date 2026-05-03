@@ -86,7 +86,8 @@ export function mapCurrentUserResponse(res: any): AuthSessionUser {
     residentialAddress: res.residential_address || undefined,
     area: res.area || undefined,
     city: res.profile?.city || res.city || undefined,
-    state: res.state || res.state || undefined,
+    state: res.state || undefined,
+    zone: res.zone_name || undefined,
 
     employmentStatus: res.employment_status || undefined,
     occupations: res.occupation ? [res.occupation] : undefined,

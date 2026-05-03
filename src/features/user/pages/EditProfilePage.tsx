@@ -34,6 +34,7 @@ import type { AuthSessionUser } from '@/features/authentication/types/auth.types
 import { useCities } from '@/features/authentication/hooks/useCities';
 import { DatePicker } from '@/shared/components/ui/input/DatePicker';
 import { getDateYearsAgo } from '@/shared/utils/dateHelpers';
+import { SelectInput } from '@/shared/components/ui/SelectInput';
 
 const breadcrumbItems = [
   { label: 'Home', href: ROUTES.HOME },
@@ -154,44 +155,44 @@ function Input({
 }
 
 // disabled prop added to match the existing Select signature plus city's loading state
-function Select({
-  name,
-  value,
-  onChange,
-  options,
-  placeholder,
-  disabled,
-}: {
-  name: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  options: { label: string; value: string }[];
-  placeholder?: string;
-  disabled?: boolean;
-}) {
-  return (
-    <div className="relative">
-      <select
-        name={name}
-        value={value}
-        onChange={onChange}
-        disabled={disabled}
-        className="w-full px-4 py-2.5 rounded-3xl border border-gray-200 bg-gray-50 text-sm text-gray-800 appearance-none focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-400 focus:bg-white transition-all disabled:opacity-60"
-      >
-        {placeholder && <option value="">{placeholder}</option>}
-        {options.map((o) => (
-          <option key={o.value} value={o.value}>
-            {o.label}
-          </option>
-        ))}
-      </select>
-      <Icon
-        icon="mdi:chevron-down"
-        className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"
-      />
-    </div>
-  );
-}
+// function Select({
+//   name,
+//   value,
+//   onChange,
+//   options,
+//   placeholder,
+//   disabled,
+// }: {
+//   name: string;
+//   value: string;
+//   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+//   options: { label: string; value: string }[];
+//   placeholder?: string;
+//   disabled?: boolean;
+// }) {
+//   return (
+//     <div className="relative">
+//       <select
+//         name={name}
+//         value={value}
+//         onChange={onChange}
+//         disabled={disabled}
+//         className="w-full px-4 py-2.5 rounded-3xl border border-gray-200 bg-gray-50 text-sm text-gray-800 appearance-none focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-400 focus:bg-white transition-all disabled:opacity-60"
+//       >
+//         {placeholder && <option value="">{placeholder}</option>}
+//         {options.map((o) => (
+//           <option key={o.value} value={o.value}>
+//             {o.label}
+//           </option>
+//         ))}
+//       </select>
+//       <Icon
+//         icon="mdi:chevron-down"
+//         className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"
+//       />
+//     </div>
+//   );
+// }
 
 // ─── Section card (collapsible on mobile) ─────────────────────────────────────
 
@@ -216,7 +217,7 @@ function SectionCard({
         <span className="text-sm font-bold text-gray-900">{title}</span>
         <Icon
           icon={open ? 'mdi:chevron-up' : 'mdi:chevron-down'}
-          className="w-4 h-4 text-gray-400 sm:hidden"
+          className="w-4 h-4 text-gray-400"
         />
       </button>
       {open && <div className="px-5 sm:px-6 pb-6 pt-0">{children}</div>}
@@ -474,7 +475,7 @@ export default function EditProfilePage() {
                   <Label>WhatsApp</Label>
                   <div className="flex gap-2">
                     <div className="w-28 flex-shrink-0">
-                      <Select
+                      <SelectInput
                         name="whatsappPhoneCountry"
                         value={form.whatsappPhoneCountry}
                         onChange={(e) =>
@@ -503,7 +504,7 @@ export default function EditProfilePage() {
                   <Label>Alt. Phone</Label>
                   <div className="flex gap-2">
                     <div className="w-28 flex-shrink-0">
-                      <Select
+                      <SelectInput
                         name="alternativePhoneCountry"
                         value={form.alternativePhoneCountry}
                         onChange={(e) =>
@@ -565,7 +566,7 @@ export default function EditProfilePage() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                   <Label>Employment Status</Label>
-                  <Select
+                  <SelectInput
                     name="employmentStatus"
                     value={form.employmentStatus}
                     onChange={handleChange}
@@ -584,7 +585,7 @@ export default function EditProfilePage() {
                 </div>
                 <div>
                   <Label>Industry Sector</Label>
-                  <Select
+                  <SelectInput
                     name="industrySector"
                     value={form.industrySector}
                     onChange={handleChange}
@@ -594,7 +595,7 @@ export default function EditProfilePage() {
                 </div>
                 <div>
                   <Label>Years of Experience</Label>
-                  <Select
+                  <SelectInput
                     name="yearsOfExperience"
                     value={form.yearsOfExperience}
                     onChange={handleChange}
@@ -637,19 +638,20 @@ export default function EditProfilePage() {
                 </div>
                 <div>
                   <Label>State</Label>
-                  <Select
+                  <SelectInput
                     name="state"
                     value={form.state}
                     onChange={handleChange}
                     options={stateOptions}
                     placeholder="Select State"
+                    disabled
                   />
                 </div>
 
                 {/* ── CHANGED: city is now a dropdown backed by the API ── */}
                 <div>
                   <Label>City</Label>
-                  <Select
+                  <SelectInput
                     name="city"
                     value={form.city}
                     onChange={handleChange}
