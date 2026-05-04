@@ -105,7 +105,7 @@ export interface AuthSessionUser {
   employmentStatus?: string;
   occupations?: string[];
   industrySectors?: string[];
-  yearsOfExperience?: number;
+  yearsOfExperience?: string;
   isVolunteer?: boolean;
 
   linkedin?: string;

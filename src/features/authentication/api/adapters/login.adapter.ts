@@ -92,7 +92,8 @@ export function mapCurrentUserResponse(res: any): AuthSessionUser {
     employmentStatus: res.employment_status || undefined,
     occupations: res.occupation ? [res.occupation] : undefined,
     industrySectors: res.industry_sector ? [res.industry_sector] : undefined,
-    yearsOfExperience: safeParseInt(res.years_of_experience),
+    // yearsOfExperience: safeParseInt(res.years_of_experience),
+    yearsOfExperience: res.years_of_experience || undefined,
 
     isClassCoordinator: stringToBoolean(res.is_coordinator),
     isVolunteer: stringToBoolean(res.is_volunteer),

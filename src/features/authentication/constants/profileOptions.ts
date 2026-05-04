@@ -94,11 +94,11 @@ export const areaOptions = [
 
 // ─── Years of Experience ──────────────────────────────────────────────────────
 export const yearsOfExperienceOptions = [
-  { label: 'Less than 1 year', value: 0 },
-  { label: '1 – 3 years', value: 1 },
-  { label: '4 – 6 years', value: 4 },
-  { label: '7 – 10 years', value: 7 },
-  { label: '11 – 15 years', value: 11 },
-  { label: '16 – 20 years', value: 16 },
-  { label: '20+ years', value: 20 },
+  { label: 'Less than 1 year', value: 'Less than 1 year' },
+  { label: '1 – 3 years', value: '1 – 3 years' },
+  { label: '4 – 6 years', value: '4 – 6 years' },
+  { label: '7 – 10 years', value: '7 – 10 years' },
+  { label: '11 – 15 years', value: '11 – 15 years' },
+  { label: '16 – 20 years', value: '16 – 20 years' },
+  { label: '20+ years', value: '20+ years' },
 ] as const;

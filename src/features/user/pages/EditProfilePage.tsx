@@ -76,11 +76,11 @@ interface FormState {
   tiktok: string;
 }
 
-function resolveYearsOfExperience(years: number | undefined): string {
-  if (years == null) return '';
-  const match = [...yearsOfExperienceOptions].reverse().find((o) => o.value <= years);
-  return match ? String(match.value) : String(yearsOfExperienceOptions[0].value);
-}
+// function resolveYearsOfExperience(years: number | undefined): string {
+//   if (years == null) return '';
+//   const match = [...yearsOfExperienceOptions].reverse().find((o) => o.value <= years);
+//   return match ? String(match.value) : String(yearsOfExperienceOptions[0].value);
+// }
 
 function toFormState(user: AuthSessionUser | null | undefined): FormState {
   const whatsappPhone = parseStoredPhoneNumber(user?.whatsappPhone);
@@ -104,7 +104,8 @@ function toFormState(user: AuthSessionUser | null | undefined): FormState {
     employmentStatus: user?.employmentStatus ?? '',
     occupation: user?.occupations?.[0] ?? '',
     industrySector: user?.industrySectors?.[0] ?? '',
-    yearsOfExperience: resolveYearsOfExperience(user?.yearsOfExperience),
+    // yearsOfExperience: resolveYearsOfExperience(user?.yearsOfExperience),
+    yearsOfExperience: user?.yearsOfExperience ?? '',
     company: user?.company ?? '',
     position: user?.position ?? '',
     isVolunteer: user?.isVolunteer ?? false,
@@ -387,7 +388,7 @@ export default function EditProfilePage() {
       employmentStatus: form.employmentStatus || undefined,
       occupations: form.occupation ? [form.occupation] : undefined,
       industrySectors: form.industrySector ? [form.industrySector] : undefined,
-      yearsOfExperience: form.yearsOfExperience ? Number(form.yearsOfExperience) : undefined,
+      yearsOfExperience: form.yearsOfExperience || undefined,
       company: form.company.trim() || undefined,
       position: form.position.trim() || undefined,
       isVolunteer: form.isVolunteer,
