@@ -16,6 +16,7 @@ import {
   industrySectorOptions,
   occupationOptions,
 } from '@/features/authentication/constants/profileOptions';
+import { toast } from '@/shared/components/ui/Toast';
 
 const breadcrumbItems = [
   { label: 'Home', href: ROUTES.HOME },
@@ -135,7 +136,7 @@ export default function UserProfilePage() {
       navigator.share({ title: currentUser?.fullName ?? 'Profile', url }).catch(() => {});
     } else {
       navigator.clipboard.writeText(url).then(() => {
-        // toast handled by ProfileCard internally if needed
+        toast.success('Profile link copied to clipboard!');
       });
     }
   };
@@ -173,29 +174,27 @@ export default function UserProfilePage() {
                   <h3 className="text-sm font-bold text-gray-900 mb-3">Address</h3>
                   <div className="space-y-2 text-sm text-gray-600">
                     {currentUser?.residentialAddress && (
-                      <div className="grid grid-cols-[auto_1fr] gap-x-3">
-                        <span className="text-gray-400 whitespace-nowrap">
-                          Street Number and Name:
-                        </span>
-                        <span>{currentUser.residentialAddress}</span>
+                      <div className="flex flex-col sm:grid sm:grid-cols-[auto_1fr] sm:gap-x-3">
+                        <span className="text-xs text-gray-400">Street Number and Name:</span>
+                        <span className="break-words">{currentUser.residentialAddress}</span>
                       </div>
                     )}
                     {currentUser?.state && (
-                      <div className="grid grid-cols-[auto_1fr] gap-x-3">
+                      <div className="flex flex-col sm:grid sm:grid-cols-[auto_1fr] sm:gap-x-3">
                         <span className="text-gray-400">State:</span>
-                        <span>{currentUser.state}</span>
+                        <span className="break-words">{currentUser.state}</span>
                       </div>
                     )}
                     {currentUser?.city && (
-                      <div className="grid grid-cols-[auto_1fr] gap-x-3">
+                      <div className="flex flex-col sm:grid sm:grid-cols-[auto_1fr] sm:gap-x-3">
                         <span className="text-gray-400">City:</span>
-                        <span>{currentUser.city}</span>
+                        <span className="break-words">{currentUser.city}</span>
                       </div>
                     )}
                     {currentUser?.zone && (
-                      <div className="grid grid-cols-[auto_1fr] gap-x-3">
+                      <div className="flex flex-col sm:grid sm:grid-cols-[auto_1fr] sm:gap-x-3">
                         <span className="text-gray-400">Zone:</span>
-                        <span>{currentUser.zone}</span>
+                        <span className="break-words">{currentUser.zone}</span>
                       </div>
                     )}
                   </div>

@@ -32,6 +32,7 @@ export interface Alumni {
   // ── Location ──────────────────────────────────────────────────────────────
   location: string;
   city?: string;
+  zone?: string;
   area?: string;
   state?: string;
   residentialAddress?: string;

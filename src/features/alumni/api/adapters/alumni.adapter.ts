@@ -122,6 +122,7 @@ export function mapBackendAlumniToFrontend(raw: unknown): Alumni {
 
     city,
     location: city,
+    zone: d.zone_name,
     area: optionalString(d.area),
     state: optionalString(d.state),
     residentialAddress: optionalString(d.residential_address),

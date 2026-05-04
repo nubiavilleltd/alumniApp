@@ -104,12 +104,10 @@ function FieldRow({
   if (value === undefined || value === null || value === '') return null;
 
   return (
-    <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 py-2.5 border-b border-gray-50 last:border-0">
-      <span className="text-sm text-gray-500 whitespace-nowrap min-w-[140px] sm:min-w-[180px]">
-        {label}:
-      </span>
+    <div className="flex flex-col sm:grid sm:grid-cols-[180px_1fr] gap-x-4 gap-y-0.5 py-2.5 border-b border-gray-50 last:border-0">
+      <span className="text-xs sm:text-sm text-gray-400 sm:text-gray-500 shrink-0">{label}:</span>
       <div className="flex items-center gap-2 min-w-0">
-        <span className="text-sm text-gray-700 break-words">{value}</span>
+        <span className="text-sm text-gray-700 break-all sm:break-words">{value}</span>
         {copyable && typeof value === 'string' && <CopyButton value={value} />}
       </div>
     </div>
