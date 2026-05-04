@@ -15,4 +15,5 @@ export interface WelfareZone {
   zone: string; // e.g. "Zone 1", "Zone 5a"
   chapterId: number;
   coordinator: ZoneCoordinator | null;
+  cities: string;
 }
