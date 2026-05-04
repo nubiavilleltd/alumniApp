@@ -14,6 +14,7 @@ import { EVENT_ROUTES } from '../routes';
 import type { Event } from '../types/event.types';
 import { MonthYearPicker } from '@/shared/components/ui/MonthYearPicker';
 import { ROUTES } from '@/shared/constants/routes';
+import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -91,7 +92,7 @@ function CalendarBlock({
       className={`
         w-full text-left rounded-md
         px-1.5 py-1
-        sm:rounded-xl sm:p-2 sm:p-2.5
+        sm:rounded-xl sm:p-2.5
         transition-all duration-200
         hover:brightness-95
       `}
@@ -448,8 +449,8 @@ export function EventsPage() {
 
             {/* Search + create */}
             <div className="flex items-center gap-2">
-              <div className="relative flex-1 sm:w-60">
-                <Icon
+              {/* <div className="relative flex-1 sm:w-60"> */}
+              {/* <Icon
                   icon="mdi:magnify"
                   className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
                 />
@@ -463,8 +464,19 @@ export function EventsPage() {
                   }}
                   placeholder="Search events"
                   className="w-full pl-9 pr-4 py-2 rounded-full border border-gray-200 bg-white text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-300 shadow-sm"
-                />
-              </div>
+                /> */}
+
+              <SearchInput
+                className="flex-1 sm:w-60"
+                value={searchTerm}
+                onValueChange={(v) => {
+                  setSearchTerm(v);
+                  setListCount(LIST_PAGE);
+                  setActiveEventId(null);
+                }}
+                placeholder="Search events"
+              />
+              {/* </div> */}
               {isAdmin && (
                 <button
                   type="button"

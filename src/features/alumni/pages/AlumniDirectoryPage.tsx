@@ -172,7 +172,7 @@ export function AlumniDirectoryPage() {
           <h1 className="text-2xl md:text-3xl font-bold mb-6">Alumnae Directory</h1>
 
           {/* Filters */}
-          <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-4 mb-8">
+          <div className="flex flex-col sm:flex-row items-center gap-4 mb-8">
             <div className="flex-1 w-full sm:max-w-xl">
               <SearchInput
                 value={searchTerm}

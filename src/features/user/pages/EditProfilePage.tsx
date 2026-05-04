@@ -490,6 +490,7 @@ export default function EditProfilePage() {
                         }
                         options={phoneCountryOpts}
                         disabled
+                        className="whitespace-nowrap"
                       />
                     </div>
                     <Input
@@ -519,6 +520,7 @@ export default function EditProfilePage() {
                         }
                         options={phoneCountryOpts}
                         disabled
+                        className="whitespace-nowrap"
                       />
                     </div>
                     <Input
@@ -736,7 +738,7 @@ export default function EditProfilePage() {
                 type="button"
                 onClick={() => navigate(USER_ROUTES.PROFILE)}
                 disabled={isSaving}
-                className="flex-1 sm:flex-none px-6 py-3 rounded-xl border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-50"
+                className="flex-1 sm:flex-none px-6 py-3 rounded-3xl border border-red-400 text-sm font-semibold text-red-600 hover:bg-gray-50 transition-colors disabled:opacity-50"
               >
                 Cancel
               </button>
@@ -744,7 +746,7 @@ export default function EditProfilePage() {
                 type="button"
                 onClick={handleSave}
                 disabled={isSaving}
-                className="flex-1 sm:flex-none px-8 py-3 rounded-xl bg-primary-500 hover:bg-primary-600 text-white text-sm font-semibold flex items-center justify-center gap-2 transition-colors disabled:opacity-60"
+                className="flex-1 sm:flex-none px-8 py-3 rounded-3xl bg-primary-500 hover:bg-primary-600 text-white text-sm font-semibold flex items-center justify-center gap-2 transition-colors disabled:opacity-60"
               >
                 {isSaving ? (
                   <>

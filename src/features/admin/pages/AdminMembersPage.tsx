@@ -33,6 +33,7 @@ import { ADMIN_ROUTES } from '../routes';
 import { useAlumni } from '@/features/alumni/hooks/useAlumni';
 import type { Alumni } from '@/features/alumni/types/alumni.types';
 import { Avatar } from '@/shared/components/ui/Avatar';
+import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 
 const breadcrumbItems = [
   { label: 'Home', href: ROUTES.HOME },
@@ -511,7 +512,7 @@ export function AdminMembersPage() {
           <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6">
             <div className="flex flex-col sm:flex-row gap-4">
               {/* Search */}
-              <div className="flex-1 relative">
+              {/* <div className="flex-1 relative">
                 <Icon
                   icon="mdi:magnify"
                   className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
@@ -523,7 +524,14 @@ export function AdminMembersPage() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 />
-              </div>
+              </div> */}
+
+              <SearchInput
+                placeholder="Search by name or email..."
+                value={searchQuery}
+                onValueChange={setSearchQuery}
+                className="w-full"
+              />
 
               {/* Status Filter */}
               <div className="flex gap-2">
