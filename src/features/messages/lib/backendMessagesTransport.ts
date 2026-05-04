@@ -121,6 +121,71 @@ function normalizeBackendIdentifierValue(value: string) {
   return trimmedValue;
 }
 
+function normalizeRecipientRegistryLookupId(memberId: string) {
+  const trimmedValue = memberId.trim();
+  const normalizedValue = trimmedValue.toLowerCase();
+  const prefixedNumericMatch = normalizedValue.match(/^(?:member|user)[-_ ]?(\d+)$/);
+
+  if (prefixedNumericMatch?.[1]) {
+    return prefixedNumericMatch[1];
+  }
+
+  return trimmedValue;
+}
+
+function getRegisteredRecipientForMemberId(memberId: string) {
+  const exactMatch = getRegisteredMessageRecipient(memberId);
+  if (exactMatch) {
+    return exactMatch;
+  }
+
+  const normalizedLookupId = normalizeRecipientRegistryLookupId(memberId);
+  if (normalizedLookupId !== memberId) {
+    return getRegisteredMessageRecipient(normalizedLookupId);
+  }
+
+  return undefined;
+}
+
+function extractBackendParticipantFullName(rawParticipant: BackendThreadParticipant) {
+  const firstName = String(rawParticipant.first_name ?? '').trim();
+  const lastName = String(rawParticipant.last_name ?? '').trim();
+  const combinedName = `${firstName} ${lastName}`.trim();
+
+  return (
+    String(
+      rawParticipant.fullname ?? rawParticipant.full_name ?? rawParticipant.name ?? combinedName,
+    ).trim() || undefined
+  );
+}
+
+function isPlaceholderParticipantName(value: string, memberId: string) {
+  const normalizedValue = value.trim().toLowerCase();
+  const normalizedMemberId = memberId.trim().toLowerCase();
+
+  if (!normalizedValue) {
+    return true;
+  }
+
+  if (normalizedValue === normalizedMemberId) {
+    return true;
+  }
+
+  if (/^(?:member|user)[-_ ]?\d+$/.test(normalizedValue)) {
+    return true;
+  }
+
+  if (normalizedMemberId && normalizedValue === `member${normalizedMemberId}`) {
+    return true;
+  }
+
+  if (normalizedMemberId && normalizedValue === `user${normalizedMemberId}`) {
+    return true;
+  }
+
+  return normalizedValue === 'unknown' || normalizedValue === 'unknown member';
+}
+
 function deriveInitials(value: string) {
   return (
     value
@@ -205,13 +270,17 @@ function buildParticipantFromBackend(
     '';
   const memberId = String(rawUserId || '');
   const currentUser = getCurrentSessionUser();
-  const recipientRegistryEntry = getRegisteredMessageRecipient(memberId);
-  const backendFullName =
-    String(rawParticipant.fullname ?? rawParticipant.full_name ?? '').trim() || undefined;
+  const recipientRegistryEntry = getRegisteredRecipientForMemberId(memberId);
+  const backendFullName = extractBackendParticipantFullName(rawParticipant);
+  const preferredBackendFullName =
+    backendFullName && !isPlaceholderParticipantName(backendFullName, memberId)
+      ? backendFullName
+      : undefined;
   const fullName =
     (memberId === viewerMemberId ? currentUser?.fullName : undefined) ??
-    backendFullName ??
+    preferredBackendFullName ??
     recipientRegistryEntry?.fullName ??
+    backendFullName ??
     `Member ${memberId}`;
   const firstName = fullName.split(/\s+/)[0] ?? fullName;
   const avatar =

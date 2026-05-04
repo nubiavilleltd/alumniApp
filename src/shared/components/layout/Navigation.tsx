@@ -20,7 +20,6 @@ import { AppLink } from '../ui/AppLink';
 type NavChild = {
   label: string;
   url: string;
-  icon?: string;
 };
 
 type NavItem = NavChild & {
@@ -50,40 +49,35 @@ const primaryNavItems: NavItem[] = [
     label: 'News & Events',
     url: ROUTES.NEWS,
     children: [
-      { label: 'Announcements', url: ROUTES.NEWS, icon: 'mdi:newspaper-variant-outline' },
-      { label: 'Events', url: EVENT_ROUTES.ROOT, icon: 'mdi:calendar-month-outline' },
-      { label: 'Our Projects', url: ROUTES.PROJECTS.ROOT, icon: 'mdi:folder-star-outline' },
+      { label: 'Announcements', url: ROUTES.NEWS },
+      { label: 'Events', url: EVENT_ROUTES.ROOT },
+      { label: 'Our Projects', url: ROUTES.PROJECTS.ROOT },
     ],
   },
   {
     label: 'Marketplace',
     url: MARKETPLACE_ROUTES.ROOT,
     children: [
-      { label: 'Marketplace', url: MARKETPLACE_ROUTES.ROOT, icon: 'mdi:storefront-outline' },
-      { label: 'Job Vacancies', url: ROUTES.JOB_VACANCIES, icon: 'mdi:briefcase-outline' },
+      { label: 'Marketplace', url: MARKETPLACE_ROUTES.ROOT },
+      { label: 'Job Vacancies', url: ROUTES.JOB_VACANCIES },
     ],
   },
 ];
 
 const authenticatedMenuItems: NavChild[] = [
-  { label: 'View Profile', url: USER_ROUTES.PROFILE, icon: 'mdi:account-outline' },
-  { label: 'Dashboard', url: USER_ROUTES.DASHBOARD, icon: 'mdi:view-dashboard-outline' },
-  { label: 'Messaging Center', url: ROUTES.MESSAGES, icon: 'mdi:message-outline' },
-  {
-    label: 'My Registered Events',
-    url: EVENT_ROUTES.MY_EVENTS,
-    icon: 'mdi:calendar-check-outline',
-  },
-  { label: 'My Business', url: MARKETPLACE_ROUTES.MY_BUSINESS, icon: 'mdi:store-cog-outline' },
-  { label: 'Settings', url: USER_ROUTES.SETTINGS, icon: 'mdi:cog-outline' },
+  { label: 'View Profile', url: USER_ROUTES.PROFILE },
+  { label: 'Dashboard', url: USER_ROUTES.DASHBOARD },
+  { label: 'Messaging Center', url: ROUTES.MESSAGES },
+  { label: 'My Registered Events', url: EVENT_ROUTES.MY_EVENTS },
+  { label: 'My Business', url: MARKETPLACE_ROUTES.MY_BUSINESS },
+  { label: 'Settings', url: USER_ROUTES.SETTINGS },
 ];
 
 const navSurfaceClassName =
   'bg-[linear-gradient(106deg,_rgb(var(--color-primary-500))_0%,_#003a5d_92%)]';
 const desktopLinkBaseClassName =
-  'relative no-underline font-bold tracking-[0.1em] text-[#c4d0d9] transition-colors duration-200 hover:text-white';
-const desktopActiveLinkClassName =
-  'text-white after:absolute after:left-0 after:right-0 after:-bottom-[0.45rem] after:h-[2px] after:rounded-full after:bg-white/85';
+  "relative no-underline font-bold tracking-[0.1em] text-[#c4d0d9] transition-colors duration-200 hover:text-white focus-visible:text-white after:pointer-events-none after:absolute after:bottom-[-0.45rem] after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:rounded-full after:bg-white/85 after:content-[''] after:transition-transform after:duration-300 after:ease-out hover:after:scale-x-100 focus-visible:after:scale-x-100";
+const desktopActiveLinkClassName = 'text-white after:scale-x-100';
 const desktopPrimaryLinkClassName = `${desktopLinkBaseClassName} whitespace-nowrap text-[clamp(1.05rem,1.36vw,1.75rem)]`;
 const desktopSecondaryLinkClassName = `${desktopLinkBaseClassName} text-[clamp(0.95rem,1.18vw,1.35rem)]`;
 const desktopPanelClassName =
@@ -132,7 +126,7 @@ function BrandMark({ mobile = false }: { mobile?: boolean }) {
       )}
     >
       <span
-        className="absolute inset-0 -z-10 bg-[url('/navbarImage.png')] bg-cover bg-right bg-no-repeat"
+        className="absolute inset-0 -z-10 bg-[url('/navbarImage.png')] bg-[length:auto_100%] bg-right bg-no-repeat"
         aria-hidden="true"
       />
       <span
@@ -259,12 +253,6 @@ function DesktopDropdown({ item }: { item: NavItem }) {
               )}
               onClick={() => setOpen(false)}
             >
-              {child.icon && (
-                <Icon
-                  icon={child.icon}
-                  className="h-[1.15rem] w-[1.15rem] flex-none text-primary-500"
-                />
-              )}
               <span>{child.label}</span>
             </AppLink>
           ))}
@@ -324,7 +312,6 @@ function UserDropdown({
         {
           label: 'Admin Dashboard',
           url: ADMIN_ROUTES.DASHBOARD,
-          icon: 'mdi:shield-account-outline',
         },
         ...authenticatedMenuItems,
       ]
@@ -362,10 +349,6 @@ function UserDropdown({
               className="flex items-center gap-[0.65rem] px-4 py-[0.8rem] text-left text-[0.92rem] font-bold text-[#4f5864] transition-colors duration-200 hover:bg-primary-50 hover:text-primary-700"
               onClick={() => setOpen(false)}
             >
-              <Icon
-                icon={item.icon ?? 'mdi:circle-outline'}
-                className="h-[1.15rem] w-[1.15rem] flex-none text-primary-500"
-              />
               <span>{item.label}</span>
             </AppLink>
           ))}
@@ -426,7 +409,6 @@ function MobileNavGroup({ item }: { item: NavItem }) {
               isPathActive(pathname, child.url) && 'bg-white/10 text-white',
             )}
           >
-            {child.icon && <Icon icon={child.icon} className="h-[1.15rem] w-[1.15rem] flex-none" />}
             <span>{child.label}</span>
           </AppLink>
         ))}
@@ -497,7 +479,6 @@ export function Navigation() {
         {
           label: 'Admin Dashboard',
           url: ADMIN_ROUTES.DASHBOARD,
-          icon: 'mdi:shield-account-outline',
         },
         ...authenticatedMenuItems,
       ]
@@ -629,10 +610,6 @@ export function Navigation() {
 
               {mobileMenuItems.map((item) => (
                 <AppLink key={item.url} href={item.url} className={mobileLinkClassName}>
-                  <Icon
-                    icon={item.icon ?? 'mdi:circle-outline'}
-                    className="h-[1.15rem] w-[1.15rem] flex-none"
-                  />
                   <span>{item.label}</span>
                 </AppLink>
               ))}

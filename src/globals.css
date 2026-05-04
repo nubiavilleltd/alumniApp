@@ -585,15 +585,16 @@
 .home-event-card {
   overflow: hidden;
   border: 1px solid #eef2f5;
-  border-radius: 1rem;
+  border-radius: 1.25rem;
   background: #ffffff;
   box-shadow: 0 1rem 2rem rgba(7, 17, 22, 0.06);
 }
 
 .home-event-card__image-wrap {
-  aspect-ratio: 16 / 9;
-  max-height: 13.5rem;
+  width: 100%;
+  aspect-ratio: 2 / 1;
   overflow: hidden;
+  border-radius: 1.25rem;
   background: #e9edf1;
 }
 
@@ -602,6 +603,7 @@
   height: 100%;
   object-fit: cover;
   object-position: center;
+  display: block;
 }
 
 .home-event-card__placeholder {
@@ -1476,12 +1478,17 @@ input[type='password']::-webkit-caps-lock-indicator {
   grid-template-columns: 1fr;
   gap: 3rem;
   margin-top: 5rem;
-  align-items: center;
+  align-items: start;
   justify-content: center;
   justify-items: center;
 }
 
 .about-mission__feature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  width: 100%;
   max-width: 23rem;
   text-align: center;
 }
@@ -1498,8 +1505,9 @@ input[type='password']::-webkit-caps-lock-indicator {
 }
 
 .about-mission__icon img {
-  max-width: 2.75rem;
-  max-height: 2.5rem;
+  display: block;
+  width: 2.15rem;
+  height: 2.15rem;
   object-fit: contain;
 }
 
@@ -1673,6 +1681,7 @@ input[type='password']::-webkit-caps-lock-indicator {
 }
 
 .contact-detail__value {
+  display: inline-block;
   max-width: 23rem;
   margin: 0.8rem 0 0;
   color: #4e5d72;
@@ -1680,6 +1689,22 @@ input[type='password']::-webkit-caps-lock-indicator {
   font-weight: 500;
   line-height: 1.35;
   letter-spacing: 0;
+}
+
+.contact-detail__value-link {
+  text-decoration: none;
+  transition:
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.contact-detail__value-link:hover {
+  color: rgb(var(--color-primary-600));
+}
+
+.contact-detail__value-link:focus-visible {
+  outline: none;
+  color: rgb(var(--color-primary-600));
 }
 
 .contact-detail__line {

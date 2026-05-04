@@ -12,7 +12,6 @@ import { useAlumni } from '@/features/alumni/hooks/useAlumni';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 import { isFieldVisible, getPhotoDisplay } from '@/features/alumni/utils/privacyHelpers';
 import { ALUMNI_ROUTES } from '../routes';
-import { ROUTES } from '@/shared/constants/routes';
 import { useStartDirectConversation } from '@/features/messages/hooks/useStartDirectConversation';
 import { Alumni } from '../types/alumni.types';
 
@@ -157,8 +156,25 @@ export function AlumniDirectoryPage() {
 
   async function handleMessage(entry: Alumni) {
     if (!entry.memberId) return;
+
+    const recipientHeadline =
+      entry.position && entry.company
+        ? `${entry.position} at ${entry.company}`
+        : entry.position || entry.occupations?.[0] || `Class of ${entry.graduationYear}`;
+
     setPendingId(entry.memberId);
-    await startDirectConversation({ participantMemberId: entry.memberId });
+    await startDirectConversation({
+      participantMemberId: entry.memberId,
+      recipientProfile: {
+        fullName: entry.name,
+        avatar: entry.photo,
+        headline: recipientHeadline,
+        location: entry.location || entry.city,
+        graduationYear: entry.graduationYear,
+        slug: entry.slug,
+        profileHref: `/alumni/profiles/${entry.memberId}`,
+      },
+    });
     setPendingId(null);
   }
 

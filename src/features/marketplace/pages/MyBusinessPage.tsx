@@ -129,7 +129,6 @@ function MyBusinessCard({
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1 text-primary-500 hover:text-primary-600 text-[11px] truncate"
-              onClick={(e) => e.stopPropagation()}
             >
               <Icon icon="mdi:web" className="w-3 h-3 flex-shrink-0" />
               {business.website}

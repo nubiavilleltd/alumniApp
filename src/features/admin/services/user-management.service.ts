@@ -13,10 +13,7 @@ import { API_ENDPOINTS } from '@/lib/api/endpoints';
 import {
   createAdminActivatePayload,
   createAdminDeactivatePayload,
-  createGetAllUsersPayload,
   createSelfDeactivatePayload,
-  mapBackendUserList,
-  UserAccount,
 } from '../api/adapters/user-management.adapter';
 
 export const userManagementApi = {

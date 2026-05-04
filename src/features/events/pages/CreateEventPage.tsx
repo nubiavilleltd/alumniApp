@@ -36,6 +36,7 @@ import {
   type EventRegistrationFormDraft,
   type EventRegistrationQuestionDraft,
 } from '../components/EventRegistrationFormBuilderModal';
+import { EventRegistrationQuestionField } from '../components/EventRegistrationQuestionField';
 
 type LocalRegistrationFormDraft = {
   localId: string;
@@ -445,55 +446,39 @@ export default function CreateEventPage() {
                   }}
                   className="inline-flex min-h-[3.1rem] items-center justify-center rounded-full border-2 border-primary-500 px-6 text-sm font-semibold text-primary-500 transition-colors hover:bg-primary-50 md:min-h-[3.2rem] md:px-7 md:text-base"
                 >
-                  {registrationFormDrafts.length > 0
-                    ? 'Add another request form'
-                    : 'Yes, request info'}
+                  {registrationFormDrafts.length > 0 ? 'Add another section' : 'Yes, request info'}
                 </button>
               </div>
 
               {registrationFormDrafts.length > 0 ? (
-                <div className="mt-5 grid max-w-4xl gap-4">
+                <div className="mt-6 space-y-5">
                   {registrationFormDrafts.map((item, index) => (
                     <div
                       key={item.localId}
-                      onClick={() => {
-                        setActiveRegistrationFormId(item.localId);
-                        setIsRegistrationBuilderOpen(true);
-                      }}
-                      onKeyDown={(event) => {
-                        if (event.key === 'Enter' || event.key === ' ') {
-                          event.preventDefault();
-                          setActiveRegistrationFormId(item.localId);
-                          setIsRegistrationBuilderOpen(true);
-                        }
-                      }}
-                      role="button"
-                      tabIndex={0}
-                      className="rounded-[1.6rem] border border-primary-100 bg-white px-5 py-4 text-left transition-colors hover:border-primary-300 hover:bg-primary-50/40 focus:outline-none focus:ring-2 focus:ring-primary-300"
+                      className="rounded-[1.6rem] border border-primary-100 bg-white px-4 py-4 shadow-sm sm:px-5 sm:py-5"
                     >
-                      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                        <div>
-                          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-primary-500">
-                            Request Form {index + 1}
-                          </p>
-                          <p className="mt-1 text-base font-semibold text-gray-900">
+                      <div className="flex flex-col gap-3 border-b border-primary-100 pb-4 md:flex-row md:items-start md:justify-between">
+                        <div className="max-w-3xl">
+                          <p className="mt-1 text-lg font-semibold text-gray-900">
                             {item.draft.name}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            {item.draft.questions.length} question
-                            {item.draft.questions.length === 1 ? '' : 's'} ready for this event
                           </p>
                         </div>
 
-                        <div className="flex items-center gap-3 self-start md:self-center">
-                          <span className="inline-flex items-center gap-2 rounded-full border border-primary-200 bg-white px-3 py-1.5 text-sm font-semibold text-primary-500">
-                            <Icon icon="mdi:pencil-outline" className="h-4 w-4" />
-                            Open form
-                          </span>
+                        <div className="flex flex-wrap items-center gap-3 self-start md:self-center">
                           <button
                             type="button"
-                            onClick={(event) => {
-                              event.stopPropagation();
+                            onClick={() => {
+                              setActiveRegistrationFormId(item.localId);
+                              setIsRegistrationBuilderOpen(true);
+                            }}
+                            className="inline-flex items-center gap-2 rounded-full border border-primary-200 bg-white px-3 py-1.5 text-sm font-semibold text-primary-500 transition-colors hover:bg-primary-50"
+                          >
+                            <Icon icon="mdi:pencil-outline" className="h-4 w-4" />
+                            Edit form
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
                               setRegistrationFormDrafts((current) =>
                                 current.filter((draftItem) => draftItem.localId !== item.localId),
                               );
@@ -507,6 +492,17 @@ export default function CreateEventPage() {
                             Remove
                           </button>
                         </div>
+                      </div>
+
+                      <div className="mt-4 space-y-4">
+                        {item.draft.questions.map((question, questionIndex) => (
+                          <EventRegistrationQuestionField
+                            key={question.id}
+                            question={question}
+                            index={questionIndex}
+                            mode="preview"
+                          />
+                        ))}
                       </div>
                     </div>
                   ))}

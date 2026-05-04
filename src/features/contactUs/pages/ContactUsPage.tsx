@@ -2,28 +2,22 @@ import { Icon } from '@iconify/react';
 import { useState, type FormEvent } from 'react';
 import { SEO } from '@/shared/common/SEO';
 import { Button } from '@/shared/components/ui/Button';
+import { AppLink } from '@/shared/components/ui/AppLink';
 import { BaseInput } from '@/shared/components/ui/input/BaseInput';
 import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
 import { useSubmitContactForm } from '@/features/contactUs/hooks/useContactUs';
 import type { Contact } from '@/features/contactUs/types/contact.types';
+import { getSiteConfig } from '@/data/content';
 
-const contactMethods = [
-  {
-    label: 'Find us',
-    valueLines: ['123 Alumni Avenue, Victoria Island', 'Lagos, Nigeria'],
-    icon: 'mdi:map-marker-outline',
-  },
-  {
-    label: 'Call us',
-    valueLines: ['+234 800 000 0000'],
-    icon: 'mdi:phone-outline',
-  },
-  {
-    label: 'Email us',
-    valueLines: ['alumni@fggcowerri.com'],
-    icon: 'mdi:email-outline',
-  },
-];
+function toTelephoneHref(phone: string) {
+  const normalizedPhone = phone.replace(/[^\d+]/g, '');
+  return `tel:${normalizedPhone}`;
+}
+
+function toGoogleMapsHref(addressLines: string[]) {
+  const query = addressLines.filter(Boolean).join(', ').trim();
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+}
 
 const initialFormState: Contact = {
   firstName: '',
@@ -50,6 +44,34 @@ function validateContactForm(form: Contact): ContactFieldErrors {
 }
 
 export function ContactUsPage() {
+  const config = getSiteConfig();
+  const contactConfig = config.contact ?? {};
+  const address = String(contactConfig.address ?? 'Lagos, Nigeria').trim();
+  const phone = String(contactConfig.phone ?? '+234 800 000 0000').trim();
+  const email = String(contactConfig.email ?? 'info@fggcowerrilagos.org').trim();
+  const contactMethods = [
+    {
+      label: 'Find us',
+      valueLines: [address],
+      icon: 'mdi:map-marker-outline',
+      href: toGoogleMapsHref([address]),
+      target: '_blank' as const,
+      rel: 'noreferrer',
+    },
+    {
+      label: 'Call us',
+      valueLines: [phone],
+      icon: 'mdi:phone-outline',
+      href: toTelephoneHref(phone),
+    },
+    {
+      label: 'Email us',
+      valueLines: [email],
+      icon: 'mdi:email-outline',
+      href: `mailto:${email}`,
+    },
+  ];
+
   const submitContactForm = useSubmitContactForm();
   const [form, setForm] = useState<Contact>(initialFormState);
   const [fieldErrors, setFieldErrors] = useState<ContactFieldErrors>({});
@@ -107,13 +129,19 @@ export function ContactUsPage() {
                     </span>
                     <h2 className="contact-detail__label">{method.label}</h2>
                   </div>
-                  <p className="contact-detail__value">
+                  <AppLink
+                    href={method.href}
+                    className="contact-detail__value contact-detail__value-link"
+                    target={method.target}
+                    rel={method.rel}
+                    ariaLabel={`${method.label}: ${method.valueLines.join(', ')}`}
+                  >
                     {method.valueLines.map((line) => (
                       <span key={line} className="contact-detail__line">
                         {line}
                       </span>
                     ))}
-                  </p>
+                  </AppLink>
                 </article>
               ))}
             </div>

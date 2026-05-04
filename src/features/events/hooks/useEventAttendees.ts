@@ -9,7 +9,6 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-
 import type { AttendeeStatus } from '../api/adapters/event-attendees.adapter';
 import { eventAttendeesApi } from '../services/event-attendees.service';
 

@@ -49,7 +49,7 @@ function getDefaultPlaceholder(type: EventQuestionType) {
       return 'Add your answer choices below';
     case 'short_answer':
     default:
-      return 'Enter your answer';
+      return 'Add response';
   }
 }
 
@@ -397,7 +397,7 @@ export function EventRegistrationFormBuilderModal({
               setDraft((current) => ({ ...current, name: event.target.value }));
               setFormError('');
             }}
-            placeholder="Name of Form"
+            placeholder="Section name"
             className="w-full border-0 bg-transparent text-2xl font-medium tracking-tight text-gray-500 outline-none placeholder:text-gray-500 sm:text-4xl"
           />
         </div>

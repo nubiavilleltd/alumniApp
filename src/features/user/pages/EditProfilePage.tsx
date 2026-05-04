@@ -25,6 +25,7 @@ import {
 import {
   phoneCountryOptions,
   type SupportedPhoneCountry,
+  getPhoneCountryOption,
   parseStoredPhoneNumber,
   normalizePhoneNumberForCountry,
   formatOptionalPhoneNumberWithCountryCode,
@@ -132,6 +133,7 @@ function Input({
   onChange,
   placeholder,
   type = 'text',
+  inputMode,
   disabled,
 }: {
   name: string;
@@ -139,6 +141,7 @@ function Input({
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   type?: string;
+  inputMode?: React.HTMLAttributes<HTMLInputElement>['inputMode'];
   disabled?: boolean;
 }) {
   return (
@@ -148,6 +151,7 @@ function Input({
       value={value}
       onChange={onChange}
       placeholder={placeholder}
+      inputMode={inputMode}
       disabled={disabled}
       className="w-full px-4 py-2.5 rounded-3xl border border-gray-200 bg-gray-50 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-400 focus:bg-white transition-all disabled:opacity-60"
     />
@@ -308,6 +312,8 @@ export default function EditProfilePage() {
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const selectedWhatsappPhoneCountry = getPhoneCountryOption(form.whatsappPhoneCountry);
+  const selectedAlternativePhoneCountry = getPhoneCountryOption(form.alternativePhoneCountry);
 
   // Populate form when data arrives
   useEffect(() => {
@@ -318,7 +324,27 @@ export default function EditProfilePage() {
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
-  ) => setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  ) =>
+    setForm((prev) => {
+      if (e.target.name === 'whatsappPhone') {
+        return {
+          ...prev,
+          whatsappPhone: normalizePhoneNumberForCountry(prev.whatsappPhoneCountry, e.target.value),
+        };
+      }
+
+      if (e.target.name === 'alternativePhone') {
+        return {
+          ...prev,
+          alternativePhone: normalizePhoneNumberForCountry(
+            prev.alternativePhoneCountry,
+            e.target.value,
+          ),
+        };
+      }
+
+      return { ...prev, [e.target.name]: e.target.value };
+    });
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -497,7 +523,9 @@ export default function EditProfilePage() {
                       name="whatsappPhone"
                       value={form.whatsappPhone}
                       onChange={handleChange}
-                      placeholder="Phone number"
+                      type="tel"
+                      inputMode="numeric"
+                      placeholder={selectedWhatsappPhoneCountry.placeholder}
                     />
                   </div>
                 </div>
@@ -527,7 +555,9 @@ export default function EditProfilePage() {
                       name="alternativePhone"
                       value={form.alternativePhone}
                       onChange={handleChange}
-                      placeholder="Phone number"
+                      type="tel"
+                      inputMode="numeric"
+                      placeholder={selectedAlternativePhoneCountry.placeholder}
                     />
                   </div>
                 </div>

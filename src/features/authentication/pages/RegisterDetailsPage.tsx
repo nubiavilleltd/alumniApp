@@ -58,7 +58,7 @@ function buildRegisterDefaultValues(
     confirmPassword: savedValues?.confirmPassword ?? '',
     voucherId: savedValues?.voucherId ?? '',
     city: savedValues?.city ?? '',
-    state: savedValues?.state ?? 'Lagos',
+    state: 'Lagos',
     residentialAddress: savedValues?.residentialAddress ?? '',
   };
 }
@@ -112,6 +112,15 @@ export function RegisterDetailsPage() {
   const cityValue = detailForm.watch('city');
   const passwordsMatch = passwordValue.length > 0 && confirmPasswordValue === passwordValue;
   const selectedPhoneCountry = getPhoneCountryOption(phoneCountry);
+
+  useEffect(() => {
+    if (detailForm.getValues('state') !== 'Lagos') {
+      detailForm.setValue('state', 'Lagos', {
+        shouldDirty: false,
+        shouldValidate: true,
+      });
+    }
+  }, [detailForm]);
 
   useEffect(() => {
     const loadVouchers = async () => {
@@ -321,9 +330,9 @@ export function RegisterDetailsPage() {
               {...whatsappRegistration}
             />
           </div>
-          <p className="auth-field-hint auth-field-hint--muted">
+          {/* <p className="auth-field-hint auth-field-hint--muted">
             Enter number without country code
-          </p>
+          </p> */}
         </div>
 
         <TextareaInput
@@ -341,7 +350,7 @@ export function RegisterDetailsPage() {
             id="state"
             required
             options={stateOptions}
-            placeholder="Select your state"
+            placeholder="Lagos"
             error={detailForm.formState.errors.state?.message}
             value={detailForm.watch('state') || 'Lagos'}
             disabled
