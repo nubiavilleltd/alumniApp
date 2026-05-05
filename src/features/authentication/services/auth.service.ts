@@ -79,7 +79,9 @@ export const authApi = {
         API_ENDPOINTS.AUTH.LOGOUT,
         refreshToken ? { refresh_token: refreshToken } : {},
       );
-    } catch {}
+    } catch (error) {
+      console.log('Failed to log out', error);
+    }
   },
 
   /** POST /forgot_password */

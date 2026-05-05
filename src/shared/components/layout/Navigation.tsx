@@ -458,19 +458,39 @@ export function Navigation() {
     };
   }, []);
 
+  // const handleLogout = async () => {
+  //   setIsLoggingOut(true);
+  //   if (authenticatedUser) {
+  //     try {
+  //       await authApi.logout();
+  //     } catch(error) {
+  //       /* Always clear local auth state even if the server session has expired. */
+  //       console.log("Failed to log out in handleLogout", error)
+  //     }
+  //   }
+  //   clearTokens();
+  //   clearIdentity();
+  //   setMobileOpen(false);
+  //   console.log("redirecting ...home")
+  //   navigate(ROUTES.HOME, { replace: true });
+  //   setIsLoggingOut(false);
+  // };
+
   const handleLogout = async () => {
     setIsLoggingOut(true);
     if (authenticatedUser) {
       try {
         await authApi.logout();
-      } catch {
-        /* Always clear local auth state even if the server session has expired. */
+      } catch (error) {
+        console.log('Failed to log out in handleLogout', error);
       }
     }
+    // Navigate first so the current ProtectedRoute unmounts
+    // before we clear auth state — prevents the spurious /login redirect
+    navigate(ROUTES.HOME, { replace: true });
     clearTokens();
     clearIdentity();
     setMobileOpen(false);
-    navigate(ROUTES.HOME, { replace: true });
     setIsLoggingOut(false);
   };
 
