@@ -52,7 +52,11 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: a
   const occupation = entry.position || entry.occupations?.[0] || '';
 
   return (
-    <div className="relative rounded-2xl overflow-hidden shadow-md group cursor-pointer aspect-[3/4] sm:aspect-[4/5] lg:aspect-[3/4]">
+    // <div className="relative rounded-2xl overflow-hidden shadow-md group cursor-pointer aspect-[3/4] sm:aspect-[4/5] lg:aspect-[3/4]">
+    <div
+      className="relative rounded-2xl overflow-hidden shadow-md group cursor-pointer 
+  aspect-[4/5] sm:aspect-[4/5] lg:aspect-[3/4]"
+    >
       {/* Image */}
       <div className="absolute inset-0">
         {displayPhoto ? (
@@ -75,8 +79,10 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: a
           {' '}
           <p className="text-white font-semibold text-sm truncate">{entry.name}</p>
           <p className="text-white/90 text-xs font-semibold">{classLabel}</p>
-          {occupation && (
+          {occupation ? (
             <p className="text-white/90 text-xs truncate font-semibold">{occupation}</p>
+          ) : (
+            <p className="text-white/90 text-xs truncate font-semibold">&nbsp;</p>
           )}
         </div>
 
@@ -91,6 +97,7 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: a
           <button
             onClick={() => onMessageClick(entry)}
             disabled={!entry.memberId || isOwnProfile || isMessagePending}
+            title={isOwnProfile ? 'You cannot message yourself' : ''}
             className="flex-1 bg-white text-primary-600 text-xs py-1.5 rounded-full disabled:opacity-50"
           >
             {isMessagePending ? 'Opening…' : 'Send Message'}
