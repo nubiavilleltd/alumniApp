@@ -20,6 +20,8 @@ import { ProjectCard, ProjectCardSkeleton } from '../components/ProjectCard';
 import { ProjectFormModal } from '../components/ProjectFormModal';
 import type { Project } from '../types/project.types';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
+import { Link } from 'react-router-dom';
+import { ROUTES } from '@/shared/constants/routes';
 
 // ─── Responsive items per page (mirrors AlumniDirectoryPage) ─────────────────
 
@@ -128,6 +130,20 @@ export default function ProjectsPage() {
         <div className="container-custom mx-auto px-4">
           {/* Header */}
           {/* <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6"> */}
+          <div className="flex flex-wrap justify-end items-center gap-3 mb-7">
+            <Link
+              to={ROUTES.NEWS}
+              className="flex-1 sm:flex-none text-center border border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white font-semibold text-sm px-5 py-2.5 rounded-full transition-colors whitespace-nowrap"
+            >
+              Go to Announcements
+            </Link>
+            <Link
+              to={ROUTES.EVENTS.ROOT}
+              className="flex-1 sm:flex-none text-center border border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white font-semibold text-sm px-5 py-2.5 rounded-full transition-colors whitespace-nowrap"
+            >
+              Go to Events
+            </Link>
+          </div>
           <div className="flex justify-between items-center gap-4 mb-6">
             {/* Text */}
             <div className="max-w-2xl">
@@ -168,7 +184,7 @@ export default function ProjectsPage() {
               <SearchInput
                 value={searchTerm}
                 onValueChange={resetFilters(setSearchTerm)}
-                placeholder="Search here"
+                placeholder="Search here..."
               />
             </div>
             <div className="w-full sm:w-auto">
