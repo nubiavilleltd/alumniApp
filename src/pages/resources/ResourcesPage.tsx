@@ -6,8 +6,8 @@
 import { Icon } from '@iconify/react';
 import { SEO } from '@/shared/common/SEO';
 import { DonationButton } from '@/shared/components/ui/DonationButton';
-import { Link } from 'react-router-dom';
 import { ROUTES } from '@/shared/constants/routes';
+import { AppLink } from '@/shared/components/ui/AppLink';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -144,7 +144,7 @@ function ResourceCard({ category }: { category: ResourceCategory }) {
       <div className="space-y-4">
         {category.links.map((link, i) => (
           <div key={i} className="space-y-1">
-            {link.label ? (
+            {/* {link.label ? (
               link.href ? (
                 <Link
                   to={link.href}
@@ -157,6 +157,31 @@ function ResourceCard({ category }: { category: ResourceCategory }) {
                     <Icon icon="mdi:open-in-new" className="w-3.5 h-3.5 flex-shrink-0" />
                   )}
                 </Link>
+              ) : (
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-1.5 text-primary-500 hover:text-primary-600 font-semibold text-sm transition-colors text-left"
+                >
+                  {link.label}
+                </button>
+              )
+            ) : null} */}
+
+            {link.label ? (
+              link.href ? (
+                <AppLink
+                  href={link.href}
+                  target={link.external ? '_blank' : undefined}
+                  rel={link.external ? 'noopener noreferrer' : undefined}
+                  className="inline-flex items-center gap-1.5 text-primary-500 hover:text-primary-600 font-semibold text-sm transition-colors"
+                  endAdornment={
+                    link.external ? (
+                      <Icon icon="mdi:open-in-new" className="w-3.5 h-3.5 flex-shrink-0" />
+                    ) : null
+                  }
+                >
+                  {link.label}
+                </AppLink>
               ) : (
                 <button
                   type="button"
