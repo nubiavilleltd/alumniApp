@@ -1,4 +1,4 @@
-import { useMemo, useState, type FormEvent } from 'react';
+import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react';
 import { Icon } from '@iconify/react';
 import { SEO } from '@/shared/common/SEO';
 import { Button } from '@/shared/components/ui/Button';
@@ -14,7 +14,7 @@ import { useIdentityStore } from '@/features/authentication/stores/useIdentitySt
 import { useTokenStore } from '@/features/authentication/stores/useTokenStore';
 import { useCreateVacancy } from '../hooks/useCreateVacancy';
 import { useJobVacancies } from '../hooks/useJobVacancies';
-import { useDeleteVacancy } from '../hooks/useManageVacancy';
+import { useDeleteVacancy, useUpdateVacancy } from '../hooks/useManageVacancy';
 import type { JobVacancyViewModel } from '../api/adapters';
 import {
   APPLICATION_TYPE_OPTIONS,
@@ -30,7 +30,7 @@ import {
   type WorkplaceType,
 } from '../types/jobVacancies.types';
 
-type JobCardTone = 'mint' | 'rose' | 'slate' | 'lavender' | 'sky' | 'green';
+export type JobCardTone = 'mint' | 'rose' | 'slate' | 'lavender' | 'sky' | 'green';
 
 type JobFormState = {
   title: string;
@@ -76,6 +76,56 @@ const initialJobFormState: JobFormState = {
   applicationDestination: '',
 };
 
+function getInitialJobFormState(): JobFormState {
+  return {
+    ...initialJobFormState,
+    tags: [],
+  };
+}
+
+function isVacancyCurrency(value: string): value is VacancyCurrency {
+  return CURRENCY_OPTIONS.some((option) => option.value === value);
+}
+
+function getDateInputValue(value: string) {
+  if (/^\d{4}-\d{2}-\d{2}/.test(value)) return value.slice(0, 10);
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+
+  return date.toISOString().slice(0, 10);
+}
+
+function getSalaryFormValue(value: string) {
+  const numericValue = value.replace(/[^\d.]/g, '');
+
+  return numericValue || value;
+}
+
+function jobToFormState(job?: JobVacancyViewModel | null): JobFormState {
+  if (!job) return getInitialJobFormState();
+
+  return {
+    title: job.title,
+    companyName: job.companyName,
+    jobType: job.jobType,
+    workplaceType: job.workplaceType,
+    level: job.levelOfExpertise,
+    location: job.location,
+    salary: getSalaryFormValue(job.salary),
+    currency: isVacancyCurrency(job.currency) ? job.currency : 'NGN',
+    deadline: getDateInputValue(job.postedAt),
+    tags: [...job.tags],
+    tagDraft: '',
+    aboutRole: job.aboutRole,
+    responsibilities: job.responsibilities,
+    requirements: job.requirements,
+    applicationMode: job.applicationMode,
+    applicationDestination:
+      job.applicationMode === 'email' ? (job.applicationEmail ?? '') : (job.applicationUrl ?? ''),
+  };
+}
+
 function formatJobDate(value: string) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
@@ -112,6 +162,20 @@ function formatMoneyAmount(
 
 function getSalaryDisplay(job: JobVacancyViewModel) {
   return formatMoneyAmount(job.salary, job.currency, job.salary);
+}
+
+function getOptionLabel<T extends string>(options: { label: string; value: T }[], value?: T) {
+  if (!value) return '';
+
+  return options.find((option) => option.value === value)?.label ?? value;
+}
+
+function getJobPillLabels(job: JobVacancyViewModel) {
+  return [
+    getOptionLabel(JOB_TYPE_OPTIONS, job.jobType),
+    getOptionLabel(LEVEL_OF_EXPERTISE_OPTIONS, job.levelOfExpertise),
+    getOptionLabel(WORKPLACE_TYPE_OPTIONS, job.workplaceType),
+  ].filter(Boolean);
 }
 
 function getTodayDateInputValue() {
@@ -193,7 +257,7 @@ function validateJobForm(form: JobFormState): JobFormErrors {
   return errors;
 }
 
-function getTone(index: number): JobCardTone {
+export function getTone(index: number): JobCardTone {
   return jobCardTones[index % jobCardTones.length];
 }
 
@@ -293,15 +357,19 @@ function KeywordInput({
   );
 }
 
-function JobCard({
+export function JobCard({
   job,
   tone,
   onDetails,
+  actions,
 }: {
   job: JobVacancyViewModel;
   tone: JobCardTone;
   onDetails: (job: JobVacancyViewModel) => void;
+  actions?: ReactNode;
 }) {
+  const pillLabels = getJobPillLabels(job);
+
   return (
     <article className="job-card">
       <div className={`job-card__panel job-card__panel--${tone}`}>
@@ -313,11 +381,9 @@ function JobCard({
         <h2 className="job-card__title">{job.title}</h2>
 
         <div className="job-card__tags">
-          {job.tags.length > 0 ? (
-            job.tags.map((tag) => <span key={tag}>{tag}</span>)
-          ) : (
-            <span>Open role</span>
-          )}
+          {pillLabels.map((label) => (
+            <span key={label}>{label}</span>
+          ))}
         </div>
       </div>
 
@@ -327,25 +393,33 @@ function JobCard({
           <p className="job-card__location">{job.location}</p>
         </div>
 
-        <button type="button" className="job-card__details" onClick={() => onDetails(job)}>
-          Details
-        </button>
+        <div className="job-card__actions">
+          <button type="button" className="job-card__details" onClick={() => onDetails(job)}>
+            Details
+          </button>
+          {actions}
+        </div>
       </div>
     </article>
   );
 }
 
-function JobDetailsModal({
+export function JobDetailsModal({
   job,
   onClose,
+  canEdit = false,
+  onEdit,
   canDelete,
   onDelete,
 }: {
   job: JobVacancyViewModel;
   onClose: () => void;
+  canEdit?: boolean;
+  onEdit?: () => void;
   canDelete: boolean;
   onDelete: () => void;
 }) {
+  const pillLabels = getJobPillLabels(job);
   const applicationHref =
     job.applicationMode === 'email'
       ? `mailto:${job.applicationEmail ?? ''}`
@@ -372,7 +446,9 @@ function JobDetailsModal({
           <p>{job.companyName}</p>
           <h2 id="job-details-title">{job.title}</h2>
           <div className="jobs-detail-modal__tags">
-            {job.tags.length > 0 ? job.tags.map((tag) => <span key={tag}>{tag}</span>) : null}
+            {pillLabels.map((label) => (
+              <span key={label}>{label}</span>
+            ))}
           </div>
         </div>
 
@@ -425,6 +501,16 @@ function JobDetailsModal({
         </div>
 
         <div className="mt-8 flex flex-wrap items-center justify-end gap-3">
+          {canEdit && onEdit ? (
+            <button
+              type="button"
+              onClick={onEdit}
+              className="inline-flex items-center gap-2 rounded-full border border-primary-200 px-4 py-2 text-sm font-semibold text-primary-600 hover:bg-primary-50"
+            >
+              <Icon icon="mdi:pencil-outline" className="h-4 w-4" />
+              Edit Vacancy
+            </button>
+          ) : null}
           {canDelete ? (
             <button
               type="button"
@@ -444,22 +530,37 @@ function JobDetailsModal({
   );
 }
 
-function PostJobModal({
+export function PostJobModal({
   chapterId,
+  editData,
   onClose,
   onSubmitted,
 }: {
   chapterId?: string;
+  editData?: JobVacancyViewModel | null;
   onClose: () => void;
   onSubmitted: () => void;
 }) {
+  const isEditing = Boolean(editData);
   const createVacancy = useCreateVacancy();
-  const [form, setForm] = useState<JobFormState>(initialJobFormState);
+  const updateVacancy = useUpdateVacancy();
+  const [form, setForm] = useState<JobFormState>(() => jobToFormState(editData));
   const [fieldErrors, setFieldErrors] = useState<JobFormErrors>({});
   const [formError, setFormError] = useState('');
   const [flyerFile, setFlyerFile] = useState<File | null>(null);
-  const [flyerPreviews, setFlyerPreviews] = useState<string[]>([]);
+  const [flyerPreviews, setFlyerPreviews] = useState<string[]>(
+    editData?.flyer ? [editData.flyer] : [],
+  );
   const minDeadline = getTodayDateInputValue();
+  const isSubmitting = createVacancy.isPending || updateVacancy.isPending;
+
+  useEffect(() => {
+    setForm(jobToFormState(editData));
+    setFieldErrors({});
+    setFormError('');
+    setFlyerFile(null);
+    setFlyerPreviews(editData?.flyer ? [editData.flyer] : []);
+  }, [editData]);
 
   const handleFieldChange = <K extends keyof JobFormState>(field: K, value: JobFormState[K]) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -566,15 +667,24 @@ function PostJobModal({
       application_link:
         form.applicationMode === 'link' ? form.applicationDestination.trim() : undefined,
       chapter_id: chapterId,
-      flyer: flyerFile,
+      ...(flyerFile ? { flyer: flyerFile } : {}),
     };
 
     try {
-      await createVacancy.mutateAsync(payload);
-      toast.success('Job vacancy posted successfully.');
+      if (isEditing && editData) {
+        await updateVacancy.mutateAsync({ id: editData.id, ...payload });
+        toast.success('Job vacancy updated successfully.');
+      } else {
+        await createVacancy.mutateAsync(payload);
+        toast.success('Job vacancy posted successfully.');
+      }
       onSubmitted();
     } catch (error: any) {
-      const message = error?.message ?? 'Unable to post this job vacancy right now.';
+      const message =
+        error?.message ??
+        (isEditing
+          ? 'Unable to update this job vacancy right now.'
+          : 'Unable to post this job vacancy right now.');
       setFormError(message);
       toast.fromError(error);
     }
@@ -595,7 +705,7 @@ function PostJobModal({
 
         <form className="jobs-post-form" onSubmit={handleSubmit}>
           <h2 id="post-job-title" className="sr-only">
-            Post a Job
+            {isEditing ? 'Edit Job' : 'Post a Job'}
           </h2>
 
           <div className="jobs-post-form__grid">
@@ -607,7 +717,7 @@ function PostJobModal({
               placeholder="Enter the job title"
               error={fieldErrors.title}
               required
-              disabled={createVacancy.isPending}
+              disabled={isSubmitting}
             />
             <BaseInput
               label="Company Name"
@@ -617,7 +727,7 @@ function PostJobModal({
               placeholder="Enter the company name"
               error={fieldErrors.companyName}
               required
-              disabled={createVacancy.isPending}
+              disabled={isSubmitting}
             />
             <SelectInput
               label="Job Type"
@@ -628,7 +738,7 @@ function PostJobModal({
               options={JOB_TYPE_OPTIONS}
               error={fieldErrors.jobType}
               required
-              disabled={createVacancy.isPending}
+              disabled={isSubmitting}
             />
             <SelectInput
               label="Workplace Type"
@@ -641,7 +751,7 @@ function PostJobModal({
               options={WORKPLACE_TYPE_OPTIONS}
               error={fieldErrors.workplaceType}
               required
-              disabled={createVacancy.isPending}
+              disabled={isSubmitting}
             />
             <SelectInput
               label="Level of Expertise"
@@ -654,7 +764,7 @@ function PostJobModal({
               options={LEVEL_OF_EXPERTISE_OPTIONS}
               error={fieldErrors.level}
               required
-              disabled={createVacancy.isPending}
+              disabled={isSubmitting}
             />
             <BaseInput
               label="Location (City)"
@@ -664,7 +774,7 @@ function PostJobModal({
               placeholder="Enter the location of the job"
               error={fieldErrors.location}
               required
-              disabled={createVacancy.isPending}
+              disabled={isSubmitting}
             />
             <BaseInput
               label="Salary"
@@ -679,7 +789,7 @@ function PostJobModal({
               }
               error={fieldErrors.salary}
               required
-              disabled={createVacancy.isPending}
+              disabled={isSubmitting}
             />
             <SelectInput
               label="Currency"
@@ -689,7 +799,7 @@ function PostJobModal({
                 handleFieldChange('currency', event.target.value as VacancyCurrency)
               }
               options={CURRENCY_OPTIONS}
-              disabled={createVacancy.isPending}
+              disabled={isSubmitting}
             />
             <DatePicker
               label="Application Deadline"
@@ -700,7 +810,7 @@ function PostJobModal({
               placeholder="Select the application deadline"
               error={fieldErrors.deadline}
               required
-              disabled={createVacancy.isPending}
+              disabled={isSubmitting}
             />
           </div>
 
@@ -708,7 +818,7 @@ function PostJobModal({
             tags={form.tags}
             draft={form.tagDraft}
             error={fieldErrors.tags}
-            disabled={createVacancy.isPending}
+            disabled={isSubmitting}
             onDraftChange={(value) => {
               handleFieldChange('tagDraft', value);
               if (fieldErrors.tags) {
@@ -730,7 +840,7 @@ function PostJobModal({
             rows={5}
             error={fieldErrors.aboutRole}
             required
-            disabled={createVacancy.isPending}
+            disabled={isSubmitting}
           />
 
           <TextareaInput
@@ -743,7 +853,7 @@ function PostJobModal({
             rows={5}
             error={fieldErrors.responsibilities}
             required
-            disabled={createVacancy.isPending}
+            disabled={isSubmitting}
           />
 
           <TextareaInput
@@ -756,7 +866,7 @@ function PostJobModal({
             rows={5}
             error={fieldErrors.requirements}
             required
-            disabled={createVacancy.isPending}
+            disabled={isSubmitting}
           />
 
           <div className="jobs-post-form__application">
@@ -770,7 +880,7 @@ function PostJobModal({
                     value={option.value}
                     checked={form.applicationMode === option.value}
                     onChange={() => handleFieldChange('applicationMode', option.value)}
-                    disabled={createVacancy.isPending}
+                    disabled={isSubmitting}
                   />
                   <span>{option.label === 'Link' ? 'Job Application Link' : option.label}</span>
                 </label>
@@ -790,7 +900,7 @@ function PostJobModal({
               }
               error={fieldErrors.applicationDestination}
               required
-              disabled={createVacancy.isPending}
+              disabled={isSubmitting}
             />
           </div>
 
@@ -808,13 +918,8 @@ function PostJobModal({
             <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{formError}</div>
           ) : null}
 
-          <Button
-            type="submit"
-            size="lg"
-            className="jobs-post-form__submit"
-            loading={createVacancy.isPending}
-          >
-            Submit
+          <Button type="submit" size="lg" className="jobs-post-form__submit" loading={isSubmitting}>
+            {isEditing ? 'Update Job' : 'Submit'}
           </Button>
         </form>
       </section>
@@ -822,7 +927,7 @@ function PostJobModal({
   );
 }
 
-function JobsLoadingState() {
+export function JobsLoadingState() {
   return (
     <div className="jobs-grid">
       {Array.from({ length: 6 }).map((_, index) => (

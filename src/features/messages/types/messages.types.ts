@@ -82,6 +82,8 @@ export interface MessageThreadSummary {
   lastActivityAt: string;
   lastMessagePreview: string;
   lastMessageSenderName?: string;
+  lastMessageStatus?: MessageDeliveryStatus;
+  lastMessageIsOwn?: boolean;
   presence?: MessagePresence;
   memberCount: number;
   participants: MessageParticipant[];

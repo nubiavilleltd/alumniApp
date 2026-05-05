@@ -37,6 +37,7 @@ import {
 import { getRegisteredMessageRecipient } from './messageRecipientRegistry';
 import type {
   MessageAttachment,
+  MessageDeliveryStatus,
   MessageParticipant,
   MessageThreadCategory,
   MessageThreadDetail,
@@ -212,6 +213,27 @@ function normalizeThreadCategory(value: unknown): MessageThreadCategory {
 
 function normalizeThreadType(value: unknown): MessageThreadSummary['type'] {
   return value === 'group' ? 'group' : 'direct';
+}
+
+function normalizeDeliveryStatus(value: unknown): MessageDeliveryStatus | undefined {
+  const normalizedValue = String(value ?? '')
+    .trim()
+    .toLowerCase();
+
+  if (
+    normalizedValue === 'sending' ||
+    normalizedValue === 'sent' ||
+    normalizedValue === 'delivered' ||
+    normalizedValue === 'seen' ||
+    normalizedValue === 'failed'
+  ) {
+    return normalizedValue;
+  }
+
+  if (normalizedValue === 'read') return 'seen';
+  if (normalizedValue === 'received') return 'delivered';
+
+  return undefined;
 }
 
 function normalizeParticipantRole(value: unknown): MessageParticipant['roleInThread'] {
@@ -528,6 +550,19 @@ function buildLastMessagePreview(rawLastMessage: BackendMessageLike | null | und
   return 'No messages yet.';
 }
 
+function getBackendMessageSenderMemberId(rawMessage: BackendMessageLike | null | undefined) {
+  if (!rawMessage) return '';
+
+  return String(
+    rawMessage.sender_member_id ??
+      rawMessage.sender_id ??
+      rawMessage.sender_user_id ??
+      rawMessage.user_id ??
+      rawMessage.member_id ??
+      '',
+  ).trim();
+}
+
 function buildThreadSummaryFromBackend(params: {
   rawThread: BackendThreadLike;
   viewerMemberId: string;
@@ -560,6 +595,35 @@ function buildThreadSummaryFromBackend(params: {
   const lastMessagePreview =
     String(params.rawThread.last_message_preview ?? '').trim() ||
     buildLastMessagePreview(lastMessage);
+  const lastMessageSenderMemberId =
+    getBackendMessageSenderMemberId(lastMessage) ||
+    String(
+      params.rawThread.last_message_sender_member_id ??
+        params.rawThread.last_message_sender_id ??
+        params.rawThread.last_message_sender_user_id ??
+        '',
+    ).trim();
+  const lastMessageIsOwn =
+    Boolean(lastMessageSenderMemberId) && lastMessageSenderMemberId === params.viewerMemberId;
+  const explicitLastMessageStatus = normalizeDeliveryStatus(
+    params.rawThread.last_message_status ??
+      params.rawThread.last_message_delivery_status ??
+      lastMessage?.status ??
+      lastMessage?.delivery_status ??
+      lastMessage?.message_status,
+  );
+  const lastMessageStatus = lastMessageIsOwn
+    ? (explicitLastMessageStatus ??
+      (lastMessage
+        ? deriveOutgoingMessageStatus({
+            rawMessage: lastMessage,
+            rawMessages: [lastMessage],
+            participants: participantsWithViewer,
+            viewerMemberId: params.viewerMemberId,
+            threadType: type,
+          })
+        : 'sent'))
+    : undefined;
 
   return {
     id: String(
@@ -600,6 +664,8 @@ function buildThreadSummaryFromBackend(params: {
           (typeof lastMessage?.sender_name === 'string' ? lastMessage.sender_name : '') ??
           '',
       ).trim() || undefined,
+    lastMessageStatus,
+    lastMessageIsOwn,
     presence: undefined,
     memberCount: participantsWithViewer.length,
     participants: participantsWithViewer,
@@ -623,14 +689,7 @@ function deriveOutgoingMessageStatus(params: {
   viewerMemberId: string;
   threadType: MessageThreadSummary['type'];
 }) {
-  const senderMemberId = String(
-    params.rawMessage.sender_member_id ??
-      params.rawMessage.sender_id ??
-      params.rawMessage.sender_user_id ??
-      params.rawMessage.user_id ??
-      params.rawMessage.member_id ??
-      '',
-  );
+  const senderMemberId = getBackendMessageSenderMemberId(params.rawMessage);
 
   if (senderMemberId !== params.viewerMemberId) {
     return 'seen' as const;
@@ -675,14 +734,7 @@ function buildMessageItemsFromBackend(params: {
 }) {
   return sortMessagesChronologically(
     params.rawMessages.map((rawMessage) => {
-      const senderMemberId = String(
-        rawMessage.sender_member_id ??
-          rawMessage.sender_id ??
-          rawMessage.sender_user_id ??
-          rawMessage.user_id ??
-          rawMessage.member_id ??
-          '',
-      );
+      const senderMemberId = getBackendMessageSenderMemberId(rawMessage);
       const sender =
         params.participants.find((participant) => participant.memberId === senderMemberId) ?? null;
       const body = String(rawMessage.message ?? rawMessage.body ?? '').trim();

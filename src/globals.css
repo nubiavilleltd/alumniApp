@@ -1881,6 +1881,38 @@ input[type='password']::-webkit-caps-lock-indicator {
   line-height: 1;
 }
 
+.job-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.job-card__mini-action {
+  min-height: 2.25rem;
+  border: 1px solid #c8dceb;
+  border-radius: 999px;
+  background: #ffffff;
+  padding: 0.35rem 0.85rem;
+  color: rgb(var(--color-primary-600));
+  font-size: 0.8rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.job-card__mini-action:hover {
+  background: rgb(var(--color-primary-50));
+}
+
+.job-card__mini-action--danger {
+  border-color: #f2b8b5;
+  color: #c81e1e;
+}
+
+.job-card__mini-action--danger:hover {
+  background: #fef2f2;
+}
+
 .job-card__details:hover,
 .jobs-page__post-button:hover,
 .jobs-post-form__submit:hover {

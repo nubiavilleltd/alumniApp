@@ -54,6 +54,7 @@ import {
   DraftComposerAttachments,
   GroupParticipantsModal,
   ImageAttachmentLightbox,
+  MessageDeliveryIndicator,
   MessageAttachments,
   ReplyPreviewCard,
   ThreadAvatar,
@@ -65,7 +66,6 @@ import {
   buildOptimisticMessage,
   buildReplyPreviewFromMessage,
   createClientGeneratedMessageId,
-  deliveryLabel,
   formatConversationDay,
   formatMemberCount,
   formatMessageTime,
@@ -1077,6 +1077,27 @@ export function MessagesPage() {
     !voiceRecordingBusy &&
     (draftMessage.trim().length > 0 || draftAttachments.length > 0);
 
+  function getSidebarDeliveryState(thread: MessageThreadSummary) {
+    if (activeThreadWithOptimisticMessages?.id === thread.id) {
+      const lastMessage =
+        activeThreadWithOptimisticMessages.messages[
+          activeThreadWithOptimisticMessages.messages.length - 1
+        ];
+
+      if (lastMessage) {
+        return {
+          isOwn: lastMessage.isOwn,
+          status: lastMessage.status,
+        };
+      }
+    }
+
+    return {
+      isOwn: Boolean(thread.lastMessageIsOwn),
+      status: thread.lastMessageStatus,
+    };
+  }
+
   return (
     <>
       <SEO
@@ -1201,6 +1222,7 @@ export function MessagesPage() {
                   <div className="py-1">
                     {visibleThreads.map((thread) => {
                       const isActive = activeThreadId === thread.id;
+                      const deliveryState = getSidebarDeliveryState(thread);
 
                       return (
                         <button
@@ -1233,9 +1255,17 @@ export function MessagesPage() {
                               </div>
 
                               <div className="mt-0.5 flex items-center justify-between gap-2">
-                                <p className="line-clamp-1 text-sm text-gray-500">
-                                  {getThreadPreview(thread)}
-                                </p>
+                                <div className="flex min-w-0 flex-1 items-center gap-1.5">
+                                  {deliveryState.isOwn && deliveryState.status ? (
+                                    <MessageDeliveryIndicator
+                                      status={deliveryState.status}
+                                      className="shrink-0"
+                                    />
+                                  ) : null}
+                                  <p className="line-clamp-1 min-w-0 flex-1 text-sm text-gray-500">
+                                    {getThreadPreview(thread)}
+                                  </p>
+                                </div>
                                 {thread.unreadCount > 0 ? (
                                   <span className="flex-shrink-0 inline-flex min-w-5 items-center justify-center rounded-full bg-blue-600 px-1.5 py-0.5 text-[11px] font-semibold text-white">
                                     {thread.unreadCount}
@@ -1321,29 +1351,30 @@ export function MessagesPage() {
                         {activeThreadWithOptimisticMessages.messages.map((message, index) => {
                           const previousMessage =
                             activeThreadWithOptimisticMessages.messages[index - 1];
+
+                          const currentDate = new Date(message.createdAt);
+                          const previousDate = previousMessage
+                            ? new Date(previousMessage.createdAt)
+                            : null;
+
                           const showDayDivider =
                             !previousMessage ||
-                            new Date(previousMessage.createdAt).toDateString() !==
-                              new Date(message.createdAt).toDateString();
-                          const showSenderName =
-                            activeThreadWithOptimisticMessages.type === 'group' &&
-                            !message.isOwn &&
-                            (!previousMessage ||
-                              previousMessage.senderMemberId !== message.senderMemberId ||
-                              showDayDivider);
+                            previousDate?.toDateString() !== currentDate.toDateString();
 
-                          // Group messages by sender: show timestamp label above first in a cluster
-                          const isFirstInCluster =
+                          const currentMinuteKey = `${currentDate.getFullYear()}-${currentDate.getMonth()}-${currentDate.getDate()}-${currentDate.getHours()}-${currentDate.getMinutes()}`;
+
+                          const previousMinuteKey = previousDate
+                            ? `${previousDate.getFullYear()}-${previousDate.getMonth()}-${previousDate.getDate()}-${previousDate.getHours()}-${previousDate.getMinutes()}`
+                            : null;
+
+                          const showTimestampHeader =
                             !previousMessage ||
-                            previousMessage.senderMemberId !== message.senderMemberId ||
                             showDayDivider ||
-                            new Date(message.createdAt).getTime() -
-                              new Date(previousMessage.createdAt).getTime() >
-                              5 * 60 * 1000;
+                            previousMessage.senderMemberId !== message.senderMemberId ||
+                            previousMinuteKey !== currentMinuteKey;
 
                           return (
                             <Fragment key={message.id}>
-                              {/* Day divider — simple centered text like Figma */}
                               {showDayDivider ? (
                                 <div className="py-4 text-center">
                                   <span className="text-xs text-gray-400">
@@ -1352,15 +1383,23 @@ export function MessagesPage() {
                                 </div>
                               ) : null}
 
-                              {/* Timestamp above cluster — aligned by sender side */}
-                              {isFirstInCluster && !showDayDivider ? (
+                              {showTimestampHeader ? (
                                 <div
-                                  className={`pt-3 pb-1 text-xs text-gray-400 ${
+                                  className={`pb-1 pt-3 text-xs text-gray-400 ${
                                     message.isOwn ? 'text-right' : 'text-left'
                                   }`}
                                 >
-                                  {formatConversationDay(message.createdAt)}{' '}
-                                  {formatMessageTime(message.createdAt)}
+                                  {!message.isOwn &&
+                                  activeThreadWithOptimisticMessages.type === 'group' ? (
+                                    <span className="font-medium text-gray-500">
+                                      {message.senderDisplayName}{' '}
+                                    </span>
+                                  ) : null}
+
+                                  <span>
+                                    {formatConversationDay(message.createdAt)}{' '}
+                                    {formatMessageTime(message.createdAt)}
+                                  </span>
                                 </div>
                               ) : null}
 
@@ -1369,25 +1408,17 @@ export function MessagesPage() {
                               >
                                 <div
                                   data-message-id={message.id}
-                                  className={`group relative w-fit max-w-[75%] sm:max-w-[60%] transition-all duration-300 ${
+                                  className={`group relative w-fit max-w-[75%] transition-all duration-300 sm:max-w-[60%] ${
                                     highlightedMessageId === message.id
-                                      ? 'ring-2 ring-blue-300 ring-offset-2 rounded-2xl'
+                                      ? 'rounded-2xl ring-2 ring-blue-300 ring-offset-2'
                                       : ''
                                   }`}
                                 >
-                                  {showSenderName ? (
-                                    <p className="mb-1 px-1 text-xs font-semibold text-gray-500">
-                                      {message.senderDisplayName}
-                                    </p>
-                                  ) : null}
-
                                   {/* Actions button */}
                                   {message.status !== 'sending' && !message.deletedAt ? (
                                     <div
                                       data-message-actions-root="true"
-                                      className={`absolute top-2 z-10 ${
-                                        message.isOwn ? 'left-2' : 'right-2'
-                                      }`}
+                                      className={`absolute top-2 z-10 ${message.isOwn ? 'left-2' : 'right-2'}`}
                                     >
                                       <button
                                         type="button"
@@ -1407,7 +1438,6 @@ export function MessagesPage() {
                                     </div>
                                   ) : null}
 
-                                  {/* Bubble — Figma: received = white/light gray, sent = light blue */}
                                   <div
                                     className={`rounded-2xl px-4 py-2.5 ${
                                       message.isOwn
@@ -1438,17 +1468,12 @@ export function MessagesPage() {
                                     ) : null}
                                   </div>
 
-                                  {/* Delivery status — only for own messages, below bubble */}
                                   {message.isOwn ? (
-                                    <div className="mt-1 flex items-center justify-end gap-1 px-1 text-[11px] text-gray-400">
-                                      <Icon
-                                        icon={
-                                          message.status === 'seen' ? 'mdi:check-all' : 'mdi:check'
-                                        }
-                                        className="h-3 w-3"
-                                      />
-                                      <span>{deliveryLabel(message.status)}</span>
-                                    </div>
+                                    <MessageDeliveryIndicator
+                                      status={message.status}
+                                      showLabel
+                                      className="mt-1 justify-end px-1 text-[11px]"
+                                    />
                                   ) : null}
                                 </div>
                               </div>

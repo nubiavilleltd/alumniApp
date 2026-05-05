@@ -10,6 +10,7 @@ import { useStartDirectConversation } from '../hooks/useStartDirectConversation'
 import { getMessageAttachmentPreviewUrl } from '../lib/messageAttachmentPreviewRegistry';
 import type {
   MessageAttachment,
+  MessageDeliveryStatus,
   MessageParticipant,
   MessageReplyPreview,
   MessageThreadDetail,
@@ -18,6 +19,7 @@ import type {
 import type { DraftComposerAttachment } from './messagesPage.types';
 import {
   formatAudioDuration,
+  deliveryLabel,
   formatMemberCount,
   getAttachmentIcon,
   presenceClasses,
@@ -51,6 +53,41 @@ export function ParticipantAvatar({
     >
       {participant.initials}
     </div>
+  );
+}
+
+export function MessageDeliveryIndicator({
+  status,
+  showLabel = false,
+  className = '',
+}: {
+  status: MessageDeliveryStatus;
+  showLabel?: boolean;
+  className?: string;
+}) {
+  const isSeen = status === 'seen';
+  const isDelivered = status === 'delivered';
+  const icon =
+    status === 'failed'
+      ? 'mdi:alert-circle-outline'
+      : status === 'sending'
+        ? 'mdi:clock-outline'
+        : isSeen || isDelivered
+          ? 'mdi:check-all'
+          : 'mdi:check';
+  const colorClass =
+    status === 'failed' ? 'text-red-500' : isSeen ? 'text-blue-500' : 'text-gray-400';
+  const label = deliveryLabel(status);
+
+  return (
+    <span
+      className={`inline-flex items-center gap-1 ${colorClass} ${className}`}
+      title={label}
+      aria-label={label}
+    >
+      <Icon icon={icon} className="h-3.5 w-3.5 flex-shrink-0" />
+      {showLabel ? <span>{label}</span> : null}
+    </span>
   );
 }
 

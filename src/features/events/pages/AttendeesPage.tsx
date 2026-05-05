@@ -652,6 +652,14 @@ export default function AttendeesPage() {
     }
   }
 
+  const isPreparingExport = isLoading || isLoadingSurveySubmissions;
+  const exportButtonDisabled = isPreparingExport || isExporting || attendees.length === 0;
+  const exportButtonLabel = isPreparingExport
+    ? 'Loading attendees...'
+    : isExporting
+      ? 'Exporting...'
+      : 'Export List';
+
   return (
     <>
       <SEO title={`${pageTitle} Attendees`} description={`View attendees for ${pageTitle}.`} />
@@ -693,17 +701,16 @@ export default function AttendeesPage() {
                 <button
                   type="button"
                   onClick={handleExportAttendees}
-                  disabled={
-                    isLoading || isExporting || attendees.length === 0 || isLoadingSurveySubmissions
-                  }
+                  disabled={exportButtonDisabled}
                   className="inline-flex items-center gap-2 rounded-full bg-primary-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-600 disabled:cursor-not-allowed disabled:bg-primary-200"
                 >
-                  {isExporting ? (
+                  {isPreparingExport || isExporting ? (
                     <Icon icon="mdi:loading" className="h-4 w-4 animate-spin" />
                   ) : (
                     <Icon icon="mdi:download-outline" className="h-4 w-4" />
                   )}
-                  <span>{isExporting ? 'Exporting...' : 'Export List'}</span>
+
+                  <span>{exportButtonLabel}</span>
                 </button>
               </div>
             </header>

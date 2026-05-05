@@ -1,7 +1,10 @@
 import {
   CreateVacancyPayload,
   JobVacancy,
+  JobType,
+  LevelOfExpertise,
   UpdateVacancyPayload,
+  WorkplaceType,
 } from '../types/jobVacancies.types';
 
 export type JobVacancyViewModel = {
@@ -9,6 +12,9 @@ export type JobVacancyViewModel = {
   ownerId?: string;
   title: string;
   companyName: string;
+  jobType: JobType;
+  workplaceType: WorkplaceType;
+  levelOfExpertise: LevelOfExpertise;
   postedAt: string;
   salary: string;
   currency: string;
@@ -39,6 +45,9 @@ export function vacancyToViewModel(vacancy: JobVacancy): JobVacancyViewModel {
       ownerId !== null && ownerId !== undefined && ownerId !== '' ? String(ownerId) : undefined,
     title: vacancy.job_title,
     companyName: vacancy.company_name,
+    jobType: vacancy.job_type,
+    workplaceType: vacancy.workplace_type,
+    levelOfExpertise: vacancy.level_of_expertise,
     postedAt: vacancy.application_deadline,
     salary: vacancy.salary,
     currency: vacancy.currency ? String(vacancy.currency) : 'NGN',

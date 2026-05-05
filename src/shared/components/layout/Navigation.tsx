@@ -70,6 +70,7 @@ const authenticatedMenuItems: NavChild[] = [
   { label: 'Messaging Center', url: ROUTES.MESSAGES },
   { label: 'My Registered Events', url: EVENT_ROUTES.MY_EVENTS },
   { label: 'My Market', url: MARKETPLACE_ROUTES.MY_BUSINESS },
+  { label: 'My Job Posts', url: ROUTES.MY_JOB_POSTS },
   { label: 'Settings', url: USER_ROUTES.SETTINGS },
 ];
 
