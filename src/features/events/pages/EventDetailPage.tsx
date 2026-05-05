@@ -13,6 +13,8 @@ import { toast } from '@/shared/components/ui/Toast';
 import { EVENT_ROUTES } from '../routes';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 import { renderMarkdown } from '@/data/content';
+import { AUTH_ROUTES } from '@/features/authentication/routes';
+import { useEventStatus } from '../hooks/useEventStatus';
 
 // ─── Countdown ────────────────────────────────────────────────────────────────
 
@@ -237,9 +239,9 @@ export function EventDetailPage() {
 
   // ── Derived state ─────────────────────────────────────────────────────────
 
-  const isPast = new Date(event.date) < new Date();
   const isCancelled = event.status === 'cancelled';
-  const isUpcoming = !isPast && !isCancelled;
+
+  const { isUpcoming, isOngoing, isPast } = useEventStatus(event);
 
   // ── Handlers ──────────────────────────────────────────────────────────────
 
@@ -303,18 +305,18 @@ export function EventDetailPage() {
               {/* View Registrations */}
               <AppLink
                 href={EVENT_ROUTES.ATTENDEES(event.id)}
-                className="inline-flex items-center gap-1.5 border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 rounded-full transition-colors shadow-sm whitespace-nowrap"
+                className="inline-flex items-center gap-1.5 border-2 border-primary-500 bg-white hover:bg-primary-600 hover:text-white text-primary-500 text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 rounded-full transition-colors shadow-sm whitespace-nowrap"
               >
-                <Icon icon="mdi:account-group-outline" className="w-4 h-4" />
+                {/* <Icon icon="mdi:account-group-outline" className="w-4 h-4" /> */}
                 View Registrations
               </AppLink>
 
               {/* Edit Event */}
               <AppLink
                 href={EVENT_ROUTES.EDIT(event.id)}
-                className="inline-flex items-center gap-1.5 border border-primary-300 bg-white hover:bg-primary-50 text-primary-600 text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 rounded-full transition-colors shadow-sm whitespace-nowrap"
+                className="inline-flex items-center gap-1.5 border-2 border-primary-500 bg-white hover:bg-primary-600 hover:text-white text-primary-500 text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 rounded-full transition-colors shadow-sm whitespace-nowrap"
               >
-                <Icon icon="mdi:pencil-outline" className="w-4 h-4" />
+                {/* <Icon icon="mdi:pencil-outline" className="w-4 h-4" /> */}
                 Edit Event
               </AppLink>
 
@@ -322,9 +324,9 @@ export function EventDetailPage() {
               <button
                 type="button"
                 onClick={() => setShowDeleteModal(true)}
-                className="inline-flex items-center gap-1.5 border border-red-300 bg-white hover:bg-red-50 text-red-600 text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 rounded-full transition-colors shadow-sm whitespace-nowrap"
+                className="inline-flex items-center gap-1.5 border-2 border-red-500 bg-white hover:bg-red-50 text-red-600 text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 rounded-full transition-colors shadow-sm whitespace-nowrap"
               >
-                <Icon icon="mdi:trash-can-outline" className="w-4 h-4" />
+                {/* <Icon icon="mdi:trash-can-outline" className="w-4 h-4" /> */}
                 Delete Event
               </button>
             </div>
@@ -355,18 +357,15 @@ export function EventDetailPage() {
               ════════════════════════════════════════════════════ */}
           <div className="max-w-3xl">
             {/* ── Back link ─────────────────────────────────── */}
-            <div className="mb-4">
-              <AppLink
-                href={EVENT_ROUTES.ROOT}
-                className="inline-flex items-center gap-1.5 text-gray-500 hover:text-gray-800 text-sm font-medium transition-colors"
-              >
-                <Icon icon="mdi:arrow-left" className="w-4 h-4" />
-                Back to Events
-              </AppLink>
-            </div>
 
             {/* ── Status badges ─────────────────────────────── */}
             <div className="flex flex-wrap items-center gap-2 mb-3">
+              {isOngoing && (
+                <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-green-100 text-green-700 border border-green-200">
+                  <Icon icon="mdi:play-circle-outline" className="w-3.5 h-3.5" />
+                  Happening Now
+                </span>
+              )}
               {isPast && !isCancelled && (
                 <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-gray-100 text-gray-600 border border-gray-200">
                   <Icon icon="mdi:calendar-check-outline" className="w-3.5 h-3.5" />
@@ -379,7 +378,7 @@ export function EventDetailPage() {
                   Featured
                 </span>
               )}
-              {isRegistered && isUpcoming && (
+              {isRegistered && (isUpcoming || isOngoing) && (
                 <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-green-100 text-green-700 border border-green-200">
                   <Icon icon="mdi:check-circle" className="w-3.5 h-3.5" />
                   You're Registered
@@ -433,12 +432,15 @@ export function EventDetailPage() {
                   />
                   <span>
                     {capacity ? `${attendeeCount}/${capacity}` : attendeeCount}{' '}
-                    {isPast ? 'attended' : 'attending'}
-                    {spotsLeft !== undefined && spotsLeft > 0 && spotsLeft <= 10 && !isPast && (
-                      <span className="text-orange-500 font-semibold ml-1">
-                        · {spotsLeft} spots left
-                      </span>
-                    )}
+                    {isPast ? 'attended' : isOngoing ? 'attending live' : 'attending'}
+                    {spotsLeft !== undefined &&
+                      spotsLeft > 0 &&
+                      spotsLeft <= 1 &&
+                      (isUpcoming || isOngoing) && (
+                        <span className="text-orange-500 font-semibold ml-1">
+                          · {spotsLeft} spot(s) left
+                        </span>
+                      )}
                   </span>
                 </div>
               )}
@@ -468,9 +470,9 @@ export function EventDetailPage() {
                 ════════════════════════════════════════════════ */}
             <div className="flex items-center gap-3">
               {/* Register — not logged in, upcoming, not full */}
-              {!isPast && !isCancelled && !isLoggedIn && !isFull && (
+              {(isUpcoming || isOngoing) && !isCancelled && !isLoggedIn && !isFull && (
                 <AppLink
-                  href="/auth/login"
+                  href={AUTH_ROUTES.LOGIN}
                   className="inline-flex items-center gap-2 bg-primary-500 hover:bg-primary-600 text-white font-semibold text-sm px-6 py-2.5 rounded-full transition-colors shadow-sm"
                 >
                   <Icon icon="mdi:login" className="w-4 h-4" />
@@ -479,18 +481,22 @@ export function EventDetailPage() {
               )}
 
               {/* Register — logged in, upcoming, not registered, not full */}
-              {!isPast && !isCancelled && isLoggedIn && !isRegistered && !isFull && (
-                <button
-                  type="button"
-                  onClick={() => setShowRegisterModal(true)}
-                  className="inline-flex items-center gap-2 bg-primary-500 hover:bg-primary-600 text-white font-semibold text-sm px-6 py-2.5 rounded-full transition-colors shadow-sm"
-                >
-                  Register
-                </button>
-              )}
+              {(isUpcoming || isOngoing) &&
+                !isCancelled &&
+                isLoggedIn &&
+                !isRegistered &&
+                !isFull && (
+                  <button
+                    type="button"
+                    onClick={() => setShowRegisterModal(true)}
+                    className="inline-flex items-center gap-2 bg-primary-500 hover:bg-primary-600 text-white font-semibold text-sm px-6 py-2.5 rounded-full transition-colors shadow-sm"
+                  >
+                    Register
+                  </button>
+                )}
 
               {/* Cancel Registration — logged in, upcoming, registered */}
-              {!isPast && !isCancelled && isLoggedIn && isRegistered && (
+              {(isUpcoming || isOngoing) && !isCancelled && isLoggedIn && isRegistered && (
                 <button
                   type="button"
                   onClick={() => setShowUnregisterModal(true)}

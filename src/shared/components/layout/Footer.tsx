@@ -55,7 +55,7 @@ const QUICK_LINKS = [
 
 const COMMUNITY_LINKS = [
   // { label: 'Alumnae Directory', href: '/alumni/profiles' },
-  { label: 'Check on your Sister', href: '/alumni/profiles' },
+  { label: 'Check on your Sisters', href: '/alumni/profiles' },
   { label: 'Marketplace', href: '/marketplace' },
   { label: 'Resources', href: '/resources' },
   { label: 'Welfare', href: '/welfare' },

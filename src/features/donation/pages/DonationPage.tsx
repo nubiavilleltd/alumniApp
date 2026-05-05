@@ -18,13 +18,14 @@ export function DonationPage() {
   };
 
   return (
-    <section className="mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <section className="mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-gray-100">
       {/* Title */}
       <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-8">Make a Donation</h1>
 
-      <div className="grid lg:grid-cols-2 gap-10 items-center">
+      {/* <div className="grid lg:grid-cols-3 gap-10 items-center"> */}
+      <div className="flex flex-col md:flex-row gap-5 items-center justify-between">
         {/* LEFT CARD */}
-        <div className="bg-gray-100 rounded-2xl p-6 sm:p-8 shadow-sm">
+        <div className="flex-1 bg-white rounded-2xl p-6 sm:p-8 shadow-sm max-w-3xl">
           <p className="text-gray-600 leading-relaxed mb-6">
             Give back and help create opportunities that benefit alumnae and the wider community.
             Your contribution helps support members, fund initiatives, and strengthen our community.
@@ -37,7 +38,7 @@ export function DonationPage() {
           </div>
 
           {/* Account Number */}
-          <div className="mb-6 flex items-center justify-between">
+          <div className="mb-6 flex items-center justify-start gap-7">
             <div>
               <p className="text-sm text-gray-500 mb-1">Account Number</p>
               <p className="text-lg font-semibold text-gray-900">0250037225</p>
@@ -47,7 +48,7 @@ export function DonationPage() {
               onClick={() => copyToClipboard('0250037225', 'account')}
               className="p-2 rounded-lg hover:bg-gray-200 transition"
             >
-              <Icon icon="mdi:content-copy" className="w-5 h-5 text-blue-600" />
+              <Icon icon="mdi:content-copy" className="w-5 h-5 text-primary-500" />
             </button>
           </div>
 
@@ -58,12 +59,12 @@ export function DonationPage() {
               <p className="text-lg font-semibold text-gray-900">FGGC Alumnae Lagos</p>
             </div>
 
-            <button
+            {/* <button
               onClick={() => copyToClipboard('FGGC Alumnae Lagos', 'name')}
               className="p-2 rounded-lg hover:bg-gray-200 transition"
             >
               <Icon icon="mdi:content-copy" className="w-5 h-5 text-blue-600" />
-            </button>
+            </button> */}
           </div>
         </div>
 

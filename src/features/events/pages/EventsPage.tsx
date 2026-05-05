@@ -181,14 +181,7 @@ function Calendar({
           return (
             <div
               key={idx}
-              className={`
-    min-h-[60px] sm:min-h-[80px]
-    p-1
-    rounded-lg
-    flex flex-col items-start gap-1
-    ${calDay.isCurrentMonth ? 'bg-white' : 'bg-gray-50/60'}
-    ${isToday ? 'ring-1 ring-primary-400' : 'ring-1 ring-gray-100'}
-  `}
+              className={`min-h-[60px] sm:min-h-[80px] p-1 rounded-lg flex flex-col items-start gap-1 ${calDay.isCurrentMonth ? 'bg-white' : 'bg-gray-50/60'} ${isToday ? 'ring-1 ring-primary-400' : 'ring-1 ring-gray-100'}`}
             >
               <span
                 className={`text-[10px] sm:text-xs font-semibold ${
@@ -374,9 +367,22 @@ export function EventsPage() {
         setListCount(idx + LIST_PAGE);
       }
 
+      // requestAnimationFrame(() => {
+      //   const el = itemRefs.current.get(event.id);
+      //   el?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      // });
+
       requestAnimationFrame(() => {
         const el = itemRefs.current.get(event.id);
-        el?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        if (el) {
+          const container = el.closest('.overflow-y-auto') as HTMLElement | null;
+          if (container) {
+            container.scrollTo({
+              top: el.offsetTop - container.offsetTop,
+              behavior: 'smooth',
+            });
+          }
+        }
       });
     },
     [filteredEvents, listCount],

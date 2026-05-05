@@ -209,7 +209,7 @@ export default function ProjectDetailsPage() {
                   onClick={() => setShowEditModal(true)}
                   className="flex items-center gap-1.5 border border-primary-200 text-primary-500 hover:bg-primary-50 text-xs font-semibold px-3 py-2 rounded-lg transition-colors"
                 >
-                  <Icon icon="mdi:pencil-outline" className="w-3.5 h-3.5" />
+                  {/* <Icon icon="mdi:pencil-outline" className="w-3.5 h-3.5" /> */}
                   Edit
                 </button>
                 <button
@@ -217,23 +217,13 @@ export default function ProjectDetailsPage() {
                   onClick={() => setShowDeleteModal(true)}
                   className="flex items-center gap-1.5 border border-red-200 text-red-500 hover:bg-red-50 text-xs font-semibold px-3 py-2 rounded-lg transition-colors"
                 >
-                  <Icon icon="mdi:trash-can-outline" className="w-3.5 h-3.5" />
+                  {/* <Icon icon="mdi:trash-can-outline" className="w-3.5 h-3.5" /> */}
                   Delete
                 </button>
               </div>
             )}
 
-            <div
-              className="
-  w-full
-  aspect-[16/10] sm:aspect-[16/9]
-  lg:aspect-auto
-  lg:h-[420px]
-  bg-gray-100
-  rounded-xl
-  overflow-hidden
-"
-            >
+            <div className="w-full aspect-[16/10] sm:aspect-[16/9] lg:aspect-auto lg:h-[420px] bg-gray-100 rounded-3xl overflow-hidden">
               <img
                 src={images[activeImage]}
                 alt={project.title}
