@@ -395,7 +395,13 @@ export function UserDashboardPage() {
     .filter((e: Event) => new Date(e.date) >= new Date())
     .slice(0, 5);
 
-  const suggestedAlumni = allAlumni.filter((a) => a.slug !== currentUser?.slug).slice(0, 3);
+  const suggestedAlumni = allAlumni
+    .filter(
+      (a) => a.email !== currentUser?.email && a.graduationYear == currentUser?.graduationYear,
+    )
+    .slice(0, 3);
+  const hasSuggestedAlumni = suggestedAlumni.length > 0;
+  const hasMyRegisteredEvents = myRegisteredEvents.length > 0;
 
   return (
     <>
@@ -511,18 +517,22 @@ export function UserDashboardPage() {
             </PanelCard>
           </div>
 
+          {/* hasMyRegisteredEvents */}
+
           {/* ── My Registered Events ─────────────────────────────────── */}
           {/* Left column only, matching the layout above */}
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-4">
             <PanelCard
               title="My Registered Events"
               action={
-                <AppLink
-                  href={EVENT_ROUTES.MY_EVENTS}
-                  className="text-xs font-semibold text-primary-500 hover:text-primary-600 flex items-center gap-0.5"
-                >
-                  View All <Icon icon="mdi:chevron-right" className="w-3.5 h-3.5" />
-                </AppLink>
+                hasMyRegisteredEvents && (
+                  <AppLink
+                    href={EVENT_ROUTES.MY_EVENTS}
+                    className="text-xs font-semibold text-primary-500 hover:text-primary-600 flex items-center gap-0.5"
+                  >
+                    View All <Icon icon="mdi:chevron-right" className="w-3.5 h-3.5" />
+                  </AppLink>
+                )
               }
             >
               {myEventsLoading ? (
