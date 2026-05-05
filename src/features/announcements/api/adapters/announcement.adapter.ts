@@ -22,8 +22,6 @@ function toStringOrUndefined(value: unknown) {
 
 function toAnnouncementType(value: unknown): AnnouncementType {
   switch (value) {
-    case 'warning':
-    case 'success':
     case 'event':
       return value;
     case 'info':

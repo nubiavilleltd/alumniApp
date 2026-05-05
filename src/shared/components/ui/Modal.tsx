@@ -26,29 +26,31 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
   return (
     // Overlay
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4"
+      className="fixed inset-0 z-50 overflow-y-auto bg-black/50 px-4 py-6 backdrop-blur-sm"
       onClick={onClose}
     >
-      {/* Modal panel — stop click propagation so clicking inside doesn't close */}
-      <div
-        className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-gray-100">
-          <h2 className="text-primary-500 font-bold text-xl">{title}</h2>
-          <button
-            type="button"
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-800 font-semibold text-lg leading-none transition-colors"
-            aria-label="Close modal"
-          >
-            ✕
-          </button>
-        </div>
+      <div className="flex min-h-full items-start justify-center sm:items-center">
+        {/* Modal panel — stop click propagation so clicking inside doesn't close */}
+        <div
+          className="relative my-auto w-full max-w-lg overflow-visible rounded-2xl bg-white shadow-2xl"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between border-b border-gray-100 px-6 pb-4 pt-6">
+            <h2 className="text-primary-500 font-bold text-xl">{title}</h2>
+            <button
+              type="button"
+              onClick={onClose}
+              className="text-gray-500 hover:text-gray-800 font-semibold text-lg leading-none transition-colors"
+              aria-label="Close modal"
+            >
+              ✕
+            </button>
+          </div>
 
-        {/* Content */}
-        <div className="px-6 py-5">{children}</div>
+          {/* Content */}
+          <div className="px-6 py-5">{children}</div>
+        </div>
       </div>
     </div>
   );

@@ -10,6 +10,7 @@ import { ImageUpload } from '@/shared/components/ui/ImageUpload';
 import { Button } from '@/shared/components/ui/Button';
 import { FormInput } from '@/shared/components/ui/input/FormInput';
 import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
+import { toTitleCase } from '@/shared/utils/textHelpers';
 import {
   defaultPhoneCountry,
   formatOptionalPhoneNumberWithCountryCode,
@@ -230,9 +231,10 @@ export function PostBusinessModal({ isOpen, onClose, editData }: PostBusinessMod
   };
 
   const isLoading = createMutation.isPending || updateMutation.isPending || isSubmitting;
-  const categoryOptions = categoriesList.map((cat) => ({ label: cat, value: cat }));
+  const categoryOptions = categoriesList.map((cat) => ({ label: toTitleCase(cat), value: cat }));
+  const categoryValue = watch('category') ?? '';
   const phoneCountrySelectOptions = phoneCountryOptions.map((option) => ({
-    label: `${option.dialCode} (${option.label})`,
+    label: `${option.dialCode} (${toTitleCase(option.label)})`,
     value: option.code,
   }));
   const phoneCountry = watch('phoneCountry') ?? defaultPhoneCountry;
@@ -281,6 +283,7 @@ export function PostBusinessModal({ isOpen, onClose, editData }: PostBusinessMod
           required
           placeholder="Select a category"
           options={categoryOptions}
+          value={categoryValue}
           error={errors.category?.message}
           {...register('category')}
         />
@@ -314,6 +317,7 @@ export function PostBusinessModal({ isOpen, onClose, editData }: PostBusinessMod
               id="phoneCountry"
               options={phoneCountrySelectOptions}
               placeholder="Country"
+              value={phoneCountry}
               error={undefined}
               {...phoneCountryRegistration}
             />

@@ -69,14 +69,14 @@ const authenticatedMenuItems: NavChild[] = [
   { label: 'Dashboard', url: USER_ROUTES.DASHBOARD },
   { label: 'Messaging Center', url: ROUTES.MESSAGES },
   { label: 'My Registered Events', url: EVENT_ROUTES.MY_EVENTS },
-  { label: 'My Business', url: MARKETPLACE_ROUTES.MY_BUSINESS },
+  { label: 'My Market', url: MARKETPLACE_ROUTES.MY_BUSINESS },
   { label: 'Settings', url: USER_ROUTES.SETTINGS },
 ];
 
 const navSurfaceClassName =
   'bg-[linear-gradient(106deg,_rgb(var(--color-primary-500))_0%,_#003a5d_92%)]';
 const desktopLinkBaseClassName =
-  "relative no-underline font-bold tracking-[0.1em] text-[#c4d0d9] transition-colors duration-200 hover:text-white focus-visible:text-white after:pointer-events-none after:absolute after:bottom-[-0.45rem] after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:rounded-full after:bg-white/85 after:content-[''] after:transition-transform after:duration-300 after:ease-out hover:after:scale-x-100 focus-visible:after:scale-x-100";
+  "relative no-underline font-bold tracking-[0.1em] text-[#c4d0d9] transition-colors duration-200 hover:text-white focus-visible:text-white after:pointer-events-none after:absolute after:bottom-[-0.55rem] after:left-0 after:h-[5px] after:w-full after:origin-left after:scale-x-0 after:rounded-full after:bg-white/85 after:content-[''] after:transition-transform after:duration-300 after:ease-out hover:after:scale-x-100 focus-visible:after:scale-x-100";
 const desktopActiveLinkClassName = 'text-white after:scale-x-100';
 const desktopPrimaryLinkClassName = `${desktopLinkBaseClassName} whitespace-nowrap text-[clamp(1.05rem,1.36vw,1.75rem)]`;
 const desktopSecondaryLinkClassName = `${desktopLinkBaseClassName} text-[clamp(0.95rem,1.18vw,1.35rem)]`;
@@ -84,6 +84,7 @@ const desktopPanelClassName =
   'absolute top-[calc(100%+1rem)] z-[60] overflow-hidden border border-[#d7e6ef] bg-white shadow-[0_1.25rem_2.5rem_rgba(7,17,22,0.14)]';
 const desktopMenuLinkClassName =
   'flex items-center gap-3 px-6 py-[0.95rem] text-[clamp(1.05rem,1.3vw,1.35rem)] font-bold leading-[1.25] text-[#4f5864] no-underline transition-colors duration-200 hover:bg-primary-50 hover:text-primary-700';
+const desktopMenuActiveLinkClassName = 'bg-primary-50 text-primary-700';
 const accountPillClassName =
   'inline-flex min-h-[3.35rem] items-center rounded-full border border-white/25 bg-[#001f38]/20 text-white no-underline transition-colors duration-200 hover:bg-white/10';
 const mobileSectionClassName =
@@ -295,6 +296,7 @@ function UserDropdown({
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const { pathname } = useLocation();
   const isAdmin = currentUser.role === 'admin';
   const displayName = getDisplayName(currentUser);
 
@@ -346,7 +348,10 @@ function UserDropdown({
             <AppLink
               key={item.url}
               href={item.url}
-              className="flex items-center gap-[0.65rem] px-4 py-[0.8rem] text-left text-[0.92rem] font-bold text-[#4f5864] transition-colors duration-200 hover:bg-primary-50 hover:text-primary-700"
+              className={cn(
+                'flex items-center gap-[0.65rem] px-4 py-[0.8rem] text-left text-[0.92rem] font-bold text-[#4f5864] transition-colors duration-200 hover:bg-primary-50 hover:text-primary-700',
+                isPathActive(pathname, item.url) && desktopMenuActiveLinkClassName,
+              )}
               onClick={() => setOpen(false)}
             >
               <span>{item.label}</span>
@@ -629,7 +634,14 @@ export function Navigation() {
               </div>
 
               {mobileMenuItems.map((item) => (
-                <AppLink key={item.url} href={item.url} className={mobileLinkClassName}>
+                <AppLink
+                  key={item.url}
+                  href={item.url}
+                  className={cn(
+                    mobileLinkClassName,
+                    isPathActive(pathname, item.url) && 'bg-white/10 text-white',
+                  )}
+                >
                   <span>{item.label}</span>
                 </AppLink>
               ))}

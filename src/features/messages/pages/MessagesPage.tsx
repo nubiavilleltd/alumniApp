@@ -19,16 +19,13 @@ import EmptyState from '@/shared/components/ui/EmptyState';
 import { toast } from '@/shared/components/ui/Toast';
 import {
   MESSAGE_ATTACHMENT_FILE_INPUT_ACCEPT,
-  buildFileAttachmentUploadRequest,
   buildRecordedVoiceNoteUploadRequest,
   buildSendMessageRequest,
   buildVoiceNoteUploadRequest,
-  describeAttachmentForPreview,
   filterMessageThreads,
-  formatBytes,
   isGraduationYearGroupThread,
 } from '../api/adapters/messages.adapter';
-import type { UploadMessageAttachmentRequest } from '../api/messages.contract';
+import { useDraftComposerAttachments } from '../hooks/useDraftComposerAttachments';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
 import {
   messageKeys,
@@ -40,1030 +37,56 @@ import {
   useSendMessage,
   useUploadMessageAttachment,
 } from '../hooks/useMessages';
-import { useStartDirectConversation } from '../hooks/useStartDirectConversation';
-import {
-  getMessageAttachmentPreviewUrl,
-  registerMessageAttachmentPreview,
-  revokeMessageAttachmentPreview,
-} from '../lib/messageAttachmentPreviewRegistry';
+import { registerMessageAttachmentPreview } from '../lib/messageAttachmentPreviewRegistry';
 import {
   recordMarketplaceDraftPrefill,
   shouldPrefillMarketplaceDraft,
 } from '../lib/marketplaceDraftPrefillStorage';
 import type {
   MessageAttachment,
-  MessageDeliveryStatus,
   MessageItem,
-  MessageParticipant,
   MessageReplyPreview,
-  MessageThreadDetail,
   MessageThreadFilter,
   MessageThreadSummary,
 } from '../types/messages.types';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
+import {
+  DraftComposerAttachments,
+  GroupParticipantsModal,
+  ImageAttachmentLightbox,
+  MessageAttachments,
+  ReplyPreviewCard,
+  ThreadAvatar,
+} from './MessagesPage.components';
+import type { OpenMessageActionsMenu, ReplaceMessagesSearchOptions } from './messagesPage.types';
+import {
+  buildCopyTextFromMessage,
+  buildOptimisticAttachmentsFromDraftAttachments,
+  buildOptimisticMessage,
+  buildReplyPreviewFromMessage,
+  createClientGeneratedMessageId,
+  deliveryLabel,
+  formatConversationDay,
+  formatMemberCount,
+  formatMessageTime,
+  formatRecordingDuration,
+  formatThreadHeaderSubtitle,
+  formatThreadTimestamp,
+  getPreferredRecorderMimeType,
+  getThreadPreview,
+  mergeThreadMessagesWithOptimistic,
+  sortGroupParticipants,
+} from './messagesPage.utils';
 
 const breadcrumbItems = [{ label: 'Home', href: '/' }, { label: 'Messages' }];
 const MIN_VOICE_NOTE_DURATION_MS = 600;
 const RECORDING_TIMER_INTERVAL_MS = 200;
-
-interface DraftComposerAttachment {
-  id: string;
-  kind: MessageAttachment['kind'];
-  fileName: string;
-  mimeType: string;
-  sizeInBytes: number;
-  sizeLabel: string;
-  durationSeconds?: number;
-  previewUrl?: string;
-  uploadRequest: UploadMessageAttachmentRequest;
-  uploadedAttachment?: MessageAttachment;
-}
-
-interface OpenMessageActionsMenu {
-  messageId: string;
-  style: CSSProperties;
-}
-
-interface ReplaceMessagesSearchOptions {
-  initialMessage?: string;
-  draftMessage?: string;
-  marketplaceBusinessId?: string;
-}
-
-function getParticipantRolePriority(role: MessageParticipant['roleInThread']) {
-  if (role === 'admin') return 0;
-  if (role === 'moderator') return 1;
-  return 2;
-}
-
-function sortGroupParticipants(participants: MessageParticipant[]) {
-  return [...participants].sort((left, right) => {
-    const roleDifference =
-      getParticipantRolePriority(left.roleInThread) -
-      getParticipantRolePriority(right.roleInThread);
-
-    if (roleDifference !== 0) {
-      return roleDifference;
-    }
-
-    return left.fullName.localeCompare(right.fullName);
-  });
-}
 
 // Only All and Unread filters, matching Figma design
 const inboxFilters: { key: MessageThreadFilter; label: string }[] = [
   { key: 'all', label: 'All' },
   { key: 'unread', label: 'Unread' },
 ];
-
-function formatThreadTimestamp(value: string) {
-  const date = new Date(value);
-  const now = new Date();
-  const sameDay = date.toDateString() === now.toDateString();
-
-  if (sameDay) {
-    return date.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-    });
-  }
-
-  const withinWeek = now.getTime() - date.getTime() < 6 * 24 * 60 * 60 * 1000;
-  if (withinWeek) {
-    return date.toLocaleDateString('en-US', {
-      weekday: 'short',
-    });
-  }
-
-  return date.toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-  });
-}
-
-function formatConversationDay(value: string) {
-  const date = new Date(value);
-  const now = new Date();
-  const yesterday = new Date(now);
-  yesterday.setDate(now.getDate() - 1);
-
-  if (date.toDateString() === now.toDateString()) return 'Today';
-  if (date.toDateString() === yesterday.toDateString()) return 'Yesterday';
-
-  return date.toLocaleDateString('en-US', {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric',
-  });
-}
-
-function formatMessageTime(value: string) {
-  return new Date(value).toLocaleTimeString('en-US', {
-    hour: 'numeric',
-    minute: '2-digit',
-  });
-}
-
-function formatAudioDuration(durationSeconds = 0) {
-  const minutes = Math.floor(durationSeconds / 60);
-  const seconds = durationSeconds % 60;
-  return `${minutes}:${String(seconds).padStart(2, '0')}`;
-}
-
-function formatRecordingDuration(durationMs: number) {
-  return formatAudioDuration(Math.max(0, Math.floor(durationMs / 1000)));
-}
-
-function createDraftComposerAttachmentId() {
-  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
-    return crypto.randomUUID();
-  }
-
-  return `draft-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
-}
-
-function createClientGeneratedMessageId() {
-  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
-    return `client-${crypto.randomUUID()}`;
-  }
-
-  return `client-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
-}
-
-function buildDraftComposerAttachment(file: File, viewerMemberId: string): DraftComposerAttachment {
-  const uploadRequest = buildFileAttachmentUploadRequest(file, viewerMemberId);
-  const previewUrl = file.type.startsWith('image/') ? URL.createObjectURL(file) : undefined;
-
-  return {
-    id: createDraftComposerAttachmentId(),
-    kind: uploadRequest.kind,
-    fileName: uploadRequest.fileName,
-    mimeType: uploadRequest.mimeType,
-    sizeInBytes: uploadRequest.sizeInBytes,
-    sizeLabel: formatBytes(uploadRequest.sizeInBytes),
-    previewUrl,
-    uploadRequest,
-  };
-}
-
-function buildDraftComposerAttachmentFromUploadRequest(
-  uploadRequest: UploadMessageAttachmentRequest,
-  options?: {
-    previewUrl?: string;
-  },
-): DraftComposerAttachment {
-  return {
-    id: createDraftComposerAttachmentId(),
-    kind: uploadRequest.kind,
-    fileName: uploadRequest.fileName,
-    mimeType: uploadRequest.mimeType,
-    sizeInBytes: uploadRequest.sizeInBytes,
-    sizeLabel: formatBytes(uploadRequest.sizeInBytes),
-    durationSeconds: uploadRequest.durationSeconds,
-    previewUrl: options?.previewUrl,
-    uploadRequest,
-  };
-}
-
-function buildOptimisticMessage(params: {
-  viewerMemberId: string;
-  threadId: string;
-  body?: string;
-  attachments: MessageAttachment[];
-  clientGeneratedId: string;
-  currentUserName?: string;
-  currentUserAvatar?: string;
-  replyTo?: MessageReplyPreview | null;
-}): MessageItem {
-  return {
-    id: params.clientGeneratedId,
-    clientGeneratedId: params.clientGeneratedId,
-    threadId: params.threadId,
-    senderMemberId: params.viewerMemberId,
-    senderDisplayName: params.currentUserName ?? 'You',
-    senderAvatar: params.currentUserAvatar,
-    body: params.body?.trim() ?? '',
-    createdAt: new Date().toISOString(),
-    status: 'sending',
-    attachments: params.attachments,
-    isOwn: true,
-    replyTo: params.replyTo ?? undefined,
-  };
-}
-
-function buildOptimisticAttachmentsFromDraftAttachments(
-  draftAttachments: DraftComposerAttachment[],
-): MessageAttachment[] {
-  return draftAttachments.map((draftAttachment) => {
-    if (draftAttachment.uploadedAttachment) {
-      return draftAttachment.uploadedAttachment;
-    }
-
-    return {
-      id: draftAttachment.id,
-      kind: draftAttachment.kind,
-      fileName: draftAttachment.fileName,
-      mimeType: draftAttachment.mimeType,
-      sizeInBytes: draftAttachment.sizeInBytes,
-      sizeLabel: draftAttachment.sizeLabel,
-      durationSeconds: draftAttachment.durationSeconds,
-      uploadState: 'processing',
-      url: draftAttachment.previewUrl,
-    };
-  });
-}
-
-function mergeThreadMessagesWithOptimistic(
-  persistedMessages: MessageItem[],
-  optimisticMessages: MessageItem[],
-) {
-  if (optimisticMessages.length === 0) {
-    return persistedMessages;
-  }
-
-  const persistedIds = new Set(persistedMessages.map((message) => message.id));
-  const persistedClientGeneratedIds = new Set(
-    persistedMessages
-      .map((message) => message.clientGeneratedId)
-      .filter((value): value is string => typeof value === 'string' && value.length > 0),
-  );
-
-  const remainingOptimisticMessages = optimisticMessages.filter(
-    (message) =>
-      !persistedIds.has(message.id) &&
-      !persistedClientGeneratedIds.has(message.clientGeneratedId ?? message.id),
-  );
-
-  return [...persistedMessages, ...remainingOptimisticMessages];
-}
-
-function buildCopyTextFromMessage(message: MessageItem) {
-  if (message.deletedAt) {
-    return '';
-  }
-
-  return message.body.trim();
-}
-
-function buildReplyPreviewFromMessage(message: MessageItem): MessageReplyPreview {
-  return {
-    messageId: message.id,
-    senderMemberId: message.senderMemberId,
-    senderDisplayName: message.senderDisplayName,
-    bodyPreview: message.deletedAt
-      ? 'Message removed'
-      : message.body.trim() ||
-        message.attachments
-          .map((attachment) => describeAttachmentForPreview(attachment))
-          .join(', ') ||
-        'Message',
-    attachments: message.attachments.map((attachment) => ({
-      kind: attachment.kind,
-      fileName: attachment.fileName,
-    })),
-    isOwn: message.isOwn,
-    isDeleted: !!message.deletedAt,
-  };
-}
-
-function presenceClasses(value?: MessageThreadSummary['presence']) {
-  if (value === 'online') return 'bg-emerald-500';
-  if (value === 'away') return 'bg-amber-400';
-  return 'bg-gray-300';
-}
-
-function presenceLabel(value?: MessageThreadSummary['presence']) {
-  if (value === 'online') return 'Online now';
-  if (value === 'away') return 'Away right now';
-  return '';
-}
-
-function formatThreadHeaderSubtitle(thread: MessageThreadSummary | MessageThreadDetail) {
-  if (thread.type === 'group') {
-    return `${thread.memberCount} members`;
-  }
-  const label = presenceLabel(thread.presence);
-  if (label) return label;
-  // Show last seen style subtitle from topic or fallback
-  return thread.topic || '';
-}
-
-function getThreadPreview(thread: MessageThreadSummary) {
-  if (thread.type === 'group' && thread.lastMessageSenderName) {
-    return `${thread.lastMessageSenderName}: ${thread.lastMessagePreview}`;
-  }
-
-  return thread.lastMessagePreview;
-}
-
-function getAttachmentIcon(kind: MessageAttachment['kind']) {
-  if (kind === 'audio') return 'mdi:waveform';
-  if (kind === 'image') return 'mdi:image-outline';
-  return 'mdi:file-document-outline';
-}
-
-function deliveryLabel(status: MessageDeliveryStatus) {
-  if (status === 'seen') return 'Seen';
-  if (status === 'delivered') return 'Delivered';
-  if (status === 'failed') return 'Failed';
-  if (status === 'sending') return 'Sending';
-  return 'Sent';
-}
-
-function getPreferredRecorderMimeType() {
-  if (typeof MediaRecorder === 'undefined' || typeof MediaRecorder.isTypeSupported !== 'function') {
-    return '';
-  }
-
-  return (
-    ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus', 'audio/mp4'].find(
-      (mimeType) => MediaRecorder.isTypeSupported(mimeType),
-    ) ?? ''
-  );
-}
-
-function ParticipantAvatar({
-  participant,
-  size = 'md',
-}: {
-  participant: MessageParticipant;
-  size?: 'sm' | 'md';
-}) {
-  const [hasImageError, setHasImageError] = useState(false);
-  const sizeClasses =
-    size === 'sm' ? 'h-9 w-9 rounded-full text-xs' : 'h-11 w-11 rounded-full text-sm';
-
-  useEffect(() => {
-    setHasImageError(false);
-  }, [participant.avatar]);
-
-  return participant.avatar && !hasImageError ? (
-    <img
-      src={participant.avatar}
-      alt={participant.fullName}
-      className={`${sizeClasses} object-cover`}
-      onError={() => setHasImageError(true)}
-    />
-  ) : (
-    <div
-      className={`flex ${sizeClasses} items-center justify-center bg-blue-100 font-semibold text-blue-700`}
-    >
-      {participant.initials}
-    </div>
-  );
-}
-
-function GroupParticipantsModal({
-  isOpen,
-  onClose,
-  threadTitle,
-  participants,
-  viewerMemberId,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-  threadTitle: string;
-  participants: MessageParticipant[];
-  viewerMemberId?: string;
-}) {
-  const navigate = useNavigate();
-  const { startDirectConversation, isPending: isStartingConversation } =
-    useStartDirectConversation();
-  const [pendingConversationMemberId, setPendingConversationMemberId] = useState<string | null>(
-    null,
-  );
-
-  useEffect(() => {
-    if (!isOpen) return undefined;
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-
-    function handleEscape(event: globalThis.KeyboardEvent) {
-      if (event.key === 'Escape') {
-        onClose();
-      }
-    }
-
-    window.addEventListener('keydown', handleEscape);
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener('keydown', handleEscape);
-    };
-  }, [isOpen, onClose]);
-
-  if (!isOpen) return null;
-
-  function handleOpenProfile(participant: MessageParticipant) {
-    const profileHref = participant.profileHref || `/alumni/profiles/${participant.memberId}`;
-    onClose();
-    navigate(profileHref);
-  }
-
-  async function handleStartConversation(participant: MessageParticipant) {
-    if (!participant.memberId || participant.memberId === viewerMemberId) {
-      return;
-    }
-
-    setPendingConversationMemberId(participant.memberId);
-    onClose();
-
-    try {
-      await startDirectConversation({
-        participantMemberId: participant.memberId,
-        recipientProfile: {
-          fullName: participant.fullName,
-          avatar: participant.avatar,
-          headline: participant.headline,
-          location: participant.location,
-          graduationYear: participant.graduationYear || undefined,
-          slug: participant.slug,
-          profileHref: participant.profileHref,
-        },
-      });
-    } finally {
-      setPendingConversationMemberId((current) =>
-        current === participant.memberId ? null : current,
-      );
-    }
-  }
-
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4 py-6 backdrop-blur-sm"
-      onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-label={`${threadTitle} members`}
-    >
-      <div
-        className="w-full max-w-2xl overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-2xl"
-        onClick={(event) => event.stopPropagation()}
-      >
-        <div className="flex items-start justify-between gap-4 border-b border-gray-100 px-6 py-5">
-          <div className="min-w-0">
-            <p className="text-xs font-semibold uppercase tracking-wider text-blue-600">
-              Group Members
-            </p>
-            <h3 className="mt-1.5 truncate text-xl font-semibold text-gray-900">{threadTitle}</h3>
-            <p className="mt-0.5 text-sm text-gray-500">{participants.length} participants</p>
-          </div>
-
-          <button
-            type="button"
-            onClick={onClose}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
-            aria-label="Close members list"
-          >
-            <Icon icon="mdi:close" className="h-5 w-5" />
-          </button>
-        </div>
-
-        <div className="max-h-[70vh] overflow-y-auto px-6 py-4">
-          <div className="space-y-2">
-            {participants.map((participant) => {
-              const isViewer = participant.memberId === viewerMemberId;
-
-              return (
-                <div
-                  key={participant.memberId}
-                  className="flex flex-col gap-3 rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 sm:flex-row sm:items-center"
-                >
-                  <button
-                    type="button"
-                    onClick={() => handleOpenProfile(participant)}
-                    className="flex items-center gap-3 rounded-xl text-left transition-colors hover:bg-white/70 sm:flex-1 sm:px-2 sm:py-1.5"
-                  >
-                    <ParticipantAvatar participant={participant} />
-
-                    <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <p className="truncate text-sm font-semibold text-gray-900">
-                          {participant.fullName}
-                        </p>
-                        {isViewer ? (
-                          <span className="rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold text-gray-500">
-                            You
-                          </span>
-                        ) : null}
-                        {participant.roleInThread === 'admin' ? (
-                          <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-semibold text-blue-600">
-                            Admin
-                          </span>
-                        ) : participant.roleInThread === 'moderator' ? (
-                          <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-700">
-                            Moderator
-                          </span>
-                        ) : null}
-                      </div>
-                      <p className="mt-0.5 truncate text-sm text-gray-500">
-                        {participant.headline}
-                      </p>
-                      <p className="mt-1.5 text-xs font-medium text-blue-600">View profile</p>
-                    </div>
-                  </button>
-
-                  {!isViewer ? (
-                    <button
-                      type="button"
-                      onClick={() => void handleStartConversation(participant)}
-                      disabled={isStartingConversation}
-                      className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-200 sm:w-auto"
-                    >
-                      <Icon
-                        icon={
-                          isStartingConversation &&
-                          pendingConversationMemberId === participant.memberId
-                            ? 'mdi:loading'
-                            : 'mdi:message-outline'
-                        }
-                        className={`h-4 w-4 ${
-                          isStartingConversation &&
-                          pendingConversationMemberId === participant.memberId
-                            ? 'animate-spin'
-                            : ''
-                        }`}
-                      />
-                      {isStartingConversation &&
-                      pendingConversationMemberId === participant.memberId
-                        ? 'Opening...'
-                        : 'Message'}
-                    </button>
-                  ) : null}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ThreadAvatar({
-  thread,
-  size = 'md',
-}: {
-  thread: MessageThreadSummary | MessageThreadDetail;
-  size?: 'sm' | 'md';
-}) {
-  const [hasImageError, setHasImageError] = useState(false);
-  // Figma: avatars are circles
-  const sizeClasses = size === 'sm' ? 'h-11 w-11 rounded-full' : 'h-12 w-12 rounded-full';
-
-  useEffect(() => {
-    setHasImageError(false);
-  }, [thread.avatar]);
-
-  if (thread.type === 'group') {
-    return (
-      <div
-        className={`flex ${sizeClasses} flex-shrink-0 items-center justify-center bg-blue-100 text-blue-600`}
-      >
-        <Icon icon="mdi:account-group-outline" className="h-6 w-6" />
-      </div>
-    );
-  }
-
-  return (
-    <div className="relative flex-shrink-0">
-      {thread.avatar && !hasImageError ? (
-        <img
-          src={thread.avatar}
-          alt={thread.title}
-          className={`${sizeClasses} object-cover`}
-          onError={() => setHasImageError(true)}
-        />
-      ) : (
-        <div
-          className={`flex ${sizeClasses} items-center justify-center bg-blue-100 text-sm font-semibold text-blue-700`}
-        >
-          {thread.initials}
-        </div>
-      )}
-      {thread.presence ? (
-        <span
-          className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-white ${presenceClasses(
-            thread.presence,
-          )}`}
-        />
-      ) : null}
-    </div>
-  );
-}
-
-function ReplyPreviewCard({
-  replyTo,
-  variant,
-  onClear,
-  onOpenOriginal,
-}: {
-  replyTo: MessageReplyPreview;
-  variant: 'composer' | 'bubble';
-  onClear?: () => void;
-  onOpenOriginal?: (messageId: string) => void;
-}) {
-  const isComposer = variant === 'composer';
-  const attachmentSummary =
-    replyTo.attachments.length > 0
-      ? replyTo.attachments.length === 1
-        ? describeAttachmentForPreview({
-            id: replyTo.messageId,
-            kind: replyTo.attachments[0].kind,
-            fileName: replyTo.attachments[0].fileName,
-            mimeType: '',
-            sizeInBytes: 0,
-            sizeLabel: '',
-            uploadState: 'uploaded',
-          })
-        : `${replyTo.attachments.length} attachments`
-      : null;
-
-  return (
-    <div
-      className={`mb-3 rounded-xl border-l-4 px-3 py-2.5 ${
-        isComposer
-          ? 'border-blue-500 bg-blue-50 text-gray-800'
-          : 'border-blue-300 bg-black/10 text-inherit'
-      }`}
-    >
-      <div className="flex items-start justify-between gap-3">
-        {onOpenOriginal ? (
-          <button
-            type="button"
-            onClick={() => onOpenOriginal(replyTo.messageId)}
-            className="min-w-0 flex-1 text-left"
-          >
-            <p
-              className={`truncate text-xs font-semibold ${
-                isComposer ? 'text-blue-700' : 'text-current/80'
-              }`}
-            >
-              {replyTo.senderDisplayName}
-            </p>
-            <p
-              className={`mt-0.5 line-clamp-2 text-sm ${
-                isComposer ? 'text-gray-600' : 'text-current/85'
-              }`}
-            >
-              {replyTo.bodyPreview}
-            </p>
-            {attachmentSummary ? (
-              <p className={`mt-0.5 text-xs ${isComposer ? 'text-gray-500' : 'text-current/70'}`}>
-                {attachmentSummary}
-              </p>
-            ) : null}
-          </button>
-        ) : (
-          <div className="min-w-0">
-            <p
-              className={`truncate text-xs font-semibold ${
-                isComposer ? 'text-blue-700' : 'text-current/80'
-              }`}
-            >
-              {replyTo.senderDisplayName}
-            </p>
-            <p
-              className={`mt-0.5 line-clamp-2 text-sm ${
-                isComposer ? 'text-gray-600' : 'text-current/85'
-              }`}
-            >
-              {replyTo.bodyPreview}
-            </p>
-            {attachmentSummary ? (
-              <p className={`mt-0.5 text-xs ${isComposer ? 'text-gray-500' : 'text-current/70'}`}>
-                {attachmentSummary}
-              </p>
-            ) : null}
-          </div>
-        )}
-
-        {onClear ? (
-          <button
-            type="button"
-            onClick={onClear}
-            className="inline-flex h-7 w-7 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
-            aria-label="Clear reply target"
-          >
-            <Icon icon="mdi:close" className="h-3.5 w-3.5" />
-          </button>
-        ) : null}
-      </div>
-    </div>
-  );
-}
-
-function MessageAttachments({
-  attachments,
-  isOwn,
-  onOpenImage,
-}: {
-  attachments: MessageAttachment[];
-  isOwn: boolean;
-  onOpenImage: (attachment: MessageAttachment) => void;
-}) {
-  return (
-    <div className="mt-2.5 space-y-2">
-      {attachments.map((attachment) => {
-        const previewUrl = attachment.url ?? getMessageAttachmentPreviewUrl(attachment.id);
-
-        if (attachment.kind === 'image' && previewUrl) {
-          return (
-            <button
-              key={attachment.id}
-              type="button"
-              onClick={() => onOpenImage(attachment)}
-              className="group block w-full overflow-hidden rounded-xl text-left transition-transform hover:scale-[1.01]"
-            >
-              <div className="relative">
-                <img
-                  src={previewUrl}
-                  alt={attachment.fileName}
-                  className="max-h-72 w-full rounded-xl object-cover"
-                />
-                <div className="absolute inset-x-0 bottom-0 rounded-b-xl bg-gradient-to-t from-black/70 via-black/20 to-transparent px-3 pb-3 pt-8 text-white">
-                  <div className="flex items-end justify-between gap-2">
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-medium">{attachment.fileName}</p>
-                      <p className="text-xs text-white/70">{attachment.sizeLabel}</p>
-                    </div>
-                    <span className="inline-flex items-center gap-1 rounded-full bg-white/20 px-2.5 py-1 text-[11px] font-semibold text-white">
-                      <Icon icon="mdi:arrow-expand-all" className="h-3 w-3" />
-                      Open
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </button>
-          );
-        }
-
-        return (
-          <div
-            key={attachment.id}
-            className={`rounded-xl border px-3 py-2.5 ${
-              isOwn
-                ? 'border-blue-200/60 bg-white/20 text-gray-900'
-                : 'border-gray-200 bg-white text-gray-800'
-            }`}
-          >
-            <div className="flex items-center gap-2.5">
-              <div
-                className={`flex h-9 w-9 items-center justify-center rounded-xl ${
-                  isOwn ? 'bg-white/30' : 'bg-blue-50 text-blue-600'
-                }`}
-              >
-                <Icon icon={getAttachmentIcon(attachment.kind)} className="h-4.5 w-4.5" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium">{attachment.fileName}</p>
-                <p className={`text-xs ${isOwn ? 'text-gray-600' : 'text-gray-500'}`}>
-                  {attachment.kind === 'audio' && attachment.durationSeconds
-                    ? `${formatAudioDuration(attachment.durationSeconds)} • ${attachment.sizeLabel}`
-                    : attachment.sizeLabel}
-                </p>
-              </div>
-            </div>
-
-            {attachment.kind === 'audio' && attachment.waveform ? (
-              <div className="mt-2.5 flex h-8 items-end gap-0.5">
-                {attachment.waveform.map((barHeight, index) => (
-                  <span
-                    key={`${attachment.id}-${index}`}
-                    className={`block w-1 rounded-full ${isOwn ? 'bg-blue-400' : 'bg-blue-200'}`}
-                    style={{ height: `${Math.max(8, Math.round(barHeight * 0.4))}px` }}
-                  />
-                ))}
-              </div>
-            ) : null}
-
-            {attachment.kind === 'audio' ? (
-              previewUrl ? (
-                <audio controls preload="metadata" src={previewUrl} className="mt-2.5 w-full" />
-              ) : (
-                <p className={`mt-2.5 text-xs ${isOwn ? 'text-gray-500' : 'text-gray-400'}`}>
-                  Audio playback is unavailable for this message right now.
-                </p>
-              )
-            ) : null}
-
-            {attachment.kind === 'file' && previewUrl ? (
-              <div className="mt-2.5">
-                <a
-                  href={previewUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${
-                    isOwn
-                      ? 'bg-white/20 text-gray-700 hover:bg-white/30'
-                      : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
-                  }`}
-                >
-                  <Icon icon="mdi:open-in-new" className="h-3.5 w-3.5" />
-                  Open file
-                </a>
-              </div>
-            ) : null}
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-function DraftComposerAttachments({
-  attachments,
-  onRemove,
-}: {
-  attachments: DraftComposerAttachment[];
-  onRemove: (attachmentId: string) => void;
-}) {
-  if (attachments.length === 0) return null;
-
-  return (
-    <div className="mb-3 space-y-2">
-      <div className={`grid gap-2.5 ${attachments.length > 1 ? 'sm:grid-cols-2' : ''}`}>
-        {attachments.map((attachment) => {
-          if (attachment.kind === 'image' && attachment.previewUrl) {
-            return (
-              <div
-                key={attachment.id}
-                className="relative overflow-hidden rounded-xl border border-gray-200 bg-gray-900 shadow-sm"
-              >
-                <img
-                  src={attachment.previewUrl}
-                  alt={attachment.fileName}
-                  className="h-56 w-full object-cover sm:h-64"
-                />
-                <button
-                  type="button"
-                  onClick={() => onRemove(attachment.id)}
-                  className="absolute right-2.5 top-2.5 inline-flex h-8 w-8 items-center justify-center rounded-full bg-black/60 text-white transition-colors hover:bg-black/80"
-                  aria-label={`Remove ${attachment.fileName}`}
-                >
-                  <Icon icon="mdi:close" className="h-4 w-4" />
-                </button>
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent px-3 pb-3 pt-8 text-white">
-                  <p className="truncate text-sm font-medium">{attachment.fileName}</p>
-                  <p className="text-xs text-white/60">{attachment.sizeLabel}</p>
-                </div>
-              </div>
-            );
-          }
-
-          if (attachment.kind === 'audio') {
-            return (
-              <div
-                key={attachment.id}
-                className="relative rounded-xl border border-gray-200 bg-white px-4 py-3.5 text-gray-800 shadow-sm"
-              >
-                <button
-                  type="button"
-                  onClick={() => onRemove(attachment.id)}
-                  className="absolute right-2.5 top-2.5 inline-flex h-8 w-8 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
-                  aria-label={`Remove ${attachment.fileName}`}
-                >
-                  <Icon icon="mdi:close" className="h-3.5 w-3.5" />
-                </button>
-
-                <div className="flex items-center gap-3 pr-10">
-                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
-                    <Icon icon="mdi:waveform" className="h-5 w-5" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium">{attachment.fileName}</p>
-                    <p className="text-xs text-gray-500">
-                      {attachment.durationSeconds
-                        ? `${formatAudioDuration(attachment.durationSeconds)} • ${attachment.sizeLabel}`
-                        : attachment.sizeLabel}
-                    </p>
-                  </div>
-                </div>
-
-                {attachment.previewUrl ? (
-                  <audio
-                    controls
-                    preload="metadata"
-                    src={attachment.previewUrl}
-                    className="mt-3 w-full"
-                  />
-                ) : (
-                  <p className="mt-3 text-xs text-gray-500">
-                    Playback preview is unavailable for this recording in the current browser.
-                  </p>
-                )}
-              </div>
-            );
-          }
-
-          return (
-            <div
-              key={attachment.id}
-              className="relative flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3.5 text-gray-800 shadow-sm"
-            >
-              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
-                <Icon icon={getAttachmentIcon(attachment.kind)} className="h-5 w-5" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium">{attachment.fileName}</p>
-                <p className="text-xs text-gray-500">{attachment.sizeLabel}</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => onRemove(attachment.id)}
-                className="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
-                aria-label={`Remove ${attachment.fileName}`}
-              >
-                <Icon icon="mdi:close" className="h-3.5 w-3.5" />
-              </button>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-function ImageAttachmentLightbox({
-  attachment,
-  onClose,
-}: {
-  attachment: MessageAttachment | null;
-  onClose: () => void;
-}) {
-  const previewUrl = attachment
-    ? (attachment.url ?? getMessageAttachmentPreviewUrl(attachment.id))
-    : undefined;
-
-  useEffect(() => {
-    if (!attachment) return undefined;
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-
-    function handleEscape(event: globalThis.KeyboardEvent) {
-      if (event.key === 'Escape') onClose();
-    }
-
-    window.addEventListener('keydown', handleEscape);
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener('keydown', handleEscape);
-    };
-  }, [attachment, onClose]);
-
-  if (!attachment || !previewUrl) return null;
-
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 px-4 py-6 backdrop-blur-sm"
-      onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-label={attachment.fileName}
-    >
-      <button
-        type="button"
-        onClick={onClose}
-        className="absolute right-5 top-5 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
-        aria-label="Close image preview"
-      >
-        <Icon icon="mdi:close" className="h-5 w-5" />
-      </button>
-
-      <div
-        className="w-full max-w-5xl overflow-hidden rounded-2xl border border-white/10 bg-gray-900/90 shadow-2xl"
-        onClick={(event) => event.stopPropagation()}
-      >
-        <div className="flex items-center justify-between gap-4 border-b border-white/10 px-5 py-4 text-white">
-          <div className="min-w-0">
-            <p className="truncate text-sm font-semibold">{attachment.fileName}</p>
-            <p className="text-xs text-white/60">{attachment.sizeLabel}</p>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => window.open(previewUrl, '_blank', 'noopener,noreferrer')}
-            className="inline-flex items-center gap-1.5 rounded-full border border-white/15 px-3 py-1.5 text-xs font-semibold text-white/80 transition-colors hover:border-white/30 hover:text-white"
-          >
-            <Icon icon="mdi:open-in-new" className="h-3.5 w-3.5" />
-            Open
-          </button>
-        </div>
-
-        <div className="flex max-h-[80vh] items-center justify-center bg-black/50 p-4 sm:p-6">
-          <img
-            src={previewUrl}
-            alt={attachment.fileName}
-            className="max-h-[72vh] w-auto max-w-full rounded-xl object-contain"
-          />
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export function MessagesPage() {
   const navigate = useNavigate();
@@ -1075,7 +98,6 @@ export function MessagesPage() {
   const [filter, setFilter] = useState<MessageThreadFilter>('all');
   const [query, setQuery] = useState('');
   const [draftMessage, setDraftMessage] = useState('');
-  const [draftAttachments, setDraftAttachments] = useState<DraftComposerAttachment[]>([]);
   const [replyTarget, setReplyTarget] = useState<MessageReplyPreview | null>(null);
   const [openMessageActions, setOpenMessageActions] = useState<OpenMessageActionsMenu | null>(null);
   const [participantsModalOpen, setParticipantsModalOpen] = useState(false);
@@ -1122,6 +144,14 @@ export function MessagesPage() {
   const uploadAttachment = useUploadMessageAttachment();
   const markThreadRead = useMarkMessageThreadRead();
   const inboxThreads = inboxQuery.data?.threads ?? [];
+  const {
+    draftAttachments,
+    addFilesToDraft,
+    clearDraftAttachments,
+    removeDraftAttachment,
+    restoreDraftAttachments,
+    stageDraftVoiceNote,
+  } = useDraftComposerAttachments();
 
   const visibleThreads = useMemo(
     () => filterMessageThreads(inboxThreads, filter, deferredQuery, selectedThreadId),
@@ -1173,9 +203,6 @@ export function MessagesPage() {
       threadShell?.type === 'group' ? sortGroupParticipants(threadShell.participants ?? []) : [],
     [threadShell],
   );
-  const previewGroupParticipants = groupParticipants.slice(0, 3);
-  const groupAdminParticipant =
-    groupParticipants.find((participant) => participant.roleInThread === 'admin') ?? null;
   const openMessageActionsMessage = useMemo(
     () =>
       openMessageActions
@@ -1225,41 +252,13 @@ export function MessagesPage() {
     ]);
   }
 
-  function releaseDraftAttachmentResources(
-    attachment: DraftComposerAttachment,
-    options?: {
-      preservePreviewUrls?: Set<string>;
-      preserveUploadedAttachmentIds?: Set<string>;
-    },
-  ) {
-    const shouldPreservePreviewUrl =
-      !!attachment.previewUrl && options?.preservePreviewUrls?.has(attachment.previewUrl);
-    const uploadedAttachmentId = attachment.uploadedAttachment?.id;
-    const shouldPreserveUploadedAttachment =
-      !!uploadedAttachmentId && options?.preserveUploadedAttachmentIds?.has(uploadedAttachmentId);
-
-    if (uploadedAttachmentId && !shouldPreserveUploadedAttachment) {
-      revokeMessageAttachmentPreview(uploadedAttachmentId);
-    }
-
-    if (attachment.previewUrl && !shouldPreservePreviewUrl) {
-      URL.revokeObjectURL(attachment.previewUrl);
-    }
-  }
-
   function discardDraftComposer(options?: {
     preservePreviewUrls?: Set<string>;
     preserveUploadedAttachmentIds?: Set<string>;
   }) {
     setDraftMessage('');
     setReplyTarget(null);
-    setDraftAttachments((previous) => {
-      previous.forEach((attachment) => {
-        releaseDraftAttachmentResources(attachment, options);
-      });
-
-      return [];
-    });
+    clearDraftAttachments(options);
   }
 
   function addOptimisticMessage(threadId: string, message: MessageItem) {
@@ -1287,17 +286,6 @@ export function MessagesPage() {
         ...previous,
         [threadId]: nextMessages,
       };
-    });
-  }
-
-  function removeDraftAttachment(attachmentId: string) {
-    setDraftAttachments((previous) => {
-      const attachmentToRemove = previous.find((attachment) => attachment.id === attachmentId);
-      if (attachmentToRemove) {
-        releaseDraftAttachmentResources(attachmentToRemove);
-      }
-
-      return previous.filter((attachment) => attachment.id !== attachmentId);
     });
   }
 
@@ -1339,18 +327,6 @@ export function MessagesPage() {
     if (shouldResetTimer) {
       setVoiceRecordingDurationMs(0);
     }
-  }
-
-  function stageDraftVoiceNote(
-    attachmentRequest: UploadMessageAttachmentRequest,
-    previewUrl?: string,
-  ) {
-    setDraftAttachments((previous) => [
-      ...previous,
-      buildDraftComposerAttachmentFromUploadRequest(attachmentRequest, {
-        previewUrl,
-      }),
-    ]);
   }
 
   async function finalizeSimulatedVoiceRecording() {
@@ -1855,10 +831,7 @@ export function MessagesPage() {
     event.target.value = '';
 
     if (!viewerMemberId || !activeThread || files.length === 0) return;
-
-    const nextAttachments = files.map((file) => buildDraftComposerAttachment(file, viewerMemberId));
-
-    setDraftAttachments((previous) => [...previous, ...nextAttachments]);
+    addFilesToDraft(files, viewerMemberId);
   }
 
   async function handleCopyMessage(message: MessageItem) {
@@ -2044,7 +1017,7 @@ export function MessagesPage() {
       removeOptimisticMessage(currentThreadId, optimisticMessage.id);
       setDraftMessage(originalDraftMessage);
       setReplyTarget(originalReplyTarget);
-      setDraftAttachments(
+      restoreDraftAttachments(
         originalDraftAttachments.map((attachment) => ({
           ...attachment,
           uploadedAttachment: uploadedByDraftId.get(attachment.id) ?? attachment.uploadedAttachment,
@@ -2285,47 +1258,26 @@ export function MessagesPage() {
                 <>
                   {/* Thread header */}
                   {threadShell ? (
-                    <header className="flex items-center gap-4 border-b border-gray-100 px-5 py-4">
+                    <header className="flex items-center gap-4 border-b border-gray-100 px-5 py-2">
                       <ThreadAvatar thread={threadShell} />
 
                       <div className="min-w-0 flex-1">
                         <h2 className="truncate text-base font-semibold text-gray-900">
                           {threadShell.title}
                         </h2>
-                        <p className="mt-0.5 truncate text-sm text-gray-500">
-                          {threadShell.subtitle || formatThreadHeaderSubtitle(threadShell)}
-                        </p>
-
-                        {/* Group participants button */}
                         {threadShell.type === 'group' && groupParticipants.length > 0 ? (
                           <button
                             type="button"
                             onClick={() => setParticipantsModalOpen(true)}
-                            className="mt-2 inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 text-left text-xs font-medium text-gray-600 transition-colors hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
+                            className="mt-0.5 block truncate text-left text-sm text-gray-500 underline decoration-gray-300 underline-offset-4 transition-colors hover:text-blue-700 hover:decoration-blue-300"
                           >
-                            <div className="flex -space-x-1.5">
-                              {previewGroupParticipants.map((participant) => (
-                                <div
-                                  key={participant.memberId}
-                                  className="rounded-full border border-white"
-                                >
-                                  <ParticipantAvatar participant={participant} size="sm" />
-                                </div>
-                              ))}
-                              {groupParticipants.length > previewGroupParticipants.length ? (
-                                <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white bg-gray-200 text-[10px] font-semibold text-gray-600">
-                                  +{groupParticipants.length - previewGroupParticipants.length}
-                                </span>
-                              ) : null}
-                            </div>
-                            <span>
-                              {groupAdminParticipant
-                                ? `${groupAdminParticipant.fullName} is admin`
-                                : `${groupParticipants.length} members`}
-                            </span>
-                            <Icon icon="mdi:chevron-right" className="h-3.5 w-3.5 text-gray-400" />
+                            {formatMemberCount(groupParticipants.length)}
                           </button>
-                        ) : null}
+                        ) : (
+                          <p className="mt-0.5 truncate text-sm text-gray-500">
+                            {threadShell.subtitle || formatThreadHeaderSubtitle(threadShell)}
+                          </p>
+                        )}
                       </div>
                     </header>
                   ) : (
@@ -2341,7 +1293,10 @@ export function MessagesPage() {
                   )}
 
                   {/* Message pane */}
-                  <div ref={messagePaneRef} className="flex-1 overflow-y-auto bg-white px-5 py-5">
+                  <div
+                    ref={messagePaneRef}
+                    className="min-h-0 flex-1 overflow-y-auto bg-white px-5 py-5"
+                  >
                     {threadQuery.isLoading && !activeThread ? (
                       <div className="space-y-5">
                         {Array.from({ length: 3 }).map((_, index) => (
@@ -2511,7 +1466,7 @@ export function MessagesPage() {
                   </div>
 
                   {/* Composer footer */}
-                  <footer className="border-t border-gray-100 px-4 py-3">
+                  <footer className="shrink-0 border-t border-gray-100 px-4 py-1.5">
                     <input
                       ref={fileInputRef}
                       type="file"
@@ -2521,123 +1476,131 @@ export function MessagesPage() {
                       onChange={handleFileSelection}
                     />
 
-                    <div className="rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3">
-                      {replyTarget ? (
-                        <ReplyPreviewCard
-                          replyTo={replyTarget}
-                          variant="composer"
-                          onClear={() => setReplyTarget(null)}
+                    <div className="flex max-h-[min(12.5rem,24vh)] flex-col rounded-2xl border border-gray-200 bg-gray-50">
+                      <div className="min-h-0 overflow-y-auto px-4 pt-2">
+                        {replyTarget ? (
+                          <ReplyPreviewCard
+                            replyTo={replyTarget}
+                            variant="composer"
+                            onClear={() => setReplyTarget(null)}
+                          />
+                        ) : null}
+
+                        <DraftComposerAttachments
+                          attachments={draftAttachments}
+                          onRemove={removeDraftAttachment}
                         />
-                      ) : null}
+                      </div>
 
-                      <DraftComposerAttachments
-                        attachments={draftAttachments}
-                        onRemove={removeDraftAttachment}
-                      />
+                      <div
+                        className={`shrink-0 px-4 py-2 ${
+                          draftAttachments.length > 0 ? 'border-t border-gray-200/80' : ''
+                        }`}
+                      >
+                        {voiceRecordingBusy ? (
+                          <div className="mb-3 flex items-center justify-between gap-3 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2.5 text-rose-900">
+                            <div className="flex min-w-0 items-center gap-2.5">
+                              <span
+                                className={`h-2.5 w-2.5 flex-shrink-0 rounded-full ${
+                                  voiceRecordingActive ? 'animate-pulse bg-rose-500' : 'bg-rose-400'
+                                }`}
+                              />
+                              <div className="min-w-0">
+                                <p className="text-sm font-semibold">{voiceRecordingLabel}</p>
+                                <p className="text-xs text-rose-700">{voiceRecordingHint}</p>
+                              </div>
+                            </div>
 
-                      {voiceRecordingBusy ? (
-                        <div className="mb-3 flex items-center justify-between gap-3 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2.5 text-rose-900">
-                          <div className="flex min-w-0 items-center gap-2.5">
-                            <span
-                              className={`h-2.5 w-2.5 flex-shrink-0 rounded-full ${
-                                voiceRecordingActive ? 'animate-pulse bg-rose-500' : 'bg-rose-400'
-                              }`}
-                            />
-                            <div className="min-w-0">
-                              <p className="text-sm font-semibold">{voiceRecordingLabel}</p>
-                              <p className="text-xs text-rose-700">{voiceRecordingHint}</p>
+                            <span className="rounded-full bg-white px-2.5 py-1 text-sm font-semibold text-rose-700 shadow-sm">
+                              {formatRecordingDuration(voiceRecordingDurationMs)}
+                            </span>
+                          </div>
+                        ) : null}
+
+                        <textarea
+                          value={draftMessage}
+                          onChange={(event) => setDraftMessage(event.target.value)}
+                          onKeyDown={handleComposerKeyDown}
+                          disabled={composerDisabled}
+                          rows={1}
+                          placeholder={
+                            activeThread
+                              ? 'Write a message...'
+                              : 'Select a conversation to start typing'
+                          }
+                          className="w-full resize-none border-0 bg-transparent text-[14.5px] text-gray-900 outline-none placeholder:text-gray-400 disabled:cursor-not-allowed disabled:opacity-50"
+                        />
+
+                        <div className="mt-1.5 flex items-center justify-between gap-3">
+                          <div className="flex items-center gap-1.5">
+                            {/* Attach file */}
+                            <button
+                              type="button"
+                              onClick={() => fileInputRef.current?.click()}
+                              disabled={attachmentsDisabled}
+                              className="inline-flex h-9 w-9 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-200 hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-50"
+                              aria-label="Attach file"
+                            >
+                              <Icon icon="mdi:paperclip" className="h-4.5 w-4.5" />
+                            </button>
+
+                            {/* Voice note */}
+                            <div className="group relative">
+                              <button
+                                type="button"
+                                ref={voiceRecordButtonRef}
+                                onPointerDown={handleVoiceRecordPointerDown}
+                                onPointerUp={handleVoiceRecordPointerUp}
+                                onPointerCancel={handleVoiceRecordPointerUp}
+                                onKeyDown={handleVoiceRecordKeyDown}
+                                onKeyUp={handleVoiceRecordKeyUp}
+                                disabled={audioDisabled}
+                                title={voiceRecordTooltip}
+                                className={`inline-flex h-9 w-9 items-center justify-center rounded-full transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+                                  voiceRecordingBusy
+                                    ? 'bg-rose-100 text-rose-700'
+                                    : 'text-gray-400 hover:bg-gray-200 hover:text-gray-600'
+                                }`}
+                                aria-label="Hold to record a voice note"
+                              >
+                                <Icon
+                                  icon={
+                                    voiceRecordingState === 'starting' ||
+                                    voiceRecordingState === 'finishing'
+                                      ? 'mdi:loading'
+                                      : voiceRecordingActive
+                                        ? 'mdi:microphone'
+                                        : 'mdi:microphone-outline'
+                                  }
+                                  className={`h-4.5 w-4.5 ${
+                                    voiceRecordingState === 'starting' ||
+                                    voiceRecordingState === 'finishing'
+                                      ? 'animate-spin'
+                                      : ''
+                                  }`}
+                                />
+                              </button>
+
+                              <span className="pointer-events-none absolute -top-9 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded-lg bg-gray-800 px-2.5 py-1.5 text-xs text-white shadow-sm group-hover:inline-flex">
+                                {voiceRecordTooltip}
+                              </span>
                             </div>
                           </div>
 
-                          <span className="rounded-full bg-white px-2.5 py-1 text-sm font-semibold text-rose-700 shadow-sm">
-                            {formatRecordingDuration(voiceRecordingDurationMs)}
-                          </span>
-                        </div>
-                      ) : null}
-
-                      <textarea
-                        value={draftMessage}
-                        onChange={(event) => setDraftMessage(event.target.value)}
-                        onKeyDown={handleComposerKeyDown}
-                        disabled={composerDisabled}
-                        rows={2}
-                        placeholder={
-                          activeThread
-                            ? 'Write a message...'
-                            : 'Select a conversation to start typing'
-                        }
-                        className="w-full resize-none border-0 bg-transparent text-[14.5px] text-gray-900 outline-none placeholder:text-gray-400 disabled:cursor-not-allowed disabled:opacity-50"
-                      />
-
-                      <div className="mt-2.5 flex items-center justify-between gap-3">
-                        <div className="flex items-center gap-1.5">
-                          {/* Attach file */}
+                          {/* Send button */}
                           <button
                             type="button"
-                            onClick={() => fileInputRef.current?.click()}
-                            disabled={attachmentsDisabled}
-                            className="inline-flex h-9 w-9 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-200 hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-50"
-                            aria-label="Attach file"
+                            onClick={() => void handleSendMessage()}
+                            disabled={!canSend}
+                            className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-white shadow-sm transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-200"
+                            aria-label="Send message"
                           >
-                            <Icon icon="mdi:paperclip" className="h-4.5 w-4.5" />
+                            <Icon
+                              icon={sendMessage.isPending ? 'mdi:loading' : 'mdi:send'}
+                              className={`h-4 w-4 ${sendMessage.isPending ? 'animate-spin' : ''}`}
+                            />
                           </button>
-
-                          {/* Voice note */}
-                          <div className="group relative">
-                            <button
-                              type="button"
-                              ref={voiceRecordButtonRef}
-                              onPointerDown={handleVoiceRecordPointerDown}
-                              onPointerUp={handleVoiceRecordPointerUp}
-                              onPointerCancel={handleVoiceRecordPointerUp}
-                              onKeyDown={handleVoiceRecordKeyDown}
-                              onKeyUp={handleVoiceRecordKeyUp}
-                              disabled={audioDisabled}
-                              title={voiceRecordTooltip}
-                              className={`inline-flex h-9 w-9 items-center justify-center rounded-full transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
-                                voiceRecordingBusy
-                                  ? 'bg-rose-100 text-rose-700'
-                                  : 'text-gray-400 hover:bg-gray-200 hover:text-gray-600'
-                              }`}
-                              aria-label="Hold to record a voice note"
-                            >
-                              <Icon
-                                icon={
-                                  voiceRecordingState === 'starting' ||
-                                  voiceRecordingState === 'finishing'
-                                    ? 'mdi:loading'
-                                    : voiceRecordingActive
-                                      ? 'mdi:microphone'
-                                      : 'mdi:microphone-outline'
-                                }
-                                className={`h-4.5 w-4.5 ${
-                                  voiceRecordingState === 'starting' ||
-                                  voiceRecordingState === 'finishing'
-                                    ? 'animate-spin'
-                                    : ''
-                                }`}
-                              />
-                            </button>
-
-                            <span className="pointer-events-none absolute -top-9 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded-lg bg-gray-800 px-2.5 py-1.5 text-xs text-white shadow-sm group-hover:inline-flex">
-                              {voiceRecordTooltip}
-                            </span>
-                          </div>
                         </div>
-
-                        {/* Send button */}
-                        <button
-                          type="button"
-                          onClick={() => void handleSendMessage()}
-                          disabled={!canSend}
-                          className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-white shadow-sm transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-200"
-                          aria-label="Send message"
-                        >
-                          <Icon
-                            icon={sendMessage.isPending ? 'mdi:loading' : 'mdi:send'}
-                            className={`h-4 w-4 ${sendMessage.isPending ? 'animate-spin' : ''}`}
-                          />
-                        </button>
                       </div>
                     </div>
                   </footer>

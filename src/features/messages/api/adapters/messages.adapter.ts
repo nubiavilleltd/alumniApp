@@ -325,7 +325,7 @@ export function filterMessageThreads(
   return sortMessageThreads(threads).filter((thread) => {
     const matchesFilter =
       filter === 'all' ||
-      (filter === 'unread' && thread.unreadCount > 0 && !thread.isPinned) ||
+      (filter === 'unread' && thread.unreadCount > 0) ||
       (filter === 'pinned' && thread.isPinned);
 
     if (!matchesFilter) return false;

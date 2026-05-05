@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { ButtonLink } from '@/shared/components/ui/Button';
+import { DatePicker } from '@/shared/components/ui/input/DatePicker';
 import { FormInput } from '@/shared/components/ui/input/FormInput';
 import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
@@ -28,20 +29,23 @@ type EditorState = {
   title: string;
   content: string;
   type: AnnouncementType;
-  chapterId: string;
   year: string;
   startsAt: string;
   endsAt: string;
 };
 
+type SortDirection = 'newest' | 'oldest';
+
 const announcementTypeOptions = [
   { label: 'Info', value: 'info' },
-  { label: 'Warning', value: 'warning' },
-  { label: 'Success', value: 'success' },
   { label: 'Event', value: 'event' },
 ] as const;
 
 const filterOptions = [{ label: 'All types', value: 'all' }, ...announcementTypeOptions] as const;
+const sortOptions = [
+  { label: 'Newest first', value: 'newest' },
+  { label: 'Oldest first', value: 'oldest' },
+] as const;
 const ANNOUNCEMENT_FALLBACK_IMAGE = '/news-1.png';
 
 const breadcrumbItems = [
@@ -53,8 +57,17 @@ const breadcrumbItems = [
 function formatAnnouncementDate(date?: string) {
   if (!date) return 'Not scheduled';
 
-  const parsed = new Date(date);
+  const isDateOnly = /^\d{4}-\d{2}-\d{2}$/.test(date);
+  const parsed = new Date(isDateOnly ? `${date}T00:00:00` : date);
   if (Number.isNaN(parsed.getTime())) return date;
+
+  if (isDateOnly) {
+    return parsed.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  }
 
   return parsed.toLocaleString('en-US', {
     month: 'short',
@@ -94,23 +107,26 @@ async function imageUrlToFile(imageUrl: string) {
   });
 }
 
-function toInputDateTime(value?: string) {
+function toInputDate(value?: string) {
   if (!value) return '';
-  if (value.includes('T')) return value.slice(0, 16);
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
+  if (value.includes('T')) return value.slice(0, 10);
   if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}(:\d{2})?$/.test(value)) {
-    return value.replace(' ', 'T').slice(0, 16);
+    return value.slice(0, 10);
   }
 
   const parsed = new Date(value);
   if (Number.isNaN(parsed.getTime())) return '';
 
-  const offset = parsed.getTimezoneOffset() * 60_000;
-  return new Date(parsed.getTime() - offset).toISOString().slice(0, 16);
+  const year = parsed.getFullYear();
+  const month = String(parsed.getMonth() + 1).padStart(2, '0');
+  const day = String(parsed.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
 
-function toBackendDateTime(value: string) {
+function toBackendDate(value: string) {
   if (!value.trim()) return undefined;
-  return `${value.replace('T', ' ')}:00`;
+  return value.trim();
 }
 
 function getInitialEditorState(item?: NewsItem): EditorState {
@@ -118,19 +134,14 @@ function getInitialEditorState(item?: NewsItem): EditorState {
     title: item?.title ?? '',
     content: item?.content ?? item?.excerpt ?? '',
     type: item?.type ?? 'info',
-    chapterId: item?.chapterId ?? '',
     year: item?.year ? String(item.year) : '',
-    startsAt: toInputDateTime(item?.startsAt),
-    endsAt: toInputDateTime(item?.endsAt),
+    startsAt: toInputDate(item?.startsAt),
+    endsAt: toInputDate(item?.endsAt),
   };
 }
 
 function typeBadgeClass(type: AnnouncementType) {
   switch (type) {
-    case 'warning':
-      return 'bg-amber-100 text-amber-800';
-    case 'success':
-      return 'bg-green-100 text-green-800';
     case 'event':
       return 'bg-blue-100 text-blue-800';
     case 'info':
@@ -216,10 +227,9 @@ function AnnouncementEditorModal({
       title: form.title.trim(),
       content: form.content.trim(),
       type: form.type,
-      chapterId: form.chapterId.trim() || undefined,
       year: form.year.trim() || undefined,
-      startsAt: toBackendDateTime(form.startsAt),
-      endsAt: toBackendDateTime(form.endsAt),
+      startsAt: toBackendDate(form.startsAt),
+      endsAt: toBackendDate(form.endsAt),
       image: submitImage,
     };
 
@@ -283,32 +293,22 @@ function AnnouncementEditorModal({
           />
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          <FormInput
-            label="Chapter ID"
-            value={form.chapterId}
-            onChange={(event) => handleFieldChange('chapterId', event.target.value)}
-            placeholder="Leave blank for global"
-          />
-
-          <div className="rounded-2xl bg-accent-50 px-4 py-3 text-sm text-accent-600">
-            Leave chapter and year blank if the announcement should be visible to everyone.
-          </div>
+        <div className="rounded-2xl bg-accent-50 px-4 py-3 text-sm text-accent-600">
+          Leave year blank if the announcement should be visible to everyone.
         </div>
 
         <div className="grid gap-4 md:grid-cols-2">
-          <FormInput
+          <DatePicker
             label="Starts At"
             value={form.startsAt}
-            onChange={(event) => handleFieldChange('startsAt', event.target.value)}
-            type="datetime-local"
+            onValueChange={(value) => handleFieldChange('startsAt', value)}
           />
 
-          <FormInput
+          <DatePicker
             label="Ends At"
             value={form.endsAt}
-            onChange={(event) => handleFieldChange('endsAt', event.target.value)}
-            type="datetime-local"
+            min={form.startsAt || undefined}
+            onValueChange={(value) => handleFieldChange('endsAt', value)}
           />
         </div>
 
@@ -353,18 +353,22 @@ export function AdminAnnouncementsPage() {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedType, setSelectedType] = useState<'all' | AnnouncementType>('all');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('newest');
   const [editorOpen, setEditorOpen] = useState(false);
   const [editingAnnouncement, setEditingAnnouncement] = useState<NewsItem | null>(null);
   const [announcementToDelete, setAnnouncementToDelete] = useState<NewsItem | null>(null);
 
-  const sortedAnnouncements = useMemo(
-    () =>
-      [...announcements].sort(
-        (a, b) =>
-          new Date(b.startsAt || b.date).getTime() - new Date(a.startsAt || a.date).getTime(),
-      ),
-    [announcements],
-  );
+  const sortedAnnouncements = useMemo(() => {
+    const getCreatedTime = (item: NewsItem) => {
+      const timestamp = new Date(item.date).getTime();
+      return Number.isNaN(timestamp) ? 0 : timestamp;
+    };
+
+    return [...announcements].sort((a, b) => {
+      const difference = getCreatedTime(b) - getCreatedTime(a);
+      return sortDirection === 'oldest' ? -difference : difference;
+    });
+  }, [announcements, sortDirection]);
 
   const filteredAnnouncements = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -403,7 +407,7 @@ export function AdminAnnouncementsPage() {
             <div>
               <h1 className="text-3xl font-bold text-accent-950">Manage Announcements</h1>
               <p className="mt-2 text-sm text-accent-500">
-                Publish updates for members, chapters, year sets, and time-sensitive notices.
+                Publish updates for members, year sets, and time-sensitive notices.
               </p>
             </div>
 
@@ -458,7 +462,7 @@ export function AdminAnnouncementsPage() {
                 />
               </div>
 
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap items-start gap-2">
                 {filterOptions.map((filter) => (
                   <button
                     key={filter.value}
@@ -473,6 +477,15 @@ export function AdminAnnouncementsPage() {
                     {filter.label}
                   </button>
                 ))}
+
+                <div className="min-w-[11.5rem] flex-1 sm:flex-none">
+                  <SelectInput
+                    id="announcement-sort-direction"
+                    options={sortOptions}
+                    value={sortDirection}
+                    onChange={(event) => setSortDirection(event.target.value as SortDirection)}
+                  />
+                </div>
               </div>
             </div>
           </div>

@@ -34,12 +34,13 @@ const typeFilters: Array<{ label: string; value: 'all' | AnnouncementType }> = [
   { label: 'All updates', value: 'all' },
   { label: 'Info', value: 'info' },
   { label: 'Events', value: 'event' },
-  { label: 'Success', value: 'success' },
-  { label: 'Warnings', value: 'warning' },
 ];
 
+const DESKTOP_SIDE_CARD_GAP_PX = 14;
+
 function formatAnnouncementDate(date: string) {
-  const parsed = new Date(date);
+  const isDateOnly = /^\d{4}-\d{2}-\d{2}$/.test(date);
+  const parsed = new Date(isDateOnly ? `${date}T00:00:00` : date);
   if (Number.isNaN(parsed.getTime())) return date;
 
   return parsed.toLocaleDateString('en-US', {
@@ -136,6 +137,10 @@ export default function BlogIndexPage() {
 
   const [featured, ...latest] = sortedAnnouncements;
   const isAdmin = user?.role === 'admin';
+  const compactCardHeight =
+    featuredCardHeight !== null
+      ? Math.max((featuredCardHeight - DESKTOP_SIDE_CARD_GAP_PX * 2) / 3, 0)
+      : null;
 
   useEffect(() => {
     const element = featuredCardRef.current;
@@ -329,12 +334,17 @@ export default function BlogIndexPage() {
           )}
 
           {(isLoading || latest.length > 3) && (
-            <div className={continuationGridClassName}>
+            <div
+              className={continuationGridClassName}
+              style={compactCardHeight ? { gridAutoRows: `${compactCardHeight}px` } : undefined}
+            >
               {isLoading
                 ? Array.from({ length: 4 }).map((_, index) => (
-                    <AnnouncementCardSkeleton key={index} />
+                    <AnnouncementCardSkeleton key={index} compact />
                   ))
-                : latest.slice(3).map((item) => <AnnouncementCard key={item.slug} item={item} />)}
+                : latest
+                    .slice(3)
+                    .map((item) => <AnnouncementCard key={item.slug} item={item} compact />)}
             </div>
           )}
         </section>

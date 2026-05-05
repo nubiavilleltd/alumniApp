@@ -1,4 +1,3 @@
-import { Icon } from '@iconify/react';
 import { useAlumni } from '@/features/alumni/hooks/useAlumni';
 import { useAllEvents } from '@/features/events/hooks/useEvents';
 
@@ -21,25 +20,25 @@ export default function HomeStats() {
     {
       label: 'Active Members',
       value: formatCount(alumni.length),
-      icon: 'mdi:account-group-outline',
+      iconSrc: '/home-cards/activemembers.svg',
       className: 'home-stats-card--light',
     },
     {
       label: 'Founded',
       value: '1985',
-      icon: 'mdi:bank-outline',
+      iconSrc: '/home-cards/founded.svg',
       className: 'home-stats-card--dark',
     },
     {
       label: 'Annual Events',
       value: formatEventCount(events.length),
-      icon: 'mdi:calendar-sync-outline',
+      iconSrc: '/home-cards/annualevents.svg',
       className: 'home-stats-card--blue',
     },
     {
       label: 'Raised for Welfare',
       value: '-',
-      icon: 'mdi:hand-heart-outline',
+      iconSrc: '/home-cards/raised4welfare.svg',
       className: 'home-stats-card--navy',
     },
   ];
@@ -50,7 +49,7 @@ export default function HomeStats() {
         <div className="home-stats-grid">
           {stats.map((stat) => (
             <article key={stat.label} className={`home-stats-card ${stat.className}`}>
-              <Icon icon={stat.icon} className="home-stats-card__icon" />
+              <img src={stat.iconSrc} alt="" aria-hidden="true" className="home-stats-card__icon" />
               <div className="home-stats-card__copy">
                 <h3>{stat.value}</h3>
                 <p>{stat.label}</p>

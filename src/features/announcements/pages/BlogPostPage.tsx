@@ -13,8 +13,17 @@ const FALLBACK_IMAGE = '/news-1.png';
 function formatAnnouncementDate(date?: string) {
   if (!date) return '';
 
-  const parsed = new Date(date);
+  const isDateOnly = /^\d{4}-\d{2}-\d{2}$/.test(date);
+  const parsed = new Date(isDateOnly ? `${date}T00:00:00` : date);
   if (Number.isNaN(parsed.getTime())) return date;
+
+  if (isDateOnly) {
+    return parsed.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  }
 
   return parsed.toLocaleString('en-US', {
     month: 'short',
@@ -123,16 +132,8 @@ export default function BlogPostPage() {
                   </p>
                 )}
 
-                {(announcement.chapterId || announcement.year || announcement.endsAt) && (
-                  <div className="mt-6 grid gap-3 rounded-2xl bg-accent-50 p-4 text-sm text-accent-700 md:grid-cols-3">
-                    {announcement.chapterId && (
-                      <div>
-                        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent-400">
-                          Chapter
-                        </p>
-                        <p className="mt-1 font-medium">#{announcement.chapterId}</p>
-                      </div>
-                    )}
+                {(announcement.year || announcement.endsAt) && (
+                  <div className="mt-6 grid gap-3 rounded-2xl bg-accent-50 p-4 text-sm text-accent-700 md:grid-cols-2">
                     {announcement.year && (
                       <div>
                         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent-400">

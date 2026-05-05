@@ -39,6 +39,11 @@ interface DatePickerProps {
   className?: string;
 }
 
+type DropdownPlacement = {
+  horizontal: 'left' | 'right';
+  vertical: 'bottom' | 'top';
+};
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const DAYS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
@@ -148,6 +153,11 @@ export function DatePicker({
   );
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [dropdownPlacement, setDropdownPlacement] = useState<DropdownPlacement>({
+    horizontal: 'left',
+    vertical: 'bottom',
+  });
 
   // Sync view when value changes externally
   useEffect(() => {
@@ -173,6 +183,45 @@ export function DatePicker({
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, [open]);
+
+  const updateDropdownPlacement = useCallback(() => {
+    if (!open || typeof window === 'undefined' || !containerRef.current || !dropdownRef.current) {
+      return;
+    }
+
+    const margin = 16;
+    const gap = 4;
+    const containerRect = containerRef.current.getBoundingClientRect();
+    const dropdownRect = dropdownRef.current.getBoundingClientRect();
+
+    const horizontal =
+      containerRect.left + dropdownRect.width > window.innerWidth - margin ? 'right' : 'left';
+
+    const canOpenAbove = containerRect.top - gap - dropdownRect.height >= margin;
+    const needsOpenAbove =
+      containerRect.bottom + gap + dropdownRect.height > window.innerHeight - margin;
+    const vertical = needsOpenAbove && canOpenAbove ? 'top' : 'bottom';
+
+    setDropdownPlacement((current) => {
+      if (current.horizontal === horizontal && current.vertical === vertical) {
+        return current;
+      }
+
+      return { horizontal, vertical };
+    });
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const rafId = window.requestAnimationFrame(updateDropdownPlacement);
+    window.addEventListener('resize', updateDropdownPlacement);
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+      window.removeEventListener('resize', updateDropdownPlacement);
+    };
+  }, [open, calView, viewMonth, viewYear, updateDropdownPlacement]);
 
   const minDate = parseDate(min);
   const maxDate = parseDate(max);
@@ -337,8 +386,16 @@ export function DatePicker({
       {/* Dropdown calendar */}
       {open && (
         <div
-          className="absolute top-full mt-1 z-50 bg-white border border-gray-200 rounded-2xl shadow-xl overflow-hidden"
-          style={{ minWidth: '280px', left: 0 }}
+          ref={dropdownRef}
+          className="absolute z-[60] max-w-[calc(100vw-2rem)] overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl"
+          style={{
+            minWidth: '280px',
+            width: 'min(280px, calc(100vw - 2rem))',
+            ...(dropdownPlacement.horizontal === 'left' ? { left: 0 } : { right: 0 }),
+            ...(dropdownPlacement.vertical === 'bottom'
+              ? { top: 'calc(100% + 0.25rem)' }
+              : { bottom: 'calc(100% + 0.25rem)' }),
+          }}
         >
           {/* ── Shared header ── */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
