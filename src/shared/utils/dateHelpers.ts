@@ -41,3 +41,16 @@ export function calculateAge(birthDate: string): number {
 export function isAtLeastAge(birthDate: string, minAge: number): boolean {
   return calculateAge(birthDate) >= minAge;
 }
+
+export function formatDate(date?: string) {
+  if (!date) return null;
+
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return null;
+
+  return d.toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+}

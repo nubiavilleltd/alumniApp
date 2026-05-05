@@ -51,8 +51,6 @@ const projectFormSchema = z
 
 type ProjectFormValues = z.infer<typeof projectFormSchema>;
 
-type Status = ProjectFormValues['status'];
-
 // ─── Main component ───────────────────────────────────────────────────────────
 
 interface ProjectFormModalProps {
@@ -103,6 +101,7 @@ export function ProjectFormModal({ isOpen, onClose, editData }: ProjectFormModal
   // Sync form + images when edit data changes
   useEffect(() => {
     if (isOpen && editData) {
+      console.log('edit data', { editData });
       reset({
         title: editData.title,
         description: editData.description,
@@ -209,6 +208,7 @@ export function ProjectFormModal({ isOpen, onClose, editData }: ProjectFormModal
             label="Conducted by"
             id="conductedBy"
             type="text"
+            required
             placeholder="Who carried out the project"
             error={errors.conductedBy?.message}
             {...register('conductedBy')}
@@ -272,6 +272,7 @@ export function ProjectFormModal({ isOpen, onClose, editData }: ProjectFormModal
             label="Location"
             id="location"
             type="text"
+            required
             placeholder="Where the project is sited"
             error={errors.location?.message}
             {...register('location')}

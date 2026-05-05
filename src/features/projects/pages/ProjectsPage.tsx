@@ -57,29 +57,35 @@ export default function ProjectsPage() {
   const ITEMS_PER_PAGE = useItemsPerPage();
 
   const { data: projects = [], isLoading } = useProjects();
+  console.log('data project', { projects });
 
   // Year options derived from projects
-  const years = useMemo(
-    () =>
-      [
-        ...new Set(
-          projects
-            .map((p) => (p.createdAt ? new Date(p.createdAt).getFullYear() : null))
-            .filter(Boolean) as number[],
-        ),
-      ].sort((a, b) => b - a),
-    [projects],
-  );
+  const years = useMemo(() => {
+    return [
+      ...new Set(
+        projects
+          .map((p) => {
+            if (!p.startDate) return null;
+            return new Date(p.startDate).getFullYear();
+          })
+          .filter(Boolean) as number[],
+      ),
+    ].sort((a, b) => b - a);
+  }, [projects]);
 
   // Filtered list
   const filtered = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
     return projects.filter((p) => {
       const matchesSearch =
-        !q || p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q);
+        !q ||
+        p.title.toLowerCase().includes(q) ||
+        p.description.toLowerCase().includes(q) ||
+        p.location?.toLowerCase().includes(q) ||
+        p.status?.toLowerCase().includes(q);
       const matchesYear =
         !yearFilter ||
-        (p.createdAt && new Date(p.createdAt).getFullYear().toString() === yearFilter);
+        (p.startDate && new Date(p.startDate).getFullYear().toString() === yearFilter);
       return matchesSearch && matchesYear;
     });
   }, [projects, searchTerm, yearFilter]);
@@ -170,7 +176,10 @@ export default function ProjectsPage() {
                 value={yearFilter}
                 onChange={resetFilters(setYearFilter)}
                 placeholder="Filter by Year"
-                options={years.map((y) => ({ label: String(y), value: String(y) }))}
+                options={[
+                  { label: 'All', value: '' },
+                  ...years.map((y) => ({ label: String(y), value: String(y) })),
+                ]}
               />
             </div>
           </div>

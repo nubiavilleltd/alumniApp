@@ -11,6 +11,7 @@ import { AppLink } from '@/shared/components/ui/AppLink';
 import { useDeleteProject } from '../hooks/useProjects';
 import type { Project } from '../types/project.types';
 import { ROUTES } from '@/shared/constants/routes';
+import { formatDate } from '@/shared/utils/dateHelpers';
 
 const PLACEHOLDER = 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=700&q=80';
 
@@ -81,13 +82,15 @@ export function ProjectCard({ project, showAdminActions = false, onEdit }: Proje
   const mainImage = project.images?.[0] || PLACEHOLDER;
   const isCompleted = project.status === 'completed';
 
-  // Format amount for the location-style metadata line
-  const amountLabel = project.amountRaised
-    ? `₦${project.amountRaised.toLocaleString()} raised`
-    : null;
+  const startDate = formatDate(project.startDate);
+  const endDate = formatDate(project.endDate);
 
-  // Use createdAt year range as the "date" shown in the clock metadata
-  const dateLabel = project.createdAt ? new Date(project.createdAt).getFullYear().toString() : null;
+  const dateRange =
+    startDate && endDate
+      ? `${startDate} - ${endDate}`
+      : startDate
+        ? `${startDate} - Present`
+        : null;
 
   const handleDelete = () => {
     deleteMutation.mutate(project.id, {
@@ -137,40 +140,44 @@ export function ProjectCard({ project, showAdminActions = false, onEdit }: Proje
               isCompleted ? 'bg-green-500/90 text-white' : 'bg-primary-500/90 text-white'
             }`}
           >
-            {isCompleted ? 'Completed' : 'Active'}
+            {isCompleted ? 'Completed' : 'Ongoing'}
           </span>
         </div>
 
         {/* Blue overlay panel */}
-        <div className="absolute bottom-0 left-0 right-0 bg-primary-600/80 backdrop-blur-[2px] rounded-2xl px-4 pt-3.5 pb-4">
+        {/* <div className="absolute bottom-0 left-0 right-0 bg-primary-600/80 backdrop-blur-[2px] rounded-2xl px-4 pt-3.5 pb-4"> */}
+        <div
+          className="
+  absolute bottom-0 left-0 right-0
+  h-32 sm:h-36 md:h-40
+  bg-primary-600/80 backdrop-blur-[2px]
+  rounded-2xl px-4 pt-3 pb-3
+  flex flex-col
+"
+        >
           {/* Title */}
-          <p className="text-white font-bold text-[15px] leading-snug line-clamp-1">
+          <p className="text-white font-bold text-[14px] sm:text-[15px] leading-snug line-clamp-1">
             {project.title}
           </p>
 
           {/* Description */}
-          <p className="text-white/85 text-xs leading-relaxed mt-1 line-clamp-2">
+          <p className="text-white/85 text-[11px] sm:text-xs leading-relaxed mt-1 line-clamp-2">
             {project.description}
           </p>
 
-          {/* Metadata row */}
-          <div className="flex items-center gap-3 mt-2 flex-wrap">
-            {project.chapterName && (
-              <span className="flex items-center gap-1 text-white/80 text-[11px]">
+          {/* Metadata */}
+          <div className="flex flex-col gap-1 mt-2 flex-1">
+            {project.location && (
+              <span className="flex items-center gap-1 text-white/80 text-[10px] sm:text-[11px]">
                 <Icon icon="mdi:map-marker-outline" className="w-3 h-3 flex-shrink-0" />
-                {project.chapterName}
+                {project.location}
               </span>
             )}
-            {amountLabel && (
-              <span className="flex items-center gap-1 text-white/80 text-[11px]">
-                <Icon icon="mdi:cash-outline" className="w-3 h-3 flex-shrink-0" />
-                {amountLabel}
-              </span>
-            )}
-            {dateLabel && (
-              <span className="flex items-center gap-1 text-white/80 text-[11px]">
+
+            {dateRange && (
+              <span className="flex items-center gap-1 text-white/80 text-[10px] sm:text-[11px]">
                 <Icon icon="mdi:clock-outline" className="w-3 h-3 flex-shrink-0" />
-                {dateLabel}
+                {dateRange}
               </span>
             )}
           </div>
@@ -178,7 +185,7 @@ export function ProjectCard({ project, showAdminActions = false, onEdit }: Proje
           {/* View details link */}
           <AppLink
             href={ROUTES.PROJECTS.DETAIL(project.id)}
-            className="inline-flex items-center gap-0.5 text-white font-semibold text-xs mt-3 hover:text-white/80 transition-colors"
+            className="mt-auto inline-flex items-center gap-0.5 text-white font-semibold text-[11px] sm:text-xs hover:text-white/80 transition-colors"
           >
             View Details
             <Icon icon="mdi:chevron-right" className="w-3.5 h-3.5" />

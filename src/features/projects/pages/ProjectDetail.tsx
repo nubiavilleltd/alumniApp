@@ -12,6 +12,7 @@ import { ProjectNotFoundPage } from '../components/ProjectNotFoundPage';
 import type { Project } from '../types/project.types';
 import { ROUTES } from '@/shared/constants/routes';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
+import { formatDate } from '@/shared/utils/dateHelpers';
 
 const PLACEHOLDER = 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=700&q=80';
 
@@ -38,48 +39,48 @@ function ProjectDetailsSkeleton() {
 
 // ─── Progress bar ─────────────────────────────────────────────────────────────
 
-function ProgressSection({ project }: { project: Project }) {
-  const { amountRaised, targetAmount } = project;
-  const pct =
-    targetAmount && targetAmount > 0
-      ? Math.min(100, Math.round((amountRaised / targetAmount) * 100))
-      : 0;
+// function ProgressSection({ project }: { project: Project }) {
+//   const { amountRaised, targetAmount } = project;
+//   const pct =
+//     targetAmount && targetAmount > 0
+//       ? Math.min(100, Math.round((amountRaised / targetAmount) * 100))
+//       : 0;
 
-  return (
-    <div className="bg-primary-50 rounded-xl p-4 sm:p-5 space-y-3">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div>
-          <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold">
-            Amount Raised
-          </p>
-          <p className="text-xl sm:text-2xl font-bold text-primary-600">
-            ₦{amountRaised.toLocaleString()}
-          </p>
-        </div>
-        {targetAmount && (
-          <div className="text-left sm:text-right">
-            <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold">Goal</p>
-            <p className="text-lg sm:text-xl font-bold text-gray-700">
-              ₦{targetAmount.toLocaleString()}
-            </p>
-          </div>
-        )}
-      </div>
+//   return (
+//     <div className="bg-primary-50 rounded-xl p-4 sm:p-5 space-y-3">
+//       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+//         <div>
+//           <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold">
+//             Amount Raised
+//           </p>
+//           <p className="text-xl sm:text-2xl font-bold text-primary-600">
+//             ₦{amountRaised.toLocaleString()}
+//           </p>
+//         </div>
+//         {targetAmount && (
+//           <div className="text-left sm:text-right">
+//             <p className="text-xs text-gray-500 uppercase tracking-wide font-semibold">Goal</p>
+//             <p className="text-lg sm:text-xl font-bold text-gray-700">
+//               ₦{targetAmount.toLocaleString()}
+//             </p>
+//           </div>
+//         )}
+//       </div>
 
-      {targetAmount && (
-        <>
-          <div className="h-3 rounded-full bg-primary-100 overflow-hidden">
-            <div
-              className="h-full rounded-full bg-primary-500 transition-all duration-700"
-              style={{ width: `${pct}%` }}
-            />
-          </div>
-          <p className="text-xs text-gray-500 text-right">{pct}% of goal reached</p>
-        </>
-      )}
-    </div>
-  );
-}
+//       {targetAmount && (
+//         <>
+//           <div className="h-3 rounded-full bg-primary-100 overflow-hidden">
+//             <div
+//               className="h-full rounded-full bg-primary-500 transition-all duration-700"
+//               style={{ width: `${pct}%` }}
+//             />
+//           </div>
+//           <p className="text-xs text-gray-500 text-right">{pct}% of goal reached</p>
+//         </>
+//       )}
+//     </div>
+//   );
+// }
 
 // ─── Delete confirmation ──────────────────────────────────────────────────────
 
@@ -169,6 +170,16 @@ export default function ProjectDetailsPage() {
 
   const images = project.images?.length ? project.images : placeholderImages;
 
+  const startDate = formatDate(project.startDate);
+  const endDate = formatDate(project.endDate);
+
+  const dateRange =
+    startDate && endDate
+      ? `${startDate} - ${endDate}`
+      : startDate
+        ? `${startDate} - Present`
+        : null;
+
   const breadcrumbItems = [
     { label: 'Home', href: ROUTES.HOME },
     { label: 'Projects', href: ROUTES.PROJECTS.ROOT },
@@ -187,11 +198,42 @@ export default function ProjectDetailsPage() {
       <Breadcrumbs items={breadcrumbItems} />
 
       <section className="section">
-        <div className="container-custom max-w-4xl">
+        <div className="container-custom">
           {/* Image gallery */}
           <div className="flex flex-col gap-3 mb-6 sm:mb-8">
             {/* Main image */}
-            <div className="w-full aspect-[16/10] sm:aspect-[16/9] bg-gray-100 rounded-xl overflow-hidden">
+            {isAdmin && (
+              <div className="flex items-center justify-end gap-2 flex-wrap sm:flex-nowrap">
+                <button
+                  type="button"
+                  onClick={() => setShowEditModal(true)}
+                  className="flex items-center gap-1.5 border border-primary-200 text-primary-500 hover:bg-primary-50 text-xs font-semibold px-3 py-2 rounded-lg transition-colors"
+                >
+                  <Icon icon="mdi:pencil-outline" className="w-3.5 h-3.5" />
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowDeleteModal(true)}
+                  className="flex items-center gap-1.5 border border-red-200 text-red-500 hover:bg-red-50 text-xs font-semibold px-3 py-2 rounded-lg transition-colors"
+                >
+                  <Icon icon="mdi:trash-can-outline" className="w-3.5 h-3.5" />
+                  Delete
+                </button>
+              </div>
+            )}
+
+            <div
+              className="
+  w-full
+  aspect-[16/10] sm:aspect-[16/9]
+  lg:aspect-auto
+  lg:h-[420px]
+  bg-gray-100
+  rounded-xl
+  overflow-hidden
+"
+            >
               <img
                 src={images[activeImage]}
                 alt={project.title}
@@ -223,7 +265,7 @@ export default function ProjectDetailsPage() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
             <div className="flex-1 min-w-0">
-              {/* <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center gap-2 mb-2">
                 <span
                   className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${
                     project.status === 'completed'
@@ -231,48 +273,39 @@ export default function ProjectDetailsPage() {
                       : 'bg-primary-100 text-primary-700'
                   }`}
                 >
-                  {project.status === 'completed' ? 'Completed' : 'Active'}
+                  {project.status === 'completed' ? 'Completed' : 'Ongoing'}
                 </span>
-                {Boolean(project.isFeatured) && (
+                {/* {Boolean(project.isFeatured) && (
                   <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-700">
                     Featured
                   </span>
-                )}
-              </div> */}
+                )} */}
+              </div>
 
               <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
                 {project.title}
               </h1>
-              {project.createdByName && (
+              {project.conductedBy && (
                 <p className="mt-1 text-sm text-gray-400 flex items-center gap-1 flex-wrap">
                   <Icon icon="mdi:account-outline" className="w-4 h-4" />
-                  {project.createdByName}
-                  {project.chapterName && ` · ${project.chapterName}`}
+                  {project.conductedBy}
+                </p>
+              )}
+              {project.location && (
+                <p className="mt-1 text-sm text-gray-400 flex items-center gap-1 flex-wrap">
+                  <Icon icon="mdi:map-marker-outline" className="w-4 h-4" />
+                  {project.location}
+                </p>
+              )}
+              {dateRange && (
+                <p className="mt-1 text-sm text-gray-400 flex items-center gap-1 flex-wrap">
+                  <Icon icon="mdi:clock-outline" className="w-4 h-4" />
+                  {dateRange}
                 </p>
               )}
             </div>
 
             {/* Admin actions */}
-            {isAdmin && (
-              <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
-                <button
-                  type="button"
-                  onClick={() => setShowEditModal(true)}
-                  className="flex items-center gap-1.5 border border-primary-200 text-primary-500 hover:bg-primary-50 text-xs font-semibold px-3 py-2 rounded-lg transition-colors"
-                >
-                  <Icon icon="mdi:pencil-outline" className="w-3.5 h-3.5" />
-                  Edit
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowDeleteModal(true)}
-                  className="flex items-center gap-1.5 border border-red-200 text-red-500 hover:bg-red-50 text-xs font-semibold px-3 py-2 rounded-lg transition-colors"
-                >
-                  <Icon icon="mdi:trash-can-outline" className="w-3.5 h-3.5" />
-                  Delete
-                </button>
-              </div>
-            )}
           </div>
 
           {/* Progress */}
@@ -289,7 +322,7 @@ export default function ProjectDetailsPage() {
           </div>
 
           {/* Back link */}
-          <div className="mt-8 sm:mt-10">
+          {/* <div className="mt-8 sm:mt-10">
             <AppLink
               href={ROUTES.PROJECTS.ROOT}
               className="inline-flex items-center gap-1 text-primary-500 hover:text-primary-600 text-sm font-semibold"
@@ -297,7 +330,7 @@ export default function ProjectDetailsPage() {
               <Icon icon="mdi:arrow-left" className="w-4 h-4" />
               Back to all projects
             </AppLink>
-          </div>
+          </div> */}
         </div>
       </section>
 
