@@ -8,6 +8,8 @@ import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
 import { useSubmitContactForm } from '@/features/contactUs/hooks/useContactUs';
 import type { Contact } from '@/features/contactUs/types/contact.types';
 import { getSiteConfig } from '@/data/content';
+import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
+import { usePrefillFormFromUser } from '../hooks/usePrefillFormFromUser';
 
 function toTelephoneHref(phone: string) {
   const normalizedPhone = phone.replace(/[^\d+]/g, '');
@@ -44,6 +46,8 @@ function validateContactForm(form: Contact): ContactFieldErrors {
 }
 
 export function ContactUsPage() {
+  const { data: currentUser, isLoading, error } = useCurrentUser();
+
   const config = getSiteConfig();
   const contactConfig = config.contact ?? {};
   const address = String(contactConfig.address ?? 'Lagos, Nigeria').trim();
@@ -76,6 +80,15 @@ export function ContactUsPage() {
   const [form, setForm] = useState<Contact>(initialFormState);
   const [fieldErrors, setFieldErrors] = useState<ContactFieldErrors>({});
   const [formError, setFormError] = useState('');
+  usePrefillFormFromUser<Contact>({
+    currentUser,
+    setForm,
+    mapUserToForm: (user) => ({
+      firstName: user.otherNames || user.fullName?.split(' ')[0] || '',
+      lastName: user.surname || user.fullName?.split(' ')[1] || '',
+      email: user.email || '',
+    }),
+  });
 
   const handleFieldChange = <K extends keyof Contact>(field: K, value: Contact[K]) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -215,7 +228,8 @@ export function ContactUsPage() {
                 type="submit"
                 size="lg"
                 className="contact-form-card__button"
-                loading={submitContactForm.isPending}
+                // loading={submitContactForm.isPending}
+                disabled={submitContactForm.isPending || isLoading}
               >
                 Send message
               </Button>
