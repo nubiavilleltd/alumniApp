@@ -14,26 +14,44 @@ import Button from '@/shared/components/ui/Button';
 import { useCreateProject, useUpdateProject } from '../hooks/useProjects';
 import { useImageManager } from '@/shared/hooks/useImageManager';
 import type { Project } from '../types/project.types';
+import { DatePicker } from '@/shared/components/ui/input/DatePicker';
 
 // ─── Validation schema ────────────────────────────────────────────────────────
 
-const projectFormSchema = z.object({
-  title: z.string().min(2, 'Title must be at least 2 characters'),
-  description: z.string().min(10, 'Description must be at least 10 characters'),
-  targetAmount: z
-    .number({ error: 'Please enter a valid amount' })
-    .min(0, 'Amount must be 0 or more')
-    .optional(),
-  amountRaised: z
-    .number({ error: 'Please enter a valid amount' })
-    .min(0, 'Amount must be 0 or more')
-    .default(0),
-  status: z.enum(['active', 'completed']),
-  sortOrder: z.number({ error: 'Please enter a whole number' }).int().min(0).optional(),
-  isFeatured: z.boolean().optional(),
-});
+const projectFormSchema = z
+  .object({
+    title: z.string().trim().min(2, 'Title must be at least 2 characters'),
+    description: z.string().trim().min(10, 'Description must be at least 10 characters'),
+    targetAmount: z
+      .number({ error: 'Please enter a valid amount' })
+      .min(0, 'Amount must be 0 or more')
+      .optional(),
+    amountRaised: z
+      .number({ error: 'Please enter a valid amount' })
+      .min(0, 'Amount must be 0 or more')
+      .default(0),
+    status: z.enum(['ongoing', 'completed']).default('ongoing'),
+    conductedBy: z.string().trim().min(1, 'Conducted By is required'),
+    location: z.string().trim().min(5, 'Location is required'),
+    startDate: z.string().min(1, 'Start date is required'),
+    endDate: z.string().optional(),
+    sortOrder: z.number({ error: 'Please enter a whole number' }).int().min(0).optional(),
+    isFeatured: z.boolean().optional(),
+  })
+  .refine(
+    (data) => {
+      if (!data.startDate) return true;
+      const selectedDate = new Date(data.startDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return selectedDate >= today;
+    },
+    { message: 'Start date cannot be in the past', path: ['startDate'] },
+  );
 
 type ProjectFormValues = z.infer<typeof projectFormSchema>;
+
+type Status = ProjectFormValues['status'];
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
@@ -61,6 +79,8 @@ export function ProjectFormModal({ isOpen, onClose, editData }: ProjectFormModal
     register,
     handleSubmit,
     reset,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<ProjectFormValues>({
     resolver: zodResolver(projectFormSchema) as any,
@@ -68,7 +88,11 @@ export function ProjectFormModal({ isOpen, onClose, editData }: ProjectFormModal
     defaultValues: {
       title: '',
       description: '',
-      status: 'active',
+      status: 'ongoing',
+      conductedBy: '',
+      location: '',
+      startDate: '',
+      endDate: '',
       targetAmount: undefined,
       amountRaised: 0,
       sortOrder: undefined,
@@ -83,6 +107,10 @@ export function ProjectFormModal({ isOpen, onClose, editData }: ProjectFormModal
         title: editData.title,
         description: editData.description,
         status: editData.status,
+        conductedBy: editData.conductedBy,
+        location: editData.location,
+        startDate: editData.startDate,
+        endDate: editData.endDate,
         targetAmount: editData.targetAmount,
         amountRaised: editData.amountRaised,
         sortOrder: editData.sortOrder,
@@ -90,7 +118,7 @@ export function ProjectFormModal({ isOpen, onClose, editData }: ProjectFormModal
       });
       resetImages(editData.images ?? []);
     } else {
-      reset({ title: '', description: '', status: 'active', amountRaised: 0, isFeatured: false });
+      reset({ title: '', description: '', status: 'ongoing', amountRaised: 0, isFeatured: false });
       resetImages();
     }
   }, [isOpen, editData, reset, resetImages]);
@@ -118,8 +146,13 @@ export function ProjectFormModal({ isOpen, onClose, editData }: ProjectFormModal
 
   const isLoading = createMutation.isPending || updateMutation.isPending;
 
-  const statusOptions = [
-    { label: 'Active', value: 'active' },
+  // const statusOptions = [
+  //   { label: 'Ongoing', value: 'ongoing' },
+  //   { label: 'Completed', value: 'completed' },
+  // ];
+
+  const statusOptions: { label: string; value: ProjectFormValues['status'] }[] = [
+    { label: 'Ongoing', value: 'ongoing' },
     { label: 'Completed', value: 'completed' },
   ];
 
@@ -145,29 +178,8 @@ export function ProjectFormModal({ isOpen, onClose, editData }: ProjectFormModal
           {...register('description')}
         />
 
-        {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <FormInput
-            label="Target Amount (₦)"
-            id="targetAmount"
-            type="number"
-            placeholder="e.g. 1000000"
-            hint="Optional — enter 0 if no target"
-            error={errors.targetAmount?.message}
-            {...register('targetAmount', { valueAsNumber: true })}
-          />
-          <FormInput
-            label="Amount Raised (₦)"
-            id="amountRaised"
-            required
-            type="number"
-            placeholder="e.g. 500000"
-            error={errors.amountRaised?.message}
-            {...register('amountRaised', { valueAsNumber: true })}
-          />
-        </div> */}
-
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <SelectInput
+          {/* <SelectInput
             label="Status"
             id="status"
             required
@@ -175,6 +187,74 @@ export function ProjectFormModal({ isOpen, onClose, editData }: ProjectFormModal
             placeholder="Select status"
             error={errors.status?.message}
             {...register('status')}
+          /> */}
+
+          <SelectInput
+            label="Status"
+            id="status"
+            required
+            options={statusOptions}
+            placeholder="Select status"
+            error={errors.status?.message}
+            value={watch('status')}
+            onChange={(e) =>
+              setValue('status', e.target.value as ProjectFormValues['status'], {
+                shouldValidate: true,
+                shouldDirty: true,
+              })
+            }
+          />
+
+          <FormInput
+            label="Conducted by"
+            id="conductedBy"
+            type="text"
+            placeholder="Who carried out the project"
+            error={errors.conductedBy?.message}
+            {...register('conductedBy')}
+          />
+          {/* <DatePicker
+                          label="Event Date"
+                          id="event_date"
+                          required
+                          min={new Date().toISOString().split('T')[0]} // same as before
+                          error={errors.startDate?.message}
+                          value={watch('startDate')} // controlled
+                          onValueChange={(val) => setValue('startDate', val, { shouldValidate: true })}
+                        /> */}
+          {/* <FormInput
+            label="Sort Order"
+            id="sortOrder"
+            type="number"
+            placeholder="e.g. 1"
+            hint="Lower = shown first"
+            error={errors.sortOrder?.message}
+            {...register('sortOrder', { valueAsNumber: true })}
+          /> */}
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <DatePicker
+            label="Start Date"
+            id="startDate"
+            required
+            min={new Date().toISOString().split('T')[0]}
+            error={errors.startDate?.message}
+            value={watch('startDate')}
+            onValueChange={(val) =>
+              setValue('startDate', val, { shouldValidate: true, shouldDirty: true })
+            }
+          />
+
+          <DatePicker
+            label="End Date (Optional)"
+            id="endDate"
+            min={watch('startDate') || undefined}
+            error={errors.endDate?.message}
+            value={watch('endDate')}
+            onValueChange={(val) =>
+              setValue('endDate', val, { shouldValidate: true, shouldDirty: true })
+            }
           />
           {/* <FormInput
             label="Sort Order"
@@ -185,6 +265,17 @@ export function ProjectFormModal({ isOpen, onClose, editData }: ProjectFormModal
             error={errors.sortOrder?.message}
             {...register('sortOrder', { valueAsNumber: true })}
           /> */}
+        </div>
+
+        <div className="grid grid-cols-1">
+          <FormInput
+            label="Location"
+            id="location"
+            type="text"
+            placeholder="Where the project is sited"
+            error={errors.location?.message}
+            {...register('location')}
+          />
         </div>
 
         {/* <label className="flex items-center gap-3 cursor-pointer">

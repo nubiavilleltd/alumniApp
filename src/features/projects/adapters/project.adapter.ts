@@ -46,7 +46,11 @@ export function mapBackendProject(raw: unknown): Project {
     images: parseImages(d.images),
     amountRaised: Number(d.amount_raised ?? 0),
     targetAmount: d.target_amount ? Number(d.target_amount) : undefined,
-    status: d.status === 'completed' ? 'completed' : 'active',
+    status: d.status === 'completed' ? 'completed' : 'ongoing',
+    conductedBy: String(d.conducted_by ?? ''),
+    location: String(d.location ?? ''),
+    startDate: String(d.start_date ?? ''),
+    endDate: d.end_date ? String(d.end_date) : undefined,
     sortOrder: d.sort_order ? Number(d.sort_order) : undefined,
     isFeatured: d.is_featured ? Number(d.is_featured) : 0,
     createdAt: d.created_at ? String(d.created_at) : undefined,
@@ -81,6 +85,10 @@ export function mapProjectToCreatePayload(
     title: formData.title,
     description: formData.description,
     status: formData.status,
+    conductedBy: formData.conductedBy,
+    location: formData.location,
+    startDate: formData.startDate,
+    endDate: formData.endDate,
   };
 
   if (formData.targetAmount != null) base.target_amount = String(formData.targetAmount);
@@ -116,6 +124,10 @@ export function mapProjectToUpdatePayload(
   if (formData.title != null) base.title = formData.title;
   if (formData.description != null) base.description = formData.description;
   if (formData.status != null) base.status = formData.status;
+  if (formData.conductedBy != null) base.conductedBy = formData.conductedBy;
+  if (formData.location != null) base.location = formData.location;
+  if (formData.startDate != null) base.startDate = formData.startDate;
+  if (formData.endDate != null) base.endDate = formData.endDate;
   if (formData.targetAmount != null) base.target_amount = String(formData.targetAmount);
   if (formData.amountRaised != null) base.amount_raised = String(formData.amountRaised);
   if (formData.sortOrder != null) base.sort_order = String(formData.sortOrder);
