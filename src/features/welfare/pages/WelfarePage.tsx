@@ -133,7 +133,7 @@ export default function WelfarePage() {
             {/* Right: action buttons (stacked) */}
             <div className="flex flex-col gap-3 flex-shrink-0">
               <Link
-                to={ROUTES.CONTACT}
+                to={ROUTES.WELFARE_COMMITTEE_CONTACT}
                 className="text-center border border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white font-semibold text-sm px-5 py-2.5 rounded-full transition-colors whitespace-nowrap"
               >
                 Contact the Committee

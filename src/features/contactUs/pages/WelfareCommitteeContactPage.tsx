@@ -1,10 +1,12 @@
+import React from 'react';
+
 import { SEO } from '@/shared/common/SEO';
 import { useSubmitContactForm } from '@/features/contactUs/hooks/useContactUs';
 import { getSiteConfig } from '@/data/content';
 import { ContactPageLayout } from '../components/ContactPageLayout';
 import { toGoogleMapsHref, toTelephoneHref } from '../utils';
 
-export function ContactUsPage() {
+export function WelfareCommitteeContactPage() {
   const config = getSiteConfig();
   const contactConfig = config.contact ?? {};
 

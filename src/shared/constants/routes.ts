@@ -11,6 +11,7 @@ export const ROUTES = {
   HOME: '/',
   ABOUT: '/about',
   CONTACT: '/contact',
+  WELFARE_COMMITTEE_CONTACT: '/welfare-committee-contact',
   DONATION: '/donation',
   NEWS: ANNOUNCEMENT_ROUTES.ROOT,
   RESOURCES: '/resources',

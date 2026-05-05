@@ -61,6 +61,7 @@ import WelfarePage from './features/welfare/pages/WelfarePage';
 import WelfareZonesPage from './features/welfare/pages/WelfareZonesPage';
 import JobVacanciesPage from './features/jobVacancies/pages/JobVacanciesPage';
 import { DonationPage } from './features/donation/pages/DonationPage';
+import { WelfareCommitteeContactPage } from './features/contactUs/pages/WelfareCommitteeContactPage';
 
 export default function App() {
   return (
@@ -89,6 +90,14 @@ export default function App() {
             element={
               <ErrorBoundary>
                 <ContactUsPage />
+              </ErrorBoundary>
+            }
+          />
+          <Route
+            path={ROUTES.WELFARE_COMMITTEE_CONTACT}
+            element={
+              <ErrorBoundary>
+                <WelfareCommitteeContactPage />
               </ErrorBoundary>
             }
           />
