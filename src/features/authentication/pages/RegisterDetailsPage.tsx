@@ -51,7 +51,7 @@ function buildRegisterDefaultValues(
     nameInSchool: savedValues?.nameInSchool ?? '',
     nickName: savedValues?.nickName ?? '',
     email: savedValues?.email ?? '',
-    phoneCountry: savedValues?.phoneCountry ?? defaultPhoneCountry,
+    // phoneCountry: savedValues?.phoneCountry ?? defaultPhoneCountry,
     whatsappPhone: savedValues?.whatsappPhone ?? '',
     graduationYear: savedValues?.graduationYear ?? currentYear,
     password: savedValues?.password ?? '',
@@ -106,12 +106,12 @@ export function RegisterDetailsPage() {
   });
 
   const passwordValue = detailForm.watch('password') ?? '';
-  const phoneCountry = detailForm.watch('phoneCountry') ?? defaultPhoneCountry;
+  // const phoneCountry = detailForm.watch('phoneCountry') ?? defaultPhoneCountry;
   const confirmPasswordValue = detailForm.watch('confirmPassword') ?? '';
   const graduationYear = detailForm.watch('graduationYear');
   const cityValue = detailForm.watch('city');
   const passwordsMatch = passwordValue.length > 0 && confirmPasswordValue === passwordValue;
-  const selectedPhoneCountry = getPhoneCountryOption(phoneCountry);
+  // const selectedPhoneCountry = getPhoneCountryOption(phoneCountry);
 
   useEffect(() => {
     if (detailForm.getValues('state') !== 'Lagos') {
@@ -158,29 +158,29 @@ export function RegisterDetailsPage() {
     }
   }, [allVouchers, detailForm, graduationYear]);
 
-  const phoneCountryRegistration = detailForm.register('phoneCountry', {
-    onChange: (event) => {
-      const nextCode = event.target.value as SupportedPhoneCountry;
-      const nextCountry = getPhoneCountryOption(nextCode);
-      const current = normalizeNationalPhoneNumber(detailForm.getValues('whatsappPhone'));
-      const next = current.slice(0, nextCountry.maxLength);
+  // const phoneCountryRegistration = detailForm.register('phoneCountry', {
+  //   onChange: (event) => {
+  //     const nextCode = event.target.value as SupportedPhoneCountry;
+  //     const nextCountry = getPhoneCountryOption(nextCode);
+  //     const current = normalizeNationalPhoneNumber(detailForm.getValues('whatsappPhone'));
+  //     const next = current.slice(0, nextCountry.maxLength);
 
-      if (next !== detailForm.getValues('whatsappPhone')) {
-        detailForm.setValue('whatsappPhone', next, { shouldDirty: true, shouldValidate: true });
-      } else if (current) {
-        void detailForm.trigger('whatsappPhone');
-      }
-    },
-  });
+  //     if (next !== detailForm.getValues('whatsappPhone')) {
+  //       detailForm.setValue('whatsappPhone', next, { shouldDirty: true, shouldValidate: true });
+  //     } else if (current) {
+  //       void detailForm.trigger('whatsappPhone');
+  //     }
+  //   },
+  // });
 
-  const whatsappRegistration = detailForm.register('whatsappPhone', {
-    onChange: (event) => {
-      event.target.value = normalizeNationalPhoneNumber(event.target.value).slice(
-        0,
-        selectedPhoneCountry.maxLength,
-      );
-    },
-  });
+  // const whatsappRegistration = detailForm.register('whatsappPhone', {
+  //   onChange: (event) => {
+  //     event.target.value = normalizeNationalPhoneNumber(event.target.value).slice(
+  //       0,
+  //       selectedPhoneCountry.maxLength,
+  //     );
+  //   },
+  // });
 
   const voucherOptions = filteredVouchers.map((voucher) => ({
     label: `${voucher.fullName} (${voucher.email})`,
@@ -226,20 +226,20 @@ export function RegisterDetailsPage() {
       >
         <div className="auth-form-grid auth-form-grid--two">
           <FormInput
-            label="Surname"
-            id="surname"
-            required
-            placeholder="e.g. Okonkwo"
-            error={detailForm.formState.errors.surname?.message}
-            {...detailForm.register('surname')}
-          />
-          <FormInput
-            label="Other Names"
+            label="First Name"
             required
             id="otherNames"
             placeholder="e.g. Adaeze"
             error={detailForm.formState.errors.otherNames?.message}
             {...detailForm.register('otherNames')}
+          />
+          <FormInput
+            label="Last Name"
+            id="surname"
+            required
+            placeholder="e.g. Okonkwo"
+            error={detailForm.formState.errors.surname?.message}
+            {...detailForm.register('surname')}
           />
         </div>
 
@@ -254,9 +254,8 @@ export function RegisterDetailsPage() {
             {...detailForm.register('nameInSchool')}
           />
           <FormInput
-            label="Nickname"
+            label="Nickname in School"
             id="nickName"
-            required
             placeholder="MJ"
             hint=""
             error={detailForm.formState.errors.nickName?.message}
@@ -309,27 +308,19 @@ export function RegisterDetailsPage() {
 
         <div className="auth-phone-field">
           <label className="auth-field-label">
-            WhatsApp Phone Number <span className="text-red-500">*</span>
+            WhatsApp Phone Number <small>(11-digit number)</small>{' '}
+            <span className="text-red-500">*</span>
           </label>
-          <div className="auth-phone-grid">
-            <SelectInput
-              id="phoneCountry"
-              options={phoneCountrySelectOptions}
-              placeholder="Country"
-              error={undefined}
-              disabled
-              value={phoneCountry}
-              {...phoneCountryRegistration}
-            />
-            <FormInput
-              id="whatsappPhone"
-              type="tel"
-              inputMode="numeric"
-              placeholder={selectedPhoneCountry.placeholder}
-              error={detailForm.formState.errors.whatsappPhone?.message}
-              {...whatsappRegistration}
-            />
-          </div>
+          <FormInput
+            id="whatsappPhone"
+            type="tel"
+            inputMode="numeric"
+            placeholder="e.g 08023456789"
+            // placeholder={selectedPhoneCountry.placeholder}
+            error={detailForm.formState.errors.whatsappPhone?.message}
+            {...detailForm.register('whatsappPhone')}
+            // {...whatsappRegistration}
+          />
           {/* <p className="auth-field-hint auth-field-hint--muted">
             Enter number without country code
           </p> */}

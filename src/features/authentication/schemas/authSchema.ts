@@ -37,16 +37,16 @@ export const registerDetailsSchema = z
     surname: z
       .string()
       .trim()
-      .min(2, 'Surname must be at least 2 characters')
-      .max(50, 'Surname must be 50 characters or less')
+      .min(2, 'Last name must be at least 2 characters')
+      .max(50, 'Last name must be 50 characters or less')
       .regex(/^[A-Za-z][A-Za-z\s'.-]*$/, 'Please enter a valid last name'),
 
     otherNames: z
       .string()
       .trim()
-      .min(2, 'Other names must be at least 2 characters')
-      .max(80, 'Other names must be 80 characters or less')
-      .regex(/^[A-Za-z][A-Za-z\s'.-]*$/, 'Please enter valid other names'),
+      .min(2, 'First name must be at least 2 characters')
+      .max(80, 'First name must be 80 characters or less')
+      .regex(/^[A-Za-z][A-Za-z\s'.-]*$/, 'Please enter valid first name'),
 
     nameInSchool: z
       .string()
@@ -60,9 +60,12 @@ export const registerDetailsSchema = z
       message: 'Please select a valid state',
     }),
 
-    phoneCountry: z.enum(supportedPhoneCountries),
+    // phoneCountry: z.enum(supportedPhoneCountries),
 
-    whatsappPhone: z.string().trim().min(1, 'WhatsApp phone number is required'),
+    whatsappPhone: z
+      .string()
+      .trim()
+      .regex(/^\d{11}$/, 'WhatsApp phone number must be exactly 11 digits'),
     city: z.string().min(1, 'Please select a city'),
     // city: z
     //   .string()
@@ -73,7 +76,8 @@ export const registerDetailsSchema = z
       .string()
       .trim()
       .min(2, 'Residential Address must be at least 2 characters'),
-    nickName: z.string().trim().min(1, 'Nickname is required'),
+    nickName: z.string().optional(),
+    // nickName: z.string().trim().min(1, 'Nickname in School is required'),
 
     graduationYear: z.coerce
       .number()
@@ -85,12 +89,12 @@ export const registerDetailsSchema = z
     confirmPassword: z.string().min(1, 'Please confirm your password'),
     voucherId: z.string().min(1, 'Please select a voucher who will approve your registration'),
   })
-  .superRefine((data, ctx) => {
-    const phoneError = validateNationalPhoneNumber(data.phoneCountry, data.whatsappPhone);
-    if (phoneError) {
-      ctx.addIssue({ code: 'custom', path: ['whatsappPhone'], message: phoneError });
-    }
-  })
+  // .superRefine((data, ctx) => {
+  //   const phoneError = validateNationalPhoneNumber(data.phoneCountry, data.whatsappPhone);
+  //   if (phoneError) {
+  //     ctx.addIssue({ code: 'custom', path: ['whatsappPhone'], message: phoneError });
+  //   }
+  // })
   .refine((data) => data.password === data.confirmPassword, {
     path: ['confirmPassword'],
     message: 'Passwords do not match',

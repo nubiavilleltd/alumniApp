@@ -55,7 +55,8 @@ function toUserSummary(values: RegisterDetailsFormValues): AuthUserSummary {
   return {
     fullName: `${values.otherNames} ${values.surname}`.trim(),
     email: values.email,
-    phoneNumber: formatPhoneNumberWithCountryCode(values.phoneCountry, values.whatsappPhone),
+    // phoneNumber: formatPhoneNumberWithCountryCode(values.phoneCountry, values.whatsappPhone),
+    phoneNumber: values.whatsappPhone,
     graduationYear: Number(values.graduationYear),
   };
 }
