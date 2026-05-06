@@ -500,7 +500,7 @@ export default function EditProfilePage() {
                 </div>
                 <div>
                   <Label>WhatsApp</Label>
-                  <div className="flex gap-2">
+                  {/* <div className="flex gap-2">
                     <div className="w-28 flex-shrink-0">
                       <SelectInput
                         name="whatsappPhoneCountry"
@@ -520,19 +520,21 @@ export default function EditProfilePage() {
                         className="whitespace-nowrap"
                       />
                     </div>
-                    <Input
-                      name="whatsappPhone"
-                      value={form.whatsappPhone}
-                      onChange={handleChange}
-                      type="tel"
-                      inputMode="numeric"
-                      placeholder={selectedWhatsappPhoneCountry.placeholder}
-                    />
-                  </div>
+                  
+                  </div> */}
+
+                  <Input
+                    name="whatsappPhone"
+                    value={form.whatsappPhone}
+                    onChange={handleChange}
+                    type="tel"
+                    inputMode="numeric"
+                    placeholder={selectedWhatsappPhoneCountry.placeholder}
+                  />
                 </div>
                 <div>
                   <Label>Alt. Phone</Label>
-                  <div className="flex gap-2">
+                  {/* <div className="flex gap-2">
                     <div className="w-28 flex-shrink-0">
                       <SelectInput
                         name="alternativePhoneCountry"
@@ -552,15 +554,17 @@ export default function EditProfilePage() {
                         className="whitespace-nowrap"
                       />
                     </div>
-                    <Input
-                      name="alternativePhone"
-                      value={form.alternativePhone}
-                      onChange={handleChange}
-                      type="tel"
-                      inputMode="numeric"
-                      placeholder={selectedAlternativePhoneCountry.placeholder}
-                    />
-                  </div>
+                 
+                  </div> */}
+
+                  <Input
+                    name="alternativePhone"
+                    value={form.alternativePhone}
+                    onChange={handleChange}
+                    type="tel"
+                    inputMode="numeric"
+                    placeholder={selectedAlternativePhoneCountry.placeholder}
+                  />
                 </div>
 
                 <div>

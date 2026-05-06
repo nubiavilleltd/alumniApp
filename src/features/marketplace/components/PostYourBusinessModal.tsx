@@ -312,26 +312,16 @@ export function PostBusinessModal({ isOpen, onClose, editData }: PostBusinessMod
           <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
             Phone <span className="text-red-500">*</span>
           </label>
-          <div className="grid grid-cols-[10rem_1fr] gap-2">
-            <SelectInput
-              id="phoneCountry"
-              options={phoneCountrySelectOptions}
-              placeholder="Country"
-              value={phoneCountry}
-              error={undefined}
-              {...phoneCountryRegistration}
-            />
-            <FormInput
-              id="phone"
-              type="tel"
-              inputMode="numeric"
-              required
-              placeholder={selectedPhoneCountry.placeholder}
-              icon="mdi:phone-outline"
-              error={errors.phone?.message}
-              {...phoneRegistration}
-            />
-          </div>
+          <FormInput
+            id="phone"
+            type="tel"
+            inputMode="numeric"
+            required
+            placeholder={selectedPhoneCountry.placeholder}
+            icon="mdi:phone-outline"
+            error={errors.phone?.message}
+            {...phoneRegistration}
+          />
         </div>
 
         <FormInput
