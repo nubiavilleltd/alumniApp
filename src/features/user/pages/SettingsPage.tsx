@@ -78,7 +78,7 @@ function PrivacyRow({
       </div>
 
       <div className="flex items-center gap-3">
-        <span className="text-xs hidden sm:inline text-gray-500">Private</span>
+        {/* <span className="text-xs hidden sm:inline text-gray-500">Private</span> */}
 
         {/* Toggle */}
         <button
@@ -105,7 +105,7 @@ function PrivacyRow({
             </span>
           )}
         </button>
-        <span className="hidden sm:inline text-xs text-gray-500">Public</span>
+        {/* <span className="hidden sm:inline text-xs text-gray-500">Public</span> */}
       </div>
     </div>
   );
@@ -240,15 +240,20 @@ function PrivacySection() {
       label: 'Employment Information Visibility',
       description: 'Let others see your employment information',
     },
+    // {
+    //   field: 'occupations',
+    //   label: 'Occupation Visibility',
+    //   description: 'Let others see your occupation',
+    // },
+    // {
+    //   field: 'industrySectors',
+    //   label: 'Industry Sector Visibility',
+    //   description: 'Let others see your industry sector',
+    // },
     {
-      field: 'occupations',
-      label: 'Occupation Visibility',
-      description: 'Let others see your occupation',
-    },
-    {
-      field: 'industrySectors',
-      label: 'Industry Sector Visibility',
-      description: 'Let others see your industry sector',
+      field: 'socials',
+      label: 'Socials Visibility',
+      description: 'Let others see your social media links',
     },
   ];
 

@@ -35,8 +35,9 @@ export interface PrivacySettings {
   city: FieldVisibility;
   state: FieldVisibility;
   employmentStatus: FieldVisibility;
-  occupations: FieldVisibility;
-  industrySectors: FieldVisibility;
+  // occupations: FieldVisibility;
+  // industrySectors: FieldVisibility;
+  socials: FieldVisibility;
   yearsOfExperience: FieldVisibility;
 }
 
@@ -50,8 +51,8 @@ export const defaultPrivacySettings: PrivacySettings = {
   city: 'public',
   state: 'public',
   employmentStatus: 'public',
-  occupations: 'public',
-  industrySectors: 'public',
+  socials: 'public',
+  // industrySectors: 'public',
   yearsOfExperience: 'public',
 };
 

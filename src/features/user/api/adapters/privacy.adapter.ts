@@ -24,8 +24,9 @@ export function mapBackendPrivacyToFrontend(raw: any): PrivacySettings {
     city: normalize(visibility.city),
     state: normalize(visibility.state),
     employmentStatus: normalize(visibility.employment_status),
-    occupations: normalize(visibility.occupation),
-    industrySectors: normalize(visibility.industry_sector),
+    socials: normalize(visibility.socials),
+    // occupations: normalize(visibility.occupation),
+    // industrySectors: normalize(visibility.industry_sector),
     yearsOfExperience: normalize(visibility.years_of_experience),
   };
 }
@@ -46,8 +47,9 @@ export function frontendFieldToBackendKey(field: keyof PrivacySettings): string 
     city: 'city_visible',
     state: 'state_visible',
     employmentStatus: 'employment_status_visible',
-    occupations: 'occupation_visible',
-    industrySectors: 'industry_sector_visible',
+    socials: 'socials_visible',
+    // occupations: 'occupation_visible',
+    // industrySectors: 'industry_sector_visible',
     yearsOfExperience: 'years_of_experience_visible',
   };
 
