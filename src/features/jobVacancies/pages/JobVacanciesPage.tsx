@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import { SEO } from '@/shared/common/SEO';
 import { Button } from '@/shared/components/ui/Button';
@@ -8,14 +9,20 @@ import { BaseInput } from '@/shared/components/ui/input/BaseInput';
 import { DatePicker } from '@/shared/components/ui/input/DatePicker';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
 import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
-import { DeleteConfirmModal } from '@/features/events/components/DeleteConfirmModal';
 import { toast } from '@/shared/components/ui/Toast';
+import { ROUTES } from '@/shared/constants/routes';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 import { useTokenStore } from '@/features/authentication/stores/useTokenStore';
 import { useCreateVacancy } from '../hooks/useCreateVacancy';
 import { useJobVacancies } from '../hooks/useJobVacancies';
-import { useDeleteVacancy, useUpdateVacancy } from '../hooks/useManageVacancy';
+import { useUpdateVacancy } from '../hooks/useManageVacancy';
 import type { JobVacancyViewModel } from '../api/adapters';
+import {
+  formatJobDate,
+  formatMoneyAmount,
+  getJobPillLabels,
+  getSalaryDisplay,
+} from '../utils/jobVacancyDisplay';
 import {
   APPLICATION_TYPE_OPTIONS,
   CURRENCY_OPTIONS,
@@ -124,58 +131,6 @@ function jobToFormState(job?: JobVacancyViewModel | null): JobFormState {
     applicationDestination:
       job.applicationMode === 'email' ? (job.applicationEmail ?? '') : (job.applicationUrl ?? ''),
   };
-}
-
-function formatJobDate(value: string) {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value;
-
-  return date.toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  });
-}
-
-function formatMoneyAmount(
-  value: string,
-  currency: string = 'NGN',
-  fallback: string = value,
-): string {
-  const normalized = value.replace(/,/g, '').trim();
-  if (!/^\d+(\.\d+)?$/.test(normalized)) return fallback;
-
-  const amount = Number(normalized);
-  if (!Number.isFinite(amount)) return fallback;
-
-  try {
-    return new Intl.NumberFormat(currency === 'NGN' ? 'en-NG' : 'en', {
-      style: 'currency',
-      currency,
-      minimumFractionDigits: 0,
-      maximumFractionDigits: amount % 1 === 0 ? 0 : 2,
-    }).format(amount);
-  } catch {
-    return fallback;
-  }
-}
-
-function getSalaryDisplay(job: JobVacancyViewModel) {
-  return formatMoneyAmount(job.salary, job.currency, job.salary);
-}
-
-function getOptionLabel<T extends string>(options: { label: string; value: T }[], value?: T) {
-  if (!value) return '';
-
-  return options.find((option) => option.value === value)?.label ?? value;
-}
-
-function getJobPillLabels(job: JobVacancyViewModel) {
-  return [
-    getOptionLabel(JOB_TYPE_OPTIONS, job.jobType),
-    getOptionLabel(LEVEL_OF_EXPERTISE_OPTIONS, job.levelOfExpertise),
-    getOptionLabel(WORKPLACE_TYPE_OPTIONS, job.workplaceType),
-  ].filter(Boolean);
 }
 
 function getTodayDateInputValue() {
@@ -401,132 +356,6 @@ export function JobCard({
         </div>
       </div>
     </article>
-  );
-}
-
-export function JobDetailsModal({
-  job,
-  onClose,
-  canEdit = false,
-  onEdit,
-  canDelete,
-  onDelete,
-}: {
-  job: JobVacancyViewModel;
-  onClose: () => void;
-  canEdit?: boolean;
-  onEdit?: () => void;
-  canDelete: boolean;
-  onDelete: () => void;
-}) {
-  const pillLabels = getJobPillLabels(job);
-  const applicationHref =
-    job.applicationMode === 'email'
-      ? `mailto:${job.applicationEmail ?? ''}`
-      : (job.applicationUrl ?? '#');
-
-  const applicationLabel =
-    job.applicationMode === 'email' ? job.applicationEmail : job.applicationUrl;
-
-  return (
-    <div className="jobs-modal-backdrop" role="presentation" onClick={onClose}>
-      <section
-        className="jobs-detail-modal"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="job-details-title"
-        onClick={(event) => event.stopPropagation()}
-      >
-        <button type="button" className="jobs-modal-close" onClick={onClose} aria-label="Close">
-          <Icon icon="mdi:close" />
-        </button>
-
-        <div className="jobs-detail-modal__header">
-          <time dateTime={job.postedAt}>Deadline: {formatJobDate(job.postedAt)}</time>
-          <p>{job.companyName}</p>
-          <h2 id="job-details-title">{job.title}</h2>
-          <div className="jobs-detail-modal__tags">
-            {pillLabels.map((label) => (
-              <span key={label}>{label}</span>
-            ))}
-          </div>
-        </div>
-
-        <div className="jobs-detail-modal__body">
-          {job.flyer ? (
-            <section>
-              <h3>Flyer</h3>
-              <img
-                src={job.flyer}
-                alt={`${job.title} flyer`}
-                className="mt-3 w-full rounded-2xl border border-gray-200 object-cover"
-              />
-            </section>
-          ) : null}
-
-          <section>
-            <h3>About this Role</h3>
-            <p>{job.aboutRole}</p>
-          </section>
-          <section>
-            <h3>Requirements</h3>
-            <p>{job.requirements}</p>
-          </section>
-          <section>
-            <h3>Responsibilities</h3>
-            <p>{job.responsibilities}</p>
-          </section>
-          <section>
-            <h3>Applications</h3>
-            <p>
-              {job.applicationMode === 'email'
-                ? 'Applications should be sent to the email below.'
-                : 'Applications should be submitted through the link below.'}
-            </p>
-            {applicationLabel ? (
-              <a
-                href={applicationHref}
-                target={job.applicationMode === 'link' ? '_blank' : undefined}
-                rel={job.applicationMode === 'link' ? 'noreferrer' : undefined}
-                className="mt-3 inline-flex items-center gap-2 rounded-full bg-primary-50 px-4 py-2 text-sm font-medium text-primary-600 hover:bg-primary-100"
-              >
-                <Icon
-                  icon={job.applicationMode === 'email' ? 'mdi:email-outline' : 'mdi:open-in-new'}
-                  className="h-4 w-4"
-                />
-                {applicationLabel}
-              </a>
-            ) : null}
-          </section>
-        </div>
-
-        <div className="mt-8 flex flex-wrap items-center justify-end gap-3">
-          {canEdit && onEdit ? (
-            <button
-              type="button"
-              onClick={onEdit}
-              className="inline-flex items-center gap-2 rounded-full border border-primary-200 px-4 py-2 text-sm font-semibold text-primary-600 hover:bg-primary-50"
-            >
-              <Icon icon="mdi:pencil-outline" className="h-4 w-4" />
-              Edit Vacancy
-            </button>
-          ) : null}
-          {canDelete ? (
-            <button
-              type="button"
-              onClick={onDelete}
-              className="inline-flex items-center gap-2 rounded-full border border-red-200 px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50"
-            >
-              <Icon icon="mdi:delete-outline" className="h-4 w-4" />
-              Delete Vacancy
-            </button>
-          ) : null}
-          <Button type="button" size="md" onClick={onClose}>
-            Close
-          </Button>
-        </div>
-      </section>
-    </div>
   );
 }
 
@@ -955,24 +784,14 @@ export function JobsLoadingState() {
 }
 
 export default function JobVacanciesPage() {
+  const navigate = useNavigate();
   const user = useIdentityStore((state) => state.user);
   const accessToken = useTokenStore((state) => state.accessToken);
   const { data: vacancies = [], isLoading, isError, error, refetch } = useJobVacancies();
-  const deleteVacancy = useDeleteVacancy();
 
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
-  const [selectedJob, setSelectedJob] = useState<JobVacancyViewModel | null>(null);
-  const [jobToDelete, setJobToDelete] = useState<JobVacancyViewModel | null>(null);
 
   const canPostJob = Boolean(user?.chapterId && accessToken);
-  const currentUserId = user?.id ? String(user.id) : undefined;
-  const currentUserMemberId = user?.memberId ? String(user.memberId) : undefined;
-
-  const canDeleteVacancy = (job?: JobVacancyViewModel | null) => {
-    if (!job?.ownerId) return false;
-
-    return job.ownerId === currentUserId || job.ownerId === currentUserMemberId;
-  };
 
   const orderedVacancies = useMemo(
     () =>
@@ -991,22 +810,8 @@ export default function JobVacanciesPage() {
     setIsPostModalOpen(true);
   };
 
-  const handleDeleteVacancy = async () => {
-    if (!jobToDelete) return;
-    if (!canDeleteVacancy(jobToDelete)) {
-      toast.error('Only the person who posted this vacancy can delete it.');
-      setJobToDelete(null);
-      return;
-    }
-
-    try {
-      await deleteVacancy.mutateAsync({ id: jobToDelete.id });
-      toast.success('Job vacancy deleted successfully.');
-      setJobToDelete(null);
-      setSelectedJob(null);
-    } catch (deleteError: any) {
-      toast.fromError(deleteError);
-    }
+  const handleOpenJobDetails = (job: JobVacancyViewModel) => {
+    navigate(ROUTES.JOB_VACANCY_DETAIL(job.id));
   };
 
   return (
@@ -1062,7 +867,12 @@ export default function JobVacanciesPage() {
           {!isLoading && !isError && orderedVacancies.length > 0 ? (
             <div className="jobs-grid">
               {orderedVacancies.map((job, index) => (
-                <JobCard key={job.id} job={job} tone={getTone(index)} onDetails={setSelectedJob} />
+                <JobCard
+                  key={job.id}
+                  job={job}
+                  tone={getTone(index)}
+                  onDetails={handleOpenJobDetails}
+                />
               ))}
             </div>
           ) : null}
@@ -1076,28 +886,6 @@ export default function JobVacanciesPage() {
           onSubmitted={() => {
             setIsPostModalOpen(false);
           }}
-        />
-      ) : null}
-
-      {selectedJob ? (
-        <JobDetailsModal
-          job={selectedJob}
-          canDelete={canDeleteVacancy(selectedJob)}
-          onDelete={() => setJobToDelete(selectedJob)}
-          onClose={() => setSelectedJob(null)}
-        />
-      ) : null}
-
-      {jobToDelete ? (
-        <DeleteConfirmModal
-          title={jobToDelete.title}
-          isDeleting={deleteVacancy.isPending}
-          onCancel={() => setJobToDelete(null)}
-          onConfirm={() => {
-            void handleDeleteVacancy();
-          }}
-          heading="Delete Vacancy?"
-          description={`Are you sure you want to delete "${jobToDelete.title}"? This action cannot be undone.`}
         />
       ) : null}
     </>

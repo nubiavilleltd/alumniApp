@@ -16,6 +16,7 @@ export type JobVacancyViewModel = {
   workplaceType: WorkplaceType;
   levelOfExpertise: LevelOfExpertise;
   postedAt: string;
+  createdAt?: string;
   salary: string;
   currency: string;
   location: string;
@@ -38,6 +39,12 @@ export function vacancyToViewModel(vacancy: JobVacancy): JobVacancyViewModel {
     vacancy.posted_by ??
     vacancy.postedBy ??
     vacancy.member_id;
+  const createdAt =
+    vacancy.created_at ??
+    vacancy.createdAt ??
+    vacancy.posted_at ??
+    vacancy.postedAt ??
+    vacancy.updated_at;
 
   return {
     id: String(vacancy.id),
@@ -49,6 +56,10 @@ export function vacancyToViewModel(vacancy: JobVacancy): JobVacancyViewModel {
     workplaceType: vacancy.workplace_type,
     levelOfExpertise: vacancy.level_of_expertise,
     postedAt: vacancy.application_deadline,
+    createdAt:
+      createdAt !== null && createdAt !== undefined && createdAt !== ''
+        ? String(createdAt)
+        : undefined,
     salary: vacancy.salary,
     currency: vacancy.currency ? String(vacancy.currency) : 'NGN',
     location: vacancy.location,

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100;200;300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -240,7 +240,14 @@
 .home-about-section {
   position: relative;
   overflow: hidden;
-  background: #eaf5fb;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0, 119, 204, 0.102) 0%,
+      rgba(0, 119, 204, 0.102) 36%,
+      rgba(0, 119, 204, 0.102) 100%
+    ),
+    url('/public/realAboutBg.png') center / cover no-repeat;
   padding: 3rem 0 3.5rem;
 }
 
@@ -249,10 +256,9 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background-image:
-    linear-gradient(rgba(0, 119, 204, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 119, 204, 0.08) 1px, transparent 1px);
-  background-size: 6.4rem 6.4rem;
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.18), transparent 34%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 32%);
 }
 
 .home-about-card {
@@ -1401,10 +1407,18 @@ input[type='password']::-webkit-caps-lock-indicator {
 
 /* Contact page */
 .contact-page {
+  font-family: 'Geist', 'Inter', system-ui, sans-serif;
   min-height: calc(100vh - 5rem);
   overflow: hidden;
   background: #f8f6f2;
   color: #071116;
+}
+
+.contact-page button,
+.contact-page input,
+.contact-page textarea,
+.contact-page select {
+  font-family: inherit;
 }
 
 .contact-page__shell {

@@ -18,6 +18,8 @@ export const ROUTES = {
   WELFARE: '/welfare',
   WELFARE_ZONES: '/welfare/zones',
   JOB_VACANCIES: '/job-vacancies',
+  JOB_VACANCY_DETAIL_PATH: '/job-vacancies/:id',
+  JOB_VACANCY_DETAIL: (id: string | number) => `/job-vacancies/${id}`,
   MY_JOB_POSTS: '/job-vacancies/my-posts',
   MESSAGES: '/messages',
   PRIVACY: '/privacy',

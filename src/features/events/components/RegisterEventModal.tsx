@@ -408,27 +408,6 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
             </div>
           )}
 
-          {/* User Info (Read-only) */}
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
-              Your Information
-            </p>
-            <div className="space-y-2 text-sm">
-              <div className="flex items-center justify-between">
-                <span className="text-gray-500">Name:</span>
-                <span className="font-medium text-gray-700">{currentUser?.fullName}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-gray-500">Email:</span>
-                <span className="font-medium text-gray-700">{currentUser?.email}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-gray-500">Class:</span>
-                <span className="font-medium text-gray-700">{currentUser?.graduationYear}</span>
-              </div>
-            </div>
-          </div>
-
           {/* Event Details Summary */}
           <div className="border-t border-gray-100 pt-4">
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">

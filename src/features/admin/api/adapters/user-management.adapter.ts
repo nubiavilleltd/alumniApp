@@ -21,6 +21,7 @@ export type UserAccount = {
   fullName: string;
   email: string;
   phone: string;
+  graduationYear?: number;
   role: 'admin' | 'member';
   accountStatus: AccountStatus;
   profileStatus: string;
@@ -39,6 +40,7 @@ export function mapBackendUserAccount(raw: any): UserAccount {
     fullName: raw.fullname || raw.full_name || 'Unknown',
     email: raw.email || '',
     phone: raw.phone || '',
+    graduationYear: safeParseInt(raw.graduation_year ?? raw.graduationYear),
     role: raw.user_role === 'admin' ? 'admin' : 'member',
     accountStatus:
       raw.active === '1' || raw.active === 1 || raw.active === true ? 'active' : 'inactive',
@@ -136,4 +138,12 @@ export function createGetAllUsersPayload(): Record<string, any> {
   return {
     action_type: 'all_users',
   };
+}
+
+function safeParseInt(value: any): number | undefined {
+  if (value === null || value === undefined || value === '') return undefined;
+
+  const parsed = parseInt(String(value), 10);
+
+  return Number.isNaN(parsed) ? undefined : parsed;
 }

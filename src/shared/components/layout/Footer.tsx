@@ -42,6 +42,8 @@ function resolveSocialIcon(iconName: string): string {
   return SOCIAL_ICON_MAP[key] ?? `mdi:${iconName}`;
 }
 
+const footerSocialLinkClassName =
+  'relative flex items-center justify-center rounded-full bg-transparent transition-all duration-200 hover:scale-105 before:absolute before:inset-0 before:rounded-full before:p-px before:bg-[linear-gradient(90deg,#015C9E_0%,#FFFFFF_50%,#015C9E_100%)] before:[-webkit-mask:linear-gradient(#000_0_0)_content-box,linear-gradient(#000_0_0)] before:[-webkit-mask-composite:xor] before:[mask-composite:exclude] before:pointer-events-none';
 // ─── Link columns ─────────────────────────────────────────────────────────────
 
 const QUICK_LINKS = [
@@ -179,7 +181,7 @@ export function Footer() {
             </div>
 
             {/* ── Vertical divider 1 (desktop only) ────────────────── */}
-            <div className="hidden lg:block w-px self-stretch bg-white/20 mx-6 xl:mx-10" />
+            <div className="hidden lg:block w-px self-stretch mx-6 xl:mx-10 bg-gradient-to-b from-white/0 via-white/70 to-white/0" />
 
             {/* ══ Column 2: Link groups ════════════════════════════════ */}
             <div className="lg:px-2">
@@ -194,7 +196,7 @@ export function Footer() {
             </div>
 
             {/* ── Vertical divider 2 (desktop only) ────────────────── */}
-            <div className="hidden lg:block w-px self-stretch bg-white/20 mx-6 xl:mx-10" />
+            <div className="hidden lg:block w-px self-stretch mx-6 xl:mx-10 bg-[linear-gradient(180deg,#015C9E_0%,#FFFFFF_50%,#015C9E_100%)]" />
 
             {/* ══ Column 3: Social icons (desktop — stacked vertically) */}
             {socialLinks.length > 0 && (
@@ -206,7 +208,7 @@ export function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     ariaLabel={social.name}
-                    className="w-11 h-11 rounded-full border border-white/30 bg-white/10 hover:bg-white/25 flex items-center justify-center transition-all duration-200 hover:scale-105 hover:border-white/50"
+                    className={`${footerSocialLinkClassName} h-11 w-11`}
                   >
                     <Icon icon={resolveSocialIcon(social.icon)} className="w-5 h-5 text-white" />
                   </AppLink>
@@ -239,7 +241,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   ariaLabel={social.name}
-                  className="w-10 h-10 rounded-full border border-white/30 bg-white/10 hover:bg-white/25 flex items-center justify-center transition-colors"
+                  className={`${footerSocialLinkClassName} h-10 w-10`}
                 >
                   <Icon icon={resolveSocialIcon(social.icon)} className="w-5 h-5 text-white" />
                 </AppLink>

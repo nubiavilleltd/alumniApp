@@ -16,6 +16,7 @@ import { MARKETPLACE_ROUTES } from '@/features/marketplace/routes';
 import { ROUTES } from '@/shared/constants/routes';
 import { USER_ROUTES } from '@/features/user/routes';
 import { AppLink } from '../ui/AppLink';
+import HeaderLogo from '../ui/HeaderLogo';
 
 type NavChild = {
   label: string;
@@ -77,17 +78,17 @@ const authenticatedMenuItems: NavChild[] = [
 const navSurfaceClassName =
   'bg-[linear-gradient(106deg,_rgb(var(--color-primary-500))_0%,_#003a5d_92%)]';
 const desktopLinkBaseClassName =
-  "relative no-underline font-bold tracking-[0.1em] text-[#c4d0d9] transition-colors duration-200 hover:text-white focus-visible:text-white after:pointer-events-none after:absolute after:bottom-[-0.55rem] after:left-0 after:h-[5px] after:w-full after:origin-left after:scale-x-0 after:rounded-full after:bg-white/85 after:content-[''] after:transition-transform after:duration-300 after:ease-out hover:after:scale-x-100 focus-visible:after:scale-x-100";
+  "relative no-underline font-bold tracking-[0.1em] text-[#c4d0d9] transition-colors duration-200 hover:text-white focus-visible:text-white after:pointer-events-none after:absolute after:left-0 after:h-[5px] after:w-full after:origin-left after:scale-x-0 after:rounded-full after:bg-white/85 after:content-[''] after:transition-transform after:duration-300 after:ease-out hover:after:scale-x-100 focus-visible:after:scale-x-100";
 const desktopActiveLinkClassName = 'text-white after:scale-x-100';
-const desktopPrimaryLinkClassName = `${desktopLinkBaseClassName} whitespace-nowrap text-[clamp(1.05rem,1.36vw,1.75rem)]`;
-const desktopSecondaryLinkClassName = `${desktopLinkBaseClassName} text-[clamp(0.95rem,1.18vw,1.35rem)]`;
+const desktopPrimaryLinkClassName = `${desktopLinkBaseClassName} whitespace-nowrap text-[clamp(1.05rem,1.36vw,1.75rem)] after:bottom-[-1.12rem] lg:max-[1360px]:after:bottom-[-0.95rem] xl:after:bottom-[-1.28rem]`;
+const desktopSecondaryLinkClassName = `${desktopLinkBaseClassName} text-[clamp(0.95rem,1.18vw,1.35rem)] after:bottom-[-0.55rem]`;
 const desktopPanelClassName =
   'absolute top-[calc(100%+1rem)] z-[60] overflow-hidden border border-[#d7e6ef] bg-white shadow-[0_1.25rem_2.5rem_rgba(7,17,22,0.14)]';
 const desktopMenuLinkClassName =
   'flex items-center gap-3 px-6 py-[0.95rem] text-[clamp(1.05rem,1.3vw,1.35rem)] font-bold leading-[1.25] text-[#4f5864] no-underline transition-colors duration-200 hover:bg-primary-50 hover:text-primary-700';
 const desktopMenuActiveLinkClassName = 'bg-primary-50 text-primary-700';
 const accountPillClassName =
-  'inline-flex min-h-[3.35rem] items-center rounded-full border border-white/25 bg-[#001f38]/20 text-white no-underline transition-colors duration-200 hover:bg-white/10';
+  'inline-flex min-h-[3.35rem] items-center rounded-full border border-white/25 bg-[#fff] text-[#0077CC] no-underline transition-colors duration-200 hover:bg-[#0077CC] hover:text-white';
 const mobileSectionClassName =
   'mt-[0.85rem] grid gap-[0.35rem] border-t border-white/15 pt-[0.85rem] first:mt-0 first:border-t-0';
 const mobileLinkClassName =
@@ -123,71 +124,24 @@ function BrandMark({ mobile = false }: { mobile?: boolean }) {
       className={cn(
         'relative isolate flex overflow-hidden bg-white text-primary-500 no-underline',
         mobile
-          ? 'min-h-[5.25rem] items-center px-[0.85rem] py-[0.6rem]'
-          : 'items-center justify-center px-[clamp(0.9rem,1.8vw,1.6rem)] py-[clamp(0.75rem,1.4vw,1.25rem)]',
+          ? 'min-h-[5.25rem] items-center px-4 py-3'
+          : 'items-center justify-center px-[clamp(1rem,2vw,1.8rem)] py-[clamp(0.8rem,1.4vw,1.25rem)]',
       )}
     >
       <span
         className="absolute inset-0 -z-10 bg-[url('/navbarImage.png')] bg-[length:auto_100%] bg-right bg-no-repeat"
         aria-hidden="true"
       />
-      <span
+      <HeaderLogo
         className={cn(
-          'flex w-full items-center',
-          mobile ? 'max-w-[22rem] gap-[0.65rem]' : 'justify-center gap-[clamp(0.65rem,1.1vw,1rem)]',
+          'relative z-10 min-w-0',
+          mobile ? 'w-full justify-center gap-2.5' : 'max-w-full justify-center gap-3',
         )}
-      >
-        <img
-          src="/logo.png"
-          alt=""
-          className={cn(
-            'h-auto flex-none object-contain',
-            mobile
-              ? 'h-[2.8rem] w-[2.8rem]'
-              : 'h-[clamp(2.75rem,4vw,4.15rem)] w-[clamp(2.75rem,4vw,4.15rem)]',
-          )}
-        />
-        <span className="flex min-w-0 flex-col justify-center">
-          <span
-            className={cn(
-              "[font-family:Georgia,'Times_New_Roman',serif] block whitespace-nowrap font-bold leading-[0.9] tracking-[0.34em] text-primary-500",
-              mobile
-                ? 'text-[1.55rem] max-[420px]:text-[1.35rem]'
-                : 'text-[clamp(1.75rem,2.65vw,3.45rem)]',
-            )}
-          >
-            FGGC
-          </span>
-          <span
-            className={cn(
-              "[font-family:Georgia,'Times_New_Roman',serif] mt-[0.35rem] block whitespace-nowrap font-bold leading-none text-primary-500",
-              mobile ? 'text-[0.75rem]' : 'text-[clamp(0.85rem,1.1vw,1.35rem)]',
-            )}
-          >
-            Alumnae Association
-          </span>
-        </span>
-        <span
-          className={cn(
-            'w-px flex-none bg-[rgba(0,119,204,0.6)]',
-            mobile
-              ? 'mx-[0.35rem] h-[2.75rem] max-[420px]:hidden'
-              : 'mx-[clamp(0.8rem,1.5vw,1.35rem)] hidden h-[clamp(3rem,5vw,4.6rem)] min-[1361px]:block',
-          )}
-          aria-hidden="true"
-        />
-        <span
-          className={cn(
-            "[font-family:'Segoe_Script','Brush_Script_MT',cursive] flex flex-none rotate-[-2deg] flex-col whitespace-nowrap font-bold leading-[1.2] text-primary-500",
-            mobile
-              ? 'text-[0.85rem] max-[420px]:hidden'
-              : 'hidden text-[clamp(0.95rem,1.35vw,1.55rem)] min-[1361px]:flex',
-          )}
-        >
-          <span>Lagos</span>
-          <span>Chapter</span>
-        </span>
-      </span>
+        imageClassName={cn(mobile ? 'h-[2.8rem] w-[2.8rem]' : 'h-[3.35rem] w-[3.35rem]')}
+        wordmarkClassName={cn(
+          mobile ? 'w-[10.75rem] max-w-[calc(100vw-9.25rem)]' : 'w-[14.75rem] max-w-full',
+        )}
+      />
     </AppLink>
   );
 }
@@ -549,7 +503,7 @@ export function Navigation() {
                   'px-[1.65rem] py-[0.7rem] text-base font-bold tracking-[0.08em]',
                 )}
               >
-                Login
+                Sign In
               </AppLink>
             )}
           </div>
@@ -663,7 +617,7 @@ export function Navigation() {
                 href={AUTH_ROUTES.LOGIN}
                 className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/30 px-6 text-center text-base font-extrabold tracking-[0.08em] text-white no-underline transition-colors duration-200 hover:bg-white/10"
               >
-                Login
+                Sign In
               </AppLink>
             </div>
           )}

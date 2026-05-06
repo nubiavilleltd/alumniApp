@@ -60,6 +60,7 @@ import ResourcesPage from './pages/resources/ResourcesPage';
 import WelfarePage from './features/welfare/pages/WelfarePage';
 import WelfareZonesPage from './features/welfare/pages/WelfareZonesPage';
 import JobVacanciesPage from './features/jobVacancies/pages/JobVacanciesPage';
+import JobVacancyDetailPage from './features/jobVacancies/pages/JobVacancyDetailPage';
 import MyJobPostsPage from './features/jobVacancies/pages/MyJobPostsPage';
 import { DonationPage } from './features/donation/pages/DonationPage';
 import { WelfareCommitteeContactPage } from './features/contactUs/pages/WelfareCommitteeContactPage';
@@ -147,6 +148,16 @@ export default function App() {
               <ProtectedRoute>
                 <ErrorBoundary>
                   <MyJobPostsPage />
+                </ErrorBoundary>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ROUTES.JOB_VACANCY_DETAIL_PATH}
+            element={
+              <ProtectedRoute>
+                <ErrorBoundary>
+                  <JobVacancyDetailPage />
                 </ErrorBoundary>
               </ProtectedRoute>
             }

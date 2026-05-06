@@ -13,6 +13,8 @@ import { EVENT_ROUTES } from '../routes';
 import type { EventAttendee } from '../api/adapters/event-attendees.adapter';
 import { ROUTES } from '@/shared/constants/routes';
 import { ADMIN_ROUTES } from '@/features/admin/routes';
+import { useAllUsers } from '@/features/admin/hooks/useUserManagement';
+import type { UserAccount } from '@/features/admin/api/adapters/user-management.adapter';
 import {
   getStoredEventSurveyAvailability,
   setStoredEventSurveyAvailability,
@@ -93,6 +95,12 @@ function normalizeMatchValue(value?: string) {
   return String(value ?? '')
     .trim()
     .toLowerCase();
+}
+
+function buildUserLookup(users: UserAccount[], key: 'id' | 'email') {
+  return new Map(
+    users.map((user) => [normalizeMatchValue(user[key]), user] as const).filter(([value]) => value),
+  );
 }
 
 function buildFallbackFormsFromRegistration(
@@ -370,6 +378,12 @@ function AttendeeCard({
             />
             <span>{formatRegisteredAt(attendee.registeredAt)}</span>
           </p>
+          {attendee.graduationYear ? (
+            <p className="mt-1 flex items-center gap-2 text-sm text-accent-500">
+              <Icon icon="mdi:school-outline" className="h-4 w-4 flex-shrink-0 text-accent-400" />
+              <span>Class of {attendee.graduationYear}</span>
+            </p>
+          ) : null}
         </div>
 
         {hasSurveyResponse ? (
@@ -421,7 +435,38 @@ export default function AttendeesPage() {
   const { data: event } = useEvent(id);
   const cachedSurveyAvailability = useMemo(() => getStoredEventSurveyAvailability(id), [id]);
   const { data: attendeeData, isLoading } = useEventAttendees(id, 'going');
-  const attendees = useMemo(() => attendeeData?.attendees ?? [], [attendeeData?.attendees]);
+  const registrationAttendees = useMemo(
+    () => attendeeData?.attendees ?? [],
+    [attendeeData?.attendees],
+  );
+  const shouldLoadUserProfiles = registrationAttendees.some((attendee) => !attendee.graduationYear);
+  const { data: allUsers = [], isLoading: isLoadingUserProfiles } = useAllUsers({
+    enabled: shouldLoadUserProfiles,
+  });
+  const usersById = useMemo(() => buildUserLookup(allUsers, 'id'), [allUsers]);
+  const usersByEmail = useMemo(() => buildUserLookup(allUsers, 'email'), [allUsers]);
+  const attendees = useMemo(
+    () =>
+      registrationAttendees.map((attendee) => {
+        if (attendee.graduationYear) {
+          return attendee;
+        }
+
+        const matchedUser =
+          usersById.get(normalizeMatchValue(attendee.userId)) ??
+          usersByEmail.get(normalizeMatchValue(attendee.email));
+
+        if (!matchedUser?.graduationYear) {
+          return attendee;
+        }
+
+        return {
+          ...attendee,
+          graduationYear: matchedUser.graduationYear,
+        };
+      }),
+    [registrationAttendees, usersByEmail, usersById],
+  );
   const shouldAttemptSurveyLookup =
     !!id && attendees.length > 0 && cachedSurveyAvailability !== 'disabled';
   const {
@@ -479,6 +524,7 @@ export default function AttendeesPage() {
       eventHasRegistrationQuestions: event?.hasRegistrationQuestions ?? null,
       cachedSurveyAvailability,
       attendeeCount: attendees.length,
+      profileLookupEnabled: shouldLoadUserProfiles,
       shouldAttemptSurveyLookup,
     });
   }, [
@@ -486,6 +532,7 @@ export default function AttendeesPage() {
     cachedSurveyAvailability,
     event?.hasRegistrationQuestions,
     id,
+    shouldLoadUserProfiles,
     shouldAttemptSurveyLookup,
   ]);
 
@@ -652,10 +699,13 @@ export default function AttendeesPage() {
     }
   }
 
-  const isPreparingExport = isLoading || isLoadingSurveySubmissions;
+  const isPreparingExport =
+    isLoading || isLoadingSurveySubmissions || (shouldLoadUserProfiles && isLoadingUserProfiles);
   const exportButtonDisabled = isPreparingExport || isExporting || attendees.length === 0;
   const exportButtonLabel = isPreparingExport
-    ? 'Loading attendees...'
+    ? isLoadingUserProfiles
+      ? 'Loading profiles...'
+      : 'Loading attendees...'
     : isExporting
       ? 'Exporting...'
       : 'Export List';

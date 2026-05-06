@@ -1,21 +1,17 @@
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import { SEO } from '@/shared/common/SEO';
 import { Button } from '@/shared/components/ui/Button';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import { DeleteConfirmModal } from '@/features/events/components/DeleteConfirmModal';
 import { toast } from '@/shared/components/ui/Toast';
+import { ROUTES } from '@/shared/constants/routes';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 import { useJobVacancies } from '../hooks/useJobVacancies';
 import { useDeleteVacancy } from '../hooks/useManageVacancy';
 import type { JobVacancyViewModel } from '../api/adapters';
-import {
-  getTone,
-  JobCard,
-  JobDetailsModal,
-  JobsLoadingState,
-  PostJobModal,
-} from './JobVacanciesPage';
+import { getTone, JobCard, JobsLoadingState, PostJobModal } from './JobVacanciesPage';
 
 function useCurrentOwnerIds() {
   const user = useIdentityStore((state) => state.user);
@@ -30,13 +26,13 @@ function useCurrentOwnerIds() {
 }
 
 export default function MyJobPostsPage() {
+  const navigate = useNavigate();
   const user = useIdentityStore((state) => state.user);
   const ownerIds = useCurrentOwnerIds();
   const { data: vacancies = [], isLoading, isError, error, refetch } = useJobVacancies();
   const deleteVacancy = useDeleteVacancy();
 
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
-  const [selectedJob, setSelectedJob] = useState<JobVacancyViewModel | null>(null);
   const [editingJob, setEditingJob] = useState<JobVacancyViewModel | null>(null);
   const [jobToDelete, setJobToDelete] = useState<JobVacancyViewModel | null>(null);
 
@@ -55,15 +51,17 @@ export default function MyJobPostsPage() {
       await deleteVacancy.mutateAsync({ id: jobToDelete.id });
       toast.success('Job vacancy deleted successfully.');
       setJobToDelete(null);
-      setSelectedJob(null);
     } catch (deleteError: any) {
       toast.fromError(deleteError);
     }
   };
 
   const handleEditJob = (job: JobVacancyViewModel) => {
-    setSelectedJob(null);
     setEditingJob(job);
+  };
+
+  const handleOpenJobDetails = (job: JobVacancyViewModel) => {
+    navigate(ROUTES.JOB_VACANCY_DETAIL(job.id));
   };
 
   const hasOwnerIdentity = ownerIds.size > 0;
@@ -133,7 +131,7 @@ export default function MyJobPostsPage() {
                   key={job.id}
                   job={job}
                   tone={getTone(index)}
-                  onDetails={setSelectedJob}
+                  onDetails={handleOpenJobDetails}
                   actions={
                     <>
                       <button
@@ -173,17 +171,6 @@ export default function MyJobPostsPage() {
           editData={editingJob}
           onClose={() => setEditingJob(null)}
           onSubmitted={() => setEditingJob(null)}
-        />
-      ) : null}
-
-      {selectedJob ? (
-        <JobDetailsModal
-          job={selectedJob}
-          canEdit
-          onEdit={() => handleEditJob(selectedJob)}
-          canDelete
-          onDelete={() => setJobToDelete(selectedJob)}
-          onClose={() => setSelectedJob(null)}
         />
       ) : null}
 
