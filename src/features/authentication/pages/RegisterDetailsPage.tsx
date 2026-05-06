@@ -338,6 +338,7 @@ export function RegisterDetailsPage() {
         <TextareaInput
           label="Residential Address"
           id="residentialAddress"
+          required
           rows={5}
           placeholder=""
           error={detailForm.formState.errors.residentialAddress?.message}
