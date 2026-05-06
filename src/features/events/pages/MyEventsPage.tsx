@@ -83,7 +83,7 @@ function MyEventCard({
   const isCancelled = event.status === 'cancelled';
 
   const dateDisplay = (() => {
-    const d = new Date(event.date);
+    const d = new Date(event.startDate);
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   })();
 
@@ -211,12 +211,12 @@ export function MyEventsPage() {
   const now = new Date();
   const upcomingEvents = myEvents.filter((e: Event) => {
     const [h = 23, m = 59] = (e.endTime || '23:59').split(':').map(Number);
-    const d = new Date(e.date);
+    const d = new Date(e.startDate);
     return new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, m) >= now;
   });
   const pastEvents = myEvents.filter((e: Event) => {
     const [h = 23, m = 59] = (e.endTime || '23:59').split(':').map(Number);
-    const d = new Date(e.date);
+    const d = new Date(e.startDate);
     return new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, m) < now;
   });
 

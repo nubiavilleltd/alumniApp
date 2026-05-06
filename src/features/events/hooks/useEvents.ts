@@ -36,7 +36,7 @@ export function useUpcomingEvents() {
     return allEvents
       .filter((event) => {
         const [hours, minutes] = (event.endTime || '23:59').split(':').map(Number);
-        const date = new Date(event.date);
+        const date = new Date(event.startDate);
         const endDateTime = new Date(
           date.getFullYear(),
           date.getMonth(),
@@ -46,7 +46,7 @@ export function useUpcomingEvents() {
         );
         return endDateTime >= now;
       })
-      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
   }, [allEvents]);
 
   return { data: upcoming, isLoading, error };
@@ -60,8 +60,8 @@ export function usePastEvents() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     return allEvents
-      .filter((event) => new Date(event.date) < today)
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+      .filter((event) => new Date(event.startDate) < today)
+      .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime());
   }, [allEvents]);
 
   return { data: past, isLoading, error };
@@ -73,7 +73,7 @@ export function useLatestEvents(count = 4) {
 
   const latest = useMemo(() => {
     return [...allEvents]
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
       .slice(0, count);
   }, [allEvents, count]);
 

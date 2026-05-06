@@ -258,7 +258,7 @@ function AttestationRow({
 // ─── Registered event row ─────────────────────────────────────────────────────
 
 function RegisteredEventRow({ event }: { event: Event }) {
-  const dateStr = new Date(event.date).toLocaleDateString('en-US', {
+  const dateStr = new Date(event.startDate).toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
@@ -392,7 +392,7 @@ export function UserDashboardPage() {
   const visibleVouches = pendingVouches.filter((v) => !removedVouchIds.has(v.vouchId));
 
   const myRegisteredEvents = myEvents
-    .filter((e: Event) => new Date(e.date) >= new Date())
+    .filter((e: Event) => new Date(e.startDate) >= new Date())
     .slice(0, 5);
 
   const suggestedAlumni = allAlumni

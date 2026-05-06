@@ -5,8 +5,10 @@ export type Event = {
   title: string;
 
   // ── Timing ────────────────────────────────────────────────────────────
-  date: string;
-  startTime?: string; // ➕ NEW
+  // date: string;
+  startDate: string;
+  endDate?: string;
+  startTime: string; // ➕ NEW
   endTime?: string; // ➕ NEW
 
   // ── Content ───────────────────────────────────────────────────────────

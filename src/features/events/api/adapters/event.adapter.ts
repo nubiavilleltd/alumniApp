@@ -41,7 +41,8 @@ export function mapBackendEventToFrontend(raw: unknown): Event {
 
     image: d.event_banner || '',
 
-    date: safeParseDate(d.event_date),
+    startDate: safeParseDate(d.start_date || d.event_date),
+    endDate: safeParseDate(d.end_date),
 
     startTime: d.start_time?.slice(0, 5),
     endTime: d.end_time?.slice(0, 5),
@@ -99,7 +100,8 @@ export function mapEventToCreatePayload(
     title: string;
     description: string;
     location: string;
-    event_date: string;
+    start_date: string;
+    end_date?: string;
     start_time?: string;
     end_time?: string;
     color?: string;
@@ -118,7 +120,8 @@ export function mapEventToCreatePayload(
     title: formData.title,
     description: formData.description,
     location: formData.location,
-    event_date: formData.event_date,
+    start_date: formData.start_date,
+    end_date: formData.end_date,
     status: formData.status || 'upcoming',
     visibility: formData.visibility || 'public',
     is_approved: '1',
@@ -128,7 +131,7 @@ export function mapEventToCreatePayload(
   if (formData.start_time) base.start_time = formData.start_time;
   if (formData.end_time) base.end_time = formData.end_time;
   if (formData.color) base.color = formData.color;
-  if (formData.max_attendees) base.max_attendees = String(formData.max_attendees);
+  // if (formData.max_attendees) base.max_attendees = String(formData.max_attendees);
   if (formData.tags?.length) base.tags = JSON.stringify(formData.tags);
 
   if (formData.event_banner) {
@@ -155,23 +158,26 @@ export function mapEventToUpdatePayload(
     title: string;
     description: string;
     location: string;
-    event_date: string;
-    start_time?: string;
+    start_date: string;
+    end_date?: string;
+    start_time: string;
     end_time?: string;
     color?: string;
     visibility?: string;
+    event_banner?: File | null;
     max_attendees?: number;
     status?: string;
     tags?: string[];
   },
-): Record<string, unknown> {
+): FormData | Record<string, unknown> {
   const base: Record<string, unknown> = {
     id: eventId,
     function_type: 'update',
     title: formData.title,
     description: formData.description,
     location: formData.location,
-    event_date: formData.event_date,
+    start_date: formData.start_date,
+    start_time: formData.start_time,
   };
 
   if (formData.start_time) base.start_time = formData.start_time;
@@ -181,6 +187,20 @@ export function mapEventToUpdatePayload(
   if (formData.max_attendees) base.max_attendees = String(formData.max_attendees);
   if (formData.status) base.status = formData.status;
   if (formData.tags?.length) base.tags = JSON.stringify(formData.tags);
+
+  if (formData.event_banner) {
+    const fd = new FormData();
+
+    Object.entries(base).forEach(([k, v]) => {
+      if (v !== undefined && v !== null) {
+        fd.append(k, String(v));
+      }
+    });
+
+    fd.append('event_banner', formData.event_banner);
+
+    return fd;
+  }
 
   return base;
 }
@@ -337,7 +357,7 @@ function readRegistrationQuestionFlag(
   for (const candidate of explicitBooleanCandidates) {
     const parsed = stringToBoolean(candidate);
     if (parsed !== null) {
-      return parsed;
+      return parsed as boolean;
     }
   }
 

@@ -417,7 +417,7 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
               <div className="flex items-start gap-2">
                 <Icon icon="mdi:calendar-outline" className="w-4 h-4 mt-0.5 flex-shrink-0" />
                 <span>
-                  {new Date(event.date).toLocaleDateString('en-GB', {
+                  {new Date(event.startDate).toLocaleDateString('en-GB', {
                     weekday: 'long',
                     day: 'numeric',
                     month: 'long',
@@ -439,7 +439,7 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
             </div>
           </div>
 
-          <div className="rounded-lg border border-green-200 bg-green-50 p-3">
+          {/* <div className="rounded-lg border border-green-200 bg-green-50 p-3">
             <div className="flex items-start gap-3">
               <div className="rounded-full bg-white p-1.5 text-green-600 shadow-sm">
                 <Icon icon="mdi:check-circle-outline" className="h-4 w-4" />
@@ -453,7 +453,7 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
                 </p>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Note about guests - backend doesn't support guest count yet */}
           {event.allowGuests && (
@@ -524,7 +524,7 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
           ) : null}
 
           <TextareaInput
-            label={registrationForms.length > 0 ? 'Extra Note' : 'Additional Info'}
+            label={registrationForms.length > 0 ? 'Extra Note' : 'Additional Info (Optional)'}
             id="additionalInfo"
             rows={5}
             value={additionalInfo}

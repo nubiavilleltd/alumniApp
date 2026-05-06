@@ -45,7 +45,7 @@ function EventListItem({
   isSelected: boolean;
   onClick: () => void;
 }) {
-  const isPast = new Date(event.date) < new Date();
+  const isPast = new Date(event.startDate) < new Date();
 
   return (
     <button
@@ -64,7 +64,7 @@ function EventListItem({
           <div className="mt-1 flex items-center gap-3 text-xs text-gray-500">
             <span className="flex items-center gap-1">
               <Icon icon="mdi:calendar-outline" className="w-3.5 h-3.5" />
-              {new Date(event.date).toLocaleDateString('en-GB', {
+              {new Date(event.startDate).toLocaleDateString('en-GB', {
                 day: 'numeric',
                 month: 'short',
                 year: 'numeric',
@@ -294,7 +294,7 @@ export function AdminEventRegistrationsPage() {
                       <span className="flex items-center gap-1">
                         <Icon icon="mdi:calendar-outline" className="w-4 h-4" />
                         {selectedEvent &&
-                          new Date(selectedEvent.date).toLocaleDateString('en-GB', {
+                          new Date(selectedEvent.startDate).toLocaleDateString('en-GB', {
                             day: 'numeric',
                             month: 'long',
                             year: 'numeric',

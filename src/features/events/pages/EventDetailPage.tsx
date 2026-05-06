@@ -181,13 +181,15 @@ function EventDetailSkeleton() {
 
 export function EventDetailPage() {
   const { slug = '' } = useParams();
+  const { data: event, isLoading, error } = useEvent(slug);
+  const { isUpcoming, isOngoing, isPast } = useEventStatus(event);
   const navigate = useNavigate();
 
   const currentUser = useIdentityStore((state) => state.user);
   const isLoggedIn = !!currentUser;
   const isAdmin = currentUser?.role === 'admin';
 
-  const { data: event, isLoading, error } = useEvent(slug);
+  console.log('data', { event });
   const deleteEvent = useDeleteEvent();
   const cancelMutation = useCancelRegistration();
 
@@ -241,8 +243,6 @@ export function EventDetailPage() {
 
   const isCancelled = event.status === 'cancelled';
 
-  const { isUpcoming, isOngoing, isPast } = useEventStatus(event);
-
   // ── Handlers ──────────────────────────────────────────────────────────────
 
   const handleDelete = () => {
@@ -282,7 +282,7 @@ export function EventDetailPage() {
 
   const dateDisplay = (() => {
     const opts: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric', year: 'numeric' };
-    const start = new Date(event.date).toLocaleDateString('en-US', opts);
+    const start = new Date(event.startDate).toLocaleDateString('en-US', opts);
     const timePart = [event.startTime, event.endTime].filter(Boolean).join(' - ');
     return timePart ? `${start} · ${timePart}` : start;
   })();
@@ -449,7 +449,7 @@ export function EventDetailPage() {
             {/* ── Countdown ─────────────────────────────────── */}
             {isUpcoming && (
               <div className="mb-8">
-                <CountdownTimer date={event.date} startTime={event.startTime} />
+                <CountdownTimer date={event.startDate} startTime={event.startTime} />
               </div>
             )}
 

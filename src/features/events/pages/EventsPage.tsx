@@ -34,7 +34,7 @@ function formatDateKey(date: Date) {
 }
 
 function formatEventDate(event: Event): string {
-  const d = parseDateOnly(event.date);
+  const d = parseDateOnly(event.startDate);
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
@@ -105,7 +105,7 @@ function CalendarBlock({
       {/* Hidden on mobile, visible on desktop */}
       <div className="hidden sm:inline-flex items-center gap-1 px-2 py-[3px] rounded-md text-[10px] font-medium text-white bg-gray-800 mb-1.5">
         <span>📅</span>
-        {formatShort(event.date)}
+        {formatShort(event.startDate)}
       </div>
 
       {/* Compact title */}
@@ -137,7 +137,7 @@ function Calendar({
   const eventsByDate = useMemo(() => {
     const map = new Map<string, Event[]>();
     events.forEach((ev) => {
-      const key = formatDateKey(parseDateOnly(ev.date));
+      const key = formatDateKey(parseDateOnly(ev.startDate));
       map.set(key, [...(map.get(key) || []), ev]);
     });
     return map;
@@ -322,7 +322,7 @@ export function EventsPage() {
   const allEvents = useMemo(
     () =>
       [...upcoming, ...past].sort(
-        (a, b) => parseDateOnly(a.date).getTime() - parseDateOnly(b.date).getTime(),
+        (a, b) => parseDateOnly(a.startDate).getTime() - parseDateOnly(b.startDate).getTime(),
       ),
     [upcoming, past],
   );
@@ -331,7 +331,7 @@ export function EventsPage() {
   const calendarMonthEvents = useMemo(
     () =>
       allEvents.filter((e) => {
-        const d = parseDateOnly(e.date);
+        const d = parseDateOnly(e.startDate);
         return (
           d.getFullYear() === calendarDate.getFullYear() && d.getMonth() === calendarDate.getMonth()
         );
