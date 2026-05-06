@@ -2,7 +2,6 @@ import { AppLink } from '@/shared/components/ui/AppLink';
 
 import { useLeadership } from '@/features/leadership/hooks/useLeadership';
 import { LeadershipMember } from '@/features/leadership/types/leadership.types';
-import { ROUTES } from '@/shared/constants/routes';
 
 function SectionEyebrow({ children }: { children: string }) {
   return (
@@ -17,7 +16,8 @@ function SectionEyebrow({ children }: { children: string }) {
 function MemberCard({ member }: { member: LeadershipMember }) {
   return (
     <div className="rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex flex-col">
-      <div className="h-57 w-full overflow-hidden bg-gray-100">
+      {/* <div className="h-57 w-full overflow-hidden bg-gray-100"> */}
+      <div className="aspect-square w-full overflow-hidden bg-gray-100 rounded-2xl">
         <img
           src={member.image}
           alt={member.name}
@@ -47,21 +47,19 @@ function MemberCardSkeleton() {
 export default function Leadership() {
   const { data: members = [], isLoading } = useLeadership();
 
-  console.log('leadership', { members });
-
   const president = members.find((m) => m.featured);
   const board = members.filter((m) => !m.featured);
 
   return (
     <section className="section">
       <div className="container-custom">
-        <div className="mb-4">
+        <div className="mb-12">
           <SectionEyebrow>Our Leadership</SectionEyebrow>
+          <p className="font-semibold text-gray-700 mt-2">Meet the woment leading the way</p>
         </div>
-        <p>Meet the woment leading the way</p>
 
         {/* President feature row */}
-        {isLoading ? (
+        {/* {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-[1fr_320px] gap-10 mb-14 items-start animate-pulse">
             <div className="flex flex-col gap-4">
               <div className="h-10 bg-gray-200 rounded w-2/3" />
@@ -102,22 +100,76 @@ export default function Leadership() {
               </div>
             </div>
           )
+        )} */}
+
+        {/* President feature row */}
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-[260px_1fr] gap-8 mb-14 items-start animate-pulse">
+            <div className="flex flex-col gap-3">
+              <div className="h-8 bg-gray-200 rounded w-40" />
+              <div className="h-5 bg-gray-200 rounded w-52" />
+              <div className="w-full aspect-[3/4] bg-gray-200 rounded-2xl" />
+            </div>
+
+            <div className="flex flex-col gap-4">
+              <div className="h-4 bg-gray-200 rounded w-full" />
+              <div className="h-4 bg-gray-200 rounded w-full" />
+              <div className="h-4 bg-gray-200 rounded w-3/4" />
+              <div className="h-4 bg-gray-200 rounded w-full" />
+              <div className="h-4 bg-gray-200 rounded w-5/6" />
+            </div>
+          </div>
+        ) : (
+          president && (
+            <div>
+              {/* Heading */}
+              <div className="mb-4">
+                <h2 className="text-xl md:text-2xl font-bold text-gray-700 leading-tight">
+                  From the President
+                </h2>
+
+                <h3 className="text-lg font-semibold text-gray-600 ">-{president.name}</h3>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-[260px_1fr] gap-8 mb-14 items-start">
+                {/* Left Column */}
+                <div className="w-full max-w-[260px] mx-auto md:mx-0">
+                  {/* Image */}
+                  {/* <div className="aspect-[3/4] rounded-2xl overflow-hidden shadow-md bg-gray-100"> */}
+                  <div className="aspect-square w-full rounded-2xl overflow-hidden shadow-md bg-gray-100">
+                    <img
+                      src={president.image}
+                      alt={president.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+
+                {/* Right Column */}
+                <div className="pt-1">
+                  {president.bio?.split('\n\n').map((para, i) => (
+                    <p key={i} className="text-gray-700 text-md leading-relaxed mb-6">
+                      {para}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )
         )}
 
         {/* Board grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
+        {/* <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
           {isLoading
             ? Array.from({ length: 6 }).map((_, i) => <MemberCardSkeleton key={i} />)
             : board.map((member) => <MemberCard key={member.id} member={member} />)}
-        </div>
+        </div> */}
 
-        <div className="mt-8 text-right">
-          <AppLink
-            href={ROUTES.LEADERSHIP}
-            className="text-primary-500 text-sm font-semibold hover:underline inline-flex items-center gap-1"
-          >
-            See More →
-          </AppLink>
+        {/* Board grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+          {isLoading
+            ? Array.from({ length: 10 }).map((_, i) => <MemberCardSkeleton key={i} />)
+            : board.map((member) => <MemberCard key={member.id} member={member} />)}
         </div>
       </div>
     </section>
