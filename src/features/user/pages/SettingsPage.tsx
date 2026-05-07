@@ -253,7 +253,7 @@ function PrivacySection() {
     {
       field: 'socials',
       label: 'Socials Visibility',
-      description: 'Let others see your social media links',
+      description: 'Let others see your social media links and email',
     },
   ];
 

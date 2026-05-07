@@ -10,10 +10,11 @@ import EmptyState from '@/shared/components/ui/EmptyState';
 import { Pagination } from '@/shared/components/ui/Pagination';
 import { useAlumni } from '@/features/alumni/hooks/useAlumni';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
-import { isFieldVisible, getPhotoDisplay } from '@/features/alumni/utils/privacyHelpers';
+import { getPhotoDisplay } from '@/features/alumni/utils/privacyHelpers';
 import { ALUMNI_ROUTES } from '../routes';
 import { useStartDirectConversation } from '@/features/messages/hooks/useStartDirectConversation';
 import { Alumni } from '../types/alumni.types';
+import { resolveVisibleField } from '@/features/user/utils/privacyResolvers';
 
 /* ───────────────────────────────────────────────────────────── */
 /* Responsive items per page */
@@ -44,12 +45,40 @@ function useItemsPerPage() {
 /* ───────────────────────────────────────────────────────────── */
 
 function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: any) {
-  const photoVisible = isFieldVisible(entry, 'photo', currentUser);
-  const displayPhoto = getPhotoDisplay(entry.photo, photoVisible);
+  // const photoVisible = isFieldVisible(entry, 'photo', currentUser);
+  // const displayPhoto = getPhotoDisplay(entry.photo, photoVisible);
   const classLabel = `Class '${String(entry.graduationYear).slice(-2)}`;
   const isOwnProfile = entry.memberId === currentUser?.memberId;
 
-  const occupation = entry.position || entry.occupations?.[0] || '';
+  // const occupation = entry.position || entry.occupations?.[0] || '';
+
+  const isOwner = entry.memberId === currentUser?.memberId;
+
+  console.log('entry', { entry });
+
+  const canSeePhoto = resolveVisibleField(entry.photo, 'photo', entry.privacy, isOwner);
+
+  const displayPhoto = getPhotoDisplay(entry.photo, canSeePhoto);
+  entry.memberId == '39' &&
+    console.log('canSeePhoto', { canSeePhoto, photo: entry.photo, photo2: displayPhoto });
+
+  const visibleGraduationYear = resolveVisibleField(
+    entry.graduationYear,
+    'birthDate', // TEMPORARY until you create graduationYear privacy
+    entry.privacy,
+    isOwner,
+  );
+
+  const visibleOccupation = resolveVisibleField(
+    entry.position || entry.occupations?.[0],
+    'employmentStatus', // TEMPORARY mapping
+    entry.privacy,
+    isOwner,
+  );
+
+  // const classLabel = visibleGraduationYear
+  //   ? `Class '${String(visibleGraduationYear).slice(-2)}`
+  //   : null;
 
   return (
     // <div className="relative rounded-2xl overflow-hidden shadow-md group cursor-pointer aspect-[3/4] sm:aspect-[4/5] lg:aspect-[3/4]">
@@ -79,8 +108,14 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: a
           {' '}
           <p className="text-white font-semibold text-sm truncate">{entry.name}</p>
           <p className="text-white/90 text-xs font-semibold">{classLabel}</p>
-          {occupation ? (
+          {/* <p className="text-white/90 text-xs font-semibold">{classLabel ?? '\u00A0'}</p> */}
+          {/* {occupation ? (
             <p className="text-white/90 text-xs truncate font-semibold">{occupation}</p>
+          ) : (
+            <p className="text-white/90 text-xs truncate font-semibold">&nbsp;</p>
+          )} */}
+          {visibleOccupation ? (
+            <p className="text-white/90 text-xs truncate font-semibold">{visibleOccupation}</p>
           ) : (
             <p className="text-white/90 text-xs truncate font-semibold">&nbsp;</p>
           )}

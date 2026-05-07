@@ -22,7 +22,7 @@ export type DuesStatus = 'paid' | 'owing' | 'overdue' | 'exempt' | 'unknown';
 
 // ─── Privacy ──────────────────────────────────────────────────────────────────
 
-export type FieldVisibility = 'public' | 'private';
+export type FieldVisibility = 'public' | 'private' | 'members';
 // export type DuesStatus = 'paid' | 'owing' | 'overdue' | 'unknown';
 
 export interface PrivacySettings {

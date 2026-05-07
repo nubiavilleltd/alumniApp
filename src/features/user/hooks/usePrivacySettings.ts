@@ -258,7 +258,7 @@ export function usePrivacyToggle(field: keyof PrivacySettings) {
 
   const updatePrivacy = useUpdateFieldPrivacy();
 
-  const value = privacy?.[field] || 'private';
+  const value = privacy?.[field] ?? 'private';
 
   const toggle = (newValue: FieldVisibility) => {
     updatePrivacy.mutate({ field, visibility: newValue });

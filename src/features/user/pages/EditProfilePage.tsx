@@ -112,7 +112,7 @@ function toFormState(user: AuthSessionUser | null | undefined): FormState {
     twitter: user?.twitter ?? '',
     instagram: user?.instagram ?? '',
     facebook: user?.facebook ?? '',
-    tiktok: (user as any)?.tiktok ?? '',
+    tiktok: user?.tiktok ?? '',
   };
 }
 
@@ -490,6 +490,7 @@ export default function EditProfilePage() {
       twitter: form.twitter.trim() || undefined,
       instagram: form.instagram.trim() || undefined,
       facebook: form.facebook.trim() || undefined,
+      tiktok: form.tiktok.trim() || undefined,
     };
 
     try {
@@ -748,7 +749,8 @@ export default function EditProfilePage() {
                   />
                 </div>
 
-                <div>
+                {/* Replace this with zone instead */}
+                {/* <div>
                   <Label>Current Position</Label>
                   <Input
                     name="position"
@@ -756,7 +758,7 @@ export default function EditProfilePage() {
                     onChange={handleChange}
                     placeholder="Job title"
                   />
-                </div>
+                </div> */}
               </div>
             </SectionCard>
 

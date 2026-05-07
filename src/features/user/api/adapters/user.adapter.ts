@@ -59,6 +59,8 @@ export function mapFrontendUserToBackendPayload(user: Partial<AuthSessionUser>) 
 
   if (user.linkedin !== undefined) profile.linkedin = user.linkedin || '';
   if (user.twitter !== undefined) profile.twitter = user.twitter || '';
+  if (user.tiktok !== undefined) profile.tiktok = user.tiktok || '';
+  if (user.facebook !== undefined) profile.facebook = user.facebook || '';
   if (user.instagram !== undefined) profile.instagram = user.instagram || '';
   if (user.company !== undefined) profile.current_company = user.company || '';
   if (user.position !== undefined) profile.current_position = user.position || '';
@@ -133,11 +135,13 @@ export function mapBackendResponseToFrontendUser(raw: unknown): Partial<AuthSess
     occupations: user.occupation ? [user.occupation] : undefined,
     industrySectors: user.industry_sector ? [user.industry_sector] : undefined,
 
-    yearsOfExperience: safeParseInt(user.years_of_experience),
+    yearsOfExperience: user.years_of_experience,
 
     linkedin: profile.linkedin || undefined,
     twitter: profile.twitter || undefined,
     instagram: profile.instagram || undefined,
+    tiktok: profile.tiktok || undefined,
+    facebook: profile.facebook || undefined,
 
     isClassCoordinator: stringToBoolean(user.is_coordinator),
     isVolunteer: stringToBoolean(user.is_volunteer),
