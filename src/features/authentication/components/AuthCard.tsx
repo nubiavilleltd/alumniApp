@@ -1,4 +1,6 @@
 import type { ReactNode } from 'react';
+import { clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
 interface AuthCardProps {
   title: string;
@@ -6,6 +8,10 @@ interface AuthCardProps {
   subtitle?: string;
   children: ReactNode;
   variant?: 'default' | 'registration';
+  shellClassName?: string;
+  cardClassName?: string;
+  headerClassName?: string;
+  bodyClassName?: string;
 }
 
 export function AuthCard({
@@ -14,14 +20,18 @@ export function AuthCard({
   subtitle,
   children,
   variant = 'default',
+  shellClassName,
+  cardClassName,
+  headerClassName,
+  bodyClassName,
 }: AuthCardProps) {
-  const cardClassName =
+  const baseCardClassName =
     variant === 'registration' ? 'auth-card auth-card--registration' : 'auth-card';
 
   return (
-    <div className="auth-page-shell">
-      <section className={cardClassName}>
-        <header className="auth-card__header">
+    <div className={twMerge(clsx('auth-page-shell', shellClassName))}>
+      <section className={twMerge(clsx(baseCardClassName, cardClassName))}>
+        <header className={twMerge(clsx('auth-card__header', headerClassName))}>
           <h1 className="auth-card__title">
             <span>{title}</span>
             {titleAccent && (
@@ -34,7 +44,7 @@ export function AuthCard({
           {subtitle && <p className="auth-card__subtitle">{subtitle}</p>}
         </header>
 
-        <div className="auth-card__body">{children}</div>
+        <div className={twMerge(clsx('auth-card__body', bodyClassName))}>{children}</div>
       </section>
     </div>
   );

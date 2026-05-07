@@ -5,7 +5,7 @@ import { ButtonLink } from '@/shared/components/ui/Button';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { ROUTES } from '@/shared/constants/routes';
 import { EVENT_ROUTES } from '@/features/events/routes';
-import { ADMIN_ROUTES } from '@/features/admin/routes';
+import { AnnouncementEditorModal } from '@/features/announcements/components/AnnouncementEditorModal';
 import { useAnnouncements } from '@/features/announcements/hooks/useAnnouncements';
 import { ANNOUNCEMENT_ROUTES } from '@/features/announcements/routes';
 import type { AnnouncementType, NewsItem } from '@/features/announcements/types/announcement.types';
@@ -23,7 +23,7 @@ const cardBodyClassName =
 const metaClassName =
   'm-0 flex items-center gap-[0.55rem] text-sm font-semibold leading-[1.2] text-[#59626c]';
 const actionClassName =
-  'min-h-10 rounded-full border-[1.5px] border-primary-500 bg-white px-[1.1rem] text-sm font-bold text-primary-500';
+  'min-h-10 rounded-full border border-primary-500 bg-transparent px-5 py-2.5 text-sm font-semibold text-primary-500 transition-colors hover:bg-primary-500 hover:text-white whitespace-nowrap';
 const boardClassName =
   'hidden gap-5 min-[1181px]:grid min-[1181px]:grid-cols-2 min-[1181px]:items-start';
 const sideListClassName = 'grid gap-3.5 min-[1181px]:grid-rows-3 [&>*]:h-full';
@@ -119,6 +119,7 @@ function AnnouncementCardSkeleton({ compact = false }: { compact?: boolean }) {
 export default function BlogIndexPage() {
   const user = useIdentityStore((state) => state.user);
   const [selectedType, setSelectedType] = useState<'all' | AnnouncementType>('all');
+  const [isEditorOpen, setIsEditorOpen] = useState(false);
   const featuredCardRef = useRef<HTMLElement | null>(null);
   const [featuredCardHeight, setFeaturedCardHeight] = useState<number | null>(null);
 
@@ -214,13 +215,13 @@ export default function BlogIndexPage() {
 
             <div className="flex w-full flex-wrap justify-start gap-3 min-[761px]:w-auto min-[761px]:justify-end">
               {isAdmin && (
-                <ButtonLink
-                  href={ADMIN_ROUTES.ANNOUNCEMENTS}
-                  variant="primary"
+                <button
+                  type="button"
+                  onClick={() => setIsEditorOpen(true)}
                   className={`${actionClassName} max-[760px]:basis-[11rem] max-[760px]:flex-1`}
                 >
-                  Manage announcements
-                </ButtonLink>
+                  Create announcement
+                </button>
               )}
               <ButtonLink
                 href={ROUTES.PROJECTS.ROOT}
@@ -349,6 +350,8 @@ export default function BlogIndexPage() {
           )}
         </section>
       </main>
+
+      <AnnouncementEditorModal isOpen={isEditorOpen} onClose={() => setIsEditorOpen(false)} />
     </>
   );
 }

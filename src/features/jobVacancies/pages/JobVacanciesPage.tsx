@@ -85,9 +85,22 @@ export const jobsPagePostButtonClassName =
   'min-h-[3.35rem] rounded-full px-[1.45rem] text-base font-extrabold tracking-normal shadow-none max-md:w-full [&>svg]:h-[1.35rem] [&>svg]:w-[1.35rem]';
 export const jobsGridClassName =
   'grid grid-cols-1 gap-x-[1.4rem] gap-y-[1.05rem] md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
-export const jobCardMiniActionClassName =
-  'min-h-9 rounded-full border border-[#c8dceb] bg-white px-3.5 text-[0.8rem] font-extrabold leading-none text-primary-600 transition-colors hover:bg-primary-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-200';
-export const jobCardMiniActionDangerClassName = 'border-[#f2b8b5] text-[#c81e1e] hover:bg-red-50';
+const jobsModalBackdropClassName =
+  'fixed inset-0 z-[80] flex items-start justify-center bg-[rgba(7,17,22,0.55)] p-3 sm:items-center sm:p-6';
+const jobsModalSurfaceClassName =
+  'relative w-full max-w-[76rem] max-h-[calc(100vh-1.5rem)] overflow-y-auto rounded-[1.2rem] bg-white shadow-[0_2rem_4rem_rgba(7,17,22,0.22)] sm:max-h-[min(88vh,58rem)] sm:rounded-[1.75rem]';
+const jobsModalCloseButtonClassName =
+  'sticky top-3 z-10 ml-auto mr-3 mt-3 flex h-11 w-11 items-center justify-center text-primary-500 transition-colors hover:text-primary-600 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-200 sm:top-5 sm:mr-5 sm:mt-5 sm:h-14 sm:w-14';
+const jobsFormLabelClassName = 'text-sm font-bold text-[#858585]';
+const jobsFormControlClassName =
+  '!rounded-full !bg-[#f8f8f7] !shadow-none focus-within:!ring-2 focus-within:!ring-primary-200';
+const jobsFormInputClassName =
+  '!h-[3.25rem] !px-[1.1rem] !text-[0.95rem] !font-medium !text-[#071116] placeholder:!text-[#858585]';
+const jobsFormSelectControlClassName =
+  '!rounded-full !bg-[#f8f8f7] !shadow-none [&>span]:!text-[0.95rem] [&>span]:!font-medium [&>span.text-gray-400]:!text-[#858585] [&>span.text-gray-700]:!text-[#071116]';
+const jobsFormTextareaClassName =
+  '!min-h-[10.5rem] !rounded-[1.45rem] !bg-[#f8f8f7] !px-5 !py-4 !text-[0.95rem] !font-medium !leading-[1.45] !text-[#071116] placeholder:!text-[#858585] !shadow-none';
+const jobsFormSectionSpacingClassName = 'mt-7';
 
 const initialJobFormState: JobFormState = {
   title: '',
@@ -261,7 +274,7 @@ function KeywordInput({
   onRemoveLastKeyword: () => void;
 }) {
   return (
-    <div className="jobs-post-form__full flex flex-col gap-1">
+    <div className={`${jobsFormSectionSpacingClassName} flex flex-col gap-1.5`}>
       <label htmlFor="job-keywords" className="block text-sm font-medium text-gray-700">
         Job Tags / Keywords
       </label>
@@ -342,11 +355,15 @@ export function JobCard({
   tone,
   onDetails,
   actions,
+  panelAction,
+  primaryAction,
 }: {
   job: JobVacancyViewModel;
   tone: JobCardTone;
-  onDetails: (job: JobVacancyViewModel) => void;
+  onDetails?: (job: JobVacancyViewModel) => void;
   actions?: ReactNode;
+  panelAction?: ReactNode;
+  primaryAction?: ReactNode;
 }) {
   const pillLabels = getJobPillLabels(job);
 
@@ -355,12 +372,16 @@ export function JobCard({
       <div
         className={`m-[0.55rem] flex min-h-[15.8rem] flex-1 flex-col rounded-[0.8rem] px-[1.35rem] pb-[1.25rem] pt-[1.35rem] ${jobPanelToneClassNames[tone]}`}
       >
-        <time
-          dateTime={job.postedAt}
-          className="inline-flex self-start min-h-9 items-center rounded-full bg-white/80 px-4 py-[0.35rem] text-[0.88rem] font-bold leading-none text-[#59626c]"
-        >
-          {formatJobDate(job.postedAt)}
-        </time>
+        <div className="flex items-start justify-between gap-3">
+          <time
+            dateTime={job.postedAt}
+            className="inline-flex min-h-9 items-center rounded-full bg-white/80 px-4 py-[0.35rem] text-[0.88rem] font-bold leading-none text-[#59626c]"
+          >
+            {formatJobDate(job.postedAt)}
+          </time>
+
+          {panelAction ? <div className="shrink-0">{panelAction}</div> : null}
+        </div>
 
         <p className="mt-[1.35rem] text-[0.95rem] font-extrabold leading-[1.2] text-[#071116]">
           {job.companyName}
@@ -392,13 +413,16 @@ export function JobCard({
         </div>
 
         <div className="flex flex-wrap justify-end gap-2">
-          <button
-            type="button"
-            className="min-h-[2.85rem] rounded-full bg-primary-500 px-6 py-2 text-[0.95rem] font-extrabold leading-none text-white transition-colors hover:bg-primary-600 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-200"
-            onClick={() => onDetails(job)}
-          >
-            Details
-          </button>
+          {primaryAction ??
+            (onDetails ? (
+              <button
+                type="button"
+                className="min-h-[2.85rem] rounded-full bg-primary-500 px-6 py-2 text-[0.95rem] font-extrabold leading-none text-white transition-colors hover:bg-primary-600 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-200"
+                onClick={() => onDetails(job)}
+              >
+                Details
+              </button>
+            ) : null)}
           {actions}
         </div>
       </div>
@@ -595,26 +619,34 @@ export function PostJobModal({
   };
 
   return (
-    <div className="jobs-modal-backdrop" role="presentation" onClick={onClose}>
+    <div className={jobsModalBackdropClassName} role="presentation" onClick={onClose}>
       <section
-        className="jobs-post-modal"
+        className={jobsModalSurfaceClassName}
         role="dialog"
         aria-modal="true"
         aria-labelledby="post-job-title"
         onClick={(event) => event.stopPropagation()}
       >
-        <button type="button" className="jobs-modal-close" onClick={onClose} aria-label="Close">
-          <Icon icon="mdi:close" />
+        <button
+          type="button"
+          className={jobsModalCloseButtonClassName}
+          onClick={onClose}
+          aria-label="Close"
+        >
+          <Icon icon="mdi:close" className="h-9 w-9 sm:h-12 sm:w-12" />
         </button>
 
-        <form className="jobs-post-form" onSubmit={handleSubmit}>
+        <form className="px-4 pb-8 pt-1 sm:px-6 md:px-10" onSubmit={handleSubmit}>
           <h2 id="post-job-title" className="sr-only">
             {isEditing ? 'Edit Job' : 'Post a Job'}
           </h2>
 
-          <div className="jobs-post-form__grid">
+          <div className="grid grid-cols-1 gap-x-8 gap-y-7 md:grid-cols-2">
             <BaseInput
               label="Job Title"
+              labelClassName={jobsFormLabelClassName}
+              controlClassName={jobsFormControlClassName}
+              inputClassName={jobsFormInputClassName}
               name="title"
               value={form.title}
               onChange={(event) => handleFieldChange('title', event.target.value)}
@@ -625,6 +657,9 @@ export function PostJobModal({
             />
             <BaseInput
               label="Company Name"
+              labelClassName={jobsFormLabelClassName}
+              controlClassName={jobsFormControlClassName}
+              inputClassName={jobsFormInputClassName}
               name="companyName"
               value={form.companyName}
               onChange={(event) => handleFieldChange('companyName', event.target.value)}
@@ -635,6 +670,8 @@ export function PostJobModal({
             />
             <SelectInput
               label="Employment Type"
+              labelClassName={jobsFormLabelClassName}
+              controlClassName={jobsFormSelectControlClassName}
               name="jobType"
               value={form.jobType}
               onChange={(event) => handleFieldChange('jobType', event.target.value as JobType | '')}
@@ -646,6 +683,8 @@ export function PostJobModal({
             />
             <SelectInput
               label="Work Mode"
+              labelClassName={jobsFormLabelClassName}
+              controlClassName={jobsFormSelectControlClassName}
               name="workplaceType"
               value={form.workplaceType}
               onChange={(event) =>
@@ -659,6 +698,8 @@ export function PostJobModal({
             />
             <SelectInput
               label="Level of Expertise"
+              labelClassName={jobsFormLabelClassName}
+              controlClassName={jobsFormSelectControlClassName}
               name="level"
               value={form.level}
               onChange={(event) =>
@@ -672,6 +713,9 @@ export function PostJobModal({
             />
             <BaseInput
               label="Location (City)"
+              labelClassName={jobsFormLabelClassName}
+              controlClassName={jobsFormControlClassName}
+              inputClassName={jobsFormInputClassName}
               name="location"
               value={form.location}
               onChange={(event) => handleFieldChange('location', event.target.value)}
@@ -682,6 +726,9 @@ export function PostJobModal({
             />
             <BaseInput
               label="Salary"
+              labelClassName={jobsFormLabelClassName}
+              controlClassName={jobsFormControlClassName}
+              inputClassName={jobsFormInputClassName}
               name="salary"
               value={form.salary}
               onChange={(event) => handleFieldChange('salary', event.target.value)}
@@ -697,6 +744,8 @@ export function PostJobModal({
             />
             <SelectInput
               label="Currency"
+              labelClassName={jobsFormLabelClassName}
+              controlClassName={jobsFormSelectControlClassName}
               name="currency"
               value={form.currency}
               onChange={(event) =>
@@ -707,6 +756,8 @@ export function PostJobModal({
             />
             <DatePicker
               label="Application Deadline"
+              labelClassName={jobsFormLabelClassName}
+              inputClassName="!rounded-full !bg-[#f8f8f7] !text-[0.95rem] !font-medium !text-[#071116] placeholder:!text-[#858585] !shadow-none"
               name="deadline"
               value={form.deadline}
               onValueChange={(value) => handleFieldChange('deadline', value)}
@@ -735,8 +786,10 @@ export function PostJobModal({
           />
 
           <TextareaInput
-            className="jobs-post-form__full"
+            className={jobsFormSectionSpacingClassName}
             label="About this Role"
+            labelClassName={jobsFormLabelClassName}
+            textareaClassName={jobsFormTextareaClassName}
             name="aboutRole"
             value={form.aboutRole}
             onChange={(event) => handleFieldChange('aboutRole', event.target.value)}
@@ -748,8 +801,10 @@ export function PostJobModal({
           />
 
           <TextareaInput
-            className="jobs-post-form__full"
+            className={jobsFormSectionSpacingClassName}
             label="Responsibilities"
+            labelClassName={jobsFormLabelClassName}
+            textareaClassName={jobsFormTextareaClassName}
             name="responsibilities"
             value={form.responsibilities}
             onChange={(event) => handleFieldChange('responsibilities', event.target.value)}
@@ -761,8 +816,10 @@ export function PostJobModal({
           />
 
           <TextareaInput
-            className="jobs-post-form__full"
+            className={jobsFormSectionSpacingClassName}
             label="Requirements"
+            labelClassName={jobsFormLabelClassName}
+            textareaClassName={jobsFormTextareaClassName}
             name="requirements"
             value={form.requirements}
             onChange={(event) => handleFieldChange('requirements', event.target.value)}
@@ -773,26 +830,39 @@ export function PostJobModal({
             disabled={isSubmitting}
           />
 
-          <div className="jobs-post-form__application">
-            <fieldset>
-              <legend>Applications for this job will be done by:</legend>
-              {APPLICATION_TYPE_OPTIONS.map((option) => (
-                <label key={option.value}>
-                  <input
-                    type="radio"
-                    name="applicationMode"
-                    value={option.value}
-                    checked={form.applicationMode === option.value}
-                    onChange={() => handleApplicationModeChange(option.value)}
-                    disabled={isSubmitting}
-                  />
-                  <span>{option.label === 'Link' ? 'Job Application Link' : option.label}</span>
-                </label>
-              ))}
+          <div
+            className={`${jobsFormSectionSpacingClassName} grid grid-cols-1 gap-7 md:grid-cols-2 md:gap-8`}
+          >
+            <fieldset className="m-0 border-0 p-0">
+              <legend className="mb-4 text-sm font-bold leading-[1.2] text-[#858585]">
+                Applications for this job will be done by:
+              </legend>
+              <div className="flex flex-wrap gap-x-7 gap-y-3">
+                {APPLICATION_TYPE_OPTIONS.map((option) => (
+                  <label
+                    key={option.value}
+                    className="inline-flex items-center gap-2.5 text-sm font-bold text-[#858585]"
+                  >
+                    <input
+                      type="radio"
+                      name="applicationMode"
+                      value={option.value}
+                      checked={form.applicationMode === option.value}
+                      onChange={() => handleApplicationModeChange(option.value)}
+                      disabled={isSubmitting}
+                      className="h-5 w-5 accent-primary-500"
+                    />
+                    <span>{option.label === 'Link' ? 'Job Application Link' : option.label}</span>
+                  </label>
+                ))}
+              </div>
             </fieldset>
 
             <BaseInput
               label={form.applicationMode === 'email' ? 'Application Email' : 'Application Link'}
+              labelClassName={jobsFormLabelClassName}
+              controlClassName={jobsFormControlClassName}
+              inputClassName={jobsFormInputClassName}
               name={form.applicationMode === 'email' ? 'applicationEmail' : 'applicationUrl'}
               type={form.applicationMode === 'email' ? 'email' : 'url'}
               value={form.applicationDestination}
@@ -808,9 +878,12 @@ export function PostJobModal({
             />
           </div>
 
-          <div className="jobs-post-form__full">
+          <div className={jobsFormSectionSpacingClassName}>
             <ImageUpload
               label="Job Flyer (Optional)"
+              labelClassName={jobsFormLabelClassName}
+              className="gap-1.5"
+              dropzoneClassName="rounded-[1.45rem] border-gray-200 bg-[#fbfbfa] py-8"
               previews={flyerPreviews}
               onChange={handleImageChange}
               multiple={false}
@@ -822,7 +895,12 @@ export function PostJobModal({
             <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{formError}</div>
           ) : null}
 
-          <Button type="submit" size="lg" className="jobs-post-form__submit" loading={isSubmitting}>
+          <Button
+            type="submit"
+            size="lg"
+            className="mx-auto mt-10 flex min-h-[3.35rem] w-full max-w-[14rem] rounded-full border-0 px-8 text-[1.05rem] font-extrabold tracking-normal shadow-none"
+            loading={isSubmitting}
+          >
             {isEditing ? 'Update Job' : 'Submit'}
           </Button>
         </form>

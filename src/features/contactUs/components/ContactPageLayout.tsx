@@ -14,7 +14,8 @@ import { toast } from '@/shared/components/ui/Toast';
 type ContactMethod = {
   label: string;
   valueLines: string[];
-  icon: string;
+  icon?: string;
+  iconSrc?: string;
   href: string;
   target?: string;
   rel?: string;
@@ -120,7 +121,11 @@ export function ContactPageLayout({
               <article key={method.label} className="contact-detail">
                 <div className="contact-detail__header">
                   <span className="contact-detail__icon" aria-hidden="true">
-                    <Icon icon={method.icon} />
+                    {method.iconSrc ? (
+                      <img src={method.iconSrc} alt="" className="h-1/2 w-3/4 object-contain" />
+                    ) : method.icon ? (
+                      <Icon icon={method.icon} />
+                    ) : null}
                   </span>
                   <h2 className="contact-detail__label">{method.label}</h2>
                 </div>

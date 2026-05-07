@@ -1,12 +1,10 @@
 import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import { SEO } from '@/shared/common/SEO';
 import { Button } from '@/shared/components/ui/Button';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import { DeleteConfirmModal } from '@/features/events/components/DeleteConfirmModal';
 import { toast } from '@/shared/components/ui/Toast';
-import { ROUTES } from '@/shared/constants/routes';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 import { useJobVacancies } from '../hooks/useJobVacancies';
 import { useDeleteVacancy } from '../hooks/useManageVacancy';
@@ -16,8 +14,6 @@ import {
   JobCard,
   JobsLoadingState,
   jobsGridClassName,
-  jobCardMiniActionClassName,
-  jobCardMiniActionDangerClassName,
   jobsPageHeaderClassName,
   jobsPagePostButtonClassName,
   jobsPageShellClassName,
@@ -25,6 +21,11 @@ import {
   jobsPageTitleClassName,
   PostJobModal,
 } from './JobVacanciesPage';
+
+const myJobCardEditButtonClassName =
+  'min-h-[2.85rem] rounded-full bg-primary-500 px-6 py-2 text-[0.95rem] font-extrabold leading-none text-white transition-colors hover:bg-primary-600 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-200';
+const myJobCardDeleteActionClassName =
+  'inline-flex h-10 w-10 items-center justify-center rounded-full bg-transparent text-[#c81e1e] transition-colors hover:bg-red-50 hover:text-[#ab1b1b] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-red-100';
 
 function useCurrentOwnerIds() {
   const user = useIdentityStore((state) => state.user);
@@ -39,7 +40,6 @@ function useCurrentOwnerIds() {
 }
 
 export default function MyJobPostsPage() {
-  const navigate = useNavigate();
   const user = useIdentityStore((state) => state.user);
   const ownerIds = useCurrentOwnerIds();
   const { data: vacancies = [], isLoading, isError, error, refetch } = useJobVacancies();
@@ -71,10 +71,6 @@ export default function MyJobPostsPage() {
 
   const handleEditJob = (job: JobVacancyViewModel) => {
     setEditingJob(job);
-  };
-
-  const handleOpenJobDetails = (job: JobVacancyViewModel) => {
-    navigate(ROUTES.JOB_VACANCY_DETAIL(job.id));
   };
 
   const hasOwnerIdentity = ownerIds.size > 0;
@@ -148,24 +144,25 @@ export default function MyJobPostsPage() {
                   key={job.id}
                   job={job}
                   tone={getTone(index)}
-                  onDetails={handleOpenJobDetails}
-                  actions={
-                    <>
-                      <button
-                        type="button"
-                        className={jobCardMiniActionClassName}
-                        onClick={() => handleEditJob(job)}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        type="button"
-                        className={`${jobCardMiniActionClassName} ${jobCardMiniActionDangerClassName}`}
-                        onClick={() => setJobToDelete(job)}
-                      >
-                        Delete
-                      </button>
-                    </>
+                  primaryAction={
+                    <button
+                      type="button"
+                      className={myJobCardEditButtonClassName}
+                      onClick={() => handleEditJob(job)}
+                    >
+                      Edit
+                    </button>
+                  }
+                  panelAction={
+                    <button
+                      type="button"
+                      className={myJobCardDeleteActionClassName}
+                      onClick={() => setJobToDelete(job)}
+                      aria-label={`Delete ${job.title}`}
+                      title="Delete job"
+                    >
+                      <Icon icon="mdi:trash-can-outline" className="h-[1.25rem] w-[1.25rem]" />
+                    </button>
                   }
                 />
               ))}

@@ -1,11 +1,11 @@
 import { Icon } from '@iconify/react';
-import { useParams } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { SEO } from '@/shared/common/SEO';
 import { AppLink } from '@/shared/components/ui/AppLink';
-import { ButtonLink } from '@/shared/components/ui/Button';
+import { AnnouncementEditorModal } from '@/features/announcements/components/AnnouncementEditorModal';
 import { useAnnouncement } from '@/features/announcements/hooks/useAnnouncements';
 import { ANNOUNCEMENT_ROUTES } from '@/features/announcements/routes';
-import { ADMIN_ROUTES } from '@/features/admin/routes';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 
 const FALLBACK_IMAGE = '/news-1.png';
@@ -46,8 +46,10 @@ function splitAnnouncementContent(content?: string, excerpt?: string) {
 
 export default function BlogPostPage() {
   const { slug = '' } = useParams();
+  const navigate = useNavigate();
   const user = useIdentityStore((state) => state.user);
   const { data: announcement, isLoading } = useAnnouncement(slug);
+  const [isEditorOpen, setIsEditorOpen] = useState(false);
 
   const bodyParagraphs = splitAnnouncementContent(announcement?.content, announcement?.excerpt);
   const isAdmin = user?.role === 'admin';
@@ -73,10 +75,14 @@ export default function BlogPostPage() {
               Back to announcements
             </AppLink>
 
-            {isAdmin && (
-              <ButtonLink href={ADMIN_ROUTES.ANNOUNCEMENTS} variant="outline" size="sm">
-                Manage announcements
-              </ButtonLink>
+            {isAdmin && announcement && (
+              <button
+                type="button"
+                onClick={() => setIsEditorOpen(true)}
+                className="inline-flex items-center gap-1.5 border-2 border-primary-500 bg-white hover:bg-primary-600 hover:text-white text-primary-500 text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 rounded-full transition-colors shadow-sm whitespace-nowrap"
+              >
+                Edit Announcement
+              </button>
             )}
           </div>
 
@@ -167,6 +173,15 @@ export default function BlogPostPage() {
           )}
         </section>
       </main>
+
+      <AnnouncementEditorModal
+        announcement={announcement}
+        isOpen={isEditorOpen}
+        onClose={() => setIsEditorOpen(false)}
+        onSubmitted={(updatedAnnouncement) => {
+          navigate(ANNOUNCEMENT_ROUTES.DETAIL(updatedAnnouncement.slug), { replace: true });
+        }}
+      />
     </>
   );
 }

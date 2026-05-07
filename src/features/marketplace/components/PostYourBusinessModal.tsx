@@ -9,18 +9,9 @@ import { SelectInput } from '@/shared/components/ui/SelectInput';
 import { ImageUpload } from '@/shared/components/ui/ImageUpload';
 import { Button } from '@/shared/components/ui/Button';
 import { FormInput } from '@/shared/components/ui/input/FormInput';
+import { PhoneNumberInput } from '@/shared/components/ui/input/PhoneNumberInput';
 import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
 import { toTitleCase } from '@/shared/utils/textHelpers';
-import {
-  defaultPhoneCountry,
-  formatOptionalPhoneNumberWithCountryCode,
-  getPhoneCountryOption,
-  normalizePhoneNumberForCountry,
-  parseStoredPhoneNumber,
-  phoneCountryOptions,
-  type SupportedPhoneCountry,
-  validateNationalPhoneNumber,
-} from '@/features/authentication/constants/phoneCountries';
 import {
   useCreateListing,
   useUpdateListing,
@@ -28,11 +19,12 @@ import {
 } from '../hooks/useMarketplace';
 import { useImageManager } from '@/shared/hooks/useImageManager';
 import type { Business, CreateListingFormData } from '../types/marketplace.types';
-
-const supportedPhoneCountries = phoneCountryOptions.map((option) => option.code) as [
-  SupportedPhoneCountry,
-  ...SupportedPhoneCountry[],
-];
+import {
+  formatOptionalNigerianPhoneNumber,
+  NIGERIAN_PHONE_PLACEHOLDER,
+  parseStoredNigerianPhoneNumber,
+  validateNigerianPhoneNumber,
+} from '@/shared/utils/nigerianPhoneNumber';
 
 // ─── Zod Schema ────────────────────────────────────────────────────────────────
 
@@ -63,8 +55,6 @@ const postBusinessSchema = z
 
     location: z.string().min(1, 'Location is required').min(2, 'Please provide a valid location'),
 
-    phoneCountry: z.enum(supportedPhoneCountries),
-
     phone: z.string().trim().min(1, 'Phone number is required'),
     website: z.string().optional(),
 
@@ -80,7 +70,7 @@ const postBusinessSchema = z
     //   ),
   })
   .superRefine((data, ctx) => {
-    const phoneError = validateNationalPhoneNumber(data.phoneCountry, data.phone);
+    const phoneError = validateNigerianPhoneNumber(data.phone);
     if (phoneError) {
       ctx.addIssue({ code: 'custom', path: ['phone'], message: phoneError });
     }
@@ -105,21 +95,17 @@ function toFormState(data: Business | null | undefined): PostBusinessFormValues 
       category: '',
       description: '',
       location: '',
-      phoneCountry: defaultPhoneCountry,
       phone: '',
       website: '',
     };
   }
-
-  const parsedPhone = parseStoredPhoneNumber(data.phone);
 
   return {
     name: data.name,
     category: data.category,
     description: data.description,
     location: data.location,
-    phoneCountry: parsedPhone.countryCode,
-    phone: parsedPhone.nationalNumber,
+    phone: parseStoredNigerianPhoneNumber(data.phone),
     website: data.website ?? '',
   };
 }
@@ -133,7 +119,7 @@ function toCreateListingFormData(
     category: form.category,
     description: form.description,
     location: form.location,
-    phone: formatOptionalPhoneNumberWithCountryCode(form.phoneCountry, form.phone),
+    phone: formatOptionalNigerianPhoneNumber(form.phone),
     website: form.website || undefined,
     images,
   };
@@ -161,8 +147,6 @@ export function PostBusinessModal({ isOpen, onClose, editData }: PostBusinessMod
     register,
     handleSubmit,
     reset,
-    setValue,
-    trigger,
     watch,
     formState: { errors, isSubmitting },
     setError: setFormError,
@@ -198,7 +182,6 @@ export function PostBusinessModal({ isOpen, onClose, editData }: PostBusinessMod
         category: '',
         description: '',
         location: '',
-        phoneCountry: defaultPhoneCountry,
         phone: '',
         website: '',
       });
@@ -245,27 +228,6 @@ export function PostBusinessModal({ isOpen, onClose, editData }: PostBusinessMod
   const isLoading = createMutation.isPending || updateMutation.isPending || isSubmitting;
   const categoryOptions = categoriesList.map((cat) => ({ label: toTitleCase(cat), value: cat }));
   const categoryValue = watch('category') ?? '';
-  const phoneCountrySelectOptions = phoneCountryOptions.map((option) => ({
-    label: `${option.dialCode} (${toTitleCase(option.label)})`,
-    value: option.code,
-  }));
-  const phoneCountry = watch('phoneCountry') ?? defaultPhoneCountry;
-  const selectedPhoneCountry = getPhoneCountryOption(phoneCountry);
-  const phoneCountryRegistration = register('phoneCountry', {
-    onChange: (e) => {
-      const nextCountry = e.target.value as SupportedPhoneCountry;
-      setValue('phone', normalizePhoneNumberForCountry(nextCountry, watch('phone') ?? ''), {
-        shouldDirty: true,
-        shouldValidate: true,
-      });
-      void trigger('phone');
-    },
-  });
-  const phoneRegistration = register('phone', {
-    onChange: (e) => {
-      e.target.value = normalizePhoneNumberForCountry(phoneCountry, e.target.value);
-    },
-  });
 
   if (!isOpen) return null;
 
@@ -350,48 +312,17 @@ export function PostBusinessModal({ isOpen, onClose, editData }: PostBusinessMod
                   {...register('description')}
                 />
 
-        <div className="flex flex-col gap-1">
-          <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-            Phone <span className="text-red-500">*</span>
-          </label>
-          <FormInput
-            id="phone"
-            type="tel"
-            inputMode="numeric"
-            required
-            placeholder={selectedPhoneCountry.placeholder}
-            icon="mdi:phone-outline"
-            error={errors.phone?.message}
-            {...phoneRegistration}
-          />
-        </div>
-                <div className="flex flex-col gap-1">
-                  <label htmlFor="phone" className={`block text-sm ${fieldLabelClassName}`}>
-                    Phone Number <span className="text-red-500">*</span>
-                  </label>
-                  <div className="grid grid-cols-[8.5rem_1fr] gap-2">
-                    <SelectInput
-                      id="phoneCountry"
-                      options={phoneCountrySelectOptions}
-                      placeholder="Country"
-                      value={phoneCountry}
-                      error={undefined}
-                      controlClassName={fieldControlClassName}
-                      {...phoneCountryRegistration}
-                    />
-                    <FormInput
-                      controlClassName={fieldControlClassName}
-                      inputClassName={fieldInputClassName}
-                      id="phone"
-                      type="tel"
-                      inputMode="numeric"
-                      required
-                      placeholder={selectedPhoneCountry.placeholder}
-                      error={errors.phone?.message}
-                      {...phoneRegistration}
-                    />
-                  </div>
-                </div>
+                <PhoneNumberInput
+                  label="Phone Number"
+                  labelClassName={fieldLabelClassName}
+                  controlClassName={fieldControlClassName}
+                  inputClassName={fieldInputClassName}
+                  id="phone"
+                  required
+                  placeholder={NIGERIAN_PHONE_PLACEHOLDER}
+                  error={errors.phone?.message}
+                  {...register('phone')}
+                />
 
                 <FormInput
                   label="Location"

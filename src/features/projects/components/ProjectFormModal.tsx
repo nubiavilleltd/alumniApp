@@ -38,16 +38,29 @@ const projectFormSchema = z
     sortOrder: z.number({ error: 'Please enter a whole number' }).int().min(0).optional(),
     isFeatured: z.boolean().optional(),
   })
-  .refine(
-    (data) => {
-      if (!data.startDate) return true;
+  .superRefine((data, ctx) => {
+    if (data.startDate) {
       const selectedDate = new Date(data.startDate);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      return selectedDate >= today;
-    },
-    { message: 'Start date cannot be in the past', path: ['startDate'] },
-  );
+
+      if (selectedDate < today) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['startDate'],
+          message: 'Start date cannot be in the past',
+        });
+      }
+    }
+
+    if (data.startDate && data.endDate && data.endDate < data.startDate) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['endDate'],
+        message: 'End date cannot be before start date',
+      });
+    }
+  });
 
 type ProjectFormValues = z.infer<typeof projectFormSchema>;
 
@@ -79,6 +92,7 @@ export function ProjectFormModal({ isOpen, onClose, editData }: ProjectFormModal
     reset,
     watch,
     setValue,
+    trigger,
     formState: { errors },
   } = useForm<ProjectFormValues>({
     resolver: zodResolver(projectFormSchema) as any,
@@ -97,6 +111,9 @@ export function ProjectFormModal({ isOpen, onClose, editData }: ProjectFormModal
       isFeatured: false,
     },
   });
+
+  const startDate = watch('startDate');
+  const endDate = watch('endDate');
 
   // Sync form + images when edit data changes
   useEffect(() => {
@@ -121,6 +138,11 @@ export function ProjectFormModal({ isOpen, onClose, editData }: ProjectFormModal
       resetImages();
     }
   }, [isOpen, editData, reset, resetImages]);
+
+  useEffect(() => {
+    if (!startDate && !endDate) return;
+    void trigger(['startDate', 'endDate']);
+  }, [endDate, startDate, trigger]);
 
   // ── Submit ──────────────────────────────────────────────────────────────────
 
@@ -239,8 +261,9 @@ export function ProjectFormModal({ isOpen, onClose, editData }: ProjectFormModal
             id="startDate"
             required
             min={new Date().toISOString().split('T')[0]}
+            max={endDate || undefined}
             error={errors.startDate?.message}
-            value={watch('startDate')}
+            value={startDate}
             onValueChange={(val) =>
               setValue('startDate', val, { shouldValidate: true, shouldDirty: true })
             }
@@ -249,9 +272,9 @@ export function ProjectFormModal({ isOpen, onClose, editData }: ProjectFormModal
           <DatePicker
             label="End Date (Optional)"
             id="endDate"
-            min={watch('startDate') || undefined}
+            min={startDate || new Date().toISOString().split('T')[0]}
             error={errors.endDate?.message}
-            value={watch('endDate')}
+            value={endDate}
             onValueChange={(val) =>
               setValue('endDate', val, { shouldValidate: true, shouldDirty: true })
             }

@@ -10,16 +10,10 @@ import { useNavigate } from 'react-router-dom';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { Button } from '@/shared/components/ui/Button';
 import { FormInput } from '@/shared/components/ui/input/FormInput';
+import { PhoneNumberInput } from '@/shared/components/ui/input/PhoneNumberInput';
 import { PasswordInput } from '@/shared/components/ui/input/PasswordInput';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
 import { authApi } from '../services/auth.service';
-import {
-  defaultPhoneCountry,
-  getPhoneCountryOption,
-  normalizeNationalPhoneNumber,
-  phoneCountryOptions,
-  type SupportedPhoneCountry,
-} from '../constants/phoneCountries';
 import { registerDetailsSchema } from '../schemas/authSchema';
 import type { RegisterDetailsFormValues, Voucher } from '../types/auth.types';
 import { PasswordStrengthMeter } from '../components/PasswordStrengthMeter';
@@ -34,6 +28,7 @@ import { markInitialVerificationSend } from '../lib/verificationResendThrottle';
 import { NIGERIA_STATES } from '../constants/nigerianStates';
 import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
 import { useCities } from '../hooks/useCities';
+import { NIGERIAN_PHONE_PLACEHOLDER } from '@/shared/utils/nigerianPhoneNumber';
 // import { useCities } from '@/features/alumni/hooks/useCities';
 
 const stateOptions = NIGERIA_STATES.map((state) => ({
@@ -51,7 +46,6 @@ function buildRegisterDefaultValues(
     nameInSchool: savedValues?.nameInSchool ?? '',
     nickName: savedValues?.nickName ?? '',
     email: savedValues?.email ?? '',
-    // phoneCountry: savedValues?.phoneCountry ?? defaultPhoneCountry,
     whatsappPhone: savedValues?.whatsappPhone ?? '',
     graduationYear: savedValues?.graduationYear ?? currentYear,
     password: savedValues?.password ?? '',
@@ -87,11 +81,6 @@ export function RegisterDetailsPage() {
     value: String(currentYear - index),
   }));
 
-  const phoneCountrySelectOptions = phoneCountryOptions.map((option) => ({
-    label: `${option.dialCode} (${option.label})`,
-    value: option.code,
-  }));
-
   const [allVouchers, setAllVouchers] = useState<Voucher[]>([]);
   const [filteredVouchers, setFilteredVouchers] = useState<Voucher[]>([]);
   const [isLoadingVouchers, setIsLoadingVouchers] = useState(false);
@@ -106,12 +95,10 @@ export function RegisterDetailsPage() {
   });
 
   const passwordValue = detailForm.watch('password') ?? '';
-  // const phoneCountry = detailForm.watch('phoneCountry') ?? defaultPhoneCountry;
   const confirmPasswordValue = detailForm.watch('confirmPassword') ?? '';
   const graduationYear = detailForm.watch('graduationYear');
   const cityValue = detailForm.watch('city');
   const passwordsMatch = passwordValue.length > 0 && confirmPasswordValue === passwordValue;
-  // const selectedPhoneCountry = getPhoneCountryOption(phoneCountry);
 
   useEffect(() => {
     if (detailForm.getValues('state') !== 'Lagos') {
@@ -157,30 +144,6 @@ export function RegisterDetailsPage() {
       setFilteredVouchers([]);
     }
   }, [allVouchers, detailForm, graduationYear]);
-
-  // const phoneCountryRegistration = detailForm.register('phoneCountry', {
-  //   onChange: (event) => {
-  //     const nextCode = event.target.value as SupportedPhoneCountry;
-  //     const nextCountry = getPhoneCountryOption(nextCode);
-  //     const current = normalizeNationalPhoneNumber(detailForm.getValues('whatsappPhone'));
-  //     const next = current.slice(0, nextCountry.maxLength);
-
-  //     if (next !== detailForm.getValues('whatsappPhone')) {
-  //       detailForm.setValue('whatsappPhone', next, { shouldDirty: true, shouldValidate: true });
-  //     } else if (current) {
-  //       void detailForm.trigger('whatsappPhone');
-  //     }
-  //   },
-  // });
-
-  // const whatsappRegistration = detailForm.register('whatsappPhone', {
-  //   onChange: (event) => {
-  //     event.target.value = normalizeNationalPhoneNumber(event.target.value).slice(
-  //       0,
-  //       selectedPhoneCountry.maxLength,
-  //     );
-  //   },
-  // });
 
   const voucherOptions = filteredVouchers.map((voucher) => ({
     label: `${voucher.fullName} (${voucher.email})`,
@@ -307,23 +270,15 @@ export function RegisterDetailsPage() {
         {passwordValue && <PasswordStrengthMeter password={passwordValue} />}
 
         <div className="auth-phone-field">
-          <label className="auth-field-label">
-            WhatsApp Phone Number <small>(11-digit number)</small>{' '}
-            <span className="text-red-500">*</span>
-          </label>
-          <FormInput
+          <PhoneNumberInput
+            label="WhatsApp Phone Number"
             id="whatsappPhone"
-            type="tel"
-            inputMode="numeric"
-            placeholder="e.g 08023456789"
-            // placeholder={selectedPhoneCountry.placeholder}
+            required
+            placeholder={NIGERIAN_PHONE_PLACEHOLDER}
+            hint="Enter your 11-digit Nigerian phone number starting with 0"
             error={detailForm.formState.errors.whatsappPhone?.message}
             {...detailForm.register('whatsappPhone')}
-            // {...whatsappRegistration}
           />
-          {/* <p className="auth-field-hint auth-field-hint--muted">
-            Enter number without country code
-          </p> */}
         </div>
 
         <TextareaInput

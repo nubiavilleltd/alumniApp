@@ -64,6 +64,7 @@ export default function EditEventPage() {
     setValue,
     watch,
     reset,
+    trigger,
     formState: { errors },
   } = useForm<UpdateEventFormData>({
     resolver: zodResolver(updateEventSchema) as any,
@@ -84,6 +85,8 @@ export default function EditEventPage() {
   const visibility = watch('visibility');
   const status = watch('status');
   const startDate = watch('start_date');
+  const endDate = watch('end_date');
+  const todayDate = new Date().toISOString().split('T')[0];
 
   // Populate form when event loads
   useEffect(() => {
@@ -126,6 +129,35 @@ export default function EditEventPage() {
 
     setValue('status', computedStatus);
   }, [startDate, isStatusManuallyChanged, setValue]);
+
+  useEffect(() => {
+    const subscription = watch((values, { name }) => {
+      if (!name) return;
+
+      const fieldName = name as keyof UpdateEventFormData;
+
+      const triggerMap: Partial<
+        Record<keyof UpdateEventFormData, Array<keyof UpdateEventFormData>>
+      > = {
+        start_date: ['end_date', 'start_time', 'end_time'],
+        end_date: ['start_date', 'end_time'],
+        start_time: ['end_time'],
+        end_time: ['start_time'],
+      };
+
+      const deps = triggerMap[fieldName];
+      if (!deps) return;
+
+      const fieldsToTrigger = deps.filter((field) => {
+        const val = values[field];
+        return typeof val === 'string' && val.length > 0;
+      });
+
+      if (fieldsToTrigger.length) void trigger(fieldsToTrigger as any);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [trigger, watch]);
 
   const handleImageChange = (files: File[], previews: string[]) => {
     if (files.length > 0) {
@@ -298,9 +330,10 @@ export default function EditEventPage() {
                 label="Start Date"
                 id="event_date"
                 required
-                min={new Date().toISOString().split('T')[0]} // same as before
+                min={todayDate}
+                max={endDate || undefined}
                 error={errors.start_date?.message}
-                value={watch('start_date')} // controlled
+                value={startDate}
                 onValueChange={(val) =>
                   setValue('start_date', val, {
                     shouldValidate: true,
@@ -312,9 +345,9 @@ export default function EditEventPage() {
               <DatePicker
                 label="End Date"
                 id="end_date"
-                min={watch('start_date') || undefined} // same as before
+                min={startDate || todayDate}
                 error={errors.end_date?.message}
-                value={watch('end_date')} // controlled
+                value={endDate}
                 onValueChange={(val) =>
                   setValue('end_date', val, {
                     shouldValidate: true,

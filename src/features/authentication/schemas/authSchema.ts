@@ -5,14 +5,10 @@
 // RegistrationFlowState in RegisterForm.tsx.
 
 import { z } from 'zod';
-import { phoneCountryOptions, validateNationalPhoneNumber } from '../constants/phoneCountries';
 import { NIGERIA_STATES } from '../constants/nigerianStates';
+import { validateNigerianPhoneNumber } from '@/shared/utils/nigerianPhoneNumber';
 
 const currentYear = new Date().getFullYear();
-const supportedPhoneCountries = phoneCountryOptions.map((option) => option.code) as [
-  (typeof phoneCountryOptions)[number]['code'],
-  ...(typeof phoneCountryOptions)[number]['code'][],
-];
 
 const passwordSchema = z
   .string()
@@ -60,12 +56,7 @@ export const registerDetailsSchema = z
       message: 'Please select a valid state',
     }),
 
-    // phoneCountry: z.enum(supportedPhoneCountries),
-
-    whatsappPhone: z
-      .string()
-      .trim()
-      .regex(/^\d{11}$/, 'WhatsApp phone number must be exactly 11 digits'),
+    whatsappPhone: z.string().trim(),
     city: z.string().min(1, 'Please select a city'),
     // city: z
     //   .string()
@@ -89,12 +80,12 @@ export const registerDetailsSchema = z
     confirmPassword: z.string().min(1, 'Please confirm your password'),
     voucherId: z.string().min(1, 'Please select a voucher who will approve your registration'),
   })
-  // .superRefine((data, ctx) => {
-  //   const phoneError = validateNationalPhoneNumber(data.phoneCountry, data.whatsappPhone);
-  //   if (phoneError) {
-  //     ctx.addIssue({ code: 'custom', path: ['whatsappPhone'], message: phoneError });
-  //   }
-  // })
+  .superRefine((data, ctx) => {
+    const phoneError = validateNigerianPhoneNumber(data.whatsappPhone);
+    if (phoneError) {
+      ctx.addIssue({ code: 'custom', path: ['whatsappPhone'], message: phoneError });
+    }
+  })
   .refine((data) => data.password === data.confirmPassword, {
     path: ['confirmPassword'],
     message: 'Passwords do not match',

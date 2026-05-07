@@ -37,6 +37,8 @@ interface DatePickerProps {
   max?: string;
   placeholder?: string;
   className?: string;
+  labelClassName?: string;
+  inputClassName?: string;
 }
 
 type DropdownPlacement = {
@@ -124,6 +126,8 @@ export function DatePicker({
   max,
   placeholder = 'Select date',
   className = '',
+  labelClassName = '',
+  inputClassName = '',
 }: DatePickerProps) {
   const inputId = id ?? name;
 
@@ -350,7 +354,10 @@ export function DatePicker({
     <div ref={containerRef} className={`relative flex flex-col gap-1 ${className}`}>
       {/* Label */}
       {label && (
-        <label htmlFor={inputId} className="block text-sm font-medium text-gray-700">
+        <label
+          htmlFor={inputId}
+          className={`block text-sm font-medium text-gray-700 ${labelClassName}`}
+        >
           {label}
           {required && <span className="text-red-500 ml-0.5">*</span>}
         </label>
@@ -371,6 +378,7 @@ export function DatePicker({
               ? 'border-primary-400'
               : 'border-gray-200 hover:border-gray-300',
           disabled ? 'opacity-50 cursor-not-allowed bg-gray-50' : 'cursor-pointer',
+          inputClassName,
         ].join(' ')}
       >
         <Icon icon="mdi:calendar-outline" className="w-4 h-4 text-gray-400 flex-shrink-0" />

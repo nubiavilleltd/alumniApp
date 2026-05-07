@@ -18,7 +18,7 @@ export function ContactUsPage() {
     {
       label: 'Find us',
       valueLines: [address],
-      icon: 'mdi:map-marker-outline',
+      iconSrc: '/contactLocation.svg',
       href: toGoogleMapsHref([address]),
       target: '_blank' as const,
       rel: 'noreferrer',
@@ -26,13 +26,13 @@ export function ContactUsPage() {
     {
       label: 'Call us',
       valueLines: [phone],
-      icon: 'mdi:phone-outline',
+      iconSrc: '/contactPhone.svg',
       href: toTelephoneHref(phone),
     },
     {
       label: 'Email us',
       valueLines: [email],
-      icon: 'mdi:email-outline',
+      iconSrc: '/contactMessage.svg',
       href: `mailto:${email}`,
     },
   ];

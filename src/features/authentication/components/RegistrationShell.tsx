@@ -13,20 +13,51 @@ const stepMeta: Record<RegistrationStep, { step: string; label: string }> = {
 interface RegistrationShellProps {
   step: RegistrationStep;
   children: ReactNode;
+  shellClassName?: string;
+  cardClassName?: string;
+  headerClassName?: string;
+  bodyClassName?: string;
+  stepperClassName?: string;
+  stepCountClassName?: string;
+  stepLabelClassName?: string;
+  stepDotsClassName?: string;
 }
 
-export function RegistrationShell({ step, children }: RegistrationShellProps) {
+export function RegistrationShell({
+  step,
+  children,
+  shellClassName,
+  cardClassName,
+  headerClassName,
+  bodyClassName,
+  stepperClassName,
+  stepCountClassName,
+  stepLabelClassName,
+  stepDotsClassName,
+}: RegistrationShellProps) {
   const { step: stepNumber, label: stepLabel } = stepMeta[step];
   const activeIndex = progressSteps.indexOf(step);
 
   return (
-    <AuthCard title="Sign" titleAccent="Up" subtitle="Join your sisters" variant="registration">
-      <div className="auth-stepper" aria-label={`Registration progress: ${stepNumber}`}>
+    <AuthCard
+      title="Sign"
+      titleAccent="Up"
+      subtitle="Join your sisters"
+      variant="registration"
+      shellClassName={shellClassName}
+      cardClassName={cardClassName}
+      headerClassName={headerClassName}
+      bodyClassName={bodyClassName}
+    >
+      <div
+        className={`auth-stepper ${stepperClassName ?? ''}`}
+        aria-label={`Registration progress: ${stepNumber}`}
+      >
         <div>
-          <p className="auth-stepper__count">{stepNumber}</p>
-          <p className="auth-stepper__label">{stepLabel}</p>
+          <p className={`auth-stepper__count ${stepCountClassName ?? ''}`}>{stepNumber}</p>
+          <p className={`auth-stepper__label ${stepLabelClassName ?? ''}`}>{stepLabel}</p>
         </div>
-        <div className="auth-stepper__dots">
+        <div className={`auth-stepper__dots ${stepDotsClassName ?? ''}`}>
           {progressSteps.map((registrationStep, index) => (
             <div
               key={registrationStep}

@@ -123,11 +123,9 @@ export default function CreateEventPage() {
 
   const visibility = watch('visibility');
   const status = watch('status');
-
-  //   const startDate = watch('start_date');
-  // const endDate = watch('end_date');
-  // const startTime = watch('start_time');
-  // const endTime = watch('end_time');
+  const startDate = watch('start_date');
+  const endDate = watch('end_date');
+  const todayDate = new Date().toISOString().split('T')[0];
 
   useEffect(() => {
     const subscription = watch((values, { name }) => {
@@ -328,9 +326,10 @@ export default function CreateEventPage() {
                 label="Start Date"
                 id="event_date"
                 required
-                min={new Date().toISOString().split('T')[0]} // same as before
+                min={todayDate}
+                max={endDate || undefined}
                 error={errors.start_date?.message}
-                value={watch('start_date')} // controlled
+                value={startDate}
                 onValueChange={(val) =>
                   setValue('start_date', val, {
                     shouldValidate: true,
@@ -342,9 +341,9 @@ export default function CreateEventPage() {
               <DatePicker
                 label="End Date"
                 id="end_date"
-                min={watch('start_date') || undefined} // same as before
+                min={startDate || todayDate}
                 error={errors.end_date?.message}
-                value={watch('end_date')} // controlled
+                value={endDate}
                 onValueChange={(val) =>
                   setValue('end_date', val, {
                     shouldValidate: true,

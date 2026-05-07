@@ -1442,8 +1442,8 @@ input[type='password']::-webkit-caps-lock-indicator {
   max-width: 33rem;
   margin: 0;
   color: #071116;
-  font-size: clamp(2.65rem, 4vw, 4rem);
-  font-weight: 800;
+  font-size: clamp(2.3rem, 3vw, 3rem);
+  font-weight: 600;
   line-height: 1.02;
   letter-spacing: -0.03em;
 }
@@ -1586,7 +1586,7 @@ input[type='password']::-webkit-caps-lock-indicator {
 }
 
 .contact-form-card .base-input__control {
-  min-height: clamp(3.05rem, 4vw, 3.45rem);
+  min-height: clamp(2.8rem, 3.7vw, 3.15rem);
   border: 0;
   border-radius: 999px;
   background: #f7f5f1;
@@ -1594,14 +1594,14 @@ input[type='password']::-webkit-caps-lock-indicator {
 }
 
 .contact-form-card .base-input__field {
-  height: clamp(3.05rem, 4vw, 3.45rem);
+  height: clamp(2.8rem, 3.7vw, 3.15rem);
   border: 0;
   background: transparent;
   color: #071116;
-  font-size: clamp(0.98rem, 1.08vw, 1.05rem);
+  font-size: clamp(0.94rem, 1.02vw, 1rem);
   font-weight: 500;
   letter-spacing: 0;
-  padding: 0 clamp(1rem, 1.4vw, 1.2rem);
+  padding: 0 clamp(0.9rem, 1.2vw, 1.05rem);
 }
 
 .contact-form-card .base-input__field::placeholder,
@@ -1611,17 +1611,17 @@ input[type='password']::-webkit-caps-lock-indicator {
 }
 
 .contact-form-card .textarea-input__field {
-  min-height: clamp(8.8rem, 12vw, 10rem);
+  min-height: clamp(7.9rem, 10.5vw, 8.9rem);
   border: 0;
   border-radius: clamp(1.25rem, 2vw, 1.55rem);
   background: #f7f5f1;
   box-shadow: none;
   color: #071116;
-  font-size: clamp(0.98rem, 1.08vw, 1.05rem);
+  font-size: clamp(0.94rem, 1.02vw, 1rem);
   font-weight: 500;
   line-height: 1.45;
   letter-spacing: 0;
-  padding: clamp(1rem, 1.5vw, 1.2rem);
+  padding: clamp(0.9rem, 1.25vw, 1.05rem);
 }
 
 .contact-form-card .base-input__control:focus-within,
@@ -1704,340 +1704,6 @@ input[type='password']::-webkit-caps-lock-indicator {
 
   .contact-form-card__button {
     width: 100%;
-  }
-}
-
-/* Job vacancies page */
-.jobs-detail-modal__tags span {
-  display: inline-flex;
-  min-height: 2.15rem;
-  align-items: center;
-  border: 1px solid rgba(7, 17, 22, 0.35);
-  border-radius: 999px;
-  padding: 0.35rem 0.85rem;
-  color: #59626c;
-  font-size: 0.82rem;
-  font-weight: 700;
-  line-height: 1;
-}
-.jobs-post-form__submit:hover {
-  background: rgb(var(--color-primary-600));
-}
-
-.jobs-modal-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 80;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(7, 17, 22, 0.55);
-  padding: 1.5rem;
-}
-
-.jobs-post-modal,
-.jobs-detail-modal {
-  position: relative;
-  width: min(100%, 76rem);
-  max-height: min(88vh, 58rem);
-  overflow-y: auto;
-  border-radius: 1.75rem;
-  background: #ffffff;
-  box-shadow: 0 2rem 4rem rgba(7, 17, 22, 0.22);
-}
-
-.jobs-modal-close {
-  position: sticky;
-  top: 1.2rem;
-  z-index: 2;
-  display: flex;
-  width: 3.5rem;
-  height: 3.5rem;
-  margin: 1.25rem 1.25rem 0 auto;
-  align-items: center;
-  justify-content: center;
-  border: 0;
-  background: transparent;
-  color: rgb(var(--color-primary-500));
-}
-
-.jobs-modal-close svg {
-  width: 3rem;
-  height: 3rem;
-}
-
-.jobs-post-form {
-  padding: 0.5rem clamp(1.5rem, 4vw, 3rem) 2rem;
-}
-
-.jobs-post-form__grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.85rem 2rem;
-}
-
-.jobs-post-form__full {
-  margin-top: 1.85rem;
-}
-
-.jobs-post-form .base-input,
-.jobs-post-form .select-input,
-.jobs-post-form .textarea-input {
-  gap: 0.65rem;
-}
-
-.jobs-post-form .base-input__label,
-.jobs-post-form .select-input__label,
-.jobs-post-form .textarea-input__label {
-  color: #858585;
-  font-size: 1rem;
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: 0;
-}
-
-.jobs-post-form .base-input__control,
-.jobs-post-form .select-input__control-wrap > button {
-  min-height: 3.65rem;
-  border: 0;
-  border-radius: 999px;
-  background: #f8f8f7;
-  box-shadow: none;
-}
-
-.jobs-post-form .base-input__field,
-.jobs-post-form .select-input__control-wrap > button {
-  color: #071116;
-  font-size: 1rem;
-  font-weight: 500;
-  letter-spacing: 0;
-}
-
-.jobs-post-form .base-input__field {
-  height: 3.65rem;
-  padding-inline: 1.35rem;
-}
-
-.jobs-post-form .base-input__trailing {
-  display: flex;
-  align-items: center;
-  padding-right: 1.35rem;
-  color: #858585;
-}
-
-.jobs-post-form .base-input__trailing svg {
-  width: 1.3rem;
-  height: 1.3rem;
-}
-
-.jobs-post-form .select-input__control-wrap > button {
-  padding: 0 2.7rem 0 1.35rem;
-}
-
-.jobs-post-form .select-input__control-wrap > button > span {
-  font-size: 1rem;
-  font-weight: 500;
-  line-height: 1.2;
-}
-
-.jobs-post-form .select-input__control-wrap > button > span.text-gray-400 {
-  color: #858585;
-}
-
-.jobs-post-form .select-input__control-wrap > button > span.text-gray-700 {
-  color: #071116;
-}
-
-.jobs-post-form .select-input__icon {
-  right: 1.35rem;
-  width: 1.3rem;
-  height: 1.3rem;
-  color: #858585;
-}
-
-.jobs-post-form .base-input__field::placeholder,
-.jobs-post-form .textarea-input__field::placeholder {
-  color: #858585;
-  opacity: 1;
-}
-
-.jobs-post-form .textarea-input__field {
-  min-height: 10.5rem;
-  border: 0;
-  border-radius: 1.45rem;
-  background: #f8f8f7;
-  box-shadow: none;
-  color: #071116;
-  font-size: 1rem;
-  font-weight: 500;
-  line-height: 1.45;
-  letter-spacing: 0;
-  padding: 1.25rem;
-}
-
-.jobs-post-form__application {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 2rem;
-  margin-top: 1.85rem;
-}
-
-.jobs-post-form__application fieldset {
-  margin: 0;
-  border: 0;
-  padding: 0;
-}
-
-.jobs-post-form__application legend {
-  margin: 0 0 1rem;
-  color: #858585;
-  font-size: 1rem;
-  font-weight: 700;
-  line-height: 1.2;
-}
-
-.jobs-post-form__application label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  margin-right: 1.8rem;
-  color: #858585;
-  font-size: 1rem;
-  font-weight: 700;
-}
-
-.jobs-post-form__application input[type='radio'] {
-  width: 1.25rem;
-  height: 1.25rem;
-  accent-color: rgb(var(--color-primary-500));
-}
-
-.jobs-post-form__submit {
-  display: flex;
-  min-width: min(14rem, 100%);
-  min-height: 3.35rem;
-  margin: 2.5rem auto 0;
-  border: 0;
-  border-radius: 999px;
-  background: rgb(var(--color-primary-500));
-  color: #ffffff;
-  font-size: 1.05rem;
-  font-weight: 800;
-  letter-spacing: 0;
-}
-
-.jobs-detail-modal {
-  width: min(100%, 54rem);
-}
-
-.jobs-detail-modal__header,
-.jobs-detail-modal__body {
-  padding-inline: clamp(1.5rem, 4vw, 3rem);
-}
-
-.jobs-detail-modal__header {
-  padding-bottom: 1.5rem;
-}
-
-.jobs-detail-modal__header time {
-  display: inline-flex;
-  min-height: 2.2rem;
-  align-items: center;
-  border-radius: 999px;
-  background: #f8f8f7;
-  padding: 0.35rem 1rem;
-  color: #59626c;
-  font-size: 0.9rem;
-  font-weight: 700;
-}
-
-.jobs-detail-modal__header p {
-  margin: 1.4rem 0 0;
-  color: #071116;
-  font-size: 1rem;
-  font-weight: 800;
-}
-
-.jobs-detail-modal__header h2 {
-  margin: 0.65rem 0 0;
-  color: #071116;
-  font-size: clamp(1.65rem, 3vw, 2.45rem);
-  font-weight: 800;
-  line-height: 1.15;
-}
-
-.jobs-detail-modal__tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-  margin-top: 1.25rem;
-}
-
-.jobs-detail-modal__body {
-  display: grid;
-  gap: 1.15rem;
-  padding-bottom: 2.25rem;
-}
-
-.jobs-detail-modal__body section {
-  border-radius: 1.15rem;
-  background: #f8f8f7;
-  padding: 1.15rem 1.25rem;
-}
-
-.jobs-detail-modal__body h3 {
-  margin: 0;
-  color: #071116;
-  font-size: 1rem;
-  font-weight: 800;
-}
-
-.jobs-detail-modal__body p {
-  margin: 0.55rem 0 0;
-  color: #59626c;
-  font-size: 0.95rem;
-  font-weight: 500;
-  line-height: 1.45;
-}
-
-@media (max-width: 900px) {
-  .jobs-post-form__grid,
-  .jobs-post-form__application {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 720px) {
-  .jobs-post-form__grid,
-  .jobs-post-form__application {
-    grid-template-columns: 1fr;
-  }
-
-  .jobs-modal-backdrop {
-    align-items: flex-start;
-    padding: 0.75rem;
-  }
-
-  .jobs-post-modal,
-  .jobs-detail-modal {
-    max-height: calc(100vh - 1.5rem);
-    border-radius: 1.2rem;
-  }
-
-  .jobs-modal-close {
-    top: 0.75rem;
-    width: 2.75rem;
-    height: 2.75rem;
-    margin: 0.9rem 0.9rem 0 auto;
-  }
-
-  .jobs-modal-close svg {
-    width: 2.25rem;
-    height: 2.25rem;
-  }
-
-  .jobs-post-form {
-    padding-inline: 1rem;
   }
 }
 
@@ -2479,19 +2145,10 @@ input[type='password']::-webkit-caps-lock-indicator {
   color: #dc2626;
 }
 
-.auth-verification,
 .auth-message-panel {
   display: flex;
   flex-direction: column;
   gap: 1.6rem;
-}
-
-.auth-verification {
-  gap: 2.75rem;
-}
-
-.auth-verification .auth-form {
-  gap: 2.5rem;
 }
 
 .auth-visually-hidden {
@@ -2502,113 +2159,6 @@ input[type='password']::-webkit-caps-lock-indicator {
   clip: rect(0 0 0 0);
   clip-path: inset(50%);
   white-space: nowrap;
-}
-
-.auth-verification__copy {
-  margin: 0;
-  color: #858585;
-  font-size: 1.35rem;
-  font-weight: 400;
-  line-height: 1.35;
-  letter-spacing: 0;
-}
-
-.auth-code-fieldset {
-  min-width: 0;
-  margin: 0;
-  padding: 0;
-  border: 0;
-}
-
-.auth-code-inputs {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 5.75rem));
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.auth-code-input {
-  width: 100%;
-  min-width: 0;
-  aspect-ratio: 1;
-  border: 0;
-  border-radius: 999px;
-  background: #f8f8f7;
-  color: #071116;
-  /* font-family: Poppins, system-ui, sans-serif; */
-  font-size: 2.15rem;
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: 0;
-  text-align: center;
-  outline: 0;
-  caret-color: rgb(var(--color-primary-500));
-}
-
-.auth-code-input::placeholder {
-  color: #858585;
-  opacity: 1;
-}
-
-.auth-code-input:focus {
-  outline: 4px solid rgba(0, 119, 204, 0.18);
-}
-
-.auth-code-error {
-  margin-top: 0.85rem;
-  text-align: center;
-}
-
-.auth-verification__resend-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: center;
-  gap: 0.35rem;
-  color: #858585;
-  font-size: 1.15rem;
-  font-weight: 600;
-  line-height: 1.35;
-  letter-spacing: 0;
-  text-align: center;
-}
-
-.auth-verification__resend-button {
-  border: 0;
-  background: transparent;
-  color: rgb(var(--color-primary-500));
-  cursor: pointer;
-  /* font-family: Poppins, system-ui, sans-serif; */
-  font-size: inherit;
-  font-weight: 700;
-  line-height: inherit;
-  letter-spacing: 0;
-  padding: 0;
-}
-
-.auth-verification__resend-button:hover {
-  color: rgb(var(--color-primary-600));
-}
-
-.auth-verification__resend-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.72;
-}
-
-.auth-verification__resend-button:focus-visible {
-  outline: 4px solid rgb(var(--color-primary-200));
-  outline-offset: 3px;
-}
-
-.auth-verification__resend-time {
-  color: #858585;
-}
-
-.auth-card .auth-verification__submit {
-  width: 100%;
-  height: auto;
-  min-height: 4.4rem;
-  font-size: 1.15rem;
 }
 
 .auth-info-panel {
@@ -2736,18 +2286,9 @@ input[type='password']::-webkit-caps-lock-indicator {
   margin-inline: auto;
 }
 
-.auth-registration-content--verification {
-  max-width: none;
-  margin-inline: auto;
-}
-
 .auth-registration-content--details {
   max-width: none;
   margin-inline: auto;
-}
-
-.auth-registration-content--verification #code {
-  text-align: center;
 }
 
 @media (max-width: 1200px) {
@@ -2830,36 +2371,6 @@ input[type='password']::-webkit-caps-lock-indicator {
   .auth-stepper__dot {
     width: 2.65rem;
     height: 0.36rem;
-  }
-
-  .auth-verification {
-    gap: 2.35rem;
-  }
-
-  .auth-verification .auth-form {
-    gap: 2.15rem;
-  }
-
-  .auth-verification__copy {
-    font-size: 1.15rem;
-  }
-
-  .auth-code-inputs {
-    grid-template-columns: repeat(6, minmax(0, 5.25rem));
-  }
-
-  .auth-code-input {
-    font-size: 2rem;
-  }
-
-  .auth-verification__resend-row {
-    font-size: 1.05rem;
-  }
-
-  .auth-card .auth-verification__submit {
-    height: auto;
-    min-height: 4rem;
-    font-size: 1.05rem;
   }
 }
 
@@ -3002,35 +2513,6 @@ input[type='password']::-webkit-caps-lock-indicator {
     height: 0.38rem;
   }
 
-  .auth-verification,
-  .auth-verification .auth-form {
-    gap: 1.75rem;
-  }
-
-  .auth-verification__copy {
-    font-size: 1rem;
-  }
-
-  .auth-code-inputs {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    gap: 0.45rem;
-  }
-
-  .auth-code-input {
-    font-size: 1.25rem;
-  }
-
-  .auth-verification__resend-row {
-    font-size: 0.95rem;
-  }
-
-  .auth-card .auth-verification__submit {
-    height: auto;
-    min-height: 3.4rem;
-    font-size: 1rem;
-  }
-
-  .auth-registration-content--verification,
   .auth-registration-content--success {
     max-width: none;
   }

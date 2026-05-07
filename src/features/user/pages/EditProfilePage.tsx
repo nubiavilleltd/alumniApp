@@ -22,21 +22,21 @@ import {
   yearsOfExperienceOptions,
   houseColorOptions,
 } from '@/features/authentication/constants/profileOptions';
-import {
-  phoneCountryOptions,
-  type SupportedPhoneCountry,
-  getPhoneCountryOption,
-  parseStoredPhoneNumber,
-  normalizePhoneNumberForCountry,
-  formatOptionalPhoneNumberWithCountryCode,
-} from '@/features/authentication/constants/phoneCountries';
 import { NIGERIA_STATES } from '@/features/authentication/constants/nigerianStates';
 import type { AuthSessionUser } from '@/features/authentication/types/auth.types';
 import { useCities } from '@/features/authentication/hooks/useCities';
 import { DatePicker } from '@/shared/components/ui/input/DatePicker';
+import { PhoneNumberInput } from '@/shared/components/ui/input/PhoneNumberInput';
 import { getDateYearsAgo } from '@/shared/utils/dateHelpers';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
 import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
+import {
+  formatOptionalNigerianPhoneNumber,
+  NIGERIAN_PHONE_PLACEHOLDER,
+  normalizeNigerianPhoneNumber,
+  parseStoredNigerianPhoneNumber,
+  validateNigerianPhoneNumber,
+} from '@/shared/utils/nigerianPhoneNumber';
 import {
   DEFAULT_IMAGE_UPLOAD_ACCEPT,
   validateFilesAgainstAcceptList,
@@ -56,9 +56,7 @@ interface FormState {
   lastName: string;
   nameInSchool: string;
   nickName: string;
-  whatsappPhoneCountry: SupportedPhoneCountry;
   whatsappPhone: string;
-  alternativePhoneCountry: SupportedPhoneCountry;
   alternativePhone: string;
   birthDate: string;
   bio: string;
@@ -88,17 +86,13 @@ interface FormState {
 // }
 
 function toFormState(user: AuthSessionUser | null | undefined): FormState {
-  const whatsappPhone = parseStoredPhoneNumber(user?.whatsappPhone);
-  const alternativePhone = parseStoredPhoneNumber(user?.alternativePhone);
   return {
     firstName: user?.otherNames ?? '',
     lastName: user?.surname ?? '',
     nameInSchool: user?.nameInSchool ?? '',
     nickName: user?.nickName ?? '',
-    whatsappPhoneCountry: whatsappPhone.countryCode,
-    whatsappPhone: whatsappPhone.nationalNumber,
-    alternativePhoneCountry: alternativePhone.countryCode,
-    alternativePhone: alternativePhone.nationalNumber,
+    whatsappPhone: parseStoredNigerianPhoneNumber(user?.whatsappPhone),
+    alternativePhone: parseStoredNigerianPhoneNumber(user?.alternativePhone),
     birthDate: user?.birthDate ?? '',
     bio: user?.bio ?? '',
     houseColor: user?.houseColor ?? '',
@@ -384,11 +378,6 @@ const yearsExpOpts = yearsOfExperienceOptions.map((o) => ({
   value: String(o.value),
 }));
 const houseColorOpts = houseColorOptions.map((o) => ({ label: o.label, value: o.value }));
-const phoneCountryOpts = phoneCountryOptions.map((o) => ({
-  label: `${o.dialCode} (${o.label})`,
-  value: o.code,
-}));
-
 export default function EditProfilePage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -408,8 +397,6 @@ export default function EditProfilePage() {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [photoError, setPhotoError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
-  const selectedWhatsappPhoneCountry = getPhoneCountryOption(form.whatsappPhoneCountry);
-  const selectedAlternativePhoneCountry = getPhoneCountryOption(form.alternativePhoneCountry);
 
   // Populate form when data arrives
   useEffect(() => {
@@ -425,17 +412,14 @@ export default function EditProfilePage() {
       if (e.target.name === 'whatsappPhone') {
         return {
           ...prev,
-          whatsappPhone: normalizePhoneNumberForCountry(prev.whatsappPhoneCountry, e.target.value),
+          whatsappPhone: normalizeNigerianPhoneNumber(e.target.value),
         };
       }
 
       if (e.target.name === 'alternativePhone') {
         return {
           ...prev,
-          alternativePhone: normalizePhoneNumberForCountry(
-            prev.alternativePhoneCountry,
-            e.target.value,
-          ),
+          alternativePhone: normalizeNigerianPhoneNumber(e.target.value),
         };
       }
 
@@ -463,6 +447,21 @@ export default function EditProfilePage() {
 
   const handleSave = async () => {
     if (!currentUser?.id) return;
+
+    const whatsappPhoneError = validateNigerianPhoneNumber(form.whatsappPhone);
+    if (whatsappPhoneError) {
+      toast.error(whatsappPhoneError);
+      return;
+    }
+
+    const alternativePhoneError = validateNigerianPhoneNumber(form.alternativePhone, {
+      required: false,
+    });
+    if (alternativePhoneError) {
+      toast.error(`Alternative phone: ${alternativePhoneError}`);
+      return;
+    }
+
     setIsSaving(true);
 
     const updates: Partial<AuthSessionUser> = {
@@ -471,14 +470,8 @@ export default function EditProfilePage() {
       fullName: `${form.firstName.trim()} ${form.lastName.trim()}`.trim(),
       nameInSchool: form.nameInSchool.trim() || undefined,
       nickName: form.nickName.trim() || undefined,
-      whatsappPhone:
-        formatOptionalPhoneNumberWithCountryCode(form.whatsappPhoneCountry, form.whatsappPhone) ||
-        '',
-      alternativePhone:
-        formatOptionalPhoneNumberWithCountryCode(
-          form.alternativePhoneCountry,
-          form.alternativePhone,
-        ) || undefined,
+      whatsappPhone: formatOptionalNigerianPhoneNumber(form.whatsappPhone) || '',
+      alternativePhone: formatOptionalNigerianPhoneNumber(form.alternativePhone) || undefined,
       birthDate: form.birthDate || undefined,
       bio: form.bio.trim() || undefined,
       houseColor: form.houseColor || undefined,
@@ -602,70 +595,24 @@ export default function EditProfilePage() {
                 </div>
                 <div>
                   <Label>WhatsApp</Label>
-                  {/* <div className="flex gap-2">
-                    <div className="w-28 flex-shrink-0">
-                      <SelectInput
-                        name="whatsappPhoneCountry"
-                        value={form.whatsappPhoneCountry}
-                        onChange={(e) =>
-                          setForm((p) => ({
-                            ...p,
-                            whatsappPhoneCountry: e.target.value as SupportedPhoneCountry,
-                            whatsappPhone: normalizePhoneNumberForCountry(
-                              e.target.value as SupportedPhoneCountry,
-                              p.whatsappPhone,
-                            ),
-                          }))
-                        }
-                        options={phoneCountryOpts}
-                        disabled
-                        className="whitespace-nowrap"
-                      />
-                    </div>
-                  
-                  </div> */}
-
-                  <Input
+                  <PhoneNumberInput
                     name="whatsappPhone"
                     value={form.whatsappPhone}
                     onChange={handleChange}
-                    type="tel"
-                    inputMode="numeric"
-                    placeholder={selectedWhatsappPhoneCountry.placeholder}
+                    placeholder={NIGERIAN_PHONE_PLACEHOLDER}
+                    controlClassName="!rounded-3xl !border-gray-200 !bg-gray-50 !shadow-none focus-within:!border-primary-400 focus-within:!ring-2 focus-within:!ring-primary-300 focus-within:!bg-white"
+                    inputClassName="!px-4 !py-2.5 !text-sm !text-gray-800 placeholder:!text-gray-400"
                   />
                 </div>
                 <div>
                   <Label>Alt. Phone</Label>
-                  {/* <div className="flex gap-2">
-                    <div className="w-28 flex-shrink-0">
-                      <SelectInput
-                        name="alternativePhoneCountry"
-                        value={form.alternativePhoneCountry}
-                        onChange={(e) =>
-                          setForm((p) => ({
-                            ...p,
-                            alternativePhoneCountry: e.target.value as SupportedPhoneCountry,
-                            alternativePhone: normalizePhoneNumberForCountry(
-                              e.target.value as SupportedPhoneCountry,
-                              p.alternativePhone,
-                            ),
-                          }))
-                        }
-                        options={phoneCountryOpts}
-                        disabled
-                        className="whitespace-nowrap"
-                      />
-                    </div>
-                 
-                  </div> */}
-
-                  <Input
+                  <PhoneNumberInput
                     name="alternativePhone"
                     value={form.alternativePhone}
                     onChange={handleChange}
-                    type="tel"
-                    inputMode="numeric"
-                    placeholder={selectedAlternativePhoneCountry.placeholder}
+                    placeholder={NIGERIAN_PHONE_PLACEHOLDER}
+                    controlClassName="!rounded-3xl !border-gray-200 !bg-gray-50 !shadow-none focus-within:!border-primary-400 focus-within:!ring-2 focus-within:!ring-primary-300 focus-within:!bg-white"
+                    inputClassName="!px-4 !py-2.5 !text-sm !text-gray-800 placeholder:!text-gray-400"
                   />
                 </div>
 
