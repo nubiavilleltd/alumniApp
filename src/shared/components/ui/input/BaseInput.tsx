@@ -8,6 +8,9 @@ export interface BaseInputProps extends React.InputHTMLAttributes<HTMLInputEleme
   leadingSlot?: React.ReactNode; // icon, prefix text, etc.
   trailingSlot?: React.ReactNode; // eye toggle, search button, etc.
   onValueChange?: (value: string) => void; // simple controlled usage outside RHF
+  labelClassName?: string;
+  controlClassName?: string;
+  inputClassName?: string;
 }
 
 export const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>(
@@ -18,6 +21,9 @@ export const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>(
       hint,
       leadingSlot,
       trailingSlot,
+      labelClassName = '',
+      controlClassName = '',
+      inputClassName = '',
       id,
       name,
       required,
@@ -42,7 +48,7 @@ export const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="base-input__label block text-sm font-medium text-gray-700"
+            className={`base-input__label block text-sm font-medium text-gray-700 ${labelClassName}`}
           >
             {label}
             {required && <span className="text-red-500 ml-0.5">*</span>}
@@ -54,6 +60,7 @@ export const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>(
           className={`base-input__control flex items-center bg-white border rounded-3xl overflow-hidden shadow-sm transition-colors
             ${error ? 'border-red-400 focus-within:border-red-400' : 'border-gray-200 focus-within:border-primary-400'}
             ${disabled ? 'opacity-50 bg-gray-50 cursor-not-allowed' : ''}
+            ${controlClassName}
           `}
         >
           {leadingSlot && (
@@ -69,7 +76,7 @@ export const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>(
             required={required}
             disabled={disabled}
             onChange={handleChange}
-            className="base-input__field flex-1 px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 outline-none bg-transparent disabled:cursor-not-allowed"
+            className={`base-input__field flex-1 px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 outline-none bg-transparent disabled:cursor-not-allowed ${inputClassName}`}
             {...rest}
           />
 

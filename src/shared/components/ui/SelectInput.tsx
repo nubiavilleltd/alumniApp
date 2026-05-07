@@ -16,6 +16,7 @@ interface SelectInputProps extends Omit<
   options: readonly SelectOption[];
   placeholder?: string;
   controlClassName?: string;
+  labelClassName?: string;
   onChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   onBlur?: (event: React.FocusEvent<HTMLSelectElement>) => void;
 }
@@ -29,6 +30,7 @@ export const SelectInput = forwardRef<HTMLSelectElement, SelectInputProps>(
       options,
       placeholder = 'Select an option',
       controlClassName = '',
+      labelClassName = '',
       id,
       name,
       required,
@@ -251,7 +253,7 @@ export const SelectInput = forwardRef<HTMLSelectElement, SelectInputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="select-input__label block text-sm font-medium text-gray-700"
+            className={`select-input__label block text-sm font-medium text-gray-700 ${labelClassName}`}
           >
             {label}
             {required && <span className="text-red-500 ml-0.5">*</span>}

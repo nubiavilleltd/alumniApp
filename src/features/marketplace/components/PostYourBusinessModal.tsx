@@ -1,10 +1,10 @@
 // // features/marketplace/components/PostYourBusinessModal.tsx
 
+import { Icon } from '@iconify/react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Modal } from '@/shared/components/ui/Modal';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
 import { ImageUpload } from '@/shared/components/ui/ImageUpload';
 import { Button } from '@/shared/components/ui/Button';
@@ -178,6 +178,18 @@ export function PostBusinessModal({ isOpen, onClose, editData }: PostBusinessMod
     resetImages(editData?.images ?? []);
   }, [editData, reset, resetImages]);
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   // Reset on close
   useEffect(() => {
     if (!isOpen) {
@@ -255,58 +267,88 @@ export function PostBusinessModal({ isOpen, onClose, editData }: PostBusinessMod
     },
   });
 
+  if (!isOpen) return null;
+
+  const fieldLabelClassName = 'font-medium text-gray-500';
+  const fieldControlClassName =
+    '!border-transparent !bg-[#fbf8f3] !shadow-none focus-within:!border-primary-100 focus-within:!ring-2 focus-within:!ring-primary-100';
+  const fieldInputClassName = 'placeholder:text-gray-400';
+  const textareaClassName =
+    '!border-transparent !bg-[#fbf8f3] !shadow-none placeholder:text-gray-400 focus:!border-primary-100 focus:!ring-2 focus:!ring-primary-100';
+  const compactUploadLabelClassName = 'font-medium text-gray-500';
+
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={isEditing ? 'Edit Your Business' : 'Post Your Business'}
+    <div
+      className="fixed inset-0 z-50 overflow-y-auto bg-black/35 px-4 py-6 backdrop-blur-[1.5px]"
+      onClick={onClose}
     >
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
-        {errors.root?.message && (
-          <div className="bg-red-50 border border-red-200 text-red-600 text-sm p-3 rounded-lg">
-            {errors.root.message}
-          </div>
-        )}
+      <div className="flex min-h-full items-start justify-center lg:items-center">
+        <section
+          className="relative my-auto w-full max-w-[62rem] overflow-y-auto rounded-[2rem] bg-white shadow-[0_28px_72px_rgba(15,23,42,0.16)] max-h-[82vh]"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="post-business-title"
+          onClick={(event) => event.stopPropagation()}
+        >
+          <button
+            type="button"
+            onClick={onClose}
+            className="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full text-primary-500 transition-colors hover:bg-primary-50 md:right-6 md:top-6"
+            aria-label="Close modal"
+          >
+            <Icon icon="mdi:close" className="h-7 w-7" />
+          </button>
 
-        <FormInput
-          label="Business Name"
-          id="name"
-          required
-          placeholder="Enter business name"
-          error={errors.name?.message}
-          {...register('name')}
-        />
+          <div className="px-5 pb-6 pt-9 sm:px-8 md:px-10 md:pb-8 md:pt-10">
+            <h2 id="post-business-title" className="sr-only">
+              {isEditing ? 'Edit Your Business' : 'Post Your Business'}
+            </h2>
 
-        <SelectInput
-          label="Category"
-          id="category"
-          required
-          placeholder="Select a category"
-          options={categoryOptions}
-          value={categoryValue}
-          error={errors.category?.message}
-          {...register('category')}
-        />
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+              {errors.root?.message && (
+                <div className="rounded-[1.4rem] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+                  {errors.root.message}
+                </div>
+              )}
 
-        <TextareaInput
-          label="Description"
-          id="description"
-          required
-          rows={5}
-          placeholder="Describe your business..."
-          error={errors.description?.message}
-          {...register('description')}
-        />
+              <div className="grid gap-x-6 gap-y-5 md:grid-cols-2 md:gap-x-8 md:gap-y-6">
+                <FormInput
+                  label="Business Name"
+                  labelClassName={fieldLabelClassName}
+                  controlClassName={fieldControlClassName}
+                  inputClassName={fieldInputClassName}
+                  id="name"
+                  required
+                  placeholder="Enter your business name"
+                  error={errors.name?.message}
+                  {...register('name')}
+                />
 
-        <FormInput
-          label="Location"
-          id="location"
-          required
-          placeholder="Enter location"
-          icon="mdi:map-marker-outline"
-          error={errors.location?.message}
-          {...register('location')}
-        />
+                <SelectInput
+                  label="Category"
+                  labelClassName={fieldLabelClassName}
+                  controlClassName={fieldControlClassName}
+                  id="category"
+                  required
+                  placeholder="Select a category"
+                  options={categoryOptions}
+                  value={categoryValue}
+                  error={errors.category?.message}
+                  {...register('category')}
+                />
+
+                <TextareaInput
+                  label="Description"
+                  labelClassName={fieldLabelClassName}
+                  textareaClassName={textareaClassName}
+                  className="md:col-span-2"
+                  id="description"
+                  required
+                  rows={5}
+                  placeholder="Write a short description of your business"
+                  error={errors.description?.message}
+                  {...register('description')}
+                />
 
         <div className="flex flex-col gap-1">
           <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
@@ -323,33 +365,87 @@ export function PostBusinessModal({ isOpen, onClose, editData }: PostBusinessMod
             {...phoneRegistration}
           />
         </div>
+                <div className="flex flex-col gap-1">
+                  <label htmlFor="phone" className={`block text-sm ${fieldLabelClassName}`}>
+                    Phone Number <span className="text-red-500">*</span>
+                  </label>
+                  <div className="grid grid-cols-[8.5rem_1fr] gap-2">
+                    <SelectInput
+                      id="phoneCountry"
+                      options={phoneCountrySelectOptions}
+                      placeholder="Country"
+                      value={phoneCountry}
+                      error={undefined}
+                      controlClassName={fieldControlClassName}
+                      {...phoneCountryRegistration}
+                    />
+                    <FormInput
+                      controlClassName={fieldControlClassName}
+                      inputClassName={fieldInputClassName}
+                      id="phone"
+                      type="tel"
+                      inputMode="numeric"
+                      required
+                      placeholder={selectedPhoneCountry.placeholder}
+                      error={errors.phone?.message}
+                      {...phoneRegistration}
+                    />
+                  </div>
+                </div>
 
-        <FormInput
-          label="Website URL"
-          id="website"
-          type="url"
-          placeholder="https://yourbusiness.com"
-          icon="mdi:web"
-          hint="Optional"
-          error={errors.website?.message}
-          {...register('website')}
-        />
+                <FormInput
+                  label="Location"
+                  labelClassName={fieldLabelClassName}
+                  controlClassName={fieldControlClassName}
+                  inputClassName={fieldInputClassName}
+                  id="location"
+                  required
+                  placeholder="Enter the address of your business"
+                  error={errors.location?.message}
+                  {...register('location')}
+                />
 
-        <ImageUpload
-          label={isEditing ? 'Business Images' : 'Upload Images'}
-          hint={
-            isEditing
-              ? 'Existing images shown below. Upload new ones to add more.'
-              : 'PNG or JPG (max 800×400px)'
-          }
-          previews={allPreviews}
-          onChange={handleImages}
-        />
+                <FormInput
+                  label="Website"
+                  labelClassName={fieldLabelClassName}
+                  controlClassName={fieldControlClassName}
+                  inputClassName={fieldInputClassName}
+                  className="md:col-span-2"
+                  id="website"
+                  type="url"
+                  placeholder="Enter the web address of your business"
+                  error={errors.website?.message}
+                  {...register('website')}
+                />
+              </div>
 
-        <Button type="submit" fullWidth loading={isLoading}>
-          {isEditing ? 'Update Business' : 'Post Business'}
-        </Button>
-      </form>
-    </Modal>
+              <ImageUpload
+                label={isEditing ? 'Business Images' : 'Upload Images'}
+                labelClassName={compactUploadLabelClassName}
+                dropzoneClassName="py-5"
+                hint={
+                  isEditing
+                    ? 'Existing images shown below. Upload new ones to add more.'
+                    : 'PNG or JPG (max 800×400px)'
+                }
+                previews={allPreviews}
+                onChange={handleImages}
+              />
+
+              <div className="flex justify-end">
+                <Button
+                  type="submit"
+                  size="lg"
+                  loading={isLoading}
+                  className="min-w-[11rem] px-8 shadow-none"
+                >
+                  {isEditing ? 'Update Business' : 'Post Business'}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </section>
+      </div>
+    </div>
   );
 }

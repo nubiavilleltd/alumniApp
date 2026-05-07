@@ -20,6 +20,9 @@ import { getSiteConfig } from '@/data/content';
 import { AppLink } from '../ui/AppLink';
 import FooterBgImage from '/footer-bg-image.png';
 import FooterLogo from '../ui/FooterLogo';
+import AddressLocationIcon from '/addressLocation.svg';
+import LocationPhoneIcon from '/locationPhone.svg';
+import LocationMessageIcon from '/locationMessage.svg';
 
 // ─── Social icon resolver ─────────────────────────────────────────────────────
 // config.social_links[].icon contains icon names like "facebook", "instagram".
@@ -44,6 +47,7 @@ function resolveSocialIcon(iconName: string): string {
 
 const footerSocialLinkClassName =
   'relative flex items-center justify-center rounded-full bg-transparent transition-all duration-200 hover:scale-105 before:absolute before:inset-0 before:rounded-full before:p-px before:bg-[linear-gradient(90deg,#015C9E_0%,#FFFFFF_50%,#015C9E_100%)] before:[-webkit-mask:linear-gradient(#000_0_0)_content-box,linear-gradient(#000_0_0)] before:[-webkit-mask-composite:xor] before:[mask-composite:exclude] before:pointer-events-none';
+const footerContactIconClassName = 'flex-shrink-0 opacity-80';
 // ─── Link columns ─────────────────────────────────────────────────────────────
 
 const QUICK_LINKS = [
@@ -151,16 +155,23 @@ export function Footer() {
               {/* Contact details */}
               <div className="space-y-3 mt-6">
                 <div className="flex items-start gap-3">
-                  <Icon
-                    icon="mdi:map-marker"
-                    className="w-4 h-4 text-white/60 mt-0.5 flex-shrink-0"
+                  <img
+                    src={AddressLocationIcon}
+                    alt=""
+                    aria-hidden="true"
+                    className={`${footerContactIconClassName} mt-0.5 h-5 w-[17px]`}
                   />
                   <span className="text-white text-sm leading-snug">
                     {config.organization?.address || 'Lagos, Nigeria'}
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Icon icon="mdi:email-outline" className="w-4 h-4 text-white/60 flex-shrink-0" />
+                  <img
+                    src={LocationMessageIcon}
+                    alt=""
+                    aria-hidden="true"
+                    className={`${footerContactIconClassName} h-[14px] w-[17px]`}
+                  />
                   <AppLink
                     href={`mailto:${config.contact?.email || 'info@fggcowerrilagos.org'}`}
                     className="text-white hover:text-white text-sm transition-colors"
@@ -169,7 +180,12 @@ export function Footer() {
                   </AppLink>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Icon icon="mdi:phone" className="w-4 h-4 text-white/60 flex-shrink-0" />
+                  <img
+                    src={LocationPhoneIcon}
+                    alt=""
+                    aria-hidden="true"
+                    className={`${footerContactIconClassName} h-4 w-[17px]`}
+                  />
                   <AppLink
                     href={`tel:${config.contact?.phone || '+2348000000000'}`}
                     className="text-white hover:text-white text-sm transition-colors"

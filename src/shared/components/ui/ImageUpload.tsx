@@ -17,6 +17,9 @@ interface ImageUploadProps {
   accept?: string;
   multiple?: boolean;
   maxSizeMB?: number;
+  className?: string;
+  labelClassName?: string;
+  dropzoneClassName?: string;
 }
 
 export function ImageUpload({
@@ -28,6 +31,9 @@ export function ImageUpload({
   accept = DEFAULT_IMAGE_UPLOAD_ACCEPT,
   multiple = true,
   maxSizeMB = SHARED_UPLOAD_MAX_SIZE_MB,
+  className = '',
+  labelClassName = '',
+  dropzoneClassName = '',
 }: ImageUploadProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
@@ -144,8 +150,12 @@ export function ImageUpload({
   });
 
   return (
-    <div className="flex flex-col gap-1">
-      {label && <label className="block text-sm font-medium text-gray-700">{label}</label>}
+    <div className={`flex flex-col gap-1 ${className}`}>
+      {label && (
+        <label className={`block text-sm font-medium text-gray-700 ${labelClassName}`}>
+          {label}
+        </label>
+      )}
 
       {/* Drop zone */}
       <button
@@ -163,6 +173,7 @@ export function ImageUpload({
                 ? 'border-primary-400 bg-primary-50/50'
                 : 'border-gray-200 hover:border-primary-400'
           }
+          ${dropzoneClassName}
         `}
       >
         <Icon

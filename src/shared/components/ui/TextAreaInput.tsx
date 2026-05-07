@@ -9,6 +9,7 @@ interface TextareaInputProps extends React.TextareaHTMLAttributes<HTMLTextAreaEl
   hint?: string;
   textareaClassName?: string;
   showCounter?: boolean;
+  labelClassName?: string;
 }
 
 export const TextareaInput = forwardRef<HTMLTextAreaElement, TextareaInputProps>(
@@ -24,6 +25,7 @@ export const TextareaInput = forwardRef<HTMLTextAreaElement, TextareaInputProps>
       className = '',
       textareaClassName = '',
       showCounter = true,
+      labelClassName = '',
       maxLength = DEFAULT_TEXTAREA_MAX_LENGTH,
       value,
       defaultValue,
@@ -57,7 +59,7 @@ export const TextareaInput = forwardRef<HTMLTextAreaElement, TextareaInputProps>
         {label && (
           <label
             htmlFor={inputId}
-            className="textarea-input__label block text-sm font-medium text-gray-700"
+            className={`textarea-input__label block text-sm font-medium text-gray-700 ${labelClassName}`}
           >
             {label}
             {required && <span className="text-red-500 ml-0.5">*</span>}
