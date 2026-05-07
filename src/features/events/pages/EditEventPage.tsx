@@ -56,7 +56,6 @@ export default function EditEventPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [bannerPreview, setBannerPreview] = useState<string>('');
-  const [bannerError, setBannerError] = useState<string>('');
   const [isStatusManuallyChanged, setIsStatusManuallyChanged] = useState(false);
 
   const {
@@ -129,17 +128,8 @@ export default function EditEventPage() {
   }, [startDate, isStatusManuallyChanged, setValue]);
 
   const handleImageChange = (files: File[], previews: string[]) => {
-    setBannerError('');
-
-    console.log('files  ==', files);
     if (files.length > 0) {
-      console.log('files 1  ==', files);
-      const file = files[0];
-      if (file.size > 2 * 1024 * 1024) {
-        setBannerError('Image must be under 2 MB');
-        return;
-      }
-      setBannerFile(file);
+      setBannerFile(files[0]);
       setBannerPreview(previews[0]);
     } else {
       // User cleared the image
@@ -423,7 +413,6 @@ export default function EditEventPage() {
                 onChange={handleImageChange}
                 hint="PNG or JPG — max 2 MB. Recommended: 1200×600 px"
                 multiple={false}
-                error={bannerError}
               />
             </div>
 

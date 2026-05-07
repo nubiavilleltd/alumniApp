@@ -20,6 +20,7 @@ import { mapEventToCreatePayload, mapEventToUpdatePayload } from '../api/adapter
 import { toast } from '@/shared/components/ui/Toast';
 import { EVENT_ROUTES } from '../routes';
 import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
+import { useRequireSignIn } from '@/features/authentication/hooks/useRequireSignIn';
 import { DatePicker } from '@/shared/components/ui/input/DatePicker';
 import { TimePicker } from '@/shared/components/ui/input/TimePicker';
 import { ROUTES } from '@/shared/constants/routes';
@@ -57,6 +58,7 @@ function toSurveyQuestionPayload(question: EventRegistrationQuestionDraft, index
     required: question.required,
     placeholder: question.placeholder.trim(),
     options: question.options.map((option) => option.trim()).filter(Boolean),
+    maxSelections: question.type === 'checkbox' ? question.maxSelections : null,
     order: index + 1,
   };
 }
@@ -79,6 +81,7 @@ const statusOptions = [
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function CreateEventPage() {
+  const requireSignIn = useRequireSignIn();
   const navigate = useNavigate();
   //   const currentUser = useAuthStore((state) => state.user);
   const { data: currentUser, isLoading } = useCurrentUser();
@@ -87,7 +90,6 @@ export default function CreateEventPage() {
 
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [bannerPreview, setBannerPreview] = useState<string>('');
-  const [bannerError, setBannerError] = useState<string>('');
   const [isRegistrationBuilderOpen, setIsRegistrationBuilderOpen] = useState(false);
   const [registrationFormDrafts, setRegistrationFormDrafts] = useState<
     LocalRegistrationFormDraft[]
@@ -158,15 +160,8 @@ export default function CreateEventPage() {
   }, [watch, trigger]);
 
   const handleImageChange = (files: File[], previews: string[]) => {
-    setBannerError('');
     if (files.length > 0) {
-      const file = files[0];
-      // Validate: max 2 MB
-      if (file.size > 2 * 1024 * 1024) {
-        setBannerError('Image must be under 2 MB');
-        return;
-      }
-      setBannerFile(file);
+      setBannerFile(files[0]);
       setBannerPreview(previews[0]);
     } else {
       setBannerFile(null);
@@ -176,8 +171,7 @@ export default function CreateEventPage() {
 
   const onSubmit = async (data: CreateEventFormData) => {
     if (!currentUser?.id) {
-      toast.error('You must be logged in to create events.');
-      navigate(AUTH_ROUTES.LOGIN);
+      requireSignIn({ message: 'You must be logged in to create events.' });
       return;
     }
 
@@ -444,7 +438,6 @@ export default function CreateEventPage() {
                 onChange={handleImageChange}
                 hint="PNG or JPG — max 2 MB. Recommended: 1200×600 px"
                 multiple={false}
-                error={bannerError}
               />
             </div>
 

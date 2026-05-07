@@ -19,7 +19,10 @@ import {
   getStoredEventSurveyAvailability,
   setStoredEventSurveyAvailability,
 } from '../lib/eventSurveyAvailability';
-import type { EventRegistrationAnswerValue } from '../types/eventRegistrationForm.types';
+import type {
+  EventQuestionType,
+  EventRegistrationAnswerValue,
+} from '../types/eventRegistrationForm.types';
 import type { EventSurveyFormView } from '../api/firebase/survey.types';
 
 const EMPTY_SURVEY_FORMS: EventSurveyFormView[] = [];
@@ -30,7 +33,7 @@ interface StructuredSurveyAnswer {
   formVersion: number;
   questionId: string;
   questionLabel: string;
-  questionType: string;
+  questionType: EventQuestionType;
   order: number;
   required: boolean;
   value: EventRegistrationAnswerValue;
@@ -139,9 +142,28 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
   };
 
   const toggleCheckboxAnswer = (questionId: string, option: string) => {
+    const question = formQuestions.find((item) => item.id === questionId);
+    const selectedValues = Array.isArray(formAnswers[questionId]) ? formAnswers[questionId] : [];
+    const isAddingBeyondLimit =
+      question?.type === 'checkbox' &&
+      question.maxSelections !== null &&
+      !selectedValues.includes(option) &&
+      selectedValues.length >= question.maxSelections;
+
     setFormAnswers((current) => {
       const currentValues = Array.isArray(current[questionId]) ? current[questionId] : [];
-      const nextValues = currentValues.includes(option)
+      const isRemovingOption = currentValues.includes(option);
+
+      if (
+        !isRemovingOption &&
+        question?.type === 'checkbox' &&
+        question.maxSelections !== null &&
+        currentValues.length >= question.maxSelections
+      ) {
+        return current;
+      }
+
+      const nextValues = isRemovingOption
         ? currentValues.filter((value) => value !== option)
         : [...currentValues, option];
 
@@ -151,6 +173,15 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
       };
     });
     setQuestionErrors((current) => {
+      if (isAddingBeyondLimit && question?.maxSelections !== null) {
+        return {
+          ...current,
+          [questionId]: `Select up to ${question.maxSelections} option${
+            question.maxSelections === 1 ? '' : 's'
+          }.`,
+        };
+      }
+
       if (!current[questionId]) {
         return current;
       }
@@ -215,6 +246,13 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
         const hasInvalidOption = answer.value.some((value) => !question.options.includes(value));
         if (hasInvalidOption) {
           nextErrors[question.id] = 'Please choose only from the listed options.';
+          continue;
+        }
+
+        if (question.maxSelections !== null && answer.value.length > question.maxSelections) {
+          nextErrors[question.id] = `Select up to ${question.maxSelections} option${
+            question.maxSelections === 1 ? '' : 's'
+          }.`;
         }
       }
     }

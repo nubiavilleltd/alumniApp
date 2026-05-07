@@ -11,6 +11,9 @@ interface SearchInputProps extends Omit<React.InputHTMLAttributes<HTMLInputEleme
   onClear?: () => void;
   error?: string;
   hint?: string;
+  containerClassName?: string;
+  inputClassName?: string;
+  iconClassName?: string;
 }
 
 export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
@@ -27,6 +30,9 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
       error,
       hint,
       className = '',
+      containerClassName = '',
+      inputClassName = '',
+      iconClassName = '',
       disabled,
       ...rest
     },
@@ -62,14 +68,15 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
     // Show clear button if there's text and showClearButton is true
     const hasValue = value !== undefined && value !== null && String(value).length > 0;
     const shouldShowClear = showClearButton && hasValue && !showSearchButton;
+    const inputPaddingClassName = shouldShowClear ? 'pr-10' : showSearchButton ? 'pr-28' : 'pr-4';
 
     return (
       <div className={`flex flex-col gap-1 ${className}`}>
-        <div className="relative flex items-center">
+        <div className={`relative flex items-center ${containerClassName}`}>
           {/* Search icon */}
           <Icon
             icon="mdi:magnify"
-            className="absolute left-3 w-4 h-4 text-gray-400 pointer-events-none z-10"
+            className={`absolute left-3 w-4 h-4 text-gray-400 pointer-events-none z-10 ${iconClassName}`}
           />
 
           {/* Input */}
@@ -81,11 +88,13 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
             onKeyDown={handleKeyDown}
             disabled={disabled}
             className={`
-              w-full pl-9 pr-${shouldShowClear ? '10' : showSearchButton ? '28' : '4'} py-2 
+              w-full pl-9 py-2 
               rounded-full border bg-white text-sm placeholder-gray-400 
               outline-none transition-all shadow-sm
+              ${inputPaddingClassName}
               ${error ? 'border-red-400 focus:ring-2 focus:ring-red-100' : 'border-gray-200 focus:ring-2 focus:ring-primary-300'}
               ${disabled ? 'opacity-50 cursor-not-allowed bg-gray-50' : ''}
+              ${inputClassName}
             `}
             {...rest}
           />

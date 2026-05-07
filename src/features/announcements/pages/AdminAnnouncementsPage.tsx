@@ -5,6 +5,7 @@ import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { ButtonLink } from '@/shared/components/ui/Button';
 import { DatePicker } from '@/shared/components/ui/input/DatePicker';
 import { FormInput } from '@/shared/components/ui/input/FormInput';
+import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
 import { ImageUpload } from '@/shared/components/ui/ImageUpload';
@@ -317,7 +318,7 @@ function AnnouncementEditorModal({
           previews={imagePreviews}
           onChange={handleImageChange}
           multiple={false}
-          hint="PNG, JPG, WEBP or GIF up to 2MB"
+          hint="PNG, JPG, WEBP or GIF up to 2 MB"
         />
 
         {formError && (
@@ -448,17 +449,16 @@ export function AdminAnnouncementsPage() {
 
           <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-accent-100">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
-              <div className="relative flex-1">
-                <Icon
-                  icon="mdi:magnify"
-                  className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-accent-300"
-                />
-                <input
-                  type="text"
+              <div className="flex-1">
+                <label htmlFor="admin-announcements-search" className="sr-only">
+                  Search announcements by title or content
+                </label>
+                <SearchInput
+                  id="admin-announcements-search"
                   value={searchQuery}
-                  onChange={(event) => setSearchQuery(event.target.value)}
+                  onValueChange={setSearchQuery}
                   placeholder="Search by title or content..."
-                  className="w-full rounded-xl border border-accent-100 py-3 pl-10 pr-4 text-sm text-accent-800 outline-none transition-colors focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
+                  className="w-full"
                 />
               </div>
 

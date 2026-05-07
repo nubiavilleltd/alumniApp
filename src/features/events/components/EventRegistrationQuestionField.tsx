@@ -1,3 +1,5 @@
+import { SelectInput } from '@/shared/components/ui/SelectInput';
+import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
 import type {
   EventQuestionType,
   EventRegistrationAnswerValue,
@@ -10,6 +12,7 @@ interface RegistrationFieldQuestion {
   required: boolean;
   placeholder: string;
   options: string[];
+  maxSelections: number | null;
 }
 
 interface EventRegistrationQuestionFieldProps {
@@ -32,6 +35,8 @@ export function EventRegistrationQuestionField({
   onCheckboxToggle,
 }: EventRegistrationQuestionFieldProps) {
   const isPreview = mode === 'preview';
+  const selectedCheckboxValues = Array.isArray(value) ? value : [];
+  const dropdownOptions = question.options.map((option) => ({ label: option, value: option }));
   const sharedFieldClasses =
     'w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-700 outline-none transition-colors focus:border-primary-400';
 
@@ -46,13 +51,15 @@ export function EventRegistrationQuestionField({
         </div>
 
         {question.type === 'long_answer' ? (
-          <textarea
+          <TextareaInput
             rows={4}
             value={typeof value === 'string' ? value : ''}
             onChange={(event) => onValueChange?.(event.target.value)}
             placeholder={question.placeholder || 'Enter your answer'}
             readOnly={isPreview}
-            className={`${sharedFieldClasses} resize-none`}
+            showCounter={!isPreview}
+            className="gap-2"
+            textareaClassName={`${sharedFieldClasses} resize-none`}
           />
         ) : question.type === 'short_answer' ? (
           <input
@@ -64,18 +71,15 @@ export function EventRegistrationQuestionField({
             className={sharedFieldClasses}
           />
         ) : question.type === 'dropdown' ? (
-          <select
+          <SelectInput
             value={typeof value === 'string' ? value : ''}
             onChange={(event) => onValueChange?.(event.target.value)}
-            className={`${sharedFieldClasses} cursor-pointer`}
-          >
-            <option value="">Select an option</option>
-            {question.options.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
+            options={dropdownOptions}
+            placeholder="Select an option"
+            disabled={isPreview}
+            className="gap-0"
+            controlClassName="rounded-2xl px-4 py-3 pr-10 text-sm shadow-none"
+          />
         ) : question.type === 'multiple_choice' ? (
           <div className="space-y-2">
             {question.options.map((option) => (
@@ -98,18 +102,26 @@ export function EventRegistrationQuestionField({
         ) : (
           <div className="space-y-2">
             {question.options.map((option) => {
-              const selectedValues = Array.isArray(value) ? value : [];
+              const selectionLimitReached =
+                !selectedCheckboxValues.includes(option) &&
+                question.maxSelections !== null &&
+                selectedCheckboxValues.length >= question.maxSelections;
 
               return (
                 <label
                   key={option}
-                  className="flex cursor-pointer items-start gap-3 rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-700 transition-colors hover:bg-gray-50"
+                  className={`flex items-start gap-3 rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-700 transition-colors ${
+                    selectionLimitReached && !isPreview
+                      ? 'cursor-not-allowed opacity-60'
+                      : 'cursor-pointer hover:bg-gray-50'
+                  }`}
                 >
                   <input
                     type="checkbox"
                     value={option}
-                    checked={selectedValues.includes(option)}
+                    checked={selectedCheckboxValues.includes(option)}
                     onChange={() => onCheckboxToggle?.(option)}
+                    disabled={selectionLimitReached}
                     className="mt-0.5 h-4 w-4 rounded text-primary-500 focus:ring-primary-400"
                   />
                   <span>{option}</span>
@@ -118,6 +130,13 @@ export function EventRegistrationQuestionField({
             })}
           </div>
         )}
+
+        {question.type === 'checkbox' && question.maxSelections ? (
+          <p className="mt-2 text-xs font-medium text-gray-400">
+            Select up to {question.maxSelections}{' '}
+            {question.maxSelections === 1 ? 'option' : 'options'}.
+          </p>
+        ) : null}
 
         {error ? <p className="mt-2 text-xs font-medium text-red-500">{error}</p> : null}
       </div>

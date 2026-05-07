@@ -57,10 +57,16 @@ export function validateSurveyForm(input: ValidateSurveyFormInput) {
       const options = Array.isArray(rawQuestion.options)
         ? rawQuestion.options.map((option) => String(option).trim()).filter(Boolean)
         : [];
+      const rawMaxSelections = Number(rawQuestion.maxSelections);
 
       if (choiceQuestionTypes.has(type) && options.length < 2) {
         throw new HttpError(400, `Question "${label}" must have at least two options.`);
       }
+
+      const maxSelections =
+        type === 'checkbox' && Number.isFinite(rawMaxSelections) && rawMaxSelections >= 1
+          ? Math.min(Math.floor(rawMaxSelections), options.length)
+          : null;
 
       return {
         id: String(rawQuestion.id ?? `q${index + 1}`),
@@ -69,6 +75,7 @@ export function validateSurveyForm(input: ValidateSurveyFormInput) {
         required,
         placeholder,
         options,
+        maxSelections,
         order: Number.isFinite(order) ? order : index + 1,
       };
     })

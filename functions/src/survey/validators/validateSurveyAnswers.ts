@@ -16,11 +16,10 @@ function isMeaningfulValue(value: string | string[]) {
 
 function normalizeAnswerValue(
   rawValue: unknown,
-  questionType: ActiveSurveyFormView['questions'][number]['type'],
-  options: string[],
-  label: string,
-  required: boolean,
+  question: ActiveSurveyFormView['questions'][number],
 ) {
+  const { type: questionType, options, label, required, maxSelections } = question;
+
   if (questionType === 'checkbox') {
     if (!Array.isArray(rawValue)) {
       throw new HttpError(400, `Question "${label}" must be submitted as an array.`);
@@ -37,6 +36,15 @@ function normalizeAnswerValue(
         throw new HttpError(400, `Question "${label}" contains an invalid option.`);
       }
     });
+
+    if (maxSelections !== null && values.length > maxSelections) {
+      throw new HttpError(
+        400,
+        `Question "${label}" allows up to ${maxSelections} selection${
+          maxSelections === 1 ? '' : 's'
+        }.`,
+      );
+    }
 
     return values;
   }
@@ -119,13 +127,7 @@ export function validateSurveyAnswers(
         return;
       }
 
-      const normalizedValue = normalizeAnswerValue(
-        submittedAnswer.value,
-        question.type,
-        question.options,
-        question.label,
-        question.required,
-      );
+      const normalizedValue = normalizeAnswerValue(submittedAnswer.value, question);
 
       if (!isMeaningfulValue(normalizedValue)) {
         if (question.required) {

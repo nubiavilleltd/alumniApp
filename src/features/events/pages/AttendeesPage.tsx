@@ -142,6 +142,7 @@ function buildFallbackFormsFromRegistration(
         required: answer.required,
         placeholder: '',
         options: [],
+        maxSelections: null,
         order: answer.order,
         value: answer.value,
       })),
@@ -645,7 +646,6 @@ export default function AttendeesPage() {
             'Registration Date': formatRegisteredDateForExport(attendee.registeredAt),
             'Registration Time': formatRegisteredTimeForExport(attendee.registeredAt),
             'RSVP Status': attendee.status || 'going',
-            'Additional Info': detail?.registration.additionalInfo?.trim() ?? '',
           };
 
           resolvedForms.forEach((form: EventSurveySubmissionFormView) => {
@@ -660,6 +660,8 @@ export default function AttendeesPage() {
             });
           });
 
+          row['Additional Info'] = detail?.registration.additionalInfo?.trim() ?? '';
+
           return row;
         }),
       );
@@ -672,8 +674,8 @@ export default function AttendeesPage() {
         'Registration Date',
         'Registration Time',
         'RSVP Status',
-        'Additional Info',
         ...questionColumns,
+        'Additional Info',
       ];
 
       downloadCsvFile(

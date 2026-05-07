@@ -4,6 +4,8 @@ import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import Button from '@/shared/components/ui/Button';
+import { SearchInput } from '@/shared/components/ui/input/SearchInput';
+import { SelectInput } from '@/shared/components/ui/SelectInput';
 import { ROUTES } from '@/shared/constants/routes';
 import { ADMIN_ROUTES } from '@/features/admin/routes';
 import { useAllEvents } from '../hooks/useEvents';
@@ -303,39 +305,29 @@ export default function AdminEventsPage() {
             <>
               <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div className="flex flex-1 flex-col gap-4 sm:flex-row">
-                  <label className="relative block flex-1">
-                    <span className="sr-only">Search events</span>
-                    <Icon
-                      icon="mdi:magnify"
-                      className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-accent-300"
-                    />
-                    <input
-                      type="search"
+                  <div className="flex-1">
+                    <label htmlFor="admin-events-search" className="sr-only">
+                      Search events
+                    </label>
+                    <SearchInput
+                      id="admin-events-search"
                       value={searchTerm}
-                      onChange={(event) => setSearchTerm(event.target.value)}
+                      onValueChange={setSearchTerm}
                       placeholder="Search events"
-                      className="w-full rounded-full border border-white bg-white py-3 pl-12 pr-5 text-base text-accent-900 shadow-[0_10px_28px_rgba(15,23,42,0.06)] outline-none transition focus:border-primary-200 focus:ring-4 focus:ring-primary-100"
+                      className="w-full"
                     />
-                  </label>
+                  </div>
 
-                  <label className="relative block sm:w-44">
+                  <div className="sm:w-44">
                     <span className="sr-only">Filter events by month</span>
-                    <select
+                    <SelectInput
                       value={selectedMonth}
                       onChange={(event) => setSelectedMonth(event.target.value)}
-                      className="w-full appearance-none rounded-full border border-white bg-white px-5 py-3 pr-11 text-base font-semibold text-accent-600 shadow-[0_10px_28px_rgba(15,23,42,0.06)] outline-none transition focus:border-primary-200 focus:ring-4 focus:ring-primary-100"
-                    >
-                      {monthOptions.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
-                    <Icon
-                      icon="mdi:chevron-down"
-                      className="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-accent-400"
+                      options={monthOptions}
+                      className="gap-0"
+                      controlClassName="rounded-full border-white bg-white px-5 py-3 pr-11 text-base font-semibold text-accent-600 shadow-[0_10px_28px_rgba(15,23,42,0.06)] focus:border-primary-200 focus:ring-4 focus:ring-primary-100"
                     />
-                  </label>
+                  </div>
                 </div>
 
                 <AppLink

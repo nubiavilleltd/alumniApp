@@ -12,6 +12,7 @@ export type EventRegistrationQuestionDraft = {
   placeholder: string;
   required: boolean;
   options: string[];
+  maxSelections: number | null;
 };
 
 export type EventRegistrationFormDraft = {

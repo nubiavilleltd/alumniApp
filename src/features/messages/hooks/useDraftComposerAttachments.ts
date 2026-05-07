@@ -90,9 +90,35 @@ export function useDraftComposerAttachments() {
       );
     }
 
-    const nextAttachments = acceptedFiles.map((file) =>
-      buildDraftComposerAttachment(file, viewerMemberId),
-    );
+    const nextAttachments: DraftComposerAttachment[] = [];
+    let skippedFilesCount = 0;
+    let firstSkippedMessage = '';
+
+    acceptedFiles.forEach((file) => {
+      try {
+        nextAttachments.push(buildDraftComposerAttachment(file, viewerMemberId));
+      } catch (error) {
+        skippedFilesCount += 1;
+        if (!firstSkippedMessage) {
+          firstSkippedMessage =
+            error instanceof Error ? error.message : 'Unable to prepare this attachment.';
+        }
+      }
+    });
+
+    if (skippedFilesCount > 0) {
+      toast.error(
+        skippedFilesCount === 1
+          ? firstSkippedMessage
+          : `${firstSkippedMessage} ${skippedFilesCount - 1} more file${
+              skippedFilesCount - 1 === 1 ? ' was' : 's were'
+            } skipped.`,
+      );
+    }
+
+    if (nextAttachments.length === 0) {
+      return;
+    }
 
     setDraftAttachments((previous) => [...previous, ...nextAttachments]);
   }, []);

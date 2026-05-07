@@ -17,6 +17,7 @@ export interface Business {
   description: string;
   location: string;
   phone: string;
+  email?: string;
   website?: string;
   images: string[];
 }

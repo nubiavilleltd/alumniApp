@@ -16,6 +16,18 @@ export type {
 
 type DropPosition = 'before' | 'after';
 
+type FormValidationErrors = {
+  name?: string;
+  questions?: Record<
+    string,
+    {
+      label?: string;
+      options?: Record<number, string>;
+    }
+  >;
+  form?: string;
+};
+
 interface EventRegistrationFormBuilderModalProps {
   isOpen: boolean;
   value: EventRegistrationFormDraft | null;
@@ -27,12 +39,23 @@ const questionTypeOptions: Array<{
   value: EventQuestionType;
   label: string;
   icon: string;
+  description?: string;
 }> = [
   { value: 'short_answer', label: 'Short answer', icon: 'mdi:format-text' },
-  { value: 'long_answer', label: 'Long Answer', icon: 'mdi:text-box-outline' },
-  { value: 'multiple_choice', label: 'Multiple choice', icon: 'mdi:radiobox-marked' },
-  { value: 'checkbox', label: 'Check box', icon: 'mdi:checkbox-marked-outline' },
-  { value: 'dropdown', label: 'Drop down', icon: 'mdi:menu-down' },
+  { value: 'long_answer', label: 'Long answer', icon: 'mdi:text-box-outline' },
+  {
+    value: 'multiple_choice',
+    label: 'Multiple Choice',
+    description: '(single selections)',
+    icon: 'mdi:radiobox-marked',
+  },
+  {
+    value: 'checkbox',
+    label: 'Checkboxes',
+    description: '(multiple selections)',
+    icon: 'mdi:checkbox-marked-outline',
+  },
+  { value: 'dropdown', label: 'Dropdown', icon: 'mdi:chevron-down-circle-outline' },
 ];
 
 function createQuestionId() {
@@ -65,6 +88,39 @@ function isChoiceQuestion(type: EventQuestionType) {
   return type === 'multiple_choice' || type === 'checkbox' || type === 'dropdown';
 }
 
+function isDefaultOptionLabel(option: string, optionIndex: number) {
+  return option === `Option ${optionIndex + 1}`;
+}
+
+function normalizeQuestionOptions(type: EventQuestionType, options: unknown) {
+  if (!isChoiceQuestion(type)) {
+    return [];
+  }
+
+  const normalizedOptions = Array.isArray(options)
+    ? options.map((option) => String(option)).filter((option) => option.length > 0)
+    : [];
+
+  return normalizedOptions.length > 0 ? normalizedOptions : createDefaultOptions(type);
+}
+
+function normalizeMaxSelections(
+  rawValue: unknown,
+  type: EventQuestionType,
+  optionCount: number,
+): number | null {
+  if (type !== 'checkbox') {
+    return null;
+  }
+
+  const parsedValue = Number(rawValue);
+  if (!Number.isFinite(parsedValue) || parsedValue < 1 || optionCount < 1) {
+    return null;
+  }
+
+  return Math.min(Math.floor(parsedValue), optionCount);
+}
+
 function createEmptyQuestion(): EventRegistrationQuestionDraft {
   return {
     id: createQuestionId(),
@@ -73,6 +129,7 @@ function createEmptyQuestion(): EventRegistrationQuestionDraft {
     placeholder: getDefaultPlaceholder('short_answer'),
     required: false,
     options: [],
+    maxSelections: null,
   };
 }
 
@@ -87,6 +144,7 @@ function normalizeQuestion(
   question: Partial<EventRegistrationQuestionDraft>,
 ): EventRegistrationQuestionDraft {
   const type = question.type ?? 'short_answer';
+  const options = normalizeQuestionOptions(type, question.options);
 
   return {
     id: question.id ?? createQuestionId(),
@@ -94,7 +152,8 @@ function normalizeQuestion(
     type,
     placeholder: question.placeholder ?? getDefaultPlaceholder(type),
     required: Boolean(question.required),
-    options: Array.isArray(question.options) ? question.options : createDefaultOptions(type),
+    options,
+    maxSelections: normalizeMaxSelections(question.maxSelections, type, options.length),
   };
 }
 
@@ -134,8 +193,9 @@ export function EventRegistrationFormBuilderModal({
   onSave,
 }: EventRegistrationFormBuilderModalProps) {
   const [draft, setDraft] = useState<EventRegistrationFormDraft>(createInitialDraft);
-  const [formError, setFormError] = useState('');
+  const [validationErrors, setValidationErrors] = useState<FormValidationErrors>({});
   const [activeQuestionId, setActiveQuestionId] = useState<string | null>(null);
+  const [openQuestionTypeMenuId, setOpenQuestionTypeMenuId] = useState<string | null>(null);
   const [draggedQuestionId, setDraggedQuestionId] = useState<string | null>(null);
   const [dropIndicator, setDropIndicator] = useState<{
     questionId: string;
@@ -145,21 +205,22 @@ export function EventRegistrationFormBuilderModal({
   useEffect(() => {
     if (!isOpen) return;
 
-    setDraft(
-      value
-        ? {
-            name: value.name,
-            questions:
-              value.questions.length > 0
-                ? value.questions.map((question) => normalizeQuestion(question))
-                : [createEmptyQuestion()],
-          }
-        : createInitialDraft(),
-    );
-    setActiveQuestionId(value?.questions[0]?.id ?? null);
+    const nextDraft: EventRegistrationFormDraft = value
+      ? {
+          name: value.name,
+          questions:
+            value.questions.length > 0
+              ? value.questions.map((question) => normalizeQuestion(question))
+              : [createEmptyQuestion()],
+        }
+      : createInitialDraft();
+
+    setDraft(nextDraft);
+    setActiveQuestionId(nextDraft.questions[0]?.id ?? null);
+    setOpenQuestionTypeMenuId(null);
     setDraggedQuestionId(null);
     setDropIndicator(null);
-    setFormError('');
+    setValidationErrors({});
   }, [isOpen, value]);
 
   useEffect(() => {
@@ -171,7 +232,86 @@ export function EventRegistrationFormBuilderModal({
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    if (!openQuestionTypeMenuId) {
+      return;
+    }
+
+    const handlePointerDown = (event: MouseEvent) => {
+      if (!(event.target instanceof Element)) {
+        setOpenQuestionTypeMenuId(null);
+        return;
+      }
+
+      if (event.target.closest('[data-question-type-menu]')) {
+        return;
+      }
+
+      setOpenQuestionTypeMenuId(null);
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+    };
+  }, [openQuestionTypeMenuId]);
+
   if (!isOpen) return null;
+
+  const clearNameError = () => {
+    setValidationErrors((current) => ({
+      ...current,
+      name: undefined,
+    }));
+  };
+
+  const clearQuestionLabelError = (questionId: string) => {
+    setValidationErrors((current) => {
+      const nextQuestions = { ...current.questions };
+
+      if (nextQuestions[questionId]) {
+        nextQuestions[questionId] = {
+          ...nextQuestions[questionId],
+          label: undefined,
+        };
+      }
+
+      return {
+        ...current,
+        questions: nextQuestions,
+      };
+    });
+  };
+
+  const clearOptionError = (questionId: string, optionIndex: number) => {
+    setValidationErrors((current) => {
+      const nextQuestions = { ...current.questions };
+      const currentQuestionErrors = nextQuestions[questionId];
+
+      if (currentQuestionErrors?.options) {
+        const nextOptions = { ...currentQuestionErrors.options };
+        delete nextOptions[optionIndex];
+
+        nextQuestions[questionId] = {
+          ...currentQuestionErrors,
+          options: nextOptions,
+        };
+      }
+
+      return {
+        ...current,
+        form: undefined,
+        questions: nextQuestions,
+      };
+    });
+  };
+
+  const clearFormLevelError = () => {
+    setValidationErrors((current) => ({
+      ...current,
+      form: undefined,
+    }));
+  };
 
   const updateQuestion = (questionId: string, updates: Partial<EventRegistrationQuestionDraft>) => {
     setDraft((current) => ({
@@ -180,7 +320,10 @@ export function EventRegistrationFormBuilderModal({
         question.id === questionId ? { ...question, ...updates } : question,
       ),
     }));
-    setFormError('');
+
+    if ('label' in updates) {
+      clearQuestionLabelError(questionId);
+    }
   };
 
   const addQuestion = () => {
@@ -191,9 +334,10 @@ export function EventRegistrationFormBuilderModal({
       questions: [...current.questions, nextQuestion],
     }));
     setActiveQuestionId(nextQuestion.id);
+    setOpenQuestionTypeMenuId(null);
     setDraggedQuestionId(null);
     setDropIndicator(null);
-    setFormError('');
+    clearFormLevelError();
   };
 
   const removeQuestion = (questionId: string) => {
@@ -204,13 +348,26 @@ export function EventRegistrationFormBuilderModal({
       if (activeQuestionId === questionId) {
         setActiveQuestionId(remainingQuestions[0]?.id ?? null);
       }
+      if (openQuestionTypeMenuId === questionId) {
+        setOpenQuestionTypeMenuId(null);
+      }
 
       return {
         ...current,
         questions: remainingQuestions,
       };
     });
-    setFormError('');
+
+    setValidationErrors((current) => {
+      const nextQuestions = { ...current.questions };
+      delete nextQuestions[questionId];
+
+      return {
+        ...current,
+        form: undefined,
+        questions: nextQuestions,
+      };
+    });
   };
 
   const getDropPosition = (
@@ -273,7 +430,6 @@ export function EventRegistrationFormBuilderModal({
     }));
     setDraggedQuestionId(null);
     setDropIndicator(null);
-    setFormError('');
   };
 
   const handleDragLeave = (event: DragEvent<HTMLDivElement>, questionId: string) => {
@@ -291,13 +447,66 @@ export function EventRegistrationFormBuilderModal({
       questions: current.questions.map((question) => {
         if (question.id !== questionId) return question;
 
+        const nextOptionCount = question.options.length + 1;
         return {
           ...question,
           options: [...question.options, `Option ${question.options.length + 1}`],
+          maxSelections: normalizeMaxSelections(
+            question.maxSelections,
+            question.type,
+            nextOptionCount,
+          ),
         };
       }),
     }));
-    setFormError('');
+    clearFormLevelError();
+  };
+
+  const addOtherOption = (questionId: string) => {
+    setDraft((current) => ({
+      ...current,
+      questions: current.questions.map((question) => {
+        if (question.id !== questionId || question.type !== 'multiple_choice') {
+          return question;
+        }
+
+        const hasOtherOption = question.options.some(
+          (option) => option.trim().toLowerCase() === 'other',
+        );
+
+        if (hasOtherOption) {
+          return question;
+        }
+
+        return {
+          ...question,
+          options: [...question.options, 'Other'],
+        };
+      }),
+    }));
+    clearFormLevelError();
+  };
+
+  const clearDefaultOptionOnFocus = (questionId: string, optionIndex: number) => {
+    setDraft((current) => ({
+      ...current,
+      questions: current.questions.map((question) => {
+        if (question.id !== questionId) return question;
+
+        const option = question.options[optionIndex];
+
+        if (!isDefaultOptionLabel(option, optionIndex)) {
+          return question;
+        }
+
+        return {
+          ...question,
+          options: question.options.map((currentOption, index) =>
+            index === optionIndex ? '' : currentOption,
+          ),
+        };
+      }),
+    }));
   };
 
   const updateOption = (questionId: string, optionIndex: number, value: string) => {
@@ -314,7 +523,7 @@ export function EventRegistrationFormBuilderModal({
         };
       }),
     }));
-    setFormError('');
+    clearOptionError(questionId, optionIndex);
   };
 
   const removeOption = (questionId: string, optionIndex: number) => {
@@ -323,49 +532,167 @@ export function EventRegistrationFormBuilderModal({
       questions: current.questions.map((question) => {
         if (question.id !== questionId) return question;
 
+        const nextOptions = question.options.filter((_, index) => index !== optionIndex);
         if (question.options.length <= 2) return question;
 
         return {
           ...question,
-          options: question.options.filter((_, index) => index !== optionIndex),
+          options: nextOptions,
+          maxSelections: normalizeMaxSelections(
+            question.maxSelections,
+            question.type,
+            nextOptions.length,
+          ),
         };
       }),
     }));
-    setFormError('');
+    clearFormLevelError();
+  };
+
+  const updateQuestionType = (questionId: string, nextType: EventQuestionType) => {
+    setDraft((current) => ({
+      ...current,
+      questions: current.questions.map((question) => {
+        if (question.id !== questionId) {
+          return question;
+        }
+
+        const nextOptions = normalizeQuestionOptions(nextType, question.options);
+        return {
+          ...question,
+          type: nextType,
+          placeholder: getDefaultPlaceholder(nextType),
+          options: nextOptions,
+          maxSelections: normalizeMaxSelections(
+            question.maxSelections,
+            nextType,
+            nextOptions.length,
+          ),
+        };
+      }),
+    }));
+    setOpenQuestionTypeMenuId(null);
+    clearFormLevelError();
+  };
+
+  const updateMaxSelections = (questionId: string, rawValue: string) => {
+    setDraft((current) => ({
+      ...current,
+      questions: current.questions.map((question) => {
+        if (question.id !== questionId) {
+          return question;
+        }
+
+        return {
+          ...question,
+          maxSelections: normalizeMaxSelections(rawValue, question.type, question.options.length),
+        };
+      }),
+    }));
+  };
+
+  const validateDraft = (currentDraft: EventRegistrationFormDraft): FormValidationErrors => {
+    const nextErrors: FormValidationErrors = {};
+    const questionErrors: NonNullable<FormValidationErrors['questions']> = {};
+    const formMessages: string[] = [];
+
+    if (!currentDraft.name.trim()) {
+      nextErrors.name = 'Enter a section name.';
+    }
+
+    if (currentDraft.questions.length === 0) {
+      formMessages.push('Add at least one question.');
+    }
+
+    currentDraft.questions.forEach((question) => {
+      const currentQuestionErrors: {
+        label?: string;
+        options?: Record<number, string>;
+      } = {};
+
+      if (!question.label.trim()) {
+        currentQuestionErrors.label = 'Enter a question.';
+      }
+
+      if (isChoiceQuestion(question.type)) {
+        const optionErrors: Record<number, string> = {};
+        const trimmedOptions = question.options.map((option) => option.trim());
+
+        trimmedOptions.forEach((option, optionIndex) => {
+          if (!option) {
+            optionErrors[optionIndex] = 'Option cannot be empty.';
+          }
+        });
+
+        const usableOptions = trimmedOptions.filter(Boolean);
+
+        if (usableOptions.length < 2) {
+          formMessages.push(
+            `Question "${question.label.trim() || 'Untitled question'}" needs at least 2 filled options.`,
+          );
+        }
+
+        if (Object.keys(optionErrors).length > 0) {
+          currentQuestionErrors.options = optionErrors;
+        }
+      }
+
+      if (currentQuestionErrors.label || currentQuestionErrors.options) {
+        questionErrors[question.id] = currentQuestionErrors;
+      }
+    });
+
+    if (Object.keys(questionErrors).length > 0) {
+      nextErrors.questions = questionErrors;
+    }
+
+    if (formMessages.length > 0) {
+      nextErrors.form = formMessages.join(' ');
+    }
+
+    return nextErrors;
+  };
+
+  const hasValidationErrors = (errors: FormValidationErrors) => {
+    return Boolean(
+      errors.name || errors.form || (errors.questions && Object.keys(errors.questions).length > 0),
+    );
   };
 
   const handleSave = () => {
-    if (!draft.name.trim()) {
-      setFormError('Give this form a name before adding it to the event.');
-      return;
-    }
+    const errors = validateDraft(draft);
+    setValidationErrors(errors);
 
-    const emptyQuestion = draft.questions.find((question) => !question.label.trim());
-    if (emptyQuestion) {
-      setFormError('Each question needs a label.');
-      return;
-    }
+    if (hasValidationErrors(errors)) {
+      const firstInvalidQuestion = draft.questions.find((question) => {
+        const questionError = errors.questions?.[question.id];
+        return questionError?.label || questionError?.options;
+      });
 
-    const invalidChoiceQuestion = draft.questions.find((question) => {
-      if (!isChoiceQuestion(question.type)) return false;
+      if (firstInvalidQuestion) {
+        setActiveQuestionId(firstInvalidQuestion.id);
+      }
 
-      const usableOptions = question.options.map((option) => option.trim()).filter(Boolean);
-      return usableOptions.length < 2;
-    });
-
-    if (invalidChoiceQuestion) {
-      setFormError('Multiple choice, check box, and drop down questions need at least 2 options.');
       return;
     }
 
     onSave({
       name: draft.name.trim(),
-      questions: draft.questions.map((question) => ({
-        ...question,
-        label: question.label.trim(),
-        placeholder: question.placeholder.trim() || getDefaultPlaceholder(question.type),
-        options: question.options.map((option) => option.trim()).filter(Boolean),
-      })),
+      questions: draft.questions.map((question) => {
+        const trimmedOptions = question.options.map((option) => option.trim()).filter(Boolean);
+
+        return {
+          ...question,
+          label: question.label.trim(),
+          placeholder: question.placeholder.trim() || getDefaultPlaceholder(question.type),
+          options: trimmedOptions,
+          maxSelections: normalizeMaxSelections(
+            question.maxSelections,
+            question.type,
+            trimmedOptions.length,
+          ),
+        };
+      }),
     });
   };
 
@@ -389,17 +716,28 @@ export function EventRegistrationFormBuilderModal({
           </button>
         </div>
 
-        <div className="mt-1 rounded-[1.25rem] bg-[#f5f5f5] px-5 py-5">
-          <input
-            type="text"
-            value={draft.name}
-            onChange={(event) => {
-              setDraft((current) => ({ ...current, name: event.target.value }));
-              setFormError('');
-            }}
-            placeholder="Section name"
-            className="w-full border-0 bg-transparent text-2xl font-medium tracking-tight text-gray-500 outline-none placeholder:text-gray-500 sm:text-4xl"
-          />
+        <div>
+          <div
+            className={`mt-1 rounded-[1.15rem] border px-4 py-3 ${
+              validationErrors.name ? 'border-red-200 bg-red-50' : 'border-black/5 bg-[#f5f5f5]'
+            }`}
+          >
+            <input
+              type="text"
+              value={draft.name}
+              onChange={(event) => {
+                setDraft((current) => ({ ...current, name: event.target.value }));
+                clearNameError();
+              }}
+              placeholder="Section name"
+              aria-invalid={Boolean(validationErrors.name)}
+              className="w-full border-0 bg-transparent text-2xl font-medium tracking-tight text-gray-500 outline-none placeholder:text-gray-500 sm:text-2xl"
+            />
+          </div>
+
+          {validationErrors.name ? (
+            <p className="mt-2 px-2 text-sm font-medium text-red-600">{validationErrors.name}</p>
+          ) : null}
         </div>
 
         <div className="mt-6 space-y-4">
@@ -414,6 +752,11 @@ export function EventRegistrationFormBuilderModal({
               dropIndicator?.questionId === question.id && dropIndicator.position === 'before';
             const showDropAfter =
               dropIndicator?.questionId === question.id && dropIndicator.position === 'after';
+            const isQuestionTypeMenuOpen = openQuestionTypeMenuId === question.id;
+            const hasOtherOption = question.options.some(
+              (option) => option.trim().toLowerCase() === 'other',
+            );
+            const questionValidationErrors = validationErrors.questions?.[question.id];
 
             return (
               <div
@@ -421,7 +764,7 @@ export function EventRegistrationFormBuilderModal({
                 onDragOver={(event) => handleDragOver(event, question.id)}
                 onDragLeave={(event) => handleDragLeave(event, question.id)}
                 onDrop={(event) => handleDrop(event, question.id)}
-                className={`relative rounded-[1.5rem] transition-all ${
+                className={`relative rounded-[1rem] transition-all ${
                   showDropBefore
                     ? 'before:absolute before:-top-2 before:left-5 before:right-5 before:h-1 before:rounded-full before:bg-primary-500 before:content-[""]'
                     : ''
@@ -433,16 +776,20 @@ export function EventRegistrationFormBuilderModal({
               >
                 {!isEditing ? (
                   <div
-                    onClick={() => setActiveQuestionId(question.id)}
+                    onClick={() => {
+                      setActiveQuestionId(question.id);
+                      setOpenQuestionTypeMenuId(null);
+                    }}
                     onKeyDown={(event) => {
                       if (event.key === 'Enter' || event.key === ' ') {
                         event.preventDefault();
                         setActiveQuestionId(question.id);
+                        setOpenQuestionTypeMenuId(null);
                       }
                     }}
                     role="button"
                     tabIndex={0}
-                    className={`relative block w-full overflow-hidden rounded-[1.4rem] border border-sky-200 bg-white px-4 py-4 text-left shadow-sm transition-all hover:border-primary-300 hover:bg-primary-50/30 focus:outline-none focus:ring-2 focus:ring-primary-200 sm:px-6 ${
+                    className={`relative block w-full overflow-hidden rounded-[1.4rem] border border-sky-100 bg-white px-4 py-4 text-left shadow-[0_12px_32px_rgba(15,23,42,0.06)] transition-all hover:border-primary-200 hover:bg-primary-50/30 focus:outline-none focus:ring-2 focus:ring-primary-100 sm:px-6 ${
                       isDragging ? 'opacity-50' : ''
                     }`}
                   >
@@ -493,16 +840,20 @@ export function EventRegistrationFormBuilderModal({
 
                       <p className="text-sm text-gray-400">
                         {selectedType.label}
+                        {selectedType.description ? ` ${selectedType.description}` : ''}
                         {question.required ? ' • Required' : ' • Optional'}
                         {isChoiceQuestion(question.type)
                           ? ` • ${question.options.filter((option) => option.trim()).length} options`
+                          : ''}
+                        {question.type === 'checkbox' && question.maxSelections
+                          ? ` • Limit ${question.maxSelections}`
                           : ''}
                       </p>
                     </div>
                   </div>
                 ) : (
                   <div
-                    className={`relative overflow-hidden rounded-[1.5rem] border border-sky-200 bg-white px-4 py-4 shadow-sm transition-opacity sm:px-6 sm:py-5 ${
+                    className={`relative rounded-[1rem] border border-sky-100 bg-white px-4 py-4 shadow-[0_12px_32px_rgba(15,23,42,0.06)] transition-opacity sm:px-6 sm:py-5 ${
                       isDragging ? 'opacity-50' : ''
                     }`}
                   >
@@ -523,19 +874,32 @@ export function EventRegistrationFormBuilderModal({
 
                     <div className="flex flex-col gap-3 md:flex-row md:items-start">
                       <div className="min-w-0 flex-1 space-y-4">
-                        <div className="rounded-[1rem] bg-[#f5f5f5] px-4 py-3 shadow-[inset_0_-3px_0_0_#9333ea]">
-                          <input
-                            type="text"
-                            value={question.label}
-                            onChange={(event) =>
-                              updateQuestion(question.id, { label: event.target.value })
-                            }
-                            placeholder={`Question ${index + 1}`}
-                            className="w-full border-0 bg-transparent text-xl font-medium text-gray-500 outline-none placeholder:text-gray-500"
-                          />
+                        <div>
+                          <div
+                            className={`rounded-[0.95rem] px-4 py-3 shadow-[inset_0_-2px_0_0_#9333ea] ${
+                              questionValidationErrors?.label ? 'bg-red-50' : 'bg-[#f5f5f5]'
+                            }`}
+                          >
+                            <input
+                              type="text"
+                              value={question.label}
+                              onChange={(event) =>
+                                updateQuestion(question.id, { label: event.target.value })
+                              }
+                              placeholder={`Question ${index + 1}`}
+                              aria-invalid={Boolean(questionValidationErrors?.label)}
+                              className="w-full border-0 bg-transparent text-xl font-medium text-gray-500 outline-none placeholder:text-gray-500"
+                            />
+                          </div>
+
+                          {questionValidationErrors?.label ? (
+                            <p className="mt-2 px-2 text-sm font-medium text-red-600">
+                              {questionValidationErrors.label}
+                            </p>
+                          ) : null}
                         </div>
 
-                        <div className="rounded-[1rem] bg-[#f8f7f4] px-4 py-3">
+                        <div className="rounded-[0.85rem] bg-[#f8f7f4] px-4 py-3">
                           {question.type === 'long_answer' ? (
                             <textarea
                               rows={2}
@@ -553,87 +917,203 @@ export function EventRegistrationFormBuilderModal({
                               className="w-full border-0 bg-transparent text-base text-gray-400 outline-none placeholder:text-gray-400"
                             />
                           ) : (
-                            <div className="space-y-2">
-                              {question.options.map((option, optionIndex) => (
-                                <div
-                                  key={`${question.id}-option-${optionIndex}`}
-                                  className="flex items-center gap-3"
-                                >
-                                  <span className="flex h-5 w-5 items-center justify-center text-gray-400">
-                                    <Icon
-                                      icon={
-                                        question.type === 'multiple_choice'
-                                          ? 'mdi:radiobox-blank'
-                                          : question.type === 'checkbox'
-                                            ? 'mdi:checkbox-blank-outline'
-                                            : 'mdi:menu-down'
-                                      }
-                                      className="h-5 w-5"
-                                    />
-                                  </span>
-                                  <input
-                                    type="text"
-                                    value={option}
-                                    onChange={(event) =>
-                                      updateOption(question.id, optionIndex, event.target.value)
-                                    }
-                                    placeholder={`Option ${optionIndex + 1}`}
-                                    className="flex-1 border-0 bg-transparent text-base text-gray-500 outline-none placeholder:text-gray-400"
-                                  />
-                                  <button
-                                    type="button"
-                                    onClick={() => removeOption(question.id, optionIndex)}
-                                    disabled={question.options.length <= 2}
-                                    className="inline-flex h-8 w-8 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-35"
-                                    aria-label={`Remove option ${optionIndex + 1}`}
-                                  >
-                                    <Icon icon="mdi:close" className="h-4 w-4" />
-                                  </button>
-                                </div>
-                              ))}
+                            <div className="space-y-3">
+                              {question.options.map((option, optionIndex) => {
+                                const optionValidationError =
+                                  questionValidationErrors?.options?.[optionIndex];
 
-                              <button
-                                type="button"
-                                onClick={() => addOption(question.id)}
-                                className="inline-flex items-center gap-2 rounded-full bg-primary-50 px-3 py-1.5 text-sm font-semibold text-primary-600 transition-colors hover:bg-primary-100"
-                              >
-                                <Icon icon="mdi:plus" className="h-4 w-4" />
-                                Add option
-                              </button>
+                                return (
+                                  <div
+                                    key={`${question.id}-option-${optionIndex}`}
+                                    className="flex items-start gap-3"
+                                  >
+                                    <span className="mt-3 flex h-5 w-5 items-center justify-center text-gray-400">
+                                      <Icon
+                                        icon={
+                                          question.type === 'multiple_choice'
+                                            ? 'mdi:radiobox-blank'
+                                            : question.type === 'checkbox'
+                                              ? 'mdi:checkbox-blank-outline'
+                                              : 'mdi:menu-down'
+                                        }
+                                        className="h-5 w-5"
+                                      />
+                                    </span>
+
+                                    <div className="flex-1">
+                                      <div
+                                        className={`rounded-[0.9rem] px-4 py-3 ${
+                                          optionValidationError
+                                            ? 'bg-red-50 ring-1 ring-red-200'
+                                            : 'bg-white/70'
+                                        }`}
+                                      >
+                                        <input
+                                          type="text"
+                                          value={option}
+                                          onFocus={() =>
+                                            clearDefaultOptionOnFocus(question.id, optionIndex)
+                                          }
+                                          onChange={(event) =>
+                                            updateOption(
+                                              question.id,
+                                              optionIndex,
+                                              event.target.value,
+                                            )
+                                          }
+                                          placeholder={`Option ${optionIndex + 1}`}
+                                          aria-invalid={Boolean(optionValidationError)}
+                                          className="w-full border-0 bg-transparent text-base text-gray-500 outline-none placeholder:text-gray-400"
+                                        />
+                                      </div>
+
+                                      {optionValidationError ? (
+                                        <p className="mt-1 px-2 text-sm font-medium text-red-600">
+                                          {optionValidationError}
+                                        </p>
+                                      ) : null}
+                                    </div>
+
+                                    <button
+                                      type="button"
+                                      onClick={() => removeOption(question.id, optionIndex)}
+                                      disabled={question.options.length <= 2}
+                                      className="mt-2 inline-flex h-8 w-8 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-35"
+                                      aria-label={`Remove option ${optionIndex + 1}`}
+                                    >
+                                      <Icon icon="mdi:close" className="h-4 w-4" />
+                                    </button>
+                                  </div>
+                                );
+                              })}
+
+                              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-1 text-sm font-semibold text-primary-600">
+                                <button
+                                  type="button"
+                                  onClick={() => addOption(question.id)}
+                                  className="inline-flex items-center gap-2 transition-colors hover:text-primary-700"
+                                >
+                                  <Icon icon="mdi:plus" className="h-4 w-4" />
+                                  Add option
+                                </button>
+                                {question.type === 'multiple_choice' ? (
+                                  <>
+                                    <span className="text-gray-400">or</span>
+                                    <button
+                                      type="button"
+                                      onClick={() => addOtherOption(question.id)}
+                                      disabled={hasOtherOption}
+                                      className="inline-flex items-center gap-2 transition-colors hover:text-primary-700 disabled:cursor-not-allowed disabled:text-gray-400"
+                                    >
+                                      Add "Other" option
+                                    </button>
+                                  </>
+                                ) : null}
+                              </div>
+
+                              {question.type === 'checkbox' ? (
+                                <div className="rounded-[0.9rem] border border-sky-100 bg-white px-4 py-3">
+                                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                    <div>
+                                      <p className="text-sm font-semibold text-gray-500">
+                                        Selection limit
+                                      </p>
+                                      <p className="mt-1 text-sm text-gray-400">
+                                        Leave blank to allow any number of selections.
+                                      </p>
+                                    </div>
+                                    <input
+                                      type="number"
+                                      min={1}
+                                      max={question.options.length}
+                                      value={question.maxSelections ?? ''}
+                                      onChange={(event) =>
+                                        updateMaxSelections(question.id, event.target.value)
+                                      }
+                                      placeholder="No limit"
+                                      className="w-full rounded-[0.8rem] border border-sky-100 bg-[#f8f7f4] px-4 py-2.5 text-base text-gray-500 outline-none transition-colors focus:border-primary-300 sm:max-w-[11rem]"
+                                    />
+                                  </div>
+                                </div>
+                              ) : null}
                             </div>
                           )}
                         </div>
                       </div>
 
-                      <label className="w-full rounded-[1rem] border border-sky-200 bg-white px-4 py-3 md:w-[18rem] md:flex-none">
-                        <span className="sr-only">Question type</span>
-                        <div className="flex items-center gap-3">
-                          <Icon icon={selectedType.icon} className="h-6 w-6 text-gray-500" />
-                          <select
-                            value={question.type}
-                            onChange={(event) => {
-                              const nextType = event.target.value as EventQuestionType;
-                              updateQuestion(question.id, {
-                                type: nextType,
-                                placeholder: getDefaultPlaceholder(nextType),
-                                options: isChoiceQuestion(nextType)
-                                  ? question.options.length > 0
-                                    ? question.options
-                                    : createDefaultOptions(nextType)
-                                  : [],
-                              });
-                            }}
-                            className="w-full appearance-none border-0 bg-transparent text-lg font-semibold text-gray-500 outline-none"
-                          >
-                            {questionTypeOptions.map((option) => (
-                              <option key={option.value} value={option.value}>
-                                {option.label}
-                              </option>
-                            ))}
-                          </select>
-                          <Icon icon="mdi:chevron-down" className="h-6 w-6 text-gray-400" />
-                        </div>
-                      </label>
+                      <div
+                        className="relative w-full md:w-[17.5rem] md:flex-none"
+                        data-question-type-menu
+                      >
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setOpenQuestionTypeMenuId((current) =>
+                              current === question.id ? null : question.id,
+                            )
+                          }
+                          className="flex w-full items-center gap-2.5 rounded-[0.95rem] border border-sky-100 bg-white px-3.5 py-3 text-left shadow-[0_10px_24px_rgba(15,23,42,0.03)] transition-colors hover:border-primary-200"
+                          aria-expanded={isQuestionTypeMenuOpen}
+                          aria-haspopup="listbox"
+                        >
+                          <Icon
+                            icon={selectedType.icon}
+                            className="h-5 w-5 shrink-0 text-gray-500"
+                          />
+                          <span className="min-w-0 flex-1">
+                            <span className="block text-base font-semibold leading-tight text-gray-500">
+                              {selectedType.label}
+                            </span>
+                            {selectedType.description ? (
+                              <span className="mt-0.5 block text-sm leading-tight text-gray-400">
+                                {selectedType.description}
+                              </span>
+                            ) : null}
+                          </span>
+                          <Icon
+                            icon="mdi:chevron-down"
+                            className={`h-6 w-6 shrink-0 text-gray-400 transition-transform ${
+                              isQuestionTypeMenuOpen ? 'rotate-180' : ''
+                            }`}
+                          />
+                        </button>
+
+                        {isQuestionTypeMenuOpen ? (
+                          <div className="absolute left-0 right-0 top-[calc(100%+0.6rem)] z-20 rounded-[1.2rem] border border-sky-100 bg-white p-2 shadow-[0_22px_50px_rgba(15,23,42,0.14)]">
+                            {questionTypeOptions.map((option) => {
+                              const isSelected = option.value === question.type;
+
+                              return (
+                                <button
+                                  key={option.value}
+                                  type="button"
+                                  onClick={() => updateQuestionType(question.id, option.value)}
+                                  className={`flex w-full items-start gap-2.5 rounded-[0.95rem] px-3 py-2.5 text-left transition-colors ${
+                                    isSelected ? 'bg-primary-50/60' : 'hover:bg-primary-50/40'
+                                  }`}
+                                  role="option"
+                                  aria-selected={isSelected}
+                                >
+                                  <Icon
+                                    icon={option.icon}
+                                    className="mt-0.5 h-5 w-5 shrink-0 text-gray-500"
+                                  />
+                                  <span className="min-w-0">
+                                    <span className="block text-base font-semibold leading-tight text-gray-500">
+                                      {option.label}
+                                    </span>
+                                    {option.description ? (
+                                      <span className="mt-0.5 block text-sm leading-tight text-gray-400">
+                                        {option.description}
+                                      </span>
+                                    ) : null}
+                                  </span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        ) : null}
+                      </div>
                     </div>
 
                     <div className="mt-5 border-t border-gray-200 pt-4">
@@ -683,21 +1163,21 @@ export function EventRegistrationFormBuilderModal({
           <button
             type="button"
             onClick={addQuestion}
-            className="inline-flex items-center gap-2 rounded-full border-2 border-primary-500 px-5 py-2.5 text-lg font-semibold text-primary-500 transition-colors hover:bg-primary-50"
+            className="inline-flex items-center gap-2 rounded-full border-2 border-primary-500 px-2 py-1 text-md font-semibold text-primary-500 transition-colors hover:bg-primary-50"
           >
-            <Icon icon="mdi:plus" className="h-6 w-6" />
+            <Icon icon="mdi:plus" className="h-4 w-4" />
             Add new question
           </button>
         </div>
 
-        {formError ? (
-          <div className="mt-6 rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-600">
-            {formError}
+        {validationErrors.form ? (
+          <div className="mt-6 rounded-2xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+            {validationErrors.form}
           </div>
         ) : null}
 
         <div className="mt-8 flex justify-center">
-          <Button type="button" size="lg" className="min-w-[16rem]" onClick={handleSave}>
+          <Button type="button" size="md" className="min-w-[12rem]" onClick={handleSave}>
             Add to Event
           </Button>
         </div>

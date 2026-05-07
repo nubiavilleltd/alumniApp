@@ -11,7 +11,20 @@ import { useIdentityStore } from '@/features/authentication/stores/useIdentitySt
 import { useJobVacancies } from '../hooks/useJobVacancies';
 import { useDeleteVacancy } from '../hooks/useManageVacancy';
 import type { JobVacancyViewModel } from '../api/adapters';
-import { getTone, JobCard, JobsLoadingState, PostJobModal } from './JobVacanciesPage';
+import {
+  getTone,
+  JobCard,
+  JobsLoadingState,
+  jobsGridClassName,
+  jobCardMiniActionClassName,
+  jobCardMiniActionDangerClassName,
+  jobsPageHeaderClassName,
+  jobsPagePostButtonClassName,
+  jobsPageShellClassName,
+  jobsPageSubtitleClassName,
+  jobsPageTitleClassName,
+  PostJobModal,
+} from './JobVacanciesPage';
 
 function useCurrentOwnerIds() {
   const user = useIdentityStore((state) => state.user);
@@ -73,18 +86,22 @@ export default function MyJobPostsPage() {
         description="Manage the job vacancies you shared with the FGGC Owerri Alumnae Association."
       />
 
-      <main className="jobs-page">
-        <section className="jobs-page__shell" aria-labelledby="my-job-posts-title">
-          <header className="jobs-page__header">
+      <main className="min-h-full bg-[#f8f8f7] text-[#071116]">
+        <section className={jobsPageShellClassName} aria-labelledby="my-job-posts-title">
+          <header className={jobsPageHeaderClassName}>
             <div>
-              <h1 id="my-job-posts-title">My Job Posts</h1>
-              <p>Manage the job vacancies you shared with the community.</p>
+              <h1 id="my-job-posts-title" className={jobsPageTitleClassName}>
+                My Job Posts
+              </h1>
+              <p className={jobsPageSubtitleClassName}>
+                Manage the job vacancies you shared with the community.
+              </p>
             </div>
 
             <Button
               type="button"
               size="lg"
-              className="jobs-page__post-button"
+              className={jobsPagePostButtonClassName}
               onClick={() => setIsPostModalOpen(true)}
             >
               Post a Job
@@ -125,7 +142,7 @@ export default function MyJobPostsPage() {
           ) : null}
 
           {!isLoading && !isError && myVacancies.length > 0 ? (
-            <div className="jobs-grid">
+            <div className={jobsGridClassName}>
               {myVacancies.map((job, index) => (
                 <JobCard
                   key={job.id}
@@ -136,14 +153,14 @@ export default function MyJobPostsPage() {
                     <>
                       <button
                         type="button"
-                        className="job-card__mini-action"
+                        className={jobCardMiniActionClassName}
                         onClick={() => handleEditJob(job)}
                       >
                         Edit
                       </button>
                       <button
                         type="button"
-                        className="job-card__mini-action job-card__mini-action--danger"
+                        className={`${jobCardMiniActionClassName} ${jobCardMiniActionDangerClassName}`}
                         onClick={() => setJobToDelete(job)}
                       >
                         Delete

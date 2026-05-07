@@ -19,6 +19,7 @@ import { USER_ROUTES } from '../routes';
 import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 import { usePendingVouches, useApproveVouch, useRejectVouch } from '../hooks/useVoucher';
 import type { PendingVouch } from '../api/voucherApi';
+import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
 
 // ─── Profile completeness checklist ──────────────────────────────────────────
 
@@ -213,12 +214,13 @@ function AttestationRow({
           <label className="text-xs font-medium text-gray-700">
             Reason <span className="text-gray-400 font-normal">(optional)</span>
           </label>
-          <textarea
+          <TextareaInput
             rows={2}
             value={rejectReason}
             onChange={(e) => setRejectReason(e.target.value)}
             placeholder="e.g. I do not recognise this person as an alumna of FGGC."
-            className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm placeholder:text-gray-400 focus:border-primary-400 focus:outline-none focus:ring-1 focus:ring-primary-200 resize-none"
+            className="gap-2"
+            textareaClassName="rounded-xl border-gray-200 bg-gray-50 px-3 py-2 text-sm shadow-none placeholder:text-gray-400 focus:border-primary-400 focus:ring-1 focus:ring-primary-200 resize-none"
           />
           <div className="flex gap-2">
             <button

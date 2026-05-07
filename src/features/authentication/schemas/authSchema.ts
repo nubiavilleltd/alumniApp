@@ -53,7 +53,7 @@ export const registerDetailsSchema = z
       .trim()
       .min(3, 'Maiden name must be at least 3 characters')
       .max(80, 'Maiden name must be 80 characters or less')
-      .regex(/^[A-Za-z][A-Za-z\s'.-]*$/, 'Please enter a valid name'),
+      .regex(/^[A-Za-z][A-Za-z\s'.-]*$/, 'Please enter a valid maiden name'),
 
     email: z.string().trim().email('Please enter a valid email address'),
     state: z.string().refine((val) => NIGERIA_STATES.includes(val as any), {

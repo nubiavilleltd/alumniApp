@@ -1,8 +1,9 @@
 import { useNavigate } from 'react-router-dom';
-import { toast } from '@/shared/components/ui/Toast';
 import { registerMessageRecipient } from '../lib/messageRecipientRegistry';
 import { useCreateDirectMessageThread } from './useMessages';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
+import { useRequireSignIn } from '@/features/authentication/hooks/useRequireSignIn';
+import { toast } from '@/shared/components/ui/Toast';
 
 interface DirectConversationRecipientProfile {
   fullName: string;
@@ -51,6 +52,7 @@ export function useStartDirectConversation() {
   const navigate = useNavigate();
   const currentUser = useIdentityStore((state) => state.user);
   const createDirectThread = useCreateDirectMessageThread();
+  const requireSignIn = useRequireSignIn();
 
   async function startDirectConversation(params: StartDirectConversationParams) {
     if (!params.participantMemberId) return;
@@ -65,11 +67,9 @@ export function useStartDirectConversation() {
     }
 
     if (!currentUser?.memberId) {
-      navigate('/auth/login', {
-        state: {
-          from: buildMessagesIntent(params),
-          loginNotice: 'Log in to start a conversation.',
-        },
+      requireSignIn({
+        message: 'Log in to start a conversation.',
+        from: buildMessagesIntent(params),
       });
       return;
     }

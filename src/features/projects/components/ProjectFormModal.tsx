@@ -290,10 +290,10 @@ export function ProjectFormModal({ isOpen, onClose, editData }: ProjectFormModal
 
         <ImageUpload
           label="Images"
-          hint="jpg, png, gif, webp — max 5 MB each"
+          hint="jpg, jpeg, png, svg, gif, webp — max 2 MB each"
           previews={allPreviews}
           onChange={handleImages}
-          accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+          accept=".jpg,.jpeg,.png,.svg,image/jpeg,image/png,image/svg+xml,image/gif,image/webp"
           multiple
         />
 

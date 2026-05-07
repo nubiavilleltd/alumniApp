@@ -34,6 +34,7 @@ import { useAlumni } from '@/features/alumni/hooks/useAlumni';
 import type { Alumni } from '@/features/alumni/types/alumni.types';
 import { Avatar } from '@/shared/components/ui/Avatar';
 import { SearchInput } from '@/shared/components/ui/input/SearchInput';
+import { SelectInput } from '@/shared/components/ui/SelectInput';
 
 const breadcrumbItems = [
   { label: 'Home', href: ROUTES.HOME },
@@ -188,22 +189,16 @@ function ChangeRoleModal({
         {/* Form */}
         <form onSubmit={handleSubmit}>
           <div className="mb-6">
-            <label className="block text-sm font-semibold text-gray-700 mb-2">New Role</label>
-            <select
+            <SelectInput
+              label="New Role"
               value={selectedRole}
               onChange={(e) => setSelectedRole(e.target.value as UserRole)}
+              options={roleOptions}
               disabled={isBusy}
-              className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {roleOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-            <p className="mt-2 text-xs text-gray-500">
-              This will change the user's role and permissions immediately.
-            </p>
+              hint="This will change the user's role and permissions immediately."
+              controlClassName="rounded-lg px-4 py-2.5 pr-10 text-sm shadow-none"
+              className="gap-2"
+            />
           </div>
 
           {/* Actions */}

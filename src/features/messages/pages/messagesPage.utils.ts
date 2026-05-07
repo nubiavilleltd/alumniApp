@@ -1,4 +1,5 @@
 import {
+  assertValidMessageAttachmentUploadRequest,
   buildFileAttachmentUploadRequest,
   describeAttachmentForPreview,
   formatBytes,
@@ -114,6 +115,7 @@ export function buildDraftComposerAttachment(
   viewerMemberId: string,
 ): DraftComposerAttachment {
   const uploadRequest = buildFileAttachmentUploadRequest(file, viewerMemberId);
+  assertValidMessageAttachmentUploadRequest(uploadRequest);
   const previewUrl = file.type.startsWith('image/') ? URL.createObjectURL(file) : undefined;
 
   return {

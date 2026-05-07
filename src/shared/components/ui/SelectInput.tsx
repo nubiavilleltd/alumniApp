@@ -15,6 +15,7 @@ interface SelectInputProps extends Omit<
   hint?: string;
   options: readonly SelectOption[];
   placeholder?: string;
+  controlClassName?: string;
   onChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   onBlur?: (event: React.FocusEvent<HTMLSelectElement>) => void;
 }
@@ -27,6 +28,7 @@ export const SelectInput = forwardRef<HTMLSelectElement, SelectInputProps>(
       hint,
       options,
       placeholder = 'Select an option',
+      controlClassName = '',
       id,
       name,
       required,
@@ -291,6 +293,7 @@ export const SelectInput = forwardRef<HTMLSelectElement, SelectInputProps>(
               ${error ? 'border-red-400 focus:border-red-400 focus:ring-2 focus:ring-red-100' : 'border-gray-200 focus:border-primary-400 focus:ring-2 focus:ring-primary-100'}
               ${disabled ? 'opacity-50 bg-gray-50 cursor-not-allowed' : 'bg-white cursor-pointer hover:border-gray-300'}
               ${isOpen ? 'border-primary-400 ring-2 ring-primary-100' : ''}
+              ${controlClassName}
             `}
           >
             <span className={displayLabel ? 'text-gray-700' : 'text-gray-400'}>

@@ -9,6 +9,7 @@ import {
   useState,
   type CSSProperties,
   type ChangeEvent,
+  type DragEvent as ReactDragEvent,
   type KeyboardEvent,
   type PointerEvent as ReactPointerEvent,
 } from 'react';
@@ -24,6 +25,7 @@ import {
   buildVoiceNoteUploadRequest,
   filterMessageThreads,
   isGraduationYearGroupThread,
+  MESSAGE_MAX_BODY_LENGTH,
 } from '../api/adapters/messages.adapter';
 import { useDraftComposerAttachments } from '../hooks/useDraftComposerAttachments';
 import { usePullToRefresh } from '../hooks/usePullToRefresh';
@@ -105,6 +107,7 @@ export function MessagesPage() {
     null,
   );
   const [highlightedMessageId, setHighlightedMessageId] = useState<string | null>(null);
+  const [isAttachmentDropActive, setIsAttachmentDropActive] = useState(false);
   const [voiceRecordingState, setVoiceRecordingState] = useState<
     'idle' | 'starting' | 'recording' | 'finishing'
   >('idle');
@@ -830,8 +833,67 @@ export function MessagesPage() {
     const files = Array.from(event.target.files ?? []);
     event.target.value = '';
 
+    handleSelectedFiles(files);
+  }
+
+  function handleSelectedFiles(files: File[]) {
     if (!viewerMemberId || !activeThread || files.length === 0) return;
+
     addFilesToDraft(files, viewerMemberId);
+  }
+
+  function isDraggingFiles(event: ReactDragEvent<HTMLDivElement>) {
+    return Array.from(event.dataTransfer.types).includes('Files');
+  }
+
+  function handleAttachmentDragEnter(event: ReactDragEvent<HTMLDivElement>) {
+    if (attachmentsDisabled || !isDraggingFiles(event)) {
+      return;
+    }
+
+    event.preventDefault();
+    setIsAttachmentDropActive(true);
+  }
+
+  function handleAttachmentDragOver(event: ReactDragEvent<HTMLDivElement>) {
+    if (attachmentsDisabled || !isDraggingFiles(event)) {
+      return;
+    }
+
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'copy';
+    if (!isAttachmentDropActive) {
+      setIsAttachmentDropActive(true);
+    }
+  }
+
+  function handleAttachmentDragLeave(event: ReactDragEvent<HTMLDivElement>) {
+    if (!isDraggingFiles(event)) {
+      return;
+    }
+
+    event.preventDefault();
+    const nextTarget = event.relatedTarget;
+    if (nextTarget instanceof Node && event.currentTarget.contains(nextTarget)) {
+      return;
+    }
+
+    setIsAttachmentDropActive(false);
+  }
+
+  function handleAttachmentDrop(event: ReactDragEvent<HTMLDivElement>) {
+    if (!isDraggingFiles(event)) {
+      return;
+    }
+
+    event.preventDefault();
+    setIsAttachmentDropActive(false);
+
+    if (attachmentsDisabled) {
+      return;
+    }
+
+    handleSelectedFiles(Array.from(event.dataTransfer.files ?? []));
   }
 
   async function handleCopyMessage(message: MessageItem) {
@@ -1071,11 +1133,19 @@ export function MessagesPage() {
       : voiceRecordingBusy
         ? 'Release to finish recording.'
         : 'Hold to record a voice note.';
+  const draftMessageLength = draftMessage.length;
+  const isDraftMessageNearLimit = draftMessageLength / MESSAGE_MAX_BODY_LENGTH >= 0.85;
   const canSend =
     !!activeThread &&
     !sendMessage.isPending &&
     !voiceRecordingBusy &&
     (draftMessage.trim().length > 0 || draftAttachments.length > 0);
+
+  useEffect(() => {
+    if (attachmentsDisabled || !activeThread) {
+      setIsAttachmentDropActive(false);
+    }
+  }, [activeThread, attachmentsDisabled]);
 
   function getSidebarDeliveryState(thread: MessageThreadSummary) {
     if (activeThreadWithOptimisticMessages?.id === thread.id) {
@@ -1501,7 +1571,22 @@ export function MessagesPage() {
                       onChange={handleFileSelection}
                     />
 
-                    <div className="flex max-h-[min(12.5rem,24vh)] flex-col rounded-2xl border border-gray-200 bg-gray-50">
+                    <div
+                      onDragEnter={handleAttachmentDragEnter}
+                      onDragOver={handleAttachmentDragOver}
+                      onDragLeave={handleAttachmentDragLeave}
+                      onDrop={handleAttachmentDrop}
+                      className={`flex max-h-[min(12.5rem,24vh)] flex-col rounded-2xl border bg-gray-50 transition-colors ${
+                        isAttachmentDropActive
+                          ? 'border-primary-400 bg-primary-50/70 ring-2 ring-primary-100'
+                          : 'border-gray-200'
+                      }`}
+                    >
+                      {isAttachmentDropActive ? (
+                        <div className="shrink-0 border-b border-primary-100 px-4 py-2 text-xs font-semibold tracking-[0.01em] text-primary-600">
+                          Drop files here to attach them
+                        </div>
+                      ) : null}
                       <div className="min-h-0 overflow-y-auto px-4 pt-2">
                         {replyTarget ? (
                           <ReplyPreviewCard
@@ -1547,6 +1632,7 @@ export function MessagesPage() {
                           onChange={(event) => setDraftMessage(event.target.value)}
                           onKeyDown={handleComposerKeyDown}
                           disabled={composerDisabled}
+                          maxLength={MESSAGE_MAX_BODY_LENGTH}
                           rows={1}
                           placeholder={
                             activeThread
@@ -1612,19 +1698,33 @@ export function MessagesPage() {
                             </div>
                           </div>
 
-                          {/* Send button */}
-                          <button
-                            type="button"
-                            onClick={() => void handleSendMessage()}
-                            disabled={!canSend}
-                            className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-white shadow-sm transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-200"
-                            aria-label="Send message"
-                          >
-                            <Icon
-                              icon={sendMessage.isPending ? 'mdi:loading' : 'mdi:send'}
-                              className={`h-4 w-4 ${sendMessage.isPending ? 'animate-spin' : ''}`}
-                            />
-                          </button>
+                          <div className="flex items-center gap-3">
+                            <span
+                              className={`text-[11px] font-medium ${
+                                draftMessageLength >= MESSAGE_MAX_BODY_LENGTH
+                                  ? 'text-red-500'
+                                  : isDraftMessageNearLimit
+                                    ? 'text-amber-500'
+                                    : 'text-gray-400'
+                              }`}
+                            >
+                              {draftMessageLength}/{MESSAGE_MAX_BODY_LENGTH}
+                            </span>
+
+                            {/* Send button */}
+                            <button
+                              type="button"
+                              onClick={() => void handleSendMessage()}
+                              disabled={!canSend}
+                              className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-white shadow-sm transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-200"
+                              aria-label="Send message"
+                            >
+                              <Icon
+                                icon={sendMessage.isPending ? 'mdi:loading' : 'mdi:send'}
+                                className={`h-4 w-4 ${sendMessage.isPending ? 'animate-spin' : ''}`}
+                              />
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>

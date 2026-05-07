@@ -3,7 +3,7 @@
 // MODIFIED: City field in Address section changed from free-text Input to a
 // Select dropdown backed by useCities() — mirrors the same change on RegisterDetailsPage.
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState, type DragEvent as ReactDragEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { Icon } from '@iconify/react';
@@ -36,6 +36,11 @@ import { useCities } from '@/features/authentication/hooks/useCities';
 import { DatePicker } from '@/shared/components/ui/input/DatePicker';
 import { getDateYearsAgo } from '@/shared/utils/dateHelpers';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
+import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
+import {
+  DEFAULT_IMAGE_UPLOAD_ACCEPT,
+  validateFilesAgainstAcceptList,
+} from '@/shared/utils/fileValidation';
 
 const breadcrumbItems = [
   { label: 'Home', href: ROUTES.HOME },
@@ -236,13 +241,17 @@ function PhotoUpload({
   currentPhoto,
   preview,
   fullName,
-  onChange,
+  error,
+  onSelectFile,
 }: {
   currentPhoto?: string;
   preview: string | null;
   fullName: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  error?: string | null;
+  onSelectFile: (file: File) => void;
 }) {
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [isDragActive, setIsDragActive] = useState(false);
   const initials = fullName
     .split(' ')
     .slice(0, 2)
@@ -251,30 +260,115 @@ function PhotoUpload({
     .toUpperCase();
   const displaySrc = preview ?? currentPhoto;
 
+  const handleNativeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+
+    if (file) {
+      onSelectFile(file);
+    }
+  };
+
+  const isDraggingFiles = (event: ReactDragEvent<HTMLElement>) =>
+    Array.from(event.dataTransfer.types).includes('Files');
+
+  const handleDragEnter = (event: ReactDragEvent<HTMLDivElement>) => {
+    if (!isDraggingFiles(event)) {
+      return;
+    }
+
+    event.preventDefault();
+    setIsDragActive(true);
+  };
+
+  const handleDragOver = (event: ReactDragEvent<HTMLDivElement>) => {
+    if (!isDraggingFiles(event)) {
+      return;
+    }
+
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'copy';
+    if (!isDragActive) {
+      setIsDragActive(true);
+    }
+  };
+
+  const handleDragLeave = (event: ReactDragEvent<HTMLDivElement>) => {
+    if (!isDraggingFiles(event)) {
+      return;
+    }
+
+    event.preventDefault();
+    const nextTarget = event.relatedTarget;
+    if (nextTarget instanceof Node && event.currentTarget.contains(nextTarget)) {
+      return;
+    }
+
+    setIsDragActive(false);
+  };
+
+  const handleDrop = (event: ReactDragEvent<HTMLDivElement>) => {
+    if (!isDraggingFiles(event)) {
+      return;
+    }
+
+    event.preventDefault();
+    setIsDragActive(false);
+    const file = event.dataTransfer.files?.[0];
+    if (file) {
+      onSelectFile(file);
+    }
+  };
+
   return (
-    <div className="flex items-center gap-5 mb-6">
-      <div className="relative flex-shrink-0">
-        <div className="w-20 h-20 rounded-full overflow-hidden border border-white shadow-md bg-primary-50 flex items-center justify-center">
+    <div className="mb-6 flex items-start gap-5">
+      <div
+        className={`relative flex-shrink-0 rounded-full transition-shadow ${
+          isDragActive ? 'ring-4 ring-primary-100' : ''
+        }`}
+        onClick={() => fileInputRef.current?.click()}
+        onDragEnter={handleDragEnter}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            fileInputRef.current?.click();
+          }
+        }}
+        role="button"
+        tabIndex={0}
+      >
+        <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border border-white bg-primary-50 shadow-md">
           {displaySrc ? (
             <img src={displaySrc} alt={fullName} className="w-full h-full object-cover" />
           ) : (
             <span className="text-2xl font-bold text-primary-400">{initials || '?'}</span>
           )}
         </div>
-        <label
-          htmlFor="photo-upload"
-          className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-primary-500 text-white flex items-center justify-center cursor-pointer hover:bg-primary-600 transition-colors shadow"
-        >
+        <span className="absolute bottom-0 right-0 flex h-7 w-7 items-center justify-center rounded-full bg-primary-500 text-white shadow transition-colors hover:bg-primary-600">
           <Icon icon="mdi:pencil" className="w-3.5 h-3.5" />
-        </label>
+        </span>
+        {isDragActive ? (
+          <div className="absolute inset-0 flex items-center justify-center rounded-full bg-primary-500/15 text-[10px] font-semibold text-primary-700">
+            Drop image
+          </div>
+        ) : null}
         <input
+          ref={fileInputRef}
           id="photo-upload"
           type="file"
-          accept="image/*"
-          onChange={onChange}
+          accept={DEFAULT_IMAGE_UPLOAD_ACCEPT}
+          onChange={handleNativeChange}
           className="sr-only"
         />
       </div>
+      {error ? (
+        <p className="pt-6 text-xs text-red-500">{error}</p>
+      ) : (
+        <p className="pt-6 text-xs text-gray-400">Click or drag a photo here</p>
+      )}
     </div>
   );
 }
@@ -312,6 +406,7 @@ export default function EditProfilePage() {
   const [form, setForm] = useState<FormState>(() => toFormState(currentUser));
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [photoError, setPhotoError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const selectedWhatsappPhoneCountry = getPhoneCountryOption(form.whatsappPhoneCountry);
   const selectedAlternativePhoneCountry = getPhoneCountryOption(form.alternativePhoneCountry);
@@ -347,13 +442,19 @@ export default function EditProfilePage() {
       return { ...prev, [e.target.name]: e.target.value };
     });
 
-  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (file.size > 2 * 1024 * 1024) {
-      toast.error('Photo must be under 2 MB');
+  const handlePhotoChange = (file: File) => {
+    const { validFiles, errors } = validateFilesAgainstAcceptList([file], {
+      accept: DEFAULT_IMAGE_UPLOAD_ACCEPT,
+    });
+
+    if (errors.length > 0 || validFiles.length === 0) {
+      const message = errors[0] ?? 'Please choose a valid image.';
+      setPhotoError(message);
+      toast.error(message);
       return;
     }
+
+    setPhotoError(null);
     setPhotoFile(file);
     const reader = new FileReader();
     reader.onload = () => setPhotoPreview(reader.result as string);
@@ -446,7 +547,8 @@ export default function EditProfilePage() {
               currentPhoto={currentUser?.photo}
               preview={photoPreview}
               fullName={fullName || currentUser?.fullName || ''}
-              onChange={handlePhotoChange}
+              error={photoError}
+              onSelectFile={handlePhotoChange}
             />
 
             {/* ── Bio ─────────────────────────────────────────────────── */}
@@ -476,7 +578,7 @@ export default function EditProfilePage() {
                     name="nameInSchool"
                     value={form.nameInSchool}
                     onChange={handleChange}
-                    placeholder="Name in school"
+                    placeholder="Maiden name"
                   />
                 </div>
                 <div>
@@ -588,13 +690,14 @@ export default function EditProfilePage() {
 
             {/* ── About Me ────────────────────────────────────────────── */}
             <SectionCard title="About Me">
-              <textarea
+              <TextareaInput
                 name="bio"
                 value={form.bio}
                 onChange={handleChange}
                 rows={5}
                 placeholder="Tell other alumni about yourself..."
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-400 focus:bg-white transition-all resize-none"
+                className="gap-2"
+                textareaClassName="rounded-xl border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-800 placeholder-gray-400 shadow-none focus:border-primary-400 focus:ring-2 focus:ring-primary-300 focus:bg-white transition-all resize-none"
               />
             </SectionCard>
 

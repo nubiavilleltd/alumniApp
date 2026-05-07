@@ -88,7 +88,9 @@ const desktopMenuLinkClassName =
   'flex items-center gap-3 px-6 py-[0.95rem] text-[clamp(1.05rem,1.3vw,1.35rem)] font-bold leading-[1.25] text-[#4f5864] no-underline transition-colors duration-200 hover:bg-primary-50 hover:text-primary-700';
 const desktopMenuActiveLinkClassName = 'bg-primary-50 text-primary-700';
 const accountPillClassName =
-  'inline-flex min-h-[3.35rem] items-center rounded-full border border-white/25 bg-[#fff] text-[#0077CC] no-underline transition-colors duration-200 hover:bg-[#0077CC] hover:text-white';
+  'inline-flex min-h-[3.35rem] items-center rounded-full border border-transparent bg-white text-[#0d78cb] no-underline shadow-none transition-opacity duration-200 hover:bg-white/95 hover:text-[#0d78cb]';
+const userAccountTriggerClassName =
+  'inline-flex min-h-[3.35rem] items-center rounded-full border border-white/25 bg-transparent text-white no-underline shadow-none transition-colors duration-200 hover:border-white/40 hover:bg-white/5';
 const mobileSectionClassName =
   'mt-[0.85rem] grid gap-[0.35rem] border-t border-white/15 pt-[0.85rem] first:mt-0 first:border-t-0';
 const mobileLinkClassName =
@@ -225,14 +227,14 @@ function UserAvatar({ user, className = '' }: { user: CurrentUser; className?: s
   return (
     <span
       className={cn(
-        'inline-flex h-[2.65rem] w-[2.65rem] flex-none items-center justify-center overflow-hidden rounded-full border-2 border-white/15 bg-white',
+        'inline-flex h-[2.65rem] w-[2.65rem] flex-none items-center justify-center overflow-hidden rounded-full border border-white/25 bg-white/10',
         className,
       )}
     >
       {user.photo ? (
         <img src={user.photo} alt={displayName} className="h-full w-full object-cover" />
       ) : (
-        <span className="flex h-full w-full items-center justify-center bg-primary-50 text-[0.8rem] font-extrabold text-primary-700">
+        <span className="flex h-full w-full items-center justify-center bg-white text-[0.8rem] font-extrabold text-[#0d78cb]">
           {initials}
         </span>
       )}
@@ -279,7 +281,7 @@ function UserDropdown({
       <button
         type="button"
         className={cn(
-          accountPillClassName,
+          userAccountTriggerClassName,
           'cursor-pointer gap-3 px-[1.2rem] py-[0.35rem] pl-[0.45rem]',
         )}
         aria-expanded={open}
@@ -287,12 +289,12 @@ function UserDropdown({
       >
         <UserAvatar user={currentUser} />
         <span className="flex flex-col gap-[0.1rem] text-left text-[0.95rem] leading-[1.05] text-white">
-          <span className="font-medium text-[#c4d0d9]">Welcome,</span>
+          <span className="font-medium text-[#c9d6df]">Welcome,</span>
           <strong className="max-w-[8.5rem] overflow-hidden text-[1.05rem] font-extrabold text-ellipsis whitespace-nowrap text-white">
             {displayName}
           </strong>
         </span>
-        <Icon icon="mdi:chevron-down" className="h-5 w-5 flex-none" />
+        <Icon icon="mdi:chevron-down" className="h-5 w-5 flex-none text-[#9eb8ca]" />
       </button>
 
       {open && (
@@ -500,7 +502,7 @@ export function Navigation() {
                 href={AUTH_ROUTES.LOGIN}
                 className={cn(
                   accountPillClassName,
-                  'px-[1.65rem] py-[0.7rem] text-base font-bold tracking-[0.08em]',
+                  'justify-center px-[1.65rem] py-[0.7rem] text-base font-extrabold tracking-[0.01em]',
                 )}
               >
                 Sign In

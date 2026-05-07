@@ -23,6 +23,7 @@ import type { Event } from '@/features/events/types/event.types';
 import type { AttendeeStatus } from '@/features/events/api/adapters/event-attendees.adapter';
 import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
+import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { ROUTES } from '@/shared/constants/routes';
 import { ADMIN_ROUTES } from '@/features/admin/routes';
 
@@ -326,17 +327,16 @@ export function AdminEventRegistrationsPage() {
                   <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6">
                     <div className="flex flex-col sm:flex-row gap-4">
                       {/* Search */}
-                      <div className="flex-1 relative">
-                        <Icon
-                          icon="mdi:magnify"
-                          className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
-                        />
-                        <input
-                          type="text"
+                      <div className="flex-1">
+                        <label htmlFor="admin-event-registrations-search" className="sr-only">
+                          Search attendees by name or email
+                        </label>
+                        <SearchInput
+                          id="admin-event-registrations-search"
                           placeholder="Search by name or email..."
                           value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                          className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                          onValueChange={setSearchQuery}
+                          className="w-full"
                         />
                       </div>
 
