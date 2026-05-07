@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import EmptyState from '@/shared/components/ui/EmptyState';
+import { Pagination } from '@/shared/components/ui/Pagination';
 import { PostBusinessModal } from '../components/PostYourBusinessModal';
 import { useMyBusinesses, useDeleteListing } from '../hooks/useMarketplace';
 import type { Business } from '../types/marketplace.types';
@@ -12,6 +13,7 @@ import { MARKETPLACE_ROUTES } from '../routes';
 import { ROUTES } from '@/shared/constants/routes';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 import { toTitleCase } from '@/shared/utils/textHelpers';
+const MY_BUSINESSES_PER_PAGE = 6;
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 function MyBusinessCardSkeleton() {
@@ -260,6 +262,7 @@ export default function MyBusinessPage() {
   const [showPostModal, setShowPostModal] = useState(false);
   const [editBusiness, setEditBusiness] = useState<Business | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
   const currentUser = useIdentityStore((state) => state.user);
 
   const { data: myBusinesses = [], isLoading, refetch } = useMyBusinesses();
@@ -284,6 +287,22 @@ export default function MyBusinessPage() {
     setShowPostModal(false);
     setEditBusiness(null);
     refetch();
+  };
+  const totalPages = Math.max(1, Math.ceil(myBusinesses.length / MY_BUSINESSES_PER_PAGE));
+  const visibleBusinesses = myBusinesses.slice(
+    (currentPage - 1) * MY_BUSINESSES_PER_PAGE,
+    currentPage * MY_BUSINESSES_PER_PAGE,
+  );
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const breadcrumbItems = [
@@ -330,18 +349,25 @@ export default function MyBusinessPage() {
               ))}
             </div>
           ) : myBusinesses.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {myBusinesses.map((business) => (
-                <MyBusinessCard
-                  key={business.businessId}
-                  business={business}
-                  ownerPhoto={business.ownerPhoto ?? currentUser?.photo}
-                  onEdit={handleEdit}
-                  onDelete={handleDelete}
-                  isDeleting={deletingId === business.businessId}
-                />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {visibleBusinesses.map((business) => (
+                  <MyBusinessCard
+                    key={business.businessId}
+                    business={business}
+                    ownerPhoto={business.ownerPhoto ?? currentUser?.photo}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                    isDeleting={deletingId === business.businessId}
+                  />
+                ))}
+              </div>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            </>
           ) : (
             <EmptyState
               icon="mdi:storefront-outline"

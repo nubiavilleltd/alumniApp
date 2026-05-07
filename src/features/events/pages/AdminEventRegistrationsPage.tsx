@@ -16,7 +16,7 @@
  */
 
 import { Icon } from '@iconify/react';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useAllEvents } from '@/features/events/hooks/useEvents';
 import { useEventAttendees } from '@/features/events/hooks/useEventAttendees';
 import type { Event } from '@/features/events/types/event.types';
@@ -24,6 +24,7 @@ import type { AttendeeStatus } from '@/features/events/api/adapters/event-attend
 import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { SearchInput } from '@/shared/components/ui/input/SearchInput';
+import { Pagination } from '@/shared/components/ui/Pagination';
 import { ROUTES } from '@/shared/constants/routes';
 import { ADMIN_ROUTES } from '@/features/admin/routes';
 
@@ -32,6 +33,8 @@ const breadcrumbItems = [
   { label: 'Admin Dashboard', href: ADMIN_ROUTES.DASHBOARD },
   { label: 'Event Registrations' },
 ];
+const ADMIN_REGISTRATION_EVENTS_PER_PAGE = 6;
+const ADMIN_REGISTRATION_ATTENDEES_PER_PAGE = 10;
 
 // ═══════════════════════════════════════════════════════════════════════════
 // EVENT LIST ITEM
@@ -185,6 +188,8 @@ export function AdminEventRegistrationsPage() {
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<'all' | AttendeeStatus>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [eventsPage, setEventsPage] = useState(1);
+  const [attendeesPage, setAttendeesPage] = useState(1);
 
   // Fetch all events
   const { data: events = [], isLoading: eventsLoading } = useAllEvents();
@@ -210,6 +215,38 @@ export function AdminEventRegistrationsPage() {
       const query = searchQuery.toLowerCase();
       return a.fullName.toLowerCase().includes(query) || a.email.toLowerCase().includes(query);
     }) || [];
+  const totalEventPages = Math.max(
+    1,
+    Math.ceil(events.length / ADMIN_REGISTRATION_EVENTS_PER_PAGE),
+  );
+  const visibleEvents = useMemo(
+    () =>
+      events.slice(
+        (eventsPage - 1) * ADMIN_REGISTRATION_EVENTS_PER_PAGE,
+        eventsPage * ADMIN_REGISTRATION_EVENTS_PER_PAGE,
+      ),
+    [events, eventsPage],
+  );
+  const totalAttendeePages = Math.max(
+    1,
+    Math.ceil(filteredAttendees.length / ADMIN_REGISTRATION_ATTENDEES_PER_PAGE),
+  );
+  const visibleAttendees = filteredAttendees.slice(
+    (attendeesPage - 1) * ADMIN_REGISTRATION_ATTENDEES_PER_PAGE,
+    attendeesPage * ADMIN_REGISTRATION_ATTENDEES_PER_PAGE,
+  );
+
+  useEffect(() => {
+    if (eventsPage > totalEventPages) {
+      setEventsPage(totalEventPages);
+    }
+  }, [eventsPage, totalEventPages]);
+
+  useEffect(() => {
+    if (attendeesPage > totalAttendeePages) {
+      setAttendeesPage(totalAttendeePages);
+    }
+  }, [attendeesPage, totalAttendeePages]);
 
   // Stats
   const stats = attendeeData
@@ -263,7 +300,7 @@ export function AdminEventRegistrationsPage() {
                   </div>
                 ) : (
                   <div className="space-y-2 max-h-[600px] overflow-y-auto">
-                    {events.map((event) => (
+                    {visibleEvents.map((event) => (
                       <EventListItem
                         key={event.id}
                         event={event}
@@ -273,6 +310,14 @@ export function AdminEventRegistrationsPage() {
                     ))}
                   </div>
                 )}
+
+                {!eventsLoading && events.length > 0 ? (
+                  <Pagination
+                    currentPage={eventsPage}
+                    totalPages={totalEventPages}
+                    onPageChange={(page) => setEventsPage(page)}
+                  />
+                ) : null}
               </div>
             </div>
 
@@ -335,7 +380,10 @@ export function AdminEventRegistrationsPage() {
                           id="admin-event-registrations-search"
                           placeholder="Search by name or email..."
                           value={searchQuery}
-                          onValueChange={setSearchQuery}
+                          onValueChange={(value) => {
+                            setSearchQuery(value);
+                            setAttendeesPage(1);
+                          }}
                           className="w-full"
                         />
                       </div>
@@ -343,7 +391,10 @@ export function AdminEventRegistrationsPage() {
                       {/* Status Filter */}
                       <div className="flex gap-2">
                         <button
-                          onClick={() => setStatusFilter('all')}
+                          onClick={() => {
+                            setStatusFilter('all');
+                            setAttendeesPage(1);
+                          }}
                           className={`px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
                             statusFilter === 'all'
                               ? 'bg-primary-500 text-white'
@@ -353,7 +404,10 @@ export function AdminEventRegistrationsPage() {
                           All
                         </button>
                         <button
-                          onClick={() => setStatusFilter('going')}
+                          onClick={() => {
+                            setStatusFilter('going');
+                            setAttendeesPage(1);
+                          }}
                           className={`px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
                             statusFilter === 'going'
                               ? 'bg-green-500 text-white'
@@ -363,7 +417,10 @@ export function AdminEventRegistrationsPage() {
                           Going
                         </button>
                         <button
-                          onClick={() => setStatusFilter('maybe')}
+                          onClick={() => {
+                            setStatusFilter('maybe');
+                            setAttendeesPage(1);
+                          }}
                           className={`px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
                             statusFilter === 'maybe'
                               ? 'bg-amber-500 text-white'
@@ -374,7 +431,10 @@ export function AdminEventRegistrationsPage() {
                         </button>
 
                         <button
-                          onClick={() => setStatusFilter('not_going')}
+                          onClick={() => {
+                            setStatusFilter('not_going');
+                            setAttendeesPage(1);
+                          }}
                           className={`px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
                             statusFilter === 'not_going'
                               ? 'bg-red-500 text-white'
@@ -418,11 +478,18 @@ export function AdminEventRegistrationsPage() {
                           </p>
                         </div>
                       ) : (
-                        filteredAttendees.map((attendee) => (
+                        visibleAttendees.map((attendee) => (
                           <AttendeeRow key={attendee.userId} attendee={attendee} />
                         ))
                       )}
                     </div>
+                    {!attendeesLoading && filteredAttendees.length > 0 ? (
+                      <Pagination
+                        currentPage={attendeesPage}
+                        totalPages={totalAttendeePages}
+                        onPageChange={(page) => setAttendeesPage(page)}
+                      />
+                    ) : null}
                   </div>
                 </>
               )}

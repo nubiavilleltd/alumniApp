@@ -285,6 +285,17 @@ export function getThreadPreview(thread: MessageThreadSummary) {
   return thread.lastMessagePreview;
 }
 
+export function getThreadPreviewParts(thread: MessageThreadSummary) {
+  return {
+    senderPrefix:
+      thread.type === 'group' && thread.lastMessageSenderName
+        ? `${thread.lastMessageSenderName}: `
+        : '',
+    text: thread.lastMessagePreview,
+    attachmentKind: thread.lastMessagePreviewAttachmentKind,
+  };
+}
+
 export function getAttachmentIcon(kind: MessageAttachment['kind']) {
   if (kind === 'audio') return 'mdi:waveform';
   if (kind === 'image') return 'mdi:image-outline';

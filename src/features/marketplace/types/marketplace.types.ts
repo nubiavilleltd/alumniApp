@@ -19,6 +19,7 @@ export interface Business {
   phone: string;
   email?: string;
   website?: string;
+  messagePrompt?: string;
   images: string[];
 }
 
@@ -36,6 +37,7 @@ export interface PostBusinessPayload {
   location: string;
   phone: string;
   website?: string;
+  messagePrompt?: string;
   images: File[];
 }
 
@@ -46,6 +48,7 @@ export interface CreateListingFormData {
   location: string;
   phone: string;
   website?: string;
+  messagePrompt?: string;
   images: File[];
 }
 

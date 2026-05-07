@@ -72,10 +72,11 @@ import {
   formatMemberCount,
   formatMessageTime,
   formatRecordingDuration,
+  getAttachmentIcon,
   formatThreadHeaderSubtitle,
   formatThreadTimestamp,
   getPreferredRecorderMimeType,
-  getThreadPreview,
+  getThreadPreviewParts,
   mergeThreadMessagesWithOptimistic,
   sortGroupParticipants,
 } from './messagesPage.utils';
@@ -1293,6 +1294,7 @@ export function MessagesPage() {
                     {visibleThreads.map((thread) => {
                       const isActive = activeThreadId === thread.id;
                       const deliveryState = getSidebarDeliveryState(thread);
+                      const preview = getThreadPreviewParts(thread);
 
                       return (
                         <button
@@ -1333,7 +1335,16 @@ export function MessagesPage() {
                                     />
                                   ) : null}
                                   <p className="line-clamp-1 min-w-0 flex-1 text-sm text-gray-500">
-                                    {getThreadPreview(thread)}
+                                    {preview.senderPrefix ? (
+                                      <span>{preview.senderPrefix}</span>
+                                    ) : null}
+                                    {preview.attachmentKind ? (
+                                      <Icon
+                                        icon={getAttachmentIcon(preview.attachmentKind)}
+                                        className="mb-0.5 mr-1 inline-block h-4 w-4 align-text-bottom text-gray-400"
+                                      />
+                                    ) : null}
+                                    <span>{preview.text}</span>
                                   </p>
                                 </div>
                                 {thread.unreadCount > 0 ? (

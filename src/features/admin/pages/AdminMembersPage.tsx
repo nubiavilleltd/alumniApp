@@ -14,7 +14,7 @@
  */
 
 import { Icon } from '@iconify/react';
-import { useState, useMemo } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
@@ -34,6 +34,7 @@ import { useAlumni } from '@/features/alumni/hooks/useAlumni';
 import type { Alumni } from '@/features/alumni/types/alumni.types';
 import { Avatar } from '@/shared/components/ui/Avatar';
 import { SearchInput } from '@/shared/components/ui/input/SearchInput';
+import { Pagination } from '@/shared/components/ui/Pagination';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
 
 const breadcrumbItems = [
@@ -55,6 +56,8 @@ type DisplayUser = {
   accountStatus: AccountStatus;
   photo: string;
 };
+
+const ADMIN_MEMBERS_PER_PAGE = 10;
 
 // ═══════════════════════════════════════════════════════════════════════════
 // HELPER: MAP ALUMNI TO DISPLAY USER
@@ -420,6 +423,7 @@ export function AdminMembersPage() {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | AccountStatus>('all');
+  const [currentPage, setCurrentPage] = useState(1);
 
   const users = useMemo(() => {
     return alumniList.map(mapAlumniToDisplayUser);
@@ -442,8 +446,25 @@ export function AdminMembersPage() {
     return filtered;
   }, [users, statusFilter, searchQuery]);
 
+  const totalPages = Math.max(1, Math.ceil(filteredUsers.length / ADMIN_MEMBERS_PER_PAGE));
+  const visibleUsers = filteredUsers.slice(
+    (currentPage - 1) * ADMIN_MEMBERS_PER_PAGE,
+    currentPage * ADMIN_MEMBERS_PER_PAGE,
+  );
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
+
   const activeCount = users.filter((u) => u.accountStatus === 'active').length;
   const inactiveCount = users.filter((u) => u.accountStatus === 'inactive').length;
+
+  const changePage = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   if (isLoading) {
     return (
@@ -524,14 +545,20 @@ export function AdminMembersPage() {
               <SearchInput
                 placeholder="Search by name or email..."
                 value={searchQuery}
-                onValueChange={setSearchQuery}
+                onValueChange={(value) => {
+                  setSearchQuery(value);
+                  setCurrentPage(1);
+                }}
                 className="w-full"
               />
 
               {/* Status Filter */}
               <div className="flex gap-2">
                 <button
-                  onClick={() => setStatusFilter('all')}
+                  onClick={() => {
+                    setStatusFilter('all');
+                    setCurrentPage(1);
+                  }}
                   className={`px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
                     statusFilter === 'all'
                       ? 'bg-primary-500 text-white'
@@ -541,7 +568,10 @@ export function AdminMembersPage() {
                   All
                 </button>
                 <button
-                  onClick={() => setStatusFilter('active')}
+                  onClick={() => {
+                    setStatusFilter('active');
+                    setCurrentPage(1);
+                  }}
                   className={`px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
                     statusFilter === 'active'
                       ? 'bg-green-500 text-white'
@@ -551,7 +581,10 @@ export function AdminMembersPage() {
                   Active
                 </button>
                 <button
-                  onClick={() => setStatusFilter('inactive')}
+                  onClick={() => {
+                    setStatusFilter('inactive');
+                    setCurrentPage(1);
+                  }}
                   className={`px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
                     statusFilter === 'inactive'
                       ? 'bg-gray-500 text-white'
@@ -579,9 +612,17 @@ export function AdminMembersPage() {
                 </p>
               </div>
             ) : (
-              filteredUsers.map((user) => <UserRow key={user.id} user={user} />)
+              visibleUsers.map((user) => <UserRow key={user.id} user={user} />)
             )}
           </div>
+
+          {!isLoading && filteredUsers.length > 0 ? (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={changePage}
+            />
+          ) : null}
         </div>
       </section>
     </>

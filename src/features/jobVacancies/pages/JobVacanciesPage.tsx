@@ -5,6 +5,7 @@ import { SEO } from '@/shared/common/SEO';
 import { Button } from '@/shared/components/ui/Button';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import { ImageUpload } from '@/shared/components/ui/ImageUpload';
+import { Pagination } from '@/shared/components/ui/Pagination';
 import { BaseInput } from '@/shared/components/ui/input/BaseInput';
 import { DatePicker } from '@/shared/components/ui/input/DatePicker';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
@@ -64,6 +65,7 @@ type JobFormErrors = Partial<Record<keyof JobFormState, string>>;
 const jobCardTones: JobCardTone[] = ['mint', 'rose', 'slate', 'lavender', 'sky', 'green'];
 const MAX_KEYWORDS = 10;
 const MAX_KEYWORD_LENGTH = 30;
+const JOB_VACANCIES_PER_PAGE = 12;
 
 const jobPanelToneClassNames: Record<JobCardTone, string> = {
   mint: 'bg-[#e5f6f3]',
@@ -947,6 +949,7 @@ export default function JobVacanciesPage() {
   const { data: vacancies = [], isLoading, isError, error, refetch } = useJobVacancies();
 
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const canPostJob = Boolean(user?.chapterId && accessToken);
 
@@ -957,6 +960,17 @@ export default function JobVacanciesPage() {
       ),
     [vacancies],
   );
+  const totalPages = Math.max(1, Math.ceil(orderedVacancies.length / JOB_VACANCIES_PER_PAGE));
+  const visibleVacancies = orderedVacancies.slice(
+    (currentPage - 1) * JOB_VACANCIES_PER_PAGE,
+    currentPage * JOB_VACANCIES_PER_PAGE,
+  );
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   const handleOpenPostModal = () => {
     if (!canPostJob) {
@@ -971,6 +985,11 @@ export default function JobVacanciesPage() {
 
   const handleOpenJobDetails = (job: JobVacancyViewModel) => {
     navigate(ROUTES.JOB_VACANCY_DETAIL(job.id));
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -1026,16 +1045,23 @@ export default function JobVacanciesPage() {
           ) : null}
 
           {!isLoading && !isError && orderedVacancies.length > 0 ? (
-            <div className={jobsGridClassName}>
-              {orderedVacancies.map((job, index) => (
-                <JobCard
-                  key={job.id}
-                  job={job}
-                  tone={getTone(index)}
-                  onDetails={handleOpenJobDetails}
-                />
-              ))}
-            </div>
+            <>
+              <div className={jobsGridClassName}>
+                {visibleVacancies.map((job, index) => (
+                  <JobCard
+                    key={job.id}
+                    job={job}
+                    tone={getTone((currentPage - 1) * JOB_VACANCIES_PER_PAGE + index)}
+                    onDetails={handleOpenJobDetails}
+                  />
+                ))}
+              </div>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            </>
           ) : null}
         </section>
       </main>

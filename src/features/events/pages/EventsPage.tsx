@@ -13,6 +13,7 @@ import { useIdentityStore } from '@/features/authentication/stores/useIdentitySt
 import { EVENT_ROUTES } from '../routes';
 import type { Event } from '../types/event.types';
 import { MonthYearPicker } from '@/shared/components/ui/MonthYearPicker';
+import { Pagination } from '@/shared/components/ui/Pagination';
 import { ROUTES } from '@/shared/constants/routes';
 import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 
@@ -312,7 +313,7 @@ export function EventsPage() {
   const [activeEventId, setActiveEventId] = useState<string | null>(null);
   const [registerEvent, setRegisterEvent] = useState<Event | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [listCount, setListCount] = useState(LIST_PAGE);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const { data: upcoming = [], isLoading: upcomingLoading } = useUpcomingEvents();
   const { data: past = [], isLoading: pastLoading } = usePastEvents();
@@ -351,8 +352,17 @@ export function EventsPage() {
     );
   }, [allEvents, searchTerm]);
 
-  const visibleEvents = filteredEvents.slice(0, listCount);
-  const hasMore = listCount < filteredEvents.length;
+  const totalPages = Math.max(1, Math.ceil(filteredEvents.length / LIST_PAGE));
+  const visibleEvents = filteredEvents.slice(
+    (currentPage - 1) * LIST_PAGE,
+    currentPage * LIST_PAGE,
+  );
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   // Ref map for scrolling individual list items
   const itemRefs = useRef<Map<string, HTMLDivElement>>(new Map());
@@ -363,8 +373,8 @@ export function EventsPage() {
 
       // Make sure it's in the visible portion, then scroll
       const idx = filteredEvents.findIndex((e) => e.id === event.id);
-      if (idx >= 0 && idx >= listCount) {
-        setListCount(idx + LIST_PAGE);
+      if (idx >= 0) {
+        setCurrentPage(Math.floor(idx / LIST_PAGE) + 1);
       }
 
       // requestAnimationFrame(() => {
@@ -385,7 +395,7 @@ export function EventsPage() {
         }
       });
     },
-    [filteredEvents, listCount],
+    [filteredEvents],
   );
 
   const handleListClick = (event: Event) => {
@@ -477,7 +487,7 @@ export function EventsPage() {
                 value={searchTerm}
                 onValueChange={(v) => {
                   setSearchTerm(v);
-                  setListCount(LIST_PAGE);
+                  setCurrentPage(1);
                   setActiveEventId(null);
                 }}
                 placeholder="Search events"
@@ -541,24 +551,23 @@ export function EventsPage() {
                         />
                       ))}
                     </div>
-                    {hasMore && (
-                      <button
-                        type="button"
-                        onClick={() => setListCount((c) => c + LIST_PAGE)}
-                        className="w-full py-3 text-xs font-semibold text-primary-500 hover:text-primary-600 hover:bg-primary-50 rounded-xl transition-colors"
-                      >
-                        Load {Math.min(filteredEvents.length - listCount, LIST_PAGE)} more events…
-                      </button>
-                    )}
                   </>
                 )}
               </div>
 
               {/* Footer count */}
               {!isLoading && filteredEvents.length > 0 && (
-                <div className="border-t border-gray-50 px-4 py-2 text-center text-[11px] text-gray-400">
-                  {Math.min(visibleEvents.length, filteredEvents.length)} of {filteredEvents.length}{' '}
-                  events
+                <div className="border-t border-gray-50 px-4 py-3">
+                  <div className="text-center text-[11px] text-gray-400">
+                    Showing {(currentPage - 1) * LIST_PAGE + 1}-
+                    {Math.min(currentPage * LIST_PAGE, filteredEvents.length)} of{' '}
+                    {filteredEvents.length} events
+                  </div>
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={(page) => setCurrentPage(page)}
+                  />
                 </div>
               )}
             </div>

@@ -104,6 +104,24 @@ function resolveListingEmail(raw: Record<string, unknown>): string | undefined {
   return undefined;
 }
 
+function resolveListingMessagePrompt(raw: Record<string, unknown>): string | undefined {
+  const candidates = [
+    raw.message_prompt,
+    raw.messagePrompt,
+    raw.draft_message,
+    raw.draftMessage,
+    raw.message_template,
+    raw.messageTemplate,
+  ];
+
+  for (const candidate of candidates) {
+    const value = typeof candidate === 'string' ? candidate.trim() : '';
+    if (value) return value;
+  }
+
+  return undefined;
+}
+
 export function mapBackendListingToBusiness(raw: unknown): Business {
   const d = raw as Record<string, unknown>;
 
@@ -120,6 +138,7 @@ export function mapBackendListingToBusiness(raw: unknown): Business {
     phone: String(d.phone ?? ''),
     email: resolveListingEmail(d),
     website: d.website ? String(d.website) : undefined,
+    messagePrompt: resolveListingMessagePrompt(d),
     images: parseImages(d.images),
   };
 }
@@ -164,6 +183,7 @@ export function mapBusinessToCreatePayload(
     price: '0.00',
     price_type: 'free',
     is_featured: '0',
+    message_prompt: formData.messagePrompt?.trim() ?? '',
   };
 
   if (chapterId) base.chapter_id = chapterId;
@@ -242,6 +262,7 @@ export function mapBusinessToUpdatePayload(
     location: formData.location,
     phone: formData.phone,
     status: 'active',
+    message_prompt: formData.messagePrompt?.trim() ?? '',
   };
 
   if (formData.website?.trim()) {

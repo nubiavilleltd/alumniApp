@@ -4,16 +4,18 @@
 // Past events section below upcoming.
 
 import { Icon } from '@iconify/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
+import { Pagination } from '@/shared/components/ui/Pagination';
 import { useMyEvents } from '../hooks/useEventRegistration';
 import { useCancelRegistration } from '../hooks/useEvents';
 import { toast } from '@/shared/components/ui/Toast';
 import { EVENT_ROUTES } from '../routes';
 import type { Event } from '../types/event.types';
+const MY_EVENTS_PER_PAGE = 6;
 
 // ─── Unregister modal ────────────────────────────────────────────────────────
 
@@ -207,6 +209,8 @@ export function MyEventsPage() {
   const { events: myEvents = [], isLoading } = useMyEvents();
   const cancelMutation = useCancelRegistration();
   const [unregisterEvent, setUnregisterEvent] = useState<Event | null>(null);
+  const [upcomingPage, setUpcomingPage] = useState(1);
+  const [pastPage, setPastPage] = useState(1);
 
   const now = new Date();
   const upcomingEvents = myEvents.filter((e: Event) => {
@@ -219,6 +223,28 @@ export function MyEventsPage() {
     const d = new Date(e.startDate);
     return new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, m) < now;
   });
+  const upcomingTotalPages = Math.max(1, Math.ceil(upcomingEvents.length / MY_EVENTS_PER_PAGE));
+  const pastTotalPages = Math.max(1, Math.ceil(pastEvents.length / MY_EVENTS_PER_PAGE));
+  const visibleUpcomingEvents = upcomingEvents.slice(
+    (upcomingPage - 1) * MY_EVENTS_PER_PAGE,
+    upcomingPage * MY_EVENTS_PER_PAGE,
+  );
+  const visiblePastEvents = pastEvents.slice(
+    (pastPage - 1) * MY_EVENTS_PER_PAGE,
+    pastPage * MY_EVENTS_PER_PAGE,
+  );
+
+  useEffect(() => {
+    if (upcomingPage > upcomingTotalPages) {
+      setUpcomingPage(upcomingTotalPages);
+    }
+  }, [upcomingPage, upcomingTotalPages]);
+
+  useEffect(() => {
+    if (pastPage > pastTotalPages) {
+      setPastPage(pastTotalPages);
+    }
+  }, [pastPage, pastTotalPages]);
 
   const handleUnregister = async () => {
     if (!unregisterEvent) return;
@@ -262,7 +288,7 @@ export function MyEventsPage() {
                 {isLoading ? (
                   Array.from({ length: 3 }).map((_, i) => <MyEventCardSkeleton key={i} />)
                 ) : upcomingEvents.length > 0 ? (
-                  upcomingEvents.map((event: Event) => (
+                  visibleUpcomingEvents.map((event: Event) => (
                     <MyEventCard
                       key={event.id}
                       event={event}
@@ -277,6 +303,16 @@ export function MyEventsPage() {
                   <EmptyState type="upcoming" />
                 )}
               </div>
+              {!isLoading && upcomingEvents.length > 0 ? (
+                <Pagination
+                  currentPage={upcomingPage}
+                  totalPages={upcomingTotalPages}
+                  onPageChange={(page) => {
+                    setUpcomingPage(page);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                />
+              ) : null}
             </section>
           )}
 
@@ -300,7 +336,7 @@ export function MyEventsPage() {
                 {isLoading ? (
                   Array.from({ length: 2 }).map((_, i) => <MyEventCardSkeleton key={i} />)
                 ) : pastEvents.length > 0 ? (
-                  pastEvents.map((event: Event) => (
+                  visiblePastEvents.map((event: Event) => (
                     <MyEventCard
                       key={event.id}
                       event={event}
@@ -312,6 +348,16 @@ export function MyEventsPage() {
                   <EmptyState type="past" />
                 )}
               </div>
+              {!isLoading && pastEvents.length > 0 ? (
+                <Pagination
+                  currentPage={pastPage}
+                  totalPages={pastTotalPages}
+                  onPageChange={(page) => {
+                    setPastPage(page);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                />
+              ) : null}
             </section>
           )}
         </div>

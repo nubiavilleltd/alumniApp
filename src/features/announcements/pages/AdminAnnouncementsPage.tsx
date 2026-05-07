@@ -1,8 +1,9 @@
 import { Icon } from '@iconify/react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { ButtonLink } from '@/shared/components/ui/Button';
+import { Pagination } from '@/shared/components/ui/Pagination';
 import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
 import { ROUTES } from '@/shared/constants/routes';
@@ -17,6 +18,7 @@ import { ADMIN_ROUTES } from '@/features/admin/routes';
 import type { AnnouncementType, NewsItem } from '@/features/announcements/types/announcement.types';
 
 type SortDirection = 'newest' | 'oldest';
+const ADMIN_ANNOUNCEMENTS_PER_PAGE = 6;
 
 const announcementTypeOptions = [
   { label: 'Info', value: 'info' },
@@ -83,6 +85,7 @@ export function AdminAnnouncementsPage() {
   const [editorOpen, setEditorOpen] = useState(false);
   const [editingAnnouncement, setEditingAnnouncement] = useState<NewsItem | null>(null);
   const [announcementToDelete, setAnnouncementToDelete] = useState<NewsItem | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const sortedAnnouncements = useMemo(() => {
     const getCreatedTime = (item: NewsItem) => {
@@ -112,6 +115,20 @@ export function AdminAnnouncementsPage() {
       );
     });
   }, [searchQuery, selectedType, sortedAnnouncements]);
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredAnnouncements.length / ADMIN_ANNOUNCEMENTS_PER_PAGE),
+  );
+  const visibleAnnouncements = filteredAnnouncements.slice(
+    (currentPage - 1) * ADMIN_ANNOUNCEMENTS_PER_PAGE,
+    currentPage * ADMIN_ANNOUNCEMENTS_PER_PAGE,
+  );
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   const eventCount = sortedAnnouncements.filter((item) => item.type === 'event').length;
   const scheduledCount = sortedAnnouncements.filter((item) => item.startsAt || item.endsAt).length;
@@ -181,7 +198,10 @@ export function AdminAnnouncementsPage() {
                 <SearchInput
                   id="admin-announcements-search"
                   value={searchQuery}
-                  onValueChange={setSearchQuery}
+                  onValueChange={(value) => {
+                    setSearchQuery(value);
+                    setCurrentPage(1);
+                  }}
                   placeholder="Search by title or content..."
                   className="w-full"
                 />
@@ -192,7 +212,10 @@ export function AdminAnnouncementsPage() {
                   <button
                     key={filter.value}
                     type="button"
-                    onClick={() => setSelectedType(filter.value as 'all' | AnnouncementType)}
+                    onClick={() => {
+                      setSelectedType(filter.value as 'all' | AnnouncementType);
+                      setCurrentPage(1);
+                    }}
                     className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
                       selectedType === filter.value
                         ? 'bg-primary-500 text-white'
@@ -208,7 +231,10 @@ export function AdminAnnouncementsPage() {
                     id="announcement-sort-direction"
                     options={sortOptions}
                     value={sortDirection}
-                    onChange={(event) => setSortDirection(event.target.value as SortDirection)}
+                    onChange={(event) => {
+                      setSortDirection(event.target.value as SortDirection);
+                      setCurrentPage(1);
+                    }}
                   />
                 </div>
               </div>
@@ -236,7 +262,7 @@ export function AdminAnnouncementsPage() {
             </div>
           ) : (
             <div className="grid gap-4 lg:grid-cols-2">
-              {filteredAnnouncements.map((item) => (
+              {visibleAnnouncements.map((item) => (
                 <article
                   key={item.slug}
                   className="h-full overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-accent-100"
@@ -312,6 +338,17 @@ export function AdminAnnouncementsPage() {
               ))}
             </div>
           )}
+
+          {!isLoading && filteredAnnouncements.length > 0 ? (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={(page) => {
+                setCurrentPage(page);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            />
+          ) : null}
         </div>
       </section>
 

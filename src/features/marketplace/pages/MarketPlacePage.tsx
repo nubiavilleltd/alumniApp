@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { SEO } from '@/shared/common/SEO';
 import { Button } from '@/shared/components/ui/Button';
 import { FilterDropdown } from '@/shared/components/ui/FilterDropdown';
+import { Pagination } from '@/shared/components/ui/Pagination';
 import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { PostBusinessModal } from '../components/PostYourBusinessModal';
 import EmptyState from '@/shared/components/ui/EmptyState';
@@ -19,6 +20,8 @@ import { useAlumni } from '@/features/alumni/hooks/useAlumni';
 import { getPhotoDisplay, isFieldVisible } from '@/features/alumni/utils/privacyHelpers';
 
 const ITEMS_PER_PAGE = 9;
+const DEFAULT_MARKETPLACE_DRAFT_MESSAGE = (businessName: string) =>
+  `Hi, I'm interested in ${businessName}. I'd like to know more about your services.`;
 
 const marketplaceSearchInputClassName =
   '!h-full !border-0 !bg-transparent !px-0 !pl-8 text-[clamp(0.95rem,0.9vw,1.05rem)] font-normal text-[#111820] placeholder:text-[#858585] !shadow-none !ring-0 focus:!ring-0 focus-visible:!ring-0';
@@ -293,7 +296,7 @@ function BusinessCard({
 export default function MarketPlacePage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [category, setCategory] = useState('');
-  const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
+  const [currentPage, setCurrentPage] = useState(1);
   const [showPostModal, setShowPostModal] = useState(false);
   const [pendingBusinessId, setPendingBusinessId] = useState<string | null>(null);
   const currentUser = useIdentityStore((state) => state.user);
@@ -329,16 +332,22 @@ export default function MarketPlacePage() {
     });
   }, [businesses, searchTerm, category]);
 
-  const visible = filtered.slice(0, visibleCount);
-  const hasMore = visibleCount < filtered.length;
+  const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
+  const visible = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
   const categoryOptions = useMemo(
     () => categoriesList.map((cat) => ({ label: formatCategoryLabel(cat), value: cat })),
     [categoriesList],
   );
 
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
+
   const handleFilterChange = (setter: (v: string) => void) => (value: string) => {
     setter(value);
-    setVisibleCount(ITEMS_PER_PAGE);
+    setCurrentPage(1);
   };
 
   async function handleStartBusinessConversation(business: Business) {
@@ -346,7 +355,8 @@ export default function MarketPlacePage() {
     await startDirectConversation({
       participantMemberId: business.ownerId,
       topic: `Marketplace enquiry about ${business.name}`,
-      draftMessage: `Hi, I'm interested in ${business.name}. I'd like to know more about your services.`,
+      draftMessage:
+        business.messagePrompt?.trim() || DEFAULT_MARKETPLACE_DRAFT_MESSAGE(business.name),
       marketplaceBusinessId: business.businessId,
       recipientProfile: {
         fullName: business.owner,
@@ -463,17 +473,16 @@ export default function MarketPlacePage() {
           ) : null}
 
           {/* Load More */}
-          {hasMore && !isLoading && !error && (
-            <div className="mt-12 flex justify-center">
-              <Button
-                type="button"
-                onClick={() => setVisibleCount((prev) => prev + ITEMS_PER_PAGE)}
-                className="min-h-[3.25rem] rounded-full px-9 text-base font-extrabold tracking-normal shadow-none focus-visible:ring-4 focus-visible:ring-primary-200"
-              >
-                Load More Businesses
-              </Button>
-            </div>
-          )}
+          {!isLoading && !error && filtered.length > 0 ? (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={(page) => {
+                setCurrentPage(page);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            />
+          ) : null}
         </section>
       </main>
 

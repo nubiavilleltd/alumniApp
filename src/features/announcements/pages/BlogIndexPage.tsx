@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { SEO } from '@/shared/common/SEO';
 import { ButtonLink } from '@/shared/components/ui/Button';
 import { AppLink } from '@/shared/components/ui/AppLink';
+import { Pagination } from '@/shared/components/ui/Pagination';
 import { ROUTES } from '@/shared/constants/routes';
 import { EVENT_ROUTES } from '@/features/events/routes';
 import { AnnouncementEditorModal } from '@/features/announcements/components/AnnouncementEditorModal';
@@ -37,6 +38,7 @@ const typeFilters: Array<{ label: string; value: 'all' | AnnouncementType }> = [
 ];
 
 const DESKTOP_SIDE_CARD_GAP_PX = 14;
+const ANNOUNCEMENTS_PER_PAGE = 8;
 
 function formatAnnouncementDate(date: string) {
   const isDateOnly = /^\d{4}-\d{2}-\d{2}$/.test(date);
@@ -120,6 +122,7 @@ export default function BlogIndexPage() {
   const user = useIdentityStore((state) => state.user);
   const [selectedType, setSelectedType] = useState<'all' | AnnouncementType>('all');
   const [isEditorOpen, setIsEditorOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   const featuredCardRef = useRef<HTMLElement | null>(null);
   const [featuredCardHeight, setFeaturedCardHeight] = useState<number | null>(null);
 
@@ -135,8 +138,13 @@ export default function BlogIndexPage() {
       ),
     [announcements],
   );
+  const totalPages = Math.max(1, Math.ceil(sortedAnnouncements.length / ANNOUNCEMENTS_PER_PAGE));
+  const pageAnnouncements = sortedAnnouncements.slice(
+    (currentPage - 1) * ANNOUNCEMENTS_PER_PAGE,
+    currentPage * ANNOUNCEMENTS_PER_PAGE,
+  );
 
-  const [featured, ...latest] = sortedAnnouncements;
+  const [featured, ...latest] = pageAnnouncements;
   const isAdmin = user?.role === 'admin';
   const compactCardHeight =
     featuredCardHeight !== null
@@ -176,6 +184,16 @@ export default function BlogIndexPage() {
       window.removeEventListener('resize', updateHeight);
     };
   }, [featured?.slug, featured?.title, featured?.image, featured?.content, featured?.excerpt]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedType]);
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   return (
     <>
@@ -317,7 +335,7 @@ export default function BlogIndexPage() {
               </div>
 
               <div className={stackedListClassName}>
-                {sortedAnnouncements.map((item) => (
+                {pageAnnouncements.map((item) => (
                   <AnnouncementCard key={item.slug} item={item} />
                 ))}
               </div>
@@ -348,6 +366,17 @@ export default function BlogIndexPage() {
                     .map((item) => <AnnouncementCard key={item.slug} item={item} compact />)}
             </div>
           )}
+
+          {!isLoading && sortedAnnouncements.length > 0 ? (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={(page) => {
+                setCurrentPage(page);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            />
+          ) : null}
         </section>
       </main>
 

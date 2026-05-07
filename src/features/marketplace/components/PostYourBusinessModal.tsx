@@ -57,6 +57,7 @@ const postBusinessSchema = z
 
     phone: z.string().trim().min(1, 'Phone number is required'),
     website: z.string().optional(),
+    messagePrompt: z.string().max(750, 'Message prompt must be 750 characters or fewer').optional(),
 
     // website: z
     //   .string()
@@ -97,6 +98,7 @@ function toFormState(data: Business | null | undefined): PostBusinessFormValues 
       location: '',
       phone: '',
       website: '',
+      messagePrompt: '',
     };
   }
 
@@ -107,6 +109,7 @@ function toFormState(data: Business | null | undefined): PostBusinessFormValues 
     location: data.location,
     phone: parseStoredNigerianPhoneNumber(data.phone),
     website: data.website ?? '',
+    messagePrompt: data.messagePrompt ?? '',
   };
 }
 
@@ -121,6 +124,7 @@ function toCreateListingFormData(
     location: form.location,
     phone: formatOptionalNigerianPhoneNumber(form.phone),
     website: form.website || undefined,
+    messagePrompt: form.messagePrompt?.trim() || undefined,
     images,
   };
 }
@@ -184,6 +188,7 @@ export function PostBusinessModal({ isOpen, onClose, editData }: PostBusinessMod
         location: '',
         phone: '',
         website: '',
+        messagePrompt: '',
       });
       resetImages();
       setFormError('root', { message: '' });
@@ -347,6 +352,19 @@ export function PostBusinessModal({ isOpen, onClose, editData }: PostBusinessMod
                   placeholder="Enter the web address of your business"
                   error={errors.website?.message}
                   {...register('website')}
+                />
+
+                <TextareaInput
+                  label="Message Prompt"
+                  labelClassName={fieldLabelClassName}
+                  textareaClassName={textareaClassName}
+                  className="md:col-span-2"
+                  id="messagePrompt"
+                  rows={4}
+                  placeholder="Enter the message you want buyers to see when they contact you"
+                  hint="Optional. This suggested message will prefill when someone clicks Send Message."
+                  error={errors.messagePrompt?.message}
+                  {...register('messagePrompt')}
                 />
               </div>
 

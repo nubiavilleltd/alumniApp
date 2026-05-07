@@ -1,9 +1,10 @@
 import { Icon } from '@iconify/react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import Button from '@/shared/components/ui/Button';
+import { Pagination } from '@/shared/components/ui/Pagination';
 import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
 import { ROUTES } from '@/shared/constants/routes';
@@ -33,6 +34,7 @@ const monthOptions = [
   { label: 'November', value: '10' },
   { label: 'December', value: '11' },
 ] as const;
+const ADMIN_EVENTS_PER_PAGE = 6;
 
 function parseEventDate(dateStr?: string) {
   if (!dateStr) return null;
@@ -161,7 +163,7 @@ function AdminEventsCard({ event }: { event: Event }) {
 
         <div className="flex min-w-0 flex-1 flex-col">
           <div className="flex flex-wrap items-start justify-between gap-3">
-            <h2 className="max-w-3xl text-[1.45rem] font-bold leading-tight text-accent-950 transition-colors duration-200 group-hover:text-primary-700">
+            <h2 className="max-w-3xl text-[1rem] font-bold leading-tight text-accent-950 transition-colors duration-200 group-hover:text-primary-700">
               {event.title}
             </h2>
             <span
@@ -173,7 +175,7 @@ function AdminEventsCard({ event }: { event: Event }) {
             </span>
           </div>
 
-          <p className="mt-2 line-clamp-2 text-base leading-relaxed text-accent-500">
+          <p className="mt-2 line-clamp-2 text-[0.875rem] leading-relaxed text-accent-500">
             {formatEventSummary(event)}
           </p>
 
@@ -253,6 +255,7 @@ function AdminEventsSkeleton() {
 export default function AdminEventsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedMonth, setSelectedMonth] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
 
   const { data: events = [], isLoading, isError, refetch } = useAllEvents();
 
@@ -276,6 +279,23 @@ export default function AdminEventsPage() {
       return haystack.includes(normalizedSearch);
     });
   }, [events, searchTerm, selectedMonth]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredEvents.length / ADMIN_EVENTS_PER_PAGE));
+  const visibleEvents = filteredEvents.slice(
+    (currentPage - 1) * ADMIN_EVENTS_PER_PAGE,
+    currentPage * ADMIN_EVENTS_PER_PAGE,
+  );
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
+
+  const changePage = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <>
@@ -312,9 +332,12 @@ export default function AdminEventsPage() {
                     <SearchInput
                       id="admin-events-search"
                       value={searchTerm}
-                      onValueChange={setSearchTerm}
+                      onValueChange={(value) => {
+                        setSearchTerm(value);
+                        setCurrentPage(1);
+                      }}
                       placeholder="Search events"
-                      className="w-full"
+                      className="w-1/2"
                     />
                   </div>
 
@@ -322,7 +345,10 @@ export default function AdminEventsPage() {
                     <span className="sr-only">Filter events by month</span>
                     <SelectInput
                       value={selectedMonth}
-                      onChange={(event) => setSelectedMonth(event.target.value)}
+                      onChange={(event) => {
+                        setSelectedMonth(event.target.value);
+                        setCurrentPage(1);
+                      }}
                       options={monthOptions}
                       className="gap-0"
                       controlClassName="rounded-full border-white bg-white px-5 py-3 pr-11 text-base font-semibold text-accent-600 shadow-[0_10px_28px_rgba(15,23,42,0.06)] focus:border-primary-200 focus:ring-4 focus:ring-primary-100"
@@ -332,7 +358,7 @@ export default function AdminEventsPage() {
 
                 <AppLink
                   href={EVENT_ROUTES.CREATE}
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-primary-500 px-6 py-3 text-base font-semibold text-white no-underline shadow-[0_10px_26px_rgba(37,99,235,0.18)] transition hover:bg-primary-600"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-primary-500 px-4 py-2 text-base font-semibold text-white no-underline shadow-[0_10px_26px_rgba(37,99,235,0.18)] transition hover:bg-primary-600"
                 >
                   Create Event
                   <Icon icon="mdi:plus" className="h-4 w-4" />
@@ -340,11 +366,18 @@ export default function AdminEventsPage() {
               </div>
 
               {filteredEvents.length > 0 ? (
-                <div className="mt-6 grid gap-5 xl:grid-cols-2">
-                  {filteredEvents.map((event) => (
-                    <AdminEventsCard key={event.id} event={event} />
-                  ))}
-                </div>
+                <>
+                  <div className="mt-6 grid gap-5 xl:grid-cols-2">
+                    {visibleEvents.map((event) => (
+                      <AdminEventsCard key={event.id} event={event} />
+                    ))}
+                  </div>
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={changePage}
+                  />
+                </>
               ) : (
                 <div className="mt-6 rounded-[1.5rem] bg-white p-8 text-center shadow-[0_10px_28px_rgba(15,23,42,0.06)] ring-1 ring-black/5">
                   <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-accent-50 text-accent-500">
