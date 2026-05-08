@@ -37,6 +37,7 @@ const typeFilters: Array<{ label: string; value: 'all' | AnnouncementType }> = [
 ];
 
 const DESKTOP_SIDE_CARD_GAP_PX = 14;
+const DESKTOP_COMPACT_STACK_HEIGHT_SCALE = 0.77;
 const ANNOUNCEMENTS_PER_PAGE = 8;
 
 function formatAnnouncementDate(date: string) {
@@ -145,9 +146,13 @@ export default function BlogIndexPage() {
 
   const [featured, ...latest] = pageAnnouncements;
   const isAdmin = user?.role === 'admin';
-  const compactCardHeight =
+  const compactStackHeight =
     featuredCardHeight !== null
-      ? Math.max((featuredCardHeight - DESKTOP_SIDE_CARD_GAP_PX * 2) / 3, 0)
+      ? Math.max(featuredCardHeight * DESKTOP_COMPACT_STACK_HEIGHT_SCALE, 0)
+      : null;
+  const compactCardHeight =
+    compactStackHeight !== null
+      ? Math.max((compactStackHeight - DESKTOP_SIDE_CARD_GAP_PX * 2) / 3, 0)
       : null;
 
   useEffect(() => {
@@ -325,7 +330,7 @@ export default function BlogIndexPage() {
 
                 <div
                   className={sideListClassName}
-                  style={featuredCardHeight ? { height: `${featuredCardHeight}px` } : undefined}
+                  style={compactStackHeight ? { height: `${compactStackHeight}px` } : undefined}
                 >
                   {latest.slice(0, 3).map((item) => (
                     <AnnouncementCard key={item.slug} item={item} compact />

@@ -11,15 +11,24 @@ import { SEO } from '@/shared/common/SEO';
 import { DonationButton } from '@/shared/components/ui/DonationButton';
 import { ROUTES } from '@/shared/constants/routes';
 
+const congratulationsIcon = new URL(
+  '../../../../public/welfare/congratulations.svg',
+  import.meta.url,
+).href;
+const wellnessIcon = new URL('../../../../public/welfare/wellness.svg', import.meta.url).href;
+const bereavementIcon = new URL('../../../../public/welfare/bereavement.svg', import.meta.url).href;
+const emergencyIcon = new URL('../../../../public/welfare/Emergency.svg', import.meta.url).href;
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface WelfareService {
   id: string;
   title: string;
   description: string;
-  icon: string;
-  iconBg: string;
-  iconColor: string;
+  icon?: string;
+  imageSrc?: string;
+  iconBg?: string;
+  iconColor?: string;
   href?: string;
 }
 
@@ -31,27 +40,21 @@ const topServices: WelfareService[] = [
     title: 'Congratulations',
     description:
       'We celebrate with you! Wedding gifts, new baby welcomes, and milestone birthday acknowledgments.',
-    icon: 'mdi:party-popper',
-    iconBg: 'bg-orange-100',
-    iconColor: 'text-orange-500',
+    imageSrc: congratulationsIcon,
   },
   {
     id: 'wellness',
     title: 'Wellness & Medical Support',
     description:
       'Financial and logistical assistance for members facing critical health challenges or sudden hardships.',
-    icon: 'mdi:heart-plus-outline',
-    iconBg: 'bg-teal-100',
-    iconColor: 'text-teal-500',
+    imageSrc: wellnessIcon,
   },
   {
     id: 'bereavement',
     title: 'Bereavement Support',
     description:
       'Providing compassionate support and guidance during times of loss, helping you navigate grief with care and understanding.',
-    icon: 'mdi:candle',
-    iconBg: 'bg-gray-100',
-    iconColor: 'text-gray-500',
+    imageSrc: bereavementIcon,
   },
 ];
 
@@ -61,9 +64,7 @@ const bottomServices: WelfareService[] = [
     title: 'Emergency & Crisis Support',
     description:
       'Immediate support for urgent situations, connecting you to the help and resources you need when it matters most.',
-    icon: 'mdi:hand-extended-outline',
-    iconBg: 'bg-red-100',
-    iconColor: 'text-red-500',
+    imageSrc: emergencyIcon,
   },
   {
     id: 'professional',
@@ -89,11 +90,23 @@ function ServiceCard({
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sm:p-6 hover:border-primary-200 hover:shadow-md transition-all cursor-pointer flex flex-col gap-4">
       {/* Header: icon + title inline */}
       <div className={`flex items-center gap-4 ${horizontal ? '' : ''}`}>
-        <div
-          className={`w-14 h-14 rounded-2xl ${service.iconBg} flex items-center justify-center flex-shrink-0`}
-        >
-          <Icon icon={service.icon} className={`w-7 h-7 ${service.iconColor}`} />
-        </div>
+        {service.imageSrc ? (
+          <img
+            src={service.imageSrc}
+            alt=""
+            aria-hidden="true"
+            className="h-14 w-14 flex-shrink-0 object-contain"
+          />
+        ) : (
+          <div
+            className={`flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl ${service.iconBg ?? 'bg-gray-100'}`}
+          >
+            <Icon
+              icon={service.icon ?? 'mdi:briefcase-outline'}
+              className={`h-7 w-7 ${service.iconColor ?? 'text-gray-500'}`}
+            />
+          </div>
+        )}
         <h2 className="text-lg font-bold text-gray-900 leading-snug">{service.title}</h2>
       </div>
 

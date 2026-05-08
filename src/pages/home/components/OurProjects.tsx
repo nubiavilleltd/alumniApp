@@ -28,7 +28,7 @@ function HomeProjectCard({ project, index }: { project: Project; index: number }
   const meta = getProjectMeta(project);
 
   return (
-    <AppLink href={ROUTES.PROJECTS.DETAIL(project.id)} className="home-project-card">
+    <article className="home-project-card">
       <img src={getProjectImage(project, index)} alt="" className="home-project-card__image" />
 
       <div className="home-project-card__panel">
@@ -48,12 +48,12 @@ function HomeProjectCard({ project, index }: { project: Project; index: number }
           )}
         </div>
 
-        <span className="home-card-link">
+        <AppLink href={ROUTES.PROJECTS.DETAIL(project.id)} className="home-card-link">
           View Details
           <Icon icon="mdi:chevron-right" aria-hidden="true" />
-        </span>
+        </AppLink>
       </div>
-    </AppLink>
+    </article>
   );
 }
 

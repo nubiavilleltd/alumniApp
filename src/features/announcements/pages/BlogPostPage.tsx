@@ -12,6 +12,7 @@ import { ANNOUNCEMENT_ROUTES } from '@/features/announcements/routes';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 
 const FALLBACK_IMAGE = '/news-1.png';
+const pageShellClassName = 'container-custom pb-16 pt-4 sm:pb-14 sm:pt-5';
 
 function formatAnnouncementDate(date?: string) {
   if (!date) return '';
@@ -86,7 +87,7 @@ export default function BlogPostPage() {
       />
 
       <main className="announcements-page">
-        <section className="announcements-shell container-custom">
+        <section className={pageShellClassName}>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <AppLink
               href={ANNOUNCEMENT_ROUTES.ROOT}
