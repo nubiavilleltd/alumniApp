@@ -20,7 +20,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
             onClick={() => setShow((prev) => !prev)}
             className="password-input__toggle px-3 text-gray-400 hover:text-gray-600 transition-colors bg-transparent"
           >
-            <Icon icon={show ? 'mdi:eye-off-outline' : 'mdi:eye-outline'} className="w-4 h-4" />
+            <Icon icon={show ? 'mdi:eye-outline' : 'mdi:eye-off-outline'} className="w-4 h-4" />
           </button>
         }
         {...rest}

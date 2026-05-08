@@ -72,6 +72,97 @@ function UnregisterModal({
 
 // ─── Event card ───────────────────────────────────────────────────────────────
 
+// function MyEventCard({
+//   event,
+//   isPast,
+//   onUnregisterClick,
+// }: {
+//   event: Event;
+//   isPast: boolean;
+//   onUnregisterClick: (e: React.MouseEvent) => void;
+// }) {
+//   const navigate = useNavigate();
+//   const isCancelled = event.status === 'cancelled';
+
+//   const dateDisplay = (() => {
+//     const d = new Date(event.startDate);
+//     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+//   })();
+
+//   return (
+//     <div
+//       onClick={() => navigate(EVENT_ROUTES.DETAIL(event.id))}
+//       className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-all cursor-pointer group"
+//     >
+//       {/* Image */}
+//       <div className="aspect-[16/9] overflow-hidden bg-gray-100 relative">
+//         {event.image ? (
+//           <img
+//             src={event.image}
+//             alt={event.title}
+//             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+//             loading="lazy"
+//           />
+//         ) : (
+//           <div className="w-full h-full flex items-center justify-center bg-primary-50">
+//             <Icon icon="mdi:calendar-month-outline" className="w-10 h-10 text-primary-200" />
+//           </div>
+//         )}
+
+//         {/* Badges overlay */}
+//         <div className="absolute top-2.5 left-2.5 flex gap-1.5 flex-wrap">
+//           {isCancelled && (
+//             <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-gray-700/90 text-white">
+//               Cancelled
+//             </span>
+//           )}
+//           {isPast && !isCancelled && (
+//             <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-600/90 text-white flex items-center gap-1">
+//               <Icon icon="mdi:check-circle" className="w-3 h-3" /> Attended
+//             </span>
+//           )}
+//         </div>
+//       </div>
+
+//       {/* Content */}
+//       <div className="p-4">
+//         <h3 className="font-bold text-gray-900 text-sm leading-snug mb-1 line-clamp-2">
+//           {event.title}
+//         </h3>
+//         <p className="text-gray-500 text-xs leading-relaxed line-clamp-2 mb-3">
+//           {event.description}
+//         </p>
+
+//         {event.location && (
+//           <p className="text-gray-400 text-xs flex items-center gap-1 mb-1 truncate">
+//             <Icon icon="mdi:map-marker-outline" className="w-3.5 h-3.5 flex-shrink-0" />
+//             <span className="truncate">{event.location}</span>
+//           </p>
+//         )}
+
+//         <p className="text-gray-400 text-xs flex items-center gap-1">
+//           <Icon icon="mdi:clock-outline" className="w-3.5 h-3.5 flex-shrink-0" />
+//           {dateDisplay}
+//         </p>
+
+//         {/* Unregister — upcoming + not cancelled only, stops propagation */}
+//         {!isPast && !isCancelled && (
+//           <button
+//             type="button"
+//             onClick={onUnregisterClick}
+//             className="mt-3 flex items-center gap-1 text-red-500 hover:text-red-600 text-xs font-medium transition-colors"
+//           >
+//             <Icon icon="mdi:close-circle-outline" className="w-3.5 h-3.5" />
+//             Unregister
+//           </button>
+//         )}
+//       </div>
+//     </div>
+//   );
+// }
+
+// ─── Event card ───────────────────────────────────────────────────────────────
+
 function MyEventCard({
   event,
   isPast,
@@ -84,32 +175,60 @@ function MyEventCard({
   const navigate = useNavigate();
   const isCancelled = event.status === 'cancelled';
 
-  const dateDisplay = (() => {
-    const d = new Date(event.startDate);
-    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  // Date range: show "startDate - endDate" or just startDate
+  // const formatEventDate = (iso: string) =>
+  //   new Date(iso).toLocaleDateString('en-US', {
+  //     month: 'short',
+  //     day: 'numeric',
+  //     year: 'numeric',
+  //   });
+
+  // const startLabel = event.startDate ? formatEventDate(event.startDate) : null;
+  // const endLabel   = event.endDate   ? formatEventDate(event.endDate)   : null;
+  // const dateRange  = startLabel && endLabel
+  //   ? `${startLabel} - ${endLabel}`
+  //   : startLabel ?? null;
+
+  const formatEventDate = (iso: string) =>
+    new Date(iso).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+
+  // Only show a range if endDate exists AND is a different calendar day from startDate
+  const startLabel = event.startDate ? formatEventDate(event.startDate) : null;
+
+  const endLabel = (() => {
+    if (!event.endDate || !event.startDate) return null;
+    const start = new Date(event.startDate).toDateString();
+    const end = new Date(event.endDate).toDateString();
+    return start !== end ? formatEventDate(event.endDate) : null;
   })();
+
+  const dateRange = startLabel && endLabel ? `${startLabel} - ${endLabel}` : (startLabel ?? null);
 
   return (
     <div
       onClick={() => navigate(EVENT_ROUTES.DETAIL(event.id))}
-      className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-all cursor-pointer group"
+      className="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-all cursor-pointer group flex flex-col p-3"
     >
-      {/* Image */}
-      <div className="aspect-[16/9] overflow-hidden bg-gray-100 relative">
+      {/* ── Image ── */}
+      <div className="overflow-hidden rounded-3xl bg-gray-100 relative">
         {event.image ? (
           <img
             src={event.image}
             alt={event.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full aspect-[16/9] object-cover group-hover:scale-105 transition-transform duration-300 rounded-3xl"
             loading="lazy"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-primary-50">
-            <Icon icon="mdi:calendar-month-outline" className="w-10 h-10 text-primary-200" />
+          <div className="w-full aspect-[16/9] flex items-center justify-center bg-gray-100 rounded-3xl">
+            <Icon icon="mdi:calendar-month-outline" className="w-10 h-10 text-gray-300" />
           </div>
         )}
 
-        {/* Badges overlay */}
+        {/* Status badges */}
         <div className="absolute top-2.5 left-2.5 flex gap-1.5 flex-wrap">
           {isCancelled && (
             <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-gray-700/90 text-white">
@@ -124,33 +243,41 @@ function MyEventCard({
         </div>
       </div>
 
-      {/* Content */}
-      <div className="p-4">
-        <h3 className="font-bold text-gray-900 text-sm leading-snug mb-1 line-clamp-2">
+      {/* ── Content ── */}
+      <div className="py-2 flex flex-col flex-1">
+        {/* Title */}
+        <h3 className="font-bold text-gray-900 text-base leading-snug mb-1.5 line-clamp-2">
           {event.title}
         </h3>
-        <p className="text-gray-500 text-xs leading-relaxed line-clamp-2 mb-3">
+
+        {/* Description */}
+        <p className="text-gray-500 text-sm leading-relaxed line-clamp-2 mb-4">
           {event.description}
         </p>
 
-        {event.location && (
-          <p className="text-gray-400 text-xs flex items-center gap-1 mb-1 truncate">
-            <Icon icon="mdi:map-marker-outline" className="w-3.5 h-3.5 flex-shrink-0" />
-            <span className="truncate">{event.location}</span>
-          </p>
-        )}
+        {/* Meta — pushed to bottom */}
+        <div className="mt-auto flex flex-col gap-1.5">
+          {event.location && (
+            <p className="text-gray-500 text-sm flex items-center gap-1.5 truncate">
+              <Icon icon="mdi:map-marker-outline" className="w-4 h-4 flex-shrink-0 text-gray-400" />
+              <span className="truncate">{event.location}</span>
+            </p>
+          )}
 
-        <p className="text-gray-400 text-xs flex items-center gap-1">
-          <Icon icon="mdi:clock-outline" className="w-3.5 h-3.5 flex-shrink-0" />
-          {dateDisplay}
-        </p>
+          {dateRange && (
+            <p className="text-gray-500 text-sm flex items-center gap-1.5">
+              <Icon icon="mdi:clock-outline" className="w-4 h-4 flex-shrink-0 text-gray-400" />
+              {dateRange}
+            </p>
+          )}
+        </div>
 
-        {/* Unregister — upcoming + not cancelled only, stops propagation */}
+        {/* Unregister — upcoming + not cancelled only */}
         {!isPast && !isCancelled && (
           <button
             type="button"
             onClick={onUnregisterClick}
-            className="mt-3 flex items-center gap-1 text-red-500 hover:text-red-600 text-xs font-medium transition-colors"
+            className="mt-4 self-start flex items-center gap-1 text-red-500 hover:text-red-600 text-xs font-medium transition-colors"
           >
             <Icon icon="mdi:close-circle-outline" className="w-3.5 h-3.5" />
             Unregister
@@ -165,16 +292,35 @@ function MyEventCard({
 
 function MyEventCardSkeleton() {
   return (
-    <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 animate-pulse">
-      <div className="aspect-[16/9] bg-gray-200" />
-      <div className="p-4 space-y-2">
-        <div className="h-4 bg-gray-200 rounded w-3/4" />
-        <div className="h-3 bg-gray-200 rounded w-full" />
-        <div className="h-3 bg-gray-200 rounded w-1/2" />
+    <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 animate-pulse flex flex-col">
+      <div className="aspect-[16/9] bg-gray-200 rounded-t-2xl" />
+      <div className="p-4 flex flex-col gap-2.5">
+        <div className="h-5 bg-gray-200 rounded w-3/4" />
+        <div className="h-4 bg-gray-200 rounded w-full" />
+        <div className="h-4 bg-gray-200 rounded w-5/6" />
+        <div className="mt-2 flex flex-col gap-2">
+          <div className="h-3.5 bg-gray-200 rounded w-2/3" />
+          <div className="h-3.5 bg-gray-200 rounded w-1/2" />
+        </div>
       </div>
     </div>
   );
 }
+
+// ─── Skeleton card ────────────────────────────────────────────────────────────
+
+// function MyEventCardSkeleton() {
+//   return (
+//     <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 animate-pulse">
+//       <div className="aspect-[16/9] bg-gray-200" />
+//       <div className="p-4 space-y-2">
+//         <div className="h-4 bg-gray-200 rounded w-3/4" />
+//         <div className="h-3 bg-gray-200 rounded w-full" />
+//         <div className="h-3 bg-gray-200 rounded w-1/2" />
+//       </div>
+//     </div>
+//   );
+// }
 
 // ─── Empty state ──────────────────────────────────────────────────────────────
 
@@ -207,6 +353,8 @@ function EmptyState({ type }: { type: 'upcoming' | 'past' }) {
 export function MyEventsPage() {
   // TODO: myEvents empty until backend implements POST /get_events { user_id }
   const { events: myEvents = [], isLoading } = useMyEvents();
+
+  console.log('myEvents', { myEvents });
   const cancelMutation = useCancelRegistration();
   const [unregisterEvent, setUnregisterEvent] = useState<Event | null>(null);
   const [upcomingPage, setUpcomingPage] = useState(1);
@@ -271,9 +419,19 @@ export function MyEventsPage() {
 
       <div className="min-h-screen bg-[#f5f4f0]">
         <div className="container-custom py-7">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-7">
+          {/* <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-7">
             My Registered Events
-          </h1>
+          </h1> */}
+
+          <div className="flex items-center justify-between mb-7">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">My Registered Events</h1>
+            <AppLink
+              href={EVENT_ROUTES.ROOT}
+              className="px-4 py-2 text-sm font-semibold text-primary-500 border border-primary-500 rounded-full hover:bg-primary-50 transition-colors"
+            >
+              Go to Events
+            </AppLink>
+          </div>
 
           {/* Upcoming */}
           {(isLoading || upcomingEvents.length > 0) && (
