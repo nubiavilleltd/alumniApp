@@ -18,6 +18,7 @@ function formatEventDate(date: string) {
 }
 
 function HomeEventCard({ event }: { event: Event }) {
+  console.log('Event:', event);
   return (
     <article className="home-event-card">
       <div className="home-event-card__image-wrap">
@@ -43,7 +44,7 @@ function HomeEventCard({ event }: { event: Event }) {
           )}
           <span>
             <Icon icon="mdi:clock-outline" aria-hidden="true" />
-            {formatEventDate(event.date)}
+            {formatEventDate(event.startDate)}
           </span>
         </div>
 
