@@ -148,7 +148,7 @@ export function ProjectCard({ project, showAdminActions = false, onEdit }: Proje
         <div
           className="
   absolute bottom-0 left-0 right-0
-  h-32 sm:h-36 md:h-40
+  h-40 sm:h-36 md:h-40
   bg-primary-600/80 backdrop-blur-[2px]
   rounded-2xl px-4 pt-3 pb-3
   flex flex-col
@@ -184,10 +184,10 @@ export function ProjectCard({ project, showAdminActions = false, onEdit }: Proje
           {/* View details link */}
           <AppLink
             href={ROUTES.PROJECTS.DETAIL(project.id)}
-            className="mt-auto inline-flex items-center gap-0.5 text-white font-semibold text-[11px] sm:text-xs hover:text-white/80 transition-colors"
+            className="mt-auto inline-flex items-center gap-0.5 text-white font-semibold text-sm hover:text-white/80 transition-colors"
           >
             View Details
-            <Icon icon="mdi:chevron-right" className="w-3.5 h-3.5" />
+            <Icon icon="mdi:chevron-right" className="w-5 h-5" />
           </AppLink>
         </div>
       </div>
