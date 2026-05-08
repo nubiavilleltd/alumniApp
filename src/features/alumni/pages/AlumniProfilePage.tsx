@@ -412,6 +412,7 @@ export function AlumniProfilePage() {
                 city={canSeeAddress ? alumnus.city : undefined}
                 isVolunteer={alumnus.isVolunteer}
                 socials={socials}
+                // mode={isOwner ? 'owner' : isSignedIn ? 'visitor' : 'public'}
                 mode={isOwner ? 'owner' : isSignedIn ? 'visitor' : 'public'}
                 onMessage={handleMessage}
                 isMessaging={isStartingConversation}

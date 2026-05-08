@@ -88,6 +88,7 @@ export function ProfileCard({
   isMessaging,
   onShare,
 }: ProfileCardProps) {
+  console.log('mode mode', { mode });
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sm:p-6 flex flex-col items-center text-center">
       {/* Top row: share + volunteer */}
@@ -160,20 +161,21 @@ export function ProfileCard({
         </AppLink>
       )}
 
-      {mode === 'visitor' && onMessage && (
-        <button
-          type="button"
-          onClick={onMessage}
-          disabled={isMessaging}
-          className="mt-5 w-full inline-flex items-center justify-center gap-2 bg-primary-500 hover:bg-primary-600 disabled:bg-primary-200 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors"
-        >
-          <Icon
-            icon={isMessaging ? 'mdi:loading' : 'mdi:message-outline'}
-            className={`w-4 h-4 ${isMessaging ? 'animate-spin' : ''}`}
-          />
-          {isMessaging ? 'Opening...' : 'Send Message'}
-        </button>
-      )}
+      {mode === 'visitor' ||
+        (mode === 'public' && onMessage && (
+          <button
+            type="button"
+            onClick={onMessage}
+            disabled={isMessaging}
+            className="mt-5 w-full inline-flex items-center justify-center gap-2 bg-primary-500 hover:bg-primary-600 disabled:bg-primary-200 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors"
+          >
+            <Icon
+              icon={isMessaging ? 'mdi:loading' : 'mdi:message-outline'}
+              className={`w-4 h-4 ${isMessaging ? 'animate-spin' : ''}`}
+            />
+            {isMessaging ? 'Opening...' : 'Send Message'}
+          </button>
+        ))}
     </div>
   );
 }
