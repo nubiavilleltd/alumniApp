@@ -9,13 +9,10 @@ import { DonationButton } from '@/shared/components/ui/DonationButton';
 import { ROUTES } from '@/shared/constants/routes';
 import { AppLink } from '@/shared/components/ui/AppLink';
 
-const supportSafetyIcon = new URL('../../../public/resources/support_safety.svg', import.meta.url)
-  .href;
-const careerGrowthIcon = new URL('../../../public/resources/career_growth.svg', import.meta.url)
-  .href;
-const legalReferralIcon = new URL('../../../public/resources/aid_referral.svg', import.meta.url)
-  .href;
-const counsellingIcon = new URL('../../../public/resources/counselling.svg', import.meta.url).href;
+const supportSafetyIcon = '/Resources/support_safety.svg';
+const careerGrowthIcon = '/Resources/career_growth.svg';
+const legalReferralIcon = '/Resources/aid_referral.svg';
+const counsellingIcon = '/Resources/counselling.svg';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 

@@ -11,13 +11,10 @@ import { SEO } from '@/shared/common/SEO';
 import { DonationButton } from '@/shared/components/ui/DonationButton';
 import { ROUTES } from '@/shared/constants/routes';
 
-const congratulationsIcon = new URL(
-  '../../../../public/welfare/congratulations.svg',
-  import.meta.url,
-).href;
-const wellnessIcon = new URL('../../../../public/welfare/wellness.svg', import.meta.url).href;
-const bereavementIcon = new URL('../../../../public/welfare/bereavement.svg', import.meta.url).href;
-const emergencyIcon = new URL('../../../../public/welfare/Emergency.svg', import.meta.url).href;
+const congratulationsIcon = '/Welfare/congratulations.svg';
+const wellnessIcon = '/Welfare/wellness.svg';
+const bereavementIcon = '/Welfare/bereavement.svg';
+const emergencyIcon = '/Welfare/Emergency.svg';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
