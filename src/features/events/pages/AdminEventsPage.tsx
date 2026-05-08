@@ -8,6 +8,7 @@ import { Pagination } from '@/shared/components/ui/Pagination';
 import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
 import { ROUTES } from '@/shared/constants/routes';
+import { formatDateRange, parseDateInput } from '@/shared/utils/dateHelpers';
 import { ADMIN_ROUTES } from '@/features/admin/routes';
 import { useAllEvents } from '../hooks/useEvents';
 import { EVENT_ROUTES } from '../routes';
@@ -36,42 +37,12 @@ const monthOptions = [
 ] as const;
 const ADMIN_EVENTS_PER_PAGE = 6;
 
-function parseEventDate(dateStr?: string) {
-  if (!dateStr) return null;
-
-  const [year, month, day] = dateStr.split('-').map(Number);
-  if ([year, month, day].some((value) => Number.isNaN(value))) return null;
-
-  return new Date(year, month - 1, day);
-}
-
 function formatEventSummary(event: Event) {
   return event.description?.trim() || event.content?.trim() || 'No event summary provided yet.';
 }
 
-function formatDateLabel(date?: Date | null) {
-  if (!date) return 'Date to be announced';
-
-  return date.toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
-}
-
 function formatEventSchedule(event: Event) {
-  const startDate = parseEventDate(event.startDate);
-  const endDate = parseEventDate(event.endDate);
-
-  if (!startDate) {
-    return 'Date to be announced';
-  }
-
-  if (!endDate || startDate.getTime() === endDate.getTime()) {
-    return formatDateLabel(startDate);
-  }
-
-  return `${formatDateLabel(startDate)} - ${formatDateLabel(endDate)}`;
+  return formatDateRange(event.startDate, event.endDate);
 }
 
 function sortEventsForAdmin(events: Event[]) {
@@ -79,8 +50,8 @@ function sortEventsForAdmin(events: Event[]) {
   today.setHours(0, 0, 0, 0);
 
   return [...events].sort((left, right) => {
-    const leftDate = parseEventDate(left.startDate);
-    const rightDate = parseEventDate(right.startDate);
+    const leftDate = parseDateInput(left.startDate);
+    const rightDate = parseDateInput(right.startDate);
 
     if (!leftDate && !rightDate) return left.title.localeCompare(right.title);
     if (!leftDate) return 1;
@@ -138,13 +109,15 @@ function AdminEventsCard({ event }: { event: Event }) {
               <span>{event.location?.trim() || 'Location to be announced'}</span>
             </div>
 
-            <div className="flex items-start gap-2">
-              <Icon
-                icon="mdi:clock-outline"
-                className="mt-0.5 h-4 w-4 flex-shrink-0 text-accent-400"
-              />
-              <span>{formatEventSchedule(event)}</span>
-            </div>
+            {formatEventSchedule(event) && (
+              <div className="flex items-start gap-2">
+                <Icon
+                  icon="mdi:clock-outline"
+                  className="mt-0.5 h-4 w-4 flex-shrink-0 text-accent-400"
+                />
+                <span>{formatEventSchedule(event)}</span>
+              </div>
+            )}
           </div>
         </div>
       </article>
@@ -201,7 +174,7 @@ export default function AdminEventsPage() {
     const normalizedSearch = searchTerm.trim().toLowerCase();
 
     return sortEventsForAdmin(events).filter((event) => {
-      const eventDate = parseEventDate(event.startDate);
+      const eventDate = parseDateInput(event.startDate);
       const matchesMonth =
         selectedMonth === 'all' ||
         (eventDate ? eventDate.getMonth() === Number(selectedMonth) : false);

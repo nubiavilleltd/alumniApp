@@ -14,6 +14,7 @@ import axios from 'axios';
 import { logError } from '@/lib/errors/errorUtils';
 
 import { handleTokenRefresh } from '@/features/authentication/services/refreshToken.service';
+import { didLastTokenRefreshFailDueToAuth } from '@/features/authentication/services/refreshToken.service';
 import { AUTH_ROUTES } from '@/features/authentication/routes';
 import { useTokenStore } from '@/features/authentication/stores/useTokenStore';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
@@ -106,14 +107,15 @@ apiClient.interceptors.response.use(
           return apiClient(error.config);
         }
 
-        // ❌ Refresh failed → logout
-        const clearTokens = useTokenStore.getState().clearTokens;
-        const clearIdentity = useIdentityStore.getState().clearIdentity;
-        clearTokens();
-        clearIdentity();
+        if (didLastTokenRefreshFailDueToAuth()) {
+          const clearTokens = useTokenStore.getState().clearTokens;
+          const clearIdentity = useIdentityStore.getState().clearIdentity;
+          clearTokens();
+          clearIdentity();
 
-        if (!window.location.pathname.startsWith(AUTH_ROUTES.LOGIN)) {
-          window.location.href = `${AUTH_ROUTES.LOGIN}?session_expired=true`;
+          if (!window.location.pathname.startsWith(AUTH_ROUTES.LOGIN)) {
+            window.location.href = `${AUTH_ROUTES.LOGIN}?session_expired=true`;
+          }
         }
       }
 

@@ -12,7 +12,7 @@ import { ProjectNotFoundPage } from '../components/ProjectNotFoundPage';
 import type { Project } from '../types/project.types';
 import { ROUTES } from '@/shared/constants/routes';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
-import { formatDate } from '@/shared/utils/dateHelpers';
+import { formatDateRange } from '@/shared/utils/dateHelpers';
 
 const PLACEHOLDER = 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=700&q=80';
 
@@ -159,15 +159,14 @@ export default function ProjectDetailsPage() {
 
   const images = project.images?.length ? project.images : placeholderImages;
 
-  const startDate = formatDate(project.startDate);
-  const endDate = formatDate(project.endDate);
-
-  const dateRange =
-    startDate && endDate
-      ? `${startDate} - ${endDate}`
-      : startDate
-        ? `${startDate} - Present`
-        : null;
+  const dateRange = formatDateRange(project.startDate, project.endDate, {
+    locale: 'en-GB',
+    formatOptions: {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    },
+  });
 
   const breadcrumbItems = [
     { label: 'Home', href: ROUTES.HOME },

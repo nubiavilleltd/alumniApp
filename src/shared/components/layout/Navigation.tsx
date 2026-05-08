@@ -87,8 +87,9 @@ const desktopPrimaryLinkClassName = `${desktopLinkBaseClassName} whitespace-nowr
 const desktopSecondaryLinkClassName = `${desktopLinkBaseClassName} text-[clamp(0.95rem,1.18vw,1.35rem)] after:bottom-[-0.55rem]`;
 const desktopPanelClassName =
   'absolute top-[calc(100%+1rem)] z-[60] overflow-hidden border border-[#d7e6ef] bg-white shadow-[0_1.25rem_2.5rem_rgba(7,17,22,0.14)]';
-const desktopMenuLinkClassName =
-  'flex items-center gap-3 px-6 py-[0.95rem] text-[clamp(1.05rem,1.3vw,1.35rem)] font-bold leading-[1.25] text-[#4f5864] no-underline transition-colors duration-200 hover:bg-primary-50 hover:text-primary-700';
+const desktopDropdownPanelSizeClassName = 'w-[17.5rem] rounded-[0.9rem] py-[0.45rem]';
+const desktopDropdownMenuLinkClassName =
+  'flex items-center gap-3 px-4 py-[0.8rem] text-left text-[0.92rem] font-bold text-[#4f5864] no-underline transition-colors duration-200 hover:bg-primary-50 hover:text-primary-700';
 const desktopMenuActiveLinkClassName = 'bg-primary-50 text-primary-700';
 const accountPillClassName =
   'inline-flex min-h-[3.35rem] items-center rounded-full border border-transparent bg-white text-[#0d78cb] no-underline shadow-none transition-opacity duration-200 hover:bg-white/95 hover:text-[#0d78cb]';
@@ -234,7 +235,8 @@ function DesktopDropdown({ item }: { item: NavItem }) {
         <div
           className={cn(
             desktopPanelClassName,
-            'w-[min(19.5rem,calc(100vw-2rem))] rounded-[1.05rem] py-4',
+            desktopDropdownPanelSizeClassName,
+            'max-w-[calc(100vw-2rem)]',
             item.label === 'Marketplace' ? 'right-0 left-auto' : 'left-0',
           )}
         >
@@ -243,7 +245,7 @@ function DesktopDropdown({ item }: { item: NavItem }) {
               key={child.url}
               href={child.url}
               className={cn(
-                desktopMenuLinkClassName,
+                desktopDropdownMenuLinkClassName,
                 isPathActive(pathname, child.url) && 'bg-primary-50 text-primary-700',
               )}
               onClick={() => setOpen(false)}
@@ -338,15 +340,13 @@ function UserDropdown({
       </button>
 
       {open && (
-        <div
-          className={cn(desktopPanelClassName, 'right-0 w-[17.5rem] rounded-[0.9rem] py-[0.45rem]')}
-        >
+        <div className={cn(desktopPanelClassName, desktopDropdownPanelSizeClassName, 'right-0')}>
           {menuItems.map((item) => (
             <AppLink
               key={item.url}
               href={item.url}
               className={cn(
-                'flex items-center justify-between gap-3 px-4 py-[0.8rem] text-left text-[0.92rem] font-bold text-[#4f5864] transition-colors duration-200 hover:bg-primary-50 hover:text-primary-700',
+                `${desktopDropdownMenuLinkClassName} justify-between`,
                 isPathActive(pathname, item.url) && desktopMenuActiveLinkClassName,
               )}
               onClick={() => setOpen(false)}

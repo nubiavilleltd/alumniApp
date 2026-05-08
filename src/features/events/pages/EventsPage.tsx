@@ -16,13 +16,9 @@ import { MonthYearPicker } from '@/shared/components/ui/MonthYearPicker';
 import { Pagination } from '@/shared/components/ui/Pagination';
 import { ROUTES } from '@/shared/constants/routes';
 import { SearchInput } from '@/shared/components/ui/input/SearchInput';
+import { formatDateRange, parseDateInput } from '@/shared/utils/dateHelpers';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
-
-function parseDateOnly(dateStr: string) {
-  const [y, m, d] = dateStr.split('-').map(Number);
-  return new Date(y, m - 1, d);
-}
 
 function formatDateKey(date: Date) {
   return (
@@ -34,9 +30,8 @@ function formatDateKey(date: Date) {
   );
 }
 
-function formatEventDate(event: Event): string {
-  const d = parseDateOnly(event.startDate);
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+function formatEventDate(event: Event) {
+  return formatDateRange(event.startDate, event.endDate);
 }
 
 // Stable pastel color per event, deterministic from id
@@ -138,7 +133,10 @@ function Calendar({
   const eventsByDate = useMemo(() => {
     const map = new Map<string, Event[]>();
     events.forEach((ev) => {
-      const key = formatDateKey(parseDateOnly(ev.startDate));
+      const parsedDate = parseDateInput(ev.startDate);
+      if (!parsedDate) return;
+
+      const key = formatDateKey(parsedDate);
       map.set(key, [...(map.get(key) || []), ev]);
     });
     return map;
@@ -278,10 +276,12 @@ function EventListItem({
             <span className="truncate">{event.location}</span>
           </p>
         )}
-        <p className="text-gray-400 text-[11px] mt-0.5 flex items-center gap-1">
-          <Icon icon="mdi:clock-outline" className="w-3 h-3 flex-shrink-0" />
-          {formatEventDate(event)}
-        </p>
+        {formatEventDate(event) && (
+          <p className="text-gray-400 text-[11px] mt-0.5 flex items-center gap-1">
+            <Icon icon="mdi:clock-outline" className="w-3 h-3 flex-shrink-0" />
+            {formatEventDate(event)}
+          </p>
+        )}
       </div>
 
       <Icon icon="mdi:chevron-right" className="w-4 h-4 text-primary-500 flex-shrink-0" />
@@ -323,7 +323,9 @@ export function EventsPage() {
   const allEvents = useMemo(
     () =>
       [...upcoming, ...past].sort(
-        (a, b) => parseDateOnly(a.startDate).getTime() - parseDateOnly(b.startDate).getTime(),
+        (a, b) =>
+          (parseDateInput(a.startDate)?.getTime() ?? Number.POSITIVE_INFINITY) -
+          (parseDateInput(b.startDate)?.getTime() ?? Number.POSITIVE_INFINITY),
       ),
     [upcoming, past],
   );
@@ -332,7 +334,9 @@ export function EventsPage() {
   const calendarMonthEvents = useMemo(
     () =>
       allEvents.filter((e) => {
-        const d = parseDateOnly(e.startDate);
+        const d = parseDateInput(e.startDate);
+        if (!d) return false;
+
         return (
           d.getFullYear() === calendarDate.getFullYear() && d.getMonth() === calendarDate.getMonth()
         );

@@ -20,6 +20,7 @@ import { DeleteConfirmModal } from './DeleteConfirmModal';
 import { handleShare } from '@/shared/utils/share';
 import { toast } from '@/shared/components/ui/Toast';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
+import { formatDateRange } from '@/shared/utils/dateHelpers';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
@@ -74,11 +75,14 @@ export function EventCard({
 
   const isCancelled = event.status === 'cancelled';
 
-  const formattedDate = new Date(event.date).toLocaleDateString('en-GB', {
-    weekday: 'short',
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
+  const formattedDate = formatDateRange(event.startDate, event.endDate, {
+    locale: 'en-GB',
+    formatOptions: {
+      weekday: 'short',
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    },
   });
 
   const eventUrl =
@@ -249,10 +253,12 @@ export function EventCard({
                 {event.location}
               </span>
             )}
-            <span className="flex items-center gap-1">
-              <Icon icon="mdi:calendar-outline" className="w-3 h-3 flex-shrink-0" />
-              {formattedDate}
-            </span>
+            {formattedDate && (
+              <span className="flex items-center gap-1">
+                <Icon icon="mdi:calendar-outline" className="w-3 h-3 flex-shrink-0" />
+                {formattedDate}
+              </span>
+            )}
             {event.startTime && (
               <span className="flex items-center gap-1">
                 <Icon icon="mdi:clock-outline" className="w-3 h-3 flex-shrink-0" />

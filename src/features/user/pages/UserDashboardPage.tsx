@@ -20,6 +20,7 @@ import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 import { usePendingVouches, useApproveVouch, useRejectVouch } from '../hooks/useVoucher';
 import type { PendingVouch } from '../api/voucherApi';
 import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
+import { formatDateRange } from '@/shared/utils/dateHelpers';
 
 // ─── Profile completeness checklist ──────────────────────────────────────────
 
@@ -260,11 +261,7 @@ function AttestationRow({
 // ─── Registered event row ─────────────────────────────────────────────────────
 
 function RegisteredEventRow({ event }: { event: Event }) {
-  const dateStr = new Date(event.startDate).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
+  const dateStr = formatDateRange(event.startDate, event.endDate);
 
   return (
     <AppLink
@@ -296,10 +293,12 @@ function RegisteredEventRow({ event }: { event: Event }) {
             <span className="truncate">{event.location}</span>
           </p>
         )}
-        <p className="text-gray-400 text-[11px] mt-0.5 flex items-center gap-1">
-          <Icon icon="mdi:clock-outline" className="w-3 h-3 flex-shrink-0" />
-          {dateStr}
-        </p>
+        {dateStr && (
+          <p className="text-gray-400 text-[11px] mt-0.5 flex items-center gap-1">
+            <Icon icon="mdi:clock-outline" className="w-3 h-3 flex-shrink-0" />
+            {dateStr}
+          </p>
+        )}
       </div>
     </AppLink>
   );

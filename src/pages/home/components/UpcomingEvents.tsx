@@ -4,21 +4,12 @@ import { useUpcomingEvents } from '@/features/events/hooks/useEvents';
 import type { Event } from '@/features/events/types/event.types';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import { EVENT_ROUTES } from '@/features/events/routes';
+import { formatDateRange } from '@/shared/utils/dateHelpers';
 import { HomeSectionHeader } from './HomeSectionHeader';
 
-function formatEventDate(date: string) {
-  const parsed = new Date(date);
-  if (Number.isNaN(parsed.getTime())) return date;
-
-  return parsed.toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
-}
-
 function HomeEventCard({ event }: { event: Event }) {
-  // console.log('Event:', event);
+  const dateRange = formatDateRange(event.startDate, event.endDate);
+
   return (
     <article className="home-event-card">
       <div className="home-event-card__image-wrap">
@@ -42,10 +33,12 @@ function HomeEventCard({ event }: { event: Event }) {
               {event.location}
             </span>
           )}
-          <span>
-            <Icon icon="mdi:clock-outline" aria-hidden="true" />
-            {formatEventDate(event.startDate)}
-          </span>
+          {dateRange && (
+            <span>
+              <Icon icon="mdi:clock-outline" aria-hidden="true" />
+              {dateRange}
+            </span>
+          )}
         </div>
 
         <AppLink

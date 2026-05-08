@@ -4,6 +4,7 @@ import { useProjects } from '@/features/projects/hooks/useProjects';
 import type { Project } from '@/features/projects/types/project.types';
 import { ROUTES } from '@/shared/constants/routes';
 import EmptyState from '@/shared/components/ui/EmptyState';
+import { formatDateRange } from '@/shared/utils/dateHelpers';
 import { HomeSectionHeader } from './HomeSectionHeader';
 
 const PROJECT_FALLBACK_IMAGES = [
@@ -19,8 +20,8 @@ function getProjectImage(project: Project, index: number) {
 
 function getProjectMeta(project: Project) {
   const location = project.chapterName || 'FGGC Owerri';
-  const year = project.createdAt ? new Date(project.createdAt).getFullYear().toString() : 'Ongoing';
-  return { location, year };
+  const dateRange = formatDateRange(project.startDate, project.endDate);
+  return { location, dateRange };
 }
 
 function HomeProjectCard({ project, index }: { project: Project; index: number }) {
@@ -39,10 +40,12 @@ function HomeProjectCard({ project, index }: { project: Project; index: number }
             <Icon icon="mdi:map-marker-outline" aria-hidden="true" />
             {meta.location}
           </span>
-          <span>
-            <Icon icon="mdi:clock-outline" aria-hidden="true" />
-            {meta.year}
-          </span>
+          {meta.dateRange && (
+            <span>
+              <Icon icon="mdi:clock-outline" aria-hidden="true" />
+              {meta.dateRange}
+            </span>
+          )}
         </div>
 
         <span className="home-card-link">

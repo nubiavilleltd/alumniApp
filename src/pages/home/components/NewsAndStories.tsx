@@ -130,7 +130,7 @@ function AnnouncementListCard({ item }: { item: NewsItem }) {
           </p>
         ) : null}
 
-        <div className="mt-auto pt-3">
+        <div className="mt-3">
           <AnnouncementMeta date={item.date} />
         </div>
       </div>
@@ -161,7 +161,7 @@ function AnnouncementSkeleton() {
         <span className="h-5 w-5/6 rounded-full bg-[#e5e7eb]" />
         <span className="h-4 w-full rounded-full bg-[#e5e7eb]" />
         <span className="h-4 w-3/4 rounded-full bg-[#e5e7eb]" />
-        <span className="mt-auto h-4 w-36 rounded-full bg-[#e5e7eb]" />
+        <span className="mt-3 h-4 w-36 rounded-full bg-[#e5e7eb]" />
       </div>
     </div>
   );

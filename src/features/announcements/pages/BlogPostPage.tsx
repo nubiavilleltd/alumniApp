@@ -4,7 +4,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { SEO } from '@/shared/common/SEO';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { AnnouncementEditorModal } from '@/features/announcements/components/AnnouncementEditorModal';
-import { useAnnouncement } from '@/features/announcements/hooks/useAnnouncements';
+import {
+  useAnnouncement,
+  useDeleteAnnouncement,
+} from '@/features/announcements/hooks/useAnnouncements';
 import { ANNOUNCEMENT_ROUTES } from '@/features/announcements/routes';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 
@@ -49,10 +52,28 @@ export default function BlogPostPage() {
   const navigate = useNavigate();
   const user = useIdentityStore((state) => state.user);
   const { data: announcement, isLoading } = useAnnouncement(slug);
+  const deleteAnnouncement = useDeleteAnnouncement();
   const [isEditorOpen, setIsEditorOpen] = useState(false);
 
   const bodyParagraphs = splitAnnouncementContent(announcement?.content, announcement?.excerpt);
   const isAdmin = user?.role === 'admin';
+
+  async function handleDeleteAnnouncement() {
+    if (!announcement || deleteAnnouncement.isPending) {
+      return;
+    }
+
+    const shouldDelete = window.confirm(
+      `Delete "${announcement.title}"? This action cannot be undone.`,
+    );
+
+    if (!shouldDelete) {
+      return;
+    }
+
+    await deleteAnnouncement.mutateAsync(String(announcement.id));
+    navigate(ANNOUNCEMENT_ROUTES.ROOT, { replace: true });
+  }
 
   return (
     <>
@@ -76,13 +97,31 @@ export default function BlogPostPage() {
             </AppLink>
 
             {isAdmin && announcement && (
-              <button
-                type="button"
-                onClick={() => setIsEditorOpen(true)}
-                className="inline-flex items-center gap-1.5 border-2 border-primary-500 bg-white hover:bg-primary-600 hover:text-white text-primary-500 text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 rounded-full transition-colors shadow-sm whitespace-nowrap"
-              >
-                Edit Announcement
-              </button>
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsEditorOpen(true)}
+                  disabled={deleteAnnouncement.isPending}
+                  className="inline-flex items-center gap-1.5 rounded-full border-2 border-primary-500 bg-white px-3 py-2 text-xs font-semibold text-primary-500 shadow-sm transition-colors hover:bg-primary-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-60 sm:px-4 sm:text-sm whitespace-nowrap"
+                >
+                  Edit Announcement
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => void handleDeleteAnnouncement()}
+                  disabled={deleteAnnouncement.isPending}
+                  className="inline-flex items-center gap-1.5 rounded-full border-2 border-red-500 bg-white px-3 py-2 text-xs font-semibold text-red-500 shadow-sm transition-colors hover:bg-red-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-60 sm:px-4 sm:text-sm whitespace-nowrap"
+                >
+                  <Icon
+                    icon={deleteAnnouncement.isPending ? 'mdi:loading' : 'mdi:delete-outline'}
+                    className={`h-4 w-4 ${deleteAnnouncement.isPending ? 'animate-spin' : ''}`}
+                  />
+                  <span>
+                    {deleteAnnouncement.isPending ? 'Deleting...' : 'Delete Announcement'}
+                  </span>
+                </button>
+              </div>
             )}
           </div>
 

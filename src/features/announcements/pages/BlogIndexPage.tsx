@@ -19,7 +19,7 @@ const cardClassName =
 const cardImageWrapClassName =
   'w-[min(38%,14rem)] basis-[min(38%,14rem)] flex-shrink-0 overflow-hidden rounded-xl bg-[#e9edf1] max-sm:w-full max-sm:basis-auto max-sm:aspect-[16/9] max-sm:rounded-none';
 const cardBodyClassName =
-  'flex min-w-0 flex-1 flex-col justify-center px-4 py-[0.2rem] pr-[0.1rem] max-sm:p-[1.15rem]';
+  'flex min-w-0 flex-1 flex-col justify-start px-4 py-[0.2rem] pr-[0.1rem] max-sm:p-[1.15rem]';
 const metaClassName =
   'm-0 flex items-center gap-[0.55rem] text-sm font-semibold leading-[1.2] text-[#59626c]';
 const actionClassName =
@@ -63,7 +63,7 @@ function AnnouncementCard({ item, compact = false }: { item: NewsItem; compact?:
     ? 'w-[min(34%,9rem)] basis-[min(34%,9rem)] flex-shrink-0 overflow-hidden rounded-[0.9rem] bg-[#e9edf1]'
     : cardImageWrapClassName;
   const bodyClassName = compact
-    ? 'flex min-h-0 min-w-0 flex-1 flex-col justify-center px-2.5 py-0 pr-0'
+    ? 'flex min-h-0 min-w-0 flex-1 flex-col justify-start px-2.5 py-0 pr-0'
     : cardBodyClassName;
   const titleClassName = compact
     ? 'm-0 line-clamp-2 text-[0.92rem] font-bold leading-[1.12] text-[#071116]'

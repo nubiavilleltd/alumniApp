@@ -11,7 +11,7 @@ import { AppLink } from '@/shared/components/ui/AppLink';
 import { useDeleteProject } from '../hooks/useProjects';
 import type { Project } from '../types/project.types';
 import { ROUTES } from '@/shared/constants/routes';
-import { formatDate } from '@/shared/utils/dateHelpers';
+import { formatDateRange } from '@/shared/utils/dateHelpers';
 
 const PLACEHOLDER = 'https://placehold.co/80x80/E5E7EB/6B7280?text=No+Image';
 
@@ -82,15 +82,14 @@ export function ProjectCard({ project, showAdminActions = false, onEdit }: Proje
   const mainImage = project.images?.[0] || PLACEHOLDER;
   const isCompleted = project.status === 'completed';
 
-  const startDate = formatDate(project.startDate);
-  const endDate = formatDate(project.endDate);
-
-  const dateRange =
-    startDate && endDate
-      ? `${startDate} - ${endDate}`
-      : startDate
-        ? `${startDate} - Present`
-        : null;
+  const dateRange = formatDateRange(project.startDate, project.endDate, {
+    locale: 'en-GB',
+    formatOptions: {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    },
+  });
 
   const handleDelete = () => {
     deleteMutation.mutate(project.id, {

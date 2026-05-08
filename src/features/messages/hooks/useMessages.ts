@@ -11,6 +11,7 @@ import type {
 } from '../api/messages.contract';
 import { messagesService } from '../services/messages.service';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
+import { useTokenStore } from '@/features/authentication/stores/useTokenStore';
 
 export const messageKeys = {
   all: ['messages'] as const,
@@ -22,11 +23,12 @@ export const messageKeys = {
 export function useMessagesInbox() {
   const currentUser = useIdentityStore((state) => state.user);
   const viewerMemberId = currentUser?.memberId ?? '';
+  const accessToken = useTokenStore((state) => state.accessToken);
 
   return useQuery({
     queryKey: messageKeys.inbox(viewerMemberId),
     queryFn: () => messagesService.getInbox({ viewerMemberId }),
-    enabled: !!viewerMemberId,
+    enabled: !!viewerMemberId && !!accessToken,
     staleTime: 0,
     refetchOnWindowFocus: false,
     refetchIntervalInBackground: true,
@@ -37,6 +39,7 @@ export function useMessagesInbox() {
 export function useMessageThread(threadId: string | null) {
   const currentUser = useIdentityStore((state) => state.user);
   const viewerMemberId = currentUser?.memberId ?? '';
+  const accessToken = useTokenStore((state) => state.accessToken);
 
   return useQuery({
     queryKey: messageKeys.thread(viewerMemberId, threadId ?? ''),
@@ -45,7 +48,7 @@ export function useMessageThread(threadId: string | null) {
       const response = await messagesService.getThread({ viewerMemberId, threadId });
       return response.thread;
     },
-    enabled: !!viewerMemberId && !!threadId,
+    enabled: !!viewerMemberId && !!accessToken && !!threadId,
     staleTime: 0,
     refetchOnWindowFocus: false,
     refetchIntervalInBackground: true,

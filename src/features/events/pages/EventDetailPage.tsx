@@ -15,6 +15,7 @@ import { useIdentityStore } from '@/features/authentication/stores/useIdentitySt
 import { renderMarkdown } from '@/data/content';
 import { AUTH_ROUTES } from '@/features/authentication/routes';
 import { useEventStatus } from '../hooks/useEventStatus';
+import { formatDateRange } from '@/shared/utils/dateHelpers';
 
 // ─── Countdown ────────────────────────────────────────────────────────────────
 
@@ -281,10 +282,10 @@ export function EventDetailPage() {
   // ── Formatted date ────────────────────────────────────────────────────────
 
   const dateDisplay = (() => {
-    const opts: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric', year: 'numeric' };
-    const start = new Date(event.startDate).toLocaleDateString('en-US', opts);
+    const dateRange = formatDateRange(event.startDate, event.endDate);
     const timePart = [event.startTime, event.endTime].filter(Boolean).join(' - ');
-    return timePart ? `${start} · ${timePart}` : start;
+    if (dateRange && timePart) return `${dateRange} · ${timePart}`;
+    return dateRange;
   })();
 
   // ── Render ────────────────────────────────────────────────────────────────
@@ -420,10 +421,12 @@ export function EventDetailPage() {
                   <span>{event.location}</span>
                 </div>
               )}
-              <div className="flex items-center gap-2 text-gray-600 text-sm">
-                <Icon icon="mdi:clock-outline" className="w-4 h-4 text-gray-400 flex-shrink-0" />
-                <span>{dateDisplay}</span>
-              </div>
+              {dateDisplay && (
+                <div className="flex items-center gap-2 text-gray-600 text-sm">
+                  <Icon icon="mdi:clock-outline" className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                  <span>{dateDisplay}</span>
+                </div>
+              )}
               {!isCancelled && attendeeCount > 0 && (
                 <div className="flex items-center gap-2 text-gray-600 text-sm">
                   <Icon

@@ -27,6 +27,7 @@ import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { Pagination } from '@/shared/components/ui/Pagination';
 import { ROUTES } from '@/shared/constants/routes';
 import { ADMIN_ROUTES } from '@/features/admin/routes';
+import { formatDateRange } from '@/shared/utils/dateHelpers';
 
 const breadcrumbItems = [
   { label: 'Home', href: ROUTES.HOME },
@@ -50,6 +51,14 @@ function EventListItem({
   onClick: () => void;
 }) {
   const isPast = new Date(event.startDate) < new Date();
+  const eventDate = formatDateRange(event.startDate, event.endDate, {
+    locale: 'en-GB',
+    formatOptions: {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    },
+  });
 
   return (
     <button
@@ -66,14 +75,12 @@ function EventListItem({
             {event.title}
           </p>
           <div className="mt-1 flex items-center gap-3 text-xs text-gray-500">
-            <span className="flex items-center gap-1">
-              <Icon icon="mdi:calendar-outline" className="w-3.5 h-3.5" />
-              {new Date(event.startDate).toLocaleDateString('en-GB', {
-                day: 'numeric',
-                month: 'short',
-                year: 'numeric',
-              })}
-            </span>
+            {eventDate && (
+              <span className="flex items-center gap-1">
+                <Icon icon="mdi:calendar-outline" className="w-3.5 h-3.5" />
+                {eventDate}
+              </span>
+            )}
             {event.location && (
               <span className="flex items-center gap-1">
                 <Icon icon="mdi:map-marker-outline" className="w-3.5 h-3.5" />
@@ -337,15 +344,19 @@ export function AdminEventRegistrationsPage() {
                   <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
                     <h2 className="text-xl font-bold text-gray-900">{selectedEvent?.title}</h2>
                     <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
-                      <span className="flex items-center gap-1">
-                        <Icon icon="mdi:calendar-outline" className="w-4 h-4" />
-                        {selectedEvent &&
-                          new Date(selectedEvent.startDate).toLocaleDateString('en-GB', {
-                            day: 'numeric',
-                            month: 'long',
-                            year: 'numeric',
+                      {selectedEvent && (
+                        <span className="flex items-center gap-1">
+                          <Icon icon="mdi:calendar-outline" className="w-4 h-4" />
+                          {formatDateRange(selectedEvent.startDate, selectedEvent.endDate, {
+                            locale: 'en-GB',
+                            formatOptions: {
+                              day: 'numeric',
+                              month: 'long',
+                              year: 'numeric',
+                            },
                           })}
-                      </span>
+                        </span>
+                      )}
                       {selectedEvent?.location && (
                         <span className="flex items-center gap-1">
                           <Icon icon="mdi:map-marker-outline" className="w-4 h-4" />

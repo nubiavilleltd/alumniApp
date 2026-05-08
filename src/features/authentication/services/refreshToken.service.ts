@@ -4,15 +4,27 @@ import { useTokenStore } from '../stores/useTokenStore';
 import { useIdentityStore } from '../stores/useIdentityStore';
 
 let isRefreshing = false;
-let subscribers: ((token: string) => void)[] = [];
+let subscribers: ((token: string | null) => void)[] = [];
+let lastRefreshFailedDueToAuth = false;
 
-function subscribe(callback: (token: string) => void) {
+function subscribe(callback: (token: string | null) => void) {
   subscribers.push(callback);
 }
 
-function notify(newToken: string) {
+function notify(newToken: string | null) {
   subscribers.forEach((cb) => cb(newToken));
   subscribers = [];
+}
+
+function clearAuthSession() {
+  const { clearTokens } = useTokenStore.getState();
+  const { clearIdentity } = useIdentityStore.getState();
+  clearTokens();
+  clearIdentity();
+}
+
+export function didLastTokenRefreshFailDueToAuth() {
+  return lastRefreshFailedDueToAuth;
 }
 
 // export async function refreshAccessToken(): Promise<string | null> {
@@ -51,35 +63,36 @@ function notify(newToken: string) {
 // Queue logic for multiple 401s
 
 export async function refreshAccessToken(): Promise<string | null> {
-  const { refreshToken, clearTokens, setTokens } = useTokenStore.getState();
-  const { clearIdentity } = useIdentityStore.getState();
-
-  if (!refreshToken) {
-    clearTokens();
-    clearIdentity();
-    return null;
-  }
+  const { refreshToken, setTokens } = useTokenStore.getState();
 
   try {
-    const response = await apiClient.post(API_ENDPOINTS.AUTH.REFRESH_TOKEN, {
-      refresh_token: refreshToken,
-    });
+    lastRefreshFailedDueToAuth = false;
+
+    const payload = refreshToken ? { refresh_token: refreshToken } : {};
+    const response = await apiClient.post(API_ENDPOINTS.AUTH.REFRESH_TOKEN, payload);
 
     const newAccessToken = response.data?.access_token ?? response.data?.accessToken;
 
     if (!newAccessToken) {
-      clearTokens();
-      clearIdentity();
+      lastRefreshFailedDueToAuth = true;
+      clearAuthSession();
       return null;
     }
 
     // ✅ Silent update (no UI noise)
-    setTokens(newAccessToken, refreshToken);
+    setTokens(newAccessToken, refreshToken ?? '');
 
     return newAccessToken;
-  } catch {
-    clearTokens();
-    clearIdentity();
+  } catch (error: any) {
+    const status = error?.response?.status;
+    const isAuthFailure = status === 400 || status === 401 || status === 403;
+
+    lastRefreshFailedDueToAuth = isAuthFailure;
+
+    if (isAuthFailure) {
+      clearAuthSession();
+    }
+
     return null;
   }
 }
@@ -91,10 +104,7 @@ export async function handleTokenRefresh(): Promise<string | null> {
     const newToken = await refreshAccessToken();
 
     isRefreshing = false;
-
-    if (newToken) {
-      notify(newToken);
-    }
+    notify(newToken);
 
     return newToken;
   }

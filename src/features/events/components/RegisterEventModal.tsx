@@ -19,6 +19,7 @@ import {
   getStoredEventSurveyAvailability,
   setStoredEventSurveyAvailability,
 } from '../lib/eventSurveyAvailability';
+import { formatDateRange } from '@/shared/utils/dateHelpers';
 import type {
   EventQuestionType,
   EventRegistrationAnswerValue,
@@ -452,18 +453,32 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
               Event Details
             </p>
             <div className="space-y-1 text-sm text-gray-600">
-              <div className="flex items-start gap-2">
-                <Icon icon="mdi:calendar-outline" className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                <span>
-                  {new Date(event.startDate).toLocaleDateString('en-GB', {
-                    weekday: 'long',
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric',
-                  })}
-                  {event.startTime && ` at ${event.startTime}`}
-                </span>
-              </div>
+              {formatDateRange(event.startDate, event.endDate, {
+                locale: 'en-GB',
+                formatOptions: {
+                  weekday: 'long',
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric',
+                },
+              }) && (
+                <div className="flex items-start gap-2">
+                  <Icon icon="mdi:calendar-outline" className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                  <span>
+                    {formatDateRange(event.startDate, event.endDate, {
+                      locale: 'en-GB',
+                      formatOptions: {
+                        weekday: 'long',
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric',
+                      },
+                    })}
+                    {event.startTime && ` at ${event.startTime}`}
+                    {event.endTime && ` - ${event.endTime}`}
+                  </span>
+                </div>
+              )}
               <div className="flex items-start gap-2">
                 <Icon icon="mdi:map-marker-outline" className="w-4 h-4 mt-0.5 flex-shrink-0" />
                 <span>{event.location}</span>

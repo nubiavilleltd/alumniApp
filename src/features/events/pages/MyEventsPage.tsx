@@ -15,6 +15,7 @@ import { useCancelRegistration } from '../hooks/useEvents';
 import { toast } from '@/shared/components/ui/Toast';
 import { EVENT_ROUTES } from '../routes';
 import type { Event } from '../types/event.types';
+import { formatDateRange } from '@/shared/utils/dateHelpers';
 const MY_EVENTS_PER_PAGE = 6;
 
 // ─── Unregister modal ────────────────────────────────────────────────────────
@@ -189,24 +190,7 @@ function MyEventCard({
   //   ? `${startLabel} - ${endLabel}`
   //   : startLabel ?? null;
 
-  const formatEventDate = (iso: string) =>
-    new Date(iso).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-
-  // Only show a range if endDate exists AND is a different calendar day from startDate
-  const startLabel = event.startDate ? formatEventDate(event.startDate) : null;
-
-  const endLabel = (() => {
-    if (!event.endDate || !event.startDate) return null;
-    const start = new Date(event.startDate).toDateString();
-    const end = new Date(event.endDate).toDateString();
-    return start !== end ? formatEventDate(event.endDate) : null;
-  })();
-
-  const dateRange = startLabel && endLabel ? `${startLabel} - ${endLabel}` : (startLabel ?? null);
+  const dateRange = formatDateRange(event.startDate, event.endDate);
 
   return (
     <div
