@@ -13,9 +13,12 @@ import { ADMIN_ROUTES } from '@/features/admin/routes';
 import { ALUMNI_ROUTES } from '@/features/alumni/routes';
 import { EVENT_ROUTES } from '@/features/events/routes';
 import { MARKETPLACE_ROUTES } from '@/features/marketplace/routes';
+import { useMessagesInbox } from '@/features/messages/hooks/useMessages';
+import type { MessageThreadSummary } from '@/features/messages/types/messages.types';
 import { ROUTES } from '@/shared/constants/routes';
 import { USER_ROUTES } from '@/features/user/routes';
 import { AppLink } from '../ui/AppLink';
+import { useToastStore } from '../ui/Toast';
 import HeaderLogo from '../ui/HeaderLogo';
 
 type NavChild = {
@@ -117,6 +120,40 @@ function getInitials(user: CurrentUser) {
 function isPathActive(pathname: string, url: string) {
   if (url === ROUTES.HOME) return pathname === ROUTES.HOME;
   return pathname === url || pathname.startsWith(`${url}/`);
+}
+
+function formatUnreadBadgeCount(count: number) {
+  if (count > 99) return '99+';
+  return count.toString();
+}
+
+function UnreadMessagesBadge({ count, className = '' }: { count: number; className?: string }) {
+  if (count <= 0) return null;
+
+  return (
+    <span
+      className={cn(
+        'inline-flex min-w-5 items-center justify-center rounded-full bg-[#ef4444] px-1.5 py-0.5 text-[0.68rem] font-extrabold leading-none text-white shadow-[0_4px_10px_rgba(239,68,68,0.35)]',
+        className,
+      )}
+      aria-label={`${count} unread message${count === 1 ? '' : 's'}`}
+    >
+      {formatUnreadBadgeCount(count)}
+    </span>
+  );
+}
+
+function buildMessageFlashTitle(thread: MessageThreadSummary) {
+  if (thread.type === 'group' && thread.lastMessageSenderName?.trim()) {
+    return `${thread.lastMessageSenderName.trim()} in ${thread.title}`;
+  }
+
+  return thread.title;
+}
+
+function buildMessageFlashBody(thread: MessageThreadSummary) {
+  const preview = thread.lastMessagePreview.trim();
+  return preview || 'You have a new unread message.';
 }
 
 function BrandMark({ mobile = false }: { mobile?: boolean }) {
@@ -246,10 +283,12 @@ function UserDropdown({
   currentUser,
   onLogout,
   isLoggingOut,
+  unreadMessageCount,
 }: {
   currentUser: CurrentUser;
   onLogout: () => void;
   isLoggingOut: boolean;
+  unreadMessageCount: number;
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -294,6 +333,7 @@ function UserDropdown({
             {displayName}
           </strong>
         </span>
+        <UnreadMessagesBadge count={unreadMessageCount} className="ml-1 flex-none" />
         <Icon icon="mdi:chevron-down" className="h-5 w-5 flex-none text-[#9eb8ca]" />
       </button>
 
@@ -306,12 +346,15 @@ function UserDropdown({
               key={item.url}
               href={item.url}
               className={cn(
-                'flex items-center gap-[0.65rem] px-4 py-[0.8rem] text-left text-[0.92rem] font-bold text-[#4f5864] transition-colors duration-200 hover:bg-primary-50 hover:text-primary-700',
+                'flex items-center justify-between gap-3 px-4 py-[0.8rem] text-left text-[0.92rem] font-bold text-[#4f5864] transition-colors duration-200 hover:bg-primary-50 hover:text-primary-700',
                 isPathActive(pathname, item.url) && desktopMenuActiveLinkClassName,
               )}
               onClick={() => setOpen(false)}
             >
               <span>{item.label}</span>
+              {item.url === ROUTES.MESSAGES ? (
+                <UnreadMessagesBadge count={unreadMessageCount} />
+              ) : null}
             </AppLink>
           ))}
 
@@ -381,18 +424,26 @@ function MobileNavGroup({ item }: { item: NavItem }) {
 
 export function Navigation() {
   const navigate = useNavigate();
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
   const { isAuthenticated, user: storeUser } = useAuth();
   const clearTokens = useTokenStore((state) => state.clearTokens);
   const clearIdentity = useIdentityStore((state) => state.clearIdentity);
   const { data: freshUser } = useCurrentUser();
+  const inboxQuery = useMessagesInbox();
   const currentUser = (freshUser ?? storeUser) as CurrentUser | null;
   const authenticatedUser = isAuthenticated && currentUser ? currentUser : null;
+  const unreadMessageCount = authenticatedUser ? (inboxQuery.data?.unreadCount ?? 0) : 0;
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const mobileButtonRef = useRef<HTMLButtonElement>(null);
+  const previousThreadStatesRef = useRef<
+    Map<string, { unreadCount: number; lastActivityAt: string }>
+  >(new Map());
+  const hasPrimedMessageFlashRef = useRef(false);
   const isAdmin = authenticatedUser?.role === 'admin';
+  const activeMessagesThreadId =
+    pathname === ROUTES.MESSAGES ? new URLSearchParams(search).get('threadId') : null;
 
   useEffect(() => {
     setMobileOpen(false);
@@ -419,6 +470,60 @@ export function Navigation() {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
+
+  useEffect(() => {
+    if (!authenticatedUser || !inboxQuery.data) {
+      previousThreadStatesRef.current = new Map();
+      hasPrimedMessageFlashRef.current = false;
+      return;
+    }
+
+    const nextThreadStates = new Map(
+      inboxQuery.data.threads.map((thread) => [
+        thread.id,
+        {
+          unreadCount: thread.unreadCount,
+          lastActivityAt: thread.lastActivityAt,
+        },
+      ]),
+    );
+
+    if (!hasPrimedMessageFlashRef.current) {
+      previousThreadStatesRef.current = nextThreadStates;
+      hasPrimedMessageFlashRef.current = true;
+      return;
+    }
+
+    inboxQuery.data.threads.forEach((thread) => {
+      if (thread.lastMessageIsOwn || thread.unreadCount <= 0) {
+        return;
+      }
+
+      if (pathname === ROUTES.MESSAGES && activeMessagesThreadId === thread.id) {
+        return;
+      }
+
+      const previousThreadState = previousThreadStatesRef.current.get(thread.id);
+      const isNewUnreadThread = !previousThreadState;
+      const hasIncomingUpdate =
+        isNewUnreadThread ||
+        thread.unreadCount > previousThreadState.unreadCount ||
+        thread.lastActivityAt !== previousThreadState.lastActivityAt;
+
+      if (!hasIncomingUpdate) {
+        return;
+      }
+
+      useToastStore.getState().addToast({
+        type: 'info',
+        title: buildMessageFlashTitle(thread),
+        message: buildMessageFlashBody(thread),
+        duration: 3000,
+      });
+    });
+
+    previousThreadStatesRef.current = nextThreadStates;
+  }, [activeMessagesThreadId, authenticatedUser, inboxQuery.data, pathname]);
 
   // const handleLogout = async () => {
   //   setIsLoggingOut(true);
@@ -496,6 +601,7 @@ export function Navigation() {
                 currentUser={authenticatedUser}
                 onLogout={handleLogout}
                 isLoggingOut={isLoggingOut}
+                unreadMessageCount={unreadMessageCount}
               />
             ) : (
               <AppLink
@@ -588,6 +694,7 @@ export function Navigation() {
                     {getDisplayName(authenticatedUser)}
                   </strong>
                 </div>
+                <UnreadMessagesBadge count={unreadMessageCount} className="ml-auto flex-none" />
               </div>
 
               {mobileMenuItems.map((item) => (
@@ -596,10 +703,14 @@ export function Navigation() {
                   href={item.url}
                   className={cn(
                     mobileLinkClassName,
+                    'justify-between',
                     isPathActive(pathname, item.url) && 'bg-white/10 text-white',
                   )}
                 >
                   <span>{item.label}</span>
+                  {item.url === ROUTES.MESSAGES ? (
+                    <UnreadMessagesBadge count={unreadMessageCount} />
+                  ) : null}
                 </AppLink>
               ))}
 

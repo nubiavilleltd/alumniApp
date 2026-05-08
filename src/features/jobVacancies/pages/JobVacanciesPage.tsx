@@ -76,7 +76,7 @@ const jobPanelToneClassNames: Record<JobCardTone, string> = {
   green: 'bg-[#e6f5e5]',
 };
 
-export const jobsPageShellClassName = 'mx-auto w-full max-w-[80rem] px-4 pb-16 pt-6';
+export const jobsPageShellClassName = 'container-custom pb-16 pt-6';
 export const jobsPageHeaderClassName =
   'mb-7 flex flex-col gap-4 md:mb-[2.7rem] md:flex-row md:items-start md:justify-between md:gap-6';
 export const jobsPageTitleClassName =

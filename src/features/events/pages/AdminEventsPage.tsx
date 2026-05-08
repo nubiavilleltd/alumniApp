@@ -59,30 +59,19 @@ function formatDateLabel(date?: Date | null) {
   });
 }
 
-function formatTimeLabel(time?: string) {
-  if (!time) return '';
-
-  const [hours, minutes] = time.split(':').map(Number);
-  if (Number.isNaN(hours) || Number.isNaN(minutes)) return time;
-
-  const value = new Date();
-  value.setHours(hours, minutes, 0, 0);
-
-  return value.toLocaleTimeString('en-US', {
-    hour: 'numeric',
-    minute: '2-digit',
-  });
-}
-
 function formatEventSchedule(event: Event) {
-  const dateLabel = formatDateLabel(parseEventDate(event.date));
-  const startLabel = formatTimeLabel(event.startTime);
-  const endLabel = formatTimeLabel(event.endTime);
+  const startDate = parseEventDate(event.startDate);
+  const endDate = parseEventDate(event.endDate);
 
-  if (startLabel && endLabel) return `${dateLabel} · ${startLabel} - ${endLabel}`;
-  if (startLabel) return `${dateLabel} · ${startLabel}`;
+  if (!startDate) {
+    return 'Date to be announced';
+  }
 
-  return dateLabel;
+  if (!endDate || startDate.getTime() === endDate.getTime()) {
+    return formatDateLabel(startDate);
+  }
+
+  return `${formatDateLabel(startDate)} - ${formatDateLabel(endDate)}`;
 }
 
 function sortEventsForAdmin(events: Event[]) {
@@ -90,8 +79,8 @@ function sortEventsForAdmin(events: Event[]) {
   today.setHours(0, 0, 0, 0);
 
   return [...events].sort((left, right) => {
-    const leftDate = parseEventDate(left.date);
-    const rightDate = parseEventDate(right.date);
+    const leftDate = parseEventDate(left.startDate);
+    const rightDate = parseEventDate(right.startDate);
 
     if (!leftDate && !rightDate) return left.title.localeCompare(right.title);
     if (!leftDate) return 1;
@@ -109,43 +98,13 @@ function sortEventsForAdmin(events: Event[]) {
   });
 }
 
-function isFutureOrToday(date?: string) {
-  const value = parseEventDate(date);
-  if (!value) return false;
-
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  return value >= today;
-}
-
-function statusBadgeClass(event: Event) {
-  switch (event.status) {
-    case 'cancelled':
-      return 'bg-red-100 text-red-700';
-    case 'completed':
-      return 'bg-gray-100 text-gray-700';
-    case 'draft':
-      return 'bg-amber-100 text-amber-700';
-    default:
-      return 'bg-primary-50 text-primary-700';
-  }
-}
-
-function statusLabel(event: Event) {
-  if (event.status === 'completed') return 'Completed';
-  if (event.status === 'cancelled') return 'Cancelled';
-  if (event.status === 'draft') return 'Draft';
-  return isFutureOrToday(event.date) ? 'Upcoming' : 'Published';
-}
-
 function AdminEventsCard({ event }: { event: Event }) {
   return (
     <AppLink
       href={EVENT_ROUTES.DETAIL(event.id)}
-      className="group block h-full rounded-[1.5rem] bg-white p-4 text-inherit no-underline shadow-[0_10px_28px_rgba(15,23,42,0.06)] ring-1 ring-black/5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_16px_36px_rgba(15,23,42,0.1)]"
+      className="group block h-full rounded-[1.9rem] bg-white p-5 text-inherit no-underline shadow-[0_10px_28px_rgba(15,23,42,0.06)] ring-1 ring-black/5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_16px_36px_rgba(15,23,42,0.1)] sm:p-4"
     >
-      <article className="flex h-full flex-col gap-4 sm:flex-row">
+      <article className="flex h-full flex-col gap-4 sm:flex-row sm:items-center sm:gap-4">
         <div className="h-32 overflow-hidden rounded-[1.125rem] bg-accent-50 sm:h-[9rem] sm:w-[9rem] sm:flex-shrink-0">
           {event.image ? (
             <img
@@ -161,21 +120,12 @@ function AdminEventsCard({ event }: { event: Event }) {
           )}
         </div>
 
-        <div className="flex min-w-0 flex-1 flex-col">
-          <div className="flex flex-wrap items-start justify-between gap-3">
-            <h2 className="max-w-3xl text-[1rem] font-bold leading-tight text-accent-950 transition-colors duration-200 group-hover:text-primary-700">
-              {event.title}
-            </h2>
-            <span
-              className={`inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] ${statusBadgeClass(
-                event,
-              )}`}
-            >
-              {statusLabel(event)}
-            </span>
-          </div>
+        <div className="flex min-w-0 flex-1 flex-col justify-center self-center">
+          <h2 className="max-w-3xl text-[1rem] font-bold leading-tight text-accent-950 transition-colors duration-200 group-hover:text-primary-700 sm:text-[1.05rem]">
+            {event.title}
+          </h2>
 
-          <p className="mt-2 line-clamp-2 text-[0.875rem] leading-relaxed text-accent-500">
+          <p className="mt-2 line-clamp-2 text-[0.92rem] leading-relaxed text-accent-500 sm:text-[0.95rem]">
             {formatEventSummary(event)}
           </p>
 
@@ -190,23 +140,11 @@ function AdminEventsCard({ event }: { event: Event }) {
 
             <div className="flex items-start gap-2">
               <Icon
-                icon="mdi:calendar-clock-outline"
+                icon="mdi:clock-outline"
                 className="mt-0.5 h-4 w-4 flex-shrink-0 text-accent-400"
               />
               <span>{formatEventSchedule(event)}</span>
             </div>
-
-            {event.attendeeCount !== undefined && (
-              <div className="flex items-start gap-2">
-                <Icon
-                  icon="mdi:account-group-outline"
-                  className="mt-0.5 h-4 w-4 flex-shrink-0 text-accent-400"
-                />
-                <span>
-                  {event.attendeeCount} attendee{event.attendeeCount === 1 ? '' : 's'}
-                </span>
-              </div>
-            )}
           </div>
         </div>
       </article>
@@ -231,8 +169,8 @@ function AdminEventsSkeleton() {
             key={index}
             className="rounded-[1.5rem] bg-white p-4 shadow-[0_10px_28px_rgba(15,23,42,0.06)] ring-1 ring-black/5"
           >
-            <div className="flex flex-col gap-4 sm:flex-row">
-              <div className="h-32 rounded-[1.125rem] bg-accent-100 sm:h-[9rem] sm:w-[9rem]" />
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+              <div className="h-32 rounded-[1.125rem] bg-accent-100 sm:h-[8rem] sm:w-[8rem]" />
               <div className="flex-1 space-y-3">
                 <div className="h-7 w-3/4 rounded bg-accent-100" />
                 <div className="space-y-2">
@@ -263,7 +201,7 @@ export default function AdminEventsPage() {
     const normalizedSearch = searchTerm.trim().toLowerCase();
 
     return sortEventsForAdmin(events).filter((event) => {
-      const eventDate = parseEventDate(event.date);
+      const eventDate = parseEventDate(event.startDate);
       const matchesMonth =
         selectedMonth === 'all' ||
         (eventDate ? eventDate.getMonth() === Number(selectedMonth) : false);

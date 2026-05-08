@@ -13,8 +13,7 @@ import type { AnnouncementType, NewsItem } from '@/features/announcements/types/
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 
 const FALLBACK_IMAGE = '/news-1.png';
-const pageShellClassName =
-  'mx-auto w-full max-w-[80rem] px-4 pb-16 pt-4 max-[1180px]:max-w-[64rem] sm:pb-14 sm:pt-5';
+const pageShellClassName = 'container-custom pb-16 pt-4 sm:pb-14 sm:pt-5';
 const cardClassName =
   'flex min-w-0 overflow-hidden rounded-2xl border border-[#eef2f5] bg-white p-3.5 shadow-[0_1px_2px_rgba(7,17,22,0.04)] no-underline transition-colors duration-200 hover:border-primary-100 max-sm:flex-col max-sm:p-0';
 const cardImageWrapClassName =

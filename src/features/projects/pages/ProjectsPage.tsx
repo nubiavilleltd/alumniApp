@@ -127,7 +127,7 @@ export default function ProjectsPage() {
       />
 
       <section className="bg-gray-100 min-h-screen py-6">
-        <div className="container-custom mx-auto px-4">
+        <div className="container-custom mx-auto">
           {/* Header */}
           {/* <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6"> */}
           <div className="flex flex-wrap justify-end items-center gap-3 mb-7">

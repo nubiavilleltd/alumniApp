@@ -120,6 +120,7 @@ export function MessagesPage() {
   const voiceRecordButtonRef = useRef<HTMLButtonElement | null>(null);
   const messagePaneRef = useRef<HTMLDivElement | null>(null);
   const lastOpenedThreadIdRef = useRef<string | null>(null);
+  const previousRequestedThreadIdRef = useRef<string | null>(null);
   const pendingDirectThreadIntentRef = useRef<string | null>(null);
   const pendingInitialMessageIntentRef = useRef<string | null>(null);
   const activeVoicePointerIdRef = useRef<number | null>(null);
@@ -163,10 +164,18 @@ export function MessagesPage() {
   );
 
   useEffect(() => {
+    const previousRequestedThreadId = previousRequestedThreadIdRef.current;
+    previousRequestedThreadIdRef.current = requestedThreadId;
+
     if (requestedThreadId) {
       setSelectedThreadId((current) =>
         current === requestedThreadId ? current : requestedThreadId,
       );
+      return;
+    }
+
+    if (previousRequestedThreadId) {
+      setSelectedThreadId(null);
       return;
     }
 
@@ -616,12 +625,6 @@ export function MessagesPage() {
   useEffect(() => {
     setParticipantsModalOpen(false);
   }, [activeThreadId]);
-
-  useEffect(() => {
-    if (!requestedThreadId) return;
-
-    setSelectedThreadId((current) => (current === requestedThreadId ? current : requestedThreadId));
-  }, [requestedThreadId]);
 
   useEffect(() => {
     if (!requestedRecipientId) {
@@ -1169,6 +1172,12 @@ export function MessagesPage() {
     };
   }
 
+  const isMobileThreadOpen = Boolean(activeThreadId);
+
+  function handleBackToInbox() {
+    replaceMessagesSearch();
+  }
+
   return (
     <>
       <SEO
@@ -1211,7 +1220,11 @@ export function MessagesPage() {
           {/* Two-column layout */}
           <section className="grid gap-4 lg:min-h-0 lg:flex-1 lg:grid-cols-[minmax(20rem,26rem)_minmax(0,1fr)] lg:gap-4 xl:grid-cols-[24rem_minmax(0,1fr)] 2xl:grid-cols-[26rem_minmax(0,1fr)]">
             {/* ─── Inbox pane ─── */}
-            <aside className="flex min-h-[42rem] flex-col overflow-hidden rounded-2xl bg-white shadow-sm lg:h-full lg:min-h-0">
+            <aside
+              className={`min-h-[calc(100dvh-9rem)] flex-col overflow-hidden rounded-2xl bg-white shadow-sm lg:flex lg:h-full lg:min-h-0 ${
+                isMobileThreadOpen ? 'hidden' : 'flex'
+              }`}
+            >
               {/* Search + filters */}
               <div className="px-4 pb-3 pt-4">
                 <label className="relative block">
@@ -1301,7 +1314,6 @@ export function MessagesPage() {
                           key={thread.id}
                           type="button"
                           onClick={() => {
-                            setSelectedThreadId(thread.id);
                             replaceMessagesSearch(thread.id);
                           }}
                           className={`relative w-full px-4 py-3 text-left transition-colors ${
@@ -1364,12 +1376,25 @@ export function MessagesPage() {
             </aside>
 
             {/* ─── Active thread pane ─── */}
-            <article className="flex min-h-[42rem] flex-col overflow-hidden rounded-2xl bg-white shadow-sm lg:h-full lg:min-h-0">
+            <article
+              className={`min-h-[calc(100dvh-9rem)] flex-col overflow-hidden rounded-2xl bg-white shadow-sm lg:flex lg:h-full lg:min-h-0 ${
+                isMobileThreadOpen ? 'flex' : 'hidden'
+              }`}
+            >
               {threadShell || (activeThreadId && threadQuery.isLoading) ? (
                 <>
                   {/* Thread header */}
                   {threadShell ? (
-                    <header className="flex items-center gap-4 border-b border-gray-100 px-5 py-2">
+                    <header className="flex items-center gap-3 border-b border-gray-100 px-4 py-2 lg:px-5">
+                      <button
+                        type="button"
+                        onClick={handleBackToInbox}
+                        className="inline-flex h-10 w-10 items-center justify-center rounded-full text-gray-600 transition-colors hover:bg-gray-100 lg:hidden"
+                        aria-label="Back to messages"
+                      >
+                        <Icon icon="mdi:arrow-left" className="h-5 w-5" />
+                      </button>
+
                       <ThreadAvatar thread={threadShell} />
 
                       <div className="min-w-0 flex-1">
