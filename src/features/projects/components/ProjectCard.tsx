@@ -13,7 +13,7 @@ import type { Project } from '../types/project.types';
 import { ROUTES } from '@/shared/constants/routes';
 import { formatDate } from '@/shared/utils/dateHelpers';
 
-const PLACEHOLDER = 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=700&q=80';
+const PLACEHOLDER = 'https://placehold.co/80x80/E5E7EB/6B7280?text=No+Image';
 
 // ─── Delete confirmation ──────────────────────────────────────────────────────
 

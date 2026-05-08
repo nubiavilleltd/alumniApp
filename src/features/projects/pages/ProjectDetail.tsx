@@ -150,18 +150,7 @@ export default function ProjectDetailsPage() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  //   const placeholderImages = [
-  //   "https://dummyimage.com/200x200/ccc/000?text=1",
-  //   "https://dummyimage.com/200x200/ccc/000?text=2",
-  //   "https://dummyimage.com/200x200/ccc/000?text=3",
-  //   "https://dummyimage.com/200x200/ccc/000?text=4",
-  // ];
-  const placeholderImages = [
-    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=700&q=80',
-    'https://images.unsplash.com/photo-1518770660439-4636190af475?w=700&q=80',
-    'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=700&q=80',
-    ,
-  ];
+  const placeholderImages = ['https://placehold.co/80x80/E5E7EB/6B7280?text=No+Image', ,];
 
   if (isLoading) return <ProjectDetailsSkeleton />;
 
