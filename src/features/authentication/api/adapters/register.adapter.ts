@@ -1,6 +1,6 @@
-import { formatPhoneNumberWithCountryCode } from '../../constants/phoneCountries';
 import type { RegisterDetailsFormValues } from '../../types/auth.types';
 import { safeParseInt } from '@/lib/utils/adapters';
+import { formatOptionalNigerianPhoneNumber } from '@/shared/utils/nigerianPhoneNumber';
 
 // ─────────────────────────────────────────────────────────────
 // Registration → Backend
@@ -15,7 +15,7 @@ export function mapRegistrationPayload(values: RegisterDetailsFormValues) {
     password: values.password,
 
     // Contact
-    phone: formatPhoneNumberWithCountryCode(values.phoneCountry, values.whatsappPhone),
+    phone: formatOptionalNigerianPhoneNumber(values.whatsappPhone),
 
     // School
     name_in_school: values.nameInSchool,

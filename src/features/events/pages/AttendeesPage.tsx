@@ -5,6 +5,7 @@ import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { Modal } from '@/shared/components/ui/Modal';
+import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { useEvent } from '../hooks/useEvents';
 import { useEventAttendees } from '../hooks/useEventAttendees';
 import { useEventSurveySubmissionDetail, useEventSurveySubmissions } from '../hooks/useEventSurvey';
@@ -13,6 +14,9 @@ import { EVENT_ROUTES } from '../routes';
 import type { EventAttendee } from '../api/adapters/event-attendees.adapter';
 import { ROUTES } from '@/shared/constants/routes';
 import { ADMIN_ROUTES } from '@/features/admin/routes';
+import { useAllUsers } from '@/features/admin/hooks/useUserManagement';
+import { formatDateRange } from '@/shared/utils/dateHelpers';
+import type { UserAccount } from '@/features/admin/api/adapters/user-management.adapter';
 import {
   getStoredEventSurveyAvailability,
   setStoredEventSurveyAvailability,
@@ -25,19 +29,6 @@ import type {
   FirebaseSurveyStoredAnswer,
   GetEventSurveySubmissionDetailResponse,
 } from '../api/firebase/survey.types';
-
-function formatEventDate(date?: string) {
-  if (!date) return '';
-
-  const parsed = new Date(date);
-  if (Number.isNaN(parsed.getTime())) return date;
-
-  return parsed.toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
-}
 
 function formatRegisteredAt(date?: string) {
   if (!date) return 'Recently registered';
@@ -95,6 +86,12 @@ function normalizeMatchValue(value?: string) {
     .toLowerCase();
 }
 
+function buildUserLookup(users: UserAccount[], key: 'id' | 'email') {
+  return new Map(
+    users.map((user) => [normalizeMatchValue(user[key]), user] as const).filter(([value]) => value),
+  );
+}
+
 function buildFallbackFormsFromRegistration(
   detail?: GetEventSurveySubmissionDetailResponse,
 ): EventSurveySubmissionFormView[] {
@@ -134,6 +131,7 @@ function buildFallbackFormsFromRegistration(
         required: answer.required,
         placeholder: '',
         options: [],
+        maxSelections: null,
         order: answer.order,
         value: answer.value,
       })),
@@ -370,6 +368,12 @@ function AttendeeCard({
             />
             <span>{formatRegisteredAt(attendee.registeredAt)}</span>
           </p>
+          {attendee.graduationYear ? (
+            <p className="mt-1 flex items-center gap-2 text-sm text-accent-500">
+              <Icon icon="mdi:school-outline" className="h-4 w-4 flex-shrink-0 text-accent-400" />
+              <span>Class of {attendee.graduationYear}</span>
+            </p>
+          ) : null}
         </div>
 
         {hasSurveyResponse ? (
@@ -417,11 +421,63 @@ export default function AttendeesPage() {
     submissionUserId: string;
   } | null>(null);
   const [isExporting, setIsExporting] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const { data: event } = useEvent(id);
   const cachedSurveyAvailability = useMemo(() => getStoredEventSurveyAvailability(id), [id]);
   const { data: attendeeData, isLoading } = useEventAttendees(id, 'going');
-  const attendees = useMemo(() => attendeeData?.attendees ?? [], [attendeeData?.attendees]);
+  const registrationAttendees = useMemo(
+    () => attendeeData?.attendees ?? [],
+    [attendeeData?.attendees],
+  );
+  const shouldLoadUserProfiles = registrationAttendees.some((attendee) => !attendee.graduationYear);
+  const { data: allUsers = [], isLoading: isLoadingUserProfiles } = useAllUsers({
+    enabled: shouldLoadUserProfiles,
+  });
+  const usersById = useMemo(() => buildUserLookup(allUsers, 'id'), [allUsers]);
+  const usersByEmail = useMemo(() => buildUserLookup(allUsers, 'email'), [allUsers]);
+  const attendees = useMemo(
+    () =>
+      registrationAttendees.map((attendee) => {
+        if (attendee.graduationYear) {
+          return attendee;
+        }
+
+        const matchedUser =
+          usersById.get(normalizeMatchValue(attendee.userId)) ??
+          usersByEmail.get(normalizeMatchValue(attendee.email));
+
+        if (!matchedUser?.graduationYear) {
+          return attendee;
+        }
+
+        return {
+          ...attendee,
+          graduationYear: matchedUser.graduationYear,
+        };
+      }),
+    [registrationAttendees, usersByEmail, usersById],
+  );
+  const filteredAttendees = useMemo(() => {
+    const normalizedSearch = searchTerm.trim().toLowerCase();
+
+    if (!normalizedSearch) {
+      return attendees;
+    }
+
+    return attendees.filter((attendee) => {
+      const searchableValues = [
+        attendee.fullName,
+        attendee.email,
+        attendee.phone,
+        attendee.graduationYear ? String(attendee.graduationYear) : '',
+      ]
+        .join(' ')
+        .toLowerCase();
+
+      return searchableValues.includes(normalizedSearch);
+    });
+  }, [attendees, searchTerm]);
   const shouldAttemptSurveyLookup =
     !!id && attendees.length > 0 && cachedSurveyAvailability !== 'disabled';
   const {
@@ -479,6 +535,7 @@ export default function AttendeesPage() {
       eventHasRegistrationQuestions: event?.hasRegistrationQuestions ?? null,
       cachedSurveyAvailability,
       attendeeCount: attendees.length,
+      profileLookupEnabled: shouldLoadUserProfiles,
       shouldAttemptSurveyLookup,
     });
   }, [
@@ -486,6 +543,7 @@ export default function AttendeesPage() {
     cachedSurveyAvailability,
     event?.hasRegistrationQuestions,
     id,
+    shouldLoadUserProfiles,
     shouldAttemptSurveyLookup,
   ]);
 
@@ -543,7 +601,7 @@ export default function AttendeesPage() {
     (attendeeData?.eventTitle && attendeeData.eventTitle !== 'Unknown Event'
       ? attendeeData.eventTitle
       : event?.title) || 'Event attendees';
-  const eventDate = attendeeData?.eventDate || event?.date || '';
+  const eventDate = formatDateRange(event?.startDate ?? attendeeData?.eventDate, event?.endDate);
   const totalCount = attendeeData?.goingCount ?? attendees.length;
   const breadcrumbItems = [
     { label: 'Home', href: ROUTES.HOME },
@@ -598,7 +656,6 @@ export default function AttendeesPage() {
             'Registration Date': formatRegisteredDateForExport(attendee.registeredAt),
             'Registration Time': formatRegisteredTimeForExport(attendee.registeredAt),
             'RSVP Status': attendee.status || 'going',
-            'Additional Info': detail?.registration.additionalInfo?.trim() ?? '',
           };
 
           resolvedForms.forEach((form: EventSurveySubmissionFormView) => {
@@ -613,6 +670,8 @@ export default function AttendeesPage() {
             });
           });
 
+          row['Additional Info'] = detail?.registration.additionalInfo?.trim() ?? '';
+
           return row;
         }),
       );
@@ -625,8 +684,8 @@ export default function AttendeesPage() {
         'Registration Date',
         'Registration Time',
         'RSVP Status',
-        'Additional Info',
         ...questionColumns,
+        'Additional Info',
       ];
 
       downloadCsvFile(
@@ -652,6 +711,17 @@ export default function AttendeesPage() {
     }
   }
 
+  const isPreparingExport =
+    isLoading || isLoadingSurveySubmissions || (shouldLoadUserProfiles && isLoadingUserProfiles);
+  const exportButtonDisabled = isPreparingExport || isExporting || attendees.length === 0;
+  const exportButtonLabel = isPreparingExport
+    ? isLoadingUserProfiles
+      ? 'Loading profiles...'
+      : 'Loading attendees...'
+    : isExporting
+      ? 'Exporting...'
+      : 'Export List';
+
   return (
     <>
       <SEO title={`${pageTitle} Attendees`} description={`View attendees for ${pageTitle}.`} />
@@ -659,18 +729,8 @@ export default function AttendeesPage() {
 
       <main className="min-h-screen bg-[#faf9f7]">
         <div className="container-custom py-8">
-          <div className="mb-4">
-            <AppLink
-              href={id ? EVENT_ROUTES.DETAIL(id) : EVENT_ROUTES.ROOT}
-              className="inline-flex items-center gap-2 text-sm font-medium text-accent-600 transition-colors hover:text-accent-900"
-            >
-              <Icon icon="mdi:arrow-left" className="h-4 w-4" />
-              Back to Event
-            </AppLink>
-          </div>
-
           <div className="rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-accent-100 sm:p-8">
-            <header className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+            <header className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
               <div>
                 <h1 className="text-3xl font-bold leading-tight text-accent-950 sm:text-4xl">
                   {pageTitle}
@@ -679,31 +739,40 @@ export default function AttendeesPage() {
                   {eventDate && (
                     <span className="inline-flex items-center gap-2">
                       <Icon icon="mdi:calendar-clock-outline" className="h-4 w-4" />
-                      {formatEventDate(eventDate)}
+                      {eventDate}
                     </span>
                   )}
                   <span className="inline-flex items-center gap-2">
                     <Icon icon="mdi:account-group-outline" className="h-4 w-4" />
-                    {totalCount} going attendee{totalCount === 1 ? '' : 's'}
+                    {totalCount} attendee{totalCount === 1 ? '' : 's'}
                   </span>
                 </div>
               </div>
 
-              <div className="flex items-center">
+              <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center xl:w-auto">
+                <SearchInput
+                  value={searchTerm}
+                  onValueChange={setSearchTerm}
+                  onClear={() => setSearchTerm('')}
+                  placeholder="Search attendees"
+                  containerClassName="w-full sm:w-[22rem] xl:w-[24rem]"
+                  inputClassName="min-h-[3.4rem] border-0 bg-[#f7f5f2] text-base text-accent-700 shadow-none placeholder:text-accent-400 focus:ring-2 focus:ring-primary-200"
+                  iconClassName="text-accent-400"
+                />
+
                 <button
                   type="button"
                   onClick={handleExportAttendees}
-                  disabled={
-                    isLoading || isExporting || attendees.length === 0 || isLoadingSurveySubmissions
-                  }
+                  disabled={exportButtonDisabled}
                   className="inline-flex items-center gap-2 rounded-full bg-primary-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-600 disabled:cursor-not-allowed disabled:bg-primary-200"
                 >
-                  {isExporting ? (
+                  {isPreparingExport || isExporting ? (
                     <Icon icon="mdi:loading" className="h-4 w-4 animate-spin" />
                   ) : (
                     <Icon icon="mdi:download-outline" className="h-4 w-4" />
                   )}
-                  <span>{isExporting ? 'Exporting...' : 'Export List'}</span>
+
+                  <span>{exportButtonLabel}</span>
                 </button>
               </div>
             </header>
@@ -712,8 +781,8 @@ export default function AttendeesPage() {
           <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {isLoading ? (
               Array.from({ length: 6 }).map((_, index) => <AttendeeCardSkeleton key={index} />)
-            ) : attendees.length > 0 ? (
-              attendees.map((attendee) => {
+            ) : filteredAttendees.length > 0 ? (
+              filteredAttendees.map((attendee) => {
                 const matchedSubmission = getMatchedSubmission(attendee);
                 const hasSurveyResponse = hasViewableSurveyResponse(matchedSubmission);
 
@@ -744,9 +813,13 @@ export default function AttendeesPage() {
                 <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-accent-50">
                   <Icon icon="mdi:account-group-outline" className="h-7 w-7 text-accent-700" />
                 </div>
-                <h2 className="mt-4 text-2xl font-bold text-accent-950">No attendees yet</h2>
+                <h2 className="mt-4 text-2xl font-bold text-accent-950">
+                  {searchTerm.trim() ? 'No matching attendees' : 'No attendees yet'}
+                </h2>
                 <p className="mt-2 text-sm text-accent-500">
-                  No confirmed attendees yet for this event.
+                  {searchTerm.trim()
+                    ? 'Try a different name, email, phone number, or graduation year.'
+                    : 'No confirmed attendees yet for this event.'}
                 </p>
               </div>
             )}

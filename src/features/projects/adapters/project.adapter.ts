@@ -1,22 +1,3 @@
-// import { Project } from '../types/project.types';
-
-// export function mapBackendProject(project: any): Project {
-//   return {
-//     id: project.id,
-//     title: project.title,
-//     description: project.description,
-//     images: project.images ?? [],
-//     amountRaised: Number(project.amount_raised ?? 0),
-//     targetAmount: project.target_amount ? Number(project.target_amount) : undefined,
-//     status: project.status,
-//     sortOrder: project.sort_order,
-//     isFeatured: project.is_featured,
-//     createdAt: project.created_at,
-//     createdByName: project.created_by_name,
-//     chapterName: project.chapter_name,
-//   };
-// }
-
 // features/projects/api/adapters/project.adapter.ts
 //
 // Maps between backend project format and frontend Project type.
@@ -34,7 +15,46 @@
 import { parseImages } from '@/lib/utils/adapters';
 import { CreateProjectFormData, Project, UpdateProjectFormData } from '../types/project.types';
 
+// function normalizeDate(value: unknown): string | undefined {
+//   if (!value) return undefined;
+
+//   const str = String(value).trim();
+
+//   // Handle bad backend values
+//   if (
+//     str === '' ||
+//     str === '0000-00-00' ||
+//     str === '0000-00-00 00:00:00' ||
+//     str.toLowerCase() === 'null'
+//   ) {
+//     return undefined;
+//   }
+
+//   return str;
+// }
+
 // ─── Inbound (backend → frontend) ────────────────────────────────────────────
+
+function normalizeDate(value: unknown): string | undefined {
+  if (!value) return undefined;
+
+  const str = String(value).trim();
+
+  // Extract date part first (before any checks)
+  const datePart = str.split('T')[0].split(' ')[0];
+
+  // Handle bad backend values
+  if (
+    datePart === '' ||
+    datePart === '0000-00-00' ||
+    datePart === 'null' ||
+    datePart === 'undefined'
+  ) {
+    return undefined;
+  }
+
+  return datePart;
+}
 
 export function mapBackendProject(raw: unknown): Project {
   const d = raw as Record<string, unknown>;
@@ -46,7 +66,11 @@ export function mapBackendProject(raw: unknown): Project {
     images: parseImages(d.images),
     amountRaised: Number(d.amount_raised ?? 0),
     targetAmount: d.target_amount ? Number(d.target_amount) : undefined,
-    status: d.status === 'completed' ? 'completed' : 'active',
+    status: d.status === 'completed' ? 'completed' : 'ongoing',
+    conductedBy: String(d.conducted_by ?? ''),
+    location: String(d.location ?? ''),
+    startDate: normalizeDate(d.start_date) ?? '',
+    endDate: normalizeDate(d.end_date),
     sortOrder: d.sort_order ? Number(d.sort_order) : undefined,
     isFeatured: d.is_featured ? Number(d.is_featured) : 0,
     createdAt: d.created_at ? String(d.created_at) : undefined,
@@ -81,6 +105,10 @@ export function mapProjectToCreatePayload(
     title: formData.title,
     description: formData.description,
     status: formData.status,
+    conducted_by: formData.conductedBy,
+    location: formData.location,
+    start_date: formData.startDate,
+    end_date: formData.endDate,
   };
 
   if (formData.targetAmount != null) base.target_amount = String(formData.targetAmount);
@@ -116,6 +144,10 @@ export function mapProjectToUpdatePayload(
   if (formData.title != null) base.title = formData.title;
   if (formData.description != null) base.description = formData.description;
   if (formData.status != null) base.status = formData.status;
+  if (formData.conductedBy != null) base.conducted_by = formData.conductedBy;
+  if (formData.location != null) base.location = formData.location;
+  if (formData.startDate != null) base.start_date = formData.startDate;
+  if (formData.endDate != null) base.end_date = formData.endDate;
   if (formData.targetAmount != null) base.target_amount = String(formData.targetAmount);
   if (formData.amountRaised != null) base.amount_raised = String(formData.amountRaised);
   if (formData.sortOrder != null) base.sort_order = String(formData.sortOrder);

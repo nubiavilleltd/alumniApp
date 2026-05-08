@@ -19,7 +19,11 @@ import {
   getStoredEventSurveyAvailability,
   setStoredEventSurveyAvailability,
 } from '../lib/eventSurveyAvailability';
-import type { EventRegistrationAnswerValue } from '../types/eventRegistrationForm.types';
+import { formatDateRange } from '@/shared/utils/dateHelpers';
+import type {
+  EventQuestionType,
+  EventRegistrationAnswerValue,
+} from '../types/eventRegistrationForm.types';
 import type { EventSurveyFormView } from '../api/firebase/survey.types';
 
 const EMPTY_SURVEY_FORMS: EventSurveyFormView[] = [];
@@ -30,7 +34,7 @@ interface StructuredSurveyAnswer {
   formVersion: number;
   questionId: string;
   questionLabel: string;
-  questionType: string;
+  questionType: EventQuestionType;
   order: number;
   required: boolean;
   value: EventRegistrationAnswerValue;
@@ -139,9 +143,28 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
   };
 
   const toggleCheckboxAnswer = (questionId: string, option: string) => {
+    const question = formQuestions.find((item) => item.id === questionId);
+    const selectedValues = Array.isArray(formAnswers[questionId]) ? formAnswers[questionId] : [];
+    const isAddingBeyondLimit =
+      question?.type === 'checkbox' &&
+      question.maxSelections !== null &&
+      !selectedValues.includes(option) &&
+      selectedValues.length >= question.maxSelections;
+
     setFormAnswers((current) => {
       const currentValues = Array.isArray(current[questionId]) ? current[questionId] : [];
-      const nextValues = currentValues.includes(option)
+      const isRemovingOption = currentValues.includes(option);
+
+      if (
+        !isRemovingOption &&
+        question?.type === 'checkbox' &&
+        question.maxSelections !== null &&
+        currentValues.length >= question.maxSelections
+      ) {
+        return current;
+      }
+
+      const nextValues = isRemovingOption
         ? currentValues.filter((value) => value !== option)
         : [...currentValues, option];
 
@@ -151,6 +174,15 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
       };
     });
     setQuestionErrors((current) => {
+      if (isAddingBeyondLimit && question?.maxSelections !== null) {
+        return {
+          ...current,
+          [questionId]: `Select up to ${question.maxSelections} option${
+            question.maxSelections === 1 ? '' : 's'
+          }.`,
+        };
+      }
+
       if (!current[questionId]) {
         return current;
       }
@@ -215,6 +247,13 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
         const hasInvalidOption = answer.value.some((value) => !question.options.includes(value));
         if (hasInvalidOption) {
           nextErrors[question.id] = 'Please choose only from the listed options.';
+          continue;
+        }
+
+        if (question.maxSelections !== null && answer.value.length > question.maxSelections) {
+          nextErrors[question.id] = `Select up to ${question.maxSelections} option${
+            question.maxSelections === 1 ? '' : 's'
+          }.`;
         }
       }
     }
@@ -323,12 +362,12 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
       }
 
       //This is a workaround for get_events CORS error. Work on it Remove it once it fixed
-      toast.success('You have successfully for registered for this event');
+      // toast.success('You have successfully for registered for this event');
 
       setSubmitted(true);
 
       //This is a workaround for get_events CORS error. Work on it. Work on it Remove it once it fixed
-      setTimeout(window.location.reload, 3000);
+      // setTimeout(window.location.reload, 3000);
     } catch (err) {
       setError('Failed to register. Please try again.');
     }
@@ -408,45 +447,38 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
             </div>
           )}
 
-          {/* User Info (Read-only) */}
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
-              Your Information
-            </p>
-            <div className="space-y-2 text-sm">
-              <div className="flex items-center justify-between">
-                <span className="text-gray-500">Name:</span>
-                <span className="font-medium text-gray-700">{currentUser?.fullName}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-gray-500">Email:</span>
-                <span className="font-medium text-gray-700">{currentUser?.email}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-gray-500">Class:</span>
-                <span className="font-medium text-gray-700">{currentUser?.graduationYear}</span>
-              </div>
-            </div>
-          </div>
-
           {/* Event Details Summary */}
           <div className="border-t border-gray-100 pt-4">
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
               Event Details
             </p>
             <div className="space-y-1 text-sm text-gray-600">
-              <div className="flex items-start gap-2">
-                <Icon icon="mdi:calendar-outline" className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                <span>
-                  {new Date(event.date).toLocaleDateString('en-GB', {
-                    weekday: 'long',
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric',
-                  })}
-                  {event.startTime && ` at ${event.startTime}`}
-                </span>
-              </div>
+              {formatDateRange(event.startDate, event.endDate, {
+                locale: 'en-GB',
+                formatOptions: {
+                  weekday: 'long',
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric',
+                },
+              }) && (
+                <div className="flex items-start gap-2">
+                  <Icon icon="mdi:calendar-outline" className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                  <span>
+                    {formatDateRange(event.startDate, event.endDate, {
+                      locale: 'en-GB',
+                      formatOptions: {
+                        weekday: 'long',
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric',
+                      },
+                    })}
+                    {event.startTime && ` at ${event.startTime}`}
+                    {event.endTime && ` - ${event.endTime}`}
+                  </span>
+                </div>
+              )}
               <div className="flex items-start gap-2">
                 <Icon icon="mdi:map-marker-outline" className="w-4 h-4 mt-0.5 flex-shrink-0" />
                 <span>{event.location}</span>
@@ -460,7 +492,7 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
             </div>
           </div>
 
-          <div className="rounded-lg border border-green-200 bg-green-50 p-3">
+          {/* <div className="rounded-lg border border-green-200 bg-green-50 p-3">
             <div className="flex items-start gap-3">
               <div className="rounded-full bg-white p-1.5 text-green-600 shadow-sm">
                 <Icon icon="mdi:check-circle-outline" className="h-4 w-4" />
@@ -474,7 +506,7 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
                 </p>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Note about guests - backend doesn't support guest count yet */}
           {event.allowGuests && (
@@ -545,7 +577,7 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
           ) : null}
 
           <TextareaInput
-            label={registrationForms.length > 0 ? 'Extra Note' : 'Additional Info'}
+            label={registrationForms.length > 0 ? 'Extra Note' : 'Additional Info (Optional)'}
             id="additionalInfo"
             rows={5}
             value={additionalInfo}

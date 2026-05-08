@@ -16,21 +16,26 @@
  */
 
 import { Icon } from '@iconify/react';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useAllEvents } from '@/features/events/hooks/useEvents';
 import { useEventAttendees } from '@/features/events/hooks/useEventAttendees';
 import type { Event } from '@/features/events/types/event.types';
 import type { AttendeeStatus } from '@/features/events/api/adapters/event-attendees.adapter';
 import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
+import { SearchInput } from '@/shared/components/ui/input/SearchInput';
+import { Pagination } from '@/shared/components/ui/Pagination';
 import { ROUTES } from '@/shared/constants/routes';
 import { ADMIN_ROUTES } from '@/features/admin/routes';
+import { formatDateRange } from '@/shared/utils/dateHelpers';
 
 const breadcrumbItems = [
   { label: 'Home', href: ROUTES.HOME },
   { label: 'Admin Dashboard', href: ADMIN_ROUTES.DASHBOARD },
   { label: 'Event Registrations' },
 ];
+const ADMIN_REGISTRATION_EVENTS_PER_PAGE = 6;
+const ADMIN_REGISTRATION_ATTENDEES_PER_PAGE = 10;
 
 // ═══════════════════════════════════════════════════════════════════════════
 // EVENT LIST ITEM
@@ -45,7 +50,15 @@ function EventListItem({
   isSelected: boolean;
   onClick: () => void;
 }) {
-  const isPast = new Date(event.date) < new Date();
+  const isPast = new Date(event.startDate) < new Date();
+  const eventDate = formatDateRange(event.startDate, event.endDate, {
+    locale: 'en-GB',
+    formatOptions: {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    },
+  });
 
   return (
     <button
@@ -62,14 +75,12 @@ function EventListItem({
             {event.title}
           </p>
           <div className="mt-1 flex items-center gap-3 text-xs text-gray-500">
-            <span className="flex items-center gap-1">
-              <Icon icon="mdi:calendar-outline" className="w-3.5 h-3.5" />
-              {new Date(event.date).toLocaleDateString('en-GB', {
-                day: 'numeric',
-                month: 'short',
-                year: 'numeric',
-              })}
-            </span>
+            {eventDate && (
+              <span className="flex items-center gap-1">
+                <Icon icon="mdi:calendar-outline" className="w-3.5 h-3.5" />
+                {eventDate}
+              </span>
+            )}
             {event.location && (
               <span className="flex items-center gap-1">
                 <Icon icon="mdi:map-marker-outline" className="w-3.5 h-3.5" />
@@ -184,6 +195,8 @@ export function AdminEventRegistrationsPage() {
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<'all' | AttendeeStatus>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [eventsPage, setEventsPage] = useState(1);
+  const [attendeesPage, setAttendeesPage] = useState(1);
 
   // Fetch all events
   const { data: events = [], isLoading: eventsLoading } = useAllEvents();
@@ -209,6 +222,38 @@ export function AdminEventRegistrationsPage() {
       const query = searchQuery.toLowerCase();
       return a.fullName.toLowerCase().includes(query) || a.email.toLowerCase().includes(query);
     }) || [];
+  const totalEventPages = Math.max(
+    1,
+    Math.ceil(events.length / ADMIN_REGISTRATION_EVENTS_PER_PAGE),
+  );
+  const visibleEvents = useMemo(
+    () =>
+      events.slice(
+        (eventsPage - 1) * ADMIN_REGISTRATION_EVENTS_PER_PAGE,
+        eventsPage * ADMIN_REGISTRATION_EVENTS_PER_PAGE,
+      ),
+    [events, eventsPage],
+  );
+  const totalAttendeePages = Math.max(
+    1,
+    Math.ceil(filteredAttendees.length / ADMIN_REGISTRATION_ATTENDEES_PER_PAGE),
+  );
+  const visibleAttendees = filteredAttendees.slice(
+    (attendeesPage - 1) * ADMIN_REGISTRATION_ATTENDEES_PER_PAGE,
+    attendeesPage * ADMIN_REGISTRATION_ATTENDEES_PER_PAGE,
+  );
+
+  useEffect(() => {
+    if (eventsPage > totalEventPages) {
+      setEventsPage(totalEventPages);
+    }
+  }, [eventsPage, totalEventPages]);
+
+  useEffect(() => {
+    if (attendeesPage > totalAttendeePages) {
+      setAttendeesPage(totalAttendeePages);
+    }
+  }, [attendeesPage, totalAttendeePages]);
 
   // Stats
   const stats = attendeeData
@@ -262,7 +307,7 @@ export function AdminEventRegistrationsPage() {
                   </div>
                 ) : (
                   <div className="space-y-2 max-h-[600px] overflow-y-auto">
-                    {events.map((event) => (
+                    {visibleEvents.map((event) => (
                       <EventListItem
                         key={event.id}
                         event={event}
@@ -272,6 +317,14 @@ export function AdminEventRegistrationsPage() {
                     ))}
                   </div>
                 )}
+
+                {!eventsLoading && events.length > 0 ? (
+                  <Pagination
+                    currentPage={eventsPage}
+                    totalPages={totalEventPages}
+                    onPageChange={(page) => setEventsPage(page)}
+                  />
+                ) : null}
               </div>
             </div>
 
@@ -291,15 +344,19 @@ export function AdminEventRegistrationsPage() {
                   <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
                     <h2 className="text-xl font-bold text-gray-900">{selectedEvent?.title}</h2>
                     <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
-                      <span className="flex items-center gap-1">
-                        <Icon icon="mdi:calendar-outline" className="w-4 h-4" />
-                        {selectedEvent &&
-                          new Date(selectedEvent.date).toLocaleDateString('en-GB', {
-                            day: 'numeric',
-                            month: 'long',
-                            year: 'numeric',
+                      {selectedEvent && (
+                        <span className="flex items-center gap-1">
+                          <Icon icon="mdi:calendar-outline" className="w-4 h-4" />
+                          {formatDateRange(selectedEvent.startDate, selectedEvent.endDate, {
+                            locale: 'en-GB',
+                            formatOptions: {
+                              day: 'numeric',
+                              month: 'long',
+                              year: 'numeric',
+                            },
                           })}
-                      </span>
+                        </span>
+                      )}
                       {selectedEvent?.location && (
                         <span className="flex items-center gap-1">
                           <Icon icon="mdi:map-marker-outline" className="w-4 h-4" />
@@ -326,24 +383,29 @@ export function AdminEventRegistrationsPage() {
                   <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6">
                     <div className="flex flex-col sm:flex-row gap-4">
                       {/* Search */}
-                      <div className="flex-1 relative">
-                        <Icon
-                          icon="mdi:magnify"
-                          className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
-                        />
-                        <input
-                          type="text"
+                      <div className="flex-1">
+                        <label htmlFor="admin-event-registrations-search" className="sr-only">
+                          Search attendees by name or email
+                        </label>
+                        <SearchInput
+                          id="admin-event-registrations-search"
                           placeholder="Search by name or email..."
                           value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                          className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                          onValueChange={(value) => {
+                            setSearchQuery(value);
+                            setAttendeesPage(1);
+                          }}
+                          className="w-full"
                         />
                       </div>
 
                       {/* Status Filter */}
                       <div className="flex gap-2">
                         <button
-                          onClick={() => setStatusFilter('all')}
+                          onClick={() => {
+                            setStatusFilter('all');
+                            setAttendeesPage(1);
+                          }}
                           className={`px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
                             statusFilter === 'all'
                               ? 'bg-primary-500 text-white'
@@ -353,7 +415,10 @@ export function AdminEventRegistrationsPage() {
                           All
                         </button>
                         <button
-                          onClick={() => setStatusFilter('going')}
+                          onClick={() => {
+                            setStatusFilter('going');
+                            setAttendeesPage(1);
+                          }}
                           className={`px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
                             statusFilter === 'going'
                               ? 'bg-green-500 text-white'
@@ -363,7 +428,10 @@ export function AdminEventRegistrationsPage() {
                           Going
                         </button>
                         <button
-                          onClick={() => setStatusFilter('maybe')}
+                          onClick={() => {
+                            setStatusFilter('maybe');
+                            setAttendeesPage(1);
+                          }}
                           className={`px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
                             statusFilter === 'maybe'
                               ? 'bg-amber-500 text-white'
@@ -374,7 +442,10 @@ export function AdminEventRegistrationsPage() {
                         </button>
 
                         <button
-                          onClick={() => setStatusFilter('not_going')}
+                          onClick={() => {
+                            setStatusFilter('not_going');
+                            setAttendeesPage(1);
+                          }}
                           className={`px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
                             statusFilter === 'not_going'
                               ? 'bg-red-500 text-white'
@@ -418,11 +489,18 @@ export function AdminEventRegistrationsPage() {
                           </p>
                         </div>
                       ) : (
-                        filteredAttendees.map((attendee) => (
+                        visibleAttendees.map((attendee) => (
                           <AttendeeRow key={attendee.userId} attendee={attendee} />
                         ))
                       )}
                     </div>
+                    {!attendeesLoading && filteredAttendees.length > 0 ? (
+                      <Pagination
+                        currentPage={attendeesPage}
+                        totalPages={totalAttendeePages}
+                        onPageChange={(page) => setAttendeesPage(page)}
+                      />
+                    ) : null}
                   </div>
                 </>
               )}

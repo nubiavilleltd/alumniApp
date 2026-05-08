@@ -74,6 +74,54 @@ function resolveOwnerPhoto(raw: Record<string, unknown>): string | undefined {
   );
 }
 
+function resolveListingEmail(raw: Record<string, unknown>): string | undefined {
+  const profile = getNestedRecord(raw.profile);
+  const user = getNestedRecord(raw.user);
+  const seller = getNestedRecord(raw.seller);
+  const owner = getNestedRecord(raw.owner);
+
+  const candidates = [
+    raw.email,
+    raw.contact_email,
+    raw.business_email,
+    raw.seller_email,
+    raw.owner_email,
+    raw.user_email,
+    seller.email,
+    owner.email,
+    user.email,
+    profile.email,
+  ];
+
+  for (const candidate of candidates) {
+    const value = typeof candidate === 'string' ? candidate.trim() : '';
+    if (value && value.includes('@')) return value;
+  }
+
+  const contactInfo = typeof raw.contact_info === 'string' ? raw.contact_info.trim() : '';
+  if (contactInfo && contactInfo.includes('@')) return contactInfo;
+
+  return undefined;
+}
+
+function resolveListingMessagePrompt(raw: Record<string, unknown>): string | undefined {
+  const candidates = [
+    raw.message_prompt,
+    raw.messagePrompt,
+    raw.draft_message,
+    raw.draftMessage,
+    raw.message_template,
+    raw.messageTemplate,
+  ];
+
+  for (const candidate of candidates) {
+    const value = typeof candidate === 'string' ? candidate.trim() : '';
+    if (value) return value;
+  }
+
+  return undefined;
+}
+
 export function mapBackendListingToBusiness(raw: unknown): Business {
   const d = raw as Record<string, unknown>;
 
@@ -88,7 +136,9 @@ export function mapBackendListingToBusiness(raw: unknown): Business {
     description: String(d.description ?? ''),
     location: String(d.location ?? ''),
     phone: String(d.phone ?? ''),
+    email: resolveListingEmail(d),
     website: d.website ? String(d.website) : undefined,
+    messagePrompt: resolveListingMessagePrompt(d),
     images: parseImages(d.images),
   };
 }
@@ -133,6 +183,7 @@ export function mapBusinessToCreatePayload(
     price: '0.00',
     price_type: 'free',
     is_featured: '0',
+    message_prompt: formData.messagePrompt?.trim() ?? '',
   };
 
   if (chapterId) base.chapter_id = chapterId;
@@ -211,6 +262,7 @@ export function mapBusinessToUpdatePayload(
     location: formData.location,
     phone: formData.phone,
     status: 'active',
+    message_prompt: formData.messagePrompt?.trim() ?? '',
   };
 
   if (formData.website?.trim()) {

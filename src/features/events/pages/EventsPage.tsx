@@ -13,14 +13,12 @@ import { useIdentityStore } from '@/features/authentication/stores/useIdentitySt
 import { EVENT_ROUTES } from '../routes';
 import type { Event } from '../types/event.types';
 import { MonthYearPicker } from '@/shared/components/ui/MonthYearPicker';
+import { Pagination } from '@/shared/components/ui/Pagination';
 import { ROUTES } from '@/shared/constants/routes';
+import { SearchInput } from '@/shared/components/ui/input/SearchInput';
+import { formatDateRange, parseDateInput } from '@/shared/utils/dateHelpers';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
-
-function parseDateOnly(dateStr: string) {
-  const [y, m, d] = dateStr.split('-').map(Number);
-  return new Date(y, m - 1, d);
-}
 
 function formatDateKey(date: Date) {
   return (
@@ -32,9 +30,8 @@ function formatDateKey(date: Date) {
   );
 }
 
-function formatEventDate(event: Event): string {
-  const d = parseDateOnly(event.date);
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+function formatEventDate(event: Event) {
+  return formatDateRange(event.startDate, event.endDate);
 }
 
 // Stable pastel color per event, deterministic from id
@@ -91,7 +88,7 @@ function CalendarBlock({
       className={`
         w-full text-left rounded-md
         px-1.5 py-1
-        sm:rounded-xl sm:p-2 sm:p-2.5
+        sm:rounded-xl sm:p-2.5
         transition-all duration-200
         hover:brightness-95
       `}
@@ -104,7 +101,7 @@ function CalendarBlock({
       {/* Hidden on mobile, visible on desktop */}
       <div className="hidden sm:inline-flex items-center gap-1 px-2 py-[3px] rounded-md text-[10px] font-medium text-white bg-gray-800 mb-1.5">
         <span>📅</span>
-        {formatShort(event.date)}
+        {formatShort(event.startDate)}
       </div>
 
       {/* Compact title */}
@@ -136,7 +133,10 @@ function Calendar({
   const eventsByDate = useMemo(() => {
     const map = new Map<string, Event[]>();
     events.forEach((ev) => {
-      const key = formatDateKey(parseDateOnly(ev.date));
+      const parsedDate = parseDateInput(ev.startDate);
+      if (!parsedDate) return;
+
+      const key = formatDateKey(parsedDate);
       map.set(key, [...(map.get(key) || []), ev]);
     });
     return map;
@@ -180,14 +180,7 @@ function Calendar({
           return (
             <div
               key={idx}
-              className={`
-    min-h-[60px] sm:min-h-[80px]
-    p-1
-    rounded-lg
-    flex flex-col items-start gap-1
-    ${calDay.isCurrentMonth ? 'bg-white' : 'bg-gray-50/60'}
-    ${isToday ? 'ring-1 ring-primary-400' : 'ring-1 ring-gray-100'}
-  `}
+              className={`min-h-[60px] sm:min-h-[80px] p-1 rounded-lg flex flex-col items-start gap-1 ${calDay.isCurrentMonth ? 'bg-white' : 'bg-gray-50/60'} ${isToday ? 'ring-1 ring-primary-400' : 'ring-1 ring-gray-100'}`}
             >
               <span
                 className={`text-[10px] sm:text-xs font-semibold ${
@@ -283,10 +276,12 @@ function EventListItem({
             <span className="truncate">{event.location}</span>
           </p>
         )}
-        <p className="text-gray-400 text-[11px] mt-0.5 flex items-center gap-1">
-          <Icon icon="mdi:clock-outline" className="w-3 h-3 flex-shrink-0" />
-          {formatEventDate(event)}
-        </p>
+        {formatEventDate(event) && (
+          <p className="text-gray-400 text-[11px] mt-0.5 flex items-center gap-1">
+            <Icon icon="mdi:clock-outline" className="w-3 h-3 flex-shrink-0" />
+            {formatEventDate(event)}
+          </p>
+        )}
       </div>
 
       <Icon icon="mdi:chevron-right" className="w-4 h-4 text-primary-500 flex-shrink-0" />
@@ -318,7 +313,7 @@ export function EventsPage() {
   const [activeEventId, setActiveEventId] = useState<string | null>(null);
   const [registerEvent, setRegisterEvent] = useState<Event | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [listCount, setListCount] = useState(LIST_PAGE);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const { data: upcoming = [], isLoading: upcomingLoading } = useUpcomingEvents();
   const { data: past = [], isLoading: pastLoading } = usePastEvents();
@@ -328,7 +323,9 @@ export function EventsPage() {
   const allEvents = useMemo(
     () =>
       [...upcoming, ...past].sort(
-        (a, b) => parseDateOnly(a.date).getTime() - parseDateOnly(b.date).getTime(),
+        (a, b) =>
+          (parseDateInput(a.startDate)?.getTime() ?? Number.POSITIVE_INFINITY) -
+          (parseDateInput(b.startDate)?.getTime() ?? Number.POSITIVE_INFINITY),
       ),
     [upcoming, past],
   );
@@ -337,7 +334,9 @@ export function EventsPage() {
   const calendarMonthEvents = useMemo(
     () =>
       allEvents.filter((e) => {
-        const d = parseDateOnly(e.date);
+        const d = parseDateInput(e.startDate);
+        if (!d) return false;
+
         return (
           d.getFullYear() === calendarDate.getFullYear() && d.getMonth() === calendarDate.getMonth()
         );
@@ -357,8 +356,17 @@ export function EventsPage() {
     );
   }, [allEvents, searchTerm]);
 
-  const visibleEvents = filteredEvents.slice(0, listCount);
-  const hasMore = listCount < filteredEvents.length;
+  const totalPages = Math.max(1, Math.ceil(filteredEvents.length / LIST_PAGE));
+  const visibleEvents = filteredEvents.slice(
+    (currentPage - 1) * LIST_PAGE,
+    currentPage * LIST_PAGE,
+  );
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   // Ref map for scrolling individual list items
   const itemRefs = useRef<Map<string, HTMLDivElement>>(new Map());
@@ -369,16 +377,29 @@ export function EventsPage() {
 
       // Make sure it's in the visible portion, then scroll
       const idx = filteredEvents.findIndex((e) => e.id === event.id);
-      if (idx >= 0 && idx >= listCount) {
-        setListCount(idx + LIST_PAGE);
+      if (idx >= 0) {
+        setCurrentPage(Math.floor(idx / LIST_PAGE) + 1);
       }
+
+      // requestAnimationFrame(() => {
+      //   const el = itemRefs.current.get(event.id);
+      //   el?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      // });
 
       requestAnimationFrame(() => {
         const el = itemRefs.current.get(event.id);
-        el?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        if (el) {
+          const container = el.closest('.overflow-y-auto') as HTMLElement | null;
+          if (container) {
+            container.scrollTo({
+              top: el.offsetTop - container.offsetTop,
+              behavior: 'smooth',
+            });
+          }
+        }
       });
     },
-    [filteredEvents, listCount],
+    [filteredEvents],
   );
 
   const handleListClick = (event: Event) => {
@@ -448,8 +469,8 @@ export function EventsPage() {
 
             {/* Search + create */}
             <div className="flex items-center gap-2">
-              <div className="relative flex-1 sm:w-60">
-                <Icon
+              {/* <div className="relative flex-1 sm:w-60"> */}
+              {/* <Icon
                   icon="mdi:magnify"
                   className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
                 />
@@ -463,8 +484,19 @@ export function EventsPage() {
                   }}
                   placeholder="Search events"
                   className="w-full pl-9 pr-4 py-2 rounded-full border border-gray-200 bg-white text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-300 shadow-sm"
-                />
-              </div>
+                /> */}
+
+              <SearchInput
+                className="flex-1 sm:w-60"
+                value={searchTerm}
+                onValueChange={(v) => {
+                  setSearchTerm(v);
+                  setCurrentPage(1);
+                  setActiveEventId(null);
+                }}
+                placeholder="Search events"
+              />
+              {/* </div> */}
               {isAdmin && (
                 <button
                   type="button"
@@ -523,24 +555,23 @@ export function EventsPage() {
                         />
                       ))}
                     </div>
-                    {hasMore && (
-                      <button
-                        type="button"
-                        onClick={() => setListCount((c) => c + LIST_PAGE)}
-                        className="w-full py-3 text-xs font-semibold text-primary-500 hover:text-primary-600 hover:bg-primary-50 rounded-xl transition-colors"
-                      >
-                        Load {Math.min(filteredEvents.length - listCount, LIST_PAGE)} more events…
-                      </button>
-                    )}
                   </>
                 )}
               </div>
 
               {/* Footer count */}
               {!isLoading && filteredEvents.length > 0 && (
-                <div className="border-t border-gray-50 px-4 py-2 text-center text-[11px] text-gray-400">
-                  {Math.min(visibleEvents.length, filteredEvents.length)} of {filteredEvents.length}{' '}
-                  events
+                <div className="border-t border-gray-50 px-4 py-3">
+                  <div className="text-center text-[11px] text-gray-400">
+                    Showing {(currentPage - 1) * LIST_PAGE + 1}-
+                    {Math.min(currentPage * LIST_PAGE, filteredEvents.length)} of{' '}
+                    {filteredEvents.length} events
+                  </div>
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={(page) => setCurrentPage(page)}
+                  />
                 </div>
               )}
             </div>

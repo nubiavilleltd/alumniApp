@@ -13,14 +13,17 @@ import { ADMIN_ROUTES } from '@/features/admin/routes';
 import { ALUMNI_ROUTES } from '@/features/alumni/routes';
 import { EVENT_ROUTES } from '@/features/events/routes';
 import { MARKETPLACE_ROUTES } from '@/features/marketplace/routes';
+import { useMessagesInbox } from '@/features/messages/hooks/useMessages';
+import type { MessageThreadSummary } from '@/features/messages/types/messages.types';
 import { ROUTES } from '@/shared/constants/routes';
 import { USER_ROUTES } from '@/features/user/routes';
 import { AppLink } from '../ui/AppLink';
+import { useToastStore } from '../ui/Toast';
+import HeaderLogo from '../ui/HeaderLogo';
 
 type NavChild = {
   label: string;
   url: string;
-  icon?: string;
 };
 
 type NavItem = NavChild & {
@@ -50,48 +53,48 @@ const primaryNavItems: NavItem[] = [
     label: 'News & Events',
     url: ROUTES.NEWS,
     children: [
-      { label: 'Announcements', url: ROUTES.NEWS, icon: 'mdi:newspaper-variant-outline' },
-      { label: 'Events', url: EVENT_ROUTES.ROOT, icon: 'mdi:calendar-month-outline' },
-      { label: 'Our Projects', url: ROUTES.PROJECTS.ROOT, icon: 'mdi:folder-star-outline' },
+      { label: 'Announcements', url: ROUTES.NEWS },
+      { label: 'Events', url: EVENT_ROUTES.ROOT },
+      { label: 'Our Projects', url: ROUTES.PROJECTS.ROOT },
     ],
   },
   {
     label: 'Marketplace',
     url: MARKETPLACE_ROUTES.ROOT,
     children: [
-      { label: 'Marketplace', url: MARKETPLACE_ROUTES.ROOT, icon: 'mdi:storefront-outline' },
-      { label: 'Job Vacancies', url: ROUTES.JOB_VACANCIES, icon: 'mdi:briefcase-outline' },
+      { label: 'Marketplace', url: MARKETPLACE_ROUTES.ROOT },
+      { label: 'Job Vacancies', url: ROUTES.JOB_VACANCIES },
     ],
   },
 ];
 
 const authenticatedMenuItems: NavChild[] = [
-  { label: 'View Profile', url: USER_ROUTES.PROFILE, icon: 'mdi:account-outline' },
-  { label: 'Dashboard', url: USER_ROUTES.DASHBOARD, icon: 'mdi:view-dashboard-outline' },
-  { label: 'Messaging Center', url: ROUTES.MESSAGES, icon: 'mdi:message-outline' },
-  {
-    label: 'My Registered Events',
-    url: EVENT_ROUTES.MY_EVENTS,
-    icon: 'mdi:calendar-check-outline',
-  },
-  { label: 'My Business', url: MARKETPLACE_ROUTES.MY_BUSINESS, icon: 'mdi:store-cog-outline' },
-  { label: 'Settings', url: USER_ROUTES.SETTINGS, icon: 'mdi:cog-outline' },
+  { label: 'View Profile', url: USER_ROUTES.PROFILE },
+  { label: 'Dashboard', url: USER_ROUTES.DASHBOARD },
+  { label: 'Messaging Center', url: ROUTES.MESSAGES },
+  { label: 'My Registered Events', url: EVENT_ROUTES.MY_EVENTS },
+  { label: 'My Market', url: MARKETPLACE_ROUTES.MY_BUSINESS },
+  { label: 'My Job Posts', url: ROUTES.MY_JOB_POSTS },
+  { label: 'Settings', url: USER_ROUTES.SETTINGS },
 ];
 
 const navSurfaceClassName =
   'bg-[linear-gradient(106deg,_rgb(var(--color-primary-500))_0%,_#003a5d_92%)]';
 const desktopLinkBaseClassName =
-  'relative no-underline font-bold tracking-[0.1em] text-[#c4d0d9] transition-colors duration-200 hover:text-white';
-const desktopActiveLinkClassName =
-  'text-white after:absolute after:left-0 after:right-0 after:-bottom-[0.45rem] after:h-[2px] after:rounded-full after:bg-white/85';
-const desktopPrimaryLinkClassName = `${desktopLinkBaseClassName} whitespace-nowrap text-[clamp(1.05rem,1.36vw,1.75rem)]`;
-const desktopSecondaryLinkClassName = `${desktopLinkBaseClassName} text-[clamp(0.95rem,1.18vw,1.35rem)]`;
+  "relative no-underline font-bold tracking-[0.1em] text-[#c4d0d9] transition-colors duration-200 hover:text-white focus-visible:text-white after:pointer-events-none after:absolute after:left-0 after:h-[5px] after:w-full after:origin-left after:scale-x-0 after:rounded-full after:bg-white/85 after:content-[''] after:transition-transform after:duration-300 after:ease-out hover:after:scale-x-100 focus-visible:after:scale-x-100";
+const desktopActiveLinkClassName = 'text-white after:scale-x-100';
+const desktopPrimaryLinkClassName = `${desktopLinkBaseClassName} whitespace-nowrap text-[clamp(1.05rem,1.36vw,1.75rem)] after:bottom-[-1.12rem] lg:max-[1360px]:after:bottom-[-0.95rem] xl:after:bottom-[-1.28rem]`;
+const desktopSecondaryLinkClassName = `${desktopLinkBaseClassName} text-[clamp(0.95rem,1.18vw,1.35rem)] after:bottom-[-0.55rem]`;
 const desktopPanelClassName =
   'absolute top-[calc(100%+1rem)] z-[60] overflow-hidden border border-[#d7e6ef] bg-white shadow-[0_1.25rem_2.5rem_rgba(7,17,22,0.14)]';
-const desktopMenuLinkClassName =
-  'flex items-center gap-3 px-6 py-[0.95rem] text-[clamp(1.05rem,1.3vw,1.35rem)] font-bold leading-[1.25] text-[#4f5864] no-underline transition-colors duration-200 hover:bg-primary-50 hover:text-primary-700';
+const desktopDropdownPanelSizeClassName = 'w-[17.5rem] rounded-[0.9rem] py-[0.45rem]';
+const desktopDropdownMenuLinkClassName =
+  'flex items-center gap-3 px-4 py-[0.8rem] text-left text-[0.92rem] font-bold text-[#4f5864] no-underline transition-colors duration-200 hover:bg-primary-50 hover:text-primary-700';
+const desktopMenuActiveLinkClassName = 'bg-primary-50 text-primary-700';
 const accountPillClassName =
-  'inline-flex min-h-[3.35rem] items-center rounded-full border border-white/25 bg-[#001f38]/20 text-white no-underline transition-colors duration-200 hover:bg-white/10';
+  'inline-flex min-h-[3.35rem] items-center rounded-full border border-transparent bg-white text-[#0d78cb] no-underline shadow-none transition-opacity duration-200 hover:bg-white/95 hover:text-[#0d78cb]';
+const userAccountTriggerClassName =
+  'inline-flex min-h-[3.35rem] items-center rounded-full border border-white/25 bg-transparent text-white no-underline shadow-none transition-colors duration-200 hover:border-white/40 hover:bg-white/5';
 const mobileSectionClassName =
   'mt-[0.85rem] grid gap-[0.35rem] border-t border-white/15 pt-[0.85rem] first:mt-0 first:border-t-0';
 const mobileLinkClassName =
@@ -120,6 +123,40 @@ function isPathActive(pathname: string, url: string) {
   return pathname === url || pathname.startsWith(`${url}/`);
 }
 
+function formatUnreadBadgeCount(count: number) {
+  if (count > 99) return '99+';
+  return count.toString();
+}
+
+function UnreadMessagesBadge({ count, className = '' }: { count: number; className?: string }) {
+  if (count <= 0) return null;
+
+  return (
+    <span
+      className={cn(
+        'inline-flex min-w-5 items-center justify-center rounded-full bg-[#ef4444] px-1.5 py-0.5 text-[0.68rem] font-extrabold leading-none text-white shadow-[0_4px_10px_rgba(239,68,68,0.35)]',
+        className,
+      )}
+      aria-label={`${count} unread message${count === 1 ? '' : 's'}`}
+    >
+      {formatUnreadBadgeCount(count)}
+    </span>
+  );
+}
+
+function buildMessageFlashTitle(thread: MessageThreadSummary) {
+  if (thread.type === 'group' && thread.lastMessageSenderName?.trim()) {
+    return `${thread.lastMessageSenderName.trim()} in ${thread.title}`;
+  }
+
+  return thread.title;
+}
+
+function buildMessageFlashBody(thread: MessageThreadSummary) {
+  const preview = thread.lastMessagePreview.trim();
+  return preview || 'You have a new unread message.';
+}
+
 function BrandMark({ mobile = false }: { mobile?: boolean }) {
   return (
     <AppLink
@@ -127,71 +164,24 @@ function BrandMark({ mobile = false }: { mobile?: boolean }) {
       className={cn(
         'relative isolate flex overflow-hidden bg-white text-primary-500 no-underline',
         mobile
-          ? 'min-h-[5.25rem] items-center px-[0.85rem] py-[0.6rem]'
-          : 'items-center justify-center px-[clamp(0.9rem,1.8vw,1.6rem)] py-[clamp(0.75rem,1.4vw,1.25rem)]',
+          ? 'min-h-[5.25rem] items-center px-4 py-3'
+          : 'items-center justify-center px-[clamp(1rem,2vw,1.8rem)] py-[clamp(0.8rem,1.4vw,1.25rem)]',
       )}
     >
       <span
-        className="absolute inset-0 -z-10 bg-[url('/navbarImage.png')] bg-cover bg-right bg-no-repeat"
+        className="absolute inset-0 -z-10 bg-[url('/navbarImage.png')] bg-[length:auto_100%] bg-right bg-no-repeat"
         aria-hidden="true"
       />
-      <span
+      <HeaderLogo
         className={cn(
-          'flex w-full items-center',
-          mobile ? 'max-w-[22rem] gap-[0.65rem]' : 'justify-center gap-[clamp(0.65rem,1.1vw,1rem)]',
+          'relative z-10 min-w-0',
+          mobile ? 'w-full justify-center gap-2.5' : 'max-w-full justify-center gap-3',
         )}
-      >
-        <img
-          src="/logo.png"
-          alt=""
-          className={cn(
-            'h-auto flex-none object-contain',
-            mobile
-              ? 'h-[2.8rem] w-[2.8rem]'
-              : 'h-[clamp(2.75rem,4vw,4.15rem)] w-[clamp(2.75rem,4vw,4.15rem)]',
-          )}
-        />
-        <span className="flex min-w-0 flex-col justify-center">
-          <span
-            className={cn(
-              "[font-family:Georgia,'Times_New_Roman',serif] block whitespace-nowrap font-bold leading-[0.9] tracking-[0.34em] text-primary-500",
-              mobile
-                ? 'text-[1.55rem] max-[420px]:text-[1.35rem]'
-                : 'text-[clamp(1.75rem,2.65vw,3.45rem)]',
-            )}
-          >
-            FGGC
-          </span>
-          <span
-            className={cn(
-              "[font-family:Georgia,'Times_New_Roman',serif] mt-[0.35rem] block whitespace-nowrap font-bold leading-none text-primary-500",
-              mobile ? 'text-[0.75rem]' : 'text-[clamp(0.85rem,1.1vw,1.35rem)]',
-            )}
-          >
-            Alumnae Association
-          </span>
-        </span>
-        <span
-          className={cn(
-            'w-px flex-none bg-[rgba(0,119,204,0.6)]',
-            mobile
-              ? 'mx-[0.35rem] h-[2.75rem] max-[420px]:hidden'
-              : 'mx-[clamp(0.8rem,1.5vw,1.35rem)] hidden h-[clamp(3rem,5vw,4.6rem)] min-[1361px]:block',
-          )}
-          aria-hidden="true"
-        />
-        <span
-          className={cn(
-            "[font-family:'Segoe_Script','Brush_Script_MT',cursive] flex flex-none rotate-[-2deg] flex-col whitespace-nowrap font-bold leading-[1.2] text-primary-500",
-            mobile
-              ? 'text-[0.85rem] max-[420px]:hidden'
-              : 'hidden text-[clamp(0.95rem,1.35vw,1.55rem)] min-[1361px]:flex',
-          )}
-        >
-          <span>Lagos</span>
-          <span>Chapter</span>
-        </span>
-      </span>
+        imageClassName={cn(mobile ? 'h-[2.8rem] w-[2.8rem]' : 'h-[3.35rem] w-[3.35rem]')}
+        wordmarkClassName={cn(
+          mobile ? 'w-[10.75rem] max-w-[calc(100vw-9.25rem)]' : 'w-[14.75rem] max-w-full',
+        )}
+      />
     </AppLink>
   );
 }
@@ -245,7 +235,8 @@ function DesktopDropdown({ item }: { item: NavItem }) {
         <div
           className={cn(
             desktopPanelClassName,
-            'w-[min(19.5rem,calc(100vw-2rem))] rounded-[1.05rem] py-4',
+            desktopDropdownPanelSizeClassName,
+            'max-w-[calc(100vw-2rem)]',
             item.label === 'Marketplace' ? 'right-0 left-auto' : 'left-0',
           )}
         >
@@ -254,17 +245,11 @@ function DesktopDropdown({ item }: { item: NavItem }) {
               key={child.url}
               href={child.url}
               className={cn(
-                desktopMenuLinkClassName,
+                desktopDropdownMenuLinkClassName,
                 isPathActive(pathname, child.url) && 'bg-primary-50 text-primary-700',
               )}
               onClick={() => setOpen(false)}
             >
-              {child.icon && (
-                <Icon
-                  icon={child.icon}
-                  className="h-[1.15rem] w-[1.15rem] flex-none text-primary-500"
-                />
-              )}
               <span>{child.label}</span>
             </AppLink>
           ))}
@@ -281,14 +266,14 @@ function UserAvatar({ user, className = '' }: { user: CurrentUser; className?: s
   return (
     <span
       className={cn(
-        'inline-flex h-[2.65rem] w-[2.65rem] flex-none items-center justify-center overflow-hidden rounded-full border-2 border-white/15 bg-white',
+        'inline-flex h-[2.65rem] w-[2.65rem] flex-none items-center justify-center overflow-hidden rounded-full border border-white/25 bg-white/10',
         className,
       )}
     >
       {user.photo ? (
         <img src={user.photo} alt={displayName} className="h-full w-full object-cover" />
       ) : (
-        <span className="flex h-full w-full items-center justify-center bg-primary-50 text-[0.8rem] font-extrabold text-primary-700">
+        <span className="flex h-full w-full items-center justify-center bg-white text-[0.8rem] font-extrabold text-[#0d78cb]">
           {initials}
         </span>
       )}
@@ -300,13 +285,16 @@ function UserDropdown({
   currentUser,
   onLogout,
   isLoggingOut,
+  unreadMessageCount,
 }: {
   currentUser: CurrentUser;
   onLogout: () => void;
   isLoggingOut: boolean;
+  unreadMessageCount: number;
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const { pathname } = useLocation();
   const isAdmin = currentUser.role === 'admin';
   const displayName = getDisplayName(currentUser);
 
@@ -324,7 +312,6 @@ function UserDropdown({
         {
           label: 'Admin Dashboard',
           url: ADMIN_ROUTES.DASHBOARD,
-          icon: 'mdi:shield-account-outline',
         },
         ...authenticatedMenuItems,
       ]
@@ -335,7 +322,7 @@ function UserDropdown({
       <button
         type="button"
         className={cn(
-          accountPillClassName,
+          userAccountTriggerClassName,
           'cursor-pointer gap-3 px-[1.2rem] py-[0.35rem] pl-[0.45rem]',
         )}
         aria-expanded={open}
@@ -343,30 +330,31 @@ function UserDropdown({
       >
         <UserAvatar user={currentUser} />
         <span className="flex flex-col gap-[0.1rem] text-left text-[0.95rem] leading-[1.05] text-white">
-          <span className="font-medium text-[#c4d0d9]">Welcome,</span>
+          <span className="font-medium text-[#c9d6df]">Welcome,</span>
           <strong className="max-w-[8.5rem] overflow-hidden text-[1.05rem] font-extrabold text-ellipsis whitespace-nowrap text-white">
             {displayName}
           </strong>
         </span>
-        <Icon icon="mdi:chevron-down" className="h-5 w-5 flex-none" />
+        <UnreadMessagesBadge count={unreadMessageCount} className="ml-1 flex-none" />
+        <Icon icon="mdi:chevron-down" className="h-5 w-5 flex-none text-[#9eb8ca]" />
       </button>
 
       {open && (
-        <div
-          className={cn(desktopPanelClassName, 'right-0 w-[17.5rem] rounded-[0.9rem] py-[0.45rem]')}
-        >
+        <div className={cn(desktopPanelClassName, desktopDropdownPanelSizeClassName, 'right-0')}>
           {menuItems.map((item) => (
             <AppLink
               key={item.url}
               href={item.url}
-              className="flex items-center gap-[0.65rem] px-4 py-[0.8rem] text-left text-[0.92rem] font-bold text-[#4f5864] transition-colors duration-200 hover:bg-primary-50 hover:text-primary-700"
+              className={cn(
+                `${desktopDropdownMenuLinkClassName} justify-between`,
+                isPathActive(pathname, item.url) && desktopMenuActiveLinkClassName,
+              )}
               onClick={() => setOpen(false)}
             >
-              <Icon
-                icon={item.icon ?? 'mdi:circle-outline'}
-                className="h-[1.15rem] w-[1.15rem] flex-none text-primary-500"
-              />
               <span>{item.label}</span>
+              {item.url === ROUTES.MESSAGES ? (
+                <UnreadMessagesBadge count={unreadMessageCount} />
+              ) : null}
             </AppLink>
           ))}
 
@@ -426,7 +414,6 @@ function MobileNavGroup({ item }: { item: NavItem }) {
               isPathActive(pathname, child.url) && 'bg-white/10 text-white',
             )}
           >
-            {child.icon && <Icon icon={child.icon} className="h-[1.15rem] w-[1.15rem] flex-none" />}
             <span>{child.label}</span>
           </AppLink>
         ))}
@@ -437,18 +424,26 @@ function MobileNavGroup({ item }: { item: NavItem }) {
 
 export function Navigation() {
   const navigate = useNavigate();
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
   const { isAuthenticated, user: storeUser } = useAuth();
   const clearTokens = useTokenStore((state) => state.clearTokens);
   const clearIdentity = useIdentityStore((state) => state.clearIdentity);
   const { data: freshUser } = useCurrentUser();
+  const inboxQuery = useMessagesInbox();
   const currentUser = (freshUser ?? storeUser) as CurrentUser | null;
   const authenticatedUser = isAuthenticated && currentUser ? currentUser : null;
+  const unreadMessageCount = authenticatedUser ? (inboxQuery.data?.unreadCount ?? 0) : 0;
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const mobileButtonRef = useRef<HTMLButtonElement>(null);
+  const previousThreadStatesRef = useRef<
+    Map<string, { unreadCount: number; lastActivityAt: string }>
+  >(new Map());
+  const hasPrimedMessageFlashRef = useRef(false);
   const isAdmin = authenticatedUser?.role === 'admin';
+  const activeMessagesThreadId =
+    pathname === ROUTES.MESSAGES ? new URLSearchParams(search).get('threadId') : null;
 
   useEffect(() => {
     setMobileOpen(false);
@@ -476,19 +471,93 @@ export function Navigation() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!authenticatedUser || !inboxQuery.data) {
+      previousThreadStatesRef.current = new Map();
+      hasPrimedMessageFlashRef.current = false;
+      return;
+    }
+
+    const nextThreadStates = new Map(
+      inboxQuery.data.threads.map((thread) => [
+        thread.id,
+        {
+          unreadCount: thread.unreadCount,
+          lastActivityAt: thread.lastActivityAt,
+        },
+      ]),
+    );
+
+    if (!hasPrimedMessageFlashRef.current) {
+      previousThreadStatesRef.current = nextThreadStates;
+      hasPrimedMessageFlashRef.current = true;
+      return;
+    }
+
+    inboxQuery.data.threads.forEach((thread) => {
+      if (thread.lastMessageIsOwn || thread.unreadCount <= 0) {
+        return;
+      }
+
+      if (pathname === ROUTES.MESSAGES && activeMessagesThreadId === thread.id) {
+        return;
+      }
+
+      const previousThreadState = previousThreadStatesRef.current.get(thread.id);
+      const isNewUnreadThread = !previousThreadState;
+      const hasIncomingUpdate =
+        isNewUnreadThread ||
+        thread.unreadCount > previousThreadState.unreadCount ||
+        thread.lastActivityAt !== previousThreadState.lastActivityAt;
+
+      if (!hasIncomingUpdate) {
+        return;
+      }
+
+      useToastStore.getState().addToast({
+        type: 'info',
+        title: buildMessageFlashTitle(thread),
+        message: buildMessageFlashBody(thread),
+        duration: 3000,
+      });
+    });
+
+    previousThreadStatesRef.current = nextThreadStates;
+  }, [activeMessagesThreadId, authenticatedUser, inboxQuery.data, pathname]);
+
+  // const handleLogout = async () => {
+  //   setIsLoggingOut(true);
+  //   if (authenticatedUser) {
+  //     try {
+  //       await authApi.logout();
+  //     } catch(error) {
+  //       /* Always clear local auth state even if the server session has expired. */
+  //       console.log("Failed to log out in handleLogout", error)
+  //     }
+  //   }
+  //   clearTokens();
+  //   clearIdentity();
+  //   setMobileOpen(false);
+  //   console.log("redirecting ...home")
+  //   navigate(ROUTES.HOME, { replace: true });
+  //   setIsLoggingOut(false);
+  // };
+
   const handleLogout = async () => {
     setIsLoggingOut(true);
     if (authenticatedUser) {
       try {
         await authApi.logout();
-      } catch {
-        /* Always clear local auth state even if the server session has expired. */
+      } catch (error) {
+        console.log('Failed to log out in handleLogout', error);
       }
     }
+    // Navigate first so the current ProtectedRoute unmounts
+    // before we clear auth state — prevents the spurious /login redirect
+    navigate(ROUTES.HOME, { replace: true });
     clearTokens();
     clearIdentity();
     setMobileOpen(false);
-    navigate(ROUTES.HOME, { replace: true });
     setIsLoggingOut(false);
   };
 
@@ -497,7 +566,6 @@ export function Navigation() {
         {
           label: 'Admin Dashboard',
           url: ADMIN_ROUTES.DASHBOARD,
-          icon: 'mdi:shield-account-outline',
         },
         ...authenticatedMenuItems,
       ]
@@ -533,16 +601,17 @@ export function Navigation() {
                 currentUser={authenticatedUser}
                 onLogout={handleLogout}
                 isLoggingOut={isLoggingOut}
+                unreadMessageCount={unreadMessageCount}
               />
             ) : (
               <AppLink
                 href={AUTH_ROUTES.LOGIN}
                 className={cn(
                   accountPillClassName,
-                  'px-[1.65rem] py-[0.7rem] text-base font-bold tracking-[0.08em]',
+                  'justify-center px-[1.65rem] py-[0.7rem] text-base font-extrabold tracking-[0.01em]',
                 )}
               >
-                Login
+                Sign In
               </AppLink>
             )}
           </div>
@@ -625,15 +694,23 @@ export function Navigation() {
                     {getDisplayName(authenticatedUser)}
                   </strong>
                 </div>
+                <UnreadMessagesBadge count={unreadMessageCount} className="ml-auto flex-none" />
               </div>
 
               {mobileMenuItems.map((item) => (
-                <AppLink key={item.url} href={item.url} className={mobileLinkClassName}>
-                  <Icon
-                    icon={item.icon ?? 'mdi:circle-outline'}
-                    className="h-[1.15rem] w-[1.15rem] flex-none"
-                  />
+                <AppLink
+                  key={item.url}
+                  href={item.url}
+                  className={cn(
+                    mobileLinkClassName,
+                    'justify-between',
+                    isPathActive(pathname, item.url) && 'bg-white/10 text-white',
+                  )}
+                >
                   <span>{item.label}</span>
+                  {item.url === ROUTES.MESSAGES ? (
+                    <UnreadMessagesBadge count={unreadMessageCount} />
+                  ) : null}
                 </AppLink>
               ))}
 
@@ -653,7 +730,7 @@ export function Navigation() {
                 href={AUTH_ROUTES.LOGIN}
                 className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/30 px-6 text-center text-base font-extrabold tracking-[0.08em] text-white no-underline transition-colors duration-200 hover:bg-white/10"
               >
-                Login
+                Sign In
               </AppLink>
             </div>
           )}

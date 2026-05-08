@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Icon } from '@iconify/react';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import Button from '@/shared/components/ui/Button';
 // import HeroBg from '/hero-bg.png';
@@ -12,6 +11,7 @@ import HeroBg6 from '../../../../public/alumni-hero-img6.jpg';
 
 import { AUTH_ROUTES } from '@/features/authentication/routes';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
+import { ROUTES } from '@/shared/constants/routes';
 
 // const heroImages = [
 //   HeroBg,
@@ -66,20 +66,22 @@ export default function HeroSection() {
               <AppLink href={AUTH_ROUTES.REGISTER}>
                 <Button
                   size="lg"
-                  className="min-w-52 rounded-full bg-white px-12 py-3.5 text-base font-bold text-primary-500 shadow-none hover:bg-white/90"
+                  className="w-56 justify-center rounded-full bg-white px-12 py-3.5 text-base font-bold text-primary-500 shadow-none hover:bg-white/90"
                 >
                   Join Us
                 </Button>
               </AppLink>
             ) : null}
 
-            <Button
-              size="lg"
-              className="min-w-60 rounded-full border-0 bg-[#7c3aed] px-9 py-3.5 text-base font-bold text-white shadow-none hover:bg-[#6d28d9]"
-            >
-              Make a Donation
-              <Icon icon="mdi:hand-heart-outline" className="w-5 h-5" />
-            </Button>
+            <AppLink href={ROUTES.DONATION}>
+              <Button
+                size="lg"
+                className="min-w-52 rounded-full border-0 bg-[#7c3aed] px-12 py-3.5 text-base font-bold text-white shadow-none hover:bg-[#6d28d9]"
+              >
+                Make a Donation
+                <img src="/donationIcon.svg" alt="" aria-hidden="true" className="h-5 w-5" />
+              </Button>
+            </AppLink>
           </div>
         </div>
       </div>

@@ -4,6 +4,7 @@ import { useProjects } from '@/features/projects/hooks/useProjects';
 import type { Project } from '@/features/projects/types/project.types';
 import { ROUTES } from '@/shared/constants/routes';
 import EmptyState from '@/shared/components/ui/EmptyState';
+import { formatDateRange } from '@/shared/utils/dateHelpers';
 import { HomeSectionHeader } from './HomeSectionHeader';
 
 const PROJECT_FALLBACK_IMAGES = [
@@ -19,15 +20,15 @@ function getProjectImage(project: Project, index: number) {
 
 function getProjectMeta(project: Project) {
   const location = project.chapterName || 'FGGC Owerri';
-  const year = project.createdAt ? new Date(project.createdAt).getFullYear().toString() : 'Ongoing';
-  return { location, year };
+  const dateRange = formatDateRange(project.startDate, project.endDate);
+  return { location, dateRange };
 }
 
 function HomeProjectCard({ project, index }: { project: Project; index: number }) {
   const meta = getProjectMeta(project);
 
   return (
-    <AppLink href={ROUTES.PROJECTS.DETAIL(project.id)} className="home-project-card">
+    <article className="home-project-card">
       <img src={getProjectImage(project, index)} alt="" className="home-project-card__image" />
 
       <div className="home-project-card__panel">
@@ -39,18 +40,20 @@ function HomeProjectCard({ project, index }: { project: Project; index: number }
             <Icon icon="mdi:map-marker-outline" aria-hidden="true" />
             {meta.location}
           </span>
-          <span>
-            <Icon icon="mdi:clock-outline" aria-hidden="true" />
-            {meta.year}
-          </span>
+          {meta.dateRange && (
+            <span>
+              <Icon icon="mdi:clock-outline" aria-hidden="true" />
+              {meta.dateRange}
+            </span>
+          )}
         </div>
 
-        <span className="home-card-link">
+        <AppLink href={ROUTES.PROJECTS.DETAIL(project.id)} className="home-card-link">
           View Details
           <Icon icon="mdi:chevron-right" aria-hidden="true" />
-        </span>
+        </AppLink>
       </div>
-    </AppLink>
+    </article>
   );
 }
 
@@ -68,7 +71,6 @@ function HomeProjectSkeleton() {
 
 export default function OurProjects() {
   const { data: projects = [], isLoading } = useProjects();
-
   const isEmpty = !isLoading && projects.length === 0;
 
   return (
@@ -78,6 +80,7 @@ export default function OurProjects() {
           eyebrow="Our Projects"
           title="Through the generosity of our alumnae, we continue to support and improve our beloved school"
           href={ROUTES.PROJECTS.ROOT}
+          showViewAll={!isEmpty}
         />
 
         {isEmpty ? (

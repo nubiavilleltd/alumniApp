@@ -1,6 +1,6 @@
 // features/announcements/types/announcement.types.ts
 
-export type AnnouncementType = 'info' | 'warning' | 'success' | 'event';
+export type AnnouncementType = 'info' | 'event';
 
 export interface Announcement {
   id: string | number;

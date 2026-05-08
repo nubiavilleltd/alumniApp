@@ -1,4 +1,5 @@
 import type { SendMessageRequest, UploadMessageAttachmentRequest } from '../messages.contract';
+import { SHARED_UPLOAD_MAX_SIZE_BYTES } from '@/shared/utils/fileValidation';
 import type {
   MessageAttachment,
   MessageThreadDetail,
@@ -6,12 +7,15 @@ import type {
   MessageThreadSummary,
 } from '../../types/messages.types';
 
-export const MESSAGE_ATTACHMENT_MAX_FILE_SIZE_BYTES = 4 * 1024 * 1024;
+export const MESSAGE_ATTACHMENT_MAX_FILE_SIZE_BYTES = SHARED_UPLOAD_MAX_SIZE_BYTES;
+export const MESSAGE_IMAGE_ATTACHMENT_MAX_FILE_SIZE_BYTES = 2 * 1024 * 1024;
+export const MESSAGE_AUDIO_ATTACHMENT_MAX_FILE_SIZE_BYTES = SHARED_UPLOAD_MAX_SIZE_BYTES;
 export const MESSAGE_MAX_ATTACHMENTS_PER_MESSAGE = 6;
 export const MESSAGE_MAX_BODY_LENGTH = 4_000;
 export const MESSAGE_ATTACHMENT_ALLOWED_MIME_TYPES = [
   'image/jpeg',
   'image/png',
+  'image/svg+xml',
   'image/webp',
   'image/gif',
   'application/pdf',
@@ -114,10 +118,15 @@ export function assertValidMessageAttachmentUploadRequest(
     throw new Error('Attachments must include a valid file size.');
   }
 
-  if (request.sizeInBytes > MESSAGE_ATTACHMENT_MAX_FILE_SIZE_BYTES) {
-    throw new Error(
-      `Attachments must be ${formatBytes(MESSAGE_ATTACHMENT_MAX_FILE_SIZE_BYTES)} or smaller.`,
-    );
+  const maxSizeBytes =
+    request.kind === 'image'
+      ? MESSAGE_IMAGE_ATTACHMENT_MAX_FILE_SIZE_BYTES
+      : request.kind === 'audio'
+        ? MESSAGE_AUDIO_ATTACHMENT_MAX_FILE_SIZE_BYTES
+        : MESSAGE_ATTACHMENT_MAX_FILE_SIZE_BYTES;
+
+  if (request.sizeInBytes > maxSizeBytes) {
+    throw new Error(`Attachments must be ${formatBytes(maxSizeBytes)} or smaller.`);
   }
 
   const expectedKind = resolveAttachmentKindFromMime(normalizedMimeType);
@@ -325,7 +334,7 @@ export function filterMessageThreads(
   return sortMessageThreads(threads).filter((thread) => {
     const matchesFilter =
       filter === 'all' ||
-      (filter === 'unread' && thread.unreadCount > 0 && !thread.isPinned) ||
+      (filter === 'unread' && thread.unreadCount > 0) ||
       (filter === 'pinned' && thread.isPinned);
 
     if (!matchesFilter) return false;

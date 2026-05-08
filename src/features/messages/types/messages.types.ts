@@ -81,7 +81,10 @@ export interface MessageThreadSummary {
   isPinned: boolean;
   lastActivityAt: string;
   lastMessagePreview: string;
+  lastMessagePreviewAttachmentKind?: MessageAttachmentKind;
   lastMessageSenderName?: string;
+  lastMessageStatus?: MessageDeliveryStatus;
+  lastMessageIsOwn?: boolean;
   presence?: MessagePresence;
   memberCount: number;
   participants: MessageParticipant[];

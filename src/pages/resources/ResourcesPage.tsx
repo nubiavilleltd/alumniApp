@@ -6,8 +6,16 @@
 import { Icon } from '@iconify/react';
 import { SEO } from '@/shared/common/SEO';
 import { DonationButton } from '@/shared/components/ui/DonationButton';
-import { Link } from 'react-router-dom';
 import { ROUTES } from '@/shared/constants/routes';
+import { AppLink } from '@/shared/components/ui/AppLink';
+
+const supportSafetyIcon = new URL('../../../public/resources/support_safety.svg', import.meta.url)
+  .href;
+const careerGrowthIcon = new URL('../../../public/resources/career_growth.svg', import.meta.url)
+  .href;
+const legalReferralIcon = new URL('../../../public/resources/aid_referral.svg', import.meta.url)
+  .href;
+const counsellingIcon = new URL('../../../public/resources/counselling.svg', import.meta.url).href;
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -21,9 +29,7 @@ interface ResourceLink {
 interface ResourceCategory {
   id: string;
   title: string;
-  icon: string;
-  iconBg: string; // Tailwind bg class for the icon badge
-  iconColor: string; // Tailwind text class for the icon
+  imageSrc: string;
   links: ResourceLink[];
 }
 
@@ -33,9 +39,7 @@ const categories: ResourceCategory[] = [
   {
     id: 'safety',
     title: 'Support & Safety',
-    icon: 'mdi:shield-outline',
-    iconBg: 'bg-red-100',
-    iconColor: 'text-red-500',
+    imageSrc: supportSafetyIcon,
     links: [
       {
         label: 'WARIF',
@@ -55,9 +59,7 @@ const categories: ResourceCategory[] = [
   {
     id: 'career',
     title: 'Career & Growth',
-    icon: 'mdi:rocket-launch-outline',
-    iconBg: 'bg-green-100',
-    iconColor: 'text-green-600',
+    imageSrc: careerGrowthIcon,
     links: [
       {
         label: 'Networking 101',
@@ -77,9 +79,7 @@ const categories: ResourceCategory[] = [
   {
     id: 'legal',
     title: 'Legal Aid / Referral',
-    icon: 'mdi:scale-balance',
-    iconBg: 'bg-purple-100',
-    iconColor: 'text-purple-600',
+    imageSrc: legalReferralIcon,
     links: [
       {
         label: 'Legal Aid',
@@ -96,9 +96,7 @@ const categories: ResourceCategory[] = [
   {
     id: 'counselling',
     title: 'Counselling',
-    icon: 'mdi:hand-heart-outline',
-    iconBg: 'bg-sky-100',
-    iconColor: 'text-sky-500',
+    imageSrc: counsellingIcon,
     // No clickable links — just descriptive paragraphs
     links: [
       {
@@ -121,11 +119,14 @@ const categories: ResourceCategory[] = [
 
 // ─── Icon Badge ───────────────────────────────────────────────────────────────
 
-function IconBadge({ icon, bg, color }: { icon: string; bg: string; color: string }) {
+function IconBadge({ imageSrc }: { imageSrc: string }) {
   return (
-    <div className={`w-14 h-14 rounded-2xl ${bg} flex items-center justify-center flex-shrink-0`}>
-      <Icon icon={icon} className={`w-7 h-7 ${color}`} />
-    </div>
+    <img
+      src={imageSrc}
+      alt=""
+      aria-hidden="true"
+      className="h-14 w-14 flex-shrink-0 object-contain"
+    />
   );
 }
 
@@ -135,7 +136,7 @@ function ResourceCard({ category }: { category: ResourceCategory }) {
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-7 flex flex-col gap-5">
       {/* Icon */}
-      <IconBadge icon={category.icon} bg={category.iconBg} color={category.iconColor} />
+      <IconBadge imageSrc={category.imageSrc} />
 
       {/* Title */}
       <h2 className="text-xl font-bold text-gray-900">{category.title}</h2>
@@ -144,7 +145,7 @@ function ResourceCard({ category }: { category: ResourceCategory }) {
       <div className="space-y-4">
         {category.links.map((link, i) => (
           <div key={i} className="space-y-1">
-            {link.label ? (
+            {/* {link.label ? (
               link.href ? (
                 <Link
                   to={link.href}
@@ -157,6 +158,31 @@ function ResourceCard({ category }: { category: ResourceCategory }) {
                     <Icon icon="mdi:open-in-new" className="w-3.5 h-3.5 flex-shrink-0" />
                   )}
                 </Link>
+              ) : (
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-1.5 text-primary-500 hover:text-primary-600 font-semibold text-sm transition-colors text-left"
+                >
+                  {link.label}
+                </button>
+              )
+            ) : null} */}
+
+            {link.label ? (
+              link.href ? (
+                <AppLink
+                  href={link.href}
+                  target={link.external ? '_blank' : undefined}
+                  rel={link.external ? 'noopener noreferrer' : undefined}
+                  className="inline-flex items-center gap-1.5 text-primary-500 hover:text-primary-600 font-semibold text-sm transition-colors"
+                  endAdornment={
+                    link.external ? (
+                      <Icon icon="mdi:open-in-new" className="w-3.5 h-3.5 flex-shrink-0" />
+                    ) : null
+                  }
+                >
+                  {link.label}
+                </AppLink>
               ) : (
                 <button
                   type="button"

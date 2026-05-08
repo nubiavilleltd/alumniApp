@@ -39,6 +39,7 @@ export function mapBackendZoneToFrontend(raw: unknown): WelfareZone {
     zone: safeStr(d.zone),
     chapterId: safeNum(d.chapter_id),
     coordinator: mapCoordinator(d.coordinator),
+    cities: Array.isArray(d.cities) ? d.cities.map((c) => safeStr(c.city)).join(', ') : '',
   };
 }
 

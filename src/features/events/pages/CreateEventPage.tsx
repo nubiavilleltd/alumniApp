@@ -2,7 +2,7 @@
 // MODIFIED: Added status field, improved validation, uses EVENT_ROUTES,
 // uses currentUser.id (not memberId) for backend payload.
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -20,6 +20,7 @@ import { mapEventToCreatePayload, mapEventToUpdatePayload } from '../api/adapter
 import { toast } from '@/shared/components/ui/Toast';
 import { EVENT_ROUTES } from '../routes';
 import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
+import { useRequireSignIn } from '@/features/authentication/hooks/useRequireSignIn';
 import { DatePicker } from '@/shared/components/ui/input/DatePicker';
 import { TimePicker } from '@/shared/components/ui/input/TimePicker';
 import { ROUTES } from '@/shared/constants/routes';
@@ -36,6 +37,9 @@ import {
   type EventRegistrationFormDraft,
   type EventRegistrationQuestionDraft,
 } from '../components/EventRegistrationFormBuilderModal';
+import { EventRegistrationQuestionField } from '../components/EventRegistrationQuestionField';
+import { AUTH_ROUTES } from '@/features/authentication/routes';
+import { CreateEventFormData, createEventSchema } from '../schemas/event.schema';
 
 type LocalRegistrationFormDraft = {
   localId: string;
@@ -54,72 +58,17 @@ function toSurveyQuestionPayload(question: EventRegistrationQuestionDraft, index
     required: question.required,
     placeholder: question.placeholder.trim(),
     options: question.options.map((option) => option.trim()).filter(Boolean),
+    maxSelections: question.type === 'checkbox' ? question.maxSelections : null,
     order: index + 1,
   };
 }
-
-// ─── Schema ───────────────────────────────────────────────────────────────────
-// Required: title, description, location, event_date, visibility, status
-// Optional: start_time, end_time, max_attendees, banner
-
-// const createEventSchema = z
-//   .object({
-//     title: z.string().min(3, 'Title must be at least 3 characters'),
-//     description: z.string().min(10, 'Description must be at least 10 characters'),
-//     location: z.string().min(2, 'Location is required'),
-//     event_date: z.string().min(1, 'Event date is required'),
-//     start_time: z.string().optional(),
-//     end_time: z.string().optional(),
-//     visibility: z.enum(['public', 'members', 'premium']),
-//     status: z.enum(['upcoming', 'active', 'completed']),
-//     max_attendees: z.number({ error: 'Please enter a valid number' }).min(0).default(0),
-//   })
-//   .refine(
-//     (d) => {
-//       if (!d.start_time || !d.end_time) return true;
-//       return d.end_time > d.start_time;
-//     },
-//     { message: 'End time must be after start time', path: ['end_time'] },
-//   );
-
-const createEventSchema = z
-  .object({
-    title: z.string().min(3, 'Title must be at least 3 characters'),
-    description: z.string().min(10, 'Description must be at least 10 characters'),
-    location: z.string().min(2, 'Location is required'),
-    event_date: z.string().min(1, 'Event date is required'),
-    start_time: z.string().optional(),
-    end_time: z.string().optional(),
-    visibility: z.enum(['public', 'members', 'premium']),
-    status: z.enum(['upcoming', 'active', 'completed']),
-    max_attendees: z.number({ error: 'Please enter a valid number' }).min(0).default(0),
-  })
-  .refine(
-    (data) => {
-      if (!data.event_date) return true;
-      const selectedDate = new Date(data.event_date);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      return selectedDate >= today;
-    },
-    { message: 'Event date cannot be in the past', path: ['event_date'] },
-  )
-  .refine(
-    (d) => {
-      if (!d.start_time || !d.end_time) return true;
-      return d.end_time > d.start_time;
-    },
-    { message: 'End time must be after start time', path: ['end_time'] },
-  );
-
-type CreateEventFormData = z.infer<typeof createEventSchema>;
 
 // ─── Options ──────────────────────────────────────────────────────────────────
 
 const visibilityOptions = [
   { label: 'Public — everyone can see', value: 'public' },
   { label: 'Members only', value: 'members' },
-  { label: 'Premium members only', value: 'premium' },
+  // { label: 'Premium members only', value: 'premium' },
 ];
 
 // Status on create: admin may want to log a completed past event retroactively.
@@ -132,6 +81,7 @@ const statusOptions = [
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function CreateEventPage() {
+  const requireSignIn = useRequireSignIn();
   const navigate = useNavigate();
   //   const currentUser = useAuthStore((state) => state.user);
   const { data: currentUser, isLoading } = useCurrentUser();
@@ -140,7 +90,6 @@ export default function CreateEventPage() {
 
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [bannerPreview, setBannerPreview] = useState<string>('');
-  const [bannerError, setBannerError] = useState<string>('');
   const [isRegistrationBuilderOpen, setIsRegistrationBuilderOpen] = useState(false);
   const [registrationFormDrafts, setRegistrationFormDrafts] = useState<
     LocalRegistrationFormDraft[]
@@ -153,7 +102,8 @@ export default function CreateEventPage() {
     handleSubmit,
     setValue,
     watch,
-    formState: { errors },
+    trigger,
+    formState: { errors, touchedFields },
   } = useForm<CreateEventFormData>({
     resolver: zodResolver(createEventSchema) as any,
     mode: 'onChange',
@@ -161,28 +111,55 @@ export default function CreateEventPage() {
       title: '',
       description: '',
       location: '',
-      event_date: '',
+      start_date: '',
+      end_date: '',
       start_time: '',
       end_time: '',
       visibility: 'public',
       status: 'upcoming',
-      max_attendees: 0,
+      // max_attendees: 0,
     },
   });
 
   const visibility = watch('visibility');
   const status = watch('status');
+  const startDate = watch('start_date');
+  const endDate = watch('end_date');
+  const todayDate = new Date().toISOString().split('T')[0];
+
+  useEffect(() => {
+    const subscription = watch((values, { name }) => {
+      if (!name) return;
+
+      const fieldName = name as keyof CreateEventFormData;
+
+      const triggerMap: Partial<
+        Record<keyof CreateEventFormData, Array<keyof CreateEventFormData>>
+      > = {
+        start_date: ['start_time', 'end_date', 'end_time'],
+        end_date: ['end_time'],
+        start_time: ['end_time'],
+        end_time: ['start_time'],
+      };
+
+      const deps = triggerMap[fieldName];
+      if (!deps) return;
+
+      // Only trigger siblings that already have a value
+      const fieldsToTrigger = deps.filter((field) => {
+        const val = values[field as keyof CreateEventFormData];
+        return typeof val === 'string' && val.length > 0;
+      });
+
+      if (fieldsToTrigger.length) trigger(fieldsToTrigger as any);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [watch, trigger]);
 
   const handleImageChange = (files: File[], previews: string[]) => {
-    setBannerError('');
     if (files.length > 0) {
-      const file = files[0];
-      // Validate: max 2 MB
-      if (file.size > 2 * 1024 * 1024) {
-        setBannerError('Image must be under 2 MB');
-        return;
-      }
-      setBannerFile(file);
+      setBannerFile(files[0]);
       setBannerPreview(previews[0]);
     } else {
       setBannerFile(null);
@@ -192,7 +169,7 @@ export default function CreateEventPage() {
 
   const onSubmit = async (data: CreateEventFormData) => {
     if (!currentUser?.id) {
-      toast.error('You must be logged in to create events.');
+      requireSignIn({ message: 'You must be logged in to create events.' });
       return;
     }
 
@@ -201,12 +178,13 @@ export default function CreateEventPage() {
         title: data.title,
         description: data.description,
         location: data.location,
-        event_date: data.event_date,
+        start_date: data.start_date,
+        end_date: data.end_date,
         start_time: data.start_time,
         end_time: data.end_time,
         visibility: data.visibility,
         status: data.status,
-        max_attendees: data.max_attendees,
+        // max_attendees: data.max_attendees,
         event_banner: bannerFile,
       },
       currentUser.id, // ← backend numeric ID, not memberId
@@ -241,11 +219,12 @@ export default function CreateEventPage() {
                 title: data.title,
                 description: data.description,
                 location: data.location,
-                event_date: data.event_date,
+                start_date: data.start_date,
+                end_date: data.end_date,
                 start_time: data.start_time,
                 end_time: data.end_time,
                 visibility: data.visibility,
-                max_attendees: data.max_attendees,
+                // max_attendees: data.max_attendees,
                 status: data.status,
                 tags: [EVENT_SURVEY_TAG],
               }),
@@ -259,7 +238,7 @@ export default function CreateEventPage() {
           clearStoredEventSurveyAvailability(createdEvent.id);
           toast.error(
             surveyError?.message ||
-              'Event created, but we could not save the registration forms. Please try again from the event management area.',
+              'Event created, but we could not save the additional info forms. Please try again from the event management area.',
           );
         } finally {
           setIsSavingSurveyForms(false);
@@ -314,32 +293,23 @@ export default function CreateEventPage() {
       <section className="section">
         <div className="container-custom">
           <div className="mb-8">
-            <h1 className="text-3xl md:text-4xl font-bold italic mb-2">Create Event</h1>
+            <h1 className="text-3xl md:text-4xl font-bold mb-2">Create Event</h1>
             <p className="text-gray-500 text-sm">Add a new event to the alumni calendar</p>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="card p-6 space-y-6">
             {/* ── Core fields ─────────────────────────────────────────── */}
-            <FormInput
-              label="Event Title"
-              id="title"
-              required
-              placeholder="e.g. Annual Alumni Reunion 2026"
-              error={errors.title?.message}
-              {...register('title')}
-            />
-
-            <TextareaInput
-              label="Description"
-              id="description"
-              required
-              rows={4}
-              placeholder="Describe the event..."
-              error={errors.description?.message}
-              {...register('description')}
-            />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormInput
+                label="Event Title"
+                id="title"
+                required
+                placeholder="e.g. Annual Alumni Reunion 2026"
+                error={errors.title?.message}
+                {...register('title')}
+              />
+
               <FormInput
                 label="Location"
                 id="location"
@@ -349,15 +319,38 @@ export default function CreateEventPage() {
                 error={errors.location?.message}
                 {...register('location')}
               />
+            </div>
 
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <DatePicker
-                label="Event Date"
+                label="Start Date"
                 id="event_date"
                 required
-                min={new Date().toISOString().split('T')[0]} // same as before
-                error={errors.event_date?.message}
-                value={watch('event_date')} // controlled
-                onValueChange={(val) => setValue('event_date', val, { shouldValidate: true })}
+                min={todayDate}
+                max={endDate || undefined}
+                error={errors.start_date?.message}
+                value={startDate}
+                onValueChange={(val) =>
+                  setValue('start_date', val, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                    shouldTouch: true,
+                  })
+                }
+              />
+              <DatePicker
+                label="End Date"
+                id="end_date"
+                min={startDate || todayDate}
+                error={errors.end_date?.message}
+                value={endDate}
+                onValueChange={(val) =>
+                  setValue('end_date', val, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                    shouldTouch: true,
+                  })
+                }
               />
             </div>
 
@@ -365,9 +358,16 @@ export default function CreateEventPage() {
               <TimePicker
                 label="Start Time"
                 id="start_time"
+                required
                 error={errors.start_time?.message}
                 value={watch('start_time')}
-                onValueChange={(val) => setValue('start_time', val, { shouldValidate: true })}
+                onValueChange={(val) =>
+                  setValue('start_time', val, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                    shouldTouch: true,
+                  })
+                }
               />
 
               <TimePicker
@@ -375,14 +375,30 @@ export default function CreateEventPage() {
                 id="end_time"
                 error={errors.end_time?.message}
                 value={watch('end_time')}
-                onValueChange={(val) => setValue('end_time', val, { shouldValidate: true })}
+                onValueChange={(val) =>
+                  setValue('end_time', val, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                    shouldTouch: true,
+                  })
+                }
               />
             </div>
+
+            <TextareaInput
+              label="Event Details"
+              id="description"
+              required
+              rows={4}
+              placeholder="Describe the event..."
+              error={errors.description?.message}
+              {...register('description')}
+            />
 
             {/* ── Classification ──────────────────────────────────────── */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <SelectInput
-                label="Visibility"
+                label="Who is this event for?"
                 name="visibility"
                 required
                 options={visibilityOptions}
@@ -399,7 +415,7 @@ export default function CreateEventPage() {
                 onChange={(e) => setValue('status', e.target.value as any)}
                 error={errors.status?.message}
               />
-              <FormInput
+              {/* <FormInput
                 label="Max Attendees"
                 id="max_attendees"
                 type="number"
@@ -407,13 +423,13 @@ export default function CreateEventPage() {
                 hint="0 = no limit"
                 error={errors.max_attendees?.message}
                 {...register('max_attendees', { valueAsNumber: true })}
-              />
+              /> */}
             </div>
 
             {/* ── Banner image ────────────────────────────────────────── */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Event Banner Image
+                Event Banner
                 <span className="text-xs text-gray-400 font-normal ml-2">Optional</span>
               </label>
               <ImageUpload
@@ -421,7 +437,6 @@ export default function CreateEventPage() {
                 onChange={handleImageChange}
                 hint="PNG or JPG — max 2 MB. Recommended: 1200×600 px"
                 multiple={false}
-                error={bannerError}
               />
             </div>
 
@@ -429,7 +444,7 @@ export default function CreateEventPage() {
               <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                 <div className="max-w-4xl">
                   <p className="text-[1.15rem] font-semibold leading-tight tracking-[0.01em] text-gray-800 md:text-[1.35rem]">
-                    Request additional information from attendees
+                    Would you like to request additional info from attendees regarding this event?
                   </p>
                   <p className="mt-2 text-sm text-gray-500 md:text-base">
                     Add optional registration forms here if this event needs extra attendee details
@@ -443,57 +458,41 @@ export default function CreateEventPage() {
                     setActiveRegistrationFormId(null);
                     setIsRegistrationBuilderOpen(true);
                   }}
-                  className="inline-flex min-h-[3.1rem] items-center justify-center rounded-full border-2 border-primary-500 px-6 text-sm font-semibold text-primary-500 transition-colors hover:bg-primary-50 md:min-h-[3.2rem] md:px-7 md:text-base"
+                  className="inline-flex  items-center justify-center rounded-full border-2 border-primary-500 px-6 text-sm font-semibold text-primary-500 transition-colors hover:bg-primary-50 md:px-7 md:text-base"
                 >
-                  {registrationFormDrafts.length > 0
-                    ? 'Add another request form'
-                    : 'Yes, request info'}
+                  {registrationFormDrafts.length > 0 ? 'Add another section' : 'Yes, request info'}
                 </button>
               </div>
 
               {registrationFormDrafts.length > 0 ? (
-                <div className="mt-5 grid max-w-4xl gap-4">
+                <div className="mt-6 space-y-5">
                   {registrationFormDrafts.map((item, index) => (
                     <div
                       key={item.localId}
-                      onClick={() => {
-                        setActiveRegistrationFormId(item.localId);
-                        setIsRegistrationBuilderOpen(true);
-                      }}
-                      onKeyDown={(event) => {
-                        if (event.key === 'Enter' || event.key === ' ') {
-                          event.preventDefault();
-                          setActiveRegistrationFormId(item.localId);
-                          setIsRegistrationBuilderOpen(true);
-                        }
-                      }}
-                      role="button"
-                      tabIndex={0}
-                      className="rounded-[1.6rem] border border-primary-100 bg-white px-5 py-4 text-left transition-colors hover:border-primary-300 hover:bg-primary-50/40 focus:outline-none focus:ring-2 focus:ring-primary-300"
+                      className="rounded-[1.6rem] border border-primary-100 bg-white px-4 py-4 shadow-sm sm:px-5 sm:py-5"
                     >
-                      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                        <div>
-                          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-primary-500">
-                            Request Form {index + 1}
-                          </p>
-                          <p className="mt-1 text-base font-semibold text-gray-900">
+                      <div className="flex flex-col gap-3 border-b border-primary-100 pb-4 md:flex-row md:items-start md:justify-between">
+                        <div className="max-w-3xl">
+                          <p className="mt-1 text-lg font-semibold text-gray-900">
                             {item.draft.name}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            {item.draft.questions.length} question
-                            {item.draft.questions.length === 1 ? '' : 's'} ready for this event
                           </p>
                         </div>
 
-                        <div className="flex items-center gap-3 self-start md:self-center">
-                          <span className="inline-flex items-center gap-2 rounded-full border border-primary-200 bg-white px-3 py-1.5 text-sm font-semibold text-primary-500">
-                            <Icon icon="mdi:pencil-outline" className="h-4 w-4" />
-                            Open form
-                          </span>
+                        <div className="flex flex-wrap items-center gap-3 self-start md:self-center">
                           <button
                             type="button"
-                            onClick={(event) => {
-                              event.stopPropagation();
+                            onClick={() => {
+                              setActiveRegistrationFormId(item.localId);
+                              setIsRegistrationBuilderOpen(true);
+                            }}
+                            className="inline-flex items-center gap-2 rounded-full border border-primary-200 bg-white px-3 py-1.5 text-sm font-semibold text-primary-500 transition-colors hover:bg-primary-50"
+                          >
+                            <Icon icon="mdi:pencil-outline" className="h-4 w-4" />
+                            Edit form
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
                               setRegistrationFormDrafts((current) =>
                                 current.filter((draftItem) => draftItem.localId !== item.localId),
                               );
@@ -508,6 +507,17 @@ export default function CreateEventPage() {
                           </button>
                         </div>
                       </div>
+
+                      <div className="mt-4 space-y-4">
+                        {item.draft.questions.map((question, questionIndex) => (
+                          <EventRegistrationQuestionField
+                            key={question.id}
+                            question={question}
+                            index={questionIndex}
+                            mode="preview"
+                          />
+                        ))}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -518,9 +528,9 @@ export default function CreateEventPage() {
               <Button type="submit" loading={createEvent.isPending || isSavingSurveyForms}>
                 Create Event
               </Button>
-              <Button type="button" variant="outline" onClick={() => navigate(EVENT_ROUTES.ROOT)}>
+              {/* <Button type="button" variant="outline" onClick={() => navigate(EVENT_ROUTES.ROOT)}>
                 Cancel
-              </Button>
+              </Button> */}
             </div>
           </form>
         </div>

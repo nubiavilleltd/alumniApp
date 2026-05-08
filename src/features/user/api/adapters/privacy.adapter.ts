@@ -2,12 +2,33 @@
 
 import type { PrivacySettings, FieldVisibility } from '@/features/authentication/types/auth.types';
 
+function parseValue(value: unknown): Record<string, any> {
+  if (!value) return {};
+
+  // Already parsed object from backend
+  if (typeof value === 'object') {
+    return value as Record<string, any>;
+  }
+
+  // Serialized JSON string
+  if (typeof value === 'string') {
+    try {
+      return JSON.parse(value);
+    } catch (error) {
+      console.error('Failed to parse field_visibility', error);
+      return {};
+    }
+  }
+
+  return {};
+}
 export function mapBackendPrivacyToFrontend(raw: any): PrivacySettings {
   // ✅ Handle missing field_visibility gracefully
-  const visibility = raw?.field_visibility || raw || {};
+  const visibility = parseValue(raw?.field_visibility) || {};
+
+  console.log('my profile', { raw, vis: raw.field_visibility, parsed: visibility });
 
   const normalize = (value: any): FieldVisibility => {
-    if (!raw.field_visibility) return 'public'; ///This line should be removed!!!!!!!!. This is just a workaround before the backend dev does the right thing
     if (value === 'public' || value === true || value === 'true' || value === 1 || value === '1') {
       return 'public';
     }
@@ -24,8 +45,9 @@ export function mapBackendPrivacyToFrontend(raw: any): PrivacySettings {
     city: normalize(visibility.city),
     state: normalize(visibility.state),
     employmentStatus: normalize(visibility.employment_status),
-    occupations: normalize(visibility.occupation),
-    industrySectors: normalize(visibility.industry_sector),
+    socials: normalize(visibility.socials),
+    // occupations: normalize(visibility.occupation),
+    // industrySectors: normalize(visibility.industry_sector),
     yearsOfExperience: normalize(visibility.years_of_experience),
   };
 }
@@ -46,8 +68,9 @@ export function frontendFieldToBackendKey(field: keyof PrivacySettings): string 
     city: 'city_visible',
     state: 'state_visible',
     employmentStatus: 'employment_status_visible',
-    occupations: 'occupation_visible',
-    industrySectors: 'industry_sector_visible',
+    socials: 'socials_visible',
+    // occupations: 'occupation_visible',
+    // industrySectors: 'industry_sector_visible',
     yearsOfExperience: 'years_of_experience_visible',
   };
 

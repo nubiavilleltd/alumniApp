@@ -25,41 +25,7 @@ import { TimePicker } from '@/shared/components/ui/input/TimePicker';
 import { DatePicker } from '@/shared/components/ui/input/DatePicker';
 import { ROUTES } from '@/shared/constants/routes';
 import { ADMIN_ROUTES } from '@/features/admin/routes';
-
-// ─── Schema ───────────────────────────────────────────────────────────────────
-
-const editEventSchema = z
-  .object({
-    title: z.string().min(3, 'Title must be at least 3 characters'),
-    description: z.string().min(10, 'Description must be at least 10 characters'),
-    location: z.string().min(2, 'Location is required'),
-    event_date: z.string().min(1, 'Event date is required'),
-    start_time: z.string().optional(),
-    end_time: z.string().optional(),
-    visibility: z.enum(['public', 'members', 'premium']),
-    // Edit allows all statuses including cancelled — admin may need to cancel an event
-    status: z.enum(['upcoming', 'active', 'cancelled', 'completed']),
-    max_attendees: z.number({ error: 'Please enter a valid number' }).min(0).default(0),
-  })
-  .refine(
-    (data) => {
-      if (!data.event_date) return true;
-      const selectedDate = new Date(data.event_date);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      return selectedDate >= today;
-    },
-    { message: 'Event date cannot be in the past', path: ['event_date'] },
-  )
-  .refine(
-    (d) => {
-      if (!d.start_time || !d.end_time) return true;
-      return d.end_time > d.start_time;
-    },
-    { message: 'End time must be after start time', path: ['end_time'] },
-  );
-
-type EditEventFormData = z.infer<typeof editEventSchema>;
+import { UpdateEventFormData, updateEventSchema } from '../schemas/event.schema';
 
 // ─── Options ──────────────────────────────────────────────────────────────────
 
@@ -90,7 +56,6 @@ export default function EditEventPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [bannerPreview, setBannerPreview] = useState<string>('');
-  const [bannerError, setBannerError] = useState<string>('');
   const [isStatusManuallyChanged, setIsStatusManuallyChanged] = useState(false);
 
   const {
@@ -99,26 +64,29 @@ export default function EditEventPage() {
     setValue,
     watch,
     reset,
+    trigger,
     formState: { errors },
-  } = useForm<EditEventFormData>({
-    resolver: zodResolver(editEventSchema) as any,
+  } = useForm<UpdateEventFormData>({
+    resolver: zodResolver(updateEventSchema) as any,
     mode: 'onChange',
     defaultValues: {
       title: '',
       description: '',
       location: '',
-      event_date: '',
+      start_date: '',
+      end_date: '',
       start_time: '',
       end_time: '',
       visibility: 'public',
       status: 'upcoming',
-      max_attendees: 0,
     },
   });
 
   const visibility = watch('visibility');
   const status = watch('status');
-  const eventDate = watch('event_date');
+  const startDate = watch('start_date');
+  const endDate = watch('end_date');
+  const todayDate = new Date().toISOString().split('T')[0];
 
   // Populate form when event loads
   useEffect(() => {
@@ -127,12 +95,12 @@ export default function EditEventPage() {
         title: event.title,
         description: event.description,
         location: event.location,
-        event_date: event.date.split('T')[0],
+        start_date: event.startDate.split('T')[0],
+        end_date: event?.endDate?.split('T')[0],
         start_time: event.startTime || '',
         end_time: event.endTime || '',
         visibility: (event as any).visibility || 'public',
         status: (event as any).status || 'upcoming',
-        max_attendees: event.capacity || 0,
       });
       // Pre-fill banner preview with current image if one exists
       if (event.image) setBannerPreview(event.image);
@@ -141,9 +109,9 @@ export default function EditEventPage() {
   }, [event, reset]);
 
   useEffect(() => {
-    if (!eventDate || isStatusManuallyChanged) return;
+    if (!startDate || isStatusManuallyChanged) return;
 
-    const selectedDate = new Date(eventDate);
+    const selectedDate = new Date(startDate);
     const today = new Date();
 
     // Normalize today
@@ -160,40 +128,65 @@ export default function EditEventPage() {
     }
 
     setValue('status', computedStatus);
-  }, [eventDate, isStatusManuallyChanged, setValue]);
+  }, [startDate, isStatusManuallyChanged, setValue]);
+
+  useEffect(() => {
+    const subscription = watch((values, { name }) => {
+      if (!name) return;
+
+      const fieldName = name as keyof UpdateEventFormData;
+
+      const triggerMap: Partial<
+        Record<keyof UpdateEventFormData, Array<keyof UpdateEventFormData>>
+      > = {
+        start_date: ['end_date', 'start_time', 'end_time'],
+        end_date: ['start_date', 'end_time'],
+        start_time: ['end_time'],
+        end_time: ['start_time'],
+      };
+
+      const deps = triggerMap[fieldName];
+      if (!deps) return;
+
+      const fieldsToTrigger = deps.filter((field) => {
+        const val = values[field];
+        return typeof val === 'string' && val.length > 0;
+      });
+
+      if (fieldsToTrigger.length) void trigger(fieldsToTrigger as any);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [trigger, watch]);
 
   const handleImageChange = (files: File[], previews: string[]) => {
-    setBannerError('');
     if (files.length > 0) {
-      const file = files[0];
-      if (file.size > 2 * 1024 * 1024) {
-        setBannerError('Image must be under 2 MB');
-        return;
-      }
-      setBannerFile(file);
+      setBannerFile(files[0]);
       setBannerPreview(previews[0]);
     } else {
       // User cleared the image
+      console.log('files 2  ==', files);
       setBannerFile(null);
       setBannerPreview(previews[0] ?? '');
     }
   };
 
-  const onSubmit = (data: EditEventFormData) => {
+  const onSubmit = (data: UpdateEventFormData) => {
     if (!id) return;
 
     const payload = mapEventToUpdatePayload(id, {
       title: data.title,
       description: data.description,
       location: data.location,
-      event_date: data.event_date,
+      start_date: data.start_date,
+      end_date: data.end_date,
       start_time: data.start_time,
       end_time: data.end_time,
       visibility: data.visibility,
       status: data.status,
-      max_attendees: data.max_attendees,
+      event_banner: bannerFile,
       // Only include banner if a new file was selected
-      ...(bannerFile ? { event_banner: bannerFile } : {}),
+      // ...(bannerFile ? { event_banner: bannerFile } : {}),
     });
 
     updateEvent.mutate(
@@ -309,14 +302,91 @@ export default function EditEventPage() {
 
           <form onSubmit={handleSubmit(onSubmit)} className="card p-6 space-y-6">
             {/* ── Core ────────────────────────────────────────────────── */}
-            <FormInput
-              label="Event Title"
-              id="title"
-              required
-              placeholder="e.g. Annual Alumni Reunion 2026"
-              error={errors.title?.message}
-              {...register('title')}
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormInput
+                label="Event Title"
+                id="title"
+                required
+                placeholder="e.g. Annual Alumni Reunion 2026"
+                error={errors.title?.message}
+                {...register('title')}
+              />
+
+              <FormInput
+                label="Location"
+                id="location"
+                required
+                placeholder="Venue name, city"
+                icon="mdi:map-marker-outline"
+                error={errors.location?.message}
+                {...register('location')}
+              />
+            </div>
+
+            {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4"> */}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <DatePicker
+                label="Start Date"
+                id="event_date"
+                required
+                min={todayDate}
+                max={endDate || undefined}
+                error={errors.start_date?.message}
+                value={startDate}
+                onValueChange={(val) =>
+                  setValue('start_date', val, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                    shouldTouch: true,
+                  })
+                }
+              />
+              <DatePicker
+                label="End Date"
+                id="end_date"
+                min={startDate || todayDate}
+                error={errors.end_date?.message}
+                value={endDate}
+                onValueChange={(val) =>
+                  setValue('end_date', val, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                    shouldTouch: true,
+                  })
+                }
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <TimePicker
+                label="Start Time"
+                id="start_time"
+                error={errors.start_time?.message}
+                value={watch('start_time')}
+                onValueChange={(val) =>
+                  setValue('start_time', val, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                    shouldTouch: true,
+                  })
+                }
+              />
+
+              <TimePicker
+                label="End Time"
+                id="end_time"
+                error={errors.end_time?.message}
+                value={watch('end_time')}
+                onValueChange={(val) =>
+                  setValue('end_time', val, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                    shouldTouch: true,
+                  })
+                }
+              />
+            </div>
 
             <TextareaInput
               label="Description"
@@ -327,46 +397,6 @@ export default function EditEventPage() {
               error={errors.description?.message}
               {...register('description')}
             />
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormInput
-                label="Location"
-                id="location"
-                required
-                placeholder="Venue name, city"
-                icon="mdi:map-marker-outline"
-                error={errors.location?.message}
-                {...register('location')}
-              />
-
-              <DatePicker
-                label="Event Date"
-                id="event_date"
-                required
-                min={new Date().toISOString().split('T')[0]} // same as before
-                error={errors.event_date?.message}
-                value={watch('event_date')} // controlled
-                onValueChange={(val) => setValue('event_date', val, { shouldValidate: true })}
-              />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <TimePicker
-                label="Start Time"
-                id="start_time"
-                error={errors.start_time?.message}
-                value={watch('start_time')}
-                onValueChange={(val) => setValue('start_time', val, { shouldValidate: true })}
-              />
-
-              <TimePicker
-                label="End Time"
-                id="end_time"
-                error={errors.end_time?.message}
-                value={watch('end_time')}
-                onValueChange={(val) => setValue('end_time', val, { shouldValidate: true })}
-              />
-            </div>
 
             {/* ── Classification ──────────────────────────────────────── */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -392,7 +422,7 @@ export default function EditEventPage() {
                 }}
                 error={errors.status?.message}
               />
-              <FormInput
+              {/* <FormInput
                 label="Max Attendees"
                 id="max_attendees"
                 type="number"
@@ -400,13 +430,13 @@ export default function EditEventPage() {
                 hint="0 = no limit"
                 error={errors.max_attendees?.message}
                 {...register('max_attendees', { valueAsNumber: true })}
-              />
+              /> */}
             </div>
 
             {/* ── Banner image ────────────────────────────────────────── */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Event Banner Image
+                Event Banner
                 <span className="text-xs text-gray-400 font-normal ml-2">
                   {bannerPreview ? 'Current image shown — upload to replace' : 'Optional'}
                 </span>
@@ -416,7 +446,6 @@ export default function EditEventPage() {
                 onChange={handleImageChange}
                 hint="PNG or JPG — max 2 MB. Recommended: 1200×600 px"
                 multiple={false}
-                error={bannerError}
               />
             </div>
 

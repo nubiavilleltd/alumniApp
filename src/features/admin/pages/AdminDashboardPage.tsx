@@ -551,6 +551,7 @@ import { toast } from '@/shared/components/ui/Toast';
 import { PROJECT_ROUTES } from '@/features/projects/routes';
 import type { PendingMember } from '../api/adminDashboardApi';
 import { useAlumni } from '@/features/alumni/hooks/useAlumni';
+import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // PENDING APPROVAL ROW
@@ -679,12 +680,13 @@ function PendingApprovalRow({
           <label className="block text-sm font-medium text-gray-700">
             Reason for denial <span className="text-gray-400 font-normal">(optional)</span>
           </label>
-          <textarea
+          <TextareaInput
             rows={2}
             placeholder="e.g. Could not verify graduation details provided."
             value={rejectReason}
             onChange={(e) => setRejectReason(e.target.value)}
-            className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-200 resize-none"
+            className="gap-2"
+            textareaClassName="rounded-xl border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-900 shadow-none placeholder:text-gray-400 focus:border-primary-400 focus:ring-2 focus:ring-primary-200 resize-none"
           />
           <div className="flex gap-3">
             <button

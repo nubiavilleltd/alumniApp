@@ -3,46 +3,33 @@ import { useEffect, useMemo, useState } from 'react';
 import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { ButtonLink } from '@/shared/components/ui/Button';
-import { FormInput } from '@/shared/components/ui/input/FormInput';
-import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
+import { Pagination } from '@/shared/components/ui/Pagination';
+import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
-import { ImageUpload } from '@/shared/components/ui/ImageUpload';
-import { Modal } from '@/shared/components/ui/Modal';
 import { ROUTES } from '@/shared/constants/routes';
 import { DeleteConfirmModal } from '@/features/events/components/DeleteConfirmModal';
 import {
   useAnnouncements,
-  useCreateAnnouncement,
   useDeleteAnnouncement,
-  useUpdateAnnouncement,
 } from '@/features/announcements/hooks/useAnnouncements';
+import { AnnouncementEditorModal } from '@/features/announcements/components/AnnouncementEditorModal';
 import { ANNOUNCEMENT_ROUTES } from '@/features/announcements/routes';
 import { ADMIN_ROUTES } from '@/features/admin/routes';
-import type {
-  AnnouncementMutationInput,
-  AnnouncementType,
-  NewsItem,
-} from '@/features/announcements/types/announcement.types';
+import type { AnnouncementType, NewsItem } from '@/features/announcements/types/announcement.types';
 
-type EditorState = {
-  title: string;
-  content: string;
-  type: AnnouncementType;
-  chapterId: string;
-  year: string;
-  startsAt: string;
-  endsAt: string;
-};
+type SortDirection = 'newest' | 'oldest';
+const ADMIN_ANNOUNCEMENTS_PER_PAGE = 6;
 
 const announcementTypeOptions = [
   { label: 'Info', value: 'info' },
-  { label: 'Warning', value: 'warning' },
-  { label: 'Success', value: 'success' },
   { label: 'Event', value: 'event' },
 ] as const;
 
 const filterOptions = [{ label: 'All types', value: 'all' }, ...announcementTypeOptions] as const;
-const ANNOUNCEMENT_FALLBACK_IMAGE = '/news-1.png';
+const sortOptions = [
+  { label: 'Newest first', value: 'newest' },
+  { label: 'Oldest first', value: 'oldest' },
+] as const;
 
 const breadcrumbItems = [
   { label: 'Home', href: ROUTES.HOME },
@@ -53,8 +40,17 @@ const breadcrumbItems = [
 function formatAnnouncementDate(date?: string) {
   if (!date) return 'Not scheduled';
 
-  const parsed = new Date(date);
+  const isDateOnly = /^\d{4}-\d{2}-\d{2}$/.test(date);
+  const parsed = new Date(isDateOnly ? `${date}T00:00:00` : date);
   if (Number.isNaN(parsed.getTime())) return date;
+
+  if (isDateOnly) {
+    return parsed.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  }
 
   return parsed.toLocaleString('en-US', {
     month: 'short',
@@ -69,68 +65,8 @@ function buildSummary(item: NewsItem) {
   return item.excerpt?.trim() || item.content?.trim() || 'No summary provided yet.';
 }
 
-function canReuseAnnouncementImage(preview?: string) {
-  if (!preview) return false;
-  if (preview === ANNOUNCEMENT_FALLBACK_IMAGE) return false;
-  return !preview.startsWith('blob:') && !preview.startsWith('data:');
-}
-
-async function imageUrlToFile(imageUrl: string) {
-  const response = await fetch(imageUrl);
-  if (!response.ok) {
-    throw new Error('Unable to prepare the cover image for upload. Please select it again.');
-  }
-
-  const blob = await response.blob();
-  const extension = blob.type.split('/')[1] || 'jpg';
-  const pathname = imageUrl.split('?')[0]?.split('#')[0] ?? '';
-  const filename =
-    pathname.split('/').pop()?.trim() ||
-    `announcement-cover.${extension.replace(/[^a-z0-9]/gi, '')}`;
-
-  return new File([blob], filename, {
-    type: blob.type || 'image/jpeg',
-    lastModified: Date.now(),
-  });
-}
-
-function toInputDateTime(value?: string) {
-  if (!value) return '';
-  if (value.includes('T')) return value.slice(0, 16);
-  if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}(:\d{2})?$/.test(value)) {
-    return value.replace(' ', 'T').slice(0, 16);
-  }
-
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) return '';
-
-  const offset = parsed.getTimezoneOffset() * 60_000;
-  return new Date(parsed.getTime() - offset).toISOString().slice(0, 16);
-}
-
-function toBackendDateTime(value: string) {
-  if (!value.trim()) return undefined;
-  return `${value.replace('T', ' ')}:00`;
-}
-
-function getInitialEditorState(item?: NewsItem): EditorState {
-  return {
-    title: item?.title ?? '',
-    content: item?.content ?? item?.excerpt ?? '',
-    type: item?.type ?? 'info',
-    chapterId: item?.chapterId ?? '',
-    year: item?.year ? String(item.year) : '',
-    startsAt: toInputDateTime(item?.startsAt),
-    endsAt: toInputDateTime(item?.endsAt),
-  };
-}
-
 function typeBadgeClass(type: AnnouncementType) {
   switch (type) {
-    case 'warning':
-      return 'bg-amber-100 text-amber-800';
-    case 'success':
-      return 'bg-green-100 text-green-800';
     case 'event':
       return 'bg-blue-100 text-blue-800';
     case 'info':
@@ -139,232 +75,29 @@ function typeBadgeClass(type: AnnouncementType) {
   }
 }
 
-function AnnouncementEditorModal({
-  announcement,
-  isOpen,
-  onClose,
-}: {
-  announcement?: NewsItem | null;
-  isOpen: boolean;
-  onClose: () => void;
-}) {
-  const createAnnouncement = useCreateAnnouncement();
-  const updateAnnouncement = useUpdateAnnouncement();
-
-  const [form, setForm] = useState<EditorState>(getInitialEditorState(announcement ?? undefined));
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-  const [formError, setFormError] = useState('');
-
-  const isEditMode = Boolean(announcement);
-  const isSubmitting = createAnnouncement.isPending || updateAnnouncement.isPending;
-
-  useEffect(() => {
-    if (!isOpen) return;
-
-    setForm(getInitialEditorState(announcement ?? undefined));
-    setImageFile(null);
-    setImagePreviews(announcement?.image ? [announcement.image] : []);
-    setFormError('');
-  }, [announcement, isOpen]);
-
-  const handleFieldChange = <K extends keyof EditorState>(field: K, value: EditorState[K]) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleImageChange = (files: File[], previews: string[]) => {
-    setImageFile(files[0] ?? null);
-    setImagePreviews(previews);
-  };
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setFormError('');
-
-    if (!form.title.trim()) {
-      setFormError('Title is required.');
-      return;
-    }
-
-    if (!form.content.trim()) {
-      setFormError('Content is required.');
-      return;
-    }
-
-    if (form.startsAt && form.endsAt && new Date(form.endsAt) < new Date(form.startsAt)) {
-      setFormError('The end time must be after the start time.');
-      return;
-    }
-
-    let submitImage = imageFile;
-
-    if (!submitImage && canReuseAnnouncementImage(imagePreviews[0])) {
-      try {
-        submitImage = await imageUrlToFile(imagePreviews[0]);
-      } catch (error: any) {
-        setFormError(error.message ?? 'Please select a cover image before saving.');
-        return;
-      }
-    }
-
-    if (!submitImage) {
-      setFormError('Cover image is required.');
-      return;
-    }
-
-    const payload: AnnouncementMutationInput = {
-      title: form.title.trim(),
-      content: form.content.trim(),
-      type: form.type,
-      chapterId: form.chapterId.trim() || undefined,
-      year: form.year.trim() || undefined,
-      startsAt: toBackendDateTime(form.startsAt),
-      endsAt: toBackendDateTime(form.endsAt),
-      image: submitImage,
-    };
-
-    try {
-      if (isEditMode && announcement) {
-        await updateAnnouncement.mutateAsync({
-          id: String(announcement.id),
-          input: payload,
-        });
-      } else {
-        await createAnnouncement.mutateAsync(payload);
-      }
-
-      onClose();
-    } catch (error: any) {
-      setFormError(error.message ?? 'Unable to save this announcement.');
-    }
-  };
-
-  return (
-    <Modal
-      isOpen={isOpen}
-      onClose={() => {
-        if (!isSubmitting) onClose();
-      }}
-      title={isEditMode ? 'Edit Announcement' : 'Create Announcement'}
-    >
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <FormInput
-          label="Title"
-          value={form.title}
-          onChange={(event) => handleFieldChange('title', event.target.value)}
-          placeholder="Welcome to Alumni 2026"
-          required
-        />
-
-        <TextareaInput
-          label="Content"
-          value={form.content}
-          onChange={(event) => handleFieldChange('content', event.target.value)}
-          placeholder="Write the full announcement here..."
-          rows={6}
-          required
-        />
-
-        <div className="grid gap-4 md:grid-cols-2">
-          <SelectInput
-            label="Type"
-            options={announcementTypeOptions}
-            value={form.type}
-            onChange={(event) => handleFieldChange('type', event.target.value as AnnouncementType)}
-          />
-
-          <FormInput
-            label="Year"
-            value={form.year}
-            onChange={(event) => handleFieldChange('year', event.target.value)}
-            placeholder="2026"
-            type="number"
-            min="1900"
-          />
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-2">
-          <FormInput
-            label="Chapter ID"
-            value={form.chapterId}
-            onChange={(event) => handleFieldChange('chapterId', event.target.value)}
-            placeholder="Leave blank for global"
-          />
-
-          <div className="rounded-2xl bg-accent-50 px-4 py-3 text-sm text-accent-600">
-            Leave chapter and year blank if the announcement should be visible to everyone.
-          </div>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-2">
-          <FormInput
-            label="Starts At"
-            value={form.startsAt}
-            onChange={(event) => handleFieldChange('startsAt', event.target.value)}
-            type="datetime-local"
-          />
-
-          <FormInput
-            label="Ends At"
-            value={form.endsAt}
-            onChange={(event) => handleFieldChange('endsAt', event.target.value)}
-            type="datetime-local"
-          />
-        </div>
-
-        <ImageUpload
-          label="Cover Image"
-          previews={imagePreviews}
-          onChange={handleImageChange}
-          multiple={false}
-          hint="PNG, JPG, WEBP or GIF up to 2MB"
-        />
-
-        {formError && (
-          <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{formError}</div>
-        )}
-
-        <div className="flex items-center justify-end gap-3 pt-2">
-          <button
-            type="button"
-            onClick={onClose}
-            disabled={isSubmitting}
-            className="px-4 py-2 text-sm font-medium text-accent-700 hover:text-accent-900 disabled:opacity-50"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="inline-flex items-center gap-2 rounded-xl bg-primary-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary-600 disabled:opacity-50"
-          >
-            {isSubmitting && <Icon icon="mdi:loading" className="h-4 w-4 animate-spin" />}
-            {isEditMode ? 'Save changes' : 'Publish announcement'}
-          </button>
-        </div>
-      </form>
-    </Modal>
-  );
-}
-
 export function AdminAnnouncementsPage() {
   const { data: announcements = [], isLoading } = useAnnouncements();
   const deleteAnnouncement = useDeleteAnnouncement();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedType, setSelectedType] = useState<'all' | AnnouncementType>('all');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('newest');
   const [editorOpen, setEditorOpen] = useState(false);
   const [editingAnnouncement, setEditingAnnouncement] = useState<NewsItem | null>(null);
   const [announcementToDelete, setAnnouncementToDelete] = useState<NewsItem | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const sortedAnnouncements = useMemo(
-    () =>
-      [...announcements].sort(
-        (a, b) =>
-          new Date(b.startsAt || b.date).getTime() - new Date(a.startsAt || a.date).getTime(),
-      ),
-    [announcements],
-  );
+  const sortedAnnouncements = useMemo(() => {
+    const getCreatedTime = (item: NewsItem) => {
+      const timestamp = new Date(item.date).getTime();
+      return Number.isNaN(timestamp) ? 0 : timestamp;
+    };
+
+    return [...announcements].sort((a, b) => {
+      const difference = getCreatedTime(b) - getCreatedTime(a);
+      return sortDirection === 'oldest' ? -difference : difference;
+    });
+  }, [announcements, sortDirection]);
 
   const filteredAnnouncements = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -382,6 +115,20 @@ export function AdminAnnouncementsPage() {
       );
     });
   }, [searchQuery, selectedType, sortedAnnouncements]);
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredAnnouncements.length / ADMIN_ANNOUNCEMENTS_PER_PAGE),
+  );
+  const visibleAnnouncements = filteredAnnouncements.slice(
+    (currentPage - 1) * ADMIN_ANNOUNCEMENTS_PER_PAGE,
+    currentPage * ADMIN_ANNOUNCEMENTS_PER_PAGE,
+  );
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   const eventCount = sortedAnnouncements.filter((item) => item.type === 'event').length;
   const scheduledCount = sortedAnnouncements.filter((item) => item.startsAt || item.endsAt).length;
@@ -403,7 +150,7 @@ export function AdminAnnouncementsPage() {
             <div>
               <h1 className="text-3xl font-bold text-accent-950">Manage Announcements</h1>
               <p className="mt-2 text-sm text-accent-500">
-                Publish updates for members, chapters, year sets, and time-sensitive notices.
+                Publish updates for members, year sets, and time-sensitive notices.
               </p>
             </div>
 
@@ -444,26 +191,31 @@ export function AdminAnnouncementsPage() {
 
           <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-accent-100">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
-              <div className="relative flex-1">
-                <Icon
-                  icon="mdi:magnify"
-                  className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-accent-300"
-                />
-                <input
-                  type="text"
+              <div className="flex-1">
+                <label htmlFor="admin-announcements-search" className="sr-only">
+                  Search announcements by title or content
+                </label>
+                <SearchInput
+                  id="admin-announcements-search"
                   value={searchQuery}
-                  onChange={(event) => setSearchQuery(event.target.value)}
+                  onValueChange={(value) => {
+                    setSearchQuery(value);
+                    setCurrentPage(1);
+                  }}
                   placeholder="Search by title or content..."
-                  className="w-full rounded-xl border border-accent-100 py-3 pl-10 pr-4 text-sm text-accent-800 outline-none transition-colors focus:border-primary-400 focus:ring-2 focus:ring-primary-100"
+                  className="w-full"
                 />
               </div>
 
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap items-start gap-2">
                 {filterOptions.map((filter) => (
                   <button
                     key={filter.value}
                     type="button"
-                    onClick={() => setSelectedType(filter.value as 'all' | AnnouncementType)}
+                    onClick={() => {
+                      setSelectedType(filter.value as 'all' | AnnouncementType);
+                      setCurrentPage(1);
+                    }}
                     className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
                       selectedType === filter.value
                         ? 'bg-primary-500 text-white'
@@ -473,6 +225,18 @@ export function AdminAnnouncementsPage() {
                     {filter.label}
                   </button>
                 ))}
+
+                <div className="min-w-[11.5rem] flex-1 sm:flex-none">
+                  <SelectInput
+                    id="announcement-sort-direction"
+                    options={sortOptions}
+                    value={sortDirection}
+                    onChange={(event) => {
+                      setSortDirection(event.target.value as SortDirection);
+                      setCurrentPage(1);
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -498,7 +262,7 @@ export function AdminAnnouncementsPage() {
             </div>
           ) : (
             <div className="grid gap-4 lg:grid-cols-2">
-              {filteredAnnouncements.map((item) => (
+              {visibleAnnouncements.map((item) => (
                 <article
                   key={item.slug}
                   className="h-full overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-accent-100"
@@ -574,6 +338,17 @@ export function AdminAnnouncementsPage() {
               ))}
             </div>
           )}
+
+          {!isLoading && filteredAnnouncements.length > 0 ? (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={(page) => {
+                setCurrentPage(page);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            />
+          ) : null}
         </div>
       </section>
 

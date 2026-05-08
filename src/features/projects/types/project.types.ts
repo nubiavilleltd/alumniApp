@@ -1,24 +1,3 @@
-// export interface Project {
-//   id: string;
-//   title: string;
-//   description: string;
-//   images: string[];
-//   amountRaised: number;
-//   targetAmount?: number;
-//   status: 'active' | 'completed';
-//   sortOrder?: number;
-//   isFeatured?: number;
-//   createdAt?: string;
-//   createdByName?: string;
-//   chapterName?: string | null;
-// }
-
-// export interface DonatePayload {
-//   amount: number;
-//   name: string;
-//   email: string;
-// }
-
 // features/projects/types/project.types.ts
 
 export interface Project {
@@ -28,7 +7,11 @@ export interface Project {
   images: string[];
   amountRaised: number;
   targetAmount?: number;
-  status: 'active' | 'completed';
+  status: 'ongoing' | 'completed';
+  conductedBy: string;
+  location: string;
+  startDate: string;
+  endDate?: string;
   sortOrder?: number;
   isFeatured?: number;
   createdAt?: string;
@@ -49,7 +32,11 @@ export interface CreateProjectFormData {
   description: string;
   targetAmount?: number;
   amountRaised?: number;
-  status: 'active' | 'completed';
+  status: 'ongoing' | 'completed';
+  conductedBy: string;
+  location: string;
+  startDate: string;
+  endDate?: string;
   sortOrder?: number;
   isFeatured?: boolean;
   images: File[];

@@ -4,16 +4,19 @@
 // Past events section below upcoming.
 
 import { Icon } from '@iconify/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
+import { Pagination } from '@/shared/components/ui/Pagination';
 import { useMyEvents } from '../hooks/useEventRegistration';
 import { useCancelRegistration } from '../hooks/useEvents';
 import { toast } from '@/shared/components/ui/Toast';
 import { EVENT_ROUTES } from '../routes';
 import type { Event } from '../types/event.types';
+import { formatDateRange } from '@/shared/utils/dateHelpers';
+const MY_EVENTS_PER_PAGE = 6;
 
 // ─── Unregister modal ────────────────────────────────────────────────────────
 
@@ -70,6 +73,97 @@ function UnregisterModal({
 
 // ─── Event card ───────────────────────────────────────────────────────────────
 
+// function MyEventCard({
+//   event,
+//   isPast,
+//   onUnregisterClick,
+// }: {
+//   event: Event;
+//   isPast: boolean;
+//   onUnregisterClick: (e: React.MouseEvent) => void;
+// }) {
+//   const navigate = useNavigate();
+//   const isCancelled = event.status === 'cancelled';
+
+//   const dateDisplay = (() => {
+//     const d = new Date(event.startDate);
+//     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+//   })();
+
+//   return (
+//     <div
+//       onClick={() => navigate(EVENT_ROUTES.DETAIL(event.id))}
+//       className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-all cursor-pointer group"
+//     >
+//       {/* Image */}
+//       <div className="aspect-[16/9] overflow-hidden bg-gray-100 relative">
+//         {event.image ? (
+//           <img
+//             src={event.image}
+//             alt={event.title}
+//             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+//             loading="lazy"
+//           />
+//         ) : (
+//           <div className="w-full h-full flex items-center justify-center bg-primary-50">
+//             <Icon icon="mdi:calendar-month-outline" className="w-10 h-10 text-primary-200" />
+//           </div>
+//         )}
+
+//         {/* Badges overlay */}
+//         <div className="absolute top-2.5 left-2.5 flex gap-1.5 flex-wrap">
+//           {isCancelled && (
+//             <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-gray-700/90 text-white">
+//               Cancelled
+//             </span>
+//           )}
+//           {isPast && !isCancelled && (
+//             <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-600/90 text-white flex items-center gap-1">
+//               <Icon icon="mdi:check-circle" className="w-3 h-3" /> Attended
+//             </span>
+//           )}
+//         </div>
+//       </div>
+
+//       {/* Content */}
+//       <div className="p-4">
+//         <h3 className="font-bold text-gray-900 text-sm leading-snug mb-1 line-clamp-2">
+//           {event.title}
+//         </h3>
+//         <p className="text-gray-500 text-xs leading-relaxed line-clamp-2 mb-3">
+//           {event.description}
+//         </p>
+
+//         {event.location && (
+//           <p className="text-gray-400 text-xs flex items-center gap-1 mb-1 truncate">
+//             <Icon icon="mdi:map-marker-outline" className="w-3.5 h-3.5 flex-shrink-0" />
+//             <span className="truncate">{event.location}</span>
+//           </p>
+//         )}
+
+//         <p className="text-gray-400 text-xs flex items-center gap-1">
+//           <Icon icon="mdi:clock-outline" className="w-3.5 h-3.5 flex-shrink-0" />
+//           {dateDisplay}
+//         </p>
+
+//         {/* Unregister — upcoming + not cancelled only, stops propagation */}
+//         {!isPast && !isCancelled && (
+//           <button
+//             type="button"
+//             onClick={onUnregisterClick}
+//             className="mt-3 flex items-center gap-1 text-red-500 hover:text-red-600 text-xs font-medium transition-colors"
+//           >
+//             <Icon icon="mdi:close-circle-outline" className="w-3.5 h-3.5" />
+//             Unregister
+//           </button>
+//         )}
+//       </div>
+//     </div>
+//   );
+// }
+
+// ─── Event card ───────────────────────────────────────────────────────────────
+
 function MyEventCard({
   event,
   isPast,
@@ -82,32 +176,43 @@ function MyEventCard({
   const navigate = useNavigate();
   const isCancelled = event.status === 'cancelled';
 
-  const dateDisplay = (() => {
-    const d = new Date(event.date);
-    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  })();
+  // Date range: show "startDate - endDate" or just startDate
+  // const formatEventDate = (iso: string) =>
+  //   new Date(iso).toLocaleDateString('en-US', {
+  //     month: 'short',
+  //     day: 'numeric',
+  //     year: 'numeric',
+  //   });
+
+  // const startLabel = event.startDate ? formatEventDate(event.startDate) : null;
+  // const endLabel   = event.endDate   ? formatEventDate(event.endDate)   : null;
+  // const dateRange  = startLabel && endLabel
+  //   ? `${startLabel} - ${endLabel}`
+  //   : startLabel ?? null;
+
+  const dateRange = formatDateRange(event.startDate, event.endDate);
 
   return (
     <div
       onClick={() => navigate(EVENT_ROUTES.DETAIL(event.id))}
-      className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-all cursor-pointer group"
+      className="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-all cursor-pointer group flex flex-col p-3"
     >
-      {/* Image */}
-      <div className="aspect-[16/9] overflow-hidden bg-gray-100 relative">
+      {/* ── Image ── */}
+      <div className="overflow-hidden rounded-3xl bg-gray-100 relative">
         {event.image ? (
           <img
             src={event.image}
             alt={event.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full aspect-[16/9] object-cover group-hover:scale-105 transition-transform duration-300 rounded-3xl"
             loading="lazy"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-primary-50">
-            <Icon icon="mdi:calendar-month-outline" className="w-10 h-10 text-primary-200" />
+          <div className="w-full aspect-[16/9] flex items-center justify-center bg-gray-100 rounded-3xl">
+            <Icon icon="mdi:calendar-month-outline" className="w-10 h-10 text-gray-300" />
           </div>
         )}
 
-        {/* Badges overlay */}
+        {/* Status badges */}
         <div className="absolute top-2.5 left-2.5 flex gap-1.5 flex-wrap">
           {isCancelled && (
             <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-gray-700/90 text-white">
@@ -122,33 +227,41 @@ function MyEventCard({
         </div>
       </div>
 
-      {/* Content */}
-      <div className="p-4">
-        <h3 className="font-bold text-gray-900 text-sm leading-snug mb-1 line-clamp-2">
+      {/* ── Content ── */}
+      <div className="py-2 flex flex-col flex-1">
+        {/* Title */}
+        <h3 className="font-bold text-gray-900 text-base leading-snug mb-1.5 line-clamp-2">
           {event.title}
         </h3>
-        <p className="text-gray-500 text-xs leading-relaxed line-clamp-2 mb-3">
+
+        {/* Description */}
+        <p className="text-gray-500 text-sm leading-relaxed line-clamp-2 mb-4">
           {event.description}
         </p>
 
-        {event.location && (
-          <p className="text-gray-400 text-xs flex items-center gap-1 mb-1 truncate">
-            <Icon icon="mdi:map-marker-outline" className="w-3.5 h-3.5 flex-shrink-0" />
-            <span className="truncate">{event.location}</span>
-          </p>
-        )}
+        {/* Meta — pushed to bottom */}
+        <div className="mt-auto flex flex-col gap-1.5">
+          {event.location && (
+            <p className="text-gray-500 text-sm flex items-center gap-1.5 truncate">
+              <Icon icon="mdi:map-marker-outline" className="w-4 h-4 flex-shrink-0 text-gray-400" />
+              <span className="truncate">{event.location}</span>
+            </p>
+          )}
 
-        <p className="text-gray-400 text-xs flex items-center gap-1">
-          <Icon icon="mdi:clock-outline" className="w-3.5 h-3.5 flex-shrink-0" />
-          {dateDisplay}
-        </p>
+          {dateRange && (
+            <p className="text-gray-500 text-sm flex items-center gap-1.5">
+              <Icon icon="mdi:clock-outline" className="w-4 h-4 flex-shrink-0 text-gray-400" />
+              {dateRange}
+            </p>
+          )}
+        </div>
 
-        {/* Unregister — upcoming + not cancelled only, stops propagation */}
+        {/* Unregister — upcoming + not cancelled only */}
         {!isPast && !isCancelled && (
           <button
             type="button"
             onClick={onUnregisterClick}
-            className="mt-3 flex items-center gap-1 text-red-500 hover:text-red-600 text-xs font-medium transition-colors"
+            className="mt-4 self-start flex items-center gap-1 text-red-500 hover:text-red-600 text-xs font-medium transition-colors"
           >
             <Icon icon="mdi:close-circle-outline" className="w-3.5 h-3.5" />
             Unregister
@@ -163,16 +276,35 @@ function MyEventCard({
 
 function MyEventCardSkeleton() {
   return (
-    <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 animate-pulse">
-      <div className="aspect-[16/9] bg-gray-200" />
-      <div className="p-4 space-y-2">
-        <div className="h-4 bg-gray-200 rounded w-3/4" />
-        <div className="h-3 bg-gray-200 rounded w-full" />
-        <div className="h-3 bg-gray-200 rounded w-1/2" />
+    <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 animate-pulse flex flex-col">
+      <div className="aspect-[16/9] bg-gray-200 rounded-t-2xl" />
+      <div className="p-4 flex flex-col gap-2.5">
+        <div className="h-5 bg-gray-200 rounded w-3/4" />
+        <div className="h-4 bg-gray-200 rounded w-full" />
+        <div className="h-4 bg-gray-200 rounded w-5/6" />
+        <div className="mt-2 flex flex-col gap-2">
+          <div className="h-3.5 bg-gray-200 rounded w-2/3" />
+          <div className="h-3.5 bg-gray-200 rounded w-1/2" />
+        </div>
       </div>
     </div>
   );
 }
+
+// ─── Skeleton card ────────────────────────────────────────────────────────────
+
+// function MyEventCardSkeleton() {
+//   return (
+//     <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 animate-pulse">
+//       <div className="aspect-[16/9] bg-gray-200" />
+//       <div className="p-4 space-y-2">
+//         <div className="h-4 bg-gray-200 rounded w-3/4" />
+//         <div className="h-3 bg-gray-200 rounded w-full" />
+//         <div className="h-3 bg-gray-200 rounded w-1/2" />
+//       </div>
+//     </div>
+//   );
+// }
 
 // ─── Empty state ──────────────────────────────────────────────────────────────
 
@@ -205,20 +337,46 @@ function EmptyState({ type }: { type: 'upcoming' | 'past' }) {
 export function MyEventsPage() {
   // TODO: myEvents empty until backend implements POST /get_events { user_id }
   const { events: myEvents = [], isLoading } = useMyEvents();
+
+  console.log('myEvents', { myEvents });
   const cancelMutation = useCancelRegistration();
   const [unregisterEvent, setUnregisterEvent] = useState<Event | null>(null);
+  const [upcomingPage, setUpcomingPage] = useState(1);
+  const [pastPage, setPastPage] = useState(1);
 
   const now = new Date();
   const upcomingEvents = myEvents.filter((e: Event) => {
     const [h = 23, m = 59] = (e.endTime || '23:59').split(':').map(Number);
-    const d = new Date(e.date);
+    const d = new Date(e.startDate);
     return new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, m) >= now;
   });
   const pastEvents = myEvents.filter((e: Event) => {
     const [h = 23, m = 59] = (e.endTime || '23:59').split(':').map(Number);
-    const d = new Date(e.date);
+    const d = new Date(e.startDate);
     return new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, m) < now;
   });
+  const upcomingTotalPages = Math.max(1, Math.ceil(upcomingEvents.length / MY_EVENTS_PER_PAGE));
+  const pastTotalPages = Math.max(1, Math.ceil(pastEvents.length / MY_EVENTS_PER_PAGE));
+  const visibleUpcomingEvents = upcomingEvents.slice(
+    (upcomingPage - 1) * MY_EVENTS_PER_PAGE,
+    upcomingPage * MY_EVENTS_PER_PAGE,
+  );
+  const visiblePastEvents = pastEvents.slice(
+    (pastPage - 1) * MY_EVENTS_PER_PAGE,
+    pastPage * MY_EVENTS_PER_PAGE,
+  );
+
+  useEffect(() => {
+    if (upcomingPage > upcomingTotalPages) {
+      setUpcomingPage(upcomingTotalPages);
+    }
+  }, [upcomingPage, upcomingTotalPages]);
+
+  useEffect(() => {
+    if (pastPage > pastTotalPages) {
+      setPastPage(pastTotalPages);
+    }
+  }, [pastPage, pastTotalPages]);
 
   const handleUnregister = async () => {
     if (!unregisterEvent) return;
@@ -245,9 +403,19 @@ export function MyEventsPage() {
 
       <div className="min-h-screen bg-[#f5f4f0]">
         <div className="container-custom py-7">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-7">
+          {/* <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-7">
             My Registered Events
-          </h1>
+          </h1> */}
+
+          <div className="flex items-center justify-between mb-7">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">My Registered Events</h1>
+            <AppLink
+              href={EVENT_ROUTES.ROOT}
+              className="px-4 py-2 text-sm font-semibold text-primary-500 border border-primary-500 rounded-full hover:bg-primary-50 transition-colors"
+            >
+              Go to Events
+            </AppLink>
+          </div>
 
           {/* Upcoming */}
           {(isLoading || upcomingEvents.length > 0) && (
@@ -262,7 +430,7 @@ export function MyEventsPage() {
                 {isLoading ? (
                   Array.from({ length: 3 }).map((_, i) => <MyEventCardSkeleton key={i} />)
                 ) : upcomingEvents.length > 0 ? (
-                  upcomingEvents.map((event: Event) => (
+                  visibleUpcomingEvents.map((event: Event) => (
                     <MyEventCard
                       key={event.id}
                       event={event}
@@ -277,6 +445,16 @@ export function MyEventsPage() {
                   <EmptyState type="upcoming" />
                 )}
               </div>
+              {!isLoading && upcomingEvents.length > 0 ? (
+                <Pagination
+                  currentPage={upcomingPage}
+                  totalPages={upcomingTotalPages}
+                  onPageChange={(page) => {
+                    setUpcomingPage(page);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                />
+              ) : null}
             </section>
           )}
 
@@ -300,7 +478,7 @@ export function MyEventsPage() {
                 {isLoading ? (
                   Array.from({ length: 2 }).map((_, i) => <MyEventCardSkeleton key={i} />)
                 ) : pastEvents.length > 0 ? (
-                  pastEvents.map((event: Event) => (
+                  visiblePastEvents.map((event: Event) => (
                     <MyEventCard
                       key={event.id}
                       event={event}
@@ -312,6 +490,16 @@ export function MyEventsPage() {
                   <EmptyState type="past" />
                 )}
               </div>
+              {!isLoading && pastEvents.length > 0 ? (
+                <Pagination
+                  currentPage={pastPage}
+                  totalPages={pastTotalPages}
+                  onPageChange={(page) => {
+                    setPastPage(page);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                />
+              ) : null}
             </section>
           )}
         </div>

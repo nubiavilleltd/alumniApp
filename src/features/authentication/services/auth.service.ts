@@ -3,7 +3,6 @@
 import { apiClient } from '@/lib/api/client';
 import { API_ENDPOINTS } from '@/lib/api/endpoints';
 import { handleApiError } from '@/lib/errors/apiErrorHandler';
-import { formatPhoneNumberWithCountryCode } from '../constants/phoneCountries';
 import type {
   AuthSessionUser,
   AuthUserSummary,
@@ -19,6 +18,7 @@ import type {
   VerifyRegistrationRequest,
   Voucher,
 } from '../types/auth.types';
+import { formatOptionalNigerianPhoneNumber } from '@/shared/utils/nigerianPhoneNumber';
 import {
   mapRegistrationPayload,
   mapRegistrationResponse,
@@ -55,7 +55,7 @@ function toUserSummary(values: RegisterDetailsFormValues): AuthUserSummary {
   return {
     fullName: `${values.otherNames} ${values.surname}`.trim(),
     email: values.email,
-    phoneNumber: formatPhoneNumberWithCountryCode(values.phoneCountry, values.whatsappPhone),
+    phoneNumber: formatOptionalNigerianPhoneNumber(values.whatsappPhone),
     graduationYear: Number(values.graduationYear),
   };
 }
@@ -79,7 +79,9 @@ export const authApi = {
         API_ENDPOINTS.AUTH.LOGOUT,
         refreshToken ? { refresh_token: refreshToken } : {},
       );
-    } catch {}
+    } catch (error) {
+      console.log('Failed to log out', error);
+    }
   },
 
   /** POST /forgot_password */

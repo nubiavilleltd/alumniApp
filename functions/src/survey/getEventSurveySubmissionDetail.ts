@@ -57,6 +57,15 @@ export const getEventSurveySubmissionDetail = onRequest(
                       options: Array.isArray(question.options)
                         ? question.options.map((option: unknown) => String(option))
                         : [],
+                      maxSelections:
+                        question.type === 'checkbox' &&
+                        Number.isFinite(Number(question.maxSelections)) &&
+                        Number(question.maxSelections) >= 1
+                          ? Math.min(
+                              Math.floor(Number(question.maxSelections)),
+                              Array.isArray(question.options) ? question.options.length : 0,
+                            )
+                          : null,
                       order: Number(question.order ?? 0),
                       value: answersByQuestionId.get(String(question.id ?? '')) ?? null,
                     }))

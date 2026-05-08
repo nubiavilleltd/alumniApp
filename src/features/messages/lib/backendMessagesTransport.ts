@@ -37,6 +37,7 @@ import {
 import { getRegisteredMessageRecipient } from './messageRecipientRegistry';
 import type {
   MessageAttachment,
+  MessageDeliveryStatus,
   MessageParticipant,
   MessageThreadCategory,
   MessageThreadDetail,
@@ -121,6 +122,71 @@ function normalizeBackendIdentifierValue(value: string) {
   return trimmedValue;
 }
 
+function normalizeRecipientRegistryLookupId(memberId: string) {
+  const trimmedValue = memberId.trim();
+  const normalizedValue = trimmedValue.toLowerCase();
+  const prefixedNumericMatch = normalizedValue.match(/^(?:member|user)[-_ ]?(\d+)$/);
+
+  if (prefixedNumericMatch?.[1]) {
+    return prefixedNumericMatch[1];
+  }
+
+  return trimmedValue;
+}
+
+function getRegisteredRecipientForMemberId(memberId: string) {
+  const exactMatch = getRegisteredMessageRecipient(memberId);
+  if (exactMatch) {
+    return exactMatch;
+  }
+
+  const normalizedLookupId = normalizeRecipientRegistryLookupId(memberId);
+  if (normalizedLookupId !== memberId) {
+    return getRegisteredMessageRecipient(normalizedLookupId);
+  }
+
+  return undefined;
+}
+
+function extractBackendParticipantFullName(rawParticipant: BackendThreadParticipant) {
+  const firstName = String(rawParticipant.first_name ?? '').trim();
+  const lastName = String(rawParticipant.last_name ?? '').trim();
+  const combinedName = `${firstName} ${lastName}`.trim();
+
+  return (
+    String(
+      rawParticipant.fullname ?? rawParticipant.full_name ?? rawParticipant.name ?? combinedName,
+    ).trim() || undefined
+  );
+}
+
+function isPlaceholderParticipantName(value: string, memberId: string) {
+  const normalizedValue = value.trim().toLowerCase();
+  const normalizedMemberId = memberId.trim().toLowerCase();
+
+  if (!normalizedValue) {
+    return true;
+  }
+
+  if (normalizedValue === normalizedMemberId) {
+    return true;
+  }
+
+  if (/^(?:member|user)[-_ ]?\d+$/.test(normalizedValue)) {
+    return true;
+  }
+
+  if (normalizedMemberId && normalizedValue === `member${normalizedMemberId}`) {
+    return true;
+  }
+
+  if (normalizedMemberId && normalizedValue === `user${normalizedMemberId}`) {
+    return true;
+  }
+
+  return normalizedValue === 'unknown' || normalizedValue === 'unknown member';
+}
+
 function deriveInitials(value: string) {
   return (
     value
@@ -147,6 +213,27 @@ function normalizeThreadCategory(value: unknown): MessageThreadCategory {
 
 function normalizeThreadType(value: unknown): MessageThreadSummary['type'] {
   return value === 'group' ? 'group' : 'direct';
+}
+
+function normalizeDeliveryStatus(value: unknown): MessageDeliveryStatus | undefined {
+  const normalizedValue = String(value ?? '')
+    .trim()
+    .toLowerCase();
+
+  if (
+    normalizedValue === 'sending' ||
+    normalizedValue === 'sent' ||
+    normalizedValue === 'delivered' ||
+    normalizedValue === 'seen' ||
+    normalizedValue === 'failed'
+  ) {
+    return normalizedValue;
+  }
+
+  if (normalizedValue === 'read') return 'seen';
+  if (normalizedValue === 'received') return 'delivered';
+
+  return undefined;
 }
 
 function normalizeParticipantRole(value: unknown): MessageParticipant['roleInThread'] {
@@ -205,13 +292,17 @@ function buildParticipantFromBackend(
     '';
   const memberId = String(rawUserId || '');
   const currentUser = getCurrentSessionUser();
-  const recipientRegistryEntry = getRegisteredMessageRecipient(memberId);
-  const backendFullName =
-    String(rawParticipant.fullname ?? rawParticipant.full_name ?? '').trim() || undefined;
+  const recipientRegistryEntry = getRegisteredRecipientForMemberId(memberId);
+  const backendFullName = extractBackendParticipantFullName(rawParticipant);
+  const preferredBackendFullName =
+    backendFullName && !isPlaceholderParticipantName(backendFullName, memberId)
+      ? backendFullName
+      : undefined;
   const fullName =
     (memberId === viewerMemberId ? currentUser?.fullName : undefined) ??
-    backendFullName ??
+    preferredBackendFullName ??
     recipientRegistryEntry?.fullName ??
+    backendFullName ??
     `Member ${memberId}`;
   const firstName = fullName.split(/\s+/)[0] ?? fullName;
   const avatar =
@@ -277,12 +368,78 @@ function buildAudioWaveform() {
 }
 
 function describeAttachmentFallback(kind: MessageAttachment['kind']) {
-  if (kind === 'audio') return 'Audio attachment';
-  if (kind === 'image') return 'Image attachment';
-  return 'File attachment';
+  if (kind === 'audio') return 'Audio';
+  if (kind === 'image') return 'Image';
+  return 'File';
 }
 
-function extractAttachmentUrl(rawMessage: BackendMessageLike) {
+function normalizeAttachmentPreviewKind(value: string): MessageAttachment['kind'] | undefined {
+  const normalized = value.trim().toLowerCase().replace(/\s+/g, ' ');
+
+  if (
+    normalized === '[audio]' ||
+    normalized === 'audio attachment' ||
+    normalized === '[voice note]'
+  ) {
+    return 'audio';
+  }
+
+  if (normalized === '[image]' || normalized === 'image attachment') {
+    return 'image';
+  }
+
+  if (
+    normalized === '[attachment]' ||
+    normalized === '[file]' ||
+    normalized === 'attachment' ||
+    normalized === 'file attachment'
+  ) {
+    return 'file';
+  }
+
+  return undefined;
+}
+
+function getThreadPreviewPayload(
+  rawPreview: unknown,
+  rawLastMessage: BackendMessageLike | null | undefined,
+): {
+  text: string;
+  attachmentKind?: MessageAttachment['kind'];
+} {
+  const trimmedPreview = String(rawPreview ?? '').trim();
+  const explicitAttachmentKind = trimmedPreview
+    ? normalizeAttachmentPreviewKind(trimmedPreview)
+    : undefined;
+  const attachmentKind = explicitAttachmentKind
+    ? explicitAttachmentKind
+    : !trimmedPreview && rawLastMessage
+      ? buildAttachmentsFromBackendMessage(rawLastMessage)[0]?.kind
+      : undefined;
+
+  if (attachmentKind) {
+    return {
+      text: describeAttachmentFallback(attachmentKind),
+      attachmentKind,
+    };
+  }
+
+  if (trimmedPreview) {
+    return {
+      text: trimmedPreview,
+    };
+  }
+
+  return {
+    text: 'No messages yet.',
+  };
+}
+
+function extractAttachmentUrl(rawMessage: BackendMessageLike | null | undefined) {
+  if (!rawMessage || typeof rawMessage !== 'object') {
+    return undefined;
+  }
+
   const attachment =
     rawMessage.public_url ??
     rawMessage.url ??
@@ -307,9 +464,13 @@ function isDeletedBackendMessage(rawMessage: BackendMessageLike) {
 }
 
 function buildAttachmentFromBackendItem(
-  rawAttachment: BackendMessageLike,
+  rawAttachment: BackendMessageLike | null | undefined,
   fallbackId: string,
 ): MessageAttachment | null {
+  if (!rawAttachment || typeof rawAttachment !== 'object') {
+    return null;
+  }
+
   const attachmentUrl = extractAttachmentUrl(rawAttachment);
   if (!attachmentUrl) {
     return null;
@@ -343,7 +504,7 @@ function buildAttachmentFromBackendItem(
 
 function buildAttachmentsFromBackendMessage(rawMessage: BackendMessageLike): MessageAttachment[] {
   const nestedAttachments = extractList(rawMessage, ['attachments']).map(
-    (attachment) => attachment as BackendMessageLike,
+    (attachment) => attachment as BackendMessageLike | null,
   );
   if (nestedAttachments.length > 0) {
     return nestedAttachments
@@ -459,6 +620,19 @@ function buildLastMessagePreview(rawLastMessage: BackendMessageLike | null | und
   return 'No messages yet.';
 }
 
+function getBackendMessageSenderMemberId(rawMessage: BackendMessageLike | null | undefined) {
+  if (!rawMessage) return '';
+
+  return String(
+    rawMessage.sender_member_id ??
+      rawMessage.sender_id ??
+      rawMessage.sender_user_id ??
+      rawMessage.user_id ??
+      rawMessage.member_id ??
+      '',
+  ).trim();
+}
+
 function buildThreadSummaryFromBackend(params: {
   rawThread: BackendThreadLike;
   viewerMemberId: string;
@@ -488,9 +662,57 @@ function buildThreadSummaryFromBackend(params: {
         'Group conversation';
   const isYearGroup = type === 'group' && isGraduationYearGroupTitle(title);
   const lastMessage = extractObject(params.rawThread.last_message, []) as BackendMessageLike | null;
-  const lastMessagePreview =
+  const lastMessagePreviewPayload = getThreadPreviewPayload(
     String(params.rawThread.last_message_preview ?? '').trim() ||
-    buildLastMessagePreview(lastMessage);
+      buildLastMessagePreview(lastMessage),
+    lastMessage,
+  );
+  const lastMessageSenderMemberId =
+    getBackendMessageSenderMemberId(lastMessage) ||
+    String(
+      params.rawThread.last_message_sender_member_id ??
+        params.rawThread.last_message_sender_id ??
+        params.rawThread.last_message_sender_user_id ??
+        '',
+    ).trim();
+  const lastMessageSenderName =
+    String(
+      params.rawThread.last_message_sender_name ??
+        (typeof lastMessage?.sender_name === 'string' ? lastMessage.sender_name : '') ??
+        '',
+    ).trim() || undefined;
+  const explicitLastMessageStatus = normalizeDeliveryStatus(
+    params.rawThread.last_message_status ??
+      params.rawThread.last_message_delivery_status ??
+      lastMessage?.status ??
+      lastMessage?.delivery_status ??
+      lastMessage?.message_status,
+  );
+  const normalizedCurrentUserName = currentUser?.fullName?.trim().toLowerCase() ?? '';
+  const isOwnBySenderId =
+    Boolean(lastMessageSenderMemberId) &&
+    (lastMessageSenderMemberId === params.viewerMemberId ||
+      (currentUser?.id ? lastMessageSenderMemberId === currentUser.id : false));
+  const isOwnBySenderName =
+    Boolean(lastMessageSenderName) &&
+    Boolean(normalizedCurrentUserName) &&
+    lastMessageSenderName.toLowerCase() === normalizedCurrentUserName;
+  const lastMessageIsOwn =
+    isOwnBySenderId ||
+    isOwnBySenderName ||
+    (!lastMessageSenderMemberId && !lastMessageSenderName && Boolean(explicitLastMessageStatus));
+  const lastMessageStatus = lastMessageIsOwn
+    ? (explicitLastMessageStatus ??
+      (lastMessage
+        ? deriveOutgoingMessageStatus({
+            rawMessage: lastMessage,
+            rawMessages: [lastMessage],
+            participants: participantsWithViewer,
+            viewerMemberId: params.viewerMemberId,
+            threadType: type,
+          })
+        : 'sent'))
+    : undefined;
 
   return {
     id: String(
@@ -524,13 +746,11 @@ function buildThreadSummaryFromBackend(params: {
         params.rawThread.updated_at ??
         params.rawThread.created_at,
     ),
-    lastMessagePreview,
-    lastMessageSenderName:
-      String(
-        params.rawThread.last_message_sender_name ??
-          (typeof lastMessage?.sender_name === 'string' ? lastMessage.sender_name : '') ??
-          '',
-      ).trim() || undefined,
+    lastMessagePreview: lastMessagePreviewPayload.text,
+    lastMessagePreviewAttachmentKind: lastMessagePreviewPayload.attachmentKind,
+    lastMessageSenderName,
+    lastMessageStatus,
+    lastMessageIsOwn,
     presence: undefined,
     memberCount: participantsWithViewer.length,
     participants: participantsWithViewer,
@@ -554,14 +774,7 @@ function deriveOutgoingMessageStatus(params: {
   viewerMemberId: string;
   threadType: MessageThreadSummary['type'];
 }) {
-  const senderMemberId = String(
-    params.rawMessage.sender_member_id ??
-      params.rawMessage.sender_id ??
-      params.rawMessage.sender_user_id ??
-      params.rawMessage.user_id ??
-      params.rawMessage.member_id ??
-      '',
-  );
+  const senderMemberId = getBackendMessageSenderMemberId(params.rawMessage);
 
   if (senderMemberId !== params.viewerMemberId) {
     return 'seen' as const;
@@ -606,14 +819,7 @@ function buildMessageItemsFromBackend(params: {
 }) {
   return sortMessagesChronologically(
     params.rawMessages.map((rawMessage) => {
-      const senderMemberId = String(
-        rawMessage.sender_member_id ??
-          rawMessage.sender_id ??
-          rawMessage.sender_user_id ??
-          rawMessage.user_id ??
-          rawMessage.member_id ??
-          '',
-      );
+      const senderMemberId = getBackendMessageSenderMemberId(rawMessage);
       const sender =
         params.participants.find((participant) => participant.memberId === senderMemberId) ?? null;
       const body = String(rawMessage.message ?? rawMessage.body ?? '').trim();

@@ -30,6 +30,11 @@ export function AppLink({
   endAdornment,
   onClick,
 }: AppLinkProps) {
+  const isExt = isExternal(href);
+
+  const finalTarget = target ?? (isExt ? '_blank' : undefined);
+  const finalRel = finalTarget === '_blank' ? (rel ?? 'noopener noreferrer') : rel;
+
   const content = (
     <>
       {children}
@@ -37,9 +42,15 @@ export function AppLink({
     </>
   );
 
-  if (isExternal(href) || target === '_blank') {
+  if (isExt || finalTarget === '_blank') {
     return (
-      <a href={href} className={className} aria-label={ariaLabel} target={target} rel={rel}>
+      <a
+        href={href}
+        className={className}
+        aria-label={ariaLabel}
+        target={finalTarget}
+        rel={finalRel}
+      >
         {content}
       </a>
     );

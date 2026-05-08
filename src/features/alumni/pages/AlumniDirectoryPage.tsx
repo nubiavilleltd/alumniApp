@@ -10,11 +10,11 @@ import EmptyState from '@/shared/components/ui/EmptyState';
 import { Pagination } from '@/shared/components/ui/Pagination';
 import { useAlumni } from '@/features/alumni/hooks/useAlumni';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
-import { isFieldVisible, getPhotoDisplay } from '@/features/alumni/utils/privacyHelpers';
+import { getPhotoDisplay } from '@/features/alumni/utils/privacyHelpers';
 import { ALUMNI_ROUTES } from '../routes';
-import { ROUTES } from '@/shared/constants/routes';
 import { useStartDirectConversation } from '@/features/messages/hooks/useStartDirectConversation';
 import { Alumni } from '../types/alumni.types';
+import { resolveVisibleField } from '@/features/user/utils/privacyResolvers';
 
 /* ───────────────────────────────────────────────────────────── */
 /* Responsive items per page */
@@ -45,15 +45,47 @@ function useItemsPerPage() {
 /* ───────────────────────────────────────────────────────────── */
 
 function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: any) {
-  const photoVisible = isFieldVisible(entry, 'photo', currentUser);
-  const displayPhoto = getPhotoDisplay(entry.photo, photoVisible);
+  // const photoVisible = isFieldVisible(entry, 'photo', currentUser);
+  // const displayPhoto = getPhotoDisplay(entry.photo, photoVisible);
   const classLabel = `Class '${String(entry.graduationYear).slice(-2)}`;
   const isOwnProfile = entry.memberId === currentUser?.memberId;
 
-  const occupation = entry.position || entry.occupations?.[0] || '';
+  // const occupation = entry.position || entry.occupations?.[0] || '';
+
+  const isOwner = entry.memberId === currentUser?.memberId;
+
+  console.log('entry', { entry });
+
+  const canSeePhoto = resolveVisibleField(entry.photo, 'photo', entry.privacy, isOwner);
+
+  const displayPhoto = getPhotoDisplay(entry.photo, canSeePhoto);
+  entry.memberId == '39' &&
+    console.log('canSeePhoto', { canSeePhoto, photo: entry.photo, photo2: displayPhoto });
+
+  const visibleGraduationYear = resolveVisibleField(
+    entry.graduationYear,
+    'birthDate', // TEMPORARY until you create graduationYear privacy
+    entry.privacy,
+    isOwner,
+  );
+
+  const visibleOccupation = resolveVisibleField(
+    entry.position || entry.occupations?.[0],
+    'employmentStatus', // TEMPORARY mapping
+    entry.privacy,
+    isOwner,
+  );
+
+  // const classLabel = visibleGraduationYear
+  //   ? `Class '${String(visibleGraduationYear).slice(-2)}`
+  //   : null;
 
   return (
-    <div className="relative rounded-2xl overflow-hidden shadow-md group cursor-pointer aspect-[3/4] sm:aspect-[4/5] lg:aspect-[3/4]">
+    // <div className="relative rounded-2xl overflow-hidden shadow-md group cursor-pointer aspect-[3/4] sm:aspect-[4/5] lg:aspect-[3/4]">
+    <div
+      className="relative rounded-2xl overflow-hidden shadow-md group cursor-pointer 
+  aspect-[4/5] sm:aspect-[4/5] lg:aspect-[3/4]"
+    >
       {/* Image */}
       <div className="absolute inset-0">
         {displayPhoto ? (
@@ -76,8 +108,16 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: a
           {' '}
           <p className="text-white font-semibold text-sm truncate">{entry.name}</p>
           <p className="text-white/90 text-xs font-semibold">{classLabel}</p>
-          {occupation && (
+          {/* <p className="text-white/90 text-xs font-semibold">{classLabel ?? '\u00A0'}</p> */}
+          {/* {occupation ? (
             <p className="text-white/90 text-xs truncate font-semibold">{occupation}</p>
+          ) : (
+            <p className="text-white/90 text-xs truncate font-semibold">&nbsp;</p>
+          )} */}
+          {visibleOccupation ? (
+            <p className="text-white/90 text-xs truncate font-semibold">{visibleOccupation}</p>
+          ) : (
+            <p className="text-white/90 text-xs truncate font-semibold">&nbsp;</p>
           )}
         </div>
 
@@ -92,6 +132,7 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: a
           <button
             onClick={() => onMessageClick(entry)}
             disabled={!entry.memberId || isOwnProfile || isMessagePending}
+            title={isOwnProfile ? 'You cannot message yourself' : ''}
             className="flex-1 bg-white text-primary-600 text-xs py-1.5 rounded-full disabled:opacity-50"
           >
             {isMessagePending ? 'Opening…' : 'Send Message'}
@@ -157,8 +198,25 @@ export function AlumniDirectoryPage() {
 
   async function handleMessage(entry: Alumni) {
     if (!entry.memberId) return;
+
+    const recipientHeadline =
+      entry.position && entry.company
+        ? `${entry.position} at ${entry.company}`
+        : entry.position || entry.occupations?.[0] || `Class of ${entry.graduationYear}`;
+
     setPendingId(entry.memberId);
-    await startDirectConversation({ participantMemberId: entry.memberId });
+    await startDirectConversation({
+      participantMemberId: entry.memberId,
+      recipientProfile: {
+        fullName: entry.name,
+        avatar: entry.photo,
+        headline: recipientHeadline,
+        location: entry.location || entry.city,
+        graduationYear: entry.graduationYear,
+        slug: entry.slug,
+        profileHref: `/alumni/profiles/${entry.memberId}`,
+      },
+    });
     setPendingId(null);
   }
 
@@ -167,12 +225,12 @@ export function AlumniDirectoryPage() {
       <SEO title="Alumnae Directory" />
 
       <section className="bg-gray-100 min-h-screen py-8">
-        <div className="container-custom mx-auto px-4">
+        <div className="container-custom mx-auto">
           {/* Title */}
           <h1 className="text-2xl md:text-3xl font-bold mb-6">Alumnae Directory</h1>
 
           {/* Filters */}
-          <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-4 mb-8">
+          <div className="flex flex-col sm:flex-row items-center gap-4 mb-8">
             <div className="flex-1 w-full sm:max-w-xl">
               <SearchInput
                 value={searchTerm}

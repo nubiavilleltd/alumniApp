@@ -22,7 +22,7 @@ export type DuesStatus = 'paid' | 'owing' | 'overdue' | 'exempt' | 'unknown';
 
 // ─── Privacy ──────────────────────────────────────────────────────────────────
 
-export type FieldVisibility = 'public' | 'private';
+export type FieldVisibility = 'public' | 'private' | 'members';
 // export type DuesStatus = 'paid' | 'owing' | 'overdue' | 'unknown';
 
 export interface PrivacySettings {
@@ -35,8 +35,9 @@ export interface PrivacySettings {
   city: FieldVisibility;
   state: FieldVisibility;
   employmentStatus: FieldVisibility;
-  occupations: FieldVisibility;
-  industrySectors: FieldVisibility;
+  // occupations: FieldVisibility;
+  // industrySectors: FieldVisibility;
+  socials: FieldVisibility;
   yearsOfExperience: FieldVisibility;
 }
 
@@ -50,8 +51,8 @@ export const defaultPrivacySettings: PrivacySettings = {
   city: 'public',
   state: 'public',
   employmentStatus: 'public',
-  occupations: 'public',
-  industrySectors: 'public',
+  socials: 'public',
+  // industrySectors: 'public',
   yearsOfExperience: 'public',
 };
 
@@ -101,10 +102,11 @@ export interface AuthSessionUser {
   area?: string;
   city?: string;
   state?: string;
+  zone?: string;
   employmentStatus?: string;
   occupations?: string[];
   industrySectors?: string[];
-  yearsOfExperience?: number;
+  yearsOfExperience?: string;
   isVolunteer?: boolean;
 
   linkedin?: string;

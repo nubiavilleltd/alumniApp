@@ -35,6 +35,9 @@ export type JobVacancy = {
   member_id?: number | string;
   flyer?: string;
   created_at?: string;
+  createdAt?: string;
+  posted_at?: string;
+  postedAt?: string;
   updated_at?: string;
 };
 

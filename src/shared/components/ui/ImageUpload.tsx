@@ -1,5 +1,12 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, type DragEvent as ReactDragEvent } from 'react';
 import { Icon } from '@iconify/react';
+import {
+  DEFAULT_IMAGE_UPLOAD_ACCEPT,
+  SHARED_UPLOAD_MAX_SIZE_MB,
+  formatAcceptedFileTypes,
+  formatFileSizeLimit,
+  validateFilesAgainstAcceptList,
+} from '@/shared/utils/fileValidation';
 
 interface ImageUploadProps {
   previews: string[];
@@ -10,6 +17,9 @@ interface ImageUploadProps {
   accept?: string;
   multiple?: boolean;
   maxSizeMB?: number;
+  className?: string;
+  labelClassName?: string;
+  dropzoneClassName?: string;
 }
 
 export function ImageUpload({
@@ -17,85 +27,103 @@ export function ImageUpload({
   onChange,
   label,
   error,
-  hint = 'PNG or JPG (max 800×400px, up to 2MB)',
-  accept = 'image/png,image/jpeg,image/webp,image/gif',
+  hint,
+  accept = DEFAULT_IMAGE_UPLOAD_ACCEPT,
   multiple = true,
-  maxSizeMB = 2,
+  maxSizeMB = SHARED_UPLOAD_MAX_SIZE_MB,
+  className = '',
+  labelClassName = '',
+  dropzoneClassName = '',
 }: ImageUploadProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [isDragActive, setIsDragActive] = useState(false);
+  const maxSizeBytes = maxSizeMB * 1024 * 1024;
+  const resolvedHint =
+    hint ?? `${formatAcceptedFileTypes(accept)} up to ${formatFileSizeLimit(maxSizeBytes)}`;
 
-  const validateFiles = (files: File[]): { valid: File[]; errors: string[] } => {
-    const valid: File[] = [];
-    const errors: string[] = [];
-    const maxSizeBytes = maxSizeMB * 1024 * 1024;
-    const allowedTypes = accept.split(',').map((t) => t.trim());
+  const processFiles = (files: File[]) => {
+    const { validFiles, errors } = validateFilesAgainstAcceptList(files, {
+      accept,
+      maxSizeBytes,
+    });
 
-    for (const file of files) {
-      // Check file type
-      const fileType = file.type;
-      const isAllowedType = allowedTypes.some((type) => {
-        // Handle wildcard types like 'image/*'
-        if (type.endsWith('/*')) {
-          const category = type.split('/')[0];
-          return fileType.startsWith(`${category}/`);
-        }
-        return type === fileType;
-      });
-
-      if (!isAllowedType) {
-        errors.push(`${file.name}: Only ${allowedTypes.join(', ')} files are allowed`);
-        continue;
-      }
-
-      // Check file size
-      if (file.size > maxSizeBytes) {
-        errors.push(`${file.name}: File size must be less than ${maxSizeMB}MB`);
-        continue;
-      }
-
-      valid.push(file);
-    }
-
-    return { valid, errors };
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files ?? []);
-
-    // Validate files
-    const { valid, errors } = validateFiles(files);
-
-    // Show first error to user
     if (errors.length > 0) {
       setValidationError(errors[0]);
     } else {
       setValidationError(null);
     }
 
-    if (valid.length === 0) {
-      // Clear the input so user can try again
+    if (validFiles.length === 0) {
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
       return;
     }
 
-    // Create preview URLs for valid files
-    const urls = valid.map((f) => URL.createObjectURL(f));
+    const urls = validFiles.map((file) => URL.createObjectURL(file));
 
-    // If multiple is false, replace existing previews
     if (!multiple && previews.length > 0) {
-      // Clean up old preview URLs to prevent memory leaks
       previews.forEach((url) => URL.revokeObjectURL(url));
     }
 
-    onChange(valid, urls);
+    onChange(validFiles, urls);
 
-    // Clear the input so same file can be uploaded again if needed
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    processFiles(Array.from(e.target.files ?? []));
+  };
+
+  const isDraggingFiles = (event: ReactDragEvent<HTMLElement>) =>
+    Array.from(event.dataTransfer.types).includes('Files');
+
+  const handleDragEnter = (event: ReactDragEvent<HTMLButtonElement>) => {
+    if (!isDraggingFiles(event)) {
+      return;
+    }
+
+    event.preventDefault();
+    setIsDragActive(true);
+  };
+
+  const handleDragOver = (event: ReactDragEvent<HTMLButtonElement>) => {
+    if (!isDraggingFiles(event)) {
+      return;
+    }
+
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'copy';
+    if (!isDragActive) {
+      setIsDragActive(true);
+    }
+  };
+
+  const handleDragLeave = (event: ReactDragEvent<HTMLButtonElement>) => {
+    if (!isDraggingFiles(event)) {
+      return;
+    }
+
+    event.preventDefault();
+    const nextTarget = event.relatedTarget;
+    if (nextTarget instanceof Node && event.currentTarget.contains(nextTarget)) {
+      return;
+    }
+
+    setIsDragActive(false);
+  };
+
+  const handleDrop = (event: ReactDragEvent<HTMLButtonElement>) => {
+    if (!isDraggingFiles(event)) {
+      return;
+    }
+
+    event.preventDefault();
+    setIsDragActive(false);
+    processFiles(Array.from(event.dataTransfer.files ?? []));
   };
 
   const removePreview = (index: number) => {
@@ -122,23 +150,40 @@ export function ImageUpload({
   });
 
   return (
-    <div className="flex flex-col gap-1">
-      {label && <label className="block text-sm font-medium text-gray-700">{label}</label>}
+    <div className={`flex flex-col gap-1 ${className}`}>
+      {label && (
+        <label className={`block text-sm font-medium text-gray-700 ${labelClassName}`}>
+          {label}
+        </label>
+      )}
 
       {/* Drop zone */}
       <button
         type="button"
         onClick={() => fileInputRef.current?.click()}
+        onDragEnter={handleDragEnter}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
         className={`w-full border-2 border-dashed rounded-xl py-8 flex flex-col items-center gap-2 transition-colors group
-          ${error || validationError ? 'border-red-400' : 'border-gray-200 hover:border-primary-400'}
+          ${
+            error || validationError
+              ? 'border-red-400'
+              : isDragActive
+                ? 'border-primary-400 bg-primary-50/50'
+                : 'border-gray-200 hover:border-primary-400'
+          }
+          ${dropzoneClassName}
         `}
       >
         <Icon
-          icon="mdi:camera-outline"
+          icon={isDragActive ? 'mdi:tray-arrow-down' : 'mdi:camera-outline'}
           className={`w-8 h-8 transition-colors ${error || validationError ? 'text-red-400' : 'text-gray-400 group-hover:text-primary-400'}`}
         />
-        <span className="text-primary-500 text-sm font-medium">Click to upload image</span>
-        <span className="text-gray-400 text-xs">{hint}</span>
+        <span className="text-primary-500 text-sm font-medium">
+          {isDragActive ? 'Drop image here' : 'Click or drag image here'}
+        </span>
+        <span className="text-gray-400 text-xs">{resolvedHint}</span>
       </button>
 
       <input

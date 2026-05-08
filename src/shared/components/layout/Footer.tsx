@@ -20,6 +20,9 @@ import { getSiteConfig } from '@/data/content';
 import { AppLink } from '../ui/AppLink';
 import FooterBgImage from '/footer-bg-image.png';
 import FooterLogo from '../ui/FooterLogo';
+import AddressLocationIcon from '/addressLocation.svg';
+import LocationPhoneIcon from '/locationPhone.svg';
+import LocationMessageIcon from '/locationMessage.svg';
 
 // ─── Social icon resolver ─────────────────────────────────────────────────────
 // config.social_links[].icon contains icon names like "facebook", "instagram".
@@ -42,6 +45,9 @@ function resolveSocialIcon(iconName: string): string {
   return SOCIAL_ICON_MAP[key] ?? `mdi:${iconName}`;
 }
 
+const footerSocialLinkClassName =
+  'relative flex items-center justify-center rounded-full bg-transparent transition-all duration-200 hover:scale-105 before:absolute before:inset-0 before:rounded-full before:p-px before:bg-[linear-gradient(90deg,#015C9E_0%,#FFFFFF_50%,#015C9E_100%)] before:[-webkit-mask:linear-gradient(#000_0_0)_content-box,linear-gradient(#000_0_0)] before:[-webkit-mask-composite:xor] before:[mask-composite:exclude] before:pointer-events-none';
+const footerContactIconClassName = 'flex-shrink-0 opacity-80';
 // ─── Link columns ─────────────────────────────────────────────────────────────
 
 const QUICK_LINKS = [
@@ -55,7 +61,7 @@ const QUICK_LINKS = [
 
 const COMMUNITY_LINKS = [
   // { label: 'Alumnae Directory', href: '/alumni/profiles' },
-  { label: 'Check on your Sister', href: '/alumni/profiles' },
+  { label: 'Check on your Sisters', href: '/alumni/profiles' },
   { label: 'Marketplace', href: '/marketplace' },
   { label: 'Resources', href: '/resources' },
   { label: 'Welfare', href: '/welfare' },
@@ -149,16 +155,23 @@ export function Footer() {
               {/* Contact details */}
               <div className="space-y-3 mt-6">
                 <div className="flex items-start gap-3">
-                  <Icon
-                    icon="mdi:map-marker"
-                    className="w-4 h-4 text-white/60 mt-0.5 flex-shrink-0"
+                  <img
+                    src={AddressLocationIcon}
+                    alt=""
+                    aria-hidden="true"
+                    className={`${footerContactIconClassName} mt-0.5 h-5 w-[17px]`}
                   />
                   <span className="text-white text-sm leading-snug">
                     {config.organization?.address || 'Lagos, Nigeria'}
                   </span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Icon icon="mdi:email-outline" className="w-4 h-4 text-white/60 flex-shrink-0" />
+                  <img
+                    src={LocationMessageIcon}
+                    alt=""
+                    aria-hidden="true"
+                    className={`${footerContactIconClassName} h-[14px] w-[17px]`}
+                  />
                   <AppLink
                     href={`mailto:${config.contact?.email || 'info@fggcowerrilagos.org'}`}
                     className="text-white hover:text-white text-sm transition-colors"
@@ -167,7 +180,12 @@ export function Footer() {
                   </AppLink>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Icon icon="mdi:phone" className="w-4 h-4 text-white/60 flex-shrink-0" />
+                  <img
+                    src={LocationPhoneIcon}
+                    alt=""
+                    aria-hidden="true"
+                    className={`${footerContactIconClassName} h-4 w-[17px]`}
+                  />
                   <AppLink
                     href={`tel:${config.contact?.phone || '+2348000000000'}`}
                     className="text-white hover:text-white text-sm transition-colors"
@@ -179,7 +197,7 @@ export function Footer() {
             </div>
 
             {/* ── Vertical divider 1 (desktop only) ────────────────── */}
-            <div className="hidden lg:block w-px self-stretch bg-white/20 mx-6 xl:mx-10" />
+            <div className="hidden lg:block w-px self-stretch mx-6 xl:mx-10 bg-gradient-to-b from-white/0 via-white/70 to-white/0" />
 
             {/* ══ Column 2: Link groups ════════════════════════════════ */}
             <div className="lg:px-2">
@@ -194,7 +212,7 @@ export function Footer() {
             </div>
 
             {/* ── Vertical divider 2 (desktop only) ────────────────── */}
-            <div className="hidden lg:block w-px self-stretch bg-white/20 mx-6 xl:mx-10" />
+            <div className="hidden lg:block w-px self-stretch mx-6 xl:mx-10 bg-[linear-gradient(180deg,#015C9E_0%,#FFFFFF_50%,#015C9E_100%)]" />
 
             {/* ══ Column 3: Social icons (desktop — stacked vertically) */}
             {socialLinks.length > 0 && (
@@ -206,7 +224,7 @@ export function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     ariaLabel={social.name}
-                    className="w-11 h-11 rounded-full border border-white/30 bg-white/10 hover:bg-white/25 flex items-center justify-center transition-all duration-200 hover:scale-105 hover:border-white/50"
+                    className={`${footerSocialLinkClassName} h-11 w-11`}
                   >
                     <Icon icon={resolveSocialIcon(social.icon)} className="w-5 h-5 text-white" />
                   </AppLink>
@@ -239,7 +257,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   ariaLabel={social.name}
-                  className="w-10 h-10 rounded-full border border-white/30 bg-white/10 hover:bg-white/25 flex items-center justify-center transition-colors"
+                  className={`${footerSocialLinkClassName} h-10 w-10`}
                 >
                   <Icon icon={resolveSocialIcon(social.icon)} className="w-5 h-5 text-white" />
                 </AppLink>

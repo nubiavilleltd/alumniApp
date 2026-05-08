@@ -5,14 +5,10 @@
 // RegistrationFlowState in RegisterForm.tsx.
 
 import { z } from 'zod';
-import { phoneCountryOptions, validateNationalPhoneNumber } from '../constants/phoneCountries';
 import { NIGERIA_STATES } from '../constants/nigerianStates';
+import { validateNigerianPhoneNumber } from '@/shared/utils/nigerianPhoneNumber';
 
 const currentYear = new Date().getFullYear();
-const supportedPhoneCountries = phoneCountryOptions.map((option) => option.code) as [
-  (typeof phoneCountryOptions)[number]['code'],
-  ...(typeof phoneCountryOptions)[number]['code'][],
-];
 
 const passwordSchema = z
   .string()
@@ -37,42 +33,42 @@ export const registerDetailsSchema = z
     surname: z
       .string()
       .trim()
-      .min(2, 'Surname must be at least 2 characters')
-      .max(50, 'Surname must be 50 characters or less')
-      .regex(/^[A-Za-z][A-Za-z\s'.-]*$/, 'Please enter a valid surname'),
+      .min(2, 'Last name must be at least 2 characters')
+      .max(50, 'Last name must be 50 characters or less')
+      .regex(/^[A-Za-z][A-Za-z\s'.-]*$/, 'Please enter a valid last name'),
 
     otherNames: z
       .string()
       .trim()
-      .min(2, 'Other names must be at least 2 characters')
-      .max(80, 'Other names must be 80 characters or less')
-      .regex(/^[A-Za-z][A-Za-z\s'.-]*$/, 'Please enter valid other names'),
+      .min(2, 'First name must be at least 2 characters')
+      .max(80, 'First name must be 80 characters or less')
+      .regex(/^[A-Za-z][A-Za-z\s'.-]*$/, 'Please enter valid first name'),
 
     nameInSchool: z
       .string()
       .trim()
-      .min(3, 'Name in school must be at least 3 characters')
-      .max(80, 'Name in school must be 80 characters or less')
-      .regex(/^[A-Za-z][A-Za-z\s'.-]*$/, 'Please enter a valid name'),
+      .min(3, 'Maiden name must be at least 3 characters')
+      .max(80, 'Maiden name must be 80 characters or less')
+      .regex(/^[A-Za-z][A-Za-z\s'.-]*$/, 'Please enter a valid maiden name'),
 
     email: z.string().trim().email('Please enter a valid email address'),
     state: z.string().refine((val) => NIGERIA_STATES.includes(val as any), {
       message: 'Please select a valid state',
     }),
 
-    phoneCountry: z.enum(supportedPhoneCountries),
-
-    whatsappPhone: z.string().trim().min(1, 'WhatsApp phone number is required'),
-    city: z
-      .string()
-      .trim()
-      .min(2, 'City must be at least 2 characters')
-      .regex(/^[A-Za-z][A-Za-z\s'.-]*$/, 'Please enter a valid city name'),
+    whatsappPhone: z.string().trim(),
+    city: z.string().min(1, 'Please select a city'),
+    // city: z
+    //   .string()
+    //   .trim()
+    //   .min(2, 'City must be at least 2 characters')
+    //   .regex(/^[A-Za-z][A-Za-z\s'.-]*$/, 'Please enter a valid city name'),
     residentialAddress: z
       .string()
       .trim()
       .min(2, 'Residential Address must be at least 2 characters'),
-    nickName: z.string().trim().min(1, 'Nickname is required'),
+    nickName: z.string().optional(),
+    // nickName: z.string().trim().min(1, 'Nickname in School is required'),
 
     graduationYear: z.coerce
       .number()
@@ -85,7 +81,7 @@ export const registerDetailsSchema = z
     voucherId: z.string().min(1, 'Please select a voucher who will approve your registration'),
   })
   .superRefine((data, ctx) => {
-    const phoneError = validateNationalPhoneNumber(data.phoneCountry, data.whatsappPhone);
+    const phoneError = validateNigerianPhoneNumber(data.whatsappPhone);
     if (phoneError) {
       ctx.addIssue({ code: 'custom', path: ['whatsappPhone'], message: phoneError });
     }

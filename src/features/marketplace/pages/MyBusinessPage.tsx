@@ -1,33 +1,44 @@
 // features/marketplace/pages/MyBusinessPage.tsx
 
 import { Icon } from '@iconify/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import EmptyState from '@/shared/components/ui/EmptyState';
+import { Pagination } from '@/shared/components/ui/Pagination';
 import { PostBusinessModal } from '../components/PostYourBusinessModal';
 import { useMyBusinesses, useDeleteListing } from '../hooks/useMarketplace';
 import type { Business } from '../types/marketplace.types';
 import { MARKETPLACE_ROUTES } from '../routes';
 import { ROUTES } from '@/shared/constants/routes';
+import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
+import { toTitleCase } from '@/shared/utils/textHelpers';
+const MY_BUSINESSES_PER_PAGE = 6;
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 function MyBusinessCardSkeleton() {
   return (
-    <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 animate-pulse flex flex-col">
-      <div className="h-44 w-full bg-gray-200" />
-      <div className="p-4 flex flex-col gap-2">
-        <div className="h-3 bg-gray-200 rounded w-1/4" />
-        <div className="h-4 bg-gray-200 rounded w-3/4" />
-        <div className="h-3 bg-gray-200 rounded w-full" />
-        <div className="h-3 bg-gray-200 rounded w-5/6" />
-        <div className="flex flex-col gap-1.5 mt-1">
-          <div className="h-3 bg-gray-200 rounded w-2/3" />
-          <div className="h-3 bg-gray-200 rounded w-1/2" />
+    <div className="overflow-hidden rounded-[1.35rem] border border-[#e7edf5] bg-white p-2 shadow-[0_12px_26px_rgba(7,17,22,0.08)] animate-pulse">
+      <div className="h-44 w-full rounded-[1.05rem] bg-gray-200" />
+      <div className="flex flex-col gap-3 px-2 pb-2 pt-3.5">
+        <div className="flex items-center gap-3">
+          <div className="h-14 w-14 rounded-[0.95rem] bg-gray-200" />
+          <div className="min-w-0 flex-1 space-y-2">
+            <div className="h-4.5 w-3/4 rounded bg-gray-200" />
+            <div className="h-3.5 w-1/2 rounded bg-gray-200" />
+          </div>
         </div>
-        <div className="flex gap-2 mt-2">
-          <div className="flex-1 h-8 bg-gray-200 rounded-lg" />
-          <div className="flex-1 h-8 bg-gray-200 rounded-lg" />
+        <div className="space-y-1.5">
+          <div className="h-3.5 w-full rounded bg-gray-200" />
+          <div className="h-3.5 w-5/6 rounded bg-gray-200" />
+        </div>
+        <div className="space-y-1.5">
+          <div className="h-3.5 w-3/4 rounded bg-gray-200" />
+          <div className="h-3.5 w-2/3 rounded bg-gray-200" />
+        </div>
+        <div className="grid grid-cols-2 gap-2.5 pt-2">
+          <div className="h-10 rounded-full bg-gray-200" />
+          <div className="h-10 rounded-full bg-gray-200" />
         </div>
       </div>
     </div>
@@ -35,19 +46,48 @@ function MyBusinessCardSkeleton() {
 }
 
 // ─── Business Card ────────────────────────────────────────────────────────────
+function getOwnerInitials(ownerName: string) {
+  const parts = ownerName.trim().split(/\s+/).filter(Boolean);
+
+  if (parts.length >= 2) {
+    return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
+  }
+
+  return parts[0]?.slice(0, 2).toUpperCase() || '?';
+}
+
+function getWebsiteHref(website: string) {
+  return /^https?:\/\//i.test(website) ? website : `https://${website}`;
+}
+
+function isRealProfilePhoto(photo?: string | null) {
+  return Boolean(photo && !photo.includes('ui-avatars.com') && !photo.includes('default-avatar'));
+}
+
 function MyBusinessCard({
   business,
+  ownerPhoto,
   onEdit,
   onDelete,
   isDeleting,
 }: {
   business: Business;
+  ownerPhoto?: string;
   onEdit: (business: Business) => void;
   onDelete: (business: Business) => void;
   isDeleting: boolean;
 }) {
   const [imgIndex, setImgIndex] = useState(0);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [ownerPhotoFailed, setOwnerPhotoFailed] = useState(false);
+  const ownerInitials = getOwnerInitials(business.owner);
+  const showOwnerPhoto = isRealProfilePhoto(ownerPhoto) && !ownerPhotoFailed;
+  const hasPhone = Boolean(business.phone.trim());
+  const hasWebsite = Boolean(business.website?.trim());
+
+  useEffect(() => {
+    setOwnerPhotoFailed(false);
+  }, [ownerPhoto]);
 
   const prev = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -60,107 +100,135 @@ function MyBusinessCard({
   };
 
   return (
-    <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex flex-col">
-      {/* Image carousel */}
-      <div className="relative h-44 w-full overflow-hidden bg-gray-100 group">
+    <article className="overflow-hidden rounded-[1.35rem] border border-[#e7edf5] bg-white p-2 shadow-[0_12px_26px_rgba(7,17,22,0.08)] transition-shadow hover:shadow-[0_16px_32px_rgba(7,17,22,0.12)]">
+      <div className="group relative h-44 w-full overflow-hidden rounded-[1.05rem] bg-gray-100">
         {business.images.length > 0 ? (
           <img
             src={business.images[imgIndex]}
             alt={business.name}
-            className="w-full h-full object-cover transition-all duration-300"
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
             loading="lazy"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gray-50">
-            <Icon icon="mdi:storefront-outline" className="w-12 h-12 text-gray-300" />
+          <div className="flex h-full w-full items-center justify-center bg-gray-50">
+            <Icon icon="mdi:storefront-outline" className="h-14 w-14 text-gray-300" />
           </div>
         )}
         {business.images.length > 1 && (
           <>
             <button
+              type="button"
               onClick={prev}
-              className="absolute left-2 top-1/2 -translate-y-1/2 w-6 h-6 bg-white/80 rounded-full flex items-center justify-center shadow opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute left-2.5 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-white/85 text-gray-700 shadow opacity-0 transition-opacity group-hover:opacity-100"
+              aria-label={`Previous image for ${business.name}`}
             >
-              <Icon icon="mdi:chevron-left" className="w-4 h-4 text-gray-700" />
+              <Icon icon="mdi:chevron-left" className="h-4 w-4" />
             </button>
             <button
+              type="button"
               onClick={next}
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 bg-white/80 rounded-full flex items-center justify-center shadow opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute right-2.5 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-white/85 text-gray-700 shadow opacity-0 transition-opacity group-hover:opacity-100"
+              aria-label={`Next image for ${business.name}`}
             >
-              <Icon icon="mdi:chevron-right" className="w-4 h-4 text-gray-700" />
+              <Icon icon="mdi:chevron-right" className="h-4 w-4" />
             </button>
           </>
         )}
         {business.images.length > 1 && (
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
+          <div className="absolute bottom-2.5 left-1/2 flex -translate-x-1/2 gap-1">
             {business.images.map((_, i) => (
               <span
                 key={i}
                 className={`block rounded-full transition-all duration-200 ${
-                  i === imgIndex ? 'w-3 h-1.5 bg-white' : 'w-1.5 h-1.5 bg-white/50'
+                  i === imgIndex ? 'h-1.5 w-3 bg-white' : 'h-1.5 w-1.5 bg-white/55'
                 }`}
               />
             ))}
           </div>
         )}
-        <span className="absolute top-2 left-2 bg-primary-500 text-white text-[10px] font-semibold px-2 py-0.5 rounded uppercase tracking-wide">
-          {business.category}
+        <span className="absolute left-3 top-3 max-w-[calc(100%-1.5rem)] truncate rounded-[0.9rem] bg-[#0b6b9f] px-3 py-1 text-[11px] font-bold text-white shadow-[0_8px_20px_rgba(11,107,159,0.28)]">
+          {toTitleCase(business.category)}
         </span>
       </div>
 
-      {/* Info */}
-      <div className="p-4 flex flex-col gap-1.5 flex-1">
-        <h3 className="text-gray-900 font-bold text-sm leading-tight">{business.name}</h3>
-        <p className="text-gray-500 text-[11px] leading-relaxed line-clamp-2">
+      <div className="flex flex-1 flex-col gap-3 px-2 pb-2 pt-3.5">
+        <div className="flex items-center gap-3">
+          <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center overflow-hidden rounded-[0.95rem] bg-primary-50 text-base font-bold text-primary-500">
+            {showOwnerPhoto ? (
+              <img
+                src={ownerPhoto}
+                alt=""
+                className="h-full w-full object-cover"
+                loading="lazy"
+                onError={() => setOwnerPhotoFailed(true)}
+              />
+            ) : (
+              <span>{ownerInitials}</span>
+            )}
+          </div>
+          <div className="min-w-0">
+            <h3 className="truncate text-lg font-semibold leading-tight text-accent-950">
+              {business.name}
+            </h3>
+            <p className="mt-0.5 truncate text-sm font-medium text-accent-500">{business.owner}</p>
+          </div>
+        </div>
+
+        <p className="line-clamp-2 text-sm font-medium leading-5 text-accent-500">
           {business.description}
         </p>
-        <div className="flex flex-col gap-1 mt-1">
-          <span className="flex items-center gap-1 text-gray-400 text-[11px]">
-            <Icon icon="mdi:map-marker-outline" className="w-3 h-3 flex-shrink-0" />
-            {business.location}
-          </span>
-          <span className="flex items-center gap-1 text-gray-400 text-[11px]">
-            <Icon icon="mdi:phone-outline" className="w-3 h-3 flex-shrink-0" />
-            {business.phone}
-          </span>
-          {business.website && (
+
+        <div className="space-y-2 text-sm font-medium text-accent-500">
+          {hasPhone && (
             <a
-              href={business.website}
+              href={`tel:${business.phone.replace(/\s+/g, '')}`}
+              className="flex items-start gap-3 transition-colors hover:text-primary-600"
+            >
+              <Icon icon="mdi:phone-outline" className="mt-0.5 h-5 w-5 flex-shrink-0" />
+              <span className="min-w-0 break-words">{business.phone}</span>
+            </a>
+          )}
+
+          <div className="flex items-start gap-3">
+            <Icon icon="mdi:map-marker-outline" className="mt-0.5 h-5 w-5 flex-shrink-0" />
+            <span className="min-w-0 break-words">{business.location}</span>
+          </div>
+
+          {hasWebsite && (
+            <a
+              href={getWebsiteHref(business.website!)}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1 text-primary-500 hover:text-primary-600 text-[11px] truncate"
-              onClick={(e) => e.stopPropagation()}
+              className="flex items-start gap-3 transition-colors hover:text-primary-600"
             >
-              <Icon icon="mdi:web" className="w-3 h-3 flex-shrink-0" />
-              {business.website}
+              <Icon icon="mdi:web" className="mt-0.5 h-5 w-5 flex-shrink-0" />
+              <span className="min-w-0 break-all">{business.website}</span>
             </a>
           )}
         </div>
 
-        {/* Actions */}
-        <div className="flex items-center gap-2 mt-3">
+        <div className="mt-auto grid grid-cols-2 gap-2.5 pt-2">
           <button
             type="button"
             onClick={() => onEdit(business)}
             disabled={isDeleting}
-            className="flex-1 flex items-center justify-center gap-1.5 border border-primary-200 text-primary-500 hover:bg-primary-50 text-xs font-semibold py-2 rounded-lg transition-colors disabled:opacity-50"
+            className="flex min-h-10 items-center justify-center rounded-full bg-primary-500 px-4 text-sm font-semibold text-white transition-colors hover:bg-primary-600 disabled:opacity-50"
           >
-            <Icon icon="mdi:pencil-outline" className="w-3.5 h-3.5" />
             Edit
           </button>
 
           {showDeleteConfirm ? (
-            <div className="flex-1 flex items-center gap-1.5">
+            <div className="col-span-1 grid gap-2">
               <button
                 type="button"
                 onClick={() => onDelete(business)}
                 disabled={isDeleting}
-                className="flex-1 flex items-center justify-center gap-1 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold py-2 rounded-lg transition-colors disabled:opacity-50"
+                className="flex min-h-9 items-center justify-center rounded-full bg-red-600 px-4 text-xs font-semibold text-white transition-colors hover:bg-red-700 disabled:opacity-50"
               >
                 {isDeleting ? (
-                  <Icon icon="mdi:loading" className="w-3.5 h-3.5 animate-spin" />
+                  <Icon icon="mdi:loading" className="h-4 w-4 animate-spin" />
                 ) : (
-                  <Icon icon="mdi:check" className="w-3.5 h-3.5" />
+                  <Icon icon="mdi:check" className="h-4 w-4" />
                 )}
                 Confirm
               </button>
@@ -168,9 +236,8 @@ function MyBusinessCard({
                 type="button"
                 onClick={() => setShowDeleteConfirm(false)}
                 disabled={isDeleting}
-                className="flex-1 flex items-center justify-center gap-1 border border-gray-200 text-gray-500 hover:bg-gray-50 text-xs font-semibold py-2 rounded-lg transition-colors"
+                className="flex min-h-9 items-center justify-center rounded-full border border-gray-200 px-4 text-xs font-semibold text-gray-500 transition-colors hover:bg-gray-50"
               >
-                <Icon icon="mdi:close" className="w-3.5 h-3.5" />
                 Cancel
               </button>
             </div>
@@ -179,15 +246,14 @@ function MyBusinessCard({
               type="button"
               onClick={() => setShowDeleteConfirm(true)}
               disabled={isDeleting}
-              className="flex-1 flex items-center justify-center gap-1.5 border border-red-200 text-red-500 hover:bg-red-50 text-xs font-semibold py-2 rounded-lg transition-colors disabled:opacity-50"
+              className="flex min-h-10 items-center justify-center rounded-full border-[2px] border-red-600 bg-white px-4 text-sm font-semibold text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50"
             >
-              <Icon icon="mdi:trash-can-outline" className="w-3.5 h-3.5" />
               Delete
             </button>
           )}
         </div>
       </div>
-    </div>
+    </article>
   );
 }
 
@@ -196,6 +262,8 @@ export default function MyBusinessPage() {
   const [showPostModal, setShowPostModal] = useState(false);
   const [editBusiness, setEditBusiness] = useState<Business | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const currentUser = useIdentityStore((state) => state.user);
 
   const { data: myBusinesses = [], isLoading, refetch } = useMyBusinesses();
   const deleteMutation = useDeleteListing();
@@ -220,17 +288,33 @@ export default function MyBusinessPage() {
     setEditBusiness(null);
     refetch();
   };
+  const totalPages = Math.max(1, Math.ceil(myBusinesses.length / MY_BUSINESSES_PER_PAGE));
+  const visibleBusinesses = myBusinesses.slice(
+    (currentPage - 1) * MY_BUSINESSES_PER_PAGE,
+    currentPage * MY_BUSINESSES_PER_PAGE,
+  );
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const breadcrumbItems = [
     { label: 'Home', href: ROUTES.HOME },
     { label: 'Marketplace', href: MARKETPLACE_ROUTES.ROOT },
-    { label: 'My Business' },
+    { label: 'My Marketplace' },
   ];
 
   return (
     <>
       <SEO
-        title="My Business"
+        title="My Market"
         description="Manage your business listings on the Alumnae Marketplace."
       />
       <Breadcrumbs items={breadcrumbItems} />
@@ -240,9 +324,7 @@ export default function MyBusinessPage() {
           {/* Header */}
           <div className="flex items-start justify-between mb-8">
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold mb-1">
-                My <span className="text-primary-500 italic">Business</span>
-              </h1>
+              <h1 className="text-2xl md:text-3xl font-semibold mb-1">My Market</h1>
               <p className="text-gray-500 text-sm">
                 Manage and update your business listings in the Alumnae Marketplace.
               </p>
@@ -267,17 +349,25 @@ export default function MyBusinessPage() {
               ))}
             </div>
           ) : myBusinesses.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {myBusinesses.map((business) => (
-                <MyBusinessCard
-                  key={business.businessId}
-                  business={business}
-                  onEdit={handleEdit}
-                  onDelete={handleDelete}
-                  isDeleting={deletingId === business.businessId}
-                />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {visibleBusinesses.map((business) => (
+                  <MyBusinessCard
+                    key={business.businessId}
+                    business={business}
+                    ownerPhoto={business.ownerPhoto ?? currentUser?.photo}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                    isDeleting={deletingId === business.businessId}
+                  />
+                ))}
+              </div>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            </>
           ) : (
             <EmptyState
               icon="mdi:storefront-outline"

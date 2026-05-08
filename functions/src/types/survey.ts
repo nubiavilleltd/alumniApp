@@ -14,6 +14,7 @@ export interface FirebaseSurveyQuestion {
   required: boolean;
   placeholder: string;
   options: string[];
+  maxSelections: number | null;
   order: number;
 }
 

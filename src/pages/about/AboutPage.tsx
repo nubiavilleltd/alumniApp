@@ -1,7 +1,9 @@
 import { AUTH_ROUTES } from '@/features/authentication/routes';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
+import LeadershipPage from '@/features/leadership/pages/LeadershipPage';
 import { SEO } from '@/shared/common/SEO';
 import { ButtonLink } from '@/shared/components/ui/Button';
+import Leadership from './Leadership';
 
 const missionFeatures = [
   {
@@ -125,6 +127,8 @@ export function AboutPage() {
             </div>
           </div>
         </section>
+
+        <Leadership />
       </main>
     </>
   );

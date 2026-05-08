@@ -252,15 +252,25 @@ export function RegisterVerificationPage() {
   };
 
   return (
-    <RegistrationShell step="verification">
-      <div className="auth-verification">
-        <p className="auth-verification__copy">Please enter the code we sent to your email.</p>
+    <RegistrationShell
+      step="verification"
+      cardClassName="!w-full !max-w-[36rem] !rounded-[1.5rem] !px-5 !py-5 sm:!px-7 sm:!py-7 md:!px-8 md:!py-8"
+      headerClassName="!mb-4 sm:!mb-5"
+      stepperClassName="!mb-5 !gap-3 sm:!mb-6"
+      stepCountClassName="!text-base sm:!text-[1.05rem]"
+      stepLabelClassName="!text-[1.55rem] sm:!text-[1.7rem]"
+      stepDotsClassName="!gap-1.5"
+    >
+      <div className="mx-auto flex w-full max-w-[26rem] flex-col gap-5 sm:gap-6">
+        <p className="m-0 text-sm leading-6 text-gray-500 sm:text-[0.98rem]">
+          Please enter the code we sent to your email.
+        </p>
 
-        <form className="auth-form" onSubmit={submitVerification}>
-          <fieldset className="auth-code-fieldset">
-            <legend className="auth-visually-hidden">Verification code</legend>
+        <form className="flex flex-col gap-5 sm:gap-6" onSubmit={submitVerification}>
+          <fieldset className="m-0 min-w-0 border-0 p-0">
+            <legend className="sr-only">Verification code</legend>
             <div
-              className="auth-code-inputs"
+              className="grid grid-cols-6 gap-2 sm:gap-2.5"
               aria-describedby={codeErrorMessage ? 'verification-code-error' : undefined}
             >
               {codeDigits.map((digit, index) => (
@@ -277,7 +287,7 @@ export function RegisterVerificationPage() {
                   placeholder="-"
                   aria-label={`Verification code digit ${index + 1} of ${VERIFICATION_CODE_LENGTH}`}
                   aria-invalid={codeErrorMessage ? 'true' : 'false'}
-                  className="auth-code-input"
+                  className="h-12 w-full rounded-full border border-transparent bg-[#f8f8f7] text-center text-[1.2rem] font-medium text-[#071116] outline-none caret-primary-500 transition focus:border-primary-200 focus:ring-4 focus:ring-primary-100 sm:h-14 sm:text-[1.45rem]"
                   onChange={(event) => handleCodeInput(index, event.target.value)}
                   onKeyDown={(event) => handleCodeKeyDown(index, event)}
                   onPaste={(event) => handleCodePaste(index, event)}
@@ -286,19 +296,22 @@ export function RegisterVerificationPage() {
               ))}
             </div>
             {codeErrorMessage && (
-              <p id="verification-code-error" className="auth-field-error auth-code-error">
+              <p
+                id="verification-code-error"
+                className="mt-2.5 text-center text-sm font-medium text-red-500"
+              >
                 {codeErrorMessage}
               </p>
             )}
           </fieldset>
 
           {verificationForm.formState.errors.root && (
-            <div className="auth-alert auth-alert--error">
+            <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
               <p>{verificationForm.formState.errors.root.message}</p>
             </div>
           )}
 
-          <div className="auth-verification__resend-row">
+          <div className="flex flex-wrap items-baseline justify-center gap-x-1.5 gap-y-1 text-center text-sm font-semibold text-gray-500">
             <span>Didn't receive a code?</span>
             <button
               type="button"
@@ -308,21 +321,24 @@ export function RegisterVerificationPage() {
                 resendStatus.isCoolingDown ||
                 resendStatus.isBlocked
               }
-              className="auth-verification__resend-button"
+              className="bg-transparent p-0 font-bold text-primary-500 transition-colors hover:text-primary-600 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-200 disabled:cursor-not-allowed disabled:opacity-70"
             >
               {resendStatus.isBlocked ? 'Try again' : 'Resend Code'}
             </button>
-            {resendCountdown && (
-              <span className="auth-verification__resend-time">({resendCountdown})</span>
-            )}
+            {resendCountdown && <span className="text-gray-500">({resendCountdown})</span>}
           </div>
 
-          {resendStatusMessage && <p className="auth-status-note">{resendStatusMessage}</p>}
+          {resendStatusMessage && (
+            <p className="rounded-2xl bg-[#f8f8f7] px-4 py-3 text-sm font-medium leading-6 text-gray-500">
+              {resendStatusMessage}
+            </p>
+          )}
 
           <Button
             type="submit"
             loading={verificationForm.formState.isSubmitting}
-            className="auth-submit-button auth-verification__submit rounded-full"
+            fullWidth
+            className="!min-h-0 !rounded-full !px-6 !py-3 !text-sm sm:!py-3.5"
           >
             {verificationForm.formState.isSubmitting ? 'Verifying...' : 'Verify Email'}
           </Button>

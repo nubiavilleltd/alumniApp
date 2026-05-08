@@ -3,7 +3,6 @@
 import { apiClient } from '@/lib/api/client';
 import { API_ENDPOINTS } from '@/lib/api/endpoints';
 import { handleApiError } from '@/lib/errors/apiErrorHandler';
-import { useTokenStore } from '@/features/authentication/stores/useTokenStore';
 import {
   extractAnnouncementFromResponse,
   extractAnnouncementIdFromSlug,
@@ -20,7 +19,7 @@ import type {
   NewsItem,
 } from '@/features/announcements/types/announcement.types';
 
-const ANNOUNCEMENT_TYPES: AnnouncementType[] = ['info', 'warning', 'success', 'event'];
+const ANNOUNCEMENT_FETCH_TYPES = ['info', 'warning', 'success', 'event'] as const;
 
 async function fetchAnnouncements(params?: GetAnnouncementsParams): Promise<NewsItem[]> {
   const payload = mapGetAnnouncementsPayload(params);
@@ -46,7 +45,9 @@ async function fetchAnnouncementsByTypeFallback(
   delete baseParams.type;
 
   const results = await Promise.all(
-    ANNOUNCEMENT_TYPES.map((type) => fetchAnnouncements({ ...baseParams, type })),
+    ANNOUNCEMENT_FETCH_TYPES.map((type) =>
+      fetchAnnouncements({ ...baseParams, type: type as AnnouncementType }),
+    ),
   );
 
   return dedupeAnnouncements(results.flat());
@@ -54,9 +55,6 @@ async function fetchAnnouncementsByTypeFallback(
 
 export const announcementService = {
   async getAll(params?: GetAnnouncementsParams): Promise<NewsItem[]> {
-    const accessToken = useTokenStore.getState().accessToken;
-    if (!accessToken) return [];
-
     const canUseTypeFallback = !params?.type;
 
     try {
@@ -84,9 +82,6 @@ export const announcementService = {
   },
 
   async getBySlug(slug: string): Promise<NewsItem | undefined> {
-    const accessToken = useTokenStore.getState().accessToken;
-    if (!accessToken) return undefined;
-
     try {
       const id = extractAnnouncementIdFromSlug(slug);
       if (id) {

@@ -36,6 +36,7 @@ export function AdminRoute({ children }: AdminRouteProps) {
 
   // ① Not logged in at all — redirect to login immediately
   if (!isAuthenticated) {
+    console.log('redirecting to login in Admin Route ... not authenticated');
     return <Navigate to={AUTH_ROUTES.LOGIN} state={{ from: location.pathname }} replace />;
   }
 

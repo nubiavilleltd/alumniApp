@@ -3,27 +3,27 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { SEO } from '@/shared/common/SEO';
 import { ButtonLink } from '@/shared/components/ui/Button';
 import { AppLink } from '@/shared/components/ui/AppLink';
+import { Pagination } from '@/shared/components/ui/Pagination';
 import { ROUTES } from '@/shared/constants/routes';
 import { EVENT_ROUTES } from '@/features/events/routes';
-import { ADMIN_ROUTES } from '@/features/admin/routes';
+import { AnnouncementEditorModal } from '@/features/announcements/components/AnnouncementEditorModal';
 import { useAnnouncements } from '@/features/announcements/hooks/useAnnouncements';
 import { ANNOUNCEMENT_ROUTES } from '@/features/announcements/routes';
 import type { AnnouncementType, NewsItem } from '@/features/announcements/types/announcement.types';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 
 const FALLBACK_IMAGE = '/news-1.png';
-const pageShellClassName =
-  'mx-auto w-full max-w-[80rem] px-4 pb-16 pt-4 max-[1180px]:max-w-[64rem] sm:pb-14 sm:pt-5';
+const pageShellClassName = 'container-custom pb-16 pt-4 sm:pb-14 sm:pt-5';
 const cardClassName =
   'flex min-w-0 overflow-hidden rounded-2xl border border-[#eef2f5] bg-white p-3.5 shadow-[0_1px_2px_rgba(7,17,22,0.04)] no-underline transition-colors duration-200 hover:border-primary-100 max-sm:flex-col max-sm:p-0';
 const cardImageWrapClassName =
   'w-[min(38%,14rem)] basis-[min(38%,14rem)] flex-shrink-0 overflow-hidden rounded-xl bg-[#e9edf1] max-sm:w-full max-sm:basis-auto max-sm:aspect-[16/9] max-sm:rounded-none';
 const cardBodyClassName =
-  'flex min-w-0 flex-1 flex-col justify-center px-4 py-[0.2rem] pr-[0.1rem] max-sm:p-[1.15rem]';
+  'flex min-w-0 flex-1 flex-col justify-start px-4 py-[0.2rem] pr-[0.1rem] max-sm:p-[1.15rem]';
 const metaClassName =
   'm-0 flex items-center gap-[0.55rem] text-sm font-semibold leading-[1.2] text-[#59626c]';
 const actionClassName =
-  'min-h-10 rounded-full border-[1.5px] border-primary-500 bg-white px-[1.1rem] text-sm font-bold text-primary-500';
+  'min-h-10 rounded-full border border-primary-500 bg-transparent px-5 py-2.5 text-sm font-semibold text-primary-500 transition-colors hover:bg-primary-500 hover:text-white whitespace-nowrap';
 const boardClassName =
   'hidden gap-5 min-[1181px]:grid min-[1181px]:grid-cols-2 min-[1181px]:items-start';
 const sideListClassName = 'grid gap-3.5 min-[1181px]:grid-rows-3 [&>*]:h-full';
@@ -34,12 +34,15 @@ const typeFilters: Array<{ label: string; value: 'all' | AnnouncementType }> = [
   { label: 'All updates', value: 'all' },
   { label: 'Info', value: 'info' },
   { label: 'Events', value: 'event' },
-  { label: 'Success', value: 'success' },
-  { label: 'Warnings', value: 'warning' },
 ];
 
+const DESKTOP_SIDE_CARD_GAP_PX = 14;
+const DESKTOP_COMPACT_STACK_HEIGHT_SCALE = 0.77;
+const ANNOUNCEMENTS_PER_PAGE = 8;
+
 function formatAnnouncementDate(date: string) {
-  const parsed = new Date(date);
+  const isDateOnly = /^\d{4}-\d{2}-\d{2}$/.test(date);
+  const parsed = new Date(isDateOnly ? `${date}T00:00:00` : date);
   if (Number.isNaN(parsed.getTime())) return date;
 
   return parsed.toLocaleDateString('en-US', {
@@ -61,7 +64,7 @@ function AnnouncementCard({ item, compact = false }: { item: NewsItem; compact?:
     ? 'w-[min(34%,9rem)] basis-[min(34%,9rem)] flex-shrink-0 overflow-hidden rounded-[0.9rem] bg-[#e9edf1]'
     : cardImageWrapClassName;
   const bodyClassName = compact
-    ? 'flex min-h-0 min-w-0 flex-1 flex-col justify-center px-2.5 py-0 pr-0'
+    ? 'flex min-h-0 min-w-0 flex-1 flex-col justify-start px-2.5 py-0 pr-0'
     : cardBodyClassName;
   const titleClassName = compact
     ? 'm-0 line-clamp-2 text-[0.92rem] font-bold leading-[1.12] text-[#071116]'
@@ -118,6 +121,8 @@ function AnnouncementCardSkeleton({ compact = false }: { compact?: boolean }) {
 export default function BlogIndexPage() {
   const user = useIdentityStore((state) => state.user);
   const [selectedType, setSelectedType] = useState<'all' | AnnouncementType>('all');
+  const [isEditorOpen, setIsEditorOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   const featuredCardRef = useRef<HTMLElement | null>(null);
   const [featuredCardHeight, setFeaturedCardHeight] = useState<number | null>(null);
 
@@ -133,9 +138,22 @@ export default function BlogIndexPage() {
       ),
     [announcements],
   );
+  const totalPages = Math.max(1, Math.ceil(sortedAnnouncements.length / ANNOUNCEMENTS_PER_PAGE));
+  const pageAnnouncements = sortedAnnouncements.slice(
+    (currentPage - 1) * ANNOUNCEMENTS_PER_PAGE,
+    currentPage * ANNOUNCEMENTS_PER_PAGE,
+  );
 
-  const [featured, ...latest] = sortedAnnouncements;
+  const [featured, ...latest] = pageAnnouncements;
   const isAdmin = user?.role === 'admin';
+  const compactStackHeight =
+    featuredCardHeight !== null
+      ? Math.max(featuredCardHeight * DESKTOP_COMPACT_STACK_HEIGHT_SCALE, 0)
+      : null;
+  const compactCardHeight =
+    compactStackHeight !== null
+      ? Math.max((compactStackHeight - DESKTOP_SIDE_CARD_GAP_PX * 2) / 3, 0)
+      : null;
 
   useEffect(() => {
     const element = featuredCardRef.current;
@@ -170,6 +188,16 @@ export default function BlogIndexPage() {
       window.removeEventListener('resize', updateHeight);
     };
   }, [featured?.slug, featured?.title, featured?.image, featured?.content, featured?.excerpt]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedType]);
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   return (
     <>
@@ -209,13 +237,13 @@ export default function BlogIndexPage() {
 
             <div className="flex w-full flex-wrap justify-start gap-3 min-[761px]:w-auto min-[761px]:justify-end">
               {isAdmin && (
-                <ButtonLink
-                  href={ADMIN_ROUTES.ANNOUNCEMENTS}
-                  variant="primary"
+                <button
+                  type="button"
+                  onClick={() => setIsEditorOpen(true)}
                   className={`${actionClassName} max-[760px]:basis-[11rem] max-[760px]:flex-1`}
                 >
-                  Manage announcements
-                </ButtonLink>
+                  Create announcement
+                </button>
               )}
               <ButtonLink
                 href={ROUTES.PROJECTS.ROOT}
@@ -302,7 +330,7 @@ export default function BlogIndexPage() {
 
                 <div
                   className={sideListClassName}
-                  style={featuredCardHeight ? { height: `${featuredCardHeight}px` } : undefined}
+                  style={compactStackHeight ? { height: `${compactStackHeight}px` } : undefined}
                 >
                   {latest.slice(0, 3).map((item) => (
                     <AnnouncementCard key={item.slug} item={item} compact />
@@ -311,7 +339,7 @@ export default function BlogIndexPage() {
               </div>
 
               <div className={stackedListClassName}>
-                {sortedAnnouncements.map((item) => (
+                {pageAnnouncements.map((item) => (
                   <AnnouncementCard key={item.slug} item={item} />
                 ))}
               </div>
@@ -329,16 +357,34 @@ export default function BlogIndexPage() {
           )}
 
           {(isLoading || latest.length > 3) && (
-            <div className={continuationGridClassName}>
+            <div
+              className={continuationGridClassName}
+              style={compactCardHeight ? { gridAutoRows: `${compactCardHeight}px` } : undefined}
+            >
               {isLoading
                 ? Array.from({ length: 4 }).map((_, index) => (
-                    <AnnouncementCardSkeleton key={index} />
+                    <AnnouncementCardSkeleton key={index} compact />
                   ))
-                : latest.slice(3).map((item) => <AnnouncementCard key={item.slug} item={item} />)}
+                : latest
+                    .slice(3)
+                    .map((item) => <AnnouncementCard key={item.slug} item={item} compact />)}
             </div>
           )}
+
+          {!isLoading && sortedAnnouncements.length > 0 ? (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={(page) => {
+                setCurrentPage(page);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            />
+          ) : null}
         </section>
       </main>
+
+      <AnnouncementEditorModal isOpen={isEditorOpen} onClose={() => setIsEditorOpen(false)} />
     </>
   );
 }
