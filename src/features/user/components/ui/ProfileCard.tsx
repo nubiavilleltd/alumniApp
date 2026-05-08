@@ -154,7 +154,7 @@ export function ProfileCard({
       {mode === 'owner' && (
         <AppLink
           href={USER_ROUTES.EDIT_PROFILE}
-          className="mt-5 w-full inline-flex items-center justify-center gap-2 bg-primary-500 hover:bg-primary-600 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors"
+          className="mt-5 w-full inline-flex items-center justify-center gap-2 bg-primary-500 hover:bg-primary-600 text-white text-sm font-semibold py-2.5 rounded-3xl transition-colors"
         >
           Edit Profile
         </AppLink>

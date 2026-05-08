@@ -129,6 +129,39 @@ function ChangePasswordSection() {
     mode: 'onChange',
   });
 
+  //   const onSubmit = handleSubmit(async (values) => {
+  //     try {
+  //       await userService.changePassword({
+  //         currentPassword: values.currentPassword,
+  //         newPassword: values.newPassword,
+  //         confirmPassword: values.confirmPassword,
+  //       });
+  //       reset();
+  //       toast.success('Password updated. Please sign in again.');
+  //       setTimeout(() => {
+  //         clearTokens();
+  //         clearIdentity();
+  //         navigate(AUTH_ROUTES.LOGIN, { replace: true });
+  //       }, 1500);
+  //     } catch (error: any) {
+  //       // if (error.message?.toLowerCase().includes('incorrect') || error.response?.status === 400) {
+  //       if (
+  //   error.message?.toLowerCase().includes('incorrect') ||
+  //   error.message?.toLowerCase().includes('current password') ||
+  //   error.message?.toLowerCase().includes('invalid entry') ||
+  //   error.response?.status === 400 ||
+  //   error.status === 400
+  // ) {
+  //         setError('currentPassword', { type: 'manual', message: error.message });
+  //       } else {
+  //         setError('newPassword', {
+  //           type: 'manual',
+  //           message: error.message ?? 'Failed to update password.',
+  //         });
+  //       }
+  //     }
+  //   });
+
   const onSubmit = handleSubmit(async (values) => {
     try {
       await userService.changePassword({
@@ -144,12 +177,21 @@ function ChangePasswordSection() {
         navigate(AUTH_ROUTES.LOGIN, { replace: true });
       }, 1500);
     } catch (error: any) {
-      if (error.message?.toLowerCase().includes('incorrect') || error.response?.status === 400) {
-        setError('currentPassword', { type: 'manual', message: error.message });
+      const msg = error.message ?? '';
+      const isCurrentPasswordError =
+        error.status === 400 ||
+        error.response?.status === 400 ||
+        msg.toLowerCase().includes('incorrect') ||
+        msg.toLowerCase().includes('current password') ||
+        msg.toLowerCase().includes('invalid entry') ||
+        msg.toLowerCase().includes('old password');
+
+      if (isCurrentPasswordError) {
+        setError('currentPassword', { type: 'manual', message: msg });
       } else {
         setError('newPassword', {
           type: 'manual',
-          message: error.message ?? 'Failed to update password.',
+          message: msg || 'Failed to update password.',
         });
       }
     }

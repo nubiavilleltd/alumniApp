@@ -281,6 +281,7 @@ function BusinessCard({
               onMessageClick(business);
             }}
             disabled={isOwnBusiness || isMessagePending}
+            title={isOwnBusiness ? 'You cannot message yourself' : ''}
             loading={isMessagePending}
             className="min-h-10 min-w-[11rem] max-w-full rounded-full border-0 px-5 text-[0.88rem] font-bold leading-none tracking-normal shadow-none focus-visible:ring-4 focus-visible:ring-primary-200"
           >
@@ -410,7 +411,7 @@ export default function MarketPlacePage() {
                 value={searchTerm}
                 onValueChange={handleFilterChange(setSearchTerm)}
                 placeholder="Search here"
-                showClearButton={false}
+                showClearButton={true}
                 className="w-full"
                 containerClassName="h-full"
                 inputClassName={marketplaceSearchInputClassName}

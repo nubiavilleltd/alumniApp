@@ -19,7 +19,7 @@ function formatAnnouncementDate(date: string) {
   });
 }
 
-function SectionHeading() {
+function SectionHeading({ showViewAll = true }: { showViewAll: boolean }) {
   return (
     <header className="mb-10 flex items-start justify-between gap-6">
       <div className="min-w-0">
@@ -45,13 +45,15 @@ function SectionHeading() {
         </h2>
       </div>
 
-      <AppLink
-        href={ANNOUNCEMENT_ROUTES.ROOT}
-        className="mt-1 hidden shrink-0 items-center gap-1 text-base font-bold text-[#0077cc] transition-colors duration-200 hover:text-[#005fa3] md:inline-flex"
-      >
-        See All
-        <Icon icon="mdi:chevron-right" aria-hidden="true" className="h-5 w-5" />
-      </AppLink>
+      {showViewAll && (
+        <AppLink
+          href={ANNOUNCEMENT_ROUTES.ROOT}
+          className="mt-1 hidden shrink-0 items-center gap-1 text-base font-bold text-[#0077cc] transition-colors duration-200 hover:text-[#005fa3] md:inline-flex"
+        >
+          See All
+          <Icon icon="mdi:chevron-right" aria-hidden="true" className="h-5 w-5" />
+        </AppLink>
+      )}
     </header>
   );
 }
@@ -186,14 +188,15 @@ function EmptyState() {
 
 export default function HomeAnnouncements() {
   const { data: items = [], isLoading } = useLatestAnnouncements(4);
-
   const featured = items.find((item) => item.featured) ?? items[0];
   const sidebar = featured ? items.filter((item) => item.id !== featured.id).slice(0, 3) : [];
+
+  const isEmpty = !isLoading && items.length == 0;
 
   return (
     <section className="bg-[#f8f8f7] px-4 py-12 sm:px-6 lg:px-16">
       <div className="mx-auto max-w-[82rem]">
-        <SectionHeading />
+        <SectionHeading showViewAll={!isEmpty} />
 
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.025fr)]">
           {isLoading ? (

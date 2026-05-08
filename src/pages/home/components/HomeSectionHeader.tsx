@@ -5,9 +5,15 @@ type HomeSectionHeaderProps = {
   eyebrow: string;
   title: string;
   href: string;
+  showViewAll?: boolean;
 };
 
-export function HomeSectionHeader({ eyebrow, title, href }: HomeSectionHeaderProps) {
+export function HomeSectionHeader({
+  eyebrow,
+  title,
+  href,
+  showViewAll = true,
+}: HomeSectionHeaderProps) {
   return (
     <header className="home-section-header">
       <div className="home-section-header__copy">
@@ -15,10 +21,12 @@ export function HomeSectionHeader({ eyebrow, title, href }: HomeSectionHeaderPro
         <h2 className="home-section-title">{title}</h2>
       </div>
 
-      <AppLink href={href} className="home-section-link">
-        See All
-        <Icon icon="mdi:chevron-right" aria-hidden="true" />
-      </AppLink>
+      {showViewAll && (
+        <AppLink href={href} className="home-section-link">
+          See All
+          <Icon icon="mdi:chevron-right" aria-hidden="true" />
+        </AppLink>
+      )}
     </header>
   );
 }

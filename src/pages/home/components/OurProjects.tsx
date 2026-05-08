@@ -68,7 +68,6 @@ function HomeProjectSkeleton() {
 
 export default function OurProjects() {
   const { data: projects = [], isLoading } = useProjects();
-
   const isEmpty = !isLoading && projects.length === 0;
 
   return (
@@ -78,6 +77,7 @@ export default function OurProjects() {
           eyebrow="Our Projects"
           title="Through the generosity of our alumnae, we continue to support and improve our beloved school"
           href={ROUTES.PROJECTS.ROOT}
+          showViewAll={!isEmpty}
         />
 
         {isEmpty ? (

@@ -18,7 +18,7 @@ function formatEventDate(date: string) {
 }
 
 function HomeEventCard({ event }: { event: Event }) {
-  console.log('Event:', event);
+  // console.log('Event:', event);
   return (
     <article className="home-event-card">
       <div className="home-event-card__image-wrap">
@@ -85,6 +85,7 @@ export default function UpcomingEvents() {
           eyebrow="Upcoming Events"
           title="Stay updated on upcoming alumnae gatherings"
           href={EVENT_ROUTES.ROOT}
+          showViewAll={!isEmpty}
         />
 
         {isEmpty ? (
