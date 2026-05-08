@@ -176,12 +176,16 @@ export function mapEventToUpdatePayload(
     title: formData.title,
     description: formData.description,
     location: formData.location,
+    end_date: formData.end_date,
+    end_time: formData.end_time,
     start_date: formData.start_date,
     start_time: formData.start_time,
   };
 
   if (formData.start_time) base.start_time = formData.start_time;
   if (formData.end_time) base.end_time = formData.end_time;
+  if (formData.start_date) base.start_time = formData.start_date;
+  if (formData.end_date) base.start_time = formData.end_date;
   if (formData.color) base.color = formData.color;
   if (formData.visibility) base.visibility = formData.visibility;
   if (formData.max_attendees) base.max_attendees = String(formData.max_attendees);
