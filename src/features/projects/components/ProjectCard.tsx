@@ -13,7 +13,10 @@ import type { Project } from '../types/project.types';
 import { ROUTES } from '@/shared/constants/routes';
 import { formatDateRange } from '@/shared/utils/dateHelpers';
 
-const PLACEHOLDER = 'https://placehold.co/80x80/E5E7EB/6B7280?text=No+Image';
+import placeholderImg from '/placeholder-image.png';
+import placeholderImg2 from '/placeholder.png';
+
+// const PLACEHOLDER = 'https://placehold.co/80x80/E5E7EB/6B7280?text=No+Image';
 
 // ─── Delete confirmation ──────────────────────────────────────────────────────
 
@@ -79,8 +82,9 @@ export function ProjectCard({ project, showAdminActions = false, onEdit }: Proje
   const deleteMutation = useDeleteProject();
   const [showDelete, setShowDelete] = useState(false);
 
-  const mainImage = project.images?.[0] || PLACEHOLDER;
-  const isCompleted = project.status === 'completed';
+  // const mainImage = project.images?.[0] || PLACEHOLDER;
+  const mainImage = project.images?.[0] || placeholderImg;
+  // const isCompleted = project.status === 'completed';
 
   const dateRange = formatDateRange(project.startDate, project.endDate, {
     locale: 'en-GB',

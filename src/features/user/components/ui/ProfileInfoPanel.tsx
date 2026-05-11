@@ -370,10 +370,10 @@ export function ProfileInfoPanel({
 
       {/* Address */}
       {hasAddress && (
-        <Section className="block sm:hidden" title="Address">
+        <Section className="block lg:hidden" title="Address">
           <FieldRow label="Street" value={data.streetAddress} />
           <FieldRow label="Area" value={data.area} />
-          <FieldRow label="State" value={data.state} />
+          {/* <FieldRow label="State" value={data.state} /> */}
           <FieldRow label="City" value={data.city} />
           <FieldRow label="Zone" value={data.zone} />
         </Section>
