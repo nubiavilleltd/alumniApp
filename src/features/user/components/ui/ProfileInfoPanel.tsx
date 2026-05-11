@@ -347,12 +347,13 @@ export function ProfileInfoPanel({
 
   return (
     <div className="space-y-4">
-      {/* About Me */}
-      {data.bio && (
-        <Section title="About Me">
+      <Section title="About Me">
+        {data.bio ? (
           <p className="text-sm text-gray-600 leading-relaxed">{data.bio}</p>
-        </Section>
-      )}
+        ) : (
+          <span className="text-sm text-gray-300 italic">Not provided</span>
+        )}
+      </Section>
 
       {/* Bio */}
       {hasBioFields && (

@@ -70,7 +70,6 @@ function resolvePhotoUrl(avatarField: any, name: string): string {
  * - Falls back to initials avatar ONLY when no real photo exists
  */
 export function mapBackendAlumniToFrontend(raw: unknown): Alumni {
-  console.log('enter here 2');
   const d = raw as Record<string, any>;
 
   const profile = d.profile || {};

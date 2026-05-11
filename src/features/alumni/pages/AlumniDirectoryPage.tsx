@@ -20,6 +20,12 @@ import { resolveVisibleField } from '@/features/user/utils/privacyResolvers';
 /* Responsive items per page */
 /* ───────────────────────────────────────────────────────────── */
 
+function generateInitialsAvatar(name: string): string {
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(
+    name,
+  )}&background=E5E7EB&color=6B7280&size=256`;
+}
+
 function useItemsPerPage() {
   const [items, setItems] = useState(12);
 
@@ -54,13 +60,11 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: a
 
   const isOwner = entry.memberId === currentUser?.memberId;
 
-  console.log('entry', { entry });
-
   const canSeePhoto = resolveVisibleField(entry.photo, 'photo', entry.privacy, isOwner);
 
   const displayPhoto = getPhotoDisplay(entry.photo, canSeePhoto);
-  entry.memberId == '39' &&
-    console.log('canSeePhoto', { canSeePhoto, photo: entry.photo, photo2: displayPhoto });
+  // entry.memberId == '39' &&
+  //   console.log('canSeePhoto', { canSeePhoto, photo: entry.photo, photo2: displayPhoto });
 
   const visibleGraduationYear = resolveVisibleField(
     entry.graduationYear,
@@ -88,9 +92,17 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: a
     >
       {/* Image */}
       <div className="absolute inset-0">
+        <img
+          src={displayPhoto ?? generateInitialsAvatar(entry.name)}
+          alt={entry.name}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          loading="lazy"
+        />
+      </div>
+      {/* <div className="absolute inset-0">
         {displayPhoto ? (
           <img
-            src={displayPhoto}
+            src={displayPhoto }
             alt={entry.name}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
@@ -100,7 +112,7 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: a
             <Icon icon="mdi:account-circle" className="w-24 h-24 text-gray-300" />
           </div>
         )}
-      </div>
+      </div> */}
 
       {/* Overlay */}
       <div className="absolute bottom-0 left-0 right-0 bg-primary-600/70 backdrop-blur-sm px-4 pt-3 pb-4 rounded-2xl">

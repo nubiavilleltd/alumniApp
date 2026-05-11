@@ -26,12 +26,12 @@ export function ProfileAddressCard({
   const fields: AddressField[] = [
     { label: 'Street', value: streetAddress },
     { label: 'Area', value: area },
-    { label: 'State', value: state },
+    // { label: 'State', value: state },
     { label: 'City', value: city },
     { label: 'Zone', value: zone },
   ].filter((f) => f.value);
 
-  if (fields.length === 0) return null;
+  //   if (fields.length === 0) return null;
 
   return (
     <div className="hidden lg:block bg-white rounded-2xl shadow-sm border border-gray-100 p-5">

@@ -26,7 +26,7 @@ export function mapBackendPrivacyToFrontend(raw: any): PrivacySettings {
   // ✅ Handle missing field_visibility gracefully
   const visibility = parseValue(raw?.field_visibility) || {};
 
-  console.log('my profile', { raw, vis: raw.field_visibility, parsed: visibility });
+  // console.log('my profile', { raw, vis: raw.field_visibility, parsed: visibility });
 
   const normalize = (value: any): FieldVisibility => {
     if (value === 'public' || value === true || value === 'true' || value === 1 || value === '1') {

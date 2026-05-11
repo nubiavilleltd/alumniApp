@@ -41,6 +41,7 @@ import {
   DEFAULT_IMAGE_UPLOAD_ACCEPT,
   validateFilesAgainstAcceptList,
 } from '@/shared/utils/fileValidation';
+import { useBreakpoint } from '@/shared/hooks/useBreakpoint';
 
 const breadcrumbItems = [
   { label: 'Home', href: ROUTES.HOME },
@@ -138,7 +139,7 @@ function Input({
 }: {
   name: string;
   value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   type?: string;
   inputMode?: React.HTMLAttributes<HTMLInputElement>['inputMode'];
@@ -200,6 +201,35 @@ function Input({
 
 // ─── Section card (collapsible on mobile) ─────────────────────────────────────
 
+// function SectionCard({
+//   title,
+//   children,
+//   defaultOpen = true,
+// }: {
+//   title: string;
+//   children: React.ReactNode;
+//   defaultOpen?: boolean;
+// }) {
+//   const [open, setOpen] = useState(defaultOpen);
+
+//   return (
+//     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-visible">
+//       <button
+//         type="button"
+//         onClick={() => setOpen((v) => !v)}
+//         className="w-full flex items-center justify-between px-5 sm:px-6 py-4 sm:cursor-default"
+//       >
+//         <span className="text-sm font-bold text-gray-900">{title}</span>
+//         <Icon
+//           icon={open ? 'mdi:chevron-up' : 'mdi:chevron-down'}
+//           className="w-4 h-4 text-gray-400"
+//         />
+//       </button>
+//       {open && <div className="px-5 sm:px-6 pb-6 pt-0">{children}</div>}
+//     </div>
+//   );
+// }
+
 function SectionCard({
   title,
   children,
@@ -209,21 +239,48 @@ function SectionCard({
   children: React.ReactNode;
   defaultOpen?: boolean;
 }) {
-  const [open, setOpen] = useState(defaultOpen);
+  const { isMobile } = useBreakpoint();
+
+  const [open, setOpen] = useState(() => {
+    // Desktop/tablet => always open
+    if (typeof window !== 'undefined' && window.innerWidth >= 640) {
+      return true;
+    }
+
+    // Mobile => respect defaultOpen
+    return defaultOpen;
+  });
+
+  // Ensure desktop/tablet always stay open
+  useEffect(() => {
+    if (!isMobile) {
+      setOpen(true);
+    }
+  }, [isMobile]);
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-visible">
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center justify-between px-5 sm:px-6 py-4 sm:cursor-default"
+        onClick={() => {
+          if (isMobile) {
+            setOpen((v) => !v);
+          }
+        }}
+        className={`w-full flex items-center justify-between px-5 sm:px-6 py-4 ${
+          isMobile ? 'cursor-pointer' : 'cursor-default'
+        }`}
       >
         <span className="text-sm font-bold text-gray-900">{title}</span>
-        <Icon
-          icon={open ? 'mdi:chevron-up' : 'mdi:chevron-down'}
-          className="w-4 h-4 text-gray-400"
-        />
+
+        {isMobile && (
+          <Icon
+            icon={open ? 'mdi:chevron-up' : 'mdi:chevron-down'}
+            className="w-4 h-4 text-gray-400"
+          />
+        )}
       </button>
+
       {open && <div className="px-5 sm:px-6 pb-6 pt-0">{children}</div>}
     </div>
   );
@@ -387,10 +444,34 @@ export default function EditProfilePage() {
   // ── Cities from API ────────────────────────────────────────────────────────
   const { data: cities = [], isLoading: isLoadingCities } = useCities();
 
-  const cityOptions = cities.map((c) => ({
-    label: c.city,
-    value: c.city, // store city name string — consistent with RegisterDetailsPage and backend
-  }));
+  const cityOptions = [...cities]
+    .sort((a, b) => a.city.localeCompare(b.city))
+    .map((c) => ({
+      label: c.city,
+      value: c.city,
+    }));
+
+  const citiesZoneMapping = cities.reduce(
+    (acc, item) => {
+      acc[item.city] = {
+        zoneId: item.zoneId,
+        zone: item.zone,
+        chapterId: item.chapterId,
+        cityId: item.cityId,
+      };
+
+      return acc;
+    },
+    {} as Record<
+      string,
+      {
+        zoneId: number;
+        zone: string;
+        chapterId: number;
+        cityId: number;
+      }
+    >,
+  );
 
   const [form, setForm] = useState<FormState>(() => toFormState(currentUser));
   const [photoFile, setPhotoFile] = useState<File | null>(null);
@@ -468,30 +549,32 @@ export default function EditProfilePage() {
       otherNames: form.firstName.trim(),
       surname: form.lastName.trim(),
       fullName: `${form.firstName.trim()} ${form.lastName.trim()}`.trim(),
-      nameInSchool: form.nameInSchool.trim() || undefined,
-      nickName: form.nickName.trim() || undefined,
+      nameInSchool: form.nameInSchool.trim() || '',
+      nickName: form.nickName.trim() || '',
       whatsappPhone: formatOptionalNigerianPhoneNumber(form.whatsappPhone) || '',
-      alternativePhone: formatOptionalNigerianPhoneNumber(form.alternativePhone) || undefined,
+      alternativePhone: formatOptionalNigerianPhoneNumber(form.alternativePhone) || '',
       birthDate: form.birthDate || undefined,
-      bio: form.bio.trim() || undefined,
-      houseColor: form.houseColor || undefined,
-      residentialAddress: form.residentialAddress.trim() || undefined,
-      area: form.area || undefined,
-      city: form.city || undefined,
-      state: form.state || undefined,
-      employmentStatus: form.employmentStatus || undefined,
+      bio: form.bio.trim() || '',
+      houseColor: form.houseColor || '',
+      residentialAddress: form.residentialAddress.trim() || '',
+      area: form.area || '',
+      city: form.city || '',
+      // state: form.state || "",
+      employmentStatus: form.employmentStatus || '',
       occupations: form.occupation ? [form.occupation] : undefined,
       industrySectors: form.industrySector ? [form.industrySector] : undefined,
       yearsOfExperience: form.yearsOfExperience || undefined,
-      company: form.company.trim() || undefined,
-      position: form.position.trim() || undefined,
+      company: form.company.trim() || '',
+      position: form.position.trim() || '',
       isVolunteer: form.isVolunteer,
-      linkedin: form.linkedin.trim() || undefined,
-      twitter: form.twitter.trim() || undefined,
-      instagram: form.instagram.trim() || undefined,
-      facebook: form.facebook.trim() || undefined,
-      tiktok: form.tiktok.trim() || undefined,
+      linkedin: form.linkedin.trim() || '',
+      twitter: form.twitter.trim() || '',
+      instagram: form.instagram.trim() || '',
+      facebook: form.facebook.trim() || '',
+      tiktok: form.tiktok.trim() || '',
     };
+
+    console.log('updates', { updates });
 
     try {
       const saved = await userService.updateProfile({
@@ -724,7 +807,7 @@ export default function EditProfilePage() {
                     placeholder="e.g. 23A Dolphin Estate"
                   />
                 </div>
-                <div>
+                {/* <div>
                   <Label>State</Label>
                   <SelectInput
                     name="state"
@@ -733,6 +816,16 @@ export default function EditProfilePage() {
                     options={stateOptions}
                     placeholder="Select State"
                     disabled
+                  />
+                </div> */}
+
+                <div>
+                  <Label>Area</Label>
+                  <Input
+                    name="area"
+                    value={form.area}
+                    onChange={handleChange}
+                    placeholder="Enter Area"
                   />
                 </div>
 
@@ -750,15 +843,15 @@ export default function EditProfilePage() {
                 </div>
 
                 {/* Replace this with zone instead */}
-                {/* <div>
-                  <Label>Current Position</Label>
+                <div>
+                  <Label>Zone</Label>
                   <Input
-                    name="position"
-                    value={form.position}
-                    onChange={handleChange}
-                    placeholder="Job title"
+                    name="zone"
+                    value={citiesZoneMapping[form?.city]?.zone ?? ''}
+                    placeholder=""
+                    disabled
                   />
-                </div> */}
+                </div>
               </div>
             </SectionCard>
 
@@ -821,14 +914,14 @@ export default function EditProfilePage() {
 
             {/* ── Save / Cancel ────────────────────────────────────────── */}
             <div className="flex flex-col-reverse sm:flex-row gap-3 pt-2 pb-6">
-              <button
+              {/* <button
                 type="button"
                 onClick={() => navigate(USER_ROUTES.PROFILE)}
                 disabled={isSaving}
                 className="flex-1 sm:flex-none px-6 py-3 rounded-3xl border border-red-400 text-sm font-semibold text-red-600 hover:bg-gray-50 transition-colors disabled:opacity-50"
               >
                 Cancel
-              </button>
+              </button> */}
               <button
                 type="button"
                 onClick={handleSave}
