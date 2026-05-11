@@ -478,7 +478,7 @@ export function EventDetailPage() {
                   href={AUTH_ROUTES.LOGIN}
                   className="inline-flex items-center gap-2 bg-primary-500 hover:bg-primary-600 text-white font-semibold text-sm px-6 py-2.5 rounded-full transition-colors shadow-sm"
                 >
-                  <Icon icon="mdi:login" className="w-4 h-4" />
+                  {/* <Icon icon="mdi:login" className="w-4 h-4" /> */}
                   Sign in to Register
                 </AppLink>
               )}
@@ -514,7 +514,7 @@ export function EventDetailPage() {
                 type="button"
                 onClick={handleShare}
                 aria-label="Share event"
-                className="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-full border border-gray-300 bg-white hover:bg-gray-50 text-gray-600 transition-colors shadow-sm"
+                className="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-full border border-primary-300 bg-white hover:bg-primary-50 text-primary-500 transition-colors shadow-sm"
               >
                 <Icon icon="mdi:share-variant-outline" className="w-4 h-4" />
               </button>

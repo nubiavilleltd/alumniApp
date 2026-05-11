@@ -133,7 +133,7 @@ export function ProjectCard({ project, showAdminActions = false, onEdit }: Proje
         )}
 
         {/* Status badge — top-left */}
-        <div className="absolute top-3 left-3 z-10">
+        {/* <div className="absolute top-3 left-3 z-10">
           <span
             className={`text-[10px] font-semibold px-2.5 py-1 rounded-full ${
               isCompleted ? 'bg-green-500/90 text-white' : 'bg-primary-500/90 text-white'
@@ -141,19 +141,11 @@ export function ProjectCard({ project, showAdminActions = false, onEdit }: Proje
           >
             {isCompleted ? 'Completed' : 'Ongoing'}
           </span>
-        </div>
+        </div> */}
 
         {/* Blue overlay panel */}
         {/* <div className="absolute bottom-0 left-0 right-0 bg-primary-600/80 backdrop-blur-[2px] rounded-2xl px-4 pt-3.5 pb-4"> */}
-        <div
-          className="
-  absolute bottom-0 left-0 right-0
-  h-40 sm:h-36 md:h-40
-  bg-primary-600/80 backdrop-blur-[2px]
-  rounded-2xl px-4 pt-3 pb-3
-  flex flex-col
-"
-        >
+        <div className="absolute bottom-0 left-0 right-0 h-40 sm:h-36 md:h-40 bg-primary-600/80 backdrop-blur-[2px] rounded-2xl px-4 pt-3 pb-3 flex flex-col">
           {/* Title */}
           <p className="text-white font-bold text-[14px] sm:text-[15px] leading-snug line-clamp-1">
             {project.title}
