@@ -82,7 +82,7 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
           {/* Input */}
           <input
             ref={ref}
-            type="search"
+            type="text"
             value={value}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
