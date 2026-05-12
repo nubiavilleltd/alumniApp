@@ -550,12 +550,16 @@ export function Navigation() {
       await new Promise((resolve) => setTimeout(resolve, 50));
 
       // Hard navigate to home
-      window.location.href = ROUTES.HOME;
+      // window.location.href = ROUTES.HOME;
+
+      window.location.replace(window.location.origin + ROUTES.HOME);
     } catch (error) {
       console.error('Logout failed:', error);
       clearTokens();
       clearIdentity();
-      window.location.href = ROUTES.HOME;
+      // window.location.href = ROUTES.HOME;
+
+      window.location.replace(window.location.origin + ROUTES.HOME);
     } finally {
       setIsLoggingOut(false);
       setLoggingOut(false); // ✅ NEW: Clear global logout flag

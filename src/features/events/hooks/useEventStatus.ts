@@ -21,10 +21,19 @@ function resolveStart(event: EventLike) {
   return parseDateTime(date, event.startTime);
 }
 
+// function resolveEnd(event: EventLike) {
+//   const date = event.endDate ?? event.date;
+//   if (!date) return 0;
+//   return parseDateTime(date, event.endTime || event.startTime);
+// }
+
 function resolveEnd(event: EventLike) {
-  const date = event.endDate ?? event.date;
+  // Fall back to startDate if no endDate — event ends on the same day it starts
+  const date = event.endDate ?? event.startDate ?? event.date;
   if (!date) return 0;
-  return parseDateTime(date, event.endTime || event.startTime);
+  // If there's an endTime use it, otherwise treat end of day as the cutoff
+  const time = event.endTime ?? '23:59';
+  return parseDateTime(date, time);
 }
 
 export function useEventStatus(event?: EventLike | null) {

@@ -186,6 +186,8 @@ export function EventDetailPage() {
   const requireSignIn = useRequireSignIn();
   const { data: event, isLoading, error } = useEvent(slug);
   const { isUpcoming, isOngoing, isPast } = useEventStatus(event);
+
+  console.log('status event', { isUpcoming, isOngoing, isPast, event });
   const navigate = useNavigate();
 
   const currentUser = useIdentityStore((state) => state.user);
