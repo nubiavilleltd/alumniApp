@@ -115,6 +115,8 @@ export function LoginForm() {
       const fallbackDestination =
         fullProfile?.role === 'admin' ? ADMIN_ROUTES.DASHBOARD : USER_ROUTES.DASHBOARD;
 
+      console.log('from', { from });
+
       // Step 4: Navigate
       navigate(from ?? fallbackDestination, { replace: true });
     } catch (error) {

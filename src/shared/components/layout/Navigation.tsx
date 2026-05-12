@@ -543,22 +543,95 @@ export function Navigation() {
   //   setIsLoggingOut(false);
   // };
 
+  // const handleLogout = async () => {
+  //   setIsLoggingOut(true);
+  //   if (authenticatedUser) {
+  //     try {
+  //       await authApi.logout();
+  //     } catch (error) {
+  //       console.log('Failed to log out in handleLogout', error);
+  //     }
+  //   }
+  //   // Navigate first so the current ProtectedRoute unmounts
+  //   // before we clear auth state — prevents the spurious /login redirect
+  //   navigate(ROUTES.HOME, { replace: true });
+  //   clearTokens();
+  //   clearIdentity();
+  //   setMobileOpen(false);
+  //   setIsLoggingOut(false);
+  // };
+
+  //   const handleLogout = async () => {
+  //   setIsLoggingOut(true);
+  //   setMobileOpen(false);
+
+  //   try {
+  //     // Call API logout if authenticated
+  //     if (authenticatedUser) {
+  //       try {
+  //         await authApi.logout();
+  //       } catch (error) {
+  //         // Ignore errors - we're logging out anyway
+  //         console.log('Failed to call logout API:', error);
+  //       }
+  //     }
+
+  //     // Clear authentication state FIRST
+  //     clearTokens();
+  //     clearIdentity();
+
+  //     // Small delay to ensure state updates propagate
+  //     await new Promise(resolve => setTimeout(resolve, 50));
+
+  //     // Then navigate to home
+  //     // Using window.location for a hard navigation to avoid race conditions
+  //     window.location.href = ROUTES.HOME;
+  //   } catch (error) {
+  //     console.error('Logout failed:', error);
+  //     // Force logout even on error
+  //     clearTokens();
+  //     clearIdentity();
+  //     window.location.href = ROUTES.HOME;
+  //   } finally {
+  //     setIsLoggingOut(false);
+  //   }
+  // };
+
   const handleLogout = async () => {
+    const setLoggingOut = useTokenStore.getState().setLoggingOut;
+
     setIsLoggingOut(true);
-    if (authenticatedUser) {
-      try {
-        await authApi.logout();
-      } catch (error) {
-        console.log('Failed to log out in handleLogout', error);
-      }
-    }
-    // Navigate first so the current ProtectedRoute unmounts
-    // before we clear auth state — prevents the spurious /login redirect
-    navigate(ROUTES.HOME, { replace: true });
-    clearTokens();
-    clearIdentity();
+    setLoggingOut(true); // ✅ NEW: Set global logout flag
     setMobileOpen(false);
-    setIsLoggingOut(false);
+
+    try {
+      // Call API logout if authenticated
+      if (authenticatedUser) {
+        try {
+          await authApi.logout();
+        } catch (error) {
+          console.log('Failed to call logout API:', error);
+        }
+      }
+
+      // Clear authentication state
+      clearTokens();
+      clearIdentity();
+
+      // Small delay to ensure state updates propagate
+      await new Promise((resolve) => setTimeout(resolve, 50));
+
+      // Hard navigate to home
+      window.location.href = ROUTES.HOME;
+    } catch (error) {
+      console.error('Logout failed:', error);
+      clearTokens();
+      clearIdentity();
+      window.location.href = ROUTES.HOME;
+    } finally {
+      setIsLoggingOut(false);
+      setLoggingOut(false); // ✅ NEW: Clear global logout flag
+    }
   };
 
   const mobileMenuItems = isAdmin
