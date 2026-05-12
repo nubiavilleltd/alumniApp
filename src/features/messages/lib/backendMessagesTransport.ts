@@ -928,7 +928,7 @@ function buildThreadDetailFromBackend(params: {
 
   return {
     ...summary,
-    unreadCount: 0,
+    unreadCount: summary.unreadCount,
     description:
       typeof params.rawThreadPayload.description === 'string'
         ? params.rawThreadPayload.description
@@ -1349,10 +1349,21 @@ export const backendMessagesTransport: MessagesTransport = {
   async markThreadRead(
     request: MarkMessageThreadReadRequest,
   ): Promise<MarkMessageThreadReadResponse> {
+    const response = await apiClient.post(API_ENDPOINTS.MESSAGES.MARK_READ, {
+      thread_id: normalizeBackendIdentifierValue(request.threadId),
+    });
+    const envelope = getEnvelopeData(response.data) ?? {};
+    const payload = extractObject(envelope, ['data']) ?? envelope ?? {};
+    const payloadRecord = payload as Record<string, unknown>;
+
     return {
-      threadId: request.threadId,
-      unreadCount: 0,
-      serverTime: nowIso(),
+      threadId: String(
+        payloadRecord.thread_id ?? payloadRecord.group_id ?? payloadRecord.id ?? request.threadId,
+      ),
+      unreadCount: safeParseInt(payloadRecord.unread_count) ?? 0,
+      serverTime: normalizeBackendTimestamp(
+        payloadRecord.server_time ?? envelope?.server_time ?? nowIso(),
+      ),
     };
   },
 
