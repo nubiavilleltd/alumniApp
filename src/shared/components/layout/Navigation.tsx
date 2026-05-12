@@ -164,8 +164,8 @@ function BrandMark({ mobile = false }: { mobile?: boolean }) {
       className={cn(
         'relative isolate flex overflow-hidden bg-white text-primary-500 no-underline',
         mobile
-          ? 'min-h-[5.25rem] items-center px-4 py-3'
-          : 'items-center justify-center px-[clamp(1rem,2vw,1.8rem)] py-[clamp(0.8rem,1.4vw,1.25rem)]',
+          ? 'min-h-[5.25rem] items-center py-3'
+          : 'items-center justify-center py-[clamp(0.8rem,1.4vw,1.25rem)]',
       )}
     >
       <span
@@ -577,11 +577,11 @@ export function Navigation() {
       className="relative z-50 bg-[#003c5f] text-white shadow-[0_1px_0_rgba(7,17,22,0.12)]"
       aria-label="Primary navigation"
     >
-      <div className="hidden min-h-[clamp(8.5rem,11.8vw,11.8rem)] grid-cols-[minmax(20rem,28.5vw)_minmax(0,1fr)] lg:grid lg:max-[1360px]:grid-cols-[minmax(18rem,31vw)_minmax(0,1fr)]">
+      <div className="hidden min-h-[clamp(8.5rem,11.8vw,11.8rem)] grid-cols-[minmax(20rem,28.5vw)_minmax(0,1fr)] pr-[var(--app-page-inline-padding)] lg:grid lg:max-[1360px]:grid-cols-[minmax(18rem,31vw)_minmax(0,1fr)]">
         <BrandMark />
 
         <div className={cn(navSurfaceClassName, 'grid grid-rows-[44%_56%]')}>
-          <div className="flex items-center justify-end gap-[clamp(1.5rem,3vw,3rem)] px-8">
+          <div className="flex items-center justify-end gap-[clamp(1.5rem,3vw,3rem)]">
             <div className="flex items-center gap-[clamp(2rem,4.5vw,4rem)]">
               {secondaryNavItems.map((item) => (
                 <AppLink
@@ -617,7 +617,7 @@ export function Navigation() {
             )}
           </div>
 
-          <div className="flex items-center justify-center gap-[clamp(2.25rem,5vw,6.25rem)] px-[clamp(2rem,4vw,4.5rem)] pb-[clamp(0.75rem,1.2vw,1.25rem)] lg:max-[1360px]:gap-[clamp(1.4rem,3vw,2.75rem)]">
+          <div className="flex items-center justify-between gap-[clamp(2.25rem,5vw,6.25rem)] pb-[clamp(0.75rem,1.2vw,1.25rem)] pl-[var(--app-page-inline-padding)] lg:max-[1360px]:gap-[clamp(1.4rem,3vw,2.75rem)]">
             {primaryNavItems.map((item) =>
               item.children ? (
                 <DesktopDropdown key={item.label} item={item} />
@@ -629,7 +629,9 @@ export function Navigation() {
         </div>
       </div>
 
-      <div className={cn(navSurfaceClassName, 'block lg:hidden')}>
+      <div
+        className={cn(navSurfaceClassName, 'block pr-[var(--app-page-inline-padding)] lg:hidden')}
+      >
         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-stretch">
           <BrandMark mobile />
           <button
@@ -648,7 +650,7 @@ export function Navigation() {
           ref={mobileMenuRef}
           className={cn(
             'overflow-hidden transition-[max-height,padding] duration-200',
-            mobileOpen ? 'max-h-[90vh] overflow-y-auto px-4 pb-5 pt-3' : 'max-h-0 px-0 py-0',
+            mobileOpen ? 'max-h-[90vh] overflow-y-auto pb-5 pt-3' : 'max-h-0 px-0 py-0',
           )}
         >
           <div className={mobileSectionClassName}>

@@ -2,7 +2,6 @@ import { Icon } from '@iconify/react';
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { SEO } from '@/shared/common/SEO';
-import { AppLink } from '@/shared/components/ui/AppLink';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import { toast } from '@/shared/components/ui/Toast';
 import { ROUTES } from '@/shared/constants/routes';

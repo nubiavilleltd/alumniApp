@@ -11,7 +11,7 @@ import HomeAnnouncements from './components/NewsAndStories';
 export function HomePage() {
   const config = getSiteConfig();
   return (
-    <>
+    <div className="home-page">
       <SEO title={config.site.name} description={config.site.description} />
 
       {/* Static sections — no boundary needed */}
@@ -31,6 +31,6 @@ export function HomePage() {
       <SectionErrorBoundary>
         <HomeAnnouncements />
       </SectionErrorBoundary>
-    </>
+    </div>
   );
 }

@@ -391,7 +391,7 @@ export default function MarketPlacePage() {
       />
 
       <main className="min-h-full bg-[#f8f8f7] text-[#071116]">
-        <section className="w-full max-w-[100vw] px-4 pb-16 pt-10 sm:px-6 lg:px-6 lg:pb-20 lg:pt-12 xl:px-11 xl:pb-24 xl:pt-16">
+        <section className="page-inline-padding w-full max-w-[100vw] pb-16 pt-10 lg:pb-20 lg:pt-12 xl:pb-24 xl:pt-16">
           <div className="mb-10 flex flex-col gap-6 lg:mb-[3.65rem] lg:flex-row lg:items-start lg:justify-between lg:gap-8">
             <div className="min-w-0">
               <h1 className="text-[clamp(2.0rem,2.45vw,3.0rem)] font-bold leading-[1.12] text-[#071116]">
