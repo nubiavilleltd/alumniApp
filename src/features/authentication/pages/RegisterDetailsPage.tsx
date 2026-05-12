@@ -280,6 +280,7 @@ export function RegisterDetailsPage() {
           <PasswordInput
             label="Confirm Password"
             id="confirmPassword"
+            disablePaste
             required
             autoComplete="new-password"
             placeholder="Re-enter your password"
