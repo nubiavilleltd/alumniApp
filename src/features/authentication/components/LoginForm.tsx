@@ -41,7 +41,7 @@ export function LoginForm() {
     if (params.get('session_expired')) {
       toast.info('Your session expired. Please login again.');
       params.delete('session_expired');
-      navigate({ search: params.toString() }, { replace: true });
+      navigate({ search: params.toString() }, { replace: true, state: location.state });
     }
   }, [location.search, navigate]);
 
