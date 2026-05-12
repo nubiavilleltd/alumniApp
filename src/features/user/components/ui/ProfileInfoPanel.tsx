@@ -327,6 +327,8 @@ export function ProfileInfoPanel({
     data.dateOfBirth,
   );
 
+  console.log('data data data =>', { data });
+
   const hasAddress = hasAny(data.streetAddress, data.area, data.state, data.city, data.zone);
 
   const hasProfessional = hasAny(

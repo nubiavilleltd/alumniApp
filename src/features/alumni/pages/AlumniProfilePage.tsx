@@ -334,7 +334,7 @@ export function AlumniProfilePage() {
   const canSeePhoto = isGroupVisible('photo', alumnus.privacy, isOwner, isSignedIn);
   const canSeeSocials = isGroupVisible('socials', alumnus.privacy, isOwner, isSignedIn);
 
-  console.log('canSeeAddress', { canSeeAddress });
+  // console.log('canSeeAddress', { canSeeAddress });
 
   // Socials for the ProfileCard icon row
   const socials: SocialLink[] = canSeeSocials

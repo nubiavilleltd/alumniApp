@@ -104,6 +104,7 @@ export function mapCurrentUserResponse(res: any): AuthSessionUser {
     twitter: res.profile?.twitter || undefined,
     instagram: res.profile?.instagram || undefined,
     facebook: res.profile?.facebook || undefined,
+    tiktok: res.profile?.tiktok || undefined,
     website: res.profile?.website || undefined,
     country: res.profile?.country || undefined,
 

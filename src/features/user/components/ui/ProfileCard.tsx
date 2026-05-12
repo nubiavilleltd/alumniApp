@@ -7,6 +7,7 @@
 import { Icon } from '@iconify/react';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { USER_ROUTES } from '@/features/user/routes';
+import { HandHelping } from 'lucide-react';
 
 export type SocialLink = {
   icon: string;
@@ -96,7 +97,7 @@ export function ProfileCard({
         <button
           type="button"
           onClick={onShare}
-          className="w-8 h-8 flex items-center border justify-center rounded-full hover:bg-gray-100 text-primary-500 hover:text-gray-600 transition-colors"
+          className="w-8 h-8 flex items-center border border-primary-200 justify-center rounded-full hover:bg-primary-100 text-primary-500 hover:text-primary-600 transition-colors"
           title="Share profile"
         >
           <Icon icon="mdi:share-variant-outline" className="w-4 h-4" />
@@ -104,7 +105,8 @@ export function ProfileCard({
 
         {isVolunteer ? (
           <div className="inline-flex items-center gap-1.5 bg-primary-50 border border-primary-100 rounded-lg px-3 py-1 text-xs font-semibold text-primary-600">
-            <Icon icon="mdi:hand-heart-outline" className="w-3.5 h-3.5" />
+            {/* <Icon icon="mdi:hand-helping-outline" className="w-3.5 h-3.5" /> */}
+            <HandHelping size={17} />
             Volunteer
           </div>
         ) : (
