@@ -43,6 +43,7 @@ import {
   setStoredEventSurveyAvailability,
 } from '../lib/eventSurveyAvailability';
 import { eventsService } from '../services/event.service';
+import { useEventStatus } from '../hooks/useEventStatus';
 
 type LocalRegistrationFormDraft = {
   localId: string;
@@ -90,6 +91,8 @@ export default function EditEventPage() {
   const currentUser = useIdentityStore((state) => state.user);
 
   const { data: event, isLoading } = useEvent(id || '');
+  const { isPast } = useEventStatus(event);
+
   const { data: surveyForms, isLoading: isSurveyFormsLoading } = useEventSurveyForms(id || '');
 
   const updateEvent = useUpdateEvent();
@@ -449,6 +452,20 @@ export default function EditEventPage() {
             </button>
           </div>
 
+          {isPast && (
+            <div className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 mb-4">
+              <Icon
+                icon="mdi:information-outline"
+                className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5"
+              />
+              <p className="text-sm text-amber-800">
+                This event has already taken place. You can still update the title, event details,
+                location, and banner image for record-keeping purposes. Date, time, and status
+                fields are locked.
+              </p>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit(onSubmit)} className="card p-6 space-y-6">
             {/* ── Core ────────────────────────────────────────────────── */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -478,6 +495,7 @@ export default function EditEventPage() {
               <DatePicker
                 label="Start Date"
                 id="event_date"
+                disabled={isPast}
                 required
                 min={todayDate}
                 max={endDate || undefined}
@@ -494,6 +512,7 @@ export default function EditEventPage() {
               <DatePicker
                 label="End Date"
                 id="end_date"
+                disabled={isPast}
                 min={startDate || todayDate}
                 error={errors.end_date?.message}
                 value={endDate}
@@ -511,6 +530,7 @@ export default function EditEventPage() {
               <TimePicker
                 label="Start Time"
                 id="start_time"
+                disabled={isPast}
                 error={errors.start_time?.message}
                 value={watch('start_time')}
                 onValueChange={(val) =>
@@ -525,6 +545,7 @@ export default function EditEventPage() {
               <TimePicker
                 label="End Time"
                 id="end_time"
+                disabled={isPast}
                 error={errors.end_time?.message}
                 value={watch('end_time')}
                 onValueChange={(val) =>
@@ -538,7 +559,7 @@ export default function EditEventPage() {
             </div>
 
             <TextareaInput
-              label="Description"
+              label="Event Details"
               id="description"
               required
               rows={4}
@@ -550,8 +571,9 @@ export default function EditEventPage() {
             {/* ── Classification ──────────────────────────────────────── */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <SelectInput
-                label="Visibility"
+                label="Who is this event for"
                 name="visibility"
+                disabled={isPast}
                 required
                 options={visibilityOptions}
                 value={visibility}
@@ -561,6 +583,7 @@ export default function EditEventPage() {
               <SelectInput
                 label="Status"
                 name="status"
+                disabled={isPast}
                 required
                 options={statusOptions}
                 value={status}
@@ -585,7 +608,7 @@ export default function EditEventPage() {
             {/* ── Banner image ────────────────────────────────────────── */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Event Banner
+                Event Banner (Optional)
                 <span className="text-xs text-gray-400 font-normal ml-2">
                   {bannerPreview ? 'Current image shown — upload to replace' : 'Optional'}
                 </span>
@@ -598,92 +621,96 @@ export default function EditEventPage() {
               />
             </div>
 
-            <div className="rounded-[1.75rem] border border-primary-100 bg-primary-50/50 px-5 py-5">
-              <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                <div className="max-w-4xl">
-                  <p className="text-[1.15rem] font-semibold leading-tight tracking-[0.01em] text-gray-800 md:text-[1.35rem]">
-                    Would you like to request additional info from attendees regarding this event?
-                  </p>
-                  <p className="mt-2 text-sm text-gray-500 md:text-base">
-                    Add optional registration forms here if this event needs extra attendee details
-                    like meal choice, dress code, logistics, or special requests.
-                  </p>
+            {!isPast && (
+              <div className="rounded-[1.75rem] border border-primary-100 bg-primary-50/50 px-5 py-5">
+                <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                  <div className="max-w-4xl">
+                    <p className="text-[1.15rem] font-semibold leading-tight tracking-[0.01em] text-gray-800 md:text-[1.35rem]">
+                      Would you like to request additional info from attendees regarding this event?
+                    </p>
+                    <p className="mt-2 text-sm text-gray-500 md:text-base">
+                      Add optional registration forms here if this event needs extra attendee
+                      details like meal choice, dress code, logistics, or special requests.
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActiveRegistrationFormId(null);
+                      setIsRegistrationBuilderOpen(true);
+                    }}
+                    className="inline-flex  items-center justify-center rounded-full border-2 border-primary-500 px-6 text-sm font-semibold text-primary-500 transition-colors hover:bg-primary-50 md:px-7 md:text-base"
+                  >
+                    {registrationFormDrafts.length > 0
+                      ? 'Add another section'
+                      : 'Yes, request info'}
+                  </button>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    setActiveRegistrationFormId(null);
-                    setIsRegistrationBuilderOpen(true);
-                  }}
-                  className="inline-flex  items-center justify-center rounded-full border-2 border-primary-500 px-6 text-sm font-semibold text-primary-500 transition-colors hover:bg-primary-50 md:px-7 md:text-base"
-                >
-                  {registrationFormDrafts.length > 0 ? 'Add another section' : 'Yes, request info'}
-                </button>
+                {registrationFormDrafts.length > 0 ? (
+                  <div className="mt-6 space-y-5">
+                    {registrationFormDrafts.map((item, index) => (
+                      <div
+                        key={item.localId}
+                        className="rounded-[1.6rem] border border-primary-100 bg-white px-4 py-4 shadow-sm sm:px-5 sm:py-5"
+                      >
+                        <div className="flex flex-col gap-3 border-b border-primary-100 pb-4 md:flex-row md:items-start md:justify-between">
+                          <div className="max-w-3xl">
+                            <p className="mt-1 text-lg font-semibold text-gray-900">
+                              {item.draft.name}
+                            </p>
+                          </div>
+
+                          <div className="flex flex-wrap items-center gap-3 self-start md:self-center">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setActiveRegistrationFormId(item.localId);
+                                setIsRegistrationBuilderOpen(true);
+                              }}
+                              className="inline-flex items-center gap-2 rounded-full border border-primary-200 bg-white px-3 py-1.5 text-sm font-semibold text-primary-500 transition-colors hover:bg-primary-50"
+                            >
+                              <Icon icon="mdi:pencil-outline" className="h-4 w-4" />
+                              Edit form
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setRegistrationFormDrafts((current) =>
+                                  current.filter((draftItem) => draftItem.localId !== item.localId),
+                                );
+                                if (item.firebaseId) {
+                                  setDeletedFormIds((prev) => [...prev, item.firebaseId!]);
+                                }
+                                if (activeRegistrationFormId === item.localId) {
+                                  setActiveRegistrationFormId(null);
+                                }
+                              }}
+                              className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 transition-colors hover:text-red-500"
+                            >
+                              <Icon icon="mdi:delete-outline" className="h-4 w-4" />
+                              Remove
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="mt-4 space-y-4">
+                          {item.draft.questions.map((question, questionIndex) => (
+                            <EventRegistrationQuestionField
+                              key={question.id}
+                              question={question}
+                              index={questionIndex}
+                              mode="preview"
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
               </div>
-
-              {registrationFormDrafts.length > 0 ? (
-                <div className="mt-6 space-y-5">
-                  {registrationFormDrafts.map((item, index) => (
-                    <div
-                      key={item.localId}
-                      className="rounded-[1.6rem] border border-primary-100 bg-white px-4 py-4 shadow-sm sm:px-5 sm:py-5"
-                    >
-                      <div className="flex flex-col gap-3 border-b border-primary-100 pb-4 md:flex-row md:items-start md:justify-between">
-                        <div className="max-w-3xl">
-                          <p className="mt-1 text-lg font-semibold text-gray-900">
-                            {item.draft.name}
-                          </p>
-                        </div>
-
-                        <div className="flex flex-wrap items-center gap-3 self-start md:self-center">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setActiveRegistrationFormId(item.localId);
-                              setIsRegistrationBuilderOpen(true);
-                            }}
-                            className="inline-flex items-center gap-2 rounded-full border border-primary-200 bg-white px-3 py-1.5 text-sm font-semibold text-primary-500 transition-colors hover:bg-primary-50"
-                          >
-                            <Icon icon="mdi:pencil-outline" className="h-4 w-4" />
-                            Edit form
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setRegistrationFormDrafts((current) =>
-                                current.filter((draftItem) => draftItem.localId !== item.localId),
-                              );
-                              if (item.firebaseId) {
-                                setDeletedFormIds((prev) => [...prev, item.firebaseId!]);
-                              }
-                              if (activeRegistrationFormId === item.localId) {
-                                setActiveRegistrationFormId(null);
-                              }
-                            }}
-                            className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 transition-colors hover:text-red-500"
-                          >
-                            <Icon icon="mdi:delete-outline" className="h-4 w-4" />
-                            Remove
-                          </button>
-                        </div>
-                      </div>
-
-                      <div className="mt-4 space-y-4">
-                        {item.draft.questions.map((question, questionIndex) => (
-                          <EventRegistrationQuestionField
-                            key={question.id}
-                            question={question}
-                            index={questionIndex}
-                            mode="preview"
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : null}
-            </div>
+            )}
 
             <div className="flex gap-3 pt-4">
               <Button type="submit" loading={updateEvent.isPending || isSavingSurveyForms}>
