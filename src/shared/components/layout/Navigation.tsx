@@ -653,7 +653,7 @@ export function Navigation() {
         <BrandMark />
 
         <div className={cn(navSurfaceClassName, 'grid grid-rows-[44%_56%]')}>
-          <div className="flex items-center justify-end gap-[clamp(1.5rem,3vw,3rem)] px-[clamp(2rem,4.6vw,5rem)]">
+          <div className="flex items-center justify-end gap-[clamp(1.5rem,3vw,3rem)] px-8">
             <div className="flex items-center gap-[clamp(2rem,4.5vw,4rem)]">
               {secondaryNavItems.map((item) => (
                 <AppLink
