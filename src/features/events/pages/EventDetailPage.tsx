@@ -16,6 +16,7 @@ import { renderMarkdown } from '@/data/content';
 import { AUTH_ROUTES } from '@/features/authentication/routes';
 import { useEventStatus } from '../hooks/useEventStatus';
 import { formatDateRange } from '@/shared/utils/dateHelpers';
+import { useRequireSignIn } from '@/features/authentication/hooks/useRequireSignIn';
 
 // ─── Countdown ────────────────────────────────────────────────────────────────
 
@@ -182,6 +183,7 @@ function EventDetailSkeleton() {
 
 export function EventDetailPage() {
   const { slug = '' } = useParams();
+  const requireSignIn = useRequireSignIn();
   const { data: event, isLoading, error } = useEvent(slug);
   const { isUpcoming, isOngoing, isPast } = useEventStatus(event);
   const navigate = useNavigate();
@@ -474,13 +476,16 @@ export function EventDetailPage() {
             <div className="flex items-center gap-3">
               {/* Register — not logged in, upcoming, not full */}
               {(isUpcoming || isOngoing) && !isCancelled && !isLoggedIn && !isFull && (
-                <AppLink
-                  href={AUTH_ROUTES.LOGIN}
+                <button
+                  type="button"
+                  onClick={() =>
+                    requireSignIn({ message: 'Please sign in to register for this event.' })
+                  }
                   className="inline-flex items-center gap-2 bg-primary-500 hover:bg-primary-600 text-white font-semibold text-sm px-6 py-2.5 rounded-full transition-colors shadow-sm"
                 >
                   {/* <Icon icon="mdi:login" className="w-4 h-4" /> */}
                   Sign in to Register
-                </AppLink>
+                </button>
               )}
 
               {/* Register — logged in, upcoming, not registered, not full */}

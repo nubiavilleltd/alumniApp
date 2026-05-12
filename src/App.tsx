@@ -135,11 +135,9 @@ export default function App() {
           <Route
             path={ROUTES.JOB_VACANCIES}
             element={
-              <ProtectedRoute>
-                <ErrorBoundary>
-                  <JobVacanciesPage />
-                </ErrorBoundary>
-              </ProtectedRoute>
+              <ErrorBoundary>
+                <JobVacanciesPage />
+              </ErrorBoundary>
             }
           />
           <Route
@@ -155,11 +153,9 @@ export default function App() {
           <Route
             path={ROUTES.JOB_VACANCY_DETAIL_PATH}
             element={
-              <ProtectedRoute>
-                <ErrorBoundary>
-                  <JobVacancyDetailPage />
-                </ErrorBoundary>
-              </ProtectedRoute>
+              <ErrorBoundary>
+                <JobVacancyDetailPage />
+              </ErrorBoundary>
             }
           />
           <Route

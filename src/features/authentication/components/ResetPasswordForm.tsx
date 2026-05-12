@@ -52,7 +52,7 @@ export function ResetPasswordForm() {
 
   if (!hasValidLink) {
     return (
-      <AuthCard title="Invalid" titleAccent="Link">
+      <AuthCard title="Invalid Link">
         <div className="auth-message-panel">
           <div className="auth-message-panel__icon auth-message-panel__icon--danger">
             <Icon icon="mdi:link-off" />
@@ -79,7 +79,7 @@ export function ResetPasswordForm() {
 
   if (success) {
     return (
-      <AuthCard title="Password" titleAccent="Updated">
+      <AuthCard title="Password Updated">
         <div className="auth-message-panel">
           <div className="auth-message-panel__icon">
             <Icon icon="mdi:check-circle-outline" />
@@ -102,11 +102,7 @@ export function ResetPasswordForm() {
   // ── Reset form ─────────────────────────────────────────────────────────────
 
   return (
-    <AuthCard
-      title="Reset"
-      titleAccent="Password"
-      subtitle="Create a new secure password for your account."
-    >
+    <AuthCard title="Reset Password" subtitle="Create a new secure password for your account.">
       <form className="auth-form" onSubmit={onSubmit}>
         <PasswordInput
           label="New Password"

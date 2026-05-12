@@ -1,4 +1,4 @@
-import { forwardRef, useState, useRef, useEffect, useCallback } from 'react';
+import { forwardRef, useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { Icon } from '@iconify/react';
 
 interface SelectOption {
@@ -53,6 +53,14 @@ export const SelectInput = forwardRef<HTMLSelectElement, SelectInputProps>(
     const onChangeRef = useRef(onChange);
     const onBlurRef = useRef(onBlur);
 
+    function toTitleCase(value: string) {
+      return value.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
+    }
+
+    function normalizeSelectOptionLabel(label: string) {
+      return toTitleCase(label.trim());
+    }
+
     // Keep refs updated
     useEffect(() => {
       onChangeRef.current = onChange;
@@ -70,16 +78,25 @@ export const SelectInput = forwardRef<HTMLSelectElement, SelectInputProps>(
       }
     }, [ref]);
 
+    const normalizedOptions = useMemo(() => {
+      return [...options]
+        .map((option) => ({
+          ...option,
+          label: normalizeSelectOptionLabel(option.label),
+        }))
+        .sort((a, b) => a.label.localeCompare(b.label));
+    }, [options]);
+
     // Filter options based on search
-    const filteredOptions = options.filter((option) =>
+    const filteredOptions = normalizedOptions.filter((option) =>
       option.label.toLowerCase().includes(searchQuery.toLowerCase()),
     );
 
     // Show search only if there are more than 5 options total
-    const showSearch = options.length > 5;
+    const showSearch = normalizedOptions.length > 5;
 
     // Get display label for selected value
-    const selectedOption = options.find((opt) => opt.value === value);
+    const selectedOption = normalizedOptions.find((opt) => opt.value === value);
     const displayLabel = selectedOption?.label || '';
 
     // Ref for the options list to handle scrolling
@@ -278,7 +295,7 @@ export const SelectInput = forwardRef<HTMLSelectElement, SelectInputProps>(
             <option value="" disabled>
               {placeholder}
             </option>
-            {options.map((opt) => (
+            {normalizedOptions.map((opt) => (
               <option key={opt.value} value={opt.value}>
                 {opt.label}
               </option>

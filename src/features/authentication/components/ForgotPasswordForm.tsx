@@ -40,14 +40,13 @@ export function ForgotPasswordForm() {
 
   if (result) {
     return (
-      <AuthCard title="Email" titleAccent="Sent">
+      <AuthCard title="Email Submitted">
         <div className="auth-message-panel">
           <div className="auth-message-panel__icon">
             <Icon icon="mdi:email-check-outline" />
           </div>
           <p className="auth-message-panel__copy">
-            We have sent an email to the address associated with your account. Please check your
-            inbox for further instructions on how to reset your password.
+            If your account is found in our system, you'll receive a password reset email.
           </p>
           <div className="auth-message-panel__note">
             Please check your spam/junk folder if the email is not in your inbox

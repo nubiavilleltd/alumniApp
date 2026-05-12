@@ -715,9 +715,7 @@ export default function AttendeesPage() {
     isLoading || isLoadingSurveySubmissions || (shouldLoadUserProfiles && isLoadingUserProfiles);
   const exportButtonDisabled = isPreparingExport || isExporting || attendees.length === 0;
   const exportButtonLabel = isPreparingExport
-    ? isLoadingUserProfiles
-      ? 'Loading profiles...'
-      : 'Loading attendees...'
+    ? 'Loading attendees...'
     : isExporting
       ? 'Exporting...'
       : 'Export List';
@@ -729,54 +727,52 @@ export default function AttendeesPage() {
 
       <main className="min-h-screen bg-[#faf9f7]">
         <div className="container-custom py-8">
-          <div className="rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-accent-100 sm:p-8">
-            <header className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
-              <div>
-                <h1 className="text-3xl font-bold leading-tight text-accent-950 sm:text-4xl">
-                  {pageTitle}
-                </h1>
-                <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-accent-500">
-                  {eventDate && (
-                    <span className="inline-flex items-center gap-2">
-                      <Icon icon="mdi:calendar-clock-outline" className="h-4 w-4" />
-                      {eventDate}
-                    </span>
-                  )}
+          <header className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between pb-6">
+            <div>
+              <h1 className="text-3xl font-bold leading-tight text-accent-950 sm:text-4xl">
+                {pageTitle}
+              </h1>
+              <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-accent-500">
+                {eventDate && (
                   <span className="inline-flex items-center gap-2">
-                    <Icon icon="mdi:account-group-outline" className="h-4 w-4" />
-                    {totalCount} attendee{totalCount === 1 ? '' : 's'}
+                    <Icon icon="mdi:calendar-clock-outline" className="h-4 w-4" />
+                    {eventDate}
                   </span>
-                </div>
+                )}
+                <span className="inline-flex items-center gap-2">
+                  <Icon icon="mdi:account-group-outline" className="h-4 w-4" />
+                  {totalCount} attendee{totalCount === 1 ? '' : 's'}
+                </span>
               </div>
+            </div>
 
-              <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center xl:w-auto">
-                <SearchInput
-                  value={searchTerm}
-                  onValueChange={setSearchTerm}
-                  onClear={() => setSearchTerm('')}
-                  placeholder="Search attendees"
-                  containerClassName="w-full sm:w-[22rem] xl:w-[24rem]"
-                  inputClassName="min-h-[3.4rem] border-0 bg-[#f7f5f2] text-base text-accent-700 shadow-none placeholder:text-accent-400 focus:ring-2 focus:ring-primary-200"
-                  iconClassName="text-accent-400"
-                />
+            <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center xl:w-auto">
+              <SearchInput
+                value={searchTerm}
+                onValueChange={setSearchTerm}
+                onClear={() => setSearchTerm('')}
+                placeholder="Search attendees"
+                containerClassName="w-full sm:w-[22rem] xl:w-[24rem]"
+                inputClassName="min-h-[3.4rem] border-0 bg-[#f7f5f2] text-base text-accent-700 shadow-none placeholder:text-accent-400 focus:ring-2 focus:ring-primary-200"
+                iconClassName="text-accent-400"
+              />
 
-                <button
-                  type="button"
-                  onClick={handleExportAttendees}
-                  disabled={exportButtonDisabled}
-                  className="inline-flex items-center gap-2 rounded-full bg-primary-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-600 disabled:cursor-not-allowed disabled:bg-primary-200"
-                >
-                  {isPreparingExport || isExporting ? (
-                    <Icon icon="mdi:loading" className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Icon icon="mdi:download-outline" className="h-4 w-4" />
-                  )}
+              <button
+                type="button"
+                onClick={handleExportAttendees}
+                disabled={exportButtonDisabled}
+                className="inline-flex items-center gap-2 rounded-full bg-primary-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-600 disabled:cursor-not-allowed disabled:bg-primary-200"
+              >
+                {isPreparingExport || isExporting ? (
+                  <Icon icon="mdi:loading" className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Icon icon="mdi:download-outline" className="h-4 w-4" />
+                )}
 
-                  <span>{exportButtonLabel}</span>
-                </button>
-              </div>
-            </header>
-          </div>
+                <span>{exportButtonLabel}</span>
+              </button>
+            </div>
+          </header>
 
           <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {isLoading ? (

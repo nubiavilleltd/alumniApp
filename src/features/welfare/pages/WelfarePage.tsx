@@ -5,16 +5,17 @@
 // Bottom row: 2-column grid (centred).
 // Cards are clickable (link or action).
 
-import { Icon } from '@iconify/react';
-import { Link, useNavigate } from 'react-router-dom';
+import {
+  BriefcaseBusiness,
+  Flame,
+  HandHelping,
+  HeartPulse,
+  type LucideIcon,
+  PartyPopper,
+} from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { SEO } from '@/shared/common/SEO';
-import { DonationButton } from '@/shared/components/ui/DonationButton';
 import { ROUTES } from '@/shared/constants/routes';
-
-const congratulationsIcon = '/Welfare/congratulations.svg';
-const wellnessIcon = '/Welfare/wellness.svg';
-const bereavementIcon = '/Welfare/bereavement.svg';
-const emergencyIcon = '/Welfare/Emergency.svg';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -22,10 +23,9 @@ interface WelfareService {
   id: string;
   title: string;
   description: string;
-  icon?: string;
-  imageSrc?: string;
-  iconBg?: string;
-  iconColor?: string;
+  icon: LucideIcon;
+  iconBg: string;
+  iconColor: string;
   href?: string;
 }
 
@@ -37,21 +37,27 @@ const topServices: WelfareService[] = [
     title: 'Congratulations',
     description:
       'We celebrate with you! Wedding gifts, new baby welcomes, and milestone birthday acknowledgments.',
-    imageSrc: congratulationsIcon,
+    icon: PartyPopper,
+    iconBg: 'bg-orange-100',
+    iconColor: 'text-orange-500',
   },
   {
     id: 'wellness',
     title: 'Wellness & Medical Support',
     description:
       'Financial and logistical assistance for members facing critical health challenges or sudden hardships.',
-    imageSrc: wellnessIcon,
+    icon: HeartPulse,
+    iconBg: 'bg-teal-100',
+    iconColor: 'text-teal-500',
   },
   {
     id: 'bereavement',
     title: 'Bereavement Support',
     description:
       'Providing compassionate support and guidance during times of loss, helping you navigate grief with care and understanding.',
-    imageSrc: bereavementIcon,
+    icon: Flame,
+    iconBg: 'bg-gray-100',
+    iconColor: 'text-gray-500',
   },
 ];
 
@@ -61,14 +67,16 @@ const bottomServices: WelfareService[] = [
     title: 'Emergency & Crisis Support',
     description:
       'Immediate support for urgent situations, connecting you to the help and resources you need when it matters most.',
-    imageSrc: emergencyIcon,
+    icon: HandHelping,
+    iconBg: 'bg-red-100',
+    iconColor: 'text-red-500',
   },
   {
     id: 'professional',
     title: 'Professional & Employment Support',
     description:
       'Supporting your career journey with access to opportunities, guidance, and resources for professional growth and development.',
-    icon: 'mdi:briefcase-outline',
+    icon: BriefcaseBusiness,
     iconBg: 'bg-sky-100',
     iconColor: 'text-sky-500',
   },
@@ -87,23 +95,15 @@ function ServiceCard({
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sm:p-6 hover:border-primary-200 hover:shadow-md transition-all cursor-pointer flex flex-col gap-4">
       {/* Header: icon + title inline */}
       <div className={`flex items-center gap-4 ${horizontal ? '' : ''}`}>
-        {service.imageSrc ? (
-          <img
-            src={service.imageSrc}
-            alt=""
+        <div
+          className={`flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl ${service.iconBg}`}
+        >
+          <service.icon
             aria-hidden="true"
-            className="h-14 w-14 flex-shrink-0 object-contain"
+            className={`h-7 w-7 ${service.iconColor}`}
+            strokeWidth={2.25}
           />
-        ) : (
-          <div
-            className={`flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl ${service.iconBg ?? 'bg-gray-100'}`}
-          >
-            <Icon
-              icon={service.icon ?? 'mdi:briefcase-outline'}
-              className={`h-7 w-7 ${service.iconColor ?? 'text-gray-500'}`}
-            />
-          </div>
-        )}
+        </div>
         <h2 className="text-lg font-bold text-gray-900 leading-snug">{service.title}</h2>
       </div>
 
@@ -116,8 +116,6 @@ function ServiceCard({
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function WelfarePage() {
-  const navigate = useNavigate();
-
   return (
     <>
       <SEO

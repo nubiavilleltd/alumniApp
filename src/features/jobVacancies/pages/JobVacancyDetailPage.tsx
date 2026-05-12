@@ -60,7 +60,7 @@ function DetailSection({ title, content }: { title: string; content: string }) {
 
 function JobDetailSkeleton() {
   return (
-    <main className="min-h-screen bg-[#f7f6f3] px-4 py-8 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-[#f7f6f3] py-4">
       <div className="mx-auto max-w-6xl animate-pulse space-y-8">
         <div className="h-56 rounded-[1.5rem] bg-white shadow-sm ring-1 ring-black/5" />
         <div className="h-96 rounded-[1.5rem] bg-white shadow-sm ring-1 ring-black/5" />
@@ -96,7 +96,7 @@ export default function JobVacancyDetailPage() {
 
   if (isError) {
     return (
-      <main className="min-h-screen bg-[#f7f6f3] px-4 py-10">
+      <main className="min-h-screen bg-[#f7f6f3] py-10">
         <SEO title="Job Details" description="View job vacancy details." />
         <EmptyState
           icon="mdi:briefcase-search-outline"
@@ -113,7 +113,7 @@ export default function JobVacancyDetailPage() {
 
   if (!job) {
     return (
-      <main className="min-h-screen bg-[#f7f6f3] px-4 py-10">
+      <main className="min-h-screen bg-[#f7f6f3] py-10">
         <SEO title="Job Not Found" description="The requested job vacancy could not be found." />
         <EmptyState
           icon="mdi:briefcase-remove-outline"
@@ -133,38 +133,31 @@ export default function JobVacancyDetailPage() {
         description={`View details for ${job.title} at ${job.companyName}.`}
       />
 
-      <main className="min-h-screen bg-[#f7f6f3] px-4 py-8 text-[#071116] sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl space-y-7">
-          <AppLink
-            href={ROUTES.JOB_VACANCIES}
-            className="inline-flex items-center gap-2 text-sm font-semibold text-primary-600 transition-colors hover:text-primary-700"
-          >
-            <Icon icon="mdi:arrow-left" className="h-4 w-4" />
-            Back to jobs
-          </AppLink>
-
-          <section className="rounded-[1.5rem] bg-white p-5 shadow-sm ring-1 ring-black/5 sm:p-7">
-            <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+      <main className="bg-[#f7f6f3] text-[#071116] px-8 py-4 lg:h-[calc(100dvh-10rem)] lg:overflow-hidden lg:flex lg:flex-col">
+        <div className="mx-auto w-full space-y-4 lg:flex lg:flex-col lg:flex-1 lg:space-y-4 lg:min-h-0">
+          {/* Top card — fixed height on desktop, scrolls internally */}
+          <section className="rounded-[1.5rem] bg-white p-5 shadow-sm ring-1 ring-black/5 sm:p-6 lg:shrink-0 lg:overflow-y-auto">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-3">
-                  <h1 className="text-2xl font-extrabold tracking-tight text-[#071116] sm:text-3xl">
+                  <h1 className="text-xl font-extrabold tracking-tight text-[#071116] sm:text-2xl">
                     {job.title}
                   </h1>
-                  <span className="inline-flex rounded-xl bg-green-100 px-3 py-1.5 text-sm font-semibold text-green-700">
+                  <span className="inline-flex rounded-xl bg-green-100 px-3 py-1 text-sm font-semibold text-green-700">
                     Deadline: {formatJobDate(job.postedAt)}
                   </span>
                 </div>
 
-                <div className="mt-3 space-y-2 text-slate-600">
-                  <p className="text-lg font-semibold">{job.companyName}</p>
-                  <p className="text-xl font-extrabold text-slate-700 sm:text-2xl">
+                <div className="mt-2 space-y-1 text-slate-600">
+                  <p className="text-base font-semibold">{job.companyName}</p>
+                  <p className="text-lg font-extrabold text-slate-700 sm:text-xl">
                     {getSalaryDisplay(job)}
                   </p>
-                  <p className="inline-flex items-center gap-1.5 text-sm font-semibold sm:text-base">
-                    <Icon icon="mdi:map-marker-outline" className="h-5 w-5" />
+                  <p className="inline-flex items-center gap-1.5 text-sm font-semibold">
+                    <Icon icon="mdi:map-marker-outline" className="h-4 w-4" />
                     {job.location}
                   </p>
-                  <p className="text-sm font-medium text-slate-500 sm:text-base">{postedLabel}</p>
+                  <p className="text-sm font-medium text-slate-500">{postedLabel}</p>
                 </div>
               </div>
 
@@ -174,29 +167,29 @@ export default function JobVacancyDetailPage() {
                     href={application.href}
                     target={application.target}
                     rel={application.rel}
-                    className="inline-flex items-center justify-center gap-2 rounded-full bg-primary-500 px-6 py-2.5 text-sm font-bold text-white transition-colors hover:bg-primary-600"
+                    className="inline-flex items-center justify-center gap-2 rounded-full bg-primary-500 px-5 py-2 text-sm font-bold text-white transition-colors hover:bg-primary-600"
                   >
                     Apply
-                    <Icon icon={application.icon} className="h-5 w-5" />
+                    <Icon icon={application.icon} className="h-4 w-4" />
                   </a>
                 ) : null}
                 <button
                   type="button"
                   onClick={handleShare}
-                  className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-primary-200 text-primary-600 transition-colors hover:bg-primary-50"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-primary-200 text-primary-600 transition-colors hover:bg-primary-50"
                   aria-label="Share job"
                 >
-                  <Icon icon="mdi:share-variant-outline" className="h-5 w-5" />
+                  <Icon icon="mdi:share-variant-outline" className="h-4 w-4" />
                 </button>
               </div>
             </div>
 
             {pillLabels.length > 0 ? (
-              <div className="mt-6 flex flex-wrap gap-3 lg:justify-end">
+              <div className="mt-4 flex flex-wrap gap-2 lg:justify-end">
                 {pillLabels.map((label) => (
                   <span
                     key={label}
-                    className="rounded-xl bg-slate-100 px-3.5 py-2 text-sm font-semibold text-slate-600"
+                    className="rounded-xl bg-slate-100 px-3 py-1.5 text-sm font-semibold text-slate-600"
                   >
                     {label}
                   </span>
@@ -205,7 +198,8 @@ export default function JobVacancyDetailPage() {
             ) : null}
           </section>
 
-          <section className="space-y-8 rounded-[1.5rem] bg-white p-5 shadow-sm ring-1 ring-black/5 sm:p-7">
+          {/* Bottom card — fills remaining height and scrolls internally on desktop */}
+          <section className="space-y-6 rounded-[1.5rem] bg-white p-5 shadow-sm ring-1 ring-black/5 sm:p-6 lg:flex-1 lg:overflow-y-auto lg:min-h-0">
             {job.flyer ? (
               <section className="space-y-3">
                 <h2 className="text-base font-bold text-[#071116] sm:text-lg">Job Flyer</h2>

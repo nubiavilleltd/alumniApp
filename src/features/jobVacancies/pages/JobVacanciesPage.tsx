@@ -376,10 +376,10 @@ export function JobCard({
       >
         <div className="flex items-start justify-between gap-3">
           <time
-            dateTime={job.postedAt}
+            dateTime={job.createdAt || job.postedAt}
             className="inline-flex min-h-9 items-center rounded-full bg-white/80 px-4 py-[0.35rem] text-[0.88rem] font-bold leading-none text-[#59626c]"
           >
-            {formatJobDate(job.postedAt)}
+            {formatJobDate(job.createdAt || job.postedAt)}
           </time>
 
           {panelAction ? <div className="shrink-0">{panelAction}</div> : null}
@@ -677,7 +677,7 @@ export function PostJobModal({
               name="jobType"
               value={form.jobType}
               onChange={(event) => handleFieldChange('jobType', event.target.value as JobType | '')}
-              placeholder="Select a job type"
+              placeholder="Select an employment type"
               options={JOB_TYPE_OPTIONS}
               error={fieldErrors.jobType}
               required

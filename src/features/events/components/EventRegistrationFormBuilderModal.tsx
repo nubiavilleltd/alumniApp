@@ -905,7 +905,7 @@ export function EventRegistrationFormBuilderModal({
                               rows={2}
                               value={question.placeholder}
                               readOnly
-                              placeholder="Enter a longer response"
+                              placeholder="Enter response"
                               className="w-full resize-none border-0 bg-transparent text-base text-gray-400 outline-none placeholder:text-gray-400"
                             />
                           ) : question.type === 'short_answer' ? (
@@ -1163,7 +1163,7 @@ export function EventRegistrationFormBuilderModal({
           <button
             type="button"
             onClick={addQuestion}
-            className="inline-flex items-center gap-2 rounded-full border-2 border-primary-500 px-2 py-1 text-md font-semibold text-primary-500 transition-colors hover:bg-primary-50"
+            className="inline-flex items-center gap-2 rounded-full border-2 border-primary-500 px-1 text-md font-semibold text-primary-500 transition-colors hover:bg-primary-50"
           >
             <Icon icon="mdi:plus" className="h-4 w-4" />
             Add new question
@@ -1178,7 +1178,7 @@ export function EventRegistrationFormBuilderModal({
 
         <div className="mt-8 flex justify-center">
           <Button type="button" size="md" className="min-w-[12rem]" onClick={handleSave}>
-            Add to Event
+            {value ? 'Update' : 'Add to Event'}
           </Button>
         </div>
       </div>
