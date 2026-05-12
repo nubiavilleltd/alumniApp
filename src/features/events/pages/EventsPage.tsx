@@ -17,6 +17,7 @@ import { Pagination } from '@/shared/components/ui/Pagination';
 import { ROUTES } from '@/shared/constants/routes';
 import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { formatDateRange, parseDateInput } from '@/shared/utils/dateHelpers';
+import { Calendar } from 'lucide-react';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -61,12 +62,13 @@ const LIST_PAGE = 20;
 
 // ─── Calendar event block ─────────────────────────────────────────────────────
 
-function formatShort(dateStr: string) {
+function formatShort(dateStr: string | undefined): string {
+  if (!dateStr) return '';
   const d = new Date(dateStr);
   return d.toLocaleDateString(undefined, {
     month: 'short',
     day: 'numeric',
-  }); // e.g. "Apr 15"
+  });
 }
 
 function CalendarBlock({
@@ -100,8 +102,9 @@ function CalendarBlock({
     >
       {/* Hidden on mobile, visible on desktop */}
       <div className="hidden sm:inline-flex items-center gap-1 px-2 py-[3px] rounded-md text-[10px] font-medium text-white bg-gray-800 mb-1.5">
-        <span>📅</span>
+        <Calendar size={12} />
         {formatShort(event.startDate)}
+        {event.endDate ? ` - ${formatShort(event.endDate)}` : ''}
       </div>
 
       {/* Compact title */}
@@ -112,7 +115,7 @@ function CalendarBlock({
   );
 }
 
-function Calendar({
+function CalendarComponent({
   events,
   currentDate,
   activeEventId,
@@ -516,7 +519,7 @@ export function EventsPage() {
             {isLoading ? (
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 animate-pulse h-[480px]" />
             ) : (
-              <Calendar
+              <CalendarComponent
                 events={calendarMonthEvents}
                 currentDate={calendarDate}
                 activeEventId={activeEventId}
