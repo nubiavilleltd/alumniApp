@@ -37,7 +37,7 @@ export function AdminRoute({ children }: AdminRouteProps) {
   const { data: freshUser, isLoading } = useCurrentUser();
 
   // ✅ NEW: Don't redirect if logout is in progress
-  if (isLoggingOut) return null;
+  // if (isLoggingOut) return null;
 
   // ① Not logged in at all — redirect to login immediately
   if (!isAuthenticated) {

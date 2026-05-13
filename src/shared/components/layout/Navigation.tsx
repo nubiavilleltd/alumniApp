@@ -525,45 +525,77 @@ export function Navigation() {
     previousThreadStatesRef.current = nextThreadStates;
   }, [activeMessagesThreadId, authenticatedUser, inboxQuery.data, pathname]);
 
-  const handleLogout = async () => {
+  // const handleLogout = async () => {
+  //   const setLoggingOut = useTokenStore.getState().setLoggingOut;
+
+  //   setIsLoggingOut(true);
+  //   setLoggingOut(true); // ✅ NEW: Set global logout flag
+  //   setMobileOpen(false);
+
+  //   try {
+  //     // Call API logout if authenticated
+  //     if (authenticatedUser) {
+  //       try {
+  //         await authApi.logout();
+  //       } catch (error) {
+  //         console.log('Failed to call logout API:', error);
+  //       }
+  //     }
+
+  //     // Clear authentication state
+  //     clearTokens();
+  //     clearIdentity();
+
+  //     // Small delay to ensure state updates propagate
+  //     await new Promise((resolve) => setTimeout(resolve, 50));
+
+  //     // Hard navigate to home
+  //     // window.location.href = ROUTES.HOME;
+
+  //     window.location.replace(window.location.origin + ROUTES.HOME);
+  //   } catch (error) {
+  //     console.error('Logout failed:', error);
+  //     clearTokens();
+  //     clearIdentity();
+  //     // window.location.href = ROUTES.HOME;
+
+  //     window.location.replace(window.location.origin + ROUTES.HOME);
+  //   } finally {
+  //     setIsLoggingOut(false);
+  //     setLoggingOut(false); // ✅ NEW: Clear global logout flag
+  //   }
+  // };
+
+  const handleLogout = () => {
     const setLoggingOut = useTokenStore.getState().setLoggingOut;
 
-    setIsLoggingOut(true);
-    setLoggingOut(true); // ✅ NEW: Set global logout flag
+    // Close mobile menu
     setMobileOpen(false);
 
-    try {
-      // Call API logout if authenticated
+    // Set local loading state
+    setIsLoggingOut(true);
+
+    // ✅ CRITICAL: Set global logout flag FIRST
+    setLoggingOut(true);
+
+    // ✅ Use requestAnimationFrame to ensure the logout flag renders
+    // before we start clearing state
+    requestAnimationFrame(() => {
+      // Call API logout (fire and forget - don't block)
       if (authenticatedUser) {
-        try {
-          await authApi.logout();
-        } catch (error) {
-          console.log('Failed to call logout API:', error);
-        }
+        authApi.logout().catch(() => {});
       }
 
       // Clear authentication state
       clearTokens();
       clearIdentity();
 
-      // Small delay to ensure state updates propagate
-      await new Promise((resolve) => setTimeout(resolve, 50));
-
-      // Hard navigate to home
-      // window.location.href = ROUTES.HOME;
-
-      window.location.replace(window.location.origin + ROUTES.HOME);
-    } catch (error) {
-      console.error('Logout failed:', error);
-      clearTokens();
-      clearIdentity();
-      // window.location.href = ROUTES.HOME;
-
-      window.location.replace(window.location.origin + ROUTES.HOME);
-    } finally {
-      setIsLoggingOut(false);
-      setLoggingOut(false); // ✅ NEW: Clear global logout flag
-    }
+      // ✅ Use another RAF to ensure state clears before navigation
+      requestAnimationFrame(() => {
+        // Hard navigate to home (atomic operation)
+        window.location.replace(window.location.origin + ROUTES.HOME);
+      });
+    });
   };
 
   const mobileMenuItems = isAdmin

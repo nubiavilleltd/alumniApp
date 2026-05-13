@@ -14,9 +14,9 @@ export function GuestRoute({ children }: GuestRouteProps) {
   const isLoggingOut = useTokenStore((state) => state._isLoggingOut);
   const location = useLocation();
 
-  if (isLoggingOut) {
-    return null; // Prevents login page from flashing
-  }
+  // if (isLoggingOut) {
+  //   return null; // Prevents login page from flashing
+  // }
   if (isAuthenticated) {
     const from = (location.state as any)?.from ?? USER_ROUTES.DASHBOARD;
     return <Navigate to={from} replace />;
