@@ -7,7 +7,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Icon } from '@iconify/react';
+import { CalendarX, Lock, MapPin, Pencil, Trash2 } from 'lucide-react';
 import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { FormInput } from '@/shared/components/ui/input/FormInput';
@@ -44,6 +44,7 @@ import {
 } from '../lib/eventSurveyAvailability';
 import { eventsService } from '../services/event.service';
 import { useEventStatus } from '../hooks/useEventStatus';
+import { Icon } from '@iconify/react/dist/iconify.js';
 
 type LocalRegistrationFormDraft = {
   localId: string;
@@ -371,7 +372,7 @@ export default function EditEventPage() {
         <SEO title="Access Denied" />
         <section className="section">
           <div className="container-custom text-center">
-            <Icon icon="mdi:lock-outline" className="w-16 h-16 text-red-400 mx-auto mb-4" />
+            <Lock className="w-16 h-16 text-red-400 mx-auto mb-4" />
             <h1 className="text-3xl font-bold mb-4">Access Denied</h1>
             <p className="text-gray-600 mb-6">You don't have permission to edit events.</p>
             <Button onClick={() => navigate(EVENT_ROUTES.ROOT)}>Back to Events</Button>
@@ -414,7 +415,7 @@ export default function EditEventPage() {
     return (
       <section className="section">
         <div className="container-custom text-center">
-          <Icon icon="mdi:calendar-alert" className="w-16 h-16 text-red-400 mx-auto mb-4" />
+          <CalendarX className="w-16 h-16 text-red-400 mx-auto mb-4" />
           <h1 className="text-3xl font-bold mb-4">Event Not Found</h1>
           <Button onClick={() => navigate(EVENT_ROUTES.ROOT)}>Back to Events</Button>
         </div>
@@ -447,28 +448,27 @@ export default function EditEventPage() {
               onClick={() => setShowDeleteModal(true)}
               className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 border border-red-200 rounded-lg transition-colors"
             >
-              <Icon icon="mdi:trash-can-outline" className="w-4 h-4" />
+              <Trash2 className="w-4 h-4" />
               Delete Event
             </button>
           </div>
 
-          {isPast && (
-            <div className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 mb-4">
-              <Icon
-                icon="mdi:information-outline"
-                className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5"
-              />
-              <p className="text-sm text-amber-800">
-                This event has already taken place. You can still update the title, event details,
-                location, and banner image for record-keeping purposes. Date, time, and status
-                fields are locked.
-              </p>
-            </div>
-          )}
-
           <form onSubmit={handleSubmit(onSubmit)} className="card p-6 space-y-6">
+            {isPast && (
+              <div className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 mb-4">
+                <Icon
+                  icon="mdi:information-outline"
+                  className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5"
+                />
+                <p className="text-sm text-amber-800">
+                  This event has already taken place. You can still update the title, event details,
+                  location, and banner image for record-keeping purposes. Date, time, and status
+                  fields are locked.
+                </p>
+              </div>
+            )}
             {/* ── Core ────────────────────────────────────────────────── */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <FormInput
                 label="Event Title"
                 id="title"
@@ -483,15 +483,11 @@ export default function EditEventPage() {
                 id="location"
                 required
                 placeholder="Venue name, city"
-                icon="mdi:map-marker-outline"
+                icon={MapPin}
                 error={errors.location?.message}
                 {...register('location')}
               />
-            </div>
 
-            {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4"> */}
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <DatePicker
                 label="Start Date"
                 id="event_date"
@@ -509,6 +505,9 @@ export default function EditEventPage() {
                   })
                 }
               />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <DatePicker
                 label="End Date"
                 id="end_date"
@@ -524,9 +523,6 @@ export default function EditEventPage() {
                   })
                 }
               />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <TimePicker
                 label="Start Time"
                 id="start_time"
@@ -568,6 +564,22 @@ export default function EditEventPage() {
               {...register('description')}
             />
 
+            {/* ── Banner image ────────────────────────────────────────── */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Event Banner (Optional)
+                <span className="text-xs text-gray-400 font-normal ml-2">
+                  {bannerPreview ? 'Current image shown — upload to replace' : 'Optional'}
+                </span>
+              </label>
+              <ImageUpload
+                previews={bannerPreview ? [bannerPreview] : []}
+                onChange={handleImageChange}
+                hint="PNG or JPG — max 2 MB. Recommended: 1200×600 px"
+                multiple={false}
+              />
+            </div>
+
             {/* ── Classification ──────────────────────────────────────── */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <SelectInput
@@ -603,22 +615,6 @@ export default function EditEventPage() {
                 error={errors.max_attendees?.message}
                 {...register('max_attendees', { valueAsNumber: true })}
               /> */}
-            </div>
-
-            {/* ── Banner image ────────────────────────────────────────── */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Event Banner (Optional)
-                <span className="text-xs text-gray-400 font-normal ml-2">
-                  {bannerPreview ? 'Current image shown — upload to replace' : 'Optional'}
-                </span>
-              </label>
-              <ImageUpload
-                previews={bannerPreview ? [bannerPreview] : []}
-                onChange={handleImageChange}
-                hint="PNG or JPG — max 2 MB. Recommended: 1200×600 px"
-                multiple={false}
-              />
             </div>
 
             {!isPast && (
@@ -671,7 +667,7 @@ export default function EditEventPage() {
                               }}
                               className="inline-flex items-center gap-2 rounded-full border border-primary-200 bg-white px-3 py-1.5 text-sm font-semibold text-primary-500 transition-colors hover:bg-primary-50"
                             >
-                              <Icon icon="mdi:pencil-outline" className="h-4 w-4" />
+                              <Pencil className="h-4 w-4" />
                               Edit form
                             </button>
                             <button
@@ -689,7 +685,7 @@ export default function EditEventPage() {
                               }}
                               className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 transition-colors hover:text-red-500"
                             >
-                              <Icon icon="mdi:delete-outline" className="h-4 w-4" />
+                              <Trash2 className="h-4 w-4" />
                               Remove
                             </button>
                           </div>

@@ -47,15 +47,15 @@ export const alumniService = {
       if (!match) return null;
 
       //Stop formatting once the backend is sending the correct format!!!!!!!. Just pass in the match directly to mapBackendAlumniToFrontend()
-      const formattedData = {
-        ...match,
-        profile: {
-          ...match.profile,
-          field_visibility: parseFieldVisibility(match.profile.field_visibility),
-        },
-      };
+      // const formattedData = {
+      //   ...match,
+      //   profile: {
+      //     ...match.profile,
+      //     field_visibility: parseFieldVisibility(match.profile.field_visibility),
+      //   },
+      // };
 
-      return mapBackendAlumniToFrontend(formattedData);
+      return mapBackendAlumniToFrontend(match);
     } catch (error: any) {
       if (error.response?.status === 404) return null;
       throw handleApiError(

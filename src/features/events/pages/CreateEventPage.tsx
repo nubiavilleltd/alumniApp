@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Icon } from '@iconify/react';
+import { Lock, MapPin, Pencil, Trash2 } from 'lucide-react';
 import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { FormInput } from '@/shared/components/ui/input/FormInput';
@@ -262,7 +262,7 @@ export default function CreateEventPage() {
         <SEO title="Access Denied" />
         <section className="section">
           <div className="container-custom text-center">
-            <Icon icon="mdi:lock-outline" className="w-16 h-16 text-red-400 mx-auto mb-4" />
+            <Lock className="w-16 h-16 text-red-400 mx-auto mb-4" />
             <h1 className="text-3xl font-bold mb-4">Access Denied</h1>
             <p className="text-gray-600 mb-6">You don't have permission to create events.</p>
             <Button onClick={() => navigate(EVENT_ROUTES.ROOT)}>Back to Events</Button>
@@ -300,7 +300,7 @@ export default function CreateEventPage() {
           <form onSubmit={handleSubmit(onSubmit)} className="card p-6 space-y-6">
             {/* ── Core fields ─────────────────────────────────────────── */}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <FormInput
                 label="Event Title"
                 id="title"
@@ -315,13 +315,11 @@ export default function CreateEventPage() {
                 id="location"
                 required
                 placeholder="Venue name, city"
-                icon="mdi:map-marker-outline"
+                icon={MapPin}
                 error={errors.location?.message}
                 {...register('location')}
               />
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <DatePicker
                 label="Start Date"
                 id="event_date"
@@ -338,6 +336,9 @@ export default function CreateEventPage() {
                   })
                 }
               />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <DatePicker
                 label="End Date"
                 id="end_date"
@@ -352,9 +353,7 @@ export default function CreateEventPage() {
                   })
                 }
               />
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <TimePicker
                 label="Start Time"
                 id="start_time"
@@ -395,6 +394,20 @@ export default function CreateEventPage() {
               {...register('description')}
             />
 
+            {/* ── Banner image ────────────────────────────────────────── */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Event Banner
+                <span className="text-xs text-gray-400 font-normal ml-2">Optional</span>
+              </label>
+              <ImageUpload
+                previews={bannerPreview ? [bannerPreview] : []}
+                onChange={handleImageChange}
+                hint="PNG or JPG — max 2 MB. Recommended: 1200×600 px"
+                multiple={false}
+              />
+            </div>
+
             {/* ── Classification ──────────────────────────────────────── */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <SelectInput
@@ -424,20 +437,6 @@ export default function CreateEventPage() {
                 error={errors.max_attendees?.message}
                 {...register('max_attendees', { valueAsNumber: true })}
               /> */}
-            </div>
-
-            {/* ── Banner image ────────────────────────────────────────── */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Event Banner
-                <span className="text-xs text-gray-400 font-normal ml-2">Optional</span>
-              </label>
-              <ImageUpload
-                previews={bannerPreview ? [bannerPreview] : []}
-                onChange={handleImageChange}
-                hint="PNG or JPG — max 2 MB. Recommended: 1200×600 px"
-                multiple={false}
-              />
             </div>
 
             <div className="rounded-[1.75rem] border border-primary-100 bg-primary-50/50 px-5 py-5">
@@ -487,7 +486,7 @@ export default function CreateEventPage() {
                             }}
                             className="inline-flex items-center gap-2 rounded-full border border-primary-200 bg-white px-3 py-1.5 text-sm font-semibold text-primary-500 transition-colors hover:bg-primary-50"
                           >
-                            <Icon icon="mdi:pencil-outline" className="h-4 w-4" />
+                            <Pencil className="h-4 w-4" />
                             Edit form
                           </button>
                           <button
@@ -502,7 +501,7 @@ export default function CreateEventPage() {
                             }}
                             className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 transition-colors hover:text-red-500"
                           >
-                            <Icon icon="mdi:delete-outline" className="h-4 w-4" />
+                            <Trash2 className="h-4 w-4" />
                             Remove
                           </button>
                         </div>

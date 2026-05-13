@@ -313,7 +313,7 @@ import {
   industrySectorOptions,
   occupationOptions,
 } from '@/features/authentication/constants/profileOptions';
-import type { PrivacySettings } from '@/features/authentication/types/auth.types';
+import type { FieldVisibility, PrivacySettings } from '@/features/authentication/types/auth.types';
 
 // ─── Label + date helpers ─────────────────────────────────────────────────────
 
@@ -334,8 +334,16 @@ export function formatDate(iso: string | undefined): string | undefined {
   });
 }
 
-export function parseFieldVisibility(value?: string | null) {
+export function parseFieldVisibility(value?: unknown) {
   if (!value) return {};
+
+  if (typeof value === 'object') {
+    return value as Record<string, unknown>;
+  }
+
+  if (typeof value !== 'string') {
+    return {};
+  }
 
   try {
     return JSON.parse(value);
@@ -344,23 +352,75 @@ export function parseFieldVisibility(value?: string | null) {
   }
 }
 
+export function normalizeFieldVisibility(
+  value: unknown,
+  fallback: FieldVisibility = 'private',
+): FieldVisibility {
+  if (value === 'members') {
+    return 'members';
+  }
+
+  if (value === 'public' || value === true || value === 'true' || value === 1 || value === '1') {
+    return 'public';
+  }
+
+  if (value === 'private' || value === false || value === 'false' || value === 0 || value === '0') {
+    return 'private';
+  }
+
+  return fallback;
+}
+
+function isVisibilityAllowed(
+  visibility: FieldVisibility | undefined,
+  isOwner: boolean,
+  isSignedIn = false,
+): boolean {
+  if (isOwner) return true;
+
+  switch (visibility) {
+    case 'public':
+      return true;
+    case 'members':
+      return isSignedIn;
+    case 'private':
+      return false;
+    default:
+      return false;
+  }
+}
+
 export function isFieldVisible(
   fieldOwner: Alumni,
   fieldName: keyof PrivacySettings,
-  currentViewer: Alumni | null,
+  currentViewer: { memberId?: string | null } | null,
 ): boolean {
-  // User can always see their own fields
-  if (currentViewer?.memberId === fieldOwner.id) {
-    return true;
-  }
+  const isOwner = currentViewer?.memberId === fieldOwner.memberId;
 
-  // Check privacy setting (default to 'public' if not set)
-  const fieldPrivacy = fieldOwner.privacy?.[fieldName] ?? 'public';
-
-  return fieldPrivacy === 'public';
+  return isGroupVisible(fieldName, fieldOwner.privacy, isOwner, Boolean(currentViewer?.memberId));
 }
 
 // ─── Photo display ────────────────────────────────────────────────────────────
+
+export function resolveProfilePhoto(params: {
+  photoUrl?: string | null;
+  privacy?: PrivacySettings;
+  photoVisibility?: FieldVisibility;
+  isOwner: boolean;
+  isSignedIn?: boolean;
+}): string | undefined {
+  const isVisible = isVisibilityAllowed(
+    params.photoVisibility ?? params.privacy?.photo,
+    params.isOwner,
+    params.isSignedIn,
+  );
+
+  if (!isVisible) {
+    return undefined;
+  }
+
+  return params.photoUrl ?? undefined;
+}
 
 /**
  * Resolve the photo URL to display given a privacy visibility flag.
@@ -413,16 +473,13 @@ export function isGroupVisible(
 
   const fields = GROUP_FIELD_MAP[group];
   return fields.some((field) => {
-    switch (privacy[field]) {
-      case 'public':
-        return true;
-      case 'members':
-        return isSignedIn;
-      case 'private':
-        return false;
-      default:
-        return false;
+    const visibility = privacy[field];
+
+    if (!visibility) {
+      return false;
     }
+
+    return isVisibilityAllowed(visibility, isOwner, isSignedIn);
   });
 }
 

@@ -28,11 +28,26 @@ export function mapBackendPrivacyToFrontend(raw: any): PrivacySettings {
 
   // console.log('my profile', { raw, vis: raw.field_visibility, parsed: visibility });
 
-  const normalize = (value: any): FieldVisibility => {
+  const normalize = (value: any, fallback: FieldVisibility = 'private'): FieldVisibility => {
+    if (value === 'members') {
+      return 'members';
+    }
+
     if (value === 'public' || value === true || value === 'true' || value === 1 || value === '1') {
       return 'public';
     }
-    return 'private';
+
+    if (
+      value === 'private' ||
+      value === false ||
+      value === 'false' ||
+      value === 0 ||
+      value === '0'
+    ) {
+      return 'private';
+    }
+
+    return fallback;
   };
 
   return {

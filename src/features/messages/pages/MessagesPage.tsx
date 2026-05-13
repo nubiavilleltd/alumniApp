@@ -46,7 +46,6 @@ import {
 } from '../lib/marketplaceDraftPrefillStorage';
 import type {
   MessageAttachment,
-  MessageDeliveryStatus,
   MessageItem,
   MessageReplyPreview,
   MessageThreadFilter,
@@ -116,16 +115,6 @@ export function MessagesPage() {
   const [voiceRecordingDurationMs, setVoiceRecordingDurationMs] = useState(0);
   const [optimisticMessagesByThreadId, setOptimisticMessagesByThreadId] = useState<
     Record<string, MessageItem[]>
-  >({});
-  const [sidebarDeliveryOverridesByThreadId, setSidebarDeliveryOverridesByThreadId] = useState<
-    Record<
-      string,
-      {
-        isOwn: boolean;
-        status?: MessageDeliveryStatus;
-        lastActivityAt: string;
-      }
-    >
   >({});
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const voiceRecordButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -223,39 +212,6 @@ export function MessagesPage() {
           ),
         }
       : activeThread;
-
-  useEffect(() => {
-    if (!activeThreadWithOptimisticMessages?.id) return;
-
-    const lastMessage =
-      activeThreadWithOptimisticMessages.messages[
-        activeThreadWithOptimisticMessages.messages.length - 1
-      ];
-
-    if (!lastMessage) return;
-
-    setSidebarDeliveryOverridesByThreadId((previous) => {
-      const current = previous[activeThreadWithOptimisticMessages.id];
-      const next = {
-        isOwn: lastMessage.isOwn,
-        status: lastMessage.status,
-        lastActivityAt: lastMessage.createdAt,
-      };
-
-      if (
-        current?.isOwn === next.isOwn &&
-        current?.status === next.status &&
-        current?.lastActivityAt === next.lastActivityAt
-      ) {
-        return previous;
-      }
-
-      return {
-        ...previous,
-        [activeThreadWithOptimisticMessages.id]: next,
-      };
-    });
-  }, [activeThreadWithOptimisticMessages]);
   const unreadDividerMessageId = useMemo(() => {
     if (!activeThreadWithOptimisticMessages?.messages.length) return null;
 
@@ -281,7 +237,7 @@ export function MessagesPage() {
     resolvedThreadSummary?.unreadCount,
   ]);
   const threadShell = activeThreadWithOptimisticMessages ?? resolvedThreadSummary;
-  const unreadMessageCount = inboxQuery.data?.unreadCount ?? 0;
+  const unreadThreadCount = inboxQuery.data?.unreadThreadCount ?? 0;
   const groupParticipants = useMemo(
     () =>
       threadShell?.type === 'group' ? sortGroupParticipants(threadShell.participants ?? []) : [],
@@ -1223,16 +1179,10 @@ export function MessagesPage() {
   }, [activeThread, attachmentsDisabled]);
 
   function getSidebarDeliveryState(thread: MessageThreadSummary) {
-    const override = sidebarDeliveryOverridesByThreadId[thread.id];
-
-    if (override && override.lastActivityAt === thread.lastActivityAt) {
-      return {
-        isOwn: override.isOwn,
-        status: override.status,
-      };
-    }
-
-    if (activeThreadWithOptimisticMessages?.id === thread.id) {
+    if (
+      activeThreadWithOptimisticMessages?.id === thread.id &&
+      activeOptimisticMessages.length > 0
+    ) {
       const lastMessage =
         activeThreadWithOptimisticMessages.messages[
           activeThreadWithOptimisticMessages.messages.length - 1
@@ -1328,7 +1278,7 @@ export function MessagesPage() {
                   {inboxFilters.map((item) => {
                     const active = filter === item.key;
                     const label =
-                      item.key === 'unread' ? `${item.label} (${unreadMessageCount})` : item.label;
+                      item.key === 'unread' ? `${item.label} (${unreadThreadCount})` : item.label;
 
                     return (
                       <button

@@ -153,6 +153,7 @@ export function GroupParticipantsModal({
         recipientProfile: {
           fullName: participant.fullName,
           avatar: participant.avatar,
+          photoVisibility: participant.photoVisibility,
           headline: participant.headline,
           location: participant.location,
           graduationYear: participant.graduationYear || undefined,
