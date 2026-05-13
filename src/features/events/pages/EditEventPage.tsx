@@ -44,7 +44,6 @@ import {
 } from '../lib/eventSurveyAvailability';
 import { eventsService } from '../services/event.service';
 import { useEventStatus } from '../hooks/useEventStatus';
-import { Icon } from '@iconify/react/dist/iconify.js';
 
 type LocalRegistrationFormDraft = {
   localId: string;

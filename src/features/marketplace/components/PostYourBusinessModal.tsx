@@ -1,10 +1,19 @@
 // // features/marketplace/components/PostYourBusinessModal.tsx
 
-import { Icon } from '@iconify/react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import {
+  Check,
+  ChevronDown,
+  ChevronUp,
+  CircleAlert,
+  Search,
+  Upload,
+  X,
+  Camera,
+} from 'lucide-react';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
 import { ImageUpload } from '@/shared/components/ui/ImageUpload';
 import { Button } from '@/shared/components/ui/Button';
@@ -263,7 +272,7 @@ export function PostBusinessModal({ isOpen, onClose, editData }: PostBusinessMod
             className="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full text-primary-500 transition-colors hover:bg-primary-50 md:right-6 md:top-6"
             aria-label="Close modal"
           >
-            <Icon icon="mdi:close" className="h-7 w-7" />
+            <X className="h-7 w-7" />
           </button>
 
           <div className="px-5 pb-6 pt-9 sm:px-8 md:px-10 md:pb-8 md:pt-10">
@@ -301,6 +310,11 @@ export function PostBusinessModal({ isOpen, onClose, editData }: PostBusinessMod
                   options={categoryOptions}
                   value={categoryValue}
                   error={errors.category?.message}
+                  chevronDownIcon={ChevronDown}
+                  chevronUpIcon={ChevronUp}
+                  searchIcon={Search}
+                  selectedIcon={Check}
+                  errorIcon={CircleAlert}
                   {...register('category')}
                 />
 
@@ -379,6 +393,10 @@ export function PostBusinessModal({ isOpen, onClose, editData }: PostBusinessMod
                 }
                 previews={allPreviews}
                 onChange={handleImages}
+                idleIcon={Camera}
+                activeIcon={Upload}
+                removeIcon={X}
+                errorIcon={CircleAlert}
               />
 
               <div className="flex justify-end">

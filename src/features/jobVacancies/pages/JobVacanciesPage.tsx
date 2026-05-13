@@ -692,7 +692,7 @@ export function PostJobModal({
               onChange={(event) =>
                 handleFieldChange('workplaceType', event.target.value as WorkplaceType | '')
               }
-              placeholder="Select a workplace type"
+              placeholder="Select a work mode"
               options={WORKPLACE_TYPE_OPTIONS}
               error={fieldErrors.workplaceType}
               required

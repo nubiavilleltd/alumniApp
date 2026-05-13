@@ -65,7 +65,7 @@ function createQuestionId() {
 function getDefaultPlaceholder(type: EventQuestionType) {
   switch (type) {
     case 'long_answer':
-      return 'Enter a longer response';
+      return 'Enter response';
     case 'multiple_choice':
     case 'checkbox':
     case 'dropdown':

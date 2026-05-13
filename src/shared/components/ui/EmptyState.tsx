@@ -1,8 +1,8 @@
-import { Icon } from '@iconify/react';
 import { AppLink } from '@/shared/components/ui/AppLink';
+import { renderIcon, type AppIcon } from '@/shared/utils/renderIcon';
 
 interface EmptyStateProps {
-  icon?: string;
+  icon?: AppIcon;
   title: string;
   description?: string;
   actionLabel?: string;
@@ -22,7 +22,7 @@ export default function EmptyState({
     <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
       {/* Icon */}
       <div className="w-16 h-16 rounded-2xl bg-primary-50 flex items-center justify-center mb-4">
-        <Icon icon={icon} className="w-8 h-8 text-primary-300" />
+        {renderIcon(icon, 'h-8 w-8 text-primary-300')}
       </div>
 
       {/* Text */}

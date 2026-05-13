@@ -1,5 +1,4 @@
 import { useRef, useState, type DragEvent as ReactDragEvent } from 'react';
-import { Icon } from '@iconify/react';
 import {
   DEFAULT_IMAGE_UPLOAD_ACCEPT,
   SHARED_UPLOAD_MAX_SIZE_MB,
@@ -7,6 +6,7 @@ import {
   formatFileSizeLimit,
   validateFilesAgainstAcceptList,
 } from '@/shared/utils/fileValidation';
+import { renderIcon, type AppIcon } from '@/shared/utils/renderIcon';
 
 interface ImageUploadProps {
   previews: string[];
@@ -20,6 +20,10 @@ interface ImageUploadProps {
   className?: string;
   labelClassName?: string;
   dropzoneClassName?: string;
+  idleIcon?: AppIcon;
+  activeIcon?: AppIcon;
+  removeIcon?: AppIcon;
+  errorIcon?: AppIcon;
 }
 
 export function ImageUpload({
@@ -34,6 +38,10 @@ export function ImageUpload({
   className = '',
   labelClassName = '',
   dropzoneClassName = '',
+  idleIcon = 'mdi:camera-outline',
+  activeIcon = 'mdi:tray-arrow-down',
+  removeIcon = 'mdi:close',
+  errorIcon = 'mdi:alert-circle-outline',
 }: ImageUploadProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
@@ -176,10 +184,12 @@ export function ImageUpload({
           ${dropzoneClassName}
         `}
       >
-        <Icon
-          icon={isDragActive ? 'mdi:tray-arrow-down' : 'mdi:camera-outline'}
-          className={`w-8 h-8 transition-colors ${error || validationError ? 'text-red-400' : 'text-gray-400 group-hover:text-primary-400'}`}
-        />
+        {renderIcon(
+          isDragActive ? activeIcon : idleIcon,
+          `h-8 w-8 transition-colors ${
+            error || validationError ? 'text-red-400' : 'text-gray-400 group-hover:text-primary-400'
+          }`,
+        )}
         <span className="text-primary-500 text-sm font-medium">
           {isDragActive ? 'Drop image here' : 'Click or drag image here'}
         </span>
@@ -210,7 +220,7 @@ export function ImageUpload({
                 onClick={() => removePreview(i)}
                 className="absolute -top-1.5 -right-1.5 bg-red-500 hover:bg-red-600 text-white rounded-full w-4 h-4 flex items-center justify-center transition-colors"
               >
-                <Icon icon="mdi:close" className="w-2.5 h-2.5" />
+                {renderIcon(removeIcon, 'h-2.5 w-2.5')}
               </button>
             </div>
           ))}
@@ -219,7 +229,7 @@ export function ImageUpload({
 
       {(error || validationError) && (
         <p className="text-xs text-red-500 flex items-center gap-1">
-          <Icon icon="mdi:alert-circle-outline" className="w-3 h-3" />
+          {renderIcon(errorIcon, 'h-3 w-3')}
           {error || validationError}
         </p>
       )}

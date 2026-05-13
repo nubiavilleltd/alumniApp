@@ -116,10 +116,14 @@ export function MessagesPage() {
   const [optimisticMessagesByThreadId, setOptimisticMessagesByThreadId] = useState<
     Record<string, MessageItem[]>
   >({});
+  const [persistedUnreadDividerMessageId, setPersistedUnreadDividerMessageId] = useState<
+    string | null
+  >(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const voiceRecordButtonRef = useRef<HTMLButtonElement | null>(null);
   const messagePaneRef = useRef<HTMLDivElement | null>(null);
   const lastOpenedThreadIdRef = useRef<string | null>(null);
+  const unreadDividerThreadIdRef = useRef<string | null>(null);
   const previousRequestedThreadIdRef = useRef<string | null>(null);
   const pendingDirectThreadIntentRef = useRef<string | null>(null);
   const pendingInitialMessageIntentRef = useRef<string | null>(null);
@@ -236,6 +240,9 @@ export function MessagesPage() {
     activeThreadWithOptimisticMessages?.messages,
     resolvedThreadSummary?.unreadCount,
   ]);
+  const visibleUnreadDividerMessageId =
+    unreadDividerMessageId ??
+    (unreadDividerThreadIdRef.current === activeThreadId ? persistedUnreadDividerMessageId : null);
   const threadShell = activeThreadWithOptimisticMessages ?? resolvedThreadSummary;
   const unreadThreadCount = inboxQuery.data?.unreadThreadCount ?? 0;
   const groupParticipants = useMemo(
@@ -817,6 +824,30 @@ export function MessagesPage() {
       threadId: activeThread.id,
     });
   }, [activeThread, markThreadRead, viewerMemberId]);
+
+  useEffect(() => {
+    if (!activeThreadId) {
+      unreadDividerThreadIdRef.current = null;
+      setPersistedUnreadDividerMessageId(null);
+      return;
+    }
+
+    if (unreadDividerThreadIdRef.current !== activeThreadId) {
+      unreadDividerThreadIdRef.current = activeThreadId;
+      setPersistedUnreadDividerMessageId(null);
+    }
+  }, [activeThreadId]);
+
+  useEffect(() => {
+    if (!activeThreadId || !unreadDividerMessageId) {
+      return;
+    }
+
+    unreadDividerThreadIdRef.current = activeThreadId;
+    setPersistedUnreadDividerMessageId((current) =>
+      current === unreadDividerMessageId ? current : unreadDividerMessageId,
+    );
+  }, [activeThreadId, unreadDividerMessageId]);
 
   useEffect(() => {
     if (!activeThreadWithOptimisticMessages?.id) {
@@ -1521,7 +1552,7 @@ export function MessagesPage() {
                                 </div>
                               ) : null}
 
-                              {message.id === unreadDividerMessageId ? (
+                              {message.id === visibleUnreadDividerMessageId ? (
                                 <div className="my-4 flex items-center gap-3">
                                   <div className="h-px flex-1 bg-blue-100" />
                                   <span className="text-sm font-medium text-gray-500">

@@ -1,8 +1,9 @@
 import { forwardRef } from 'react';
-import { Icon } from '@iconify/react';
+import { LoaderCircle } from 'lucide-react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { AppLink } from './AppLink';
+import { renderIcon, type AppIcon } from '@/shared/utils/renderIcon';
 
 type ButtonVariant = 'primary' | 'outline' | 'ghost' | 'danger' | 'white';
 type ButtonSize = 'sm' | 'md' | 'lg';
@@ -10,8 +11,8 @@ type ButtonSize = 'sm' | 'md' | 'lg';
 interface ButtonStyleProps {
   variant?: ButtonVariant;
   size?: ButtonSize;
-  leftIcon?: string;
-  rightIcon?: string;
+  leftIcon?: AppIcon;
+  rightIcon?: AppIcon;
   fullWidth?: boolean;
   className?: string;
 }
@@ -94,10 +95,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         className={getButtonClassName({ variant, size, fullWidth, className })}
         {...rest}
       >
-        {loading && <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" />}
-        {!loading && leftIcon && <Icon icon={leftIcon} className="w-4 h-4" />}
+        {loading && renderIcon(LoaderCircle, 'h-4 w-4 animate-spin')}
+        {!loading && renderIcon(leftIcon, 'h-4 w-4')}
         {children}
-        {!loading && rightIcon && <Icon icon={rightIcon} className="w-4 h-4" />}
+        {!loading && renderIcon(rightIcon, 'h-4 w-4')}
       </button>
     );
   },
@@ -128,9 +129,9 @@ export function ButtonLink({
       onClick={onClick}
       className={getButtonClassName({ variant, size, fullWidth, className })}
     >
-      {leftIcon && <Icon icon={leftIcon} className="w-4 h-4" />}
+      {renderIcon(leftIcon, 'h-4 w-4')}
       {children}
-      {rightIcon && <Icon icon={rightIcon} className="w-4 h-4" />}
+      {renderIcon(rightIcon, 'h-4 w-4')}
     </AppLink>
   );
 }

@@ -1,5 +1,5 @@
-import { Icon } from '@iconify/react';
 import { SelectInput } from './SelectInput';
+import { renderIcon, type AppIcon } from '@/shared/utils/renderIcon';
 
 interface FilterDropdownProps {
   value: string;
@@ -11,6 +11,9 @@ interface FilterDropdownProps {
   selectClassName?: string;
   showClearButton?: boolean;
   clearLabel?: string;
+  clearIcon?: AppIcon;
+  chevronDownIcon?: AppIcon;
+  chevronUpIcon?: AppIcon;
 }
 
 export function FilterDropdown({
@@ -23,6 +26,9 @@ export function FilterDropdown({
   selectClassName = '',
   showClearButton = true,
   clearLabel = 'Clear filter',
+  clearIcon = 'mdi:close-circle',
+  chevronDownIcon = 'mdi:chevron-down',
+  chevronUpIcon = 'mdi:chevron-up',
 }: FilterDropdownProps) {
   const hasValue = value.trim().length > 0;
   const shouldShowClear = showClearButton && hasValue;
@@ -38,6 +44,8 @@ export function FilterDropdown({
           placeholder={placeholder}
           className={`w-full ${selectClassName}`}
           controlClassName={shouldShowClear ? '!pr-16' : ''}
+          chevronDownIcon={chevronDownIcon}
+          chevronUpIcon={chevronUpIcon}
         />
 
         {shouldShowClear ? (
@@ -47,7 +55,7 @@ export function FilterDropdown({
             className="absolute right-9 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
             aria-label={clearLabel}
           >
-            <Icon icon="mdi:close-circle" className="h-4 w-4" />
+            {renderIcon(clearIcon, 'h-4 w-4')}
           </button>
         ) : null}
       </div>

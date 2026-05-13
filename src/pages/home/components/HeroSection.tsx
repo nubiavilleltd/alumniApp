@@ -52,7 +52,7 @@ export default function HeroSection() {
       <div className="absolute inset-0 z-[1] bg-primary-500/20" />
 
       {/* ── Content ───────────────────────────────────────────────────────── */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-0">
         <div className="max-w-3xl text-left">
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
             Welcome home
@@ -66,7 +66,7 @@ export default function HeroSection() {
               <AppLink href={AUTH_ROUTES.REGISTER}>
                 <Button
                   size="lg"
-                  className="w-56 justify-center rounded-full bg-white px-12 py-3.5 text-base font-bold text-primary-500 shadow-none hover:bg-white/90"
+                  className="w-56 h-12 justify-center rounded-full bg-white px-12 py-3.5 text-base font-bold text-primary-500 shadow-none hover:bg-white/90"
                 >
                   Join Us
                 </Button>
@@ -76,7 +76,7 @@ export default function HeroSection() {
             <AppLink href={ROUTES.DONATION}>
               <Button
                 size="lg"
-                className="min-w-52 rounded-full border-0 bg-[#7c3aed] px-12 py-3.5 text-base font-bold text-white shadow-none hover:bg-[#6d28d9]"
+                className="min-w-52 h-12 rounded-full border-0 bg-[#7c3aed] px-12 py-3.5 text-base font-bold text-white shadow-none hover:bg-[#6d28d9]"
               >
                 Make a Donation
                 <img src="/donationIcon.svg" alt="" aria-hidden="true" className="h-5 w-5" />

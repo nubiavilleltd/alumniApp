@@ -1,5 +1,5 @@
-import { Icon } from '@iconify/react';
 import { forwardRef } from 'react';
+import { renderIcon, type AppIcon } from '@/shared/utils/renderIcon';
 
 interface SearchInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> {
   onSearch?: () => void;
@@ -14,6 +14,9 @@ interface SearchInputProps extends Omit<React.InputHTMLAttributes<HTMLInputEleme
   containerClassName?: string;
   inputClassName?: string;
   iconClassName?: string;
+  searchIcon?: AppIcon;
+  clearIcon?: AppIcon;
+  errorIcon?: AppIcon;
 }
 
 export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
@@ -33,6 +36,9 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
       containerClassName = '',
       inputClassName = '',
       iconClassName = '',
+      searchIcon = 'mdi:magnify',
+      clearIcon = 'mdi:close-circle',
+      errorIcon = 'mdi:alert-circle-outline',
       disabled,
       ...rest
     },
@@ -74,10 +80,10 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
       <div className={`flex flex-col gap-1 ${className}`}>
         <div className={`relative flex items-center ${containerClassName}`}>
           {/* Search icon */}
-          <Icon
-            icon="mdi:magnify"
-            className={`absolute left-3 w-4 h-4 text-gray-400 pointer-events-none z-10 ${iconClassName}`}
-          />
+          {renderIcon(
+            searchIcon,
+            `pointer-events-none absolute left-3 z-10 h-4 w-4 text-gray-400 ${iconClassName}`,
+          )}
 
           {/* Input */}
           <input
@@ -118,10 +124,10 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
               aria-label="Clear search"
               tabIndex={-1}
             >
-              <Icon
-                icon="mdi:close-circle"
-                className="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors"
-              />
+              {renderIcon(
+                clearIcon,
+                'h-4 w-4 text-gray-400 transition-colors group-hover:text-gray-600',
+              )}
             </button>
           ) : null}
         </div>
@@ -129,7 +135,7 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
         {/* Error / hint */}
         {error ? (
           <p className="text-xs text-red-500 flex items-center gap-1 pl-3">
-            <Icon icon="mdi:alert-circle-outline" className="w-3 h-3" />
+            {renderIcon(errorIcon, 'h-3 w-3')}
             {error}
           </p>
         ) : hint ? (

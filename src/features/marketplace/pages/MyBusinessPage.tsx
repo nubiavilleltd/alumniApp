@@ -1,7 +1,17 @@
 // features/marketplace/pages/MyBusinessPage.tsx
 
-import { Icon } from '@iconify/react';
 import { useEffect, useState } from 'react';
+import {
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Globe,
+  LoaderCircle,
+  MapPin,
+  Phone,
+  Plus,
+  Store,
+} from 'lucide-react';
 import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import EmptyState from '@/shared/components/ui/EmptyState';
@@ -111,7 +121,7 @@ function MyBusinessCard({
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-gray-50">
-            <Icon icon="mdi:storefront-outline" className="h-14 w-14 text-gray-300" />
+            <Store className="h-14 w-14 text-gray-300" />
           </div>
         )}
         {business.images.length > 1 && (
@@ -122,7 +132,7 @@ function MyBusinessCard({
               className="absolute left-2.5 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-white/85 text-gray-700 shadow opacity-0 transition-opacity group-hover:opacity-100"
               aria-label={`Previous image for ${business.name}`}
             >
-              <Icon icon="mdi:chevron-left" className="h-4 w-4" />
+              <ChevronLeft className="h-4 w-4" />
             </button>
             <button
               type="button"
@@ -130,7 +140,7 @@ function MyBusinessCard({
               className="absolute right-2.5 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-white/85 text-gray-700 shadow opacity-0 transition-opacity group-hover:opacity-100"
               aria-label={`Next image for ${business.name}`}
             >
-              <Icon icon="mdi:chevron-right" className="h-4 w-4" />
+              <ChevronRight className="h-4 w-4" />
             </button>
           </>
         )}
@@ -184,13 +194,13 @@ function MyBusinessCard({
               href={`tel:${business.phone.replace(/\s+/g, '')}`}
               className="flex items-start gap-3 transition-colors hover:text-primary-600"
             >
-              <Icon icon="mdi:phone-outline" className="mt-0.5 h-5 w-5 flex-shrink-0" />
+              <Phone strokeWidth={2.6} className="mt-0.5 h-5 w-5 flex-shrink-0" />
               <span className="min-w-0 break-words">{business.phone}</span>
             </a>
           )}
 
           <div className="flex items-start gap-3">
-            <Icon icon="mdi:map-marker-outline" className="mt-0.5 h-5 w-5 flex-shrink-0" />
+            <MapPin strokeWidth={2.6} className="mt-0.5 h-5 w-5 flex-shrink-0" />
             <span className="min-w-0 break-words">{business.location}</span>
           </div>
 
@@ -201,7 +211,7 @@ function MyBusinessCard({
               rel="noopener noreferrer"
               className="flex items-start gap-3 transition-colors hover:text-primary-600"
             >
-              <Icon icon="mdi:web" className="mt-0.5 h-5 w-5 flex-shrink-0" />
+              <Globe strokeWidth={2.6} className="mt-0.5 h-5 w-5 flex-shrink-0" />
               <span className="min-w-0 break-all">{business.website}</span>
             </a>
           )}
@@ -226,9 +236,9 @@ function MyBusinessCard({
                 className="flex min-h-9 items-center justify-center rounded-full bg-red-600 px-4 text-xs font-semibold text-white transition-colors hover:bg-red-700 disabled:opacity-50"
               >
                 {isDeleting ? (
-                  <Icon icon="mdi:loading" className="h-4 w-4 animate-spin" />
+                  <LoaderCircle className="h-4 w-4 animate-spin" />
                 ) : (
-                  <Icon icon="mdi:check" className="h-4 w-4" />
+                  <Check className="h-4 w-4" />
                 )}
                 Confirm
               </button>
@@ -335,7 +345,7 @@ export default function MyBusinessPage() {
                 onClick={() => setShowPostModal(true)}
                 className="flex-shrink-0 flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-colors"
               >
-                <Icon icon="mdi:plus" className="w-4 h-4" />
+                <Plus className="h-4 w-4" />
                 Add Business
               </button>
             )}
@@ -365,12 +375,14 @@ export default function MyBusinessPage() {
               <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
+                prevIcon={ChevronLeft}
+                nextIcon={ChevronRight}
                 onPageChange={handlePageChange}
               />
             </>
           ) : (
             <EmptyState
-              icon="mdi:storefront-outline"
+              icon={Store}
               title="You have no businesses posted yet"
               description="Add your business to the Alumnae Marketplace and let your sisters find and support you."
               actionLabel="Add Your Business"

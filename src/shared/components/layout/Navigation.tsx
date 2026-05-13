@@ -81,10 +81,10 @@ const authenticatedMenuItems: NavChild[] = [
 const navSurfaceClassName =
   'bg-[linear-gradient(106deg,_rgb(var(--color-primary-500))_0%,_#003a5d_92%)]';
 const desktopLinkBaseClassName =
-  "relative no-underline font-bold tracking-[0.1em] text-[#c4d0d9] transition-colors duration-200 hover:text-white focus-visible:text-white after:pointer-events-none after:absolute after:left-0 after:h-[5px] after:w-full after:origin-left after:scale-x-0 after:rounded-full after:bg-white/85 after:content-[''] after:transition-transform after:duration-300 after:ease-out hover:after:scale-x-100 focus-visible:after:scale-x-100";
+  "relative no-underline font-[600] tracking-[0.1em] text-[#c4d0d9] transition-colors duration-200 hover:text-white focus-visible:text-white after:pointer-events-none after:absolute after:left-0 after:h-[5px] after:w-full after:origin-left after:scale-x-0 after:rounded-full after:bg-white/85 after:content-[''] after:transition-transform after:duration-300 after:ease-out hover:after:scale-x-100 focus-visible:after:scale-x-100";
 const desktopActiveLinkClassName = 'text-white after:scale-x-100';
-const desktopPrimaryLinkClassName = `${desktopLinkBaseClassName} whitespace-nowrap text-[clamp(1.05rem,1.36vw,1.75rem)] after:bottom-[-1.12rem] lg:max-[1360px]:after:bottom-[-0.95rem] xl:after:bottom-[-1.28rem]`;
-const desktopSecondaryLinkClassName = `${desktopLinkBaseClassName} text-[clamp(0.95rem,1.18vw,1.35rem)] after:bottom-[-0.55rem]`;
+const desktopPrimaryLinkClassName = `${desktopLinkBaseClassName} whitespace-nowrap text-sm xl:text-lg 2xl:text-lg after:-bottom-3 xl:after:-bottom-4`;
+const desktopSecondaryLinkClassName = `${desktopLinkBaseClassName} text-sm xl:text-base 2xl:text-lg after:-bottom-2`;
 const desktopPanelClassName =
   'absolute top-[calc(100%+1rem)] z-[60] overflow-hidden border border-[#d7e6ef] bg-white shadow-[0_1.25rem_2.5rem_rgba(7,17,22,0.14)]';
 const desktopDropdownPanelSizeClassName = 'w-[17.5rem] rounded-[0.9rem] py-[0.45rem]';
@@ -98,7 +98,7 @@ const userAccountTriggerClassName =
 const mobileSectionClassName =
   'mt-[0.85rem] grid gap-[0.35rem] border-t border-white/15 pt-[0.85rem] first:mt-0 first:border-t-0';
 const mobileLinkClassName =
-  'flex items-center gap-[0.65rem] rounded-[0.85rem] px-[0.95rem] py-[0.85rem] text-[0.98rem] font-bold tracking-[0.04em] leading-[1.25] text-[#d0d9e0] no-underline transition-colors duration-200 hover:bg-white/10 hover:text-white';
+  'flex items-center gap-[0.65rem] rounded-[0.85rem] px-[0.95rem] py-[0.85rem] text-sm font-bold tracking-[0.04em] leading-[1.25] text-[#d0d9e0] no-underline transition-colors duration-200 hover:bg-white/10 hover:text-white';
 
 function cn(...inputs: Array<string | false | null | undefined>) {
   return twMerge(clsx(inputs));
@@ -165,7 +165,7 @@ function BrandMark({ mobile = false }: { mobile?: boolean }) {
         'relative isolate flex overflow-hidden bg-white text-primary-500 no-underline',
         mobile
           ? 'min-h-[5.25rem] items-center py-3'
-          : 'items-center justify-center py-[clamp(0.8rem,1.4vw,1.25rem)]',
+          : 'items-center justify-center py-3 xl:py-4 2xl:py-5',
       )}
     >
       <span
@@ -613,12 +613,12 @@ export function Navigation() {
       className="relative z-50 bg-[#003c5f] text-white shadow-[0_1px_0_rgba(7,17,22,0.12)]"
       aria-label="Primary navigation"
     >
-      <div className="hidden min-h-[clamp(8.5rem,11.8vw,11.8rem)] grid-cols-[minmax(20rem,28.5vw)_minmax(0,1fr)] pr-[var(--app-page-inline-padding)] lg:grid lg:max-[1360px]:grid-cols-[minmax(18rem,31vw)_minmax(0,1fr)]">
+      <div className="hidden min-h-36 grid-cols-[minmax(20rem,28.5vw)_minmax(0,1fr)] pr-[var(--app-page-inline-padding)] lg:grid xl:min-h-44 2xl:min-h-48 lg:max-[1360px]:grid-cols-[minmax(18rem,31vw)_minmax(0,1fr)]">
         <BrandMark />
 
         <div className={cn(navSurfaceClassName, 'grid grid-rows-[44%_56%]')}>
-          <div className="flex items-center justify-end gap-[clamp(1.5rem,3vw,3rem)]">
-            <div className="flex items-center gap-[clamp(2rem,4.5vw,4rem)]">
+          <div className="flex items-center justify-end gap-6 xl:gap-8 2xl:gap-12">
+            <div className="flex items-center gap-8 xl:gap-10 2xl:gap-16">
               {secondaryNavItems.map((item) => (
                 <AppLink
                   key={item.url}
@@ -653,7 +653,7 @@ export function Navigation() {
             )}
           </div>
 
-          <div className="flex items-center justify-between gap-[clamp(2.25rem,5vw,6.25rem)] pb-[clamp(0.75rem,1.2vw,1.25rem)] pl-[var(--app-page-inline-padding)] lg:max-[1360px]:gap-[clamp(1.4rem,3vw,2.75rem)]">
+          <div className="ml-auto flex w-fit items-center gap-6 pb-3 xl:gap-8 xl:pb-4 2xl:gap-12 2xl:pb-5">
             {primaryNavItems.map((item) =>
               item.children ? (
                 <DesktopDropdown key={item.label} item={item} />

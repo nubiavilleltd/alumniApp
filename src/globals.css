@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 :root {
-  --app-page-inline-padding: 64px;
+  --app-page-inline-padding: 16px;
 
   /* Primary */
   --color-primary-50: 240 248 255;
@@ -58,6 +58,12 @@
   --color-success-800: 22 101 52;
   --color-success-900: 20 83 45;
   --color-success-950: 5 46 22;
+}
+
+@media (min-width: 640px) {
+  :root {
+    --app-page-inline-padding: 64px;
+  }
 }
 
 /* Basic Component Classes */
@@ -139,10 +145,6 @@
 
 .container-custom {
   padding-inline: var(--app-page-inline-padding);
-}
-
-.home-page {
-  --app-page-inline-padding: 64px;
 }
 
 .home-stats-section {

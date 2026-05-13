@@ -1,5 +1,5 @@
 import { forwardRef, useState, useRef, useEffect, useCallback, useMemo } from 'react';
-import { Icon } from '@iconify/react';
+import { renderIcon, type AppIcon } from '@/shared/utils/renderIcon';
 
 interface SelectOption {
   label: string;
@@ -19,6 +19,11 @@ interface SelectInputProps extends Omit<
   labelClassName?: string;
   onChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   onBlur?: (event: React.FocusEvent<HTMLSelectElement>) => void;
+  chevronDownIcon?: AppIcon;
+  chevronUpIcon?: AppIcon;
+  searchIcon?: AppIcon;
+  selectedIcon?: AppIcon;
+  errorIcon?: AppIcon;
 }
 
 export const SelectInput = forwardRef<HTMLSelectElement, SelectInputProps>(
@@ -31,6 +36,11 @@ export const SelectInput = forwardRef<HTMLSelectElement, SelectInputProps>(
       placeholder = 'Select an option',
       controlClassName = '',
       labelClassName = '',
+      chevronDownIcon = 'mdi:chevron-down',
+      chevronUpIcon = 'mdi:chevron-up',
+      searchIcon = 'mdi:magnify',
+      selectedIcon = 'mdi:check',
+      errorIcon = 'mdi:alert-circle-outline',
       id,
       name,
       required,
@@ -320,12 +330,12 @@ export const SelectInput = forwardRef<HTMLSelectElement, SelectInputProps>(
             </span>
           </button>
 
-          <Icon
-            icon={isOpen ? 'mdi:chevron-up' : 'mdi:chevron-down'}
-            className={`select-input__icon absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none transition-colors
-              ${disabled ? 'text-gray-300' : 'text-gray-400'}
-            `}
-          />
+          {renderIcon(
+            isOpen ? chevronUpIcon : chevronDownIcon,
+            `select-input__icon pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 transition-colors ${
+              disabled ? 'text-gray-300' : 'text-gray-400'
+            }`,
+          )}
 
           {/* Dropdown menu */}
           {isOpen && !disabled && (
@@ -334,10 +344,10 @@ export const SelectInput = forwardRef<HTMLSelectElement, SelectInputProps>(
               {showSearch && (
                 <div className="p-2 border-b border-gray-100">
                   <div className="relative">
-                    <Icon
-                      icon="mdi:magnify"
-                      className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
-                    />
+                    {renderIcon(
+                      searchIcon,
+                      'absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400',
+                    )}
                     <input
                       ref={searchInputRef}
                       type="text"
@@ -372,12 +382,8 @@ export const SelectInput = forwardRef<HTMLSelectElement, SelectInputProps>(
                     >
                       <div className="flex items-center justify-between gap-2">
                         <span className="truncate">{option.label}</span>
-                        {value === option.value && (
-                          <Icon
-                            icon="mdi:check"
-                            className="w-4 h-4 text-primary-600 flex-shrink-0"
-                          />
-                        )}
+                        {value === option.value &&
+                          renderIcon(selectedIcon, 'h-4 w-4 flex-shrink-0 text-primary-600')}
                       </div>
                     </button>
                   ))
@@ -389,7 +395,7 @@ export const SelectInput = forwardRef<HTMLSelectElement, SelectInputProps>(
 
         {error ? (
           <p className="select-input__message select-input__message--error text-xs text-red-500 flex items-center gap-1">
-            <Icon icon="mdi:alert-circle-outline" className="w-3 h-3" />
+            {renderIcon(errorIcon, 'h-3 w-3')}
             {error}
           </p>
         ) : hint ? (
