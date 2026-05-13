@@ -3,7 +3,7 @@
 // Reusable delete confirmation modal used by EventCard, EditEventPage,
 // and EventDetailPage. Previously duplicated in all three places.
 
-import { Icon } from '@iconify/react';
+import { AlertCircle, LoaderCircle } from 'lucide-react';
 
 interface DeleteConfirmModalProps {
   /** Name of the item being deleted — shown in the confirmation text */
@@ -29,7 +29,7 @@ export function DeleteConfirmModal({
       <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
         <div className="flex items-start gap-3 mb-4">
           <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
-            <Icon icon="mdi:alert-circle-outline" className="w-5 h-5 text-red-600" />
+            <AlertCircle className="w-5 h-5 text-red-600" />
           </div>
           <div>
             <h3 className="text-gray-900 font-bold text-lg mb-1">{heading}</h3>
@@ -59,7 +59,7 @@ export function DeleteConfirmModal({
             disabled={isDeleting}
             className="px-6 py-2 text-sm font-semibold bg-red-500 hover:bg-red-600 text-white rounded-lg flex items-center gap-2 disabled:opacity-50 transition-colors"
           >
-            {isDeleting && <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" />}
+            {isDeleting && <LoaderCircle className="w-4 h-4 animate-spin" />}
             Yes, Delete
           </button>
         </div>

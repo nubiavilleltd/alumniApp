@@ -20,12 +20,19 @@ function mapRSVPStatus(status: unknown): 'going' | 'maybe' | 'not_going' | null 
   return map[String(status)] ?? null;
 }
 
+// Returns undefined instead of today when value is null/empty
+export function safeParseOptionalDate(value: unknown): string | undefined {
+  if (!value) return undefined;
+  return safeParseDate(value);
+}
+
 // ─────────────────────────────────────────────────────────────
 // Inbound (backend → frontend)
 // ─────────────────────────────────────────────────────────────
 
 export function mapBackendEventToFrontend(raw: unknown): Event {
   const d = raw as Record<string, any>;
+
   const normalizedTags = parseTags(d.tags).map((tag) => tag.trim().toLowerCase());
   const hasRegistrationQuestions =
     readRegistrationQuestionFlag(d, normalizedTags) ??
@@ -42,7 +49,7 @@ export function mapBackendEventToFrontend(raw: unknown): Event {
     image: d.event_banner || '',
 
     startDate: safeParseDate(d.start_date || d.event_date),
-    endDate: safeParseDate(d.end_date),
+    endDate: safeParseOptionalDate(d.end_date),
 
     startTime: d.start_time?.slice(0, 5),
     endTime: d.end_time?.slice(0, 5),

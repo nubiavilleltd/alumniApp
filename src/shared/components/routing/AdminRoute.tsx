@@ -31,8 +31,13 @@ export function AdminRoute({ children }: AdminRouteProps) {
 
   const { isAdmin, isAuthenticated, user } = useAuth();
 
+  const isLoggingOut = useTokenStore((state) => state._isLoggingOut);
+
   // Background profile fetch — enriches data but never blocks the initial check
   const { data: freshUser, isLoading } = useCurrentUser();
+
+  // ✅ NEW: Don't redirect if logout is in progress
+  if (isLoggingOut) return null;
 
   // ① Not logged in at all — redirect to login immediately
   if (!isAuthenticated) {

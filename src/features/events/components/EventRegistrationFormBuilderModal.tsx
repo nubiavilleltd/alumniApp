@@ -1,5 +1,21 @@
 import { useEffect, useState, type DragEvent } from 'react';
-import { Icon } from '@iconify/react';
+import {
+  AlignLeft,
+  ChevronDown,
+  Circle,
+  CircleChevronDown,
+  CircleDot,
+  Grip,
+  GripVertical,
+  Pencil,
+  Plus,
+  Square,
+  SquareCheck,
+  Text,
+  Trash2,
+  X,
+  type LucideIcon,
+} from 'lucide-react';
 import Button from '@/shared/components/ui/Button';
 import { EventRegistrationQuestionField } from './EventRegistrationQuestionField';
 import type {
@@ -38,24 +54,24 @@ interface EventRegistrationFormBuilderModalProps {
 const questionTypeOptions: Array<{
   value: EventQuestionType;
   label: string;
-  icon: string;
+  icon: LucideIcon;
   description?: string;
 }> = [
-  { value: 'short_answer', label: 'Short answer', icon: 'mdi:format-text' },
-  { value: 'long_answer', label: 'Long answer', icon: 'mdi:text-box-outline' },
+  { value: 'short_answer', label: 'Short answer', icon: Text },
+  { value: 'long_answer', label: 'Long answer', icon: AlignLeft },
   {
     value: 'multiple_choice',
     label: 'Multiple Choice',
     description: '(single selections)',
-    icon: 'mdi:radiobox-marked',
+    icon: CircleDot,
   },
   {
     value: 'checkbox',
     label: 'Checkboxes',
     description: '(multiple selections)',
-    icon: 'mdi:checkbox-marked-outline',
+    icon: SquareCheck,
   },
-  { value: 'dropdown', label: 'Dropdown', icon: 'mdi:chevron-down-circle-outline' },
+  { value: 'dropdown', label: 'Dropdown', icon: CircleChevronDown },
 ];
 
 function createQuestionId() {
@@ -712,7 +728,7 @@ export function EventRegistrationFormBuilderModal({
             className="inline-flex h-12 w-12 items-center justify-center rounded-full text-primary-500 transition-colors hover:bg-primary-50"
             aria-label="Close registration form builder"
           >
-            <Icon icon="mdi:close" className="h-8 w-8" />
+            <X className="h-8 w-8" />
           </button>
         </div>
 
@@ -745,6 +761,7 @@ export function EventRegistrationFormBuilderModal({
             const selectedType =
               questionTypeOptions.find((option) => option.value === question.type) ??
               questionTypeOptions[0];
+            const SelectedTypeIcon = selectedType.icon;
             const isEditing =
               activeQuestionId === null ? index === 0 : activeQuestionId === question.id;
             const isDragging = draggedQuestionId === question.id;
@@ -816,11 +833,11 @@ export function EventRegistrationFormBuilderModal({
                             className="inline-flex cursor-grab items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-sm font-semibold text-gray-500 active:cursor-grabbing"
                             aria-label={`Drag question ${index + 1}`}
                           >
-                            <Icon icon="mdi:drag" className="h-4 w-4" />
+                            <GripVertical className="h-4 w-4" />
                             Move
                           </button>
                           <span className="inline-flex items-center gap-2 rounded-full border border-primary-200 bg-white px-3 py-1.5 text-sm font-semibold text-primary-500">
-                            <Icon icon="mdi:pencil-outline" className="h-4 w-4" />
+                            <Pencil className="h-4 w-4" />
                             Edit
                           </span>
                         </div>
@@ -868,7 +885,7 @@ export function EventRegistrationFormBuilderModal({
                         className="inline-flex cursor-grab items-center justify-center rounded-full p-1 transition-colors hover:bg-primary-50 active:cursor-grabbing"
                         aria-label={`Drag question ${index + 1}`}
                       >
-                        <Icon icon="mdi:dots-grid" className="h-7 w-7" />
+                        <Grip className="h-7 w-7" />
                       </button>
                     </div>
 
@@ -905,7 +922,7 @@ export function EventRegistrationFormBuilderModal({
                               rows={2}
                               value={question.placeholder}
                               readOnly
-                              placeholder="Enter a longer response"
+                              placeholder="Enter response"
                               className="w-full resize-none border-0 bg-transparent text-base text-gray-400 outline-none placeholder:text-gray-400"
                             />
                           ) : question.type === 'short_answer' ? (
@@ -928,16 +945,13 @@ export function EventRegistrationFormBuilderModal({
                                     className="flex items-start gap-3"
                                   >
                                     <span className="mt-3 flex h-5 w-5 items-center justify-center text-gray-400">
-                                      <Icon
-                                        icon={
-                                          question.type === 'multiple_choice'
-                                            ? 'mdi:radiobox-blank'
-                                            : question.type === 'checkbox'
-                                              ? 'mdi:checkbox-blank-outline'
-                                              : 'mdi:menu-down'
-                                        }
-                                        className="h-5 w-5"
-                                      />
+                                      {question.type === 'multiple_choice' ? (
+                                        <Circle className="h-5 w-5" />
+                                      ) : question.type === 'checkbox' ? (
+                                        <Square className="h-5 w-5" />
+                                      ) : (
+                                        <ChevronDown className="h-5 w-5" />
+                                      )}
                                     </span>
 
                                     <div className="flex-1">
@@ -981,7 +995,7 @@ export function EventRegistrationFormBuilderModal({
                                       className="mt-2 inline-flex h-8 w-8 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-35"
                                       aria-label={`Remove option ${optionIndex + 1}`}
                                     >
-                                      <Icon icon="mdi:close" className="h-4 w-4" />
+                                      <X className="h-4 w-4" />
                                     </button>
                                   </div>
                                 );
@@ -993,7 +1007,7 @@ export function EventRegistrationFormBuilderModal({
                                   onClick={() => addOption(question.id)}
                                   className="inline-flex items-center gap-2 transition-colors hover:text-primary-700"
                                 >
-                                  <Icon icon="mdi:plus" className="h-4 w-4" />
+                                  <Plus className="h-4 w-4" />
                                   Add option
                                 </button>
                                 {question.type === 'multiple_choice' ? (
@@ -1056,10 +1070,7 @@ export function EventRegistrationFormBuilderModal({
                           aria-expanded={isQuestionTypeMenuOpen}
                           aria-haspopup="listbox"
                         >
-                          <Icon
-                            icon={selectedType.icon}
-                            className="h-5 w-5 shrink-0 text-gray-500"
-                          />
+                          <SelectedTypeIcon className="h-5 w-5 shrink-0 text-gray-500" />
                           <span className="min-w-0 flex-1">
                             <span className="block text-base font-semibold leading-tight text-gray-500">
                               {selectedType.label}
@@ -1070,8 +1081,7 @@ export function EventRegistrationFormBuilderModal({
                               </span>
                             ) : null}
                           </span>
-                          <Icon
-                            icon="mdi:chevron-down"
+                          <ChevronDown
                             className={`h-6 w-6 shrink-0 text-gray-400 transition-transform ${
                               isQuestionTypeMenuOpen ? 'rotate-180' : ''
                             }`}
@@ -1082,6 +1092,7 @@ export function EventRegistrationFormBuilderModal({
                           <div className="absolute left-0 right-0 top-[calc(100%+0.6rem)] z-20 rounded-[1.2rem] border border-sky-100 bg-white p-2 shadow-[0_22px_50px_rgba(15,23,42,0.14)]">
                             {questionTypeOptions.map((option) => {
                               const isSelected = option.value === question.type;
+                              const QuestionTypeIcon = option.icon;
 
                               return (
                                 <button
@@ -1094,10 +1105,7 @@ export function EventRegistrationFormBuilderModal({
                                   role="option"
                                   aria-selected={isSelected}
                                 >
-                                  <Icon
-                                    icon={option.icon}
-                                    className="mt-0.5 h-5 w-5 shrink-0 text-gray-500"
-                                  />
+                                  <QuestionTypeIcon className="mt-0.5 h-5 w-5 shrink-0 text-gray-500" />
                                   <span className="min-w-0">
                                     <span className="block text-base font-semibold leading-tight text-gray-500">
                                       {option.label}
@@ -1148,7 +1156,7 @@ export function EventRegistrationFormBuilderModal({
                           className="inline-flex h-10 w-10 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-red-50 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-35"
                           aria-label={`Delete question ${index + 1}`}
                         >
-                          <Icon icon="mdi:delete-outline" className="h-8 w-8" />
+                          <Trash2 className="h-8 w-8" />
                         </button>
                       </div>
                     </div>
@@ -1163,9 +1171,9 @@ export function EventRegistrationFormBuilderModal({
           <button
             type="button"
             onClick={addQuestion}
-            className="inline-flex items-center gap-2 rounded-full border-2 border-primary-500 px-2 py-1 text-md font-semibold text-primary-500 transition-colors hover:bg-primary-50"
+            className="inline-flex items-center gap-2 rounded-full border-2 border-primary-500 px-1 text-md font-semibold text-primary-500 transition-colors hover:bg-primary-50"
           >
-            <Icon icon="mdi:plus" className="h-4 w-4" />
+            <Plus className="h-4 w-4" />
             Add new question
           </button>
         </div>
@@ -1178,7 +1186,7 @@ export function EventRegistrationFormBuilderModal({
 
         <div className="mt-8 flex justify-center">
           <Button type="button" size="md" className="min-w-[12rem]" onClick={handleSave}>
-            Add to Event
+            {value ? 'Update' : 'Add to Event'}
           </Button>
         </div>
       </div>

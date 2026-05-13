@@ -3,16 +3,10 @@
 // Design: 2×2 grid of category cards with coloured icon badges.
 // Each resource link is blue with an external link icon where applicable.
 
-import { Icon } from '@iconify/react';
+import { ExternalLink, HeartHandshake, type LucideIcon, Rocket, Scale, Shield } from 'lucide-react';
 import { SEO } from '@/shared/common/SEO';
-import { DonationButton } from '@/shared/components/ui/DonationButton';
 import { ROUTES } from '@/shared/constants/routes';
 import { AppLink } from '@/shared/components/ui/AppLink';
-
-const supportSafetyIcon = '/Resources/support_safety.svg';
-const careerGrowthIcon = '/Resources/career_growth.svg';
-const legalReferralIcon = '/Resources/aid_referral.svg';
-const counsellingIcon = '/Resources/counselling.svg';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -26,7 +20,9 @@ interface ResourceLink {
 interface ResourceCategory {
   id: string;
   title: string;
-  imageSrc: string;
+  icon: LucideIcon;
+  iconBg: string;
+  iconColor: string;
   links: ResourceLink[];
 }
 
@@ -36,7 +32,9 @@ const categories: ResourceCategory[] = [
   {
     id: 'safety',
     title: 'Support & Safety',
-    imageSrc: supportSafetyIcon,
+    icon: Shield,
+    iconBg: 'bg-red-100',
+    iconColor: 'text-red-500',
     links: [
       {
         label: 'WARIF',
@@ -56,7 +54,9 @@ const categories: ResourceCategory[] = [
   {
     id: 'career',
     title: 'Career & Growth',
-    imageSrc: careerGrowthIcon,
+    icon: Rocket,
+    iconBg: 'bg-green-100',
+    iconColor: 'text-green-600',
     links: [
       {
         label: 'Networking 101',
@@ -76,7 +76,9 @@ const categories: ResourceCategory[] = [
   {
     id: 'legal',
     title: 'Legal Aid / Referral',
-    imageSrc: legalReferralIcon,
+    icon: Scale,
+    iconBg: 'bg-purple-100',
+    iconColor: 'text-purple-600',
     links: [
       {
         label: 'Legal Aid',
@@ -93,7 +95,9 @@ const categories: ResourceCategory[] = [
   {
     id: 'counselling',
     title: 'Counselling',
-    imageSrc: counsellingIcon,
+    icon: HeartHandshake,
+    iconBg: 'bg-sky-100',
+    iconColor: 'text-sky-500',
     // No clickable links — just descriptive paragraphs
     links: [
       {
@@ -116,14 +120,19 @@ const categories: ResourceCategory[] = [
 
 // ─── Icon Badge ───────────────────────────────────────────────────────────────
 
-function IconBadge({ imageSrc }: { imageSrc: string }) {
+function IconBadge({
+  icon: IconComponent,
+  bg,
+  color,
+}: {
+  icon: LucideIcon;
+  bg: string;
+  color: string;
+}) {
   return (
-    <img
-      src={imageSrc}
-      alt=""
-      aria-hidden="true"
-      className="h-14 w-14 flex-shrink-0 object-contain"
-    />
+    <div className={`flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl ${bg}`}>
+      <IconComponent aria-hidden="true" className={`h-7 w-7 ${color}`} strokeWidth={2.25} />
+    </div>
   );
 }
 
@@ -133,7 +142,7 @@ function ResourceCard({ category }: { category: ResourceCategory }) {
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-7 flex flex-col gap-5">
       {/* Icon */}
-      <IconBadge imageSrc={category.imageSrc} />
+      <IconBadge icon={category.icon} bg={category.iconBg} color={category.iconColor} />
 
       {/* Title */}
       <h2 className="text-xl font-bold text-gray-900">{category.title}</h2>
@@ -174,7 +183,7 @@ function ResourceCard({ category }: { category: ResourceCategory }) {
                   className="inline-flex items-center gap-1.5 text-primary-500 hover:text-primary-600 font-semibold text-sm transition-colors"
                   endAdornment={
                     link.external ? (
-                      <Icon icon="mdi:open-in-new" className="w-3.5 h-3.5 flex-shrink-0" />
+                      <ExternalLink className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={2.25} />
                     ) : null
                   }
                 >

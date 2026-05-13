@@ -149,11 +149,11 @@ export default function BlogPostPage() {
             </div>
           ) : (
             <article className="mt-6 overflow-hidden rounded-[2rem] bg-white shadow-sm ring-1 ring-accent-100">
-              <div className="aspect-[16/8] overflow-hidden bg-accent-100">
+              <div className="bg-accent-100">
                 <img
                   src={announcement.image || FALLBACK_IMAGE}
                   alt=""
-                  className="h-full w-full object-cover"
+                  className="mx-auto block max-h-[36rem] w-full object-contain"
                 />
               </div>
 

@@ -13,7 +13,17 @@
  * ============================================================================
  */
 
-import { Icon } from '@iconify/react';
+import {
+  Check,
+  CheckCircle,
+  LoaderCircle,
+  Mail,
+  Phone,
+  UserSearch,
+  UserX,
+  Users,
+  X,
+} from 'lucide-react';
 import { useEffect, useState, useMemo } from 'react';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { SEO } from '@/shared/common/SEO';
@@ -32,10 +42,13 @@ import { ROUTES } from '@/shared/constants/routes';
 import { ADMIN_ROUTES } from '../routes';
 import { useAlumni } from '@/features/alumni/hooks/useAlumni';
 import type { Alumni } from '@/features/alumni/types/alumni.types';
+import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
+import { resolveProfilePhoto } from '@/features/user/utils/profileUtils';
 import { Avatar } from '@/shared/components/ui/Avatar';
 import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { Pagination } from '@/shared/components/ui/Pagination';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
+import { AdminBanner } from '@/features/admin/components/AdminBanner';
 
 const breadcrumbItems = [
   { label: 'Home', href: ROUTES.HOME },
@@ -54,7 +67,7 @@ type DisplayUser = {
   phone: string;
   role: 'admin' | 'member';
   accountStatus: AccountStatus;
-  photo: string;
+  photo?: string;
 };
 
 const ADMIN_MEMBERS_PER_PAGE = 10;
@@ -63,7 +76,7 @@ const ADMIN_MEMBERS_PER_PAGE = 10;
 // HELPER: MAP ALUMNI TO DISPLAY USER
 // ═══════════════════════════════════════════════════════════════════════════
 
-function mapAlumniToDisplayUser(alumni: Alumni): DisplayUser {
+function mapAlumniToDisplayUser(alumni: Alumni, currentUserMemberId?: string): DisplayUser {
   return {
     id: alumni.memberId,
     fullName: alumni.name,
@@ -71,7 +84,12 @@ function mapAlumniToDisplayUser(alumni: Alumni): DisplayUser {
     phone: alumni.whatsappPhone,
     role: alumni.role === 'admin' ? 'admin' : 'member',
     accountStatus: alumni.isActive ? 'active' : 'inactive',
-    photo: alumni.photo,
+    photo: resolveProfilePhoto({
+      photoUrl: alumni.photo,
+      privacy: alumni.privacy,
+      isOwner: alumni.memberId === currentUserMemberId,
+      isSignedIn: Boolean(currentUserMemberId),
+    }),
   };
 }
 
@@ -170,7 +188,7 @@ function ChangeRoleModal({
             disabled={isBusy}
             className="text-gray-400 hover:text-gray-600 transition-colors"
           >
-            <Icon icon="mdi:close" className="w-6 h-6" />
+            <X className="w-6 h-6" />
           </button>
         </div>
 
@@ -213,12 +231,12 @@ function ChangeRoleModal({
             >
               {isBusy ? (
                 <>
-                  <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" />
+                  <LoaderCircle className="w-4 h-4 animate-spin" />
                   Changing...
                 </>
               ) : (
                 <>
-                  <Icon icon="mdi:check" className="w-4 h-4" />
+                  <Check className="w-4 h-4" />
                   Change Role
                 </>
               )}
@@ -322,12 +340,12 @@ function UserRow({ user }: { user: DisplayUser }) {
 
               <div className="flex items-center gap-3 mt-1 text-xs text-gray-500">
                 <span className="flex items-center gap-1">
-                  <Icon icon="mdi:email-outline" className="w-3.5 h-3.5" />
+                  <Mail className="w-3.5 h-3.5" />
                   {user.email}
                 </span>
                 {user.phone && (
                   <span className="flex items-center gap-1">
-                    <Icon icon="mdi:phone-outline" className="w-3.5 h-3.5" />
+                    <Phone className="w-3.5 h-3.5" />
                     {user.phone}
                   </span>
                 )}
@@ -373,7 +391,7 @@ function UserRow({ user }: { user: DisplayUser }) {
                     : 'bg-green-500 hover:bg-green-600'
                 }`}
               >
-                {isBusy ? <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" /> : 'Confirm'}
+                {isBusy ? <LoaderCircle className="w-4 h-4 animate-spin" /> : 'Confirm'}
               </button>
               <button
                 onClick={closeConfirm}
@@ -419,6 +437,7 @@ function UserRowSkeleton() {
 // ═══════════════════════════════════════════════════════════════════════════
 
 export function AdminMembersPage() {
+  const currentUser = useIdentityStore((state) => state.user);
   const { data: alumniList = [], isLoading } = useAlumni();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -426,8 +445,8 @@ export function AdminMembersPage() {
   const [currentPage, setCurrentPage] = useState(1);
 
   const users = useMemo(() => {
-    return alumniList.map(mapAlumniToDisplayUser);
-  }, [alumniList]);
+    return alumniList.map((alumni) => mapAlumniToDisplayUser(alumni, currentUser?.memberId));
+  }, [alumniList, currentUser?.memberId]);
 
   const filteredUsers = useMemo(() => {
     let filtered = users;
@@ -470,6 +489,7 @@ export function AdminMembersPage() {
     return (
       <>
         <SEO title="Manage Members" description="View and manage all members" />
+        <AdminBanner activeTab="members" title="Manage Members" />
         <Breadcrumbs items={breadcrumbItems} />
         <AdminMembersPageSkeleton />
       </>
@@ -479,6 +499,7 @@ export function AdminMembersPage() {
   return (
     <>
       <SEO title="Manage Members" description="View and manage all members" />
+      <AdminBanner activeTab="members" title="Manage Members" />
       <Breadcrumbs items={breadcrumbItems} />
 
       <section className="section py-8">
@@ -499,7 +520,7 @@ export function AdminMembersPage() {
                   <p className="text-sm font-medium text-white/80">Total Members</p>
                   <p className="text-3xl font-bold mt-2">{users.length}</p>
                 </div>
-                <Icon icon="mdi:account-group" className="w-12 h-12 text-white/20" />
+                <Users className="w-12 h-12 text-white/20" />
               </div>
             </div>
 
@@ -509,7 +530,7 @@ export function AdminMembersPage() {
                   <p className="text-sm font-medium text-white/80">Active</p>
                   <p className="text-3xl font-bold mt-2">{activeCount}</p>
                 </div>
-                <Icon icon="mdi:check-circle" className="w-12 h-12 text-white/20" />
+                <CheckCircle className="w-12 h-12 text-white/20" />
               </div>
             </div>
 
@@ -519,7 +540,7 @@ export function AdminMembersPage() {
                   <p className="text-sm font-medium text-white/80">Inactive</p>
                   <p className="text-3xl font-bold mt-2">{inactiveCount}</p>
                 </div>
-                <Icon icon="mdi:account-off" className="w-12 h-12 text-white/20" />
+                <UserX className="w-12 h-12 text-white/20" />
               </div>
             </div>
           </div>
@@ -527,21 +548,6 @@ export function AdminMembersPage() {
           {/* Filters */}
           <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6">
             <div className="flex flex-col sm:flex-row gap-4">
-              {/* Search */}
-              {/* <div className="flex-1 relative">
-                <Icon
-                  icon="mdi:magnify"
-                  className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
-                />
-                <input
-                  type="text"
-                  placeholder="Search by name or email..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                />
-              </div> */}
-
               <SearchInput
                 placeholder="Search by name or email..."
                 value={searchQuery}
@@ -603,10 +609,7 @@ export function AdminMembersPage() {
               Array.from({ length: 5 }).map((_, i) => <UserRowSkeleton key={i} />)
             ) : filteredUsers.length === 0 ? (
               <div className="text-center py-12 bg-white rounded-xl border border-gray-100">
-                <Icon
-                  icon="mdi:account-search-outline"
-                  className="w-16 h-16 text-gray-300 mx-auto mb-3"
-                />
+                <UserSearch className="w-16 h-16 text-gray-300 mx-auto mb-3" />
                 <p className="text-gray-500 text-sm">
                   {searchQuery ? 'No users found matching your search' : 'No users found'}
                 </p>

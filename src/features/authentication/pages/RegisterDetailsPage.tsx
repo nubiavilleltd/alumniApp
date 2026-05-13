@@ -52,7 +52,8 @@ function buildRegisterDefaultValues(
     confirmPassword: savedValues?.confirmPassword ?? '',
     voucherId: savedValues?.voucherId ?? '',
     city: savedValues?.city ?? '',
-    state: 'Lagos',
+    area: savedValues?.area ?? '',
+    // state: 'Lagos',
     residentialAddress: savedValues?.residentialAddress ?? '',
   };
 }
@@ -65,10 +66,39 @@ export function RegisterDetailsPage() {
   // ── Cities from API ──────────────────────────────────────────────────────────
   const { data: cities = [], isLoading: isLoadingCities } = useCities();
 
-  const cityOptions = cities.map((c) => ({
-    label: c.city,
-    value: c.city, // store city name string — same as old free-text value
-  }));
+  // const cityOptions = cities.map((c) => ({
+  //   label: c.city,
+  //   value: c.city, // store city name string — same as old free-text value
+  // }));
+
+  const cityOptions = [...cities]
+    .sort((a, b) => a.city.localeCompare(b.city))
+    .map((c) => ({
+      label: c.city,
+      value: c.city,
+    }));
+
+  const citiesZoneMapping = cities.reduce(
+    (acc, item) => {
+      acc[item.city] = {
+        zoneId: item.zoneId,
+        zone: item.zone,
+        chapterId: item.chapterId,
+        cityId: item.cityId,
+      };
+
+      return acc;
+    },
+    {} as Record<
+      string,
+      {
+        zoneId: number;
+        zone: string;
+        chapterId: number;
+        cityId: number;
+      }
+    >,
+  );
 
   useEffect(() => {
     if (savedFlow?.step === 'success') {
@@ -100,14 +130,14 @@ export function RegisterDetailsPage() {
   const cityValue = detailForm.watch('city');
   const passwordsMatch = passwordValue.length > 0 && confirmPasswordValue === passwordValue;
 
-  useEffect(() => {
-    if (detailForm.getValues('state') !== 'Lagos') {
-      detailForm.setValue('state', 'Lagos', {
-        shouldDirty: false,
-        shouldValidate: true,
-      });
-    }
-  }, [detailForm]);
+  // useEffect(() => {
+  //   if (detailForm.getValues('state') !== 'Lagos') {
+  //     detailForm.setValue('state', 'Lagos', {
+  //       shouldDirty: false,
+  //       shouldValidate: true,
+  //     });
+  //   }
+  // }, [detailForm]);
 
   useEffect(() => {
     const loadVouchers = async () => {
@@ -250,6 +280,7 @@ export function RegisterDetailsPage() {
           <PasswordInput
             label="Confirm Password"
             id="confirmPassword"
+            disablePaste
             required
             autoComplete="new-password"
             placeholder="Re-enter your password"
@@ -281,18 +312,38 @@ export function RegisterDetailsPage() {
           />
         </div>
 
-        <TextareaInput
-          label="Residential Address"
+        <div className="auth-form-grid auth-form-grid--two">
+          {/* <TextareaInput
+          label="Street Name and Address"
           id="residentialAddress"
           required
           rows={5}
           placeholder=""
           error={detailForm.formState.errors.residentialAddress?.message}
           {...detailForm.register('residentialAddress')}
-        />
+        /> */}
+          <FormInput
+            label="Street Name and Address"
+            id="residentialAddress"
+            required
+            placeholder=""
+            error={detailForm.formState.errors.residentialAddress?.message}
+            {...detailForm.register('residentialAddress')}
+          />
+
+          <FormInput
+            label="Area"
+            id="area"
+            required
+            type="text"
+            placeholder=""
+            error={detailForm.formState.errors.area?.message}
+            {...detailForm.register('area')}
+          />
+        </div>
 
         <div className="auth-form-grid auth-form-grid--two">
-          <SelectInput
+          {/* <SelectInput
             label="State of Residence"
             id="state"
             required
@@ -308,7 +359,7 @@ export function RegisterDetailsPage() {
               });
             }}
             onBlur={() => detailForm.trigger('state')}
-          />
+          /> */}
 
           {/* ── CHANGED: city is now a dropdown backed by the API ── */}
           <SelectInput
@@ -327,6 +378,14 @@ export function RegisterDetailsPage() {
               });
             }}
             onBlur={() => detailForm.trigger('city')}
+          />
+          <FormInput
+            label="Zone"
+            id="zone"
+            type="text"
+            placeholder=""
+            disabled
+            value={citiesZoneMapping[cityValue]?.zone ?? ''}
           />
         </div>
 

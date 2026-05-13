@@ -64,6 +64,7 @@ import JobVacancyDetailPage from './features/jobVacancies/pages/JobVacancyDetail
 import MyJobPostsPage from './features/jobVacancies/pages/MyJobPostsPage';
 import { DonationPage } from './features/donation/pages/DonationPage';
 import { WelfareCommitteeContactPage } from './features/contactUs/pages/WelfareCommitteeContactPage';
+import AdminProjectsPage from './features/projects/pages/AdminProjectsPage';
 
 export default function App() {
   return (
@@ -135,11 +136,9 @@ export default function App() {
           <Route
             path={ROUTES.JOB_VACANCIES}
             element={
-              <ProtectedRoute>
-                <ErrorBoundary>
-                  <JobVacanciesPage />
-                </ErrorBoundary>
-              </ProtectedRoute>
+              <ErrorBoundary>
+                <JobVacanciesPage />
+              </ErrorBoundary>
             }
           />
           <Route
@@ -155,11 +154,9 @@ export default function App() {
           <Route
             path={ROUTES.JOB_VACANCY_DETAIL_PATH}
             element={
-              <ProtectedRoute>
-                <ErrorBoundary>
-                  <JobVacancyDetailPage />
-                </ErrorBoundary>
-              </ProtectedRoute>
+              <ErrorBoundary>
+                <JobVacancyDetailPage />
+              </ErrorBoundary>
             }
           />
           <Route
@@ -445,6 +442,17 @@ export default function App() {
               <AdminRoute>
                 <ErrorBoundary>
                   <AdminAnnouncementsPage />
+                </ErrorBoundary>
+              </AdminRoute>
+            }
+          />
+
+          <Route
+            path={ADMIN_ROUTES.PROJECTS}
+            element={
+              <AdminRoute>
+                <ErrorBoundary>
+                  <AdminProjectsPage />
                 </ErrorBoundary>
               </AdminRoute>
             }

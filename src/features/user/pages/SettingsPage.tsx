@@ -223,6 +223,7 @@ function ChangePasswordSection() {
         <PasswordInput
           label="Confirm New Password"
           id="confirmPassword"
+          disablePaste
           placeholder="Confirm your new password"
           error={errors.confirmPassword?.message}
           autoComplete="new-password"

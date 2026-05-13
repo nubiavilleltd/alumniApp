@@ -127,7 +127,10 @@ export function MessagesPage() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const recordingChunksRef = useRef<Blob[]>([]);
-  const recordingContextRef = useRef<{ viewerMemberId: string; threadId: string } | null>(null);
+  const recordingContextRef = useRef<{
+    viewerMemberId: string;
+    threadId: string;
+  } | null>(null);
   const recordingStartedAtRef = useRef<number | null>(null);
   const stopVoiceRecordingAfterStartRef = useRef(false);
   const hasShownRecordingFallbackToastRef = useRef(false);
@@ -209,8 +212,32 @@ export function MessagesPage() {
           ),
         }
       : activeThread;
+  const unreadDividerMessageId = useMemo(() => {
+    if (!activeThreadWithOptimisticMessages?.messages.length) return null;
+
+    const unreadCount =
+      activeThreadSummary?.unreadCount ??
+      activeThread?.unreadCount ??
+      resolvedThreadSummary?.unreadCount ??
+      0;
+
+    if (unreadCount <= 0) return null;
+
+    const incomingMessages = activeThreadWithOptimisticMessages.messages.filter(
+      (message) => !message.isOwn,
+    );
+
+    const unreadIncomingMessages = incomingMessages.slice(-unreadCount);
+
+    return unreadIncomingMessages[0]?.id ?? null;
+  }, [
+    activeThread?.unreadCount,
+    activeThreadSummary?.unreadCount,
+    activeThreadWithOptimisticMessages?.messages,
+    resolvedThreadSummary?.unreadCount,
+  ]);
   const threadShell = activeThreadWithOptimisticMessages ?? resolvedThreadSummary;
-  const unreadMessageCount = inboxQuery.data?.unreadCount ?? 0;
+  const unreadThreadCount = inboxQuery.data?.unreadThreadCount ?? 0;
   const groupParticipants = useMemo(
     () =>
       threadShell?.type === 'group' ? sortGroupParticipants(threadShell.participants ?? []) : [],
@@ -1152,7 +1179,10 @@ export function MessagesPage() {
   }, [activeThread, attachmentsDisabled]);
 
   function getSidebarDeliveryState(thread: MessageThreadSummary) {
-    if (activeThreadWithOptimisticMessages?.id === thread.id) {
+    if (
+      activeThreadWithOptimisticMessages?.id === thread.id &&
+      activeOptimisticMessages.length > 0
+    ) {
       const lastMessage =
         activeThreadWithOptimisticMessages.messages[
           activeThreadWithOptimisticMessages.messages.length - 1
@@ -1200,7 +1230,9 @@ export function MessagesPage() {
               className={`flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-xs font-medium text-gray-600 shadow-sm transition-all duration-200 ${
                 refreshIndicatorVisible ? 'opacity-100' : 'pointer-events-none opacity-0'
               }`}
-              style={{ transform: `translateY(${Math.min(pullToRefresh.pullDistance, 18)}px)` }}
+              style={{
+                transform: `translateY(${Math.min(pullToRefresh.pullDistance, 18)}px)`,
+              }}
             >
               <Icon
                 icon={pullToRefresh.isRefreshing ? 'mdi:loading' : 'mdi:refresh'}
@@ -1246,7 +1278,7 @@ export function MessagesPage() {
                   {inboxFilters.map((item) => {
                     const active = filter === item.key;
                     const label =
-                      item.key === 'unread' ? `${item.label} (${unreadMessageCount})` : item.label;
+                      item.key === 'unread' ? `${item.label} (${unreadThreadCount})` : item.label;
 
                     return (
                       <button
@@ -1486,6 +1518,16 @@ export function MessagesPage() {
                                   <span className="text-xs text-gray-400">
                                     {formatConversationDay(message.createdAt)}
                                   </span>
+                                </div>
+                              ) : null}
+
+                              {message.id === unreadDividerMessageId ? (
+                                <div className="my-4 flex items-center gap-3">
+                                  <div className="h-px flex-1 bg-blue-100" />
+                                  <span className="text-sm font-medium text-gray-500">
+                                    Unread messages
+                                  </span>
+                                  <div className="h-px flex-1 bg-blue-100" />
                                 </div>
                               ) : null}
 

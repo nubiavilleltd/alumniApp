@@ -96,7 +96,16 @@ apiClient.interceptors.response.use(
       const isRefreshRequest = pathname === API_ENDPOINTS.AUTH.REFRESH_TOKEN;
       const isBearerExcludedRequest = BEARER_EXCLUDED_ENDPOINTS.has(pathname);
 
-      if (status === 401 && !error.config._retry && !isRefreshRequest && !isBearerExcludedRequest) {
+      // ✅ NEW: Check if logout is in progress
+      const isLoggingOut = useTokenStore.getState()._isLoggingOut;
+
+      if (
+        status === 401 &&
+        !error.config._retry &&
+        !isRefreshRequest &&
+        !isBearerExcludedRequest &&
+        !isLoggingOut
+      ) {
         error.config._retry = true;
 
         const newToken = await handleTokenRefresh();
@@ -113,7 +122,7 @@ apiClient.interceptors.response.use(
           clearTokens();
           clearIdentity();
 
-          if (!window.location.pathname.startsWith(AUTH_ROUTES.LOGIN)) {
+          if (!isLoggingOut && !window.location.pathname.startsWith(AUTH_ROUTES.LOGIN)) {
             window.location.href = `${AUTH_ROUTES.LOGIN}?session_expired=true`;
           }
         }

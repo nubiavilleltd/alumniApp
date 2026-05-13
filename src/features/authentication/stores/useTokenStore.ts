@@ -155,10 +155,12 @@ interface TokenState {
   refreshToken: string | null;
   rememberMe: boolean;
   _hydrated: boolean;
+  _isLoggingOut: boolean;
 
   setTokens: (accessToken: string, refreshToken: string) => void;
   setRememberMe: (value: boolean) => void;
   clearTokens: () => void;
+  setLoggingOut: (value: boolean) => void;
 }
 
 export const useTokenStore = create<TokenState>()(
@@ -168,9 +170,11 @@ export const useTokenStore = create<TokenState>()(
       refreshToken: null,
       rememberMe: false,
       _hydrated: false,
+      _isLoggingOut: false,
 
       setTokens: (accessToken, refreshToken) => set({ accessToken, refreshToken }),
       setRememberMe: (value) => set({ rememberMe: value }),
+      setLoggingOut: (value) => set({ _isLoggingOut: value }),
 
       clearTokens: () =>
         set({

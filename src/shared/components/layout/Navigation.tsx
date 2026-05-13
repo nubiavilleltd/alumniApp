@@ -137,7 +137,7 @@ function UnreadMessagesBadge({ count, className = '' }: { count: number; classNa
         'inline-flex min-w-5 items-center justify-center rounded-full bg-[#ef4444] px-1.5 py-0.5 text-[0.68rem] font-extrabold leading-none text-white shadow-[0_4px_10px_rgba(239,68,68,0.35)]',
         className,
       )}
-      aria-label={`${count} unread message${count === 1 ? '' : 's'}`}
+      aria-label={`${count} unread conversation${count === 1 ? '' : 's'}`}
     >
       {formatUnreadBadgeCount(count)}
     </span>
@@ -164,8 +164,8 @@ function BrandMark({ mobile = false }: { mobile?: boolean }) {
       className={cn(
         'relative isolate flex overflow-hidden bg-white text-primary-500 no-underline',
         mobile
-          ? 'min-h-[5.25rem] items-center px-4 py-3'
-          : 'items-center justify-center px-[clamp(1rem,2vw,1.8rem)] py-[clamp(0.8rem,1.4vw,1.25rem)]',
+          ? 'min-h-[5.25rem] items-center py-3'
+          : 'items-center justify-center py-[clamp(0.8rem,1.4vw,1.25rem)]',
       )}
     >
       <span
@@ -285,12 +285,12 @@ function UserDropdown({
   currentUser,
   onLogout,
   isLoggingOut,
-  unreadMessageCount,
+  unreadThreadCount,
 }: {
   currentUser: CurrentUser;
   onLogout: () => void;
   isLoggingOut: boolean;
-  unreadMessageCount: number;
+  unreadThreadCount: number;
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -335,7 +335,7 @@ function UserDropdown({
             {displayName}
           </strong>
         </span>
-        <UnreadMessagesBadge count={unreadMessageCount} className="ml-1 flex-none" />
+        <UnreadMessagesBadge count={unreadThreadCount} className="ml-1 flex-none" />
         <Icon icon="mdi:chevron-down" className="h-5 w-5 flex-none text-[#9eb8ca]" />
       </button>
 
@@ -353,7 +353,7 @@ function UserDropdown({
             >
               <span>{item.label}</span>
               {item.url === ROUTES.MESSAGES ? (
-                <UnreadMessagesBadge count={unreadMessageCount} />
+                <UnreadMessagesBadge count={unreadThreadCount} />
               ) : null}
             </AppLink>
           ))}
@@ -432,7 +432,7 @@ export function Navigation() {
   const inboxQuery = useMessagesInbox();
   const currentUser = (freshUser ?? storeUser) as CurrentUser | null;
   const authenticatedUser = isAuthenticated && currentUser ? currentUser : null;
-  const unreadMessageCount = authenticatedUser ? (inboxQuery.data?.unreadCount ?? 0) : 0;
+  const unreadThreadCount = authenticatedUser ? (inboxQuery.data?.unreadThreadCount ?? 0) : 0;
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
@@ -525,40 +525,45 @@ export function Navigation() {
     previousThreadStatesRef.current = nextThreadStates;
   }, [activeMessagesThreadId, authenticatedUser, inboxQuery.data, pathname]);
 
-  // const handleLogout = async () => {
-  //   setIsLoggingOut(true);
-  //   if (authenticatedUser) {
-  //     try {
-  //       await authApi.logout();
-  //     } catch(error) {
-  //       /* Always clear local auth state even if the server session has expired. */
-  //       console.log("Failed to log out in handleLogout", error)
-  //     }
-  //   }
-  //   clearTokens();
-  //   clearIdentity();
-  //   setMobileOpen(false);
-  //   console.log("redirecting ...home")
-  //   navigate(ROUTES.HOME, { replace: true });
-  //   setIsLoggingOut(false);
-  // };
-
   const handleLogout = async () => {
+    const setLoggingOut = useTokenStore.getState().setLoggingOut;
+
     setIsLoggingOut(true);
-    if (authenticatedUser) {
-      try {
-        await authApi.logout();
-      } catch (error) {
-        console.log('Failed to log out in handleLogout', error);
-      }
-    }
-    // Navigate first so the current ProtectedRoute unmounts
-    // before we clear auth state — prevents the spurious /login redirect
-    navigate(ROUTES.HOME, { replace: true });
-    clearTokens();
-    clearIdentity();
+    setLoggingOut(true); // ✅ NEW: Set global logout flag
     setMobileOpen(false);
-    setIsLoggingOut(false);
+
+    try {
+      // Call API logout if authenticated
+      if (authenticatedUser) {
+        try {
+          await authApi.logout();
+        } catch (error) {
+          console.log('Failed to call logout API:', error);
+        }
+      }
+
+      // Clear authentication state
+      clearTokens();
+      clearIdentity();
+
+      // Small delay to ensure state updates propagate
+      await new Promise((resolve) => setTimeout(resolve, 50));
+
+      // Hard navigate to home
+      // window.location.href = ROUTES.HOME;
+
+      window.location.replace(window.location.origin + ROUTES.HOME);
+    } catch (error) {
+      console.error('Logout failed:', error);
+      clearTokens();
+      clearIdentity();
+      // window.location.href = ROUTES.HOME;
+
+      window.location.replace(window.location.origin + ROUTES.HOME);
+    } finally {
+      setIsLoggingOut(false);
+      setLoggingOut(false); // ✅ NEW: Clear global logout flag
+    }
   };
 
   const mobileMenuItems = isAdmin
@@ -576,11 +581,11 @@ export function Navigation() {
       className="relative z-50 bg-[#003c5f] text-white shadow-[0_1px_0_rgba(7,17,22,0.12)]"
       aria-label="Primary navigation"
     >
-      <div className="hidden min-h-[clamp(8.5rem,11.8vw,11.8rem)] grid-cols-[minmax(20rem,28.5vw)_minmax(0,1fr)] lg:grid lg:max-[1360px]:grid-cols-[minmax(18rem,31vw)_minmax(0,1fr)]">
+      <div className="hidden min-h-[clamp(8.5rem,11.8vw,11.8rem)] grid-cols-[minmax(20rem,28.5vw)_minmax(0,1fr)] pr-[var(--app-page-inline-padding)] lg:grid lg:max-[1360px]:grid-cols-[minmax(18rem,31vw)_minmax(0,1fr)]">
         <BrandMark />
 
         <div className={cn(navSurfaceClassName, 'grid grid-rows-[44%_56%]')}>
-          <div className="flex items-center justify-end gap-[clamp(1.5rem,3vw,3rem)] px-[clamp(2rem,4.6vw,5rem)]">
+          <div className="flex items-center justify-end gap-[clamp(1.5rem,3vw,3rem)]">
             <div className="flex items-center gap-[clamp(2rem,4.5vw,4rem)]">
               {secondaryNavItems.map((item) => (
                 <AppLink
@@ -601,7 +606,7 @@ export function Navigation() {
                 currentUser={authenticatedUser}
                 onLogout={handleLogout}
                 isLoggingOut={isLoggingOut}
-                unreadMessageCount={unreadMessageCount}
+                unreadThreadCount={unreadThreadCount}
               />
             ) : (
               <AppLink
@@ -616,7 +621,7 @@ export function Navigation() {
             )}
           </div>
 
-          <div className="flex items-center justify-center gap-[clamp(2.25rem,5vw,6.25rem)] px-[clamp(2rem,4vw,4.5rem)] pb-[clamp(0.75rem,1.2vw,1.25rem)] lg:max-[1360px]:gap-[clamp(1.4rem,3vw,2.75rem)]">
+          <div className="flex items-center justify-between gap-[clamp(2.25rem,5vw,6.25rem)] pb-[clamp(0.75rem,1.2vw,1.25rem)] pl-[var(--app-page-inline-padding)] lg:max-[1360px]:gap-[clamp(1.4rem,3vw,2.75rem)]">
             {primaryNavItems.map((item) =>
               item.children ? (
                 <DesktopDropdown key={item.label} item={item} />
@@ -628,7 +633,9 @@ export function Navigation() {
         </div>
       </div>
 
-      <div className={cn(navSurfaceClassName, 'block lg:hidden')}>
+      <div
+        className={cn(navSurfaceClassName, 'block pr-[var(--app-page-inline-padding)] lg:hidden')}
+      >
         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-stretch">
           <BrandMark mobile />
           <button
@@ -647,7 +654,7 @@ export function Navigation() {
           ref={mobileMenuRef}
           className={cn(
             'overflow-hidden transition-[max-height,padding] duration-200',
-            mobileOpen ? 'max-h-[90vh] overflow-y-auto px-4 pb-5 pt-3' : 'max-h-0 px-0 py-0',
+            mobileOpen ? 'max-h-[90vh] overflow-y-auto pb-5 pt-3' : 'max-h-0 px-0 py-0',
           )}
         >
           <div className={mobileSectionClassName}>
@@ -694,7 +701,7 @@ export function Navigation() {
                     {getDisplayName(authenticatedUser)}
                   </strong>
                 </div>
-                <UnreadMessagesBadge count={unreadMessageCount} className="ml-auto flex-none" />
+                <UnreadMessagesBadge count={unreadThreadCount} className="ml-auto flex-none" />
               </div>
 
               {mobileMenuItems.map((item) => (
@@ -709,7 +716,7 @@ export function Navigation() {
                 >
                   <span>{item.label}</span>
                   {item.url === ROUTES.MESSAGES ? (
-                    <UnreadMessagesBadge count={unreadMessageCount} />
+                    <UnreadMessagesBadge count={unreadThreadCount} />
                   ) : null}
                 </AppLink>
               ))}

@@ -1,4 +1,4 @@
-import { Icon } from '@iconify/react';
+import { MegaphoneOff, Pencil, Plus, Trash2 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
@@ -7,6 +7,7 @@ import { Pagination } from '@/shared/components/ui/Pagination';
 import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
 import { ROUTES } from '@/shared/constants/routes';
+import { AdminBanner } from '@/features/admin/components/AdminBanner';
 import { DeleteConfirmModal } from '@/features/events/components/DeleteConfirmModal';
 import {
   useAnnouncements,
@@ -142,6 +143,7 @@ export function AdminAnnouncementsPage() {
   return (
     <>
       <SEO title="Manage Announcements" description="Create and manage community announcements." />
+      <AdminBanner activeTab="announcements" title="Manage Announcements" />
       <Breadcrumbs items={breadcrumbItems} />
 
       <section className="section py-8">
@@ -166,7 +168,7 @@ export function AdminAnnouncementsPage() {
                 }}
                 className="inline-flex items-center gap-2 rounded-2xl bg-primary-500 px-5 py-3 text-sm font-semibold text-white hover:bg-primary-600"
               >
-                <Icon icon="mdi:plus" className="h-4 w-4" />
+                <Plus className="h-4 w-4" />
                 Create announcement
               </button>
             </div>
@@ -253,7 +255,7 @@ export function AdminAnnouncementsPage() {
           ) : filteredAnnouncements.length === 0 ? (
             <div className="rounded-2xl bg-white p-10 text-center shadow-sm ring-1 ring-accent-100">
               <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-accent-50">
-                <Icon icon="mdi:bullhorn-off-outline" className="h-7 w-7 text-accent-700" />
+                <MegaphoneOff className="h-7 w-7 text-accent-700" />
               </div>
               <h2 className="mt-4 text-2xl font-bold text-accent-950">No matching announcements</h2>
               <p className="mt-2 text-sm text-accent-500">
@@ -319,7 +321,7 @@ export function AdminAnnouncementsPage() {
                             }}
                             className="inline-flex items-center gap-2 rounded-xl border border-primary-200 px-4 py-2 text-sm font-semibold text-primary-700 hover:bg-primary-50"
                           >
-                            <Icon icon="mdi:pencil-outline" className="h-4 w-4" />
+                            <Pencil className="h-4 w-4" />
                             Edit
                           </button>
                           <button
@@ -327,7 +329,7 @@ export function AdminAnnouncementsPage() {
                             onClick={() => setAnnouncementToDelete(item)}
                             className="inline-flex items-center gap-2 rounded-xl border border-red-200 px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50"
                           >
-                            <Icon icon="mdi:trash-can-outline" className="h-4 w-4" />
+                            <Trash2 className="h-4 w-4" />
                             Delete
                           </button>
                         </div>

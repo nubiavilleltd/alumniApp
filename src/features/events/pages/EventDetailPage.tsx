@@ -16,6 +16,7 @@ import { renderMarkdown } from '@/data/content';
 import { AUTH_ROUTES } from '@/features/authentication/routes';
 import { useEventStatus } from '../hooks/useEventStatus';
 import { formatDateRange } from '@/shared/utils/dateHelpers';
+import { useRequireSignIn } from '@/features/authentication/hooks/useRequireSignIn';
 
 // ─── Countdown ────────────────────────────────────────────────────────────────
 
@@ -182,8 +183,11 @@ function EventDetailSkeleton() {
 
 export function EventDetailPage() {
   const { slug = '' } = useParams();
+  const requireSignIn = useRequireSignIn();
   const { data: event, isLoading, error } = useEvent(slug);
   const { isUpcoming, isOngoing, isPast } = useEventStatus(event);
+
+  console.log('status event', { isUpcoming, isOngoing, isPast, event });
   const navigate = useNavigate();
 
   const currentUser = useIdentityStore((state) => state.user);
@@ -474,13 +478,16 @@ export function EventDetailPage() {
             <div className="flex items-center gap-3">
               {/* Register — not logged in, upcoming, not full */}
               {(isUpcoming || isOngoing) && !isCancelled && !isLoggedIn && !isFull && (
-                <AppLink
-                  href={AUTH_ROUTES.LOGIN}
+                <button
+                  type="button"
+                  onClick={() =>
+                    requireSignIn({ message: 'Please sign in to register for this event.' })
+                  }
                   className="inline-flex items-center gap-2 bg-primary-500 hover:bg-primary-600 text-white font-semibold text-sm px-6 py-2.5 rounded-full transition-colors shadow-sm"
                 >
-                  <Icon icon="mdi:login" className="w-4 h-4" />
+                  {/* <Icon icon="mdi:login" className="w-4 h-4" /> */}
                   Sign in to Register
-                </AppLink>
+                </button>
               )}
 
               {/* Register — logged in, upcoming, not registered, not full */}
@@ -514,7 +521,7 @@ export function EventDetailPage() {
                 type="button"
                 onClick={handleShare}
                 aria-label="Share event"
-                className="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-full border border-gray-300 bg-white hover:bg-gray-50 text-gray-600 transition-colors shadow-sm"
+                className="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-full border border-primary-300 bg-white hover:bg-primary-50 text-primary-500 transition-colors shadow-sm"
               >
                 <Icon icon="mdi:share-variant-outline" className="w-4 h-4" />
               </button>

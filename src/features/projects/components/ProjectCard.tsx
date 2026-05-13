@@ -6,14 +6,25 @@
 // so they don't disturb the clean overlay layout.
 
 import { useState } from 'react';
-import { Icon } from '@iconify/react';
+import {
+  AlertCircle,
+  ChevronRight,
+  Clock,
+  LoaderCircle,
+  MapPin,
+  Pencil,
+  Trash2,
+} from 'lucide-react';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { useDeleteProject } from '../hooks/useProjects';
 import type { Project } from '../types/project.types';
 import { ROUTES } from '@/shared/constants/routes';
 import { formatDateRange } from '@/shared/utils/dateHelpers';
 
-const PLACEHOLDER = 'https://placehold.co/80x80/E5E7EB/6B7280?text=No+Image';
+import placeholderImg from '/placeholder-image.png';
+import placeholderImg2 from '/placeholder.png';
+
+// const PLACEHOLDER = 'https://placehold.co/80x80/E5E7EB/6B7280?text=No+Image';
 
 // ─── Delete confirmation ──────────────────────────────────────────────────────
 
@@ -33,7 +44,7 @@ function DeleteConfirmModal({
       <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
         <div className="flex items-start gap-3 mb-4">
           <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
-            <Icon icon="mdi:alert-circle-outline" className="w-5 h-5 text-red-600" />
+            <AlertCircle className="w-5 h-5 text-red-600" />
           </div>
           <div>
             <h3 className="text-gray-900 font-bold text-lg mb-1">Delete Project?</h3>
@@ -58,7 +69,7 @@ function DeleteConfirmModal({
             disabled={isDeleting}
             className="px-6 py-2 text-sm font-semibold bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2"
           >
-            {isDeleting && <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" />}
+            {isDeleting && <LoaderCircle className="w-4 h-4 animate-spin" />}
             Yes, Delete
           </button>
         </div>
@@ -79,8 +90,9 @@ export function ProjectCard({ project, showAdminActions = false, onEdit }: Proje
   const deleteMutation = useDeleteProject();
   const [showDelete, setShowDelete] = useState(false);
 
-  const mainImage = project.images?.[0] || PLACEHOLDER;
-  const isCompleted = project.status === 'completed';
+  // const mainImage = project.images?.[0] || PLACEHOLDER;
+  const mainImage = project.images?.[0] || placeholderImg;
+  // const isCompleted = project.status === 'completed';
 
   const dateRange = formatDateRange(project.startDate, project.endDate, {
     locale: 'en-GB',
@@ -119,7 +131,7 @@ export function ProjectCard({ project, showAdminActions = false, onEdit }: Proje
               title="Edit project"
               className="w-7 h-7 rounded-full bg-white/90 hover:bg-white flex items-center justify-center shadow transition-colors"
             >
-              <Icon icon="mdi:pencil-outline" className="w-3.5 h-3.5 text-primary-600" />
+              <Pencil className="w-3.5 h-3.5 text-primary-600" />
             </button>
             <button
               type="button"
@@ -127,13 +139,13 @@ export function ProjectCard({ project, showAdminActions = false, onEdit }: Proje
               title="Delete project"
               className="w-7 h-7 rounded-full bg-white/90 hover:bg-white flex items-center justify-center shadow transition-colors"
             >
-              <Icon icon="mdi:trash-can-outline" className="w-3.5 h-3.5 text-red-500" />
+              <Trash2 className="w-3.5 h-3.5 text-red-500" />
             </button>
           </div>
         )}
 
         {/* Status badge — top-left */}
-        <div className="absolute top-3 left-3 z-10">
+        {/* <div className="absolute top-3 left-3 z-10">
           <span
             className={`text-[10px] font-semibold px-2.5 py-1 rounded-full ${
               isCompleted ? 'bg-green-500/90 text-white' : 'bg-primary-500/90 text-white'
@@ -141,19 +153,11 @@ export function ProjectCard({ project, showAdminActions = false, onEdit }: Proje
           >
             {isCompleted ? 'Completed' : 'Ongoing'}
           </span>
-        </div>
+        </div> */}
 
         {/* Blue overlay panel */}
         {/* <div className="absolute bottom-0 left-0 right-0 bg-primary-600/80 backdrop-blur-[2px] rounded-2xl px-4 pt-3.5 pb-4"> */}
-        <div
-          className="
-  absolute bottom-0 left-0 right-0
-  h-32 sm:h-36 md:h-40
-  bg-primary-600/80 backdrop-blur-[2px]
-  rounded-2xl px-4 pt-3 pb-3
-  flex flex-col
-"
-        >
+        <div className="absolute bottom-0 left-0 right-0 h-40 sm:h-36 md:h-40 bg-primary-600/80 backdrop-blur-[2px] rounded-2xl px-4 pt-3 pb-3 flex flex-col">
           {/* Title */}
           <p className="text-white font-bold text-[14px] sm:text-[15px] leading-snug line-clamp-1">
             {project.title}
@@ -168,14 +172,14 @@ export function ProjectCard({ project, showAdminActions = false, onEdit }: Proje
           <div className="flex flex-col gap-1 mt-2 flex-1">
             {project.location && (
               <span className="flex items-center gap-1 text-white/80 text-[10px] sm:text-[11px]">
-                <Icon icon="mdi:map-marker-outline" className="w-3 h-3 flex-shrink-0" />
+                <MapPin className="w-3 h-3 flex-shrink-0" />
                 {project.location}
               </span>
             )}
 
             {dateRange && (
               <span className="flex items-center gap-1 text-white/80 text-[10px] sm:text-[11px]">
-                <Icon icon="mdi:clock-outline" className="w-3 h-3 flex-shrink-0" />
+                <Clock className="w-3 h-3 flex-shrink-0" />
                 {dateRange}
               </span>
             )}
@@ -184,10 +188,10 @@ export function ProjectCard({ project, showAdminActions = false, onEdit }: Proje
           {/* View details link */}
           <AppLink
             href={ROUTES.PROJECTS.DETAIL(project.id)}
-            className="mt-auto inline-flex items-center gap-0.5 text-white font-semibold text-[11px] sm:text-xs hover:text-white/80 transition-colors"
+            className="mt-auto inline-flex items-center gap-0.5 text-white font-semibold text-sm hover:text-white/80 transition-colors"
           >
             View Details
-            <Icon icon="mdi:chevron-right" className="w-3.5 h-3.5" />
+            <ChevronRight className="w-5 h-5" />
           </AppLink>
         </div>
       </div>

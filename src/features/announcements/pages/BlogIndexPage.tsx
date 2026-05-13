@@ -124,7 +124,8 @@ export default function BlogIndexPage() {
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const featuredCardRef = useRef<HTMLElement | null>(null);
-  const [featuredCardHeight, setFeaturedCardHeight] = useState<number | null>(null);
+  const sideListRef = useRef<HTMLDivElement | null>(null);
+  const [sideListHeight, setSideListHeight] = useState<number | null>(null);
 
   const { data: announcements = [], isLoading } = useAnnouncements(
     selectedType === 'all' ? undefined : { type: selectedType },
@@ -146,30 +147,30 @@ export default function BlogIndexPage() {
 
   const [featured, ...latest] = pageAnnouncements;
   const isAdmin = user?.role === 'admin';
-  const compactStackHeight =
-    featuredCardHeight !== null
-      ? Math.max(featuredCardHeight * DESKTOP_COMPACT_STACK_HEIGHT_SCALE, 0)
-      : null;
+  // Height of each compact card in the continuation grid below — derived from
+  // the measured side list so the grid rows stay consistent.
   const compactCardHeight =
-    compactStackHeight !== null
-      ? Math.max((compactStackHeight - DESKTOP_SIDE_CARD_GAP_PX * 2) / 3, 0)
+    sideListHeight !== null
+      ? Math.max((sideListHeight - DESKTOP_SIDE_CARD_GAP_PX * 2) / 3, 0)
       : null;
 
+  // Measure the right-side list's natural height so we can cap the featured
+  // card to the same height (reducing it, not growing the side cards).
   useEffect(() => {
-    const element = featuredCardRef.current;
+    const element = sideListRef.current;
 
     if (!element || typeof window === 'undefined') {
-      setFeaturedCardHeight(null);
+      setSideListHeight(null);
       return;
     }
 
     const updateHeight = () => {
       if (window.innerWidth < 1181) {
-        setFeaturedCardHeight(null);
+        setSideListHeight(null);
         return;
       }
 
-      setFeaturedCardHeight(element.getBoundingClientRect().height);
+      setSideListHeight(element.getBoundingClientRect().height);
     };
 
     updateHeight();
@@ -187,7 +188,12 @@ export default function BlogIndexPage() {
       observer.disconnect();
       window.removeEventListener('resize', updateHeight);
     };
-  }, [featured?.slug, featured?.title, featured?.image, featured?.content, featured?.excerpt]);
+  }, [
+    latest
+      .slice(0, 3)
+      .map((i) => i.slug)
+      .join(','),
+  ]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -208,57 +214,67 @@ export default function BlogIndexPage() {
 
       <main className="min-h-full bg-[#f8f8f7] text-[#071116]">
         <section className={pageShellClassName} aria-labelledby="announcements-title">
-          <header className="mb-6 flex flex-col items-start justify-between gap-4 min-[761px]:flex-row min-[761px]:items-center">
-            <div>
-              <h1
-                id="announcements-title"
-                className="m-0 text-2xl font-bold leading-tight text-[#071116] md:text-3xl"
-              >
-                Announcements
-              </h1>
-
-              <div className="mt-4 flex flex-wrap gap-2">
-                {typeFilters.map((filter) => (
-                  <button
-                    key={filter.value}
-                    type="button"
-                    onClick={() => setSelectedType(filter.value)}
-                    className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
-                      selectedType === filter.value
-                        ? 'bg-primary-500 text-white'
-                        : 'bg-white text-accent-700 shadow-sm ring-1 ring-accent-100 hover:bg-primary-50'
-                    }`}
-                  >
-                    {filter.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex w-full flex-wrap justify-start gap-3 min-[761px]:w-auto min-[761px]:justify-end">
-              {isAdmin && (
-                <button
-                  type="button"
-                  onClick={() => setIsEditorOpen(true)}
-                  className={`${actionClassName} max-[760px]:basis-[11rem] max-[760px]:flex-1`}
-                >
-                  Create announcement
-                </button>
-              )}
+          <header className="mb-6">
+            {/* Top row: Navigation links */}
+            <div className="mb-7 flex flex-wrap items-center justify-end gap-3">
               <ButtonLink
                 href={ROUTES.PROJECTS.ROOT}
                 variant="outline"
-                className={`${actionClassName} max-[760px]:basis-[11rem] max-[760px]:flex-1`}
+                className={`${actionClassName} flex-1 sm:flex-none text-center`}
               >
                 Go to our Projects
               </ButtonLink>
               <ButtonLink
                 href={EVENT_ROUTES.ROOT}
                 variant="outline"
-                className={`${actionClassName} max-[760px]:basis-[11rem] max-[760px]:flex-1`}
+                className={`${actionClassName} flex-1 sm:flex-none text-center`}
               >
                 Go to Events
               </ButtonLink>
+            </div>
+
+            {/* Middle row: Title, Subtitle, and Create button */}
+            <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+              <div className="max-w-2xl">
+                <h1
+                  id="announcements-title"
+                  className="m-0 text-xl font-bold text-gray-900 sm:text-2xl md:text-3xl"
+                >
+                  Announcements
+                </h1>
+                <p className="mt-1 text-sm text-gray-500 sm:text-base">
+                  Read the latest community updates, event notices, and project news
+                </p>
+              </div>
+
+              {isAdmin && (
+                <button
+                  type="button"
+                  onClick={() => setIsEditorOpen(true)}
+                  className="flex w-full flex-shrink-0 items-center justify-center gap-1.5 rounded-full bg-primary-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-primary-600 sm:w-auto"
+                >
+                  <Icon icon="mdi:plus" className="h-4 w-4" />
+                  <span>Create Announcement</span>
+                </button>
+              )}
+            </div>
+
+            {/* Bottom row: Filters */}
+            <div className="mt-4 flex flex-wrap gap-2">
+              {typeFilters.map((filter) => (
+                <button
+                  key={filter.value}
+                  type="button"
+                  onClick={() => setSelectedType(filter.value)}
+                  className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+                    selectedType === filter.value
+                      ? 'bg-primary-500 text-white'
+                      : 'bg-white text-accent-700 shadow-sm ring-1 ring-accent-100 hover:bg-primary-50'
+                  }`}
+                >
+                  {filter.label}
+                </button>
+              ))}
             </div>
           </header>
 
@@ -293,9 +309,11 @@ export default function BlogIndexPage() {
               <div className={boardClassName}>
                 <article
                   ref={featuredCardRef}
+                  style={sideListHeight ? { maxHeight: `${sideListHeight}px` } : undefined}
                   className="flex flex-col overflow-hidden rounded-2xl border border-[#eef2f5] bg-white shadow-[0_1px_2px_rgba(7,17,22,0.04)]"
                 >
-                  <div className="aspect-[16/9] overflow-hidden bg-[#e9edf1]">
+                  {/* Image fills remaining space after the text block shrinks the card */}
+                  <div className="min-h-[6rem] flex-1 overflow-hidden bg-[#e9edf1]">
                     <img
                       src={featured.image || FALLBACK_IMAGE}
                       alt=""
@@ -303,7 +321,7 @@ export default function BlogIndexPage() {
                     />
                   </div>
 
-                  <div className="flex flex-col p-[1.15rem_1.25rem_1.35rem]">
+                  <div className="flex flex-shrink-0 flex-col p-[1.15rem_1.25rem_1.35rem]">
                     <p className={metaClassName}>
                       <Icon icon="mdi:clock-time-three-outline" className="h-4 w-4 flex-shrink-0" />
                       {formatAnnouncementDate(featured.startsAt || featured.date)}
@@ -328,10 +346,8 @@ export default function BlogIndexPage() {
                   </div>
                 </article>
 
-                <div
-                  className={sideListClassName}
-                  style={compactStackHeight ? { height: `${compactStackHeight}px` } : undefined}
-                >
+                {/* Side list renders at its natural height; we measure it to cap the featured card */}
+                <div ref={sideListRef} className={sideListClassName}>
                   {latest.slice(0, 3).map((item) => (
                     <AnnouncementCard key={item.slug} item={item} compact />
                   ))}

@@ -37,7 +37,7 @@ export function mapRegistrationPayload(values: RegisterDetailsFormValues) {
     is_coordinator: '0',
     residential_address: values.residentialAddress,
     area: '',
-    state: values.state,
+    // state: values.state,
     city: values.city,
     employment_status: '',
     occupation: '',

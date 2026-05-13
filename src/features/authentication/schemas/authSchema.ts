@@ -52,9 +52,10 @@ export const registerDetailsSchema = z
       .regex(/^[A-Za-z][A-Za-z\s'.-]*$/, 'Please enter a valid maiden name'),
 
     email: z.string().trim().email('Please enter a valid email address'),
-    state: z.string().refine((val) => NIGERIA_STATES.includes(val as any), {
-      message: 'Please select a valid state',
-    }),
+    area: z.string().trim().min(2, 'Area must be at least 2 characters'),
+    // state: z.string().refine((val) => NIGERIA_STATES.includes(val as any), {
+    //   message: 'Please select a valid state',
+    // }),
 
     whatsappPhone: z.string().trim(),
     city: z.string().min(1, 'Please select a city'),

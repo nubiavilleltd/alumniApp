@@ -17,7 +17,9 @@ import type { Business } from '../types/marketplace.types';
 import { useStartDirectConversation } from '@/features/messages/hooks/useStartDirectConversation';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 import { useAlumni } from '@/features/alumni/hooks/useAlumni';
-import { getPhotoDisplay, isFieldVisible } from '@/features/alumni/utils/privacyHelpers';
+import { useRequireSignIn } from '@/features/authentication/hooks/useRequireSignIn';
+import { MARKETPLACE_ROUTES } from '../routes';
+import { resolveProfilePhoto } from '@/features/user/utils/profileUtils';
 
 const ITEMS_PER_PAGE = 9;
 const DEFAULT_MARKETPLACE_DRAFT_MESSAGE = (businessName: string) =>
@@ -301,27 +303,44 @@ export default function MarketPlacePage() {
   const [showPostModal, setShowPostModal] = useState(false);
   const [pendingBusinessId, setPendingBusinessId] = useState<string | null>(null);
   const currentUser = useIdentityStore((state) => state.user);
+  const requireSignIn = useRequireSignIn();
   const { startDirectConversation, isPending: isStartingConversation } =
     useStartDirectConversation();
 
   const { data: businesses = [], isLoading, error } = useMarketplace();
   const { data: categoriesList = [] } = useMarketplaceCategories();
   const { data: alumni = [] } = useAlumni({ action_type: 'approved' });
+  const isSignedIn = Boolean(currentUser?.memberId);
+
+  const alumniByMemberId = useMemo(() => {
+    const entries = new Map<string, (typeof alumni)[number]>();
+
+    alumni.forEach((entry) => {
+      entries.set(String(entry.id), entry);
+      entries.set(String(entry.memberId), entry);
+    });
+
+    return entries;
+  }, [alumni]);
 
   const ownerPhotoById = useMemo(() => {
     const photos = new Map<string, string | null>();
 
     alumni.forEach((entry) => {
-      const photoVisible = isFieldVisible(entry, 'photo', currentUser as any);
-      const displayPhoto = getPhotoDisplay(entry.photo, photoVisible);
-      const photo = isRealProfilePhoto(displayPhoto) ? displayPhoto : null;
+      const displayPhoto = resolveProfilePhoto({
+        photoUrl: entry.photo,
+        privacy: entry.privacy,
+        isOwner: entry.memberId === currentUser?.memberId,
+        isSignedIn,
+      });
+      const photo = isRealProfilePhoto(displayPhoto) ? (displayPhoto ?? null) : null;
 
       photos.set(String(entry.id), photo);
       photos.set(String(entry.memberId), photo);
     });
 
     return photos;
-  }, [alumni, currentUser]);
+  }, [alumni, currentUser?.memberId, isSignedIn]);
 
   const filtered = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
@@ -346,6 +365,17 @@ export default function MarketPlacePage() {
     }
   }, [currentPage, totalPages]);
 
+  const handlePostBusinessClick = () => {
+    if (!currentUser) {
+      requireSignIn({
+        message: 'Please sign in to post your business',
+        from: MARKETPLACE_ROUTES.MY_BUSINESS,
+      });
+      return;
+    }
+    setShowPostModal(true);
+  };
+
   const handleFilterChange = (setter: (v: string) => void) => (value: string) => {
     setter(value);
     setCurrentPage(1);
@@ -353,6 +383,8 @@ export default function MarketPlacePage() {
 
   async function handleStartBusinessConversation(business: Business) {
     setPendingBusinessId(business.businessId);
+    const ownerEntry = alumniByMemberId.get(String(business.ownerId));
+
     await startDirectConversation({
       participantMemberId: business.ownerId,
       topic: `Marketplace enquiry about ${business.name}`,
@@ -361,6 +393,8 @@ export default function MarketPlacePage() {
       marketplaceBusinessId: business.businessId,
       recipientProfile: {
         fullName: business.owner,
+        avatar: ownerPhotoById.get(String(business.ownerId)) ?? undefined,
+        photoVisibility: ownerEntry?.privacy?.photo,
         headline: `Owner of ${business.name}`,
         location: business.location,
         profileHref: `/alumni/profiles/${business.ownerId}`,
@@ -377,7 +411,7 @@ export default function MarketPlacePage() {
       />
 
       <main className="min-h-full bg-[#f8f8f7] text-[#071116]">
-        <section className="w-full max-w-[100vw] px-4 pb-16 pt-10 sm:px-6 lg:px-6 lg:pb-20 lg:pt-12 xl:px-11 xl:pb-24 xl:pt-16">
+        <section className="page-inline-padding w-full max-w-[100vw] pb-16 pt-10 lg:pb-20 lg:pt-12 xl:pb-24 xl:pt-16">
           <div className="mb-10 flex flex-col gap-6 lg:mb-[3.65rem] lg:flex-row lg:items-start lg:justify-between lg:gap-8">
             <div className="min-w-0">
               <h1 className="text-[clamp(2.0rem,2.45vw,3.0rem)] font-bold leading-[1.12] text-[#071116]">
@@ -389,16 +423,14 @@ export default function MarketPlacePage() {
               </p>
             </div>
 
-            {currentUser && (
-              <Button
-                type="button"
-                onClick={() => setShowPostModal(true)}
-                rightIcon="mdi:plus"
-                className="mt-0 w-full max-w-[13rem] min-h-[2.0rem] rounded-full px-3 text-[clamp(1.0rem,0.8vw,1.2rem)] font-semibold leading-none tracking-normal shadow-none transition-transform hover:bg-primary-600 active:translate-y-px focus-visible:ring-4 focus-visible:ring-primary-200 [&>svg]:h-[1.45rem] [&>svg]:w-[1.45rem] lg:mt-3"
-              >
-                Post Your Business
-              </Button>
-            )}
+            <Button
+              type="button"
+              onClick={handlePostBusinessClick}
+              rightIcon="mdi:plus"
+              className="mt-0 w-full max-w-[13rem] min-h-[2.0rem] rounded-full px-3 text-[clamp(1.0rem,0.8vw,1.2rem)] font-semibold leading-none tracking-normal shadow-none transition-transform hover:bg-primary-600 active:translate-y-px focus-visible:ring-4 focus-visible:ring-primary-200 [&>svg]:h-[1.45rem] [&>svg]:w-[1.45rem] lg:mt-3"
+            >
+              Post Your Business
+            </Button>
           </div>
 
           <div className="mb-10 flex flex-col gap-4 lg:mb-[2.15rem] lg:flex-row lg:items-center lg:justify-between">
@@ -468,8 +500,8 @@ export default function MarketPlacePage() {
               icon="mdi:storefront-outline"
               title="No businesses found"
               description="Try adjusting your search or be the first to list your business."
-              actionLabel={currentUser ? 'Post Your Business' : ''}
-              onAction={() => setShowPostModal(true)}
+              actionLabel="Post Your Business"
+              onAction={handlePostBusinessClick}
             />
           ) : null}
 

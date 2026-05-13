@@ -10,15 +10,20 @@ import EmptyState from '@/shared/components/ui/EmptyState';
 import { Pagination } from '@/shared/components/ui/Pagination';
 import { useAlumni } from '@/features/alumni/hooks/useAlumni';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
-import { getPhotoDisplay } from '@/features/alumni/utils/privacyHelpers';
 import { ALUMNI_ROUTES } from '../routes';
 import { useStartDirectConversation } from '@/features/messages/hooks/useStartDirectConversation';
 import { Alumni } from '../types/alumni.types';
-import { resolveVisibleField } from '@/features/user/utils/privacyResolvers';
+import { resolveProfilePhoto, resolveVisibleField } from '@/features/user/utils/profileUtils';
 
 /* ───────────────────────────────────────────────────────────── */
 /* Responsive items per page */
 /* ───────────────────────────────────────────────────────────── */
+
+function generateInitialsAvatar(name: string): string {
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(
+    name,
+  )}&background=E5E7EB&color=6B7280&size=256`;
+}
 
 function useItemsPerPage() {
   const [items, setItems] = useState(12);
@@ -53,20 +58,22 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: a
   // const occupation = entry.position || entry.occupations?.[0] || '';
 
   const isOwner = entry.memberId === currentUser?.memberId;
-
-  console.log('entry', { entry });
-
-  const canSeePhoto = resolveVisibleField(entry.photo, 'photo', entry.privacy, isOwner);
-
-  const displayPhoto = getPhotoDisplay(entry.photo, canSeePhoto);
-  entry.memberId == '39' &&
-    console.log('canSeePhoto', { canSeePhoto, photo: entry.photo, photo2: displayPhoto });
+  const isSignedIn = Boolean(currentUser?.memberId);
+  const displayPhoto = resolveProfilePhoto({
+    photoUrl: entry.photo,
+    privacy: entry.privacy,
+    isOwner,
+    isSignedIn,
+  });
+  // entry.memberId == '39' &&
+  //   console.log('canSeePhoto', { canSeePhoto, photo: entry.photo, photo2: displayPhoto });
 
   const visibleGraduationYear = resolveVisibleField(
     entry.graduationYear,
     'birthDate', // TEMPORARY until you create graduationYear privacy
     entry.privacy,
     isOwner,
+    isSignedIn,
   );
 
   const visibleOccupation = resolveVisibleField(
@@ -74,6 +81,7 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: a
     'employmentStatus', // TEMPORARY mapping
     entry.privacy,
     isOwner,
+    isSignedIn,
   );
 
   // const classLabel = visibleGraduationYear
@@ -88,9 +96,17 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: a
     >
       {/* Image */}
       <div className="absolute inset-0">
+        <img
+          src={displayPhoto ?? generateInitialsAvatar(entry.name)}
+          alt={entry.name}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          loading="lazy"
+        />
+      </div>
+      {/* <div className="absolute inset-0">
         {displayPhoto ? (
           <img
-            src={displayPhoto}
+            src={displayPhoto }
             alt={entry.name}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
@@ -100,7 +116,7 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: a
             <Icon icon="mdi:account-circle" className="w-24 h-24 text-gray-300" />
           </div>
         )}
-      </div>
+      </div> */}
 
       {/* Overlay */}
       <div className="absolute bottom-0 left-0 right-0 bg-primary-600/70 backdrop-blur-sm px-4 pt-3 pb-4 rounded-2xl">
@@ -199,6 +215,15 @@ export function AlumniDirectoryPage() {
   async function handleMessage(entry: Alumni) {
     if (!entry.memberId) return;
 
+    const isOwner = entry.memberId === currentUser?.memberId;
+    const isSignedIn = Boolean(currentUser?.memberId);
+    const displayPhoto = resolveProfilePhoto({
+      photoUrl: entry.photo,
+      privacy: entry.privacy,
+      isOwner,
+      isSignedIn,
+    });
+
     const recipientHeadline =
       entry.position && entry.company
         ? `${entry.position} at ${entry.company}`
@@ -209,7 +234,8 @@ export function AlumniDirectoryPage() {
       participantMemberId: entry.memberId,
       recipientProfile: {
         fullName: entry.name,
-        avatar: entry.photo,
+        avatar: displayPhoto,
+        photoVisibility: entry.privacy?.photo,
         headline: recipientHeadline,
         location: entry.location || entry.city,
         graduationYear: entry.graduationYear,

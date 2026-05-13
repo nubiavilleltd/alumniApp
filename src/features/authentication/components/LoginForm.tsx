@@ -41,7 +41,7 @@ export function LoginForm() {
     if (params.get('session_expired')) {
       toast.info('Your session expired. Please login again.');
       params.delete('session_expired');
-      navigate({ search: params.toString() }, { replace: true });
+      navigate({ search: params.toString() }, { replace: true, state: location.state });
     }
   }, [location.search, navigate]);
 
@@ -114,6 +114,8 @@ export function LoginForm() {
 
       const fallbackDestination =
         fullProfile?.role === 'admin' ? ADMIN_ROUTES.DASHBOARD : USER_ROUTES.DASHBOARD;
+
+      console.log('from', { from });
 
       // Step 4: Navigate
       navigate(from ?? fallbackDestination, { replace: true });

@@ -24,7 +24,7 @@ function MemberCard({ member }: { member: LeadershipMember }) {
           className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-300"
         />
       </div>
-      <div className="py-3 px-3 text-center bg-white">
+      <div className="py-3 px-3 bg-white">
         <h4 className="text-gray-900 font-bold text-sm">{member.name}</h4>
         <p className="text-gray-400 text-xs mt-0.5">{member.role}</p>
       </div>

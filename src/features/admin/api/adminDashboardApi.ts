@@ -22,7 +22,6 @@ export interface AdminStat {
   label: string;
   value: string;
   detail: string;
-  icon: string;
   tone: 'primary' | 'accent' | 'secondary' | 'warning';
 }
 
@@ -70,7 +69,6 @@ function buildStatPlaceholders(pendingCount: number): AdminStat[] {
       label: 'Total Members',
       value: '—', // 🔴 TODO: real count from backend stats endpoint
       detail: 'Approved & active',
-      icon: 'mdi:account-group-outline',
       tone: 'primary',
     },
     {
@@ -78,7 +76,6 @@ function buildStatPlaceholders(pendingCount: number): AdminStat[] {
       label: 'Pending Approvals',
       value: String(pendingCount),
       detail: 'Awaiting your review',
-      icon: 'mdi:account-clock-outline',
       tone: 'warning',
     },
     {
@@ -86,7 +83,6 @@ function buildStatPlaceholders(pendingCount: number): AdminStat[] {
       label: 'Upcoming Events',
       value: '—', // 🔴 TODO: real count from backend stats endpoint
       detail: 'Scheduled this quarter',
-      icon: 'mdi:calendar-star',
       tone: 'accent',
     },
     {
@@ -94,7 +90,6 @@ function buildStatPlaceholders(pendingCount: number): AdminStat[] {
       label: 'Dues Collected',
       value: '—', // 🔴 TODO: real figure from backend dues endpoint
       detail: 'Current period',
-      icon: 'mdi:cash-multiple',
       tone: 'secondary',
     },
   ];
