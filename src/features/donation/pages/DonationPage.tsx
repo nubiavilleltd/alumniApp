@@ -18,53 +18,51 @@ export function DonationPage() {
   };
 
   return (
-    <section className="page-inline-padding mx-auto bg-gray-100 py-12">
+    <section className="page-inline-padding flex flex-col mx-auto bg-stone-100 py-6">
       {/* Title */}
-      <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-8">Make a Donation</h1>
 
       {/* <div className="grid lg:grid-cols-3 gap-10 items-center"> */}
-      <div className="flex flex-col md:flex-row gap-5 items-center justify-between">
+      <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">Make a Donation</h1>
+      <div className="flex flex-col md:flex-row gap-5 justify-between">
         {/* LEFT CARD */}
-        <div className="flex-1 bg-white rounded-2xl p-6 sm:p-8 shadow-sm max-w-3xl">
-          <p className="text-gray-600 leading-relaxed mb-6">
+
+        <div className="flex-1 flex flex-col py-8 px-6 sm:px-10 bg-white rounded-2xl shadow-sm border border-gray-100 max-w-3xl mt-6">
+          <p className="text-gray-600 text-base sm:text-lg leading-relaxed mb-10">
             Give back and help create opportunities that benefit alumnae and the wider community.
             Your contribution helps support members, fund initiatives, and strengthen our community.
           </p>
 
           {/* Bank Name */}
-          <div className="mb-6">
-            <p className="text-sm text-gray-500 mb-1">Bank Name</p>
-            <p className="text-lg font-semibold text-gray-900">Guarantee Trust Bank</p>
+          <div className="mb-8">
+            <p className="text-sm text-gray-600 font-normal mb-1.5">Bank Name</p>
+            <p className="text-lg sm:text-2xl font-semibold text-gray-700 tracking-tight">
+              Guarantee Trust Bank
+            </p>
           </div>
 
           {/* Account Number */}
-          <div className="mb-6 flex items-center justify-start gap-7">
-            <div>
-              <p className="text-sm text-gray-500 mb-1">Account Number</p>
-              <p className="text-lg font-semibold text-gray-900">0250037225</p>
+          <div className="mb-8">
+            <p className="text-sm text-gray-600 font-normal mb-1.5">Account Number</p>
+            <div className="flex items-center gap-4">
+              <p className="text-lg sm:text-2xl font-semibold text-gray-900 tracking-tight">
+                0250037225
+              </p>
+              <button
+                onClick={() => copyToClipboard('0250037225', 'account')}
+                className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors flex-shrink-0"
+                aria-label="Copy account number"
+              >
+                <Icon icon="mdi:content-copy" className="w-5 h-5 text-primary-500" />
+              </button>
             </div>
-
-            <button
-              onClick={() => copyToClipboard('0250037225', 'account')}
-              className="p-2 rounded-lg hover:bg-gray-200 transition"
-            >
-              <Icon icon="mdi:content-copy" className="w-5 h-5 text-primary-500" />
-            </button>
           </div>
 
           {/* Account Name */}
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-500 mb-1">Account Name</p>
-              <p className="text-lg font-semibold text-gray-900">FGGC Alumnae Lagos</p>
-            </div>
-
-            {/* <button
-              onClick={() => copyToClipboard('FGGC Alumnae Lagos', 'name')}
-              className="p-2 rounded-lg hover:bg-gray-200 transition"
-            >
-              <Icon icon="mdi:content-copy" className="w-5 h-5 text-blue-600" />
-            </button> */}
+          <div>
+            <p className="text-sm text-gray-600 font-normal mb-1.5">Account Name</p>
+            <p className="text-lg sm:text-2xl font-semibold text-gray-900 tracking-tight">
+              FGGC Alumnae Lagos
+            </p>
           </div>
         </div>
 

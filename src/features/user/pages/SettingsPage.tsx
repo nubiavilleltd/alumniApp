@@ -214,6 +214,7 @@ function ChangePasswordSection() {
         <PasswordInput
           label="New Password"
           id="newPassword"
+          disableCopy
           placeholder="Enter your new password"
           hint="Password must be at least 8 characters long with a mix of uppercase letters, lowercase letters, numbers, and symbols"
           error={errors.newPassword?.message}
