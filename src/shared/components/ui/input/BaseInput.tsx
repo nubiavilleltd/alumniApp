@@ -31,6 +31,8 @@ export const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>(
       className = '',
       onValueChange,
       onChange,
+      onCopy,
+      onPaste,
       ...rest
     },
     ref,
@@ -76,6 +78,8 @@ export const BaseInput = forwardRef<HTMLInputElement, BaseInputProps>(
             required={required}
             disabled={disabled}
             onChange={handleChange}
+            onCopy={onCopy}
+            onPaste={onPaste}
             className={`base-input__field flex-1 px-3 py-2.5 text-sm text-gray-700 placeholder-gray-400 outline-none bg-transparent disabled:cursor-not-allowed ${inputClassName}`}
             {...rest}
           />

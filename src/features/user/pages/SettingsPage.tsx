@@ -206,6 +206,7 @@ function ChangePasswordSection() {
         <PasswordInput
           label="Current Password"
           id="currentPassword"
+          disableCopy
           placeholder="Enter your current password"
           error={errors.currentPassword?.message}
           autoComplete="current-password"

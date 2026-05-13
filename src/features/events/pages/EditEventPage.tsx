@@ -44,6 +44,7 @@ import {
 } from '../lib/eventSurveyAvailability';
 import { eventsService } from '../services/event.service';
 import { useEventStatus } from '../hooks/useEventStatus';
+import { Pencil, Trash2 } from 'lucide-react';
 
 type LocalRegistrationFormDraft = {
   localId: string;

@@ -206,6 +206,7 @@ export function LoginForm() {
         <PasswordInput
           label="Password"
           id="password"
+          disableCopy
           autoComplete="current-password"
           placeholder="Enter your password"
           error={errors.password?.message}
