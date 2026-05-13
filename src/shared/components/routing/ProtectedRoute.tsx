@@ -64,7 +64,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   if (!isHydrated) return null;
 
   // ✅ NEW: Don't redirect if logout is in progress
-  if (isLoggingOut) return null;
+  // if (isLoggingOut) return null;
 
   if (!isAuthenticated) {
     console.log('redirecting to login in Protected Route ... not authenticated');
