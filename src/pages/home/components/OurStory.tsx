@@ -3,7 +3,7 @@ import { ROUTES } from '@/shared/constants/routes';
 
 export default function OurStory() {
   return (
-    <section className="home-about-section" aria-labelledby="home-about-title">
+    <section className="home-about-section container-custom" aria-labelledby="home-about-title">
       <div className="container-custom">
         <div className="home-about-card">
           <div className="home-about-eyebrow">
