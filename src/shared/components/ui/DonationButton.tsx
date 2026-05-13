@@ -32,6 +32,7 @@
 
 import { ROUTES } from '@/shared/constants/routes';
 import { Icon } from '@iconify/react';
+import { HandHeart } from 'lucide-react';
 
 // export function DonationButton({ href }: DonationButtonProps) {
 export function DonationButton() {
@@ -59,7 +60,8 @@ export function DonationButton() {
       <span className="hidden sm:inline text-sm">Make a Donation</span>
 
       {/* Icon */}
-      <Icon icon="mdi:hand-coin-outline" className="w-5 h-5 flex-shrink-0" />
+      {/* <Icon icon="mdi:hand-coin-outline" className="w-5 h-5 flex-shrink-0" /> */}
+      <HandHeart size={20} />
     </a>
   );
 }

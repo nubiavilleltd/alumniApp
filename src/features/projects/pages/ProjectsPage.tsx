@@ -59,7 +59,6 @@ export default function ProjectsPage() {
   const ITEMS_PER_PAGE = useItemsPerPage();
 
   const { data: projects = [], isLoading } = useProjects();
-  console.log('data project', { projects });
 
   // Year options derived from projects
   const years = useMemo(() => {

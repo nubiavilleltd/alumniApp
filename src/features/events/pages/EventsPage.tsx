@@ -17,7 +17,7 @@ import { Pagination } from '@/shared/components/ui/Pagination';
 import { ROUTES } from '@/shared/constants/routes';
 import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { formatDateRange, parseDateInput } from '@/shared/utils/dateHelpers';
-import { Calendar } from 'lucide-react';
+import { Calendar, Clock, MapPin } from 'lucide-react';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -274,14 +274,16 @@ function EventListItem({
           {event.description}
         </p>
         {event.location && (
-          <p className="text-gray-400 text-[11px] mt-1 flex items-center gap-1 truncate">
-            <Icon icon="mdi:map-marker-outline" className="w-3 h-3 flex-shrink-0" />
+          <p className="text-gray-600 text-[11px] mt-1 flex items-center gap-1 truncate">
+            {/* <Icon icon="mdi:map-marker-outline" className="w-3 h-3 flex-shrink-0" /> */}
+            <MapPin size={13} />
             <span className="truncate">{event.location}</span>
           </p>
         )}
         {formatEventDate(event) && (
-          <p className="text-gray-400 text-[11px] mt-0.5 flex items-center gap-1">
-            <Icon icon="mdi:clock-outline" className="w-3 h-3 flex-shrink-0" />
+          <p className="text-gray-600 text-[11px] mt-0.5 flex items-center gap-1">
+            {/* <Icon icon="mdi:clock-outline" className="w-3 h-3 flex-shrink-0" /> */}
+            <Clock size={12} />
             {formatEventDate(event)}
           </p>
         )}

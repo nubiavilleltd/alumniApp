@@ -25,6 +25,7 @@ import type {
   EventRegistrationAnswerValue,
 } from '../types/eventRegistrationForm.types';
 import type { EventSurveyFormView } from '../api/firebase/survey.types';
+import { Calendar, MapPin } from 'lucide-react';
 
 const EMPTY_SURVEY_FORMS: EventSurveyFormView[] = [];
 
@@ -463,7 +464,8 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
                 },
               }) && (
                 <div className="flex items-start gap-2">
-                  <Icon icon="mdi:calendar-outline" className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                  {/* <Icon icon="mdi:calendar-outline" className="w-4 h-4 mt-0.5 flex-shrink-0" /> */}
+                  <Calendar size={15} />
                   <span>
                     {formatDateRange(event.startDate, event.endDate, {
                       locale: 'en-GB',
@@ -480,7 +482,8 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
                 </div>
               )}
               <div className="flex items-start gap-2">
-                <Icon icon="mdi:map-marker-outline" className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                {/* <Icon icon="mdi:map-marker-outline" className="w-4 h-4 mt-0.5 flex-shrink-0" /> */}
+                <MapPin size={15} />
                 <span>{event.location}</span>
               </div>
               {event.attire && (

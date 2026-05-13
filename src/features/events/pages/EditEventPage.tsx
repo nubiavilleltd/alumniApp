@@ -436,7 +436,7 @@ export default function EditEventPage() {
       <SEO title={`Edit — ${event.title}`} description="Edit event details" />
       <Breadcrumbs items={breadcrumbItems} />
 
-      <section className="section">
+      <section className="section bg-stone-100">
         <div className="container-custom ">
           <div className="mb-8 flex items-center justify-between">
             <div>

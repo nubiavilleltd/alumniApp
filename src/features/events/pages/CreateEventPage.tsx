@@ -290,7 +290,7 @@ export default function CreateEventPage() {
       <SEO title="Create Event" description="Create a new event" />
       <Breadcrumbs items={breadcrumbItems} />
 
-      <section className="section">
+      <section className="section bg-stone-100">
         <div className="container-custom">
           <div className="mb-8">
             <h1 className="text-3xl md:text-4xl font-bold mb-2">Create Event</h1>
@@ -308,6 +308,7 @@ export default function CreateEventPage() {
                 placeholder="e.g. Annual Alumni Reunion 2026"
                 error={errors.title?.message}
                 {...register('title')}
+                // style={{backgroundColor:"#f5f4f0"}}
               />
 
               <FormInput
@@ -315,7 +316,7 @@ export default function CreateEventPage() {
                 id="location"
                 required
                 placeholder="Venue name, city"
-                icon={MapPin}
+                // icon={MapPin}
                 error={errors.location?.message}
                 {...register('location')}
               />
