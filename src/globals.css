@@ -1440,7 +1440,7 @@ input[type='password']::-webkit-caps-lock-indicator {
   grid-template-columns: minmax(18rem, 0.92fr) minmax(0, 1.38fr);
   align-items: start;
   gap: clamp(2.5rem, 4vw, 4.5rem);
-  width: min(100%, 87.5rem);
+  /* width: min(100%, 87.5rem); */
   margin: 0 auto;
   padding: clamp(2.75rem, 5vw, 4.75rem) var(--app-page-inline-padding) clamp(4rem, 7vw, 6rem);
 }
