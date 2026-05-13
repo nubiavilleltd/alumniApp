@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 :root {
-  --app-page-inline-padding: 64px;
+  --app-page-inline-padding: 32px;
 
   /* Primary */
   --color-primary-50: 240 248 255;
@@ -142,7 +142,7 @@
 }
 
 .home-page {
-  --app-page-inline-padding: 0px;
+  --app-page-inline-padding: 64px;
 }
 
 .home-stats-section {
@@ -347,6 +347,10 @@
 @media (max-width: 768px) {
   .home-about-section {
     padding: 2.5rem 0 3rem;
+  }
+
+  .home-page {
+    --app-page-inline-padding: 16px;
   }
 
   .home-about-title {

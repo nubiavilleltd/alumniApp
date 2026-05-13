@@ -48,6 +48,7 @@ export function ForgotPasswordForm() {
           <p className="auth-message-panel__copy">
             If your account is found in our system, you'll receive a password reset email.
           </p>
+          <p className="auth-message-panel__copy">Please allow 1-2 minutes to receive the email.</p>
           <div className="auth-message-panel__note">
             Please check your spam/junk folder if the email is not in your inbox
           </div>
