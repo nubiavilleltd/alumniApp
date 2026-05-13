@@ -34,7 +34,13 @@ import {
   isGraduationYearGroupTitle,
   normalizeMessageAttachmentMimeType,
 } from '../api/adapters/messages.adapter';
+import type { FieldVisibility, PrivacySettings } from '@/features/authentication/types/auth.types';
 import { getRegisteredMessageRecipient } from './messageRecipientRegistry';
+import {
+  normalizeFieldVisibility,
+  parseFieldVisibility,
+  resolveProfilePhoto,
+} from '@/features/user/utils/profileUtils';
 import type {
   MessageAttachment,
   MessageDeliveryStatus,
@@ -69,6 +75,7 @@ type SessionUserSnapshot = {
   graduationYear?: number;
   city?: string;
   photo?: string;
+  privacy?: PrivacySettings;
   avatarInitials?: string;
   profileHref?: string;
 };
@@ -263,12 +270,43 @@ function buildViewerParticipantFromSessionUser(
     headline: graduationYear ? `Class of ${graduationYear}` : 'FGGC alumna',
     location: currentUser.city || 'Nigeria',
     graduationYear,
-    avatar: currentUser.photo,
+    avatar: resolveProfilePhoto({
+      photoUrl: currentUser.photo,
+      privacy: currentUser.privacy,
+      isOwner: true,
+      isSignedIn: true,
+    }),
+    photoVisibility: currentUser.privacy?.photo,
     initials: currentUser.avatarInitials ?? deriveInitials(fullName),
     profileHref: currentUser.profileHref ?? `/alumni/profiles/${currentUser.memberId}`,
     presence: 'offline',
     roleInThread: 'member',
   };
+}
+
+function extractParticipantPhotoVisibility(
+  rawParticipant: BackendThreadParticipant,
+): FieldVisibility | undefined {
+  const rawProfile =
+    rawParticipant.profile && typeof rawParticipant.profile === 'object'
+      ? (rawParticipant.profile as Record<string, unknown>)
+      : undefined;
+  const participantFieldVisibility = parseFieldVisibility(rawParticipant.field_visibility);
+  const profileFieldVisibility = parseFieldVisibility(rawProfile?.field_visibility);
+  const rawVisibility =
+    rawParticipant.avatar_visible ??
+    rawParticipant.photo_visible ??
+    rawParticipant.image_visible ??
+    participantFieldVisibility.avatar ??
+    participantFieldVisibility.photo ??
+    profileFieldVisibility.avatar ??
+    profileFieldVisibility.photo;
+
+  if (rawVisibility === undefined) {
+    return undefined;
+  }
+
+  return normalizeFieldVisibility(rawVisibility, 'private');
 }
 
 function getEnvelopeData(responseData: unknown) {
@@ -305,18 +343,30 @@ function buildParticipantFromBackend(
     backendFullName ??
     `Member ${memberId}`;
   const firstName = fullName.split(/\s+/)[0] ?? fullName;
-  const avatar =
-    (memberId === viewerMemberId ? currentUser?.photo : undefined) ??
+  const isViewer = memberId === viewerMemberId;
+  const photoVisibility =
+    (isViewer ? currentUser?.privacy?.photo : undefined) ??
+    recipientRegistryEntry?.photoVisibility ??
+    extractParticipantPhotoVisibility(rawParticipant);
+  const rawAvatar =
+    (isViewer ? currentUser?.photo : undefined) ??
     (typeof rawParticipant.avatar === 'string' ? rawParticipant.avatar : undefined) ??
     (typeof rawParticipant.image === 'string' ? rawParticipant.image : undefined) ??
     recipientRegistryEntry?.avatar;
+  const avatar = resolveProfilePhoto({
+    photoUrl: rawAvatar,
+    photoVisibility,
+    privacy: isViewer ? currentUser?.privacy : undefined,
+    isOwner: isViewer,
+    isSignedIn: Boolean(currentUser?.memberId),
+  });
   const graduationYear =
     safeParseInt(rawParticipant.graduation_year ?? rawParticipant.year) ??
-    (memberId === viewerMemberId ? currentUser?.graduationYear : undefined) ??
+    (isViewer ? currentUser?.graduationYear : undefined) ??
     recipientRegistryEntry?.graduationYear ??
     0;
   const slug =
-    (memberId === viewerMemberId ? currentUser?.slug : undefined) ??
+    (isViewer ? currentUser?.slug : undefined) ??
     recipientRegistryEntry?.slug ??
     generateSlug(fullName, memberId || firstName, 'member');
 
@@ -329,11 +379,10 @@ function buildParticipantFromBackend(
     location: 'Nigeria',
     graduationYear,
     avatar,
-    initials:
-      (memberId === viewerMemberId ? currentUser?.avatarInitials : undefined) ??
-      deriveInitials(fullName),
+    photoVisibility,
+    initials: (isViewer ? currentUser?.avatarInitials : undefined) ?? deriveInitials(fullName),
     profileHref:
-      (memberId === viewerMemberId ? currentUser?.profileHref : undefined) ??
+      (isViewer ? currentUser?.profileHref : undefined) ??
       recipientRegistryEntry?.profileHref ??
       `/alumni/profiles/${memberId}`,
     presence: 'offline',
@@ -689,14 +738,15 @@ function buildThreadSummaryFromBackend(params: {
       lastMessage?.message_status,
   );
   const normalizedCurrentUserName = currentUser?.fullName?.trim().toLowerCase() ?? '';
+  const normalizedLastMessageSenderName = lastMessageSenderName?.toLowerCase() ?? '';
   const isOwnBySenderId =
     Boolean(lastMessageSenderMemberId) &&
     (lastMessageSenderMemberId === params.viewerMemberId ||
       (currentUser?.id ? lastMessageSenderMemberId === currentUser.id : false));
   const isOwnBySenderName =
-    Boolean(lastMessageSenderName) &&
+    Boolean(normalizedLastMessageSenderName) &&
     Boolean(normalizedCurrentUserName) &&
-    lastMessageSenderName.toLowerCase() === normalizedCurrentUserName;
+    normalizedLastMessageSenderName === normalizedCurrentUserName;
   const lastMessageIsOwn =
     isOwnBySenderId ||
     isOwnBySenderName ||
@@ -866,6 +916,7 @@ function buildMessageItemsFromBackend(params: {
 
 async function fetchThreadsEnvelope() {
   const response = await apiClient.post(API_ENDPOINTS.MESSAGES.THREADS, {});
+  console.log('[messages] listThreads response', response.data);
   return getEnvelopeData(response.data);
 }
 
@@ -874,6 +925,12 @@ async function fetchThreadDetailEnvelope(threadId: string, limit = 50, offset = 
     thread_id: normalizeBackendIdentifierValue(threadId),
     limit,
     offset,
+  });
+  console.log('[messages] getThread response', {
+    threadId,
+    limit,
+    offset,
+    response: response.data,
   });
 
   return getEnvelopeData(response.data);
@@ -1127,6 +1184,9 @@ export const backendMessagesTransport: MessagesTransport = {
       unreadCount:
         safeParseInt((payload as Record<string, unknown>).unread_count) ??
         threads.reduce((total, thread) => total + thread.unreadCount, 0),
+      unreadThreadCount:
+        safeParseInt((payload as Record<string, unknown>).unread_thread_count) ??
+        threads.filter((thread) => thread.unreadCount > 0).length,
       syncToken: String((payload as Record<string, unknown>).sync_token ?? `backend-${serverTime}`),
       pollingIntervalMs:
         safeParseInt((payload as Record<string, unknown>).polling_interval_ms) ??

@@ -137,7 +137,7 @@ function UnreadMessagesBadge({ count, className = '' }: { count: number; classNa
         'inline-flex min-w-5 items-center justify-center rounded-full bg-[#ef4444] px-1.5 py-0.5 text-[0.68rem] font-extrabold leading-none text-white shadow-[0_4px_10px_rgba(239,68,68,0.35)]',
         className,
       )}
-      aria-label={`${count} unread message${count === 1 ? '' : 's'}`}
+      aria-label={`${count} unread conversation${count === 1 ? '' : 's'}`}
     >
       {formatUnreadBadgeCount(count)}
     </span>
@@ -285,12 +285,12 @@ function UserDropdown({
   currentUser,
   onLogout,
   isLoggingOut,
-  unreadMessageCount,
+  unreadThreadCount,
 }: {
   currentUser: CurrentUser;
   onLogout: () => void;
   isLoggingOut: boolean;
-  unreadMessageCount: number;
+  unreadThreadCount: number;
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -335,7 +335,7 @@ function UserDropdown({
             {displayName}
           </strong>
         </span>
-        <UnreadMessagesBadge count={unreadMessageCount} className="ml-1 flex-none" />
+        <UnreadMessagesBadge count={unreadThreadCount} className="ml-1 flex-none" />
         <Icon icon="mdi:chevron-down" className="h-5 w-5 flex-none text-[#9eb8ca]" />
       </button>
 
@@ -353,7 +353,7 @@ function UserDropdown({
             >
               <span>{item.label}</span>
               {item.url === ROUTES.MESSAGES ? (
-                <UnreadMessagesBadge count={unreadMessageCount} />
+                <UnreadMessagesBadge count={unreadThreadCount} />
               ) : null}
             </AppLink>
           ))}
@@ -432,7 +432,7 @@ export function Navigation() {
   const inboxQuery = useMessagesInbox();
   const currentUser = (freshUser ?? storeUser) as CurrentUser | null;
   const authenticatedUser = isAuthenticated && currentUser ? currentUser : null;
-  const unreadMessageCount = authenticatedUser ? (inboxQuery.data?.unreadCount ?? 0) : 0;
+  const unreadThreadCount = authenticatedUser ? (inboxQuery.data?.unreadThreadCount ?? 0) : 0;
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
@@ -602,7 +602,7 @@ export function Navigation() {
                 currentUser={authenticatedUser}
                 onLogout={handleLogout}
                 isLoggingOut={isLoggingOut}
-                unreadMessageCount={unreadMessageCount}
+                unreadThreadCount={unreadThreadCount}
               />
             ) : (
               <AppLink
@@ -697,7 +697,7 @@ export function Navigation() {
                     {getDisplayName(authenticatedUser)}
                   </strong>
                 </div>
-                <UnreadMessagesBadge count={unreadMessageCount} className="ml-auto flex-none" />
+                <UnreadMessagesBadge count={unreadThreadCount} className="ml-auto flex-none" />
               </div>
 
               {mobileMenuItems.map((item) => (
@@ -712,7 +712,7 @@ export function Navigation() {
                 >
                   <span>{item.label}</span>
                   {item.url === ROUTES.MESSAGES ? (
-                    <UnreadMessagesBadge count={unreadMessageCount} />
+                    <UnreadMessagesBadge count={unreadThreadCount} />
                   ) : null}
                 </AppLink>
               ))}

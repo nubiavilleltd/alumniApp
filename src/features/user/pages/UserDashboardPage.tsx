@@ -20,6 +20,7 @@ import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 import { usePendingVouches, useApproveVouch, useRejectVouch } from '../hooks/useVoucher';
 import type { PendingVouch } from '../api/voucherApi';
 import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
+import { resolveProfilePhoto } from '@/features/user/utils/profileUtils';
 import { formatDateRange } from '@/shared/utils/dateHelpers';
 
 // ─── Profile completeness checklist ──────────────────────────────────────────
@@ -306,22 +307,36 @@ function RegisteredEventRow({ event }: { event: Event }) {
 
 // ─── Suggested alumna row ─────────────────────────────────────────────────────
 
-function SuggestedAlumnaRow({ alumnus }: { alumnus: any }) {
+function SuggestedAlumnaRow({
+  alumnus,
+  viewerMemberId,
+  isSignedIn,
+}: {
+  alumnus: any;
+  viewerMemberId?: string;
+  isSignedIn: boolean;
+}) {
   const initials = alumnus.name
     ?.split(' ')
     .slice(0, 2)
     .map((n: string) => n[0])
     .join('')
     .toUpperCase();
+  const displayPhoto = resolveProfilePhoto({
+    photoUrl: alumnus.photo,
+    privacy: alumnus.privacy,
+    isOwner: alumnus.memberId === viewerMemberId,
+    isSignedIn,
+  });
   return (
     <AppLink
       href={ALUMNI_ROUTES.PROFILE(alumnus.memberId)}
       className="flex items-center gap-3 py-3 border-b border-gray-50 last:border-0 hover:bg-gray-50/50 -mx-1 px-1 rounded-xl transition-colors"
     >
       <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 bg-gray-100 flex items-center justify-center">
-        {alumnus.photo ? (
+        {displayPhoto ? (
           <img
-            src={alumnus.photo}
+            src={displayPhoto}
             alt={alumnus.name}
             className="w-full h-full object-cover"
             loading="lazy"
@@ -509,7 +524,12 @@ export function UserDashboardPage() {
               ) : suggestedAlumni.length > 0 ? (
                 <div className="-mt-1">
                   {suggestedAlumni.map((a) => (
-                    <SuggestedAlumnaRow key={a.memberId} alumnus={a} />
+                    <SuggestedAlumnaRow
+                      key={a.memberId}
+                      alumnus={a}
+                      viewerMemberId={currentUser?.memberId}
+                      isSignedIn={Boolean(currentUser?.memberId)}
+                    />
                   ))}
                 </div>
               ) : (

@@ -1,4 +1,12 @@
-import { Icon } from '@iconify/react';
+import {
+  CalendarClock,
+  Check,
+  Download,
+  Eye,
+  GraduationCap,
+  LoaderCircle,
+  Users,
+} from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { SEO } from '@/shared/common/SEO';
@@ -215,7 +223,7 @@ function renderQuestionValue(question: EventSurveySubmissionQuestionView) {
                   isSelected ? 'border-primary-500 bg-white text-primary-500' : 'border-accent-300'
                 }`}
               >
-                {isSelected ? <Icon icon="mdi:check" className="h-3.5 w-3.5" /> : null}
+                {isSelected ? <Check className="h-3.5 w-3.5" /> : null}
               </span>
               <span>{option}</span>
             </div>
@@ -300,7 +308,7 @@ function SurveyResponseModal({
     >
       {isLoading ? (
         <div className="flex items-center gap-2 py-6 text-sm text-accent-500">
-          <Icon icon="mdi:loading" className="h-4 w-4 animate-spin text-primary-500" />
+          <LoaderCircle className="h-4 w-4 animate-spin text-primary-500" />
           Loading requested information...
         </div>
       ) : resolvedForms.length ? (
@@ -362,15 +370,12 @@ function AttendeeCard({
         <div className="min-w-0 flex-1">
           <h2 className="truncate text-lg font-semibold text-accent-950">{attendee.fullName}</h2>
           <p className="mt-1 flex items-center gap-2 text-sm text-accent-500">
-            <Icon
-              icon="mdi:calendar-clock-outline"
-              className="h-4 w-4 flex-shrink-0 text-accent-400"
-            />
+            <CalendarClock className="h-4 w-4 flex-shrink-0 text-accent-400" />
             <span>{formatRegisteredAt(attendee.registeredAt)}</span>
           </p>
           {attendee.graduationYear ? (
             <p className="mt-1 flex items-center gap-2 text-sm text-accent-500">
-              <Icon icon="mdi:school-outline" className="h-4 w-4 flex-shrink-0 text-accent-400" />
+              <GraduationCap className="h-4 w-4 flex-shrink-0 text-accent-400" />
               <span>Class of {attendee.graduationYear}</span>
             </p>
           ) : null}
@@ -384,7 +389,7 @@ function AttendeeCard({
             aria-label={`View requested information for ${attendee.fullName}`}
             title="View requested information"
           >
-            <Icon icon="mdi:eye-outline" className="h-5 w-5" />
+            <Eye className="h-5 w-5" />
           </button>
         ) : null}
       </div>
@@ -735,12 +740,12 @@ export default function AttendeesPage() {
               <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-accent-500">
                 {eventDate && (
                   <span className="inline-flex items-center gap-2">
-                    <Icon icon="mdi:calendar-clock-outline" className="h-4 w-4" />
+                    <CalendarClock className="h-4 w-4" />
                     {eventDate}
                   </span>
                 )}
                 <span className="inline-flex items-center gap-2">
-                  <Icon icon="mdi:account-group-outline" className="h-4 w-4" />
+                  <Users className="h-4 w-4" />
                   {totalCount} attendee{totalCount === 1 ? '' : 's'}
                 </span>
               </div>
@@ -764,9 +769,9 @@ export default function AttendeesPage() {
                 className="inline-flex items-center gap-2 rounded-full bg-primary-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-600 disabled:cursor-not-allowed disabled:bg-primary-200"
               >
                 {isPreparingExport || isExporting ? (
-                  <Icon icon="mdi:loading" className="h-4 w-4 animate-spin" />
+                  <LoaderCircle className="h-4 w-4 animate-spin" />
                 ) : (
-                  <Icon icon="mdi:download-outline" className="h-4 w-4" />
+                  <Download className="h-4 w-4" />
                 )}
 
                 <span>{exportButtonLabel}</span>
@@ -807,7 +812,7 @@ export default function AttendeesPage() {
             ) : (
               <div className="rounded-[2rem] bg-white p-10 text-center shadow-sm ring-1 ring-accent-100 md:col-span-2 xl:col-span-3">
                 <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-accent-50">
-                  <Icon icon="mdi:account-group-outline" className="h-7 w-7 text-accent-700" />
+                  <Users className="h-7 w-7 text-accent-700" />
                 </div>
                 <h2 className="mt-4 text-2xl font-bold text-accent-950">
                   {searchTerm.trim() ? 'No matching attendees' : 'No attendees yet'}

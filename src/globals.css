@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 :root {
-  --app-page-inline-padding: 32px;
+  --app-page-inline-padding: 64px;
 
   /* Primary */
   --color-primary-50: 240 248 255;

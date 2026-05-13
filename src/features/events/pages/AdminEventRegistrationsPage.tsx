@@ -15,7 +15,7 @@
  * ============================================================================
  */
 
-import { Icon } from '@iconify/react';
+import { Calendar, CalendarDays, Mail, MapPin, Phone, UserSearch, Users } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useAllEvents } from '@/features/events/hooks/useEvents';
 import { useEventAttendees } from '@/features/events/hooks/useEventAttendees';
@@ -26,6 +26,7 @@ import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { Pagination } from '@/shared/components/ui/Pagination';
 import { ROUTES } from '@/shared/constants/routes';
+import { AdminBanner } from '@/features/admin/components/AdminBanner';
 import { ADMIN_ROUTES } from '@/features/admin/routes';
 import { formatDateRange } from '@/shared/utils/dateHelpers';
 
@@ -77,13 +78,13 @@ function EventListItem({
           <div className="mt-1 flex items-center gap-3 text-xs text-gray-500">
             {eventDate && (
               <span className="flex items-center gap-1">
-                <Icon icon="mdi:calendar-outline" className="w-3.5 h-3.5" />
+                <Calendar className="w-3.5 h-3.5" />
                 {eventDate}
               </span>
             )}
             {event.location && (
               <span className="flex items-center gap-1">
-                <Icon icon="mdi:map-marker-outline" className="w-3.5 h-3.5" />
+                <MapPin className="w-3.5 h-3.5" />
                 {event.location}
               </span>
             )}
@@ -141,12 +142,12 @@ function AttendeeRow({ attendee }: { attendee: any }) {
           <p className="font-semibold text-gray-900 truncate">{attendee.fullName}</p>
           <div className="flex items-center gap-3 mt-0.5 text-xs text-gray-500">
             <span className="flex items-center gap-1">
-              <Icon icon="mdi:email-outline" className="w-3.5 h-3.5" />
+              <Mail className="w-3.5 h-3.5" />
               {attendee.email}
             </span>
             {attendee.phone && (
               <span className="flex items-center gap-1">
-                <Icon icon="mdi:phone-outline" className="w-3.5 h-3.5" />
+                <Phone className="w-3.5 h-3.5" />
                 {attendee.phone}
               </span>
             )}
@@ -272,6 +273,7 @@ export function AdminEventRegistrationsPage() {
   return (
     <>
       <SEO title="Event Registrations" description="View and manage event registrations" />
+      <AdminBanner activeTab="events" title="Event Registrations" />
       <Breadcrumbs items={breadcrumbItems} />
 
       <section className="section py-8">
@@ -299,10 +301,7 @@ export function AdminEventRegistrationsPage() {
                   </div>
                 ) : events.length === 0 ? (
                   <div className="text-center py-8">
-                    <Icon
-                      icon="mdi:calendar-blank-outline"
-                      className="w-12 h-12 mx-auto text-gray-300 mb-2"
-                    />
+                    <CalendarDays className="w-12 h-12 mx-auto text-gray-300 mb-2" />
                     <p className="text-sm text-gray-500">No events found</p>
                   </div>
                 ) : (
@@ -332,10 +331,7 @@ export function AdminEventRegistrationsPage() {
             <div>
               {!selectedEventId ? (
                 <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
-                  <Icon
-                    icon="mdi:account-group-outline"
-                    className="w-16 h-16 mx-auto text-gray-300 mb-3"
-                  />
+                  <Users className="w-16 h-16 mx-auto text-gray-300 mb-3" />
                   <p className="text-gray-500">Select an event to view attendees</p>
                 </div>
               ) : (
@@ -346,7 +342,7 @@ export function AdminEventRegistrationsPage() {
                     <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
                       {selectedEvent && (
                         <span className="flex items-center gap-1">
-                          <Icon icon="mdi:calendar-outline" className="w-4 h-4" />
+                          <Calendar className="w-4 h-4" />
                           {formatDateRange(selectedEvent.startDate, selectedEvent.endDate, {
                             locale: 'en-GB',
                             formatOptions: {
@@ -359,7 +355,7 @@ export function AdminEventRegistrationsPage() {
                       )}
                       {selectedEvent?.location && (
                         <span className="flex items-center gap-1">
-                          <Icon icon="mdi:map-marker-outline" className="w-4 h-4" />
+                          <MapPin className="w-4 h-4" />
                           {selectedEvent.location}
                         </span>
                       )}
@@ -472,10 +468,7 @@ export function AdminEventRegistrationsPage() {
                         Array.from({ length: 5 }).map((_, i) => <AttendeeRowSkeleton key={i} />)
                       ) : filteredAttendees.length === 0 ? (
                         <div className="text-center py-12">
-                          <Icon
-                            icon="mdi:account-search-outline"
-                            className="w-16 h-16 mx-auto text-gray-300 mb-3"
-                          />
+                          <UserSearch className="w-16 h-16 mx-auto text-gray-300 mb-3" />
                           <p className="text-gray-500 text-sm">
                             {searchQuery
                               ? 'No attendees found matching your search'

@@ -1,4 +1,4 @@
-import { Icon } from '@iconify/react';
+import { AlertCircle, CalendarDays, CalendarSearch, Clock, MapPin, Plus } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
@@ -9,6 +9,7 @@ import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
 import { ROUTES } from '@/shared/constants/routes';
 import { formatDateRange, parseDateInput } from '@/shared/utils/dateHelpers';
+import { AdminBanner } from '@/features/admin/components/AdminBanner';
 import { ADMIN_ROUTES } from '@/features/admin/routes';
 import { useAllEvents } from '../hooks/useEvents';
 import { EVENT_ROUTES } from '../routes';
@@ -86,7 +87,7 @@ function AdminEventsCard({ event }: { event: Event }) {
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-primary-50 text-primary-200">
-              <Icon icon="mdi:calendar-month-outline" className="h-12 w-12" />
+              <CalendarDays className="h-12 w-12" />
             </div>
           )}
         </div>
@@ -102,19 +103,13 @@ function AdminEventsCard({ event }: { event: Event }) {
 
           <div className="mt-3 space-y-2 text-sm text-accent-500">
             <div className="flex items-start gap-2">
-              <Icon
-                icon="mdi:map-marker-outline"
-                className="mt-0.5 h-4 w-4 flex-shrink-0 text-accent-400"
-              />
+              <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0 text-accent-400" />
               <span>{event.location?.trim() || 'Location to be announced'}</span>
             </div>
 
             {formatEventSchedule(event) && (
               <div className="flex items-start gap-2">
-                <Icon
-                  icon="mdi:clock-outline"
-                  className="mt-0.5 h-4 w-4 flex-shrink-0 text-accent-400"
-                />
+                <Clock className="mt-0.5 h-4 w-4 flex-shrink-0 text-accent-400" />
                 <span>{formatEventSchedule(event)}</span>
               </div>
             )}
@@ -211,6 +206,7 @@ export default function AdminEventsPage() {
   return (
     <>
       <SEO title="Admin Events" description="Manage events from the admin dashboard." />
+      <AdminBanner activeTab="events" title="Admin Events" />
       <Breadcrumbs items={breadcrumbItems} />
 
       <main className="min-h-screen bg-[#f5f4f0]">
@@ -222,7 +218,7 @@ export default function AdminEventsPage() {
           ) : isError ? (
             <div className="rounded-[1.5rem] bg-white p-8 text-center shadow-[0_10px_28px_rgba(15,23,42,0.06)] ring-1 ring-black/5">
               <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-red-50 text-red-500">
-                <Icon icon="mdi:alert-circle-outline" className="h-7 w-7" />
+                <AlertCircle className="h-7 w-7" />
               </div>
               <h2 className="mt-4 text-xl font-bold text-accent-950">Could not load events</h2>
               <p className="mt-2 text-sm text-accent-500">
@@ -272,7 +268,7 @@ export default function AdminEventsPage() {
                   className="inline-flex items-center justify-center gap-2 rounded-full bg-primary-500 px-4 py-2 text-base font-semibold text-white no-underline shadow-[0_10px_26px_rgba(37,99,235,0.18)] transition hover:bg-primary-600"
                 >
                   Create Event
-                  <Icon icon="mdi:plus" className="h-4 w-4" />
+                  <Plus className="h-4 w-4" />
                 </AppLink>
               </div>
 
@@ -292,7 +288,7 @@ export default function AdminEventsPage() {
               ) : (
                 <div className="mt-6 rounded-[1.5rem] bg-white p-8 text-center shadow-[0_10px_28px_rgba(15,23,42,0.06)] ring-1 ring-black/5">
                   <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-accent-50 text-accent-500">
-                    <Icon icon="mdi:calendar-search-outline" className="h-7 w-7" />
+                    <CalendarSearch className="h-7 w-7" />
                   </div>
                   <h2 className="mt-4 text-xl font-bold text-accent-950">No events found</h2>
                   <p className="mt-2 text-sm text-accent-500">

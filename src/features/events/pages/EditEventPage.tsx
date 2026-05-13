@@ -7,7 +7,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Icon } from '@iconify/react';
+import { CalendarX, Lock, MapPin, Pencil, Trash2 } from 'lucide-react';
 import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { FormInput } from '@/shared/components/ui/input/FormInput';
@@ -368,7 +368,7 @@ export default function EditEventPage() {
         <SEO title="Access Denied" />
         <section className="section">
           <div className="container-custom text-center">
-            <Icon icon="mdi:lock-outline" className="w-16 h-16 text-red-400 mx-auto mb-4" />
+            <Lock className="w-16 h-16 text-red-400 mx-auto mb-4" />
             <h1 className="text-3xl font-bold mb-4">Access Denied</h1>
             <p className="text-gray-600 mb-6">You don't have permission to edit events.</p>
             <Button onClick={() => navigate(EVENT_ROUTES.ROOT)}>Back to Events</Button>
@@ -411,7 +411,7 @@ export default function EditEventPage() {
     return (
       <section className="section">
         <div className="container-custom text-center">
-          <Icon icon="mdi:calendar-alert" className="w-16 h-16 text-red-400 mx-auto mb-4" />
+          <CalendarX className="w-16 h-16 text-red-400 mx-auto mb-4" />
           <h1 className="text-3xl font-bold mb-4">Event Not Found</h1>
           <Button onClick={() => navigate(EVENT_ROUTES.ROOT)}>Back to Events</Button>
         </div>
@@ -444,7 +444,7 @@ export default function EditEventPage() {
               onClick={() => setShowDeleteModal(true)}
               className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 border border-red-200 rounded-lg transition-colors"
             >
-              <Icon icon="mdi:trash-can-outline" className="w-4 h-4" />
+              <Trash2 className="w-4 h-4" />
               Delete Event
             </button>
           </div>
@@ -466,7 +466,7 @@ export default function EditEventPage() {
                 id="location"
                 required
                 placeholder="Venue name, city"
-                icon="mdi:map-marker-outline"
+                icon={MapPin}
                 error={errors.location?.message}
                 {...register('location')}
               />
@@ -645,7 +645,7 @@ export default function EditEventPage() {
                             }}
                             className="inline-flex items-center gap-2 rounded-full border border-primary-200 bg-white px-3 py-1.5 text-sm font-semibold text-primary-500 transition-colors hover:bg-primary-50"
                           >
-                            <Icon icon="mdi:pencil-outline" className="h-4 w-4" />
+                            <Pencil className="h-4 w-4" />
                             Edit form
                           </button>
                           <button
@@ -663,7 +663,7 @@ export default function EditEventPage() {
                             }}
                             className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 transition-colors hover:text-red-500"
                           >
-                            <Icon icon="mdi:delete-outline" className="h-4 w-4" />
+                            <Trash2 className="h-4 w-4" />
                             Remove
                           </button>
                         </div>

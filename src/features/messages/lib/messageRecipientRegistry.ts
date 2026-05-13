@@ -1,7 +1,10 @@
+import type { FieldVisibility } from '@/features/authentication/types/auth.types';
+
 interface MessageRecipientRegistryEntry {
   memberId: string;
   fullName: string;
   avatar?: string;
+  photoVisibility?: FieldVisibility;
   headline?: string;
   location?: string;
   graduationYear?: number;

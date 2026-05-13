@@ -237,7 +237,7 @@ export function MessagesPage() {
     resolvedThreadSummary?.unreadCount,
   ]);
   const threadShell = activeThreadWithOptimisticMessages ?? resolvedThreadSummary;
-  const unreadMessageCount = inboxQuery.data?.unreadCount ?? 0;
+  const unreadThreadCount = inboxQuery.data?.unreadThreadCount ?? 0;
   const groupParticipants = useMemo(
     () =>
       threadShell?.type === 'group' ? sortGroupParticipants(threadShell.participants ?? []) : [],
@@ -1278,7 +1278,7 @@ export function MessagesPage() {
                   {inboxFilters.map((item) => {
                     const active = filter === item.key;
                     const label =
-                      item.key === 'unread' ? `${item.label} (${unreadMessageCount})` : item.label;
+                      item.key === 'unread' ? `${item.label} (${unreadThreadCount})` : item.label;
 
                     return (
                       <button

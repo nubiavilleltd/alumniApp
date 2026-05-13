@@ -5,19 +5,24 @@
 // - Pending Approvals section with full details
 // - Fully responsive on all screen sizes
 
-import { Icon } from '@iconify/react';
+import {
+  AlertCircle,
+  CheckCheck,
+  Clock3,
+  LoaderCircle,
+  type LucideIcon,
+  UserCheck,
+  UserX,
+  Users,
+} from 'lucide-react';
 import { useState } from 'react';
-import { AppLink } from '@/shared/components/ui/AppLink';
 import { useAdminDashboard, useApproveMember, useRejectMember } from '../hooks/useAdminDashboard';
 import { SEO } from '@/shared/common/SEO';
-import { ROUTES } from '@/shared/constants/routes';
-import { ADMIN_ROUTES } from '../routes';
-import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 import { toast } from '@/shared/components/ui/Toast';
-import { PROJECT_ROUTES } from '@/features/projects/routes';
 import type { PendingMember } from '../api/adminDashboardApi';
 import { useAlumni } from '@/features/alumni/hooks/useAlumni';
 import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
+import { AdminBanner } from '../components/AdminBanner';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // PENDING APPROVAL ROW
@@ -120,7 +125,7 @@ function PendingApprovalRow({
               className="flex-1 lg:flex-none bg-primary-500 hover:bg-primary-600 text-white text-sm font-semibold px-8 py-2.5 rounded-full transition-colors disabled:opacity-50 min-w-[120px] flex items-center justify-center"
             >
               {approveMutation.isPending ? (
-                <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" />
+                <LoaderCircle className="w-4 h-4 animate-spin" />
               ) : (
                 'Confirm'
               )}
@@ -161,9 +166,7 @@ function PendingApprovalRow({
               onClick={handleDeny}
               className="bg-red-500 hover:bg-red-600 text-white text-sm font-semibold px-6 py-2 rounded-full flex items-center gap-2 disabled:opacity-50 transition-colors"
             >
-              {rejectMutation.isPending && (
-                <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" />
-              )}
+              {rejectMutation.isPending && <LoaderCircle className="w-4 h-4 animate-spin" />}
               Confirm deny
             </button>
             <button
@@ -196,11 +199,12 @@ function PendingApprovalRow({
 interface StatCardProps {
   label: string;
   value: string | number;
-  icon: string;
+  icon: LucideIcon;
   color: 'blue' | 'cyan' | 'gray' | 'orange';
 }
 
 function StatCard({ label, value, icon, color }: StatCardProps) {
+  const Icon = icon;
   const colorClasses = {
     blue: 'from-[#1e5aa8] to-[#2563eb] text-white',
     cyan: 'from-[#0891b2] to-[#06b6d4] text-white',
@@ -216,7 +220,7 @@ function StatCard({ label, value, icon, color }: StatCardProps) {
           <p className="text-4xl font-bold">{value}</p>
         </div>
         <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
-          <Icon icon={icon} className="w-6 h-6 text-white" />
+          <Icon className="w-6 h-6 text-white" />
         </div>
       </div>
     </div>
@@ -230,21 +234,7 @@ function StatCard({ label, value, icon, color }: StatCardProps) {
 function AdminDashboardSkeleton() {
   return (
     <div className="min-h-screen bg-[#f5f4f0]">
-      {/* Banner Skeleton */}
-      <div className="bg-gradient-to-r from-[#0f172a] via-[#1e3a5f] to-[#1e40af] animate-pulse">
-        <div className="container-custom py-8">
-          <div className="h-8 w-64 bg-white/20 rounded mb-2" />
-          <div className="h-4 w-40 bg-white/20 rounded mb-6" />
-          <div className="flex gap-3">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="h-10 w-32 bg-white/20 rounded-full" />
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Stats Skeleton */}
-      <div className="container-custom py-6">
+      <div className="container-custom py-6 sm:py-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 animate-pulse">
           {[1, 2, 3, 4].map((i) => (
             <div key={i} className="h-32 bg-gray-200 rounded-2xl" />
@@ -270,20 +260,19 @@ function AdminDashboardSkeleton() {
 // ═══════════════════════════════════════════════════════════════════════════
 
 export function AdminDashboardPage() {
-  const { data: currentUser, isLoading: isLoadingProfile } = useCurrentUser();
   const { data: dashboard, isLoading, isError, refetch } = useAdminDashboard();
   const { data: alumniList = [], isLoading: isLoadingAlumni } = useAlumni();
 
   const [removedIds, setRemovedIds] = useState<Set<string>>(new Set());
-  const [activeTab, setActiveTab] = useState<string>('dashboard');
 
   const handleApprove = (id: string) => setRemovedIds((prev) => new Set([...prev, id]));
   const handleReject = (id: string) => setRemovedIds((prev) => new Set([...prev, id]));
 
-  if (isLoading || isLoadingProfile || isLoadingAlumni) {
+  if (isLoading || isLoadingAlumni) {
     return (
       <>
         <SEO title="Admin Dashboard" description="Admin dashboard" />
+        <AdminBanner activeTab="dashboard" title="Admin Dashboard" headingLevel="h1" />
         <AdminDashboardSkeleton />
       </>
     );
@@ -291,20 +280,24 @@ export function AdminDashboardPage() {
 
   if (isError || !dashboard) {
     return (
-      <section className="section">
-        <div className="container-custom">
-          <div className="mx-auto max-w-2xl rounded-2xl border border-gray-200 bg-white p-8 text-center shadow-sm">
-            <Icon icon="mdi:alert-circle-outline" className="h-12 w-12 text-red-400 mx-auto mb-4" />
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Dashboard unavailable</h1>
-            <p className="text-sm text-gray-600 mb-6">
-              Could not load admin dashboard data. Please try again.
-            </p>
-            <button type="button" className="btn btn-primary" onClick={() => void refetch()}>
-              Try again
-            </button>
+      <>
+        <SEO title="Admin Dashboard" description="Admin dashboard" />
+        <AdminBanner activeTab="dashboard" title="Admin Dashboard" headingLevel="h1" />
+        <section className="min-h-screen bg-[#f5f4f0]">
+          <div className="container-custom py-6 sm:py-8">
+            <div className="mx-auto max-w-2xl rounded-2xl border border-gray-200 bg-white p-8 text-center shadow-sm">
+              <AlertCircle className="h-12 w-12 text-red-400 mx-auto mb-4" />
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">Dashboard unavailable</h1>
+              <p className="text-sm text-gray-600 mb-6">
+                Could not load admin dashboard data. Please try again.
+              </p>
+              <button type="button" className="btn btn-primary" onClick={() => void refetch()}>
+                Try again
+              </button>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </>
     );
   }
 
@@ -316,96 +309,24 @@ export function AdminDashboardPage() {
   const inactiveMembers = totalMembers - activeMembers;
   const pendingApprovals = visiblePending.length;
 
-  // Navigation tabs
-  const tabs = [
-    { id: 'dashboard', label: 'Admin Dashboard', href: ADMIN_ROUTES.DASHBOARD },
-    { id: 'members', label: 'Members', href: ADMIN_ROUTES.MEMBERS },
-    { id: 'events', label: 'Events', href: ADMIN_ROUTES.EVENTS },
-    { id: 'announcements', label: 'Announcements', href: ADMIN_ROUTES.ANNOUNCEMENTS },
-    { id: 'projects', label: 'Projects', href: PROJECT_ROUTES.ROOT },
-  ];
-
   return (
     <>
       <SEO title="Admin Dashboard" description="Admin dashboard" />
+      <AdminBanner activeTab="dashboard" title="Admin Dashboard" headingLevel="h1" />
 
       <div className="min-h-screen bg-[#f5f4f0]">
-        {/* ══════════════════════════════════════════════════════════
-            BANNER WITH GRADIENT BACKGROUND & TABS
-            ═══════════════════════════════════════════════════════ */}
-        <div className="bg-gradient-to-r from-[#0f172a] via-[#1e3a5f] to-[#1e40af] relative overflow-hidden">
-          {/* Subtle overlay pattern */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.05),_transparent_50%)]" />
-
-          <div className="container-custom flex justify-between items-center py-6 sm:py-8 relative z-10">
-            <div>
-              {/* Admin Badge */}
-              <div className="inline-flex items-center gap-2 bg-amber-400/20 border border-amber-400/30 rounded-full px-3 py-1.5 mb-3">
-                <Icon icon="mdi:shield-crown-outline" className="w-4 h-4 text-amber-300" />
-                <span className="text-xs font-semibold text-amber-200 uppercase tracking-wide">
-                  Admin Panel
-                </span>
-              </div>
-
-              {/* Title */}
-              <h1 className="text-3xl sm:text-4xl font-bold text-white mb-1">Admin Dashboard</h1>
-              <p className="text-sm text-white/70 mb-6">
-                Signed in as {currentUser?.fullName ?? 'Admin'}
-              </p>
-            </div>
-
-            {/* Navigation Tabs */}
-            <div className="flex flex-wrap gap-2 sm:gap-3">
-              {tabs.map((tab) => (
-                <AppLink
-                  key={tab.id}
-                  href={tab.href}
-                  className={`
-                    px-4 sm:px-6 py-2.5 rounded-xl text-sm font-medium transition-all
-                    ${
-                      tab.id === 'dashboard'
-                        ? 'bg-white/20 text-white border border-white/30 shadow-lg'
-                        : 'bg-white/5 text-white/80 border border-white/10 hover:bg-white/10 hover:text-white'
-                    }
-                  `}
-                >
-                  {tab.label}
-                </AppLink>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* ══════════════════════════════════════════════════════════
-            MAIN CONTENT
-            ═══════════════════════════════════════════════════════ */}
         <div className="container-custom py-6 sm:py-8">
           {/* ══════════════════════════════════════════════════════════
               STAT CARDS (4 columns)
               ═══════════════════════════════════════════════════════ */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <StatCard
-              label="Total Members"
-              value={totalMembers}
-              icon="mdi:account-group"
-              color="blue"
-            />
-            <StatCard
-              label="Active Members"
-              value={activeMembers}
-              icon="mdi:account-check"
-              color="cyan"
-            />
-            <StatCard
-              label="Inactive Members"
-              value={inactiveMembers}
-              icon="mdi:account-off"
-              color="gray"
-            />
+            <StatCard label="Total Members" value={totalMembers} icon={Users} color="blue" />
+            <StatCard label="Active Members" value={activeMembers} icon={UserCheck} color="cyan" />
+            <StatCard label="Inactive Members" value={inactiveMembers} icon={UserX} color="gray" />
             <StatCard
               label="Pending Approvals"
               value={pendingApprovals}
-              icon="mdi:account-clock"
+              icon={Clock3}
               color="orange"
             />
           </div>
@@ -422,7 +343,7 @@ export function AdminDashboardPage() {
               {visiblePending.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
                   <div className="w-16 h-16 rounded-full bg-primary-50 flex items-center justify-center mb-4">
-                    <Icon icon="mdi:check-all" className="w-8 h-8 text-primary-500" />
+                    <CheckCheck className="w-8 h-8 text-primary-500" />
                   </div>
                   <p className="font-semibold text-gray-900 text-lg mb-1">All caught up!</p>
                   <p className="text-sm text-gray-500">No registrations awaiting approval.</p>

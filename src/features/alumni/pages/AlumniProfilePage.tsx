@@ -249,12 +249,16 @@ import { useStartDirectConversation } from '@/features/messages/hooks/useStartDi
 import { occupationOptions } from '@/features/authentication/constants/profileOptions';
 import { ALUMNI_ROUTES } from '../routes';
 import { ROUTES } from '@/shared/constants/routes';
-import { AUTH_ROUTES } from '@/features/authentication/routes';
 import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 import { ProfileCard, type SocialLink } from '@/features/user/components/ui/ProfileCard';
 import { ProfileInfoPanel } from '@/features/user/components/ui/ProfileInfoPanel';
 import { ProfileSkeleton } from '@/features/user/components/ProfileSkeleton';
-import { buildProfileData, isGroupVisible, resolveLabel } from '@/features/user/utils/profileUtils';
+import {
+  buildProfileData,
+  isGroupVisible,
+  resolveLabel,
+  resolveProfilePhoto,
+} from '@/features/user/utils/profileUtils';
 import { toast } from '@/shared/components/ui/Toast';
 import { ProfileAddressCard } from '@/features/user/components/ui/ProfileAddressCard';
 
@@ -331,10 +335,13 @@ export function AlumniProfilePage() {
     isOwner,
     isSignedIn,
   );
-  const canSeePhoto = isGroupVisible('photo', alumnus.privacy, isOwner, isSignedIn);
   const canSeeSocials = isGroupVisible('socials', alumnus.privacy, isOwner, isSignedIn);
-
-  // console.log('canSeeAddress', { canSeeAddress });
+  const profilePhoto = resolveProfilePhoto({
+    photoUrl: alumnus.photo,
+    privacy: alumnus.privacy,
+    isOwner,
+    isSignedIn,
+  });
 
   // Socials for the ProfileCard icon row
   const socials: SocialLink[] = canSeeSocials
@@ -379,7 +386,8 @@ export function AlumniProfilePage() {
       topic: `Alumni profile conversation with ${alumnus.name}`,
       recipientProfile: {
         fullName: alumnus.name,
-        avatar: alumnus.photo,
+        avatar: profilePhoto,
+        photoVisibility: alumnus.privacy?.photo,
         headline: recipientHeadline,
         location: alumnus.location || alumnus.city,
         graduationYear: alumnus.graduationYear,
@@ -400,7 +408,7 @@ export function AlumniProfilePage() {
             {/* ── Left: sidebar ─────────────────────────────────────── */}
             <div className="space-y-4 lg:sticky lg:top-6 h-fit">
               <ProfileCard
-                photo={canSeePhoto ? alumnus.photo : undefined}
+                photo={profilePhoto}
                 fullName={alumnus.name}
                 maidenName={
                   alumnus.nameInSchool && alumnus.nameInSchool !== alumnus.name

@@ -10,11 +10,10 @@ import EmptyState from '@/shared/components/ui/EmptyState';
 import { Pagination } from '@/shared/components/ui/Pagination';
 import { useAlumni } from '@/features/alumni/hooks/useAlumni';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
-import { getPhotoDisplay } from '@/features/alumni/utils/privacyHelpers';
 import { ALUMNI_ROUTES } from '../routes';
 import { useStartDirectConversation } from '@/features/messages/hooks/useStartDirectConversation';
 import { Alumni } from '../types/alumni.types';
-import { resolveVisibleField } from '@/features/user/utils/privacyResolvers';
+import { resolveProfilePhoto, resolveVisibleField } from '@/features/user/utils/profileUtils';
 
 /* ───────────────────────────────────────────────────────────── */
 /* Responsive items per page */
@@ -59,10 +58,13 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: a
   // const occupation = entry.position || entry.occupations?.[0] || '';
 
   const isOwner = entry.memberId === currentUser?.memberId;
-
-  const canSeePhoto = resolveVisibleField(entry.photo, 'photo', entry.privacy, isOwner);
-
-  const displayPhoto = getPhotoDisplay(entry.photo, canSeePhoto);
+  const isSignedIn = Boolean(currentUser?.memberId);
+  const displayPhoto = resolveProfilePhoto({
+    photoUrl: entry.photo,
+    privacy: entry.privacy,
+    isOwner,
+    isSignedIn,
+  });
   // entry.memberId == '39' &&
   //   console.log('canSeePhoto', { canSeePhoto, photo: entry.photo, photo2: displayPhoto });
 
@@ -71,6 +73,7 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: a
     'birthDate', // TEMPORARY until you create graduationYear privacy
     entry.privacy,
     isOwner,
+    isSignedIn,
   );
 
   const visibleOccupation = resolveVisibleField(
@@ -78,6 +81,7 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: a
     'employmentStatus', // TEMPORARY mapping
     entry.privacy,
     isOwner,
+    isSignedIn,
   );
 
   // const classLabel = visibleGraduationYear
@@ -211,6 +215,15 @@ export function AlumniDirectoryPage() {
   async function handleMessage(entry: Alumni) {
     if (!entry.memberId) return;
 
+    const isOwner = entry.memberId === currentUser?.memberId;
+    const isSignedIn = Boolean(currentUser?.memberId);
+    const displayPhoto = resolveProfilePhoto({
+      photoUrl: entry.photo,
+      privacy: entry.privacy,
+      isOwner,
+      isSignedIn,
+    });
+
     const recipientHeadline =
       entry.position && entry.company
         ? `${entry.position} at ${entry.company}`
@@ -221,7 +234,8 @@ export function AlumniDirectoryPage() {
       participantMemberId: entry.memberId,
       recipientProfile: {
         fullName: entry.name,
-        avatar: entry.photo,
+        avatar: displayPhoto,
+        photoVisibility: entry.privacy?.photo,
         headline: recipientHeadline,
         location: entry.location || entry.city,
         graduationYear: entry.graduationYear,

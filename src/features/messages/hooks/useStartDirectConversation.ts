@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import type { FieldVisibility } from '@/features/authentication/types/auth.types';
 import { registerMessageRecipient } from '../lib/messageRecipientRegistry';
 import { useCreateDirectMessageThread } from './useMessages';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
@@ -8,6 +9,7 @@ import { toast } from '@/shared/components/ui/Toast';
 interface DirectConversationRecipientProfile {
   fullName: string;
   avatar?: string;
+  photoVisibility?: FieldVisibility;
   headline?: string;
   location?: string;
   graduationYear?: number;

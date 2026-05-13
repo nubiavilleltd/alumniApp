@@ -1,3 +1,5 @@
+import type { FieldVisibility } from '@/features/authentication/types/auth.types';
+
 export type MessagePresence = 'online' | 'away' | 'offline';
 
 export type MessageThreadType = 'direct' | 'group';
@@ -21,6 +23,7 @@ export interface MessageParticipant {
   location: string;
   graduationYear: number;
   avatar?: string;
+  photoVisibility?: FieldVisibility;
   initials: string;
   profileHref: string;
   presence: MessagePresence;
@@ -102,6 +105,7 @@ export interface MessageThreadDetail extends MessageThreadSummary {
 export interface MessageInboxData {
   threads: MessageThreadSummary[];
   unreadCount: number;
+  unreadThreadCount: number;
   syncToken: string;
   pollingIntervalMs: number;
 }

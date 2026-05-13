@@ -17,9 +17,9 @@ import type { Business } from '../types/marketplace.types';
 import { useStartDirectConversation } from '@/features/messages/hooks/useStartDirectConversation';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 import { useAlumni } from '@/features/alumni/hooks/useAlumni';
-import { getPhotoDisplay, isFieldVisible } from '@/features/alumni/utils/privacyHelpers';
 import { useRequireSignIn } from '@/features/authentication/hooks/useRequireSignIn';
 import { MARKETPLACE_ROUTES } from '../routes';
+import { resolveProfilePhoto } from '@/features/user/utils/profileUtils';
 
 const ITEMS_PER_PAGE = 9;
 const DEFAULT_MARKETPLACE_DRAFT_MESSAGE = (businessName: string) =>
@@ -310,21 +310,37 @@ export default function MarketPlacePage() {
   const { data: businesses = [], isLoading, error } = useMarketplace();
   const { data: categoriesList = [] } = useMarketplaceCategories();
   const { data: alumni = [] } = useAlumni({ action_type: 'approved' });
+  const isSignedIn = Boolean(currentUser?.memberId);
+
+  const alumniByMemberId = useMemo(() => {
+    const entries = new Map<string, (typeof alumni)[number]>();
+
+    alumni.forEach((entry) => {
+      entries.set(String(entry.id), entry);
+      entries.set(String(entry.memberId), entry);
+    });
+
+    return entries;
+  }, [alumni]);
 
   const ownerPhotoById = useMemo(() => {
     const photos = new Map<string, string | null>();
 
     alumni.forEach((entry) => {
-      const photoVisible = isFieldVisible(entry, 'photo', currentUser as any);
-      const displayPhoto = getPhotoDisplay(entry.photo, photoVisible);
-      const photo = isRealProfilePhoto(displayPhoto) ? displayPhoto : null;
+      const displayPhoto = resolveProfilePhoto({
+        photoUrl: entry.photo,
+        privacy: entry.privacy,
+        isOwner: entry.memberId === currentUser?.memberId,
+        isSignedIn,
+      });
+      const photo = isRealProfilePhoto(displayPhoto) ? (displayPhoto ?? null) : null;
 
       photos.set(String(entry.id), photo);
       photos.set(String(entry.memberId), photo);
     });
 
     return photos;
-  }, [alumni, currentUser]);
+  }, [alumni, currentUser?.memberId, isSignedIn]);
 
   const filtered = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
@@ -367,6 +383,8 @@ export default function MarketPlacePage() {
 
   async function handleStartBusinessConversation(business: Business) {
     setPendingBusinessId(business.businessId);
+    const ownerEntry = alumniByMemberId.get(String(business.ownerId));
+
     await startDirectConversation({
       participantMemberId: business.ownerId,
       topic: `Marketplace enquiry about ${business.name}`,
@@ -375,6 +393,8 @@ export default function MarketPlacePage() {
       marketplaceBusinessId: business.businessId,
       recipientProfile: {
         fullName: business.owner,
+        avatar: ownerPhotoById.get(String(business.ownerId)) ?? undefined,
+        photoVisibility: ownerEntry?.privacy?.photo,
         headline: `Owner of ${business.name}`,
         location: business.location,
         profileHref: `/alumni/profiles/${business.ownerId}`,

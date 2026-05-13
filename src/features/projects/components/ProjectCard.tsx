@@ -6,7 +6,15 @@
 // so they don't disturb the clean overlay layout.
 
 import { useState } from 'react';
-import { Icon } from '@iconify/react';
+import {
+  AlertCircle,
+  ChevronRight,
+  Clock,
+  LoaderCircle,
+  MapPin,
+  Pencil,
+  Trash2,
+} from 'lucide-react';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { useDeleteProject } from '../hooks/useProjects';
 import type { Project } from '../types/project.types';
@@ -36,7 +44,7 @@ function DeleteConfirmModal({
       <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
         <div className="flex items-start gap-3 mb-4">
           <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
-            <Icon icon="mdi:alert-circle-outline" className="w-5 h-5 text-red-600" />
+            <AlertCircle className="w-5 h-5 text-red-600" />
           </div>
           <div>
             <h3 className="text-gray-900 font-bold text-lg mb-1">Delete Project?</h3>
@@ -61,7 +69,7 @@ function DeleteConfirmModal({
             disabled={isDeleting}
             className="px-6 py-2 text-sm font-semibold bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2"
           >
-            {isDeleting && <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" />}
+            {isDeleting && <LoaderCircle className="w-4 h-4 animate-spin" />}
             Yes, Delete
           </button>
         </div>
@@ -123,7 +131,7 @@ export function ProjectCard({ project, showAdminActions = false, onEdit }: Proje
               title="Edit project"
               className="w-7 h-7 rounded-full bg-white/90 hover:bg-white flex items-center justify-center shadow transition-colors"
             >
-              <Icon icon="mdi:pencil-outline" className="w-3.5 h-3.5 text-primary-600" />
+              <Pencil className="w-3.5 h-3.5 text-primary-600" />
             </button>
             <button
               type="button"
@@ -131,7 +139,7 @@ export function ProjectCard({ project, showAdminActions = false, onEdit }: Proje
               title="Delete project"
               className="w-7 h-7 rounded-full bg-white/90 hover:bg-white flex items-center justify-center shadow transition-colors"
             >
-              <Icon icon="mdi:trash-can-outline" className="w-3.5 h-3.5 text-red-500" />
+              <Trash2 className="w-3.5 h-3.5 text-red-500" />
             </button>
           </div>
         )}
@@ -164,14 +172,14 @@ export function ProjectCard({ project, showAdminActions = false, onEdit }: Proje
           <div className="flex flex-col gap-1 mt-2 flex-1">
             {project.location && (
               <span className="flex items-center gap-1 text-white/80 text-[10px] sm:text-[11px]">
-                <Icon icon="mdi:map-marker-outline" className="w-3 h-3 flex-shrink-0" />
+                <MapPin className="w-3 h-3 flex-shrink-0" />
                 {project.location}
               </span>
             )}
 
             {dateRange && (
               <span className="flex items-center gap-1 text-white/80 text-[10px] sm:text-[11px]">
-                <Icon icon="mdi:clock-outline" className="w-3 h-3 flex-shrink-0" />
+                <Clock className="w-3 h-3 flex-shrink-0" />
                 {dateRange}
               </span>
             )}
@@ -183,7 +191,7 @@ export function ProjectCard({ project, showAdminActions = false, onEdit }: Proje
             className="mt-auto inline-flex items-center gap-0.5 text-white font-semibold text-sm hover:text-white/80 transition-colors"
           >
             View Details
-            <Icon icon="mdi:chevron-right" className="w-5 h-5" />
+            <ChevronRight className="w-5 h-5" />
           </AppLink>
         </div>
       </div>
