@@ -96,6 +96,19 @@ export const eventBaseSchema = z
     }
   });
 
+export const updatePastEventSchema = z.object({
+  title: z.string().min(3, 'Event Title must be at least 3 characters'),
+  description: z.string().min(10, 'Event Details must be at least 10 characters'),
+  location: z.string().min(1, 'Location is required'),
+  visibility: z.enum(['public', 'members', 'premium']),
+  status: z.enum(['upcoming', 'active', 'cancelled', 'completed']),
+  start_date: z.string().optional(),
+  end_date: z.string().optional(),
+  start_time: z.string().optional(),
+  end_time: z.string().optional(),
+  event_banner: z.any().optional(),
+});
+
 // For create event (includes optional banner)
 // export const createEventSchema = eventBaseSchema.extend({
 //   event_banner: z.any().optional(),

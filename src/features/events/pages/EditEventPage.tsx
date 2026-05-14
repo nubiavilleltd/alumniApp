@@ -26,7 +26,11 @@ import { TimePicker } from '@/shared/components/ui/input/TimePicker';
 import { DatePicker } from '@/shared/components/ui/input/DatePicker';
 import { ROUTES } from '@/shared/constants/routes';
 import { ADMIN_ROUTES } from '@/features/admin/routes';
-import { UpdateEventFormData, updateEventSchema } from '../schemas/event.schema';
+import {
+  UpdateEventFormData,
+  updateEventSchema,
+  updatePastEventSchema,
+} from '../schemas/event.schema';
 import {
   useEventSurveyForms,
   useUpsertEventSurveyForm,
@@ -127,6 +131,18 @@ export default function EditEventPage() {
   const [isSavingSurveyForms, setIsSavingSurveyForms] = useState(false);
   const [hasInitializedSurveyForms, setHasInitializedSurveyForms] = useState(false);
 
+  const schema = isPast ? updatePastEventSchema : updateEventSchema;
+
+  // const {
+  //   register,
+  //   handleSubmit,
+  //   setValue,
+  //   watch,
+  //   reset,
+  //   trigger,
+  //   formState: { errors },
+  // } = useForm<UpdateEventFormData>({
+  //   resolver: zodResolver(updateEventSchema) as any,
   const {
     register,
     handleSubmit,
@@ -136,7 +152,7 @@ export default function EditEventPage() {
     trigger,
     formState: { errors },
   } = useForm<UpdateEventFormData>({
-    resolver: zodResolver(updateEventSchema) as any,
+    resolver: zodResolver(schema) as any,
     mode: 'onChange',
     defaultValues: {
       title: '',
@@ -226,6 +242,7 @@ export default function EditEventPage() {
   }, [startDate, isStatusManuallyChanged, setValue]);
 
   useEffect(() => {
+    if (isPast) return;
     const subscription = watch((values, { name }) => {
       if (!name) return;
 
@@ -456,12 +473,13 @@ export default function EditEventPage() {
               <p className="text-gray-500 text-sm">Update event details</p>
             </div>
             <button
+              title="Delete Event"
               type="button"
               onClick={() => setShowDeleteModal(true)}
               className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 border border-red-200 rounded-lg transition-colors"
             >
               <Icon icon="mdi:trash-can-outline" className="w-4 h-4" />
-              Delete Event
+              <span className="hidden sm:inline">Delete Event</span>
             </button>
           </div>
 
