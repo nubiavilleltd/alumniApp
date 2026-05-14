@@ -3,16 +3,12 @@ import {
   ChevronDown,
   Circle,
   CircleChevronDown,
-  CircleDot,
   Grip,
   GripVertical,
   Pencil,
   Plus,
   Square,
-  SquareCheckBig,
-  TextQuote,
   Trash2,
-  Type,
   X,
 } from 'lucide-react';
 import Button from '@/shared/components/ui/Button';
@@ -57,24 +53,32 @@ const questionTypeOptions: Array<{
   icon: AppIcon;
   description?: string;
 }> = [
-  { value: 'short_answer', label: 'Short answer', icon: <Type strokeWidth={2.2} /> },
-  { value: 'long_answer', label: 'Long answer', icon: <TextQuote strokeWidth={2.2} /> },
+  {
+    value: 'short_answer',
+    label: 'Short answer',
+    icon: <img src="/short_answer.svg" alt="" aria-hidden="true" />,
+  },
+  {
+    value: 'long_answer',
+    label: 'Long answer',
+    icon: <img src="/long_answer.svg" alt="" aria-hidden="true" />,
+  },
   {
     value: 'multiple_choice',
     label: 'Multiple Choice',
     description: '(single selections)',
-    icon: <CircleDot strokeWidth={2.2} />,
+    icon: <img src="/MultipleSelection.svg" alt="" aria-hidden="true" />,
   },
   {
     value: 'checkbox',
     label: 'Checkboxes',
     description: '(multiple selections)',
-    icon: <SquareCheckBig strokeWidth={2.2} />,
+    icon: <img src="/checkbox.svg" alt="" aria-hidden="true" />,
   },
   {
     value: 'dropdown',
     label: 'Dropdown',
-    icon: <CircleChevronDown strokeWidth={2.2} />,
+    icon: <CircleChevronDown />,
   },
 ];
 
@@ -885,7 +889,7 @@ export function EventRegistrationFormBuilderModal({
                   </div>
                 ) : (
                   <div
-                    className={`relative rounded-[1rem] border border-sky-100 bg-white px-4 py-4 shadow-[0_12px_32px_rgba(15,23,42,0.06)] transition-opacity sm:px-6 sm:py-5 ${
+                    className={`relative overflow-hidden rounded-[1rem] border border-sky-100 bg-white px-4 py-4 shadow-[0_12px_32px_rgba(15,23,42,0.06)] transition-opacity sm:px-6 sm:py-5 ${
                       isDragging ? 'opacity-50' : ''
                     }`}
                   >
