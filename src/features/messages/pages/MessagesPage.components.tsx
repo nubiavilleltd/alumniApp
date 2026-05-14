@@ -1,6 +1,18 @@
-import { Icon } from '@iconify/react';
+import {
+  Check,
+  CheckCheck,
+  CircleAlert,
+  Clock3,
+  ExternalLink,
+  Image,
+  LoaderCircle,
+  MessageSquare,
+  Users,
+  X,
+} from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { renderIcon } from '@/shared/utils/renderIcon';
 import { toast } from '@/shared/components/ui/Toast';
 import {
   MESSAGE_MAX_ATTACHMENTS_PER_MESSAGE,
@@ -69,12 +81,12 @@ export function MessageDeliveryIndicator({
   const isDelivered = status === 'delivered';
   const icon =
     status === 'failed'
-      ? 'mdi:alert-circle-outline'
+      ? CircleAlert
       : status === 'sending'
-        ? 'mdi:clock-outline'
+        ? Clock3
         : isSeen || isDelivered
-          ? 'mdi:check-all'
-          : 'mdi:check';
+          ? CheckCheck
+          : Check;
   const colorClass =
     status === 'failed' ? 'text-red-500' : isSeen ? 'text-blue-500' : 'text-gray-400';
   const label = deliveryLabel(status);
@@ -85,7 +97,7 @@ export function MessageDeliveryIndicator({
       title={label}
       aria-label={label}
     >
-      <Icon icon={icon} className="h-3.5 w-3.5 flex-shrink-0" />
+      {renderIcon(icon, 'h-3.5 w-3.5 flex-shrink-0')}
       {showLabel ? <span>{label}</span> : null}
     </span>
   );
@@ -195,7 +207,7 @@ export function GroupParticipantsModal({
             className="inline-flex h-10 w-10 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
             aria-label="Close members list"
           >
-            <Icon icon="mdi:close" className="h-5 w-5" />
+            <X className="h-5 w-5" strokeWidth={2.2} />
           </button>
         </div>
 
@@ -249,20 +261,12 @@ export function GroupParticipantsModal({
                       disabled={isStartingConversation}
                       className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-200 sm:w-auto"
                     >
-                      <Icon
-                        icon={
-                          isStartingConversation &&
-                          pendingConversationMemberId === participant.memberId
-                            ? 'mdi:loading'
-                            : 'mdi:message-outline'
-                        }
-                        className={`h-4 w-4 ${
-                          isStartingConversation &&
-                          pendingConversationMemberId === participant.memberId
-                            ? 'animate-spin'
-                            : ''
-                        }`}
-                      />
+                      {isStartingConversation &&
+                      pendingConversationMemberId === participant.memberId ? (
+                        <LoaderCircle className="h-4 w-4 animate-spin" strokeWidth={2.2} />
+                      ) : (
+                        <MessageSquare className="h-4 w-4" strokeWidth={2.2} />
+                      )}
                       {isStartingConversation &&
                       pendingConversationMemberId === participant.memberId
                         ? 'Opening...'
@@ -298,7 +302,7 @@ export function ThreadAvatar({
       <div
         className={`flex ${sizeClasses} flex-shrink-0 items-center justify-center bg-blue-100 text-blue-600`}
       >
-        <Icon icon="mdi:account-group-outline" className="h-6 w-6" />
+        <Users className="h-6 w-6" strokeWidth={2.2} />
       </div>
     );
   }
@@ -423,7 +427,7 @@ export function ReplyPreviewCard({
             className="inline-flex h-7 w-7 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
             aria-label="Clear reply target"
           >
-            <Icon icon="mdi:close" className="h-3.5 w-3.5" />
+            <X className="h-3.5 w-3.5" strokeWidth={2.2} />
           </button>
         ) : null}
       </div>
@@ -468,7 +472,7 @@ function MessageImageGrid({
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center bg-gray-200">
-                <Icon icon="mdi:image-outline" className="h-6 w-6 text-gray-400" />
+                <Image className="h-6 w-6 text-gray-400" strokeWidth={2.2} />
               </div>
             )}
 
@@ -522,7 +526,7 @@ export function MessageAttachments({
                   isOwn ? 'bg-white/30' : 'bg-blue-50 text-blue-600'
                 }`}
               >
-                <Icon icon={getAttachmentIcon(attachment.kind)} className="h-4.5 w-4.5" />
+                {renderIcon(getAttachmentIcon(attachment.kind), 'h-4.5 w-4.5')}
               </div>
 
               <div className="min-w-0 flex-1">
@@ -571,7 +575,7 @@ export function MessageAttachments({
                       : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
                   }`}
                 >
-                  <Icon icon="mdi:open-in-new" className="h-3.5 w-3.5" />
+                  <ExternalLink className="h-3.5 w-3.5" strokeWidth={2.2} />
                   Open file
                 </a>
               </div>
@@ -614,10 +618,10 @@ export function DraftComposerAttachments({
               />
             ) : (
               <div className="flex h-full w-full flex-col items-center justify-center gap-1 px-1.5">
-                <Icon
-                  icon={getAttachmentIcon(attachment.kind)}
-                  className="h-5 w-5 flex-shrink-0 text-gray-400"
-                />
+                {renderIcon(
+                  getAttachmentIcon(attachment.kind),
+                  'h-5 w-5 flex-shrink-0 text-gray-400',
+                )}
                 <p className="line-clamp-2 w-full text-center text-[10px] leading-tight text-gray-500">
                   {attachment.fileName}
                 </p>
@@ -636,7 +640,7 @@ export function DraftComposerAttachments({
               className="absolute right-1 top-1 inline-flex h-[18px] w-[18px] items-center justify-center rounded-full bg-black/55 text-white transition-colors hover:bg-black/75"
               aria-label={`Remove ${attachment.fileName}`}
             >
-              <Icon icon="mdi:close" className="h-2.5 w-2.5" />
+              <X className="h-2.5 w-2.5" strokeWidth={2.2} />
             </button>
           </div>
         ))}
@@ -690,7 +694,7 @@ export function ImageAttachmentLightbox({
         className="absolute right-5 top-5 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
         aria-label="Close image preview"
       >
-        <Icon icon="mdi:close" className="h-5 w-5" />
+        <X className="h-5 w-5" strokeWidth={2.2} />
       </button>
 
       <div
@@ -717,7 +721,7 @@ export function ImageAttachmentLightbox({
             }}
             className="inline-flex items-center gap-1.5 rounded-full border border-white/15 px-3 py-1.5 text-xs font-semibold text-white/80 transition-colors hover:border-white/30 hover:text-white"
           >
-            <Icon icon="mdi:open-in-new" className="h-3.5 w-3.5" />
+            <ExternalLink className="h-3.5 w-3.5" strokeWidth={2.2} />
             Open
           </button>
         </div>

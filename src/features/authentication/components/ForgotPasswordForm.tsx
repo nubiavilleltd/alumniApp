@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Icon } from '@iconify/react';
+import { MailCheck } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -43,7 +43,7 @@ export function ForgotPasswordForm() {
       <AuthCard title="Email Submitted">
         <div className="auth-message-panel">
           <div className="auth-message-panel__icon">
-            <Icon icon="mdi:email-check-outline" />
+            <MailCheck strokeWidth={2.2} />
           </div>
           <p className="auth-message-panel__copy">
             If your account is found in our system, you'll receive a password reset email.

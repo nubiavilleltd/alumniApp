@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Icon } from '@iconify/react';
+import { BriefcaseBusiness, Plus, SearchX, X } from 'lucide-react';
 import { SEO } from '@/shared/common/SEO';
 import { Button } from '@/shared/components/ui/Button';
 import EmptyState from '@/shared/components/ui/EmptyState';
@@ -299,7 +299,7 @@ function KeywordInput({
                 className="inline-flex h-4 w-4 items-center justify-center rounded-full text-primary-700 transition-colors hover:bg-primary-200 disabled:cursor-not-allowed"
                 aria-label={`Remove ${tag}`}
               >
-                <Icon icon="mdi:close" className="h-3 w-3" />
+                <X className="h-3 w-3" strokeWidth={2.35} />
               </button>
             </span>
           ))}
@@ -337,7 +337,7 @@ function KeywordInput({
             onClick={onAddKeyword}
             className="inline-flex min-h-[2rem] items-center gap-1 rounded-full bg-primary-50 px-3 py-1 text-xs font-semibold text-primary-600 transition-colors hover:bg-primary-100 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            <Icon icon="mdi:plus" className="h-3.5 w-3.5" />
+            <Plus className="h-3.5 w-3.5" strokeWidth={2.35} />
             Add
           </button>
         </div>
@@ -637,7 +637,7 @@ export function PostJobModal({
           onClick={onClose}
           aria-label="Close"
         >
-          <Icon icon="mdi:close" className="h-7 w-7 sm:h-8 sm:w-8" />
+          <X className="h-7 w-7 sm:h-8 sm:w-8" strokeWidth={2.2} />
         </button>
 
         <form className="px-4 pb-6 pt-1 sm:px-5 md:px-8" onSubmit={handleSubmit}>
@@ -1018,7 +1018,7 @@ export default function JobVacanciesPage() {
               onClick={handleOpenPostModal}
             >
               Post a Job
-              <Icon icon="mdi:plus" />
+              <Plus strokeWidth={2.35} />
             </Button>
           </header>
 
@@ -1026,7 +1026,7 @@ export default function JobVacanciesPage() {
 
           {!isLoading && isError ? (
             <EmptyState
-              icon="mdi:briefcase-search-outline"
+              icon={SearchX}
               title="We couldn't load job vacancies"
               description={error instanceof Error ? error.message : 'Please try again.'}
               actionLabel="Try Again"
@@ -1038,7 +1038,7 @@ export default function JobVacanciesPage() {
 
           {!isLoading && !isError && orderedVacancies.length === 0 ? (
             <EmptyState
-              icon="mdi:briefcase-outline"
+              icon={BriefcaseBusiness}
               title="No job vacancies yet"
               description="Once a job is posted, it will show up here for the community to explore."
               actionLabel={canPostJob ? 'Post the First Job' : undefined}

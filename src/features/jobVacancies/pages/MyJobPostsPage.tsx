@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Icon } from '@iconify/react';
+import { BriefcaseBusiness, Plus, SearchX, Trash2, UserX } from 'lucide-react';
 import { SEO } from '@/shared/common/SEO';
 import { Button } from '@/shared/components/ui/Button';
 import EmptyState from '@/shared/components/ui/EmptyState';
@@ -120,7 +120,7 @@ export default function MyJobPostsPage() {
               onClick={() => setIsPostModalOpen(true)}
             >
               Post a Job
-              <Icon icon="mdi:plus" />
+              <Plus strokeWidth={2.35} />
             </Button>
           </header>
 
@@ -128,7 +128,7 @@ export default function MyJobPostsPage() {
 
           {!isLoading && isError ? (
             <EmptyState
-              icon="mdi:briefcase-search-outline"
+              icon={SearchX}
               title="We couldn't load your job posts"
               description={error instanceof Error ? error.message : 'Please try again.'}
               actionLabel="Try Again"
@@ -140,7 +140,7 @@ export default function MyJobPostsPage() {
 
           {!isLoading && !isError && !hasOwnerIdentity ? (
             <EmptyState
-              icon="mdi:account-alert-outline"
+              icon={UserX}
               title="We couldn't identify your account"
               description="Please sign out and sign back in, then try again."
             />
@@ -148,7 +148,7 @@ export default function MyJobPostsPage() {
 
           {!isLoading && !isError && hasOwnerIdentity && myVacancies.length === 0 ? (
             <EmptyState
-              icon="mdi:briefcase-plus-outline"
+              icon={BriefcaseBusiness}
               title="No job posts yet"
               description="Jobs you post will appear here so you can edit or delete them."
               actionLabel="Post a Job"
@@ -181,7 +181,7 @@ export default function MyJobPostsPage() {
                         aria-label={`Delete ${job.title}`}
                         title="Delete job"
                       >
-                        <Icon icon="mdi:trash-can-outline" className="h-[1.25rem] w-[1.25rem]" />
+                        <Trash2 className="h-[1.25rem] w-[1.25rem]" strokeWidth={2.35} />
                       </button>
                     }
                   />

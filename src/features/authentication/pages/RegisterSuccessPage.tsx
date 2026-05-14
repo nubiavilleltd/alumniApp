@@ -1,4 +1,4 @@
-import { Icon } from '@iconify/react';
+import { CircleCheck, Clock3, Mail, ShieldCheck } from 'lucide-react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { Button } from '@/shared/components/ui/Button';
 import { RegistrationShell } from '../components/RegistrationShell';
@@ -22,7 +22,7 @@ export function RegisterSuccessPage() {
     <RegistrationShell step="success">
       <div className="auth-message-panel">
         <div className="auth-message-panel__icon">
-          <Icon icon="mdi:shield-check-outline" />
+          <ShieldCheck strokeWidth={2.2} />
         </div>
         <div>
           <p className="auth-message-panel__title">Registration completed!</p>
@@ -30,15 +30,15 @@ export function RegisterSuccessPage() {
         </div>
         <ul className="auth-check-list">
           {[
-            { icon: 'mdi:check-circle-outline', text: 'Your email has been verified.' },
-            { icon: 'mdi:clock-outline', text: 'Your account is awaiting admin approval.' },
+            { icon: CircleCheck, text: 'Your email has been verified.' },
+            { icon: Clock3, text: 'Your account is awaiting admin approval.' },
             {
-              icon: 'mdi:email-outline',
+              icon: Mail,
               text: 'You will be notified once your account is approved.',
             },
           ].map((item) => (
             <li key={item.text}>
-              <Icon icon={item.icon} />
+              <item.icon strokeWidth={2.2} />
               <span>{item.text}</span>
             </li>
           ))}

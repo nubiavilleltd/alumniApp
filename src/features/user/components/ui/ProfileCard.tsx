@@ -4,13 +4,13 @@
 // Renders avatar, name, class year, role/position, location, socials,
 // and conditionally the Edit Profile button (owner) or Message button (visitor).
 
-import { Icon } from '@iconify/react';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { USER_ROUTES } from '@/features/user/routes';
-import { HandHelping, Share2 } from 'lucide-react';
+import { HandHelping, MapPin, MessageCircleMore, Share2 } from 'lucide-react';
+import { renderIcon, type AppIcon } from '@/shared/utils/renderIcon';
 
 export type SocialLink = {
-  icon: string;
+  icon: AppIcon;
   href: string;
   label: string;
 };
@@ -131,7 +131,7 @@ export function ProfileCard({
 
       {city && (
         <p className="text-xs text-gray-400 mt-1 flex items-center gap-1">
-          <Icon icon="mdi:map-marker-outline" className="w-3.5 h-3.5 flex-shrink-0" />
+          <MapPin className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={2.4} />
           {city}
         </p>
       )}
@@ -148,7 +148,7 @@ export function ProfileCard({
               title={s.label}
               className="text-gray-600 hover:text-gray-600 transition-colors"
             >
-              <Icon icon={s.icon} className="w-5 h-5" />
+              {renderIcon(s.icon, 'w-5 h-5')}
             </a>
           ))}
         </div>
@@ -164,21 +164,22 @@ export function ProfileCard({
         </AppLink>
       )}
 
-      {mode === 'visitor' ||
-        (mode === 'public' && onMessage && (
-          <button
-            type="button"
-            onClick={onMessage}
-            disabled={isMessaging}
-            className="mt-5 w-full inline-flex items-center justify-center gap-2 bg-primary-500 hover:bg-primary-600 disabled:bg-primary-200 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors"
-          >
-            <Icon
+      {(mode === 'visitor' || mode === 'public') && onMessage && (
+        <button
+          type="button"
+          onClick={onMessage}
+          disabled={isMessaging}
+          className="mt-5 w-full inline-flex items-center justify-center gap-2 bg-primary-500 hover:bg-primary-600 disabled:bg-primary-200 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors"
+        >
+          {/* <Icon
               icon={isMessaging ? 'mdi:loading' : 'mdi:message-outline'}
               className={`w-4 h-4 ${isMessaging ? 'animate-spin' : ''}`}
-            />
-            {isMessaging ? 'Opening...' : 'Send Message'}
-          </button>
-        ))}
+            /> */}
+          <MessageCircleMore size={20} />
+
+          {isMessaging ? 'Opening...' : 'Send Message'}
+        </button>
+      )}
     </div>
   );
 }

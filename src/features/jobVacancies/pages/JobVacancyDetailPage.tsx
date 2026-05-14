@@ -1,4 +1,4 @@
-import { Icon } from '@iconify/react';
+import { BriefcaseBusiness, ExternalLink, Mail, MapPin, SearchX, Share2 } from 'lucide-react';
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { SEO } from '@/shared/common/SEO';
@@ -14,7 +14,7 @@ function getApplicationDetails(job: JobVacancyViewModel) {
     return {
       href: job.applicationEmail ? `mailto:${job.applicationEmail}` : '#',
       label: job.applicationEmail,
-      icon: 'mdi:email-outline',
+      icon: Mail,
       target: undefined,
       rel: undefined,
     };
@@ -23,7 +23,7 @@ function getApplicationDetails(job: JobVacancyViewModel) {
   return {
     href: job.applicationUrl ?? '#',
     label: job.applicationUrl,
-    icon: 'mdi:open-in-new',
+    icon: ExternalLink,
     target: '_blank',
     rel: 'noopener noreferrer',
   };
@@ -98,7 +98,7 @@ export default function JobVacancyDetailPage() {
       <main className="min-h-screen bg-[#f7f6f3] py-10">
         <SEO title="Job Details" description="View job vacancy details." />
         <EmptyState
-          icon="mdi:briefcase-search-outline"
+          icon={SearchX}
           title="We couldn't load this job"
           description={error instanceof Error ? error.message : 'Please try again.'}
           actionLabel="Try Again"
@@ -115,7 +115,7 @@ export default function JobVacancyDetailPage() {
       <main className="min-h-screen bg-[#f7f6f3] py-10">
         <SEO title="Job Not Found" description="The requested job vacancy could not be found." />
         <EmptyState
-          icon="mdi:briefcase-remove-outline"
+          icon={BriefcaseBusiness}
           title="Job not found"
           description="This vacancy may have been removed or is no longer available."
           actionLabel="Back to Job Vacancies"
@@ -153,7 +153,7 @@ export default function JobVacancyDetailPage() {
                     {getSalaryDisplay(job)}
                   </p>
                   <p className="inline-flex items-center gap-1.5 text-sm font-semibold">
-                    <Icon icon="mdi:map-marker-outline" className="h-4 w-4" />
+                    <MapPin className="h-4 w-4" strokeWidth={2.35} />
                     {job.location}
                   </p>
                   <p className="text-sm font-medium text-slate-500">{postedLabel}</p>
@@ -169,7 +169,7 @@ export default function JobVacancyDetailPage() {
                     className="inline-flex items-center justify-center gap-2 rounded-full bg-primary-500 px-5 py-2 text-sm font-bold text-white transition-colors hover:bg-primary-600"
                   >
                     Apply
-                    <Icon icon={application.icon} className="h-4 w-4" />
+                    <application.icon className="h-4 w-4" strokeWidth={2.35} />
                   </a>
                 ) : null}
                 <button
@@ -178,7 +178,7 @@ export default function JobVacancyDetailPage() {
                   className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-primary-200 text-primary-600 transition-colors hover:bg-primary-50"
                   aria-label="Share job"
                 >
-                  <Icon icon="mdi:share-variant-outline" className="h-4 w-4" />
+                  <Share2 className="h-4 w-4" strokeWidth={2.35} />
                 </button>
               </div>
             </div>
@@ -228,7 +228,7 @@ export default function JobVacancyDetailPage() {
                   rel={application.rel}
                   className="inline-flex max-w-full items-center gap-2 rounded-full bg-primary-50 px-4 py-2 text-sm font-semibold text-primary-600 transition-colors hover:bg-primary-100"
                 >
-                  <Icon icon={application.icon} className="h-4 w-4 shrink-0" />
+                  <application.icon className="h-4 w-4 shrink-0" strokeWidth={2.35} />
                   <span className="truncate">{application.label}</span>
                 </a>
               </section>

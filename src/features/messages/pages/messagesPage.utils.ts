@@ -1,3 +1,5 @@
+import type { AppIcon } from '@/shared/utils/renderIcon';
+import { AudioLines, FileText, Image } from 'lucide-react';
 import {
   assertValidMessageAttachmentUploadRequest,
   buildFileAttachmentUploadRequest,
@@ -296,10 +298,10 @@ export function getThreadPreviewParts(thread: MessageThreadSummary) {
   };
 }
 
-export function getAttachmentIcon(kind: MessageAttachment['kind']) {
-  if (kind === 'audio') return 'mdi:waveform';
-  if (kind === 'image') return 'mdi:image-outline';
-  return 'mdi:file-document-outline';
+export function getAttachmentIcon(kind: MessageAttachment['kind']): AppIcon {
+  if (kind === 'audio') return AudioLines;
+  if (kind === 'image') return Image;
+  return FileText;
 }
 
 export function deliveryLabel(status: MessageDeliveryStatus) {

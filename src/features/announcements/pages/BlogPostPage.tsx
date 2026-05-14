@@ -1,4 +1,4 @@
-import { Icon } from '@iconify/react';
+import { ArrowLeft, Clock3, FileSearch, LoaderCircle, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SEO } from '@/shared/common/SEO';
@@ -93,7 +93,7 @@ export default function BlogPostPage() {
               href={ANNOUNCEMENT_ROUTES.ROOT}
               className="inline-flex items-center gap-2 text-sm font-semibold text-primary-600 hover:text-primary-700"
             >
-              <Icon icon="mdi:arrow-left" className="h-4 w-4" />
+              <ArrowLeft className="h-4 w-4" strokeWidth={2.4} />
               Back to announcements
             </AppLink>
 
@@ -114,10 +114,11 @@ export default function BlogPostPage() {
                   disabled={deleteAnnouncement.isPending}
                   className="inline-flex items-center gap-1.5 rounded-full border-2 border-red-500 bg-white px-3 py-2 text-xs font-semibold text-red-500 shadow-sm transition-colors hover:bg-red-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-60 sm:px-4 sm:text-sm whitespace-nowrap"
                 >
-                  <Icon
-                    icon={deleteAnnouncement.isPending ? 'mdi:loading' : 'mdi:delete-outline'}
-                    className={`h-4 w-4 ${deleteAnnouncement.isPending ? 'animate-spin' : ''}`}
-                  />
+                  {deleteAnnouncement.isPending ? (
+                    <LoaderCircle className="h-4 w-4 animate-spin" strokeWidth={2.4} />
+                  ) : (
+                    <Trash2 className="h-4 w-4" strokeWidth={2.4} />
+                  )}
                   <span>
                     {deleteAnnouncement.isPending ? 'Deleting...' : 'Delete Announcement'}
                   </span>
@@ -140,7 +141,7 @@ export default function BlogPostPage() {
           ) : !announcement ? (
             <div className="mt-6 rounded-[2rem] bg-white p-10 text-center shadow-sm ring-1 ring-accent-100">
               <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-accent-50">
-                <Icon icon="mdi:file-document-alert-outline" className="h-7 w-7 text-accent-700" />
+                <FileSearch className="h-7 w-7 text-accent-700" strokeWidth={2.2} />
               </div>
               <h1 className="mt-4 text-2xl font-bold text-accent-900">Announcement not found</h1>
               <p className="mt-2 text-sm text-accent-500">
@@ -163,7 +164,7 @@ export default function BlogPostPage() {
                     {announcement.type}
                   </span>
                   <span className="inline-flex items-center gap-2 text-sm text-accent-500">
-                    <Icon icon="mdi:clock-time-three-outline" className="h-4 w-4" />
+                    <Clock3 className="h-4 w-4" strokeWidth={2.2} />
                     {formatAnnouncementDate(announcement.startsAt || announcement.date)}
                   </span>
                 </div>
