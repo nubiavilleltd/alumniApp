@@ -2,7 +2,6 @@
 
 import { useMemo, useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Icon } from '@iconify/react';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { SEO } from '@/shared/common/SEO';
 import { RegisterEventModal } from '../components/RegisterEventModal';
@@ -17,7 +16,16 @@ import { AUTH_ROUTES } from '@/features/authentication/routes';
 import { useEventStatus } from '../hooks/useEventStatus';
 import { formatDateRange } from '@/shared/utils/dateHelpers';
 import { useRequireSignIn } from '@/features/authentication/hooks/useRequireSignIn';
-import { Clock, MapPin, Share2 } from 'lucide-react';
+import {
+  AlertCircle,
+  CalendarDays,
+  CalendarX,
+  Clock,
+  LoaderCircle,
+  MapPin,
+  Share2,
+  Users,
+} from 'lucide-react';
 
 // ─── Countdown ────────────────────────────────────────────────────────────────
 
@@ -117,7 +125,7 @@ function UnregisterConfirmModal({
       <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
         <div className="flex items-start gap-3 mb-4">
           <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
-            <Icon icon="mdi:alert-circle-outline" className="w-5 h-5 text-red-600" />
+            <AlertCircle className="w-5 h-5 text-red-600" />
           </div>
           <div>
             <h3 className="font-bold text-gray-900 text-lg mb-1">Cancel Registration?</h3>
@@ -142,7 +150,7 @@ function UnregisterConfirmModal({
             disabled={isLoading}
             className="px-6 py-2 text-sm font-semibold bg-red-500 hover:bg-red-600 text-white rounded-xl flex items-center gap-2 disabled:opacity-50 transition-colors"
           >
-            {isLoading && <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" />}
+            {isLoading && <LoaderCircle className="w-4 h-4 animate-spin" />}
             Yes, Unregister
           </button>
         </div>
@@ -229,7 +237,7 @@ export function EventDetailPage() {
     return (
       <section className="min-h-screen bg-[#f5f4f0]">
         <div className="container-custom text-center py-20">
-          <Icon icon="mdi:calendar-alert" className="w-16 h-16 text-red-400 mx-auto mb-4" />
+          <CalendarX className="w-16 h-16 text-red-400 mx-auto mb-4" />
           <h1 className="text-2xl font-bold mb-3">Event not found</h1>
           <p className="text-gray-600 mb-6">This event doesn't exist or has been removed.</p>
           <div className="flex gap-4 justify-center">
@@ -354,7 +362,7 @@ export function EventDetailPage() {
             </div>
           ) : (
             <div className="w-full h-52 rounded-2xl bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center mb-6 shadow-sm">
-              <Icon icon="mdi:calendar-month-outline" className="w-16 h-16 text-primary-300" />
+              <CalendarDays className="w-16 h-16 text-primary-300" />
             </div>
           )}
 
@@ -436,10 +444,7 @@ export function EventDetailPage() {
               )}
               {!isCancelled && attendeeCount > 0 && (
                 <div className="flex items-center gap-2 text-gray-600 text-sm">
-                  <Icon
-                    icon="mdi:account-group-outline"
-                    className="w-4 h-4 text-gray-600 flex-shrink-0"
-                  />
+                  <Users className="w-4 h-4 text-gray-600 flex-shrink-0" />
 
                   <span>
                     {capacity ? `${attendeeCount}/${capacity}` : attendeeCount}{' '}

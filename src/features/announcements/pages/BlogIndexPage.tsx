@@ -1,4 +1,4 @@
-import { Icon } from '@iconify/react';
+import { Clock3, Megaphone, Plus } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { SEO } from '@/shared/common/SEO';
 import { ButtonLink } from '@/shared/components/ui/Button';
@@ -84,7 +84,7 @@ function AnnouncementCard({ item, compact = false }: { item: NewsItem; compact?:
         <h3 className={titleClassName}>{item.title}</h3>
         <p className={summaryClassName}>{getAnnouncementSummary(item)}</p>
         <p className={metaRowClassName}>
-          <Icon icon="mdi:clock-time-three-outline" className="h-4 w-4 flex-shrink-0" />
+          <Clock3 className="h-4 w-4 flex-shrink-0" />
           {formatAnnouncementDate(item.startsAt || item.date)}
         </p>
       </div>
@@ -253,7 +253,7 @@ export default function BlogIndexPage() {
                   onClick={() => setIsEditorOpen(true)}
                   className="flex w-full flex-shrink-0 items-center justify-center gap-1.5 rounded-full bg-primary-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-primary-600 sm:w-auto"
                 >
-                  <Icon icon="mdi:plus" className="h-4 w-4" />
+                  <Plus className="h-4 w-4" />
                   <span>Create Announcement</span>
                 </button>
               )}
@@ -323,7 +323,7 @@ export default function BlogIndexPage() {
 
                   <div className="flex flex-shrink-0 flex-col p-[1.15rem_1.25rem_1.35rem]">
                     <p className={metaClassName}>
-                      <Icon icon="mdi:clock-time-three-outline" className="h-4 w-4 flex-shrink-0" />
+                      <Clock3 className="h-4 w-4 flex-shrink-0" />
                       {formatAnnouncementDate(featured.startsAt || featured.date)}
                     </p>
                     <h2 className="mt-4 text-[clamp(1.35rem,2vw,1.75rem)] font-bold leading-[1.24] text-[#071116]">
@@ -363,7 +363,7 @@ export default function BlogIndexPage() {
           ) : (
             <div className="rounded-[2rem] bg-white p-10 text-center shadow-sm ring-1 ring-accent-100">
               <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary-50">
-                <Icon icon="mdi:bullhorn-outline" className="h-7 w-7 text-primary-500" />
+                <Megaphone className="h-7 w-7 text-primary-500" />
               </div>
               <h2 className="mt-4 text-2xl font-bold text-accent-900">No announcements yet</h2>
               <p className="mt-2 text-sm text-accent-500">

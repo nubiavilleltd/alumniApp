@@ -74,10 +74,10 @@ function AdminEventsCard({ event }: { event: Event }) {
   return (
     <AppLink
       href={EVENT_ROUTES.DETAIL(event.id)}
-      className="group block h-full rounded-[1.9rem] bg-white p-5 text-inherit no-underline shadow-[0_10px_28px_rgba(15,23,42,0.06)] ring-1 ring-black/5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_16px_36px_rgba(15,23,42,0.1)] sm:p-4"
+      className="group block h-full rounded-[1.75rem] bg-white p-4 text-inherit no-underline shadow-[0_10px_28px_rgba(15,23,42,0.06)] ring-1 ring-black/5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_16px_36px_rgba(15,23,42,0.1)] sm:p-3.5"
     >
-      <article className="flex h-full flex-col gap-4 sm:flex-row sm:items-center sm:gap-4">
-        <div className="h-32 overflow-hidden rounded-[1.125rem] bg-accent-50 sm:h-[9rem] sm:w-[9rem] sm:flex-shrink-0">
+      <article className="flex h-full flex-col gap-3 sm:flex-row sm:items-center sm:gap-3.5">
+        <div className="h-28 overflow-hidden rounded-[1rem] bg-accent-50 sm:h-[7rem] sm:w-[7rem] sm:flex-shrink-0">
           {event.image ? (
             <img
               src={event.image}
@@ -97,11 +97,11 @@ function AdminEventsCard({ event }: { event: Event }) {
             {event.title}
           </h2>
 
-          <p className="mt-2 line-clamp-2 text-[0.92rem] leading-relaxed text-accent-500 sm:text-[0.95rem]">
+          <p className="mt-1.5 line-clamp-2 text-[0.9rem] leading-relaxed text-accent-500 sm:text-[0.93rem]">
             {formatEventSummary(event)}
           </p>
 
-          <div className="mt-3 space-y-2 text-sm text-accent-500">
+          <div className="mt-2.5 space-y-1.5 text-sm text-accent-500">
             <div className="flex items-start gap-2">
               <Icon
                 icon="mdi:map-marker-outline"
@@ -130,9 +130,9 @@ function AdminEventsSkeleton() {
   return (
     <div className="space-y-5">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex flex-1 flex-col gap-4 sm:flex-row">
-          <div className="h-14 flex-1 rounded-full bg-white/90 shadow-[0_10px_28px_rgba(15,23,42,0.06)]" />
-          <div className="h-14 w-full rounded-full bg-white/90 shadow-[0_10px_28px_rgba(15,23,42,0.06)] sm:w-44" />
+        <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-center sm:max-w-[52rem]">
+          <div className="h-[42px] flex-1 rounded-full bg-white/90 shadow-[0_10px_28px_rgba(15,23,42,0.06)]" />
+          <div className="h-[42px] w-full rounded-full bg-white/90 shadow-[0_10px_28px_rgba(15,23,42,0.06)] sm:w-40" />
         </div>
         <div className="h-14 w-full rounded-full bg-white/90 shadow-[0_10px_28px_rgba(15,23,42,0.06)] sm:w-52" />
       </div>
@@ -141,10 +141,10 @@ function AdminEventsSkeleton() {
         {Array.from({ length: 4 }).map((_, index) => (
           <div
             key={index}
-            className="rounded-[1.5rem] bg-white p-4 shadow-[0_10px_28px_rgba(15,23,42,0.06)] ring-1 ring-black/5"
+            className="rounded-[1.5rem] bg-white p-3.5 shadow-[0_10px_28px_rgba(15,23,42,0.06)] ring-1 ring-black/5"
           >
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              <div className="h-32 rounded-[1.125rem] bg-accent-100 sm:h-[8rem] sm:w-[8rem]" />
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <div className="h-28 rounded-[1rem] bg-accent-100 sm:h-[7rem] sm:w-[7rem]" />
               <div className="flex-1 space-y-3">
                 <div className="h-7 w-3/4 rounded bg-accent-100" />
                 <div className="space-y-2">
@@ -237,8 +237,8 @@ export default function AdminEventsPage() {
           ) : (
             <>
               <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                <div className="flex flex-1 flex-col gap-4 sm:flex-row">
-                  <div className="flex-1">
+                <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-center sm:max-w-[52rem]">
+                  <div className="min-w-0 flex-1">
                     <label htmlFor="admin-events-search" className="sr-only">
                       Search events
                     </label>
@@ -250,11 +250,13 @@ export default function AdminEventsPage() {
                         setCurrentPage(1);
                       }}
                       placeholder="Search events"
-                      className="w-1/2"
+                      className="w-full"
+                      inputClassName="h-[42px] border-white pl-10 pr-4 text-[0.95rem] font-medium text-accent-600 placeholder:text-accent-400 shadow-[0_10px_28px_rgba(15,23,42,0.06)] focus:ring-4 focus:ring-primary-100"
+                      iconClassName="!h-[18px] !w-[18px] !text-accent-400"
                     />
                   </div>
 
-                  <div className="sm:w-44">
+                  <div className="sm:w-40 sm:flex-shrink-0">
                     <span className="sr-only">Filter events by month</span>
                     <SelectInput
                       value={selectedMonth}
@@ -263,8 +265,8 @@ export default function AdminEventsPage() {
                         setCurrentPage(1);
                       }}
                       options={monthOptions}
-                      className="gap-0"
-                      controlClassName="rounded-full border-white bg-white px-5 py-3 pr-11 text-base font-semibold text-accent-600 shadow-[0_10px_28px_rgba(15,23,42,0.06)] focus:border-primary-200 focus:ring-4 focus:ring-primary-100"
+                      className="w-full gap-0"
+                      controlClassName="h-[42px] rounded-full border-white bg-white px-4 py-0 pr-10 text-[0.95rem] font-semibold text-accent-600 shadow-[0_10px_28px_rgba(15,23,42,0.06)] focus:border-primary-200 focus:ring-4 focus:ring-primary-100 [&>span]:text-[0.95rem] [&>span]:font-semibold [&>span.text-gray-400]:text-accent-400 [&>span.text-gray-700]:text-accent-600"
                     />
                   </div>
                 </div>

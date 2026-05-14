@@ -1,7 +1,6 @@
 // features/events/components/RegisterEventModal.tsx
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { Icon } from '@iconify/react';
 import { Modal } from '@/shared/components/ui/Modal';
 import { useEventRegistration } from '../hooks/useEventRegistration';
 import type { Event } from '../types/event.types';
@@ -25,9 +24,10 @@ import type {
   EventRegistrationAnswerValue,
 } from '../types/eventRegistrationForm.types';
 import type { EventSurveyFormView } from '../api/firebase/survey.types';
-import { Calendar, MapPin } from 'lucide-react';
+import { Calendar, CircleCheck, FileText, Info, LoaderCircle, MapPin, Shirt } from 'lucide-react';
 
 const EMPTY_SURVEY_FORMS: EventSurveyFormView[] = [];
+const MODAL_ICON_STROKE = 2.5;
 
 interface StructuredSurveyAnswer {
   formId: string;
@@ -402,7 +402,11 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
     <Modal isOpen={!!event} onClose={handleClose} title="Confirm Registration">
       {submitted ? (
         <div className="text-center py-8">
-          <Icon icon="mdi:check-circle" className="w-14 h-14 text-primary-500 mx-auto mb-4" />
+          <CircleCheck
+            size={56}
+            strokeWidth={MODAL_ICON_STROKE}
+            className="mx-auto mb-4 text-primary-500"
+          />
           <h3 className="text-gray-900 font-bold text-lg mb-2">Registration Successful!</h3>
           <p className="text-gray-500 text-sm mb-6">
             You have successfully registered for{' '}
@@ -464,8 +468,7 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
                 },
               }) && (
                 <div className="flex items-start gap-2">
-                  {/* <Icon icon="mdi:calendar-outline" className="w-4 h-4 mt-0.5 flex-shrink-0" /> */}
-                  <Calendar size={15} />
+                  <Calendar size={15} strokeWidth={MODAL_ICON_STROKE} />
                   <span>
                     {formatDateRange(event.startDate, event.endDate, {
                       locale: 'en-GB',
@@ -482,40 +485,31 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
                 </div>
               )}
               <div className="flex items-start gap-2">
-                {/* <Icon icon="mdi:map-marker-outline" className="w-4 h-4 mt-0.5 flex-shrink-0" /> */}
-                <MapPin size={15} />
+                <MapPin size={15} strokeWidth={MODAL_ICON_STROKE} />
                 <span>{event.location}</span>
               </div>
               {event.attire && (
                 <div className="flex items-start gap-2">
-                  <Icon icon="mdi:hanger" className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                  <Shirt
+                    size={15}
+                    strokeWidth={MODAL_ICON_STROKE}
+                    className="mt-0.5 flex-shrink-0"
+                  />
                   <span>{event.attire}</span>
                 </div>
               )}
             </div>
           </div>
 
-          {/* <div className="rounded-lg border border-green-200 bg-green-50 p-3">
-            <div className="flex items-start gap-3">
-              <div className="rounded-full bg-white p-1.5 text-green-600 shadow-sm">
-                <Icon icon="mdi:check-circle-outline" className="h-4 w-4" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-800">
-                  Attendance status: Yes, I'm going
-                </p>
-                <p className="text-xs text-gray-500">
-                  Submitting this form confirms your attendance.
-                </p>
-              </div>
-            </div>
-          </div> */}
-
           {/* Note about guests - backend doesn't support guest count yet */}
           {event.allowGuests && (
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
               <div className="flex items-start gap-2">
-                <Icon icon="mdi:information-outline" className="w-4 h-4 text-yellow-600 mt-0.5" />
+                <Info
+                  size={16}
+                  strokeWidth={MODAL_ICON_STROKE}
+                  className="mt-0.5 text-yellow-600"
+                />
                 <p className="text-xs text-yellow-700">
                   This event allows guests. You can bring guests with you.
                 </p>
@@ -526,7 +520,11 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
           {shouldUseSurvey && isLoadingSurveyForms ? (
             <div className="rounded-2xl border border-primary-100 bg-primary-50/60 p-4 text-sm text-gray-600">
               <span className="flex items-center gap-2">
-                <Icon icon="mdi:loading" className="h-4 w-4 animate-spin text-primary-500" />
+                <LoaderCircle
+                  size={16}
+                  strokeWidth={MODAL_ICON_STROKE}
+                  className="animate-spin text-primary-500"
+                />
                 Loading registration questions...
               </span>
             </div>
@@ -550,7 +548,7 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
                   >
                     <div className="mb-4 flex items-start gap-3">
                       <div className="mt-0.5 rounded-full bg-white p-2 text-primary-500 shadow-sm">
-                        <Icon icon="mdi:clipboard-text-outline" className="h-5 w-5" />
+                        <FileText size={20} strokeWidth={MODAL_ICON_STROKE} />
                       </div>
                       <div>
                         <p className="text-sm font-semibold text-gray-900">{form.name}</p>
@@ -619,7 +617,7 @@ export function RegisterEventModal({ event, onClose }: RegisterEventModalProps) 
             validateSurveyRegistration.isPending ||
             submitSurveyRegistration.isPending ? (
               <span className="flex items-center justify-center gap-2">
-                <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" />
+                <LoaderCircle size={16} strokeWidth={MODAL_ICON_STROKE} className="animate-spin" />
                 {isLoading
                   ? 'Registering...'
                   : validateSurveyRegistration.isPending

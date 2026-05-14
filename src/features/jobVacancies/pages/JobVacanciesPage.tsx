@@ -84,25 +84,27 @@ export const jobsPageTitleClassName =
 export const jobsPageSubtitleClassName =
   'mt-2 text-[clamp(1rem,1.6vw,1.25rem)] font-medium leading-[1.25] text-[#59626c]';
 export const jobsPagePostButtonClassName =
-  'min-h-[3.35rem] rounded-full px-[1.45rem] text-base font-extrabold tracking-normal shadow-none max-md:w-full [&>svg]:h-[1.35rem] [&>svg]:w-[1.35rem]';
+  'min-h-[1.5rem] rounded-full px-[1.45rem] text-base font-extrabold tracking-normal shadow-none max-md:w-full [&>svg]:h-[1.35rem] [&>svg]:w-[1.35rem]';
 export const jobsGridClassName =
   'grid grid-cols-1 gap-x-[1.4rem] gap-y-[1.05rem] md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
 const jobsModalBackdropClassName =
   'fixed inset-0 z-[80] flex items-start justify-center bg-[rgba(7,17,22,0.55)] p-3 sm:items-center sm:p-6';
 const jobsModalSurfaceClassName =
-  'relative w-full max-w-[76rem] max-h-[calc(100vh-1.5rem)] overflow-y-auto rounded-[1.2rem] bg-white shadow-[0_2rem_4rem_rgba(7,17,22,0.22)] sm:max-h-[min(88vh,58rem)] sm:rounded-[1.75rem]';
+  'relative w-full max-w-[57rem] max-h-[calc(100vh-2.5rem)] overflow-y-auto rounded-[1.2rem] bg-white shadow-[0_2rem_4rem_rgba(7,17,22,0.22)] sm:max-h-[min(75vh,43.5rem)] sm:rounded-[1.75rem]';
 const jobsModalCloseButtonClassName =
-  'sticky top-3 z-10 ml-auto mr-3 mt-3 flex h-11 w-11 items-center justify-center text-primary-500 transition-colors hover:text-primary-600 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-200 sm:top-5 sm:mr-5 sm:mt-5 sm:h-14 sm:w-14';
+  'sticky top-3 z-10 ml-auto mr-3 mt-3 flex h-10 w-10 items-center justify-center text-primary-500 transition-colors hover:text-primary-600 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-200 sm:top-4 sm:mr-4 sm:mt-4 sm:h-12 sm:w-12';
 const jobsFormLabelClassName = 'text-sm font-bold text-[#858585]';
 const jobsFormControlClassName =
-  '!rounded-full !bg-[#f8f8f7] !shadow-none focus-within:!ring-2 focus-within:!ring-primary-200';
+  '!min-h-[2.95rem] !rounded-full !bg-[#f8f8f7] !shadow-none focus-within:!ring-2 focus-within:!ring-primary-200';
 const jobsFormInputClassName =
-  '!h-[3.25rem] !px-[1.1rem] !text-[0.95rem] !font-medium !text-[#071116] placeholder:!text-[#858585]';
+  '!h-[2.95rem] !px-[1rem] !py-0 !text-[0.95rem] !font-medium !text-[#071116] placeholder:!text-[#858585]';
 const jobsFormSelectControlClassName =
-  '!rounded-full !bg-[#f8f8f7] !shadow-none [&>span]:!text-[0.95rem] [&>span]:!font-medium [&>span.text-gray-400]:!text-[#858585] [&>span.text-gray-700]:!text-[#071116]';
+  '!flex !h-[2.95rem] !items-center !rounded-full !bg-[#f8f8f7] !px-[1rem] !py-0 !pr-9 !shadow-none [&>span]:!text-[0.95rem] [&>span]:!font-medium [&>span.text-gray-400]:!text-[#858585] [&>span.text-gray-700]:!text-[#071116]';
+const jobsFormDateInputClassName =
+  '!h-[2.95rem] !rounded-full !bg-[#f8f8f7] !px-[1rem] !py-0 !text-[0.95rem] !font-medium !text-[#071116] placeholder:!text-[#858585] !shadow-none';
 const jobsFormTextareaClassName =
-  '!min-h-[10.5rem] !rounded-[1.45rem] !bg-[#f8f8f7] !px-5 !py-4 !text-[0.95rem] !font-medium !leading-[1.45] !text-[#071116] placeholder:!text-[#858585] !shadow-none';
-const jobsFormSectionSpacingClassName = 'mt-7';
+  '!min-h-[9.5rem] !rounded-[1.35rem] !bg-[#f8f8f7] !px-5 !py-3.5 !text-[0.95rem] !font-medium !leading-[1.45] !text-[#071116] placeholder:!text-[#858585] !shadow-none';
+const jobsFormSectionSpacingClassName = 'mt-6';
 
 const initialJobFormState: JobFormState = {
   title: '',
@@ -276,13 +278,13 @@ function KeywordInput({
   onRemoveLastKeyword: () => void;
 }) {
   return (
-    <div className={`${jobsFormSectionSpacingClassName} flex flex-col gap-1.5`}>
-      <label htmlFor="job-keywords" className="block text-sm font-medium text-gray-700">
+    <div className={`${jobsFormSectionSpacingClassName} flex flex-col gap-1`}>
+      <label htmlFor="job-keywords" className={jobsFormLabelClassName}>
         Job Tags / Keywords
       </label>
 
       <div
-        className={`rounded-3xl border bg-white px-3 py-2.5 shadow-sm transition-colors ${
+        className={`rounded-3xl border bg-white px-3 py-2 shadow-sm transition-colors ${
           error ? 'border-red-400' : 'border-gray-200 focus-within:border-primary-400'
         } ${disabled ? 'cursor-not-allowed bg-gray-50 opacity-60' : ''}`}
       >
@@ -325,7 +327,7 @@ function KeywordInput({
             onBlur={() => {
               if (draft.trim()) onAddKeyword();
             }}
-            className="min-w-[180px] flex-1 border-0 bg-transparent py-1 text-sm text-gray-700 placeholder-gray-400 outline-none disabled:cursor-not-allowed"
+            className="min-w-[180px] flex-1 border-0 bg-transparent py-0.5 text-sm text-gray-700 placeholder-gray-400 outline-none disabled:cursor-not-allowed"
           />
 
           <button
@@ -333,7 +335,7 @@ function KeywordInput({
             disabled={disabled || !draft.trim()}
             onMouseDown={(event) => event.preventDefault()}
             onClick={onAddKeyword}
-            className="inline-flex items-center gap-1 rounded-full bg-primary-50 px-3 py-1.5 text-xs font-semibold text-primary-600 transition-colors hover:bg-primary-100 disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex min-h-[2rem] items-center gap-1 rounded-full bg-primary-50 px-3 py-1 text-xs font-semibold text-primary-600 transition-colors hover:bg-primary-100 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <Icon icon="mdi:plus" className="h-3.5 w-3.5" />
             Add
@@ -419,7 +421,7 @@ export function JobCard({
             (onDetails ? (
               <button
                 type="button"
-                className="min-h-[2.85rem] rounded-full bg-primary-500 px-6 py-2 text-[0.95rem] font-extrabold leading-none text-white transition-colors hover:bg-primary-600 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-200"
+                className="min-h-[2.5rem] rounded-full bg-primary-500 px-4 py-1 text-[0.95rem] font-extrabold leading-none text-white transition-colors hover:bg-primary-600 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-200"
                 onClick={() => onDetails(job)}
               >
                 Details
@@ -635,15 +637,15 @@ export function PostJobModal({
           onClick={onClose}
           aria-label="Close"
         >
-          <Icon icon="mdi:close" className="h-9 w-9 sm:h-12 sm:w-12" />
+          <Icon icon="mdi:close" className="h-7 w-7 sm:h-8 sm:w-8" />
         </button>
 
-        <form className="px-4 pb-8 pt-1 sm:px-6 md:px-10" onSubmit={handleSubmit}>
+        <form className="px-4 pb-6 pt-1 sm:px-5 md:px-8" onSubmit={handleSubmit}>
           <h2 id="post-job-title" className="sr-only">
             {isEditing ? 'Edit Job' : 'Post a Job'}
           </h2>
 
-          <div className="grid grid-cols-1 gap-x-8 gap-y-7 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-x-6 gap-y-6 md:grid-cols-2">
             <BaseInput
               label="Job Title"
               labelClassName={jobsFormLabelClassName}
@@ -759,7 +761,7 @@ export function PostJobModal({
             <DatePicker
               label="Application Deadline"
               labelClassName={jobsFormLabelClassName}
-              inputClassName="!rounded-full !bg-[#f8f8f7] !text-[0.95rem] !font-medium !text-[#071116] placeholder:!text-[#858585] !shadow-none"
+              inputClassName={jobsFormDateInputClassName}
               name="deadline"
               value={form.deadline}
               onValueChange={(value) => handleFieldChange('deadline', value)}
@@ -833,7 +835,7 @@ export function PostJobModal({
           />
 
           <div
-            className={`${jobsFormSectionSpacingClassName} grid grid-cols-1 gap-7 md:grid-cols-2 md:gap-8`}
+            className={`${jobsFormSectionSpacingClassName} grid grid-cols-1 gap-6 md:grid-cols-2`}
           >
             <fieldset className="m-0 border-0 p-0">
               <legend className="mb-4 text-sm font-bold leading-[1.2] text-[#858585]">
@@ -884,8 +886,8 @@ export function PostJobModal({
             <ImageUpload
               label="Job Flyer (Optional)"
               labelClassName={jobsFormLabelClassName}
-              className="gap-1.5"
-              dropzoneClassName="rounded-[1.45rem] border-gray-200 bg-[#fbfbfa] py-8"
+              className="gap-1"
+              dropzoneClassName="rounded-[1.35rem] border-gray-200 bg-[#fbfbfa] py-7"
               previews={flyerPreviews}
               onChange={handleImageChange}
               multiple={false}
@@ -900,7 +902,7 @@ export function PostJobModal({
           <Button
             type="submit"
             size="lg"
-            className="mx-auto mt-10 flex min-h-[3.35rem] w-full max-w-[14rem] rounded-full border-0 px-8 text-[1.05rem] font-extrabold tracking-normal shadow-none"
+            className="mx-auto mt-8 flex min-h-[3rem] w-full max-w-[13rem] rounded-full border-0 px-7 text-[1rem] font-extrabold tracking-normal shadow-none"
             loading={isSubmitting}
           >
             {isEditing ? 'Update Job' : 'Submit'}
@@ -1011,7 +1013,7 @@ export default function JobVacanciesPage() {
 
             <Button
               type="button"
-              size="lg"
+              size="sm"
               className={jobsPagePostButtonClassName}
               onClick={handleOpenPostModal}
             >

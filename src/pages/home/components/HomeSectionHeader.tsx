@@ -1,4 +1,4 @@
-import { Icon } from '@iconify/react';
+import { ChevronRight } from 'lucide-react';
 import { AppLink } from '@/shared/components/ui/AppLink';
 
 type HomeSectionHeaderProps = {
@@ -24,7 +24,7 @@ export function HomeSectionHeader({
       {showViewAll && (
         <AppLink href={href} className="home-section-link">
           See All
-          <Icon icon="mdi:chevron-right" aria-hidden="true" />
+          <ChevronRight aria-hidden="true" strokeWidth={2.4} />
         </AppLink>
       )}
     </header>

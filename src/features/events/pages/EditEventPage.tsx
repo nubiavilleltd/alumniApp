@@ -8,6 +8,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Icon } from '@iconify/react';
+import { Trash2 } from 'lucide-react';
 import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { FormInput } from '@/shared/components/ui/input/FormInput';
@@ -44,7 +45,18 @@ import {
 } from '../lib/eventSurveyAvailability';
 import { eventsService } from '../services/event.service';
 import { useEventStatus } from '../hooks/useEventStatus';
-import { Pencil, Trash2 } from 'lucide-react';
+import {
+  eventFormDateInputClassName,
+  eventFormFieldControlClassName,
+  eventFormFieldLabelClassName,
+  eventFormInputTextClassName,
+  eventFormSelectClassName,
+  eventFormSelectControlClassName,
+  eventFormTextareaClassName,
+  eventFormTimePickerClassName,
+  eventFormUploadDropzoneClassName,
+} from '../constants/eventFormStyles';
+import { Pencil } from 'lucide-react';
 
 type LocalRegistrationFormDraft = {
   localId: string;
@@ -475,6 +487,9 @@ export default function EditEventPage() {
                 required
                 placeholder="e.g. Annual Alumni Reunion 2026"
                 error={errors.title?.message}
+                labelClassName={eventFormFieldLabelClassName}
+                controlClassName={eventFormFieldControlClassName}
+                inputClassName={eventFormInputTextClassName}
                 {...register('title')}
               />
 
@@ -485,6 +500,9 @@ export default function EditEventPage() {
                 placeholder="Venue name, city"
                 icon="mdi:map-marker-outline"
                 error={errors.location?.message}
+                labelClassName={eventFormFieldLabelClassName}
+                controlClassName={eventFormFieldControlClassName}
+                inputClassName={eventFormInputTextClassName}
                 {...register('location')}
               />
 
@@ -496,6 +514,8 @@ export default function EditEventPage() {
                 min={todayDate}
                 max={endDate || undefined}
                 error={errors.start_date?.message}
+                labelClassName={eventFormFieldLabelClassName}
+                inputClassName={eventFormDateInputClassName}
                 value={startDate}
                 onValueChange={(val) =>
                   setValue('start_date', val, {
@@ -514,6 +534,8 @@ export default function EditEventPage() {
                 disabled={isPast}
                 min={startDate || todayDate}
                 error={errors.end_date?.message}
+                labelClassName={eventFormFieldLabelClassName}
+                inputClassName={eventFormDateInputClassName}
                 value={endDate}
                 onValueChange={(val) =>
                   setValue('end_date', val, {
@@ -528,6 +550,7 @@ export default function EditEventPage() {
                 id="start_time"
                 disabled={isPast}
                 error={errors.start_time?.message}
+                className={eventFormTimePickerClassName}
                 value={watch('start_time')}
                 onValueChange={(val) =>
                   setValue('start_time', val, {
@@ -543,6 +566,7 @@ export default function EditEventPage() {
                 id="end_time"
                 disabled={isPast}
                 error={errors.end_time?.message}
+                className={eventFormTimePickerClassName}
                 value={watch('end_time')}
                 onValueChange={(val) =>
                   setValue('end_time', val, {
@@ -561,14 +585,16 @@ export default function EditEventPage() {
               rows={4}
               placeholder="Describe the event..."
               error={errors.description?.message}
+              labelClassName={eventFormFieldLabelClassName}
+              textareaClassName={eventFormTextareaClassName}
               {...register('description')}
             />
 
             {/* ── Banner image ────────────────────────────────────────── */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-[#8f8b84]">
                 Event Banner (Optional)
-                <span className="text-xs text-gray-400 font-normal ml-2">
+                <span className="ml-2 text-xs font-normal text-[#b3afa8]">
                   {bannerPreview ? 'Current image shown — upload to replace' : 'Optional'}
                 </span>
               </label>
@@ -577,6 +603,7 @@ export default function EditEventPage() {
                 onChange={handleImageChange}
                 hint="PNG or JPG — max 2 MB. Recommended: 1200×600 px"
                 multiple={false}
+                dropzoneClassName={eventFormUploadDropzoneClassName}
               />
             </div>
 
@@ -591,6 +618,9 @@ export default function EditEventPage() {
                 value={visibility}
                 onChange={(e) => setValue('visibility', e.target.value as any)}
                 error={errors.visibility?.message}
+                labelClassName={eventFormFieldLabelClassName}
+                className={eventFormSelectClassName}
+                controlClassName={eventFormSelectControlClassName}
               />
               <SelectInput
                 label="Status"
@@ -605,6 +635,9 @@ export default function EditEventPage() {
                   setValue('status', e.target.value as any);
                 }}
                 error={errors.status?.message}
+                labelClassName={eventFormFieldLabelClassName}
+                className={eventFormSelectClassName}
+                controlClassName={eventFormSelectControlClassName}
               />
               {/* <FormInput
                 label="Max Attendees"

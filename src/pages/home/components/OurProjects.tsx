@@ -1,4 +1,4 @@
-import { Icon } from '@iconify/react';
+import { ChevronRight, Clock3, Hammer, MapPin } from 'lucide-react';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { useProjects } from '@/features/projects/hooks/useProjects';
 import type { Project } from '@/features/projects/types/project.types';
@@ -13,6 +13,8 @@ const PROJECT_FALLBACK_IMAGES = [
   '/project-3.png',
   '/news-3.png',
 ];
+const PROJECT_ICON_STROKE = 2.4;
+const PROJECT_META_ICON_STROKE = 2.8;
 
 function getProjectImage(project: Project, index: number) {
   return project.images?.[0] || PROJECT_FALLBACK_IMAGES[index % PROJECT_FALLBACK_IMAGES.length];
@@ -37,12 +39,12 @@ function HomeProjectCard({ project, index }: { project: Project; index: number }
 
         <div className="home-project-card__meta">
           <span>
-            <Icon icon="mdi:map-marker-outline" aria-hidden="true" />
+            <MapPin aria-hidden="true" strokeWidth={PROJECT_META_ICON_STROKE} />
             {meta.location}
           </span>
           {meta.dateRange && (
             <span>
-              <Icon icon="mdi:clock-outline" aria-hidden="true" />
+              <Clock3 aria-hidden="true" strokeWidth={PROJECT_META_ICON_STROKE} />
               {meta.dateRange}
             </span>
           )}
@@ -50,7 +52,7 @@ function HomeProjectCard({ project, index }: { project: Project; index: number }
 
         <AppLink href={ROUTES.PROJECTS.DETAIL(project.id)} className="home-card-link">
           View Details
-          <Icon icon="mdi:chevron-right" aria-hidden="true" />
+          <ChevronRight aria-hidden="true" strokeWidth={PROJECT_ICON_STROKE} />
         </AppLink>
       </div>
     </article>
@@ -85,7 +87,7 @@ export default function OurProjects() {
 
         {isEmpty ? (
           <EmptyState
-            icon="mdi:hammer-wrench-outline"
+            icon={<Hammer strokeWidth={PROJECT_ICON_STROKE} />}
             title="No projects available right now"
             description="No projects to display yet. New initiatives to support and improve our school will appear here."
           />
