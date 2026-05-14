@@ -1,7 +1,7 @@
 import { Icon } from '@iconify/react';
 import { clsx } from 'clsx';
 import { useEffect, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
 import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 import { useAuth } from '@/features/authentication/hooks/useAuth';
@@ -96,9 +96,9 @@ const accountPillClassName =
 const userAccountTriggerClassName =
   'inline-flex min-h-[3.35rem] items-center rounded-full border border-white/25 bg-transparent text-white no-underline shadow-none transition-colors duration-200 hover:border-white/40 hover:bg-white/5';
 const mobileSectionClassName =
-  'mt-[0.85rem] grid gap-[0.35rem] border-t border-white/15 pt-[0.85rem] first:mt-0 first:border-t-0';
+  'mt-4 grid gap-1.5 border-t border-white/15 pt-4 first:mt-0 first:border-t-0 md:mt-5 md:gap-2 md:pt-5';
 const mobileLinkClassName =
-  'flex items-center gap-[0.65rem] rounded-[0.85rem] px-[0.95rem] py-[0.85rem] text-sm font-bold tracking-[0.04em] leading-[1.25] text-[#d0d9e0] no-underline transition-colors duration-200 hover:bg-white/10 hover:text-white';
+  'flex items-center gap-3 rounded-[1rem] px-4 py-3.5 text-[0.95rem] font-bold tracking-[0.03em] leading-[1.3] text-[#d0d9e0] no-underline transition-colors duration-200 hover:bg-white/10 hover:text-white focus-visible:bg-white/10 focus-visible:text-white md:px-5 md:py-4 md:text-base';
 
 function cn(...inputs: Array<string | false | null | undefined>) {
   return twMerge(clsx(inputs));
@@ -164,7 +164,7 @@ function BrandMark({ mobile = false }: { mobile?: boolean }) {
       className={cn(
         'relative isolate flex overflow-hidden bg-white text-primary-500 no-underline',
         mobile
-          ? 'min-h-[5.25rem] items-center py-3'
+          ? 'min-h-[5.25rem] items-center py-3 sm:min-h-[5.5rem] sm:py-3.5'
           : 'items-center justify-center py-3 xl:py-4 2xl:py-5',
       )}
     >
@@ -177,9 +177,13 @@ function BrandMark({ mobile = false }: { mobile?: boolean }) {
           'relative z-10 min-w-0',
           mobile ? 'w-full justify-center gap-2.5' : 'max-w-full justify-center gap-3',
         )}
-        imageClassName={cn(mobile ? 'h-[2.8rem] w-[2.8rem]' : 'h-[3.35rem] w-[3.35rem]')}
+        imageClassName={cn(
+          mobile ? 'h-[2.8rem] w-[2.8rem] sm:h-[3rem] sm:w-[3rem]' : 'h-[3.35rem] w-[3.35rem]',
+        )}
         wordmarkClassName={cn(
-          mobile ? 'w-[10.75rem] max-w-[calc(100vw-9.25rem)]' : 'w-[14.75rem] max-w-full',
+          mobile
+            ? 'w-[10.75rem] max-w-[calc(100vw-9.5rem)] sm:w-[12rem] sm:max-w-[calc(100vw-10.5rem)]'
+            : 'w-[14.75rem] max-w-full',
         )}
       />
     </AppLink>
@@ -376,7 +380,7 @@ function UserDropdown({
   );
 }
 
-function MobileNavGroup({ item }: { item: NavItem }) {
+function MobileNavGroup({ item, onNavigate }: { item: NavItem; onNavigate: () => void }) {
   const { pathname } = useLocation();
   const isActive = item.children?.some((child) => isPathActive(pathname, child.url)) ?? false;
   const [open, setOpen] = useState(isActive);
@@ -400,7 +404,7 @@ function MobileNavGroup({ item }: { item: NavItem }) {
         <span>{item.label}</span>
         <Icon
           icon={open ? 'mdi:chevron-up' : 'mdi:chevron-down'}
-          className="h-[1.15rem] w-[1.15rem] flex-none"
+          className="pointer-events-none h-[1.15rem] w-[1.15rem] flex-none md:h-5 md:w-5"
         />
       </button>
       <div className={cn('grid gap-1 overflow-hidden', open ? 'mt-1' : 'hidden')}>
@@ -408,6 +412,7 @@ function MobileNavGroup({ item }: { item: NavItem }) {
           <AppLink
             key={child.url}
             href={child.url}
+            onClick={onNavigate}
             className={cn(
               mobileLinkClassName,
               'pl-[1.45rem]',
@@ -423,7 +428,6 @@ function MobileNavGroup({ item }: { item: NavItem }) {
 }
 
 export function Navigation() {
-  const navigate = useNavigate();
   const { pathname, search } = useLocation();
   const { isAuthenticated, user: storeUser } = useAuth();
   const clearTokens = useTokenStore((state) => state.clearTokens);
@@ -437,6 +441,7 @@ export function Navigation() {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const mobileButtonRef = useRef<HTMLButtonElement>(null);
+  const closeMobileMenu = () => setMobileOpen(false);
   const previousThreadStatesRef = useRef<
     Map<string, { unreadCount: number; lastActivityAt: string }>
   >(new Map());
@@ -450,7 +455,7 @@ export function Navigation() {
   }, [pathname]);
 
   useEffect(() => {
-    const handleOutsideClick = (event: MouseEvent) => {
+    const handleOutsideClick = (event: PointerEvent) => {
       if (
         !mobileMenuRef.current?.contains(event.target as Node) &&
         !mobileButtonRef.current?.contains(event.target as Node)
@@ -459,17 +464,42 @@ export function Navigation() {
       }
     };
 
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setMobileOpen(false);
+      }
+    };
+
     const handleResize = () => {
       if (window.innerWidth >= 1024) setMobileOpen(false);
     };
 
-    document.addEventListener('click', handleOutsideClick);
+    document.addEventListener('pointerdown', handleOutsideClick);
+    document.addEventListener('keydown', handleKeyDown);
     window.addEventListener('resize', handleResize);
     return () => {
-      document.removeEventListener('click', handleOutsideClick);
+      document.removeEventListener('pointerdown', handleOutsideClick);
+      document.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('resize', handleResize);
     };
   }, []);
+
+  useEffect(() => {
+    if (!mobileOpen || typeof window === 'undefined' || window.innerWidth >= 1024) {
+      return;
+    }
+
+    const originalOverflow = document.body.style.overflow;
+    const originalTouchAction = document.body.style.touchAction;
+
+    document.body.style.overflow = 'hidden';
+    document.body.style.touchAction = 'none';
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      document.body.style.touchAction = originalTouchAction;
+    };
+  }, [mobileOpen]);
 
   useEffect(() => {
     if (!authenticatedUser || !inboxQuery.data) {
@@ -665,53 +695,43 @@ export function Navigation() {
         </div>
       </div>
 
-      <div
-        className={cn(navSurfaceClassName, 'block pr-[var(--app-page-inline-padding)] lg:hidden')}
-      >
-        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-stretch">
+      <div className={cn(navSurfaceClassName, 'relative block lg:hidden')}>
+        <div className="grid min-h-[5.25rem] grid-cols-[minmax(0,1fr)_auto] items-stretch pr-[var(--app-page-inline-padding)] sm:min-h-[5.5rem]">
           <BrandMark mobile />
           <button
             ref={mobileButtonRef}
             type="button"
-            className="inline-flex w-[4.75rem] cursor-pointer items-center justify-center border-0 bg-transparent text-white"
+            className="relative z-10 inline-flex min-h-[5.25rem] min-w-[4.5rem] cursor-pointer items-center justify-center border-0 bg-transparent px-4 text-white transition-colors duration-200 hover:bg-white/5 focus-visible:bg-white/10 sm:min-h-[5.5rem] sm:min-w-[5rem]"
             aria-label="Toggle navigation menu"
             aria-expanded={mobileOpen}
+            aria-controls="mobile-navigation-menu"
             onClick={() => setMobileOpen((prev) => !prev)}
           >
-            <Icon icon={mobileOpen ? 'mdi:close' : 'mdi:menu'} className="h-8 w-8" />
+            <Icon
+              icon={mobileOpen ? 'mdi:close' : 'mdi:menu'}
+              className="pointer-events-none h-8 w-8 sm:h-9 sm:w-9"
+            />
           </button>
         </div>
 
         <div
+          id="mobile-navigation-menu"
           ref={mobileMenuRef}
           className={cn(
-            'overflow-hidden transition-[max-height,padding] duration-200',
-            mobileOpen ? 'max-h-[90vh] overflow-y-auto pb-5 pt-3' : 'max-h-0 px-0 py-0',
+            navSurfaceClassName,
+            'absolute inset-x-0 top-full z-40 border-t border-white/10 shadow-[0_1.2rem_2.8rem_rgba(4,18,28,0.28)] transition-[opacity,transform,visibility] duration-200',
+            mobileOpen
+              ? 'visible translate-y-0 opacity-100'
+              : 'pointer-events-none invisible -translate-y-2 opacity-0',
           )}
         >
-          <div className={mobileSectionClassName}>
-            {secondaryNavItems.map((item) => (
-              <AppLink
-                key={item.url}
-                href={item.url}
-                className={cn(
-                  mobileLinkClassName,
-                  isPathActive(pathname, item.url) && 'bg-white/10 text-white',
-                )}
-              >
-                {item.label}
-              </AppLink>
-            ))}
-          </div>
-
-          <div className={mobileSectionClassName}>
-            {primaryNavItems.map((item) =>
-              item.children ? (
-                <MobileNavGroup key={item.label} item={item} />
-              ) : (
+          <div className="max-h-[calc(100dvh-5.25rem)] overflow-y-auto overscroll-contain px-[var(--app-page-inline-padding)] pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-3 sm:max-h-[calc(100dvh-5.5rem)] sm:pt-4">
+            <div className={mobileSectionClassName}>
+              {secondaryNavItems.map((item) => (
                 <AppLink
                   key={item.url}
                   href={item.url}
+                  onClick={closeMobileMenu}
                   className={cn(
                     mobileLinkClassName,
                     isPathActive(pathname, item.url) && 'bg-white/10 text-white',
@@ -719,60 +739,85 @@ export function Navigation() {
                 >
                   {item.label}
                 </AppLink>
-              ),
+              ))}
+            </div>
+
+            <div className={mobileSectionClassName}>
+              {primaryNavItems.map((item) =>
+                item.children ? (
+                  <MobileNavGroup key={item.label} item={item} onNavigate={closeMobileMenu} />
+                ) : (
+                  <AppLink
+                    key={item.url}
+                    href={item.url}
+                    onClick={closeMobileMenu}
+                    className={cn(
+                      mobileLinkClassName,
+                      isPathActive(pathname, item.url) && 'bg-white/10 text-white',
+                    )}
+                  >
+                    {item.label}
+                  </AppLink>
+                ),
+              )}
+            </div>
+
+            {authenticatedUser ? (
+              <div className={mobileSectionClassName}>
+                <div className="flex items-center gap-3 px-4 pb-3 pt-1 md:px-5">
+                  <UserAvatar user={authenticatedUser} />
+                  <div className="flex min-w-0 flex-col text-[0.85rem] text-[#c4d0d9] md:text-[0.92rem]">
+                    <span>Welcome,</span>
+                    <strong className="overflow-hidden whitespace-nowrap text-ellipsis text-base font-bold text-white md:text-[1.05rem]">
+                      {getDisplayName(authenticatedUser)}
+                    </strong>
+                  </div>
+                  <UnreadMessagesBadge count={unreadThreadCount} className="ml-auto flex-none" />
+                </div>
+
+                {mobileMenuItems.map((item) => (
+                  <AppLink
+                    key={item.url}
+                    href={item.url}
+                    onClick={closeMobileMenu}
+                    className={cn(
+                      mobileLinkClassName,
+                      'justify-between',
+                      isPathActive(pathname, item.url) && 'bg-white/10 text-white',
+                    )}
+                  >
+                    <span>{item.label}</span>
+                    {item.url === ROUTES.MESSAGES ? (
+                      <UnreadMessagesBadge count={unreadThreadCount} />
+                    ) : null}
+                  </AppLink>
+                ))}
+
+                <button
+                  type="button"
+                  className="flex w-full cursor-pointer items-center gap-3 rounded-[1rem] border-0 bg-transparent px-4 py-3.5 text-left text-[0.98rem] font-bold tracking-[0.03em] text-red-200 transition-colors duration-200 hover:bg-white/10 hover:text-red-100 md:px-5 md:py-4 md:text-base"
+                  disabled={isLoggingOut}
+                  onClick={handleLogout}
+                >
+                  <Icon
+                    icon="mdi:logout"
+                    className="h-[1.15rem] w-[1.15rem] flex-none md:h-5 md:w-5"
+                  />
+                  <span>{isLoggingOut ? 'Logging out...' : 'Logout'}</span>
+                </button>
+              </div>
+            ) : (
+              <div className={mobileSectionClassName}>
+                <AppLink
+                  href={AUTH_ROUTES.LOGIN}
+                  onClick={closeMobileMenu}
+                  className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/30 px-6 text-center text-base font-extrabold tracking-[0.06em] text-white no-underline transition-colors duration-200 hover:bg-white/10"
+                >
+                  Sign In
+                </AppLink>
+              </div>
             )}
           </div>
-
-          {authenticatedUser ? (
-            <div className={mobileSectionClassName}>
-              <div className="flex items-center gap-3 px-[0.95rem] pb-[0.75rem] pt-[0.5rem]">
-                <UserAvatar user={authenticatedUser} />
-                <div className="flex min-w-0 flex-col text-[0.85rem] text-[#c4d0d9]">
-                  <span>Welcome,</span>
-                  <strong className="overflow-hidden whitespace-nowrap text-ellipsis text-base font-bold text-white">
-                    {getDisplayName(authenticatedUser)}
-                  </strong>
-                </div>
-                <UnreadMessagesBadge count={unreadThreadCount} className="ml-auto flex-none" />
-              </div>
-
-              {mobileMenuItems.map((item) => (
-                <AppLink
-                  key={item.url}
-                  href={item.url}
-                  className={cn(
-                    mobileLinkClassName,
-                    'justify-between',
-                    isPathActive(pathname, item.url) && 'bg-white/10 text-white',
-                  )}
-                >
-                  <span>{item.label}</span>
-                  {item.url === ROUTES.MESSAGES ? (
-                    <UnreadMessagesBadge count={unreadThreadCount} />
-                  ) : null}
-                </AppLink>
-              ))}
-
-              <button
-                type="button"
-                className="flex w-full cursor-pointer items-center gap-[0.65rem] rounded-[0.85rem] border-0 bg-transparent px-[0.95rem] py-[0.85rem] text-left text-[0.98rem] font-bold tracking-[0.04em] text-red-200 transition-colors duration-200 hover:bg-white/10 hover:text-red-100"
-                disabled={isLoggingOut}
-                onClick={handleLogout}
-              >
-                <Icon icon="mdi:logout" className="h-[1.15rem] w-[1.15rem] flex-none" />
-                <span>{isLoggingOut ? 'Logging out...' : 'Logout'}</span>
-              </button>
-            </div>
-          ) : (
-            <div className={mobileSectionClassName}>
-              <AppLink
-                href={AUTH_ROUTES.LOGIN}
-                className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/30 px-6 text-center text-base font-extrabold tracking-[0.08em] text-white no-underline transition-colors duration-200 hover:bg-white/10"
-              >
-                Sign In
-              </AppLink>
-            </div>
-          )}
         </div>
       </div>
     </nav>

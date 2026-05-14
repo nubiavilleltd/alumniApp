@@ -246,12 +246,6 @@
   }
 }
 
-@media (max-width: 768px) {
-  .home-page {
-    --app-page-inline-padding: 16px;
-  }
-}
-
 .home-feature-section {
   background: #f8f8f7;
   padding: 3.25rem 0;

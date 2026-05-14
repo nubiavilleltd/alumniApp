@@ -4,7 +4,7 @@ import { ROUTES } from '@/shared/constants/routes';
 export default function OurStory() {
   return (
     <section
-      className="relative overflow-hidden bg-[url('/realAboutBg.png')] bg-cover bg-center py-10 md:px-[var(--app-page-inline-padding)] md:py-16"
+      className="relative overflow-hidden bg-[url('/realAboutBg.png')] bg-cover bg-center px-0 py-10 md:py-16"
       aria-labelledby="home-about-title"
     >
       <div
@@ -16,7 +16,7 @@ export default function OurStory() {
         className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.18),transparent_34%),linear-gradient(90deg,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0)_32%)]"
       />
 
-      <div className="relative z-10">
+      <div className="relative z-10 container-custom">
         <div className="relative z-10">
           <div className="relative mb-6 inline-flex items-center px-[0.9rem] py-3 text-base font-extrabold leading-none text-[#071116]">
             <span

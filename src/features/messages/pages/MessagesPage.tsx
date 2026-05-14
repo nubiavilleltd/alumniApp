@@ -1263,16 +1263,24 @@ export function MessagesPage() {
         title="Messages"
         description="Stay in touch with alumnae conversations and follow-ups."
       />
-      <div className="lg:hidden">
+      <div className={isMobileThreadOpen ? 'hidden' : 'lg:hidden'}>
         <Breadcrumbs items={breadcrumbItems} />
       </div>
 
       {/* Page background matching Figma off-white */}
       <section
         {...pullToRefresh.bind}
-        className="section relative bg-[#f0ede8] lg:h-[calc(100dvh-4.75rem)] lg:overflow-hidden lg:py-4"
+        className={`relative bg-[#f0ede8] ${
+          isMobileThreadOpen
+            ? 'h-[calc(100dvh-5.25rem)] overflow-hidden sm:h-[calc(100dvh-5.5rem)]'
+            : ''
+        } lg:h-[calc(100dvh-4.75rem)] lg:overflow-hidden lg:py-4`}
       >
-        <div className="container-custom space-y-4 lg:flex lg:h-full lg:min-h-0 lg:max-w-[1560px] lg:flex-col lg:space-y-0">
+        <div
+          className={`container-custom space-y-4 ${
+            isMobileThreadOpen ? 'flex h-full min-h-0 flex-col space-y-0' : ''
+          } lg:flex lg:h-full lg:min-h-0 lg:max-w-[1560px] lg:flex-col lg:space-y-0`}
+        >
           {/* Pull-to-refresh indicator */}
           <div className="flex justify-center lg:pointer-events-none lg:absolute lg:left-1/2 lg:top-2 lg:z-20 lg:w-fit lg:-translate-x-1/2">
             <div
@@ -1293,14 +1301,22 @@ export function MessagesPage() {
           </div>
 
           {/* Page title */}
-          <div className="shrink-0 space-y-1 pt-1 lg:pb-3">
+          <div
+            className={`shrink-0 space-y-1 pt-0 ${
+              isMobileThreadOpen ? 'hidden lg:block' : ''
+            } lg:pb-3`}
+          >
             <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-950 sm:text-4xl lg:text-[2.5rem] xl:text-[2.75rem]">
               Message Centre
             </h1>
           </div>
 
           {/* Two-column layout */}
-          <section className="grid gap-4 lg:min-h-0 lg:flex-1 lg:grid-cols-[minmax(20rem,26rem)_minmax(0,1fr)] lg:gap-4 xl:grid-cols-[24rem_minmax(0,1fr)] 2xl:grid-cols-[26rem_minmax(0,1fr)]">
+          <section
+            className={`grid gap-4 ${
+              isMobileThreadOpen ? 'min-h-0 flex-1' : ''
+            } lg:min-h-0 lg:flex-1 lg:grid-cols-[minmax(20rem,26rem)_minmax(0,1fr)] lg:gap-4 xl:grid-cols-[24rem_minmax(0,1fr)] 2xl:grid-cols-[26rem_minmax(0,1fr)]`}
+          >
             {/* ─── Inbox pane ─── */}
             <aside
               className={`min-h-[calc(100dvh-9rem)] flex-col overflow-hidden rounded-2xl bg-white shadow-sm lg:flex lg:h-full lg:min-h-0 ${
@@ -1459,9 +1475,9 @@ export function MessagesPage() {
 
             {/* ─── Active thread pane ─── */}
             <article
-              className={`min-h-[calc(100dvh-9rem)] flex-col overflow-hidden rounded-2xl bg-white shadow-sm lg:flex lg:h-full lg:min-h-0 ${
-                isMobileThreadOpen ? 'flex' : 'hidden'
-              }`}
+              className={`min-h-[calc(100dvh-9rem)] flex-col overflow-hidden rounded-2xl bg-white shadow-sm ${
+                isMobileThreadOpen ? 'h-full min-h-0' : ''
+              } lg:flex lg:h-full lg:min-h-0 ${isMobileThreadOpen ? 'flex' : 'hidden'}`}
             >
               {threadShell || (activeThreadId && threadQuery.isLoading) ? (
                 <>
@@ -1513,7 +1529,7 @@ export function MessagesPage() {
                   {/* Message pane */}
                   <div
                     ref={messagePaneRef}
-                    className="min-h-0 flex-1 overflow-y-auto bg-white px-5 py-5"
+                    className="min-h-0 flex-1 overflow-y-auto bg-white px-4 py-4 sm:px-5 sm:py-5"
                   >
                     {threadQuery.isLoading && !activeThread ? (
                       <div className="space-y-5">
@@ -1689,7 +1705,7 @@ export function MessagesPage() {
                   </div>
 
                   {/* Composer footer */}
-                  <footer className="shrink-0 border-t border-gray-100 px-4 py-1.5">
+                  <footer className="sticky bottom-0 z-10 shrink-0 border-t border-gray-100 bg-white/95 px-4 py-1.5 backdrop-blur lg:static lg:bg-white lg:backdrop-blur-0">
                     <input
                       ref={fileInputRef}
                       type="file"

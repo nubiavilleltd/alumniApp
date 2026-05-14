@@ -34,7 +34,7 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className="relative min-h-[72vh] lg:min-h-[78vh] flex items-center overflow-hidden">
+    <section className="relative flex min-h-[72vh] items-center overflow-hidden px-0 lg:min-h-[78vh]">
       {/* ── Background Images ─────────────────────────────────────────────── */}
       {heroImages.map((src, i) => (
         <div
@@ -52,7 +52,7 @@ export default function HeroSection() {
       <div className="absolute inset-0 z-[1] bg-primary-500/20" />
 
       {/* ── Content ───────────────────────────────────────────────────────── */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto">
+      <div className="relative z-10 w-full container-custom">
         <div className="max-w-3xl text-left">
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
             Welcome home

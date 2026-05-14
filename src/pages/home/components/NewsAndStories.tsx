@@ -194,7 +194,7 @@ export default function HomeAnnouncements() {
   const isEmpty = !isLoading && items.length == 0;
 
   return (
-    <section className="bg-[#f8f8f7] px-4 py-12 sm:px-6 lg:px-16">
+    <section className="bg-[#f8f8f7] container-custom py-12">
       <div className="mx-auto max-w-[82rem]">
         <SectionHeading showViewAll={!isEmpty} />
 
