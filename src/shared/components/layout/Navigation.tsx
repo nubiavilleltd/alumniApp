@@ -3,20 +3,25 @@ import { clsx } from 'clsx';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
+
 import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 import { useAuth } from '@/features/authentication/hooks/useAuth';
 import { AUTH_ROUTES } from '@/features/authentication/routes';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 import { useTokenStore } from '@/features/authentication/stores/useTokenStore';
 import { authApi } from '@/features/authentication/services/auth.service';
+
 import { ADMIN_ROUTES } from '@/features/admin/routes';
 import { ALUMNI_ROUTES } from '@/features/alumni/routes';
 import { EVENT_ROUTES } from '@/features/events/routes';
 import { MARKETPLACE_ROUTES } from '@/features/marketplace/routes';
+
 import { useMessagesInbox } from '@/features/messages/hooks/useMessages';
 import type { MessageThreadSummary } from '@/features/messages/types/messages.types';
+
 import { ROUTES } from '@/shared/constants/routes';
 import { USER_ROUTES } from '@/features/user/routes';
+
 import { AppLink } from '../ui/AppLink';
 import { useToastStore } from '../ui/Toast';
 import HeaderLogo from '../ui/HeaderLogo';
@@ -80,6 +85,7 @@ const authenticatedMenuItems: NavChild[] = [
 
 const navSurfaceClassName =
   'bg-[linear-gradient(106deg,_rgb(var(--color-primary-500))_0%,_#003a5d_92%)]';
+
 const desktopLinkBaseClassName =
   "relative no-underline font-[600] tracking-[0.1em] text-[#c4d0d9] transition-colors duration-200 hover:text-white focus-visible:text-white after:pointer-events-none after:absolute after:left-0 after:h-[5px] after:w-full after:origin-left after:scale-x-0 after:rounded-full after:bg-white/85 after:content-[''] after:transition-transform after:duration-300 after:ease-out hover:after:scale-x-100 focus-visible:after:scale-x-100";
 const desktopActiveLinkClassName = 'text-white after:scale-x-100';
@@ -110,21 +116,28 @@ function getDisplayName(user: CurrentUser) {
 
 function getInitials(user: CurrentUser) {
   const storedInitials = user.avatarInitials?.trim();
+
   if (storedInitials) return storedInitials;
 
   const name = getDisplayName(user);
   const parts = name.split(/\s+/).filter(Boolean);
-  if (parts.length >= 2) return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
+
+  if (parts.length >= 2) {
+    return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
+  }
+
   return parts[0]?.slice(0, 2).toUpperCase() || '?';
 }
 
 function isPathActive(pathname: string, url: string) {
   if (url === ROUTES.HOME) return pathname === ROUTES.HOME;
+
   return pathname === url || pathname.startsWith(`${url}/`);
 }
 
 function formatUnreadBadgeCount(count: number) {
   if (count > 99) return '99+';
+
   return count.toString();
 }
 
@@ -134,10 +147,9 @@ function UnreadMessagesBadge({ count, className = '' }: { count: number; classNa
   return (
     <span
       className={cn(
-        'inline-flex min-w-5 items-center justify-center rounded-full bg-[#ef4444] px-1.5 py-0.5 text-[0.68rem] font-extrabold leading-none text-white shadow-[0_4px_10px_rgba(239,68,68,0.35)]',
+        'inline-flex min-w-5 items-center justify-center rounded-full bg-[#ef4444] px-1.5 py-0.5 text-[0.68rem] font-extrabold leading-none text-white',
         className,
       )}
-      aria-label={`${count} unread conversation${count === 1 ? '' : 's'}`}
     >
       {formatUnreadBadgeCount(count)}
     </span>
@@ -154,6 +166,7 @@ function buildMessageFlashTitle(thread: MessageThreadSummary) {
 
 function buildMessageFlashBody(thread: MessageThreadSummary) {
   const preview = thread.lastMessagePreview.trim();
+
   return preview || 'You have a new unread message.';
 }
 
@@ -175,7 +188,7 @@ function BrandMark({ mobile = false }: { mobile?: boolean }) {
       <HeaderLogo
         className={cn(
           'relative z-10 min-w-0',
-          mobile ? 'w-full justify-center gap-2.5' : 'max-w-full justify-center gap-3',
+          mobile ? 'w-full justify-start gap-2.5 pl-3 sm:pl-4' : 'max-w-full justify-center gap-3',
         )}
         imageClassName={cn(
           mobile ? 'h-[2.8rem] w-[2.8rem] sm:h-[3rem] sm:w-[3rem]' : 'h-[3.35rem] w-[3.35rem]',
@@ -192,6 +205,7 @@ function BrandMark({ mobile = false }: { mobile?: boolean }) {
 
 function DesktopNavLink({ item }: { item: NavItem }) {
   const { pathname } = useLocation();
+
   const active = isPathActive(pathname, item.url);
 
   return (
@@ -206,16 +220,22 @@ function DesktopNavLink({ item }: { item: NavItem }) {
 
 function DesktopDropdown({ item }: { item: NavItem }) {
   const [open, setOpen] = useState(false);
+
   const ref = useRef<HTMLDivElement>(null);
+
   const { pathname } = useLocation();
+
   const isActive = item.children?.some((child) => isPathActive(pathname, child.url)) ?? false;
 
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
-      if (!ref.current?.contains(event.target as Node)) setOpen(false);
+      if (!ref.current?.contains(event.target as Node)) {
+        setOpen(false);
+      }
     };
 
     document.addEventListener('mousedown', handleOutsideClick);
+
     return () => document.removeEventListener('mousedown', handleOutsideClick);
   }, []);
 
@@ -250,11 +270,11 @@ function DesktopDropdown({ item }: { item: NavItem }) {
               href={child.url}
               className={cn(
                 desktopDropdownMenuLinkClassName,
-                isPathActive(pathname, child.url) && 'bg-primary-50 text-primary-700',
+                isPathActive(pathname, child.url) && desktopMenuActiveLinkClassName,
               )}
               onClick={() => setOpen(false)}
             >
-              <span>{child.label}</span>
+              {child.label}
             </AppLink>
           ))}
         </div>
@@ -265,6 +285,7 @@ function DesktopDropdown({ item }: { item: NavItem }) {
 
 function UserAvatar({ user, className = '' }: { user: CurrentUser; className?: string }) {
   const displayName = getDisplayName(user);
+
   const initials = getInitials(user);
 
   return (
@@ -322,7 +343,7 @@ function UserDropdown({
     : authenticatedMenuItems;
 
   return (
-    <div ref={ref} className="relative flex-none">
+    <div ref={ref} className="relative flex-none self-center">
       <button
         type="button"
         className={cn(
@@ -372,7 +393,7 @@ function UserDropdown({
             }}
           >
             <Icon icon="mdi:logout" className="h-[1.15rem] w-[1.15rem] flex-none text-red-600" />
-            <span>{isLoggingOut ? 'Logging out...' : 'Logout'}</span>
+            {isLoggingOut ? 'Logging out...' : 'Logout'}
           </button>
         </div>
       )}
@@ -555,74 +576,22 @@ export function Navigation() {
     previousThreadStatesRef.current = nextThreadStates;
   }, [activeMessagesThreadId, authenticatedUser, inboxQuery.data, pathname]);
 
-  // const handleLogout = async () => {
-  //   const setLoggingOut = useTokenStore.getState().setLoggingOut;
-
-  //   setIsLoggingOut(true);
-  //   setLoggingOut(true); // ✅ NEW: Set global logout flag
-  //   setMobileOpen(false);
-
-  //   try {
-  //     // Call API logout if authenticated
-  //     if (authenticatedUser) {
-  //       try {
-  //         await authApi.logout();
-  //       } catch (error) {
-  //         console.log('Failed to call logout API:', error);
-  //       }
-  //     }
-
-  //     // Clear authentication state
-  //     clearTokens();
-  //     clearIdentity();
-
-  //     // Small delay to ensure state updates propagate
-  //     await new Promise((resolve) => setTimeout(resolve, 50));
-
-  //     // Hard navigate to home
-  //     // window.location.href = ROUTES.HOME;
-
-  //     window.location.replace(window.location.origin + ROUTES.HOME);
-  //   } catch (error) {
-  //     console.error('Logout failed:', error);
-  //     clearTokens();
-  //     clearIdentity();
-  //     // window.location.href = ROUTES.HOME;
-
-  //     window.location.replace(window.location.origin + ROUTES.HOME);
-  //   } finally {
-  //     setIsLoggingOut(false);
-  //     setLoggingOut(false); // ✅ NEW: Clear global logout flag
-  //   }
-  // };
-
   const handleLogout = () => {
     const setLoggingOut = useTokenStore.getState().setLoggingOut;
 
-    // Close mobile menu
     setMobileOpen(false);
-
-    // Set local loading state
     setIsLoggingOut(true);
-
-    // ✅ CRITICAL: Set global logout flag FIRST
     setLoggingOut(true);
 
-    // ✅ Use requestAnimationFrame to ensure the logout flag renders
-    // before we start clearing state
     requestAnimationFrame(() => {
-      // Call API logout (fire and forget - don't block)
       if (authenticatedUser) {
         authApi.logout().catch(() => {});
       }
 
-      // Clear authentication state
       clearTokens();
       clearIdentity();
 
-      // ✅ Use another RAF to ensure state clears before navigation
       requestAnimationFrame(() => {
-        // Hard navigate to home (atomic operation)
         window.location.replace(window.location.origin + ROUTES.HOME);
       });
     });
@@ -675,7 +644,7 @@ export function Navigation() {
                 href={AUTH_ROUTES.LOGIN}
                 className={cn(
                   accountPillClassName,
-                  'justify-center px-[1.65rem] py-[0.7rem] text-base font-extrabold tracking-[0.01em]',
+                  'self-center justify-center px-[1.65rem] py-[0.7rem] text-base font-extrabold tracking-[0.01em]',
                 )}
               >
                 Sign In
@@ -696,12 +665,12 @@ export function Navigation() {
       </div>
 
       <div className={cn(navSurfaceClassName, 'relative block lg:hidden')}>
-        <div className="grid min-h-[5.25rem] grid-cols-[minmax(0,1fr)_auto] items-stretch pr-[var(--app-page-inline-padding)] sm:min-h-[5.5rem]">
+        <div className="grid min-h-[5.25rem] grid-cols-[minmax(0,1fr)_auto] items-stretch sm:min-h-[5.5rem]">
           <BrandMark mobile />
           <button
             ref={mobileButtonRef}
             type="button"
-            className="relative z-10 inline-flex min-h-[5.25rem] min-w-[4.5rem] cursor-pointer items-center justify-center border-0 bg-transparent px-4 text-white transition-colors duration-200 hover:bg-white/5 focus-visible:bg-white/10 sm:min-h-[5.5rem] sm:min-w-[5rem]"
+            className="relative z-10 inline-flex min-h-[5.25rem] shrink-0 cursor-pointer items-center justify-center border-0 bg-transparent px-2.5 text-white focus-visible:outline-none sm:min-h-[5.5rem] sm:px-3"
             aria-label="Toggle navigation menu"
             aria-expanded={mobileOpen}
             aria-controls="mobile-navigation-menu"
