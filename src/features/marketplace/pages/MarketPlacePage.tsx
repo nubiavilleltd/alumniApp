@@ -299,7 +299,7 @@ function BusinessCard({
             disabled={isOwnBusiness || isMessagePending}
             title={isOwnBusiness ? 'You cannot message yourself' : ''}
             loading={isMessagePending}
-            className="min-h-10 min-w-[11rem] max-w-full rounded-full border-0 px-5 text-[0.88rem] font-bold leading-none tracking-normal shadow-none focus-visible:ring-4 focus-visible:ring-primary-200"
+            className="min-h-10 min-w-[9rem] max-w-full rounded-full border-0 px-2 text-[0.88rem] font-bold leading-none tracking-normal shadow-none focus-visible:ring-4 focus-visible:ring-primary-200"
           >
             <span>{isMessagePending ? 'Opening...' : 'Send Message'}</span>
           </Button>
