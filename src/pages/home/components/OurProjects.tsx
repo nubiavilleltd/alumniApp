@@ -30,29 +30,62 @@ function HomeProjectCard({ project, index }: { project: Project; index: number }
   const meta = getProjectMeta(project);
 
   return (
-    <article className="home-project-card">
-      <img src={getProjectImage(project, index)} alt="" className="home-project-card__image" />
+    <article className="group relative flex min-h-[22rem] overflow-hidden rounded-2xl bg-[#e9edf1] text-white shadow-[0_1rem_2rem_rgba(7,17,22,0.08)] sm:min-h-[23rem]">
+      <img
+        src={getProjectImage(project, index)}
+        alt=""
+        className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-300 group-hover:scale-[1.03]"
+      />
 
-      <div className="home-project-card__panel">
-        <h3>{project.title}</h3>
-        <p>{project.description}</p>
+      <div className="absolute inset-x-3 bottom-3 flex min-h-[10.5rem] flex-col rounded-[0.8rem] bg-[rgba(0,119,204,0.8)] px-[1.1rem] pb-[1.05rem] pt-4 backdrop-blur-[5px]">
+        {/* CONTENT */}
+        <div className="flex-1">
+          <h3 className="line-clamp-2 text-[1.08rem] font-extrabold leading-[1.24] text-white">
+            {project.title}
+          </h3>
 
-        <div className="home-project-card__meta">
-          <span>
-            <MapPin aria-hidden="true" strokeWidth={PROJECT_META_ICON_STROKE} />
-            {meta.location}
-          </span>
-          {meta.dateRange && (
-            <span>
-              <Clock3 aria-hidden="true" strokeWidth={PROJECT_META_ICON_STROKE} />
-              {meta.dateRange}
-            </span>
-          )}
+          <p className="mt-[0.45rem] line-clamp-2 overflow-hidden text-[0.88rem] font-medium leading-[1.35] text-white/90">
+            {project.description}
+          </p>
+
+          {/* META */}
+          {/* META */}
+          <div className="mt-[0.75rem] space-y-[0.55rem]">
+            <div className="flex min-w-0 items-center gap-[0.3rem] text-[0.78rem] font-bold leading-[1.2] text-inherit">
+              <MapPin
+                aria-hidden="true"
+                strokeWidth={PROJECT_META_ICON_STROKE}
+                className="h-4 w-4 shrink-0"
+              />
+
+              <span className="truncate">{meta.location}</span>
+            </div>
+
+            {meta.dateRange && (
+              <div className="flex min-w-0 items-center gap-[0.3rem] text-[0.78rem] font-bold leading-[1.2] text-inherit">
+                <Clock3
+                  aria-hidden="true"
+                  strokeWidth={PROJECT_META_ICON_STROKE}
+                  className="h-4 w-4 shrink-0"
+                />
+
+                <span className="truncate">{meta.dateRange}</span>
+              </div>
+            )}
+          </div>
         </div>
 
-        <AppLink href={ROUTES.PROJECTS.DETAIL(project.id)} className="home-card-link">
+        {/* BUTTON */}
+        <AppLink
+          href={ROUTES.PROJECTS.DETAIL(project.id)}
+          className="mt-[0.1rem] inline-flex items-center gap-[0.15rem] text-sm font-extrabold leading-[1.2] text-white no-underline transition-colors hover:text-white/80"
+        >
           View Details
-          <ChevronRight aria-hidden="true" strokeWidth={PROJECT_ICON_STROKE} />
+          <ChevronRight
+            aria-hidden="true"
+            strokeWidth={PROJECT_ICON_STROKE}
+            className="h-[1.15rem] w-[1.15rem] shrink-0"
+          />
         </AppLink>
       </div>
     </article>
@@ -61,11 +94,11 @@ function HomeProjectCard({ project, index }: { project: Project; index: number }
 
 function HomeProjectSkeleton() {
   return (
-    <div className="home-project-card home-project-card--skeleton">
-      <div className="home-project-card__panel">
-        <span />
-        <span />
-        <span />
+    <div className="pointer-events-none relative min-h-[22rem] animate-pulse overflow-hidden rounded-2xl bg-[#e9edf1] shadow-[0_1rem_2rem_rgba(7,17,22,0.08)] sm:min-h-[23rem]">
+      <div className="absolute inset-x-3 bottom-3 rounded-[0.8rem] bg-[rgba(0,119,204,0.8)] px-[1.1rem] pb-[1.05rem] pt-4 backdrop-blur-[5px]">
+        <span className="block h-3 rounded-full bg-white/55" />
+        <span className="mt-[0.65rem] block h-3 rounded-full bg-white/55" />
+        <span className="mt-[0.65rem] block h-3 rounded-full bg-white/55" />
       </div>
     </div>
   );
@@ -92,7 +125,7 @@ export default function OurProjects() {
             description="No projects to display yet. New initiatives to support and improve our school will appear here."
           />
         ) : (
-          <div className="home-projects-grid">
+          <div className="grid grid-cols-1 gap-7 md:grid-cols-2 xl:grid-cols-4">
             {isLoading
               ? Array.from({ length: 4 }).map((_, i) => <HomeProjectSkeleton key={i} />)
               : projects

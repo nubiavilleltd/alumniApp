@@ -829,7 +829,7 @@ export function EventRegistrationFormBuilderModal({
                       isDragging ? 'opacity-50' : ''
                     }`}
                   >
-                    <div className="absolute inset-y-0 left-0 w-3 bg-primary-200" />
+                    <div className="absolute inset-y-0 left-0 w-3 rounded-l-[1.4rem] bg-primary-200" />
 
                     <div className="flex flex-col gap-4">
                       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
@@ -889,11 +889,11 @@ export function EventRegistrationFormBuilderModal({
                   </div>
                 ) : (
                   <div
-                    className={`relative overflow-hidden rounded-[1rem] border border-sky-100 bg-white px-4 py-4 shadow-[0_12px_32px_rgba(15,23,42,0.06)] transition-opacity sm:px-6 sm:py-5 ${
+                    className={`relative rounded-[1rem] border border-sky-100 bg-white px-4 py-4 shadow-[0_12px_32px_rgba(15,23,42,0.06)] transition-opacity sm:px-6 sm:py-5 ${
                       isDragging ? 'opacity-50' : ''
                     }`}
                   >
-                    <div className="absolute inset-y-0 left-0 w-3 bg-primary-500" />
+                    <div className="absolute inset-y-0 left-0 w-3 rounded-l-[1rem] bg-primary-500" />
 
                     <div className="flex justify-center pb-2 text-gray-300">
                       <button

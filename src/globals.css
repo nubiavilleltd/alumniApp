@@ -351,90 +351,14 @@
   color: rgb(var(--color-primary-500));
 }
 
-.home-projects-grid,
 .home-events-grid {
   display: grid;
   gap: 1.75rem;
 }
 
-.home-projects-grid {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
 .home-events-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
-
-.home-project-card {
-  position: relative;
-  display: block;
-  min-height: 23rem;
-  overflow: hidden;
-  border-radius: 1rem;
-  background: #e9edf1;
-  color: #ffffff;
-  box-shadow: 0 1rem 2rem rgba(7, 17, 22, 0.08);
-  text-decoration: none;
-}
-
-.home-project-card__image {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  transition: transform 300ms ease;
-}
-
-.home-project-card:hover .home-project-card__image {
-  transform: scale(1.03);
-}
-
-.home-project-card__panel {
-  position: absolute;
-  right: 0.75rem;
-  bottom: 0.75rem;
-  left: 0.75rem;
-  border-radius: 0.8rem;
-  background: rgba(0, 119, 204, 0.8);
-  padding: 1rem 1.1rem 1.05rem;
-  backdrop-filter: blur(5px);
-}
-
-.home-project-card__panel h3,
-.home-event-card__body h3 {
-  margin: 0;
-  color: inherit;
-  font-weight: 800;
-  line-height: 1.24;
-}
-
-.home-project-card__panel h3 {
-  color: #ffffff;
-  font-size: 1.08rem;
-}
-
-.home-project-card__panel p {
-  display: -webkit-box;
-  margin: 0.45rem 0 0;
-  overflow: hidden;
-  color: rgba(255, 255, 255, 0.88);
-  font-size: 0.88rem;
-  font-weight: 500;
-  line-height: 1.35;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-}
-
-.home-project-card__meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.55rem 0.9rem;
-  margin-top: 0.65rem;
-}
-
-.home-project-card__meta span,
 .home-event-card__meta span {
   display: inline-flex;
   min-width: 0;
@@ -446,27 +370,24 @@
   line-height: 1.2;
 }
 
-.home-project-card__meta svg,
 .home-event-card__meta svg {
   width: 1rem;
   height: 1rem;
   flex: 0 0 auto;
 }
 
-.home-project-card .home-card-link {
-  margin-top: 0.9rem;
-}
-
-.home-project-card--skeleton,
 .home-event-card--skeleton {
   pointer-events: none;
 }
 
-.home-project-card--skeleton {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+.home-event-card__body h3 {
+  margin: 0;
+  color: #071116;
+  font-weight: 800;
+  line-height: 1.24;
+  font-size: 1.18rem;
 }
 
-.home-project-card--skeleton .home-project-card__panel span,
 .home-event-card--skeleton span {
   display: block;
   height: 0.75rem;
@@ -474,7 +395,6 @@
   background: rgba(255, 255, 255, 0.55);
 }
 
-.home-project-card--skeleton .home-project-card__panel span + span,
 .home-event-card--skeleton span + span {
   margin-top: 0.65rem;
 }
@@ -519,11 +439,6 @@
 
 .home-event-card__body {
   padding: 1.25rem 1.35rem 1.35rem;
-}
-
-.home-event-card__body h3 {
-  color: #071116;
-  font-size: 1.18rem;
 }
 
 .home-event-card__body p {
@@ -572,7 +487,6 @@
     margin-top: 0;
   }
 
-  .home-projects-grid,
   .home-events-grid {
     grid-template-columns: 1fr;
   }
@@ -586,10 +500,6 @@
   .home-section-kicker {
     margin-bottom: 1rem;
     font-size: 0.95rem;
-  }
-
-  .home-project-card {
-    min-height: 22rem;
   }
 
   .home-event-card__body {
