@@ -90,12 +90,43 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: a
 
   return (
     // <div className="relative rounded-2xl overflow-hidden shadow-md group cursor-pointer aspect-[3/4] sm:aspect-[4/5] lg:aspect-[3/4]">
+    //   <div
+    //     className="relative rounded-2xl overflow-hidden shadow-md group cursor-pointer
+    // aspect-[4/5] sm:aspect-[4/5] lg:aspect-[3/4]"
+    //   >
+
+    //   <div
+    //   className="
+    //     relative
+    //     w-full
+    //     max-w-[260px]
+    //     sm:max-w-none
+    //     rounded-2xl
+    //     overflow-hidden
+    //     shadow-md
+    //     group
+    //     cursor-pointer
+    //     aspect-[4/5]
+    //     lg:aspect-[3/4]
+    //   "
+    // >
+
     <div
-      className="relative rounded-2xl overflow-hidden shadow-md group cursor-pointer 
-  aspect-[4/5] sm:aspect-[4/5] lg:aspect-[3/4]"
+      className="
+    relative
+    rounded-2xl
+    overflow-hidden
+    shadow-md
+    group
+    cursor-pointer
+    h-[320px]
+    sm:h-[420px]
+    lg:h-[500px]
+  "
     >
       {/* Image */}
       <div className="absolute inset-0">
+        {/* <div className="absolute top-0 left-0 right-0 h-[58%] sm:h-full"> */}
         <img
           src={displayPhoto ?? generateInitialsAvatar(entry.name)}
           alt={entry.name}
@@ -250,7 +281,7 @@ export function AlumniDirectoryPage() {
     <>
       <SEO title="Alumnae Directory" />
 
-      <section className="bg-gray-100 min-h-screen py-8">
+      <section className="bg-stone-100 min-h-screen py-8">
         <div className="container-custom mx-auto">
           {/* Title */}
           <h1 className="text-2xl md:text-3xl font-bold mb-6">Alumnae Directory</h1>
@@ -289,7 +320,7 @@ export function AlumniDirectoryPage() {
               ))}
             </div>
           ) : visible.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6 ustify-items-center">
               {visible.map((entry) => (
                 <AlumnaeCard
                   key={entry.id}

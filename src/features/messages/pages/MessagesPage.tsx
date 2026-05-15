@@ -1263,9 +1263,9 @@ export function MessagesPage() {
         title="Messages"
         description="Stay in touch with alumnae conversations and follow-ups."
       />
-      <div className={isMobileThreadOpen ? 'hidden' : 'lg:hidden'}>
+      {/* <div className={isMobileThreadOpen ? 'hidden' : 'lg:hidden'}>
         <Breadcrumbs items={breadcrumbItems} />
-      </div>
+      </div> */}
 
       {/* Page background matching Figma off-white */}
       <section
@@ -1274,7 +1274,7 @@ export function MessagesPage() {
           isMobileThreadOpen
             ? 'h-[calc(100dvh-5.25rem)] overflow-hidden sm:h-[calc(100dvh-5.5rem)]'
             : ''
-        } lg:h-[calc(100dvh-4.75rem)] lg:overflow-hidden lg:py-4`}
+        } lg:h-[calc(100dvh-4.75rem)] lg:overflow-hidden py-8`}
       >
         <div
           className={`container-custom space-y-4 ${
@@ -1306,9 +1306,8 @@ export function MessagesPage() {
               isMobileThreadOpen ? 'hidden lg:block' : ''
             } lg:pb-3`}
           >
-            <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-950 sm:text-4xl lg:text-[2.5rem] xl:text-[2.75rem]">
-              Message Centre
-            </h1>
+            {/* <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-950 sm:text-4xl lg:text-[2.5rem] xl:text-[2.75rem]"> */}
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-950 mb-3">Message Centre</h1>
           </div>
 
           {/* Two-column layout */}

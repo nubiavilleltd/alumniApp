@@ -76,11 +76,11 @@ const jobPanelToneClassNames: Record<JobCardTone, string> = {
   green: 'bg-[#e6f5e5]',
 };
 
-export const jobsPageShellClassName = 'container-custom pb-16 pt-6';
+export const jobsPageShellClassName = 'container-custom pb-16 pt-8';
 export const jobsPageHeaderClassName =
   'mb-7 flex flex-col gap-4 md:mb-[2.7rem] md:flex-row md:items-start md:justify-between md:gap-6';
 export const jobsPageTitleClassName =
-  'text-[clamp(2rem,3.2vw,2.9rem)] font-extrabold leading-[1.05] text-[#071116]';
+  'text-[clamp(2rem,2.2vw,2.9rem)] font-extrabold leading-[1.05] text-[#071116]';
 export const jobsPageSubtitleClassName =
   'mt-2 text-[clamp(1rem,1.6vw,1.25rem)] font-medium leading-[1.25] text-[#59626c]';
 export const jobsPagePostButtonClassName =
@@ -387,10 +387,10 @@ export function JobCard({
           {panelAction ? <div className="shrink-0">{panelAction}</div> : null}
         </div>
 
-        <p className="mt-[1.35rem] text-[0.95rem] font-extrabold leading-[1.2] text-[#071116]">
+        <p className="mt-[1.35rem] text-[0.9rem] font-semibold leading-[1.2] text-gray-700">
           {job.companyName}
         </p>
-        <h2 className="mt-[0.7rem] text-[clamp(1.35rem,1.85vw,1.75rem)] font-extrabold leading-[1.18] text-[#071116]">
+        <h2 className="mt-[0.7rem] text-[clamp(1.35rem,1.5vw,1.75rem)] font-semibold leading-[1.18] text-[#071116]">
           {job.title}
         </h2>
 
@@ -398,7 +398,7 @@ export function JobCard({
           {pillLabels.map((label) => (
             <span
               key={label}
-              className="inline-flex min-h-[2.15rem] items-center rounded-full border border-[rgba(7,17,22,0.35)] px-[0.85rem] py-[0.35rem] text-[0.82rem] font-bold leading-none text-[#59626c]"
+              className="inline-flex min-h-[2.15rem] items-center rounded-full border border-[rgba(7,17,22,0.35)] px-[0.85rem] py-[0.35rem] text-[0.75rem] font-bold leading-none text-[#59626c]"
             >
               {label}
             </span>
@@ -406,12 +406,12 @@ export function JobCard({
         </div>
       </div>
 
-      <div className="mt-auto flex items-end justify-between gap-4 px-[1.35rem] pb-[1.2rem] pt-4 max-sm:flex-wrap">
+      <div className="mt-auto flex items-end justify-between gap-4 px-[1.35rem] pb-[1.0rem] pt-4 max-sm:flex-wrap">
         <div>
           <p className="text-[1.45rem] font-extrabold leading-none text-[#071116]">
             {getSalaryDisplay(job)}
           </p>
-          <p className="mt-[0.35rem] text-[0.9rem] font-bold leading-[1.15] text-[#59626c]">
+          <p className="mt-[0.35rem] text-[0.9rem] font-semibold leading-[1.15] text-[#59626c]">
             {job.location}
           </p>
         </div>

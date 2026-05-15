@@ -106,7 +106,7 @@ export function ContactPageLayout({
 
     setFieldErrors({});
     setFormError('');
-    toast.success('Message successfully sent');
+    // toast.success('Message successfully sent');
 
     try {
       await onSubmit(form);

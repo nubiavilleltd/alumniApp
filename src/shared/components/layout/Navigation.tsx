@@ -76,7 +76,7 @@ const primaryNavItems: NavItem[] = [
 const authenticatedMenuItems: NavChild[] = [
   { label: 'View Profile', url: USER_ROUTES.PROFILE },
   { label: 'Dashboard', url: USER_ROUTES.DASHBOARD },
-  { label: 'Messaging Center', url: ROUTES.MESSAGES },
+  { label: 'Message Center', url: ROUTES.MESSAGES },
   { label: 'My Registered Events', url: EVENT_ROUTES.MY_EVENTS },
   { label: 'My Market', url: MARKETPLACE_ROUTES.MY_BUSINESS },
   { label: 'My Job Posts', url: ROUTES.MY_JOB_POSTS },

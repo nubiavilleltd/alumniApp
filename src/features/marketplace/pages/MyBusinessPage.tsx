@@ -329,7 +329,7 @@ export default function MyBusinessPage() {
       />
       <Breadcrumbs items={breadcrumbItems} />
 
-      <section className="section">
+      <section className="section bg-stone-100">
         <div className="container-custom">
           {/* Header */}
           <div className="flex items-start justify-between mb-8">
@@ -343,10 +343,10 @@ export default function MyBusinessPage() {
               <button
                 type="button"
                 onClick={() => setShowPostModal(true)}
-                className="flex-shrink-0 flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-colors"
+                className="flex-shrink-0 flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 text-white text-xs md:text-base font-semibold px-8 py-2.5 rounded-3xl transition-colors"
               >
+                Add New Business
                 <Plus className="h-4 w-4" />
-                Add Business
               </button>
             )}
           </div>
