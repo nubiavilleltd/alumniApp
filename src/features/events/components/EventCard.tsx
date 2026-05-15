@@ -9,7 +9,18 @@
 // the homepage UpcomingEvents component's local EventCard.
 
 import { useState } from 'react';
-import { Icon } from '@iconify/react';
+import {
+  ArrowRight,
+  CalendarDays,
+  CheckCircle,
+  CircleSlash,
+  Clock3,
+  MapPin,
+  Pencil,
+  Share2,
+  Trash2,
+  Users,
+} from 'lucide-react';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { useEventRegistration, useEventAttendeeCount } from '../hooks/useEventRegistration';
 import { useDeleteEvent } from '../hooks/useEvents';
@@ -21,6 +32,8 @@ import { handleShare } from '@/shared/utils/share';
 import { toast } from '@/shared/components/ui/Toast';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 import { formatDateRange } from '@/shared/utils/dateHelpers';
+
+const EVENT_CARD_ICON_STROKE = 2.35;
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
@@ -122,7 +135,7 @@ export function EventCard({
           href={EVENT_ROUTES.DETAIL(event.id)}
           className="inline-flex items-center gap-1 text-primary-500 hover:text-primary-600 text-xs font-semibold transition-colors"
         >
-          View Details <Icon icon="mdi:arrow-right" className="w-3 h-3" />
+          View Details <ArrowRight className="h-3 w-3" strokeWidth={EVENT_CARD_ICON_STROKE} />
         </AppLink>
       );
     }
@@ -146,7 +159,7 @@ export function EventCard({
           href={EVENT_ROUTES.DETAIL(event.id)}
           className="inline-flex items-center gap-1 text-red-500 hover:text-red-600 text-xs font-semibold transition-colors"
         >
-          <Icon icon="mdi:cancel" className="w-3.5 h-3.5" />
+          <CircleSlash className="h-3.5 w-3.5" strokeWidth={EVENT_CARD_ICON_STROKE} />
           View Details
         </AppLink>
       );
@@ -159,7 +172,7 @@ export function EventCard({
           href={EVENT_ROUTES.DETAIL(event.id)}
           className="inline-flex items-center gap-1 text-primary-500 hover:text-primary-600 text-xs font-semibold transition-colors"
         >
-          View Details <Icon icon="mdi:arrow-right" className="w-3 h-3" />
+          View Details <ArrowRight className="h-3 w-3" strokeWidth={EVENT_CARD_ICON_STROKE} />
         </AppLink>
       );
     }
@@ -171,7 +184,9 @@ export function EventCard({
           href={EVENT_ROUTES.DETAIL(event.id)}
           className="inline-flex items-center gap-1 text-gray-500 hover:text-primary-500 text-xs font-semibold transition-colors"
         >
-          {isRegistered && <Icon icon="mdi:check-circle" className="w-3.5 h-3.5" />}
+          {isRegistered ? (
+            <CheckCircle className="h-3.5 w-3.5" strokeWidth={EVENT_CARD_ICON_STROKE} />
+          ) : null}
           {isFull && <span className="text-gray-400">Event Full</span>}
           View Details
         </AppLink>
@@ -185,7 +200,7 @@ export function EventCard({
         onClick={onRegister}
         className="inline-flex items-center gap-1 text-primary-500 hover:text-primary-600 text-xs font-semibold transition-colors"
       >
-        Register <Icon icon="mdi:arrow-right" className="w-3 h-3" />
+        Register <ArrowRight className="h-3 w-3" strokeWidth={EVENT_CARD_ICON_STROKE} />
       </button>
     );
   };
@@ -204,7 +219,10 @@ export function EventCard({
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-primary-50">
-              <Icon icon="mdi:calendar-month-outline" className="w-12 h-12 text-primary-200" />
+              <CalendarDays
+                className="h-12 w-12 text-primary-200"
+                strokeWidth={EVENT_CARD_ICON_STROKE}
+              />
             </div>
           )}
 
@@ -220,13 +238,13 @@ export function EventCard({
            p-2 rounded-full 
            shadow-md transition"
           >
-            <Icon icon="mdi:share-variant-outline" className="w-4 h-4" />
+            <Share2 className="h-4 w-4" strokeWidth={EVENT_CARD_ICON_STROKE} />
           </button>
 
           {/* Badges */}
           {!isPast && isRegistered && (
             <div className="absolute top-3 left-3 bg-green-500 text-white text-[10px] font-semibold px-2.5 py-1 rounded-full flex items-center gap-1">
-              <Icon icon="mdi:check-circle" className="w-3 h-3" />
+              <CheckCircle className="h-3 w-3" strokeWidth={EVENT_CARD_ICON_STROKE} />
               Registered
             </div>
           )}
@@ -249,19 +267,22 @@ export function EventCard({
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-gray-400 text-[11px]">
             {event.location && (
               <span className="flex items-center gap-1">
-                <Icon icon="mdi:map-marker-outline" className="w-3 h-3 flex-shrink-0" />
+                <MapPin className="h-3 w-3 flex-shrink-0" strokeWidth={EVENT_CARD_ICON_STROKE} />
                 {event.location}
               </span>
             )}
             {formattedDate && (
               <span className="flex items-center gap-1">
-                <Icon icon="mdi:calendar-outline" className="w-3 h-3 flex-shrink-0" />
+                <CalendarDays
+                  className="h-3 w-3 flex-shrink-0"
+                  strokeWidth={EVENT_CARD_ICON_STROKE}
+                />
                 {formattedDate}
               </span>
             )}
             {event.startTime && (
               <span className="flex items-center gap-1">
-                <Icon icon="mdi:clock-outline" className="w-3 h-3 flex-shrink-0" />
+                <Clock3 className="h-3 w-3 flex-shrink-0" strokeWidth={EVENT_CARD_ICON_STROKE} />
                 {event.startTime}
               </span>
             )}
@@ -274,7 +295,7 @@ export function EventCard({
           {/* Attendee count — hidden in compact mode */}
           {!compact && !isPast && !isCancelled && (
             <div className="flex items-center gap-1 text-gray-600 text-[11px] mt-1">
-              <Icon icon="mdi:account-group-outline" className="w-3.5 h-3.5 flex-shrink-0" />
+              <Users className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={EVENT_CARD_ICON_STROKE} />
               <span>
                 {capacity ? (
                   <>
@@ -305,7 +326,7 @@ export function EventCard({
                   href={EVENT_ROUTES.EDIT(event.id)}
                   className="flex items-center gap-1 text-xs text-primary-500 hover:text-primary-600 transition-colors"
                 >
-                  <Icon icon="mdi:pencil-outline" className="w-3.5 h-3.5" />
+                  <Pencil className="h-3.5 w-3.5" strokeWidth={EVENT_CARD_ICON_STROKE} />
                   Edit
                 </AppLink>
                 <button
@@ -313,7 +334,7 @@ export function EventCard({
                   onClick={() => setShowDeleteModal(true)}
                   className="flex items-center gap-1 text-xs text-red-500 hover:text-red-600 transition-colors"
                 >
-                  <Icon icon="mdi:trash-can-outline" className="w-3.5 h-3.5" />
+                  <Trash2 className="h-3.5 w-3.5" strokeWidth={EVENT_CARD_ICON_STROKE} />
                   Delete
                 </button>
               </div>

@@ -2,7 +2,6 @@
 
 import { useMemo, useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Icon } from '@iconify/react';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { SEO } from '@/shared/common/SEO';
 import { RegisterEventModal } from '../components/RegisterEventModal';
@@ -17,6 +16,16 @@ import { AUTH_ROUTES } from '@/features/authentication/routes';
 import { useEventStatus } from '../hooks/useEventStatus';
 import { formatDateRange } from '@/shared/utils/dateHelpers';
 import { useRequireSignIn } from '@/features/authentication/hooks/useRequireSignIn';
+import {
+  AlertCircle,
+  CalendarDays,
+  CalendarX,
+  Clock,
+  LoaderCircle,
+  MapPin,
+  Share2,
+  Users,
+} from 'lucide-react';
 
 // ─── Countdown ────────────────────────────────────────────────────────────────
 
@@ -116,7 +125,7 @@ function UnregisterConfirmModal({
       <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
         <div className="flex items-start gap-3 mb-4">
           <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
-            <Icon icon="mdi:alert-circle-outline" className="w-5 h-5 text-red-600" />
+            <AlertCircle className="w-5 h-5 text-red-600" />
           </div>
           <div>
             <h3 className="font-bold text-gray-900 text-lg mb-1">Cancel Registration?</h3>
@@ -141,7 +150,7 @@ function UnregisterConfirmModal({
             disabled={isLoading}
             className="px-6 py-2 text-sm font-semibold bg-red-500 hover:bg-red-600 text-white rounded-xl flex items-center gap-2 disabled:opacity-50 transition-colors"
           >
-            {isLoading && <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" />}
+            {isLoading && <LoaderCircle className="w-4 h-4 animate-spin" />}
             Yes, Unregister
           </button>
         </div>
@@ -228,7 +237,7 @@ export function EventDetailPage() {
     return (
       <section className="min-h-screen bg-[#f5f4f0]">
         <div className="container-custom text-center py-20">
-          <Icon icon="mdi:calendar-alert" className="w-16 h-16 text-red-400 mx-auto mb-4" />
+          <CalendarX className="w-16 h-16 text-red-400 mx-auto mb-4" />
           <h1 className="text-2xl font-bold mb-3">Event not found</h1>
           <p className="text-gray-600 mb-6">This event doesn't exist or has been removed.</p>
           <div className="flex gap-4 justify-center">
@@ -353,7 +362,7 @@ export function EventDetailPage() {
             </div>
           ) : (
             <div className="w-full h-52 rounded-2xl bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center mb-6 shadow-sm">
-              <Icon icon="mdi:calendar-month-outline" className="w-16 h-16 text-primary-300" />
+              <CalendarDays className="w-16 h-16 text-primary-300" />
             </div>
           )}
 
@@ -367,43 +376,43 @@ export function EventDetailPage() {
             <div className="flex flex-wrap items-center gap-2 mb-3">
               {isOngoing && (
                 <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-green-100 text-green-700 border border-green-200">
-                  <Icon icon="mdi:play-circle-outline" className="w-3.5 h-3.5" />
+                  {/* <Icon icon="mdi:play-circle-outline" className="w-3.5 h-3.5" /> */}
                   Happening Now
                 </span>
               )}
               {isPast && !isCancelled && (
                 <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-gray-100 text-gray-600 border border-gray-200">
-                  <Icon icon="mdi:calendar-check-outline" className="w-3.5 h-3.5" />
+                  {/* <Icon icon="mdi:calendar-check-outline" className="w-3.5 h-3.5" /> */}
                   Past Event
                 </span>
               )}
               {event.featured && (
                 <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-amber-100 text-amber-700 border border-amber-200">
-                  <Icon icon="mdi:star" className="w-3.5 h-3.5" />
+                  {/* <Icon icon="mdi:star" className="w-3.5 h-3.5" /> */}
                   Featured
                 </span>
               )}
               {isRegistered && (isUpcoming || isOngoing) && (
                 <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-green-100 text-green-700 border border-green-200">
-                  <Icon icon="mdi:check-circle" className="w-3.5 h-3.5" />
+                  {/* <Icon icon="mdi:check-circle" className="w-3.5 h-3.5" /> */}
                   You're Registered
                 </span>
               )}
               {isRegistered && isPast && (
                 <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-green-100 text-green-700 border border-green-200">
-                  <Icon icon="mdi:check-circle" className="w-3.5 h-3.5" />
+                  {/* <Icon icon="mdi:check-circle" className="w-3.5 h-3.5" /> */}
                   You Attended
                 </span>
               )}
               {!isCancelled && isFull && !isRegistered && isUpcoming && (
                 <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-red-100 text-red-600 border border-red-200">
-                  <Icon icon="mdi:alert-circle-outline" className="w-3.5 h-3.5" />
+                  {/* <Icon icon="mdi:alert-circle-outline" className="w-3.5 h-3.5" /> */}
                   Event Full
                 </span>
               )}
               {isCancelled && (
                 <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-red-100 text-red-600 border border-red-200">
-                  <Icon icon="mdi:cancel" className="w-3.5 h-3.5" />
+                  {/* <Icon icon="mdi:cancel" className="w-3.5 h-3.5" /> */}
                   Event Cancelled
                 </span>
               )}
@@ -418,25 +427,25 @@ export function EventDetailPage() {
             <div className="flex flex-col gap-1.5 mb-6">
               {event.location && (
                 <div className="flex items-center gap-2 text-gray-600 text-sm">
-                  <Icon
+                  {/* <Icon
                     icon="mdi:map-marker-outline"
                     className="w-4 h-4 text-gray-400 flex-shrink-0"
-                  />
+                  /> */}
+                  <MapPin size={15} />
                   <span>{event.location}</span>
                 </div>
               )}
               {dateDisplay && (
                 <div className="flex items-center gap-2 text-gray-600 text-sm">
-                  <Icon icon="mdi:clock-outline" className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                  {/* <Icon icon="mdi:clock-outline" className="w-4 h-4 text-gray-400 flex-shrink-0" /> */}
+                  <Clock size={15} />
                   <span>{dateDisplay}</span>
                 </div>
               )}
               {!isCancelled && attendeeCount > 0 && (
                 <div className="flex items-center gap-2 text-gray-600 text-sm">
-                  <Icon
-                    icon="mdi:account-group-outline"
-                    className="w-4 h-4 text-gray-400 flex-shrink-0"
-                  />
+                  <Users className="w-4 h-4 text-gray-600 flex-shrink-0" />
+
                   <span>
                     {capacity ? `${attendeeCount}/${capacity}` : attendeeCount}{' '}
                     {isPast ? 'attended' : isOngoing ? 'attending live' : 'attending'}
@@ -523,7 +532,8 @@ export function EventDetailPage() {
                 aria-label="Share event"
                 className="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-full border border-primary-300 bg-white hover:bg-primary-50 text-primary-500 transition-colors shadow-sm"
               >
-                <Icon icon="mdi:share-variant-outline" className="w-4 h-4" />
+                {/* <Icon icon="mdi:share-variant-outline" className="w-4 h-4" /> */}
+                <Share2 size={20} />
               </button>
             </div>
           </div>

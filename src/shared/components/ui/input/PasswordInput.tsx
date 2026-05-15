@@ -29,15 +29,54 @@ import { BaseInput, type BaseInputProps } from './BaseInput';
 //   },
 // );
 
+// type PasswordInputProps = Omit<BaseInputProps, 'type' | 'leadingSlot' | 'trailingSlot'> & {
+//   disablePaste?: boolean;
+// };
+
+// export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
+//   ({ disablePaste, ...rest }, ref) => {
+//     const [show, setShow] = useState(false);
+
+//     const handlePaste = disablePaste
+//       ? (e: React.ClipboardEvent<HTMLInputElement>) => e.preventDefault()
+//       : undefined;
+
+//     return (
+//       <BaseInput
+//         ref={ref}
+//         type={show ? 'text' : 'password'}
+//         onPaste={handlePaste}
+//         trailingSlot={
+//           <button
+//             type="button"
+//             aria-pressed={show}
+//             aria-label={show ? 'Hide password' : 'Show password'}
+//             onClick={() => setShow((prev) => !prev)}
+//             className="password-input__toggle px-3 text-gray-400 hover:text-gray-600 transition-colors bg-transparent"
+//           >
+//             <Icon icon={show ? 'mdi:eye-outline' : 'mdi:eye-off-outline'} className="w-4 h-4" />
+//           </button>
+//         }
+//         {...rest}
+//       />
+//     );
+//   },
+// );
+
 type PasswordInputProps = Omit<BaseInputProps, 'type' | 'leadingSlot' | 'trailingSlot'> & {
   disablePaste?: boolean;
+  disableCopy?: boolean;
 };
 
 export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
-  ({ disablePaste, ...rest }, ref) => {
+  ({ disablePaste, disableCopy, ...rest }, ref) => {
     const [show, setShow] = useState(false);
 
     const handlePaste = disablePaste
+      ? (e: React.ClipboardEvent<HTMLInputElement>) => e.preventDefault()
+      : undefined;
+
+    const handleCopy = disableCopy
       ? (e: React.ClipboardEvent<HTMLInputElement>) => e.preventDefault()
       : undefined;
 
@@ -46,6 +85,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
         ref={ref}
         type={show ? 'text' : 'password'}
         onPaste={handlePaste}
+        onCopy={handleCopy}
         trailingSlot={
           <button
             type="button"

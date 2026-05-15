@@ -1,7 +1,21 @@
 // features/marketplace/pages/MarketPlacePage.tsx
 
-import { Icon } from '@iconify/react';
 import { useEffect, useMemo, useState } from 'react';
+import {
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronUp,
+  CircleAlert,
+  CircleX,
+  Globe,
+  Mail,
+  MapPin,
+  Phone,
+  Plus,
+  Search,
+  Store,
+} from 'lucide-react';
 import { SEO } from '@/shared/common/SEO';
 import { Button } from '@/shared/components/ui/Button';
 import { FilterDropdown } from '@/shared/components/ui/FilterDropdown';
@@ -155,7 +169,7 @@ function BusinessCard({
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-[#edf0f2]">
-            <Icon icon="mdi:storefront-outline" className="h-14 w-14 text-[#a7aeb6]" />
+            <Store className="h-14 w-14 text-[#a7aeb6]" />
           </div>
         )}
         {business.images.length > 1 && (
@@ -166,7 +180,7 @@ function BusinessCard({
               onClick={prev}
               className="absolute left-4 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-[#29313a] opacity-0 transition-[opacity,background-color] duration-200 hover:bg-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-200 group-hover/card:opacity-100 sm:flex"
             >
-              <Icon icon="mdi:chevron-left" className="h-6 w-6" />
+              <ChevronLeft className="h-6 w-6" />
             </button>
             <button
               type="button"
@@ -174,7 +188,7 @@ function BusinessCard({
               onClick={next}
               className="absolute right-4 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-[#29313a] opacity-0 transition-[opacity,background-color] duration-200 hover:bg-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-200 group-hover/card:opacity-100 sm:flex"
             >
-              <Icon icon="mdi:chevron-right" className="h-6 w-6" />
+              <ChevronRight className="h-6 w-6" />
             </button>
           </>
         )}
@@ -225,8 +239,8 @@ function BusinessCard({
               className="flex items-start gap-2.5 no-underline transition-colors hover:text-primary-600"
               onClick={(event) => event.stopPropagation()}
             >
-              <Icon
-                icon="mdi:phone-outline"
+              <Phone
+                strokeWidth={2.6}
                 className="mt-0.5 h-[1.05rem] w-[1.05rem] shrink-0 text-[#5f6873]"
               />
               <span className="min-w-0 break-words">{business.phone}</span>
@@ -239,8 +253,8 @@ function BusinessCard({
               className="flex items-start gap-2.5 no-underline transition-colors hover:text-primary-600"
               onClick={(event) => event.stopPropagation()}
             >
-              <Icon
-                icon="mdi:email-outline"
+              <Mail
+                strokeWidth={2.6}
                 className="mt-0.5 h-[1.05rem] w-[1.05rem] shrink-0 text-[#5f6873]"
               />
               <span className="min-w-0 break-all">{business.email}</span>
@@ -248,8 +262,8 @@ function BusinessCard({
           )}
 
           <div className="flex items-start gap-2.5">
-            <Icon
-              icon="mdi:map-marker-outline"
+            <MapPin
+              strokeWidth={2.6}
               className="mt-0.5 h-[1.05rem] w-[1.05rem] shrink-0 text-[#5f6873]"
             />
             <span className="min-w-0 break-words">{business.location}</span>
@@ -263,8 +277,8 @@ function BusinessCard({
               className="flex min-w-0 items-start gap-2.5 no-underline transition-colors hover:text-primary-600"
               onClick={(event) => event.stopPropagation()}
             >
-              <Icon
-                icon="mdi:web"
+              <Globe
+                strokeWidth={2.6}
                 className="mt-0.5 h-[1.05rem] w-[1.05rem] shrink-0 text-[#5f6873]"
               />
               <span className="min-w-0 break-all">{business.website}</span>
@@ -285,7 +299,7 @@ function BusinessCard({
             disabled={isOwnBusiness || isMessagePending}
             title={isOwnBusiness ? 'You cannot message yourself' : ''}
             loading={isMessagePending}
-            className="min-h-10 min-w-[11rem] max-w-full rounded-full border-0 px-5 text-[0.88rem] font-bold leading-none tracking-normal shadow-none focus-visible:ring-4 focus-visible:ring-primary-200"
+            className="min-h-10 min-w-[9rem] max-w-full rounded-full border-0 px-2 text-[0.88rem] font-bold leading-none tracking-normal shadow-none focus-visible:ring-4 focus-visible:ring-primary-200"
           >
             <span>{isMessagePending ? 'Opening...' : 'Send Message'}</span>
           </Button>
@@ -411,7 +425,7 @@ export default function MarketPlacePage() {
       />
 
       <main className="min-h-full bg-[#f8f8f7] text-[#071116]">
-        <section className="page-inline-padding w-full max-w-[100vw] pb-16 pt-10 lg:pb-20 lg:pt-12 xl:pb-24 xl:pt-16">
+        <section className="page-inline-padding w-full max-w-[100vw] pb-16 pt-10 lg:pb-20 lg:pt-12 xl:pb-24 xl:pt-12">
           <div className="mb-10 flex flex-col gap-6 lg:mb-[3.65rem] lg:flex-row lg:items-start lg:justify-between lg:gap-8">
             <div className="min-w-0">
               <h1 className="text-[clamp(2.0rem,2.45vw,3.0rem)] font-bold leading-[1.12] text-[#071116]">
@@ -425,9 +439,10 @@ export default function MarketPlacePage() {
 
             <Button
               type="button"
+              size="sm"
               onClick={handlePostBusinessClick}
-              rightIcon="mdi:plus"
-              className="mt-0 w-full max-w-[13rem] min-h-[2.0rem] rounded-full px-3 text-[clamp(1.0rem,0.8vw,1.2rem)] font-semibold leading-none tracking-normal shadow-none transition-transform hover:bg-primary-600 active:translate-y-px focus-visible:ring-4 focus-visible:ring-primary-200 [&>svg]:h-[1.45rem] [&>svg]:w-[1.45rem] lg:mt-3"
+              leftIcon={Plus}
+              className="mt-0 min-h-8 w-full justify-center self-start rounded-full pl-5 pr-6 text-sm font-semibold leading-none tracking-normal shadow-none transition-transform hover:bg-primary-600 active:translate-y-px focus-visible:ring-4 focus-visible:ring-primary-200 [&>svg]:h-4 [&>svg]:w-4 sm:w-auto sm:min-w-[14rem] sm:text-base sm:[&>svg]:h-5 sm:[&>svg]:w-5 lg:mt-3"
             >
               Post Your Business
             </Button>
@@ -448,6 +463,9 @@ export default function MarketPlacePage() {
                 containerClassName="h-full"
                 inputClassName={marketplaceSearchInputClassName}
                 iconClassName="left-0 h-5 w-5 text-[#858585]"
+                searchIcon={Search}
+                clearIcon={CircleX}
+                errorIcon={CircleAlert}
               />
             </div>
 
@@ -458,13 +476,16 @@ export default function MarketPlacePage() {
               placeholder="Filter by Category"
               className="h-[3.1rem] w-full sm:!w-full lg:h-12 lg:!w-[12.5rem] lg:!min-w-[12.5rem]"
               selectClassName={marketplaceFilterSelectClassName}
+              clearIcon={CircleX}
+              chevronDownIcon={ChevronDown}
+              chevronUpIcon={ChevronUp}
             />
           </div>
 
           {/* Error State */}
           {error && (
             <div className="flex min-h-64 flex-col items-center justify-center text-center text-gray-500">
-              <Icon icon="mdi:alert-circle-outline" className="mb-4 h-16 w-16 text-red-400" />
+              <CircleAlert className="mb-4 h-16 w-16 text-red-400" />
               <p>Failed to load businesses. Please try again later.</p>
             </div>
           )}
@@ -497,7 +518,7 @@ export default function MarketPlacePage() {
             </div>
           ) : !error && visible.length === 0 ? (
             <EmptyState
-              icon="mdi:storefront-outline"
+              icon={Store}
               title="No businesses found"
               description="Try adjusting your search or be the first to list your business."
               actionLabel="Post Your Business"
@@ -510,6 +531,8 @@ export default function MarketPlacePage() {
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
+              prevIcon={ChevronLeft}
+              nextIcon={ChevronRight}
               onPageChange={(page) => {
                 setCurrentPage(page);
                 window.scrollTo({ top: 0, behavior: 'smooth' });

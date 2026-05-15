@@ -269,6 +269,7 @@ export function RegisterDetailsPage() {
         <PasswordInput
           label="Password"
           id="password"
+          disableCopy
           required
           autoComplete="new-password"
           placeholder="Create a secure password"

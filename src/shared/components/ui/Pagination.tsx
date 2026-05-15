@@ -10,7 +10,7 @@
 //     onPageChange={setPage}
 //   />
 
-import { Icon } from '@iconify/react';
+import { renderIcon, type AppIcon } from '@/shared/utils/renderIcon';
 
 interface PaginationProps {
   currentPage: number; // 1-based
@@ -18,6 +18,8 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
   /** Max page buttons visible before collapsing with ellipsis. Default: 5 */
   maxVisible?: number;
+  prevIcon?: AppIcon;
+  nextIcon?: AppIcon;
 }
 
 /**
@@ -54,6 +56,8 @@ export function Pagination({
   totalPages,
   onPageChange,
   maxVisible = 5,
+  prevIcon = 'mdi:chevron-left',
+  nextIcon = 'mdi:chevron-right',
 }: PaginationProps) {
   if (totalPages <= 1) return null;
 
@@ -90,7 +94,7 @@ export function Pagination({
         disabled={currentPage === 1}
         className={`${baseBtn} bg-gray-200 text-gray-600 hover:bg-gray-300 disabled:opacity-40 disabled:cursor-not-allowed`}
       >
-        <Icon icon="mdi:chevron-left" className="w-5 h-5" />
+        {renderIcon(prevIcon, 'h-5 w-5')}
       </button>
 
       {/* Pages */}
@@ -111,7 +115,7 @@ export function Pagination({
         disabled={currentPage === totalPages}
         className={`${baseBtn} bg-gray-200 text-gray-600 hover:bg-gray-300 disabled:opacity-40 disabled:cursor-not-allowed`}
       >
-        <Icon icon="mdi:chevron-right" className="w-5 h-5" />
+        {renderIcon(nextIcon, 'h-5 w-5')}
       </button>
     </nav>
   );

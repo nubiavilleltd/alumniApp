@@ -16,6 +16,7 @@ import { toast } from '@/shared/components/ui/Toast';
 import { EVENT_ROUTES } from '../routes';
 import type { Event } from '../types/event.types';
 import { formatDateRange } from '@/shared/utils/dateHelpers';
+import { Calendar, MapPin } from 'lucide-react';
 const MY_EVENTS_PER_PAGE = 6;
 
 // ─── Unregister modal ────────────────────────────────────────────────────────
@@ -221,7 +222,8 @@ function MyEventCard({
           )}
           {isPast && !isCancelled && (
             <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-600/90 text-white flex items-center gap-1">
-              <Icon icon="mdi:check-circle" className="w-3 h-3" /> Attended
+              {/* <Icon icon="mdi:check-circle" className="w-3 h-3" /> Attended */}
+              Attended
             </span>
           )}
         </div>
@@ -235,22 +237,24 @@ function MyEventCard({
         </h3>
 
         {/* Description */}
-        <p className="text-gray-500 text-sm leading-relaxed line-clamp-2 mb-4">
+        <p className="text-gray-600 text-sm leading-relaxed line-clamp-2 mb-4">
           {event.description}
         </p>
 
         {/* Meta — pushed to bottom */}
         <div className="mt-auto flex flex-col gap-1.5">
           {event.location && (
-            <p className="text-gray-500 text-sm flex items-center gap-1.5 truncate">
-              <Icon icon="mdi:map-marker-outline" className="w-4 h-4 flex-shrink-0 text-gray-400" />
+            <p className="text-gray-600 text-sm flex items-center gap-1.5 truncate">
+              {/* <Icon icon="mdi:map-marker-outline" className="w-4 h-4 flex-shrink-0 text-gray-400" /> */}
+              <MapPin size={15} />
               <span className="truncate">{event.location}</span>
             </p>
           )}
 
           {dateRange && (
-            <p className="text-gray-500 text-sm flex items-center gap-1.5">
-              <Icon icon="mdi:clock-outline" className="w-4 h-4 flex-shrink-0 text-gray-400" />
+            <p className="text-gray-600 text-sm flex items-center gap-1.5">
+              {/* <Icon icon="mdi:clock-outline" className="w-4 h-4 flex-shrink-0 text-gray-400" /> */}
+              <Calendar size={15} />
               {dateRange}
             </p>
           )}
@@ -422,7 +426,7 @@ export function MyEventsPage() {
             <section className="mb-10">
               {!isLoading && upcomingEvents.length > 0 && (
                 <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4 flex items-center gap-2">
-                  <Icon icon="mdi:calendar-clock-outline" className="w-4 h-4 text-primary-500" />
+                  {/* <Icon icon="mdi:calendar-clock-outline" className="w-4 h-4 text-primary-500" /> */}
                   Upcoming ({upcomingEvents.length})
                 </h2>
               )}
@@ -471,7 +475,7 @@ export function MyEventsPage() {
           {(isLoading || pastEvents.length > 0) && (
             <section>
               <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4 flex items-center gap-2">
-                <Icon icon="mdi:calendar-check-outline" className="w-4 h-4 text-gray-400" />
+                {/* <Icon icon="mdi:calendar-check-outline" className="w-4 h-4 text-gray-400" /> */}
                 Past Events ({isLoading ? '…' : pastEvents.length})
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">

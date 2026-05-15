@@ -22,6 +22,7 @@ import type { PendingVouch } from '../api/voucherApi';
 import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
 import { resolveProfilePhoto } from '@/features/user/utils/profileUtils';
 import { formatDateRange } from '@/shared/utils/dateHelpers';
+import { Calendar, Clock, MapPin } from 'lucide-react';
 
 // ─── Profile completeness checklist ──────────────────────────────────────────
 
@@ -279,7 +280,8 @@ function RegisteredEventRow({ event }: { event: Event }) {
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <Icon icon="mdi:calendar-month-outline" className="w-6 h-6 text-gray-300" />
+            {/* <Icon icon="mdi:calendar-month-outline" className="w-6 h-6 text-gray-300" /> */}
+            <Calendar className="text-gray-600" size={15} />
           </div>
         )}
       </div>
@@ -289,14 +291,16 @@ function RegisteredEventRow({ event }: { event: Event }) {
           {event.description}
         </p>
         {event.location && (
-          <p className="text-gray-400 text-[11px] mt-1 flex items-center gap-1 truncate">
-            <Icon icon="mdi:map-marker-outline" className="w-3 h-3 flex-shrink-0" />
+          <p className="text-gray-600 text-[11px] mt-1 flex items-center gap-1 truncate">
+            {/* <Icon icon="mdi:map-marker-outline" className="w-3 h-3 flex-shrink-0" /> */}
+            <MapPin size={15} />
             <span className="truncate">{event.location}</span>
           </p>
         )}
         {dateStr && (
-          <p className="text-gray-400 text-[11px] mt-0.5 flex items-center gap-1">
-            <Icon icon="mdi:clock-outline" className="w-3 h-3 flex-shrink-0" />
+          <p className="text-gray-600 text-[11px] mt-0.5 flex items-center gap-1">
+            {/* <Icon icon="mdi:clock-outline" className="w-3 h-3 flex-shrink-0" /> */}
+            <Clock size={15} />
             {dateStr}
           </p>
         )}

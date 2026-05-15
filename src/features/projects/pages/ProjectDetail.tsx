@@ -13,8 +13,10 @@ import type { Project } from '../types/project.types';
 import { ROUTES } from '@/shared/constants/routes';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 import { formatDateRange } from '@/shared/utils/dateHelpers';
+import { Calendar, MapPin, User } from 'lucide-react';
+import placeholderImg from '/placeholder-image.png';
 
-const PLACEHOLDER = 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=700&q=80';
+// const PLACEHOLDER = 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=700&q=80';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
@@ -150,7 +152,8 @@ export default function ProjectDetailsPage() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const placeholderImages = ['https://placehold.co/80x80/E5E7EB/6B7280?text=No+Image', ,];
+  // const placeholderImages = ['https://placehold.co/80x80/E5E7EB/6B7280?text=No+Image'];
+  const placeholderImages = [placeholderImg];
 
   if (isLoading) return <ProjectDetailsSkeleton />;
 
@@ -264,20 +267,23 @@ export default function ProjectDetailsPage() {
                 {project.title}
               </h1>
               {project.conductedBy && (
-                <p className="mt-1 text-sm text-gray-400 flex items-center gap-1 flex-wrap">
-                  <Icon icon="mdi:account-outline" className="w-4 h-4" />
+                <p className="mt-1 text-sm text-gray-600 flex items-center gap-1 flex-wrap">
+                  {/* <Icon icon="mdi:account-outline" className="w-4 h-4" /> */}
+                  <User size={15} />
                   {project.conductedBy}
                 </p>
               )}
               {project.location && (
-                <p className="mt-1 text-sm text-gray-400 flex items-center gap-1 flex-wrap">
-                  <Icon icon="mdi:map-marker-outline" className="w-4 h-4" />
+                <p className="mt-1 text-sm text-gray-600 flex items-center gap-1 flex-wrap">
+                  {/* <Icon icon="mdi:map-marker-outline" className="w-4 h-4" /> */}
+                  <MapPin size={15} />
                   {project.location}
                 </p>
               )}
               {dateRange && (
-                <p className="mt-1 text-sm text-gray-400 flex items-center gap-1 flex-wrap">
-                  <Icon icon="mdi:clock-outline" className="w-4 h-4" />
+                <p className="mt-1 text-sm text-gray-600 flex items-center gap-1 flex-wrap">
+                  {/* <Icon icon="mdi:clock-outline" className="w-4 h-4" /> */}
+                  <Calendar size={15} />
                   {dateRange}
                 </p>
               )}

@@ -1,4 +1,21 @@
-import { Icon } from '@iconify/react';
+import {
+  ArrowLeft,
+  Copy,
+  Ellipsis,
+  LoaderCircle,
+  MessageSquare,
+  MessageSquareWarning,
+  MessageSquareX,
+  MessagesSquare,
+  Mic,
+  MicOff,
+  Paperclip,
+  RefreshCw,
+  Reply,
+  Search,
+  SendHorizontal,
+  Trash2,
+} from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   Fragment,
@@ -80,6 +97,7 @@ import {
   mergeThreadMessagesWithOptimistic,
   sortGroupParticipants,
 } from './messagesPage.utils';
+import { renderIcon } from '@/shared/utils/renderIcon';
 
 const breadcrumbItems = [{ label: 'Home', href: '/' }, { label: 'Messages' }];
 const MIN_VOICE_NOTE_DURATION_MS = 600;
@@ -116,10 +134,14 @@ export function MessagesPage() {
   const [optimisticMessagesByThreadId, setOptimisticMessagesByThreadId] = useState<
     Record<string, MessageItem[]>
   >({});
+  const [persistedUnreadDividerMessageId, setPersistedUnreadDividerMessageId] = useState<
+    string | null
+  >(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const voiceRecordButtonRef = useRef<HTMLButtonElement | null>(null);
   const messagePaneRef = useRef<HTMLDivElement | null>(null);
   const lastOpenedThreadIdRef = useRef<string | null>(null);
+  const unreadDividerThreadIdRef = useRef<string | null>(null);
   const previousRequestedThreadIdRef = useRef<string | null>(null);
   const pendingDirectThreadIntentRef = useRef<string | null>(null);
   const pendingInitialMessageIntentRef = useRef<string | null>(null);
@@ -236,6 +258,9 @@ export function MessagesPage() {
     activeThreadWithOptimisticMessages?.messages,
     resolvedThreadSummary?.unreadCount,
   ]);
+  const visibleUnreadDividerMessageId =
+    unreadDividerMessageId ??
+    (unreadDividerThreadIdRef.current === activeThreadId ? persistedUnreadDividerMessageId : null);
   const threadShell = activeThreadWithOptimisticMessages ?? resolvedThreadSummary;
   const unreadThreadCount = inboxQuery.data?.unreadThreadCount ?? 0;
   const groupParticipants = useMemo(
@@ -819,6 +844,30 @@ export function MessagesPage() {
   }, [activeThread, markThreadRead, viewerMemberId]);
 
   useEffect(() => {
+    if (!activeThreadId) {
+      unreadDividerThreadIdRef.current = null;
+      setPersistedUnreadDividerMessageId(null);
+      return;
+    }
+
+    if (unreadDividerThreadIdRef.current !== activeThreadId) {
+      unreadDividerThreadIdRef.current = activeThreadId;
+      setPersistedUnreadDividerMessageId(null);
+    }
+  }, [activeThreadId]);
+
+  useEffect(() => {
+    if (!activeThreadId || !unreadDividerMessageId) {
+      return;
+    }
+
+    unreadDividerThreadIdRef.current = activeThreadId;
+    setPersistedUnreadDividerMessageId((current) =>
+      current === unreadDividerMessageId ? current : unreadDividerMessageId,
+    );
+  }, [activeThreadId, unreadDividerMessageId]);
+
+  useEffect(() => {
     if (!activeThreadWithOptimisticMessages?.id) {
       lastOpenedThreadIdRef.current = null;
       return;
@@ -1214,16 +1263,24 @@ export function MessagesPage() {
         title="Messages"
         description="Stay in touch with alumnae conversations and follow-ups."
       />
-      <div className="lg:hidden">
+      <div className={isMobileThreadOpen ? 'hidden' : 'lg:hidden'}>
         <Breadcrumbs items={breadcrumbItems} />
       </div>
 
       {/* Page background matching Figma off-white */}
       <section
         {...pullToRefresh.bind}
-        className="section relative bg-[#f0ede8] lg:h-[calc(100dvh-4.75rem)] lg:overflow-hidden lg:py-4"
+        className={`relative bg-[#f0ede8] ${
+          isMobileThreadOpen
+            ? 'h-[calc(100dvh-5.25rem)] overflow-hidden sm:h-[calc(100dvh-5.5rem)]'
+            : ''
+        } lg:h-[calc(100dvh-4.75rem)] lg:overflow-hidden lg:py-4`}
       >
-        <div className="container-custom space-y-4 lg:flex lg:h-full lg:min-h-0 lg:max-w-[1560px] lg:flex-col lg:space-y-0">
+        <div
+          className={`container-custom space-y-4 ${
+            isMobileThreadOpen ? 'flex h-full min-h-0 flex-col space-y-0' : ''
+          } lg:flex lg:h-full lg:min-h-0 lg:max-w-[1560px] lg:flex-col lg:space-y-0`}
+        >
           {/* Pull-to-refresh indicator */}
           <div className="flex justify-center lg:pointer-events-none lg:absolute lg:left-1/2 lg:top-2 lg:z-20 lg:w-fit lg:-translate-x-1/2">
             <div
@@ -1234,23 +1291,32 @@ export function MessagesPage() {
                 transform: `translateY(${Math.min(pullToRefresh.pullDistance, 18)}px)`,
               }}
             >
-              <Icon
-                icon={pullToRefresh.isRefreshing ? 'mdi:loading' : 'mdi:refresh'}
-                className={`h-4 w-4 ${pullToRefresh.isRefreshing ? 'animate-spin' : ''}`}
-              />
+              {pullToRefresh.isRefreshing ? (
+                <LoaderCircle className="h-4 w-4 animate-spin" strokeWidth={2.2} />
+              ) : (
+                <RefreshCw className="h-4 w-4" strokeWidth={2.2} />
+              )}
               <span>{refreshLabel}</span>
             </div>
           </div>
 
           {/* Page title */}
-          <div className="shrink-0 space-y-1 pt-1 lg:pb-3">
+          <div
+            className={`shrink-0 space-y-1 pt-0 ${
+              isMobileThreadOpen ? 'hidden lg:block' : ''
+            } lg:pb-3`}
+          >
             <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-950 sm:text-4xl lg:text-[2.5rem] xl:text-[2.75rem]">
               Message Centre
             </h1>
           </div>
 
           {/* Two-column layout */}
-          <section className="grid gap-4 lg:min-h-0 lg:flex-1 lg:grid-cols-[minmax(20rem,26rem)_minmax(0,1fr)] lg:gap-4 xl:grid-cols-[24rem_minmax(0,1fr)] 2xl:grid-cols-[26rem_minmax(0,1fr)]">
+          <section
+            className={`grid gap-4 ${
+              isMobileThreadOpen ? 'min-h-0 flex-1' : ''
+            } lg:min-h-0 lg:flex-1 lg:grid-cols-[minmax(20rem,26rem)_minmax(0,1fr)] lg:gap-4 xl:grid-cols-[24rem_minmax(0,1fr)] 2xl:grid-cols-[26rem_minmax(0,1fr)]`}
+          >
             {/* ─── Inbox pane ─── */}
             <aside
               className={`min-h-[calc(100dvh-9rem)] flex-col overflow-hidden rounded-2xl bg-white shadow-sm lg:flex lg:h-full lg:min-h-0 ${
@@ -1260,9 +1326,9 @@ export function MessagesPage() {
               {/* Search + filters */}
               <div className="px-4 pb-3 pt-4">
                 <label className="relative block">
-                  <Icon
-                    icon="mdi:magnify"
+                  <Search
                     className="pointer-events-none absolute left-3.5 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-gray-400"
+                    strokeWidth={2.2}
                   />
                   <input
                     type="text"
@@ -1316,7 +1382,7 @@ export function MessagesPage() {
                   </div>
                 ) : inboxQuery.error && !inboxQuery.data ? (
                   <EmptyState
-                    icon="mdi:chat-alert-outline"
+                    icon={MessageSquareWarning}
                     title="Could not load inbox"
                     description="Pull down to retry."
                     actionLabel="Refresh"
@@ -1324,13 +1390,13 @@ export function MessagesPage() {
                   />
                 ) : inboxThreads.length === 0 ? (
                   <EmptyState
-                    icon="mdi:message-outline"
+                    icon={MessageSquare}
                     title="No messages yet"
                     description="Your conversations will appear here."
                   />
                 ) : visibleThreads.length === 0 ? (
                   <EmptyState
-                    icon="mdi:message-text-outline"
+                    icon={MessagesSquare}
                     title="No results"
                     description="Try a different filter or search term."
                   />
@@ -1382,12 +1448,12 @@ export function MessagesPage() {
                                     {preview.senderPrefix ? (
                                       <span>{preview.senderPrefix}</span>
                                     ) : null}
-                                    {preview.attachmentKind ? (
-                                      <Icon
-                                        icon={getAttachmentIcon(preview.attachmentKind)}
-                                        className="mb-0.5 mr-1 inline-block h-4 w-4 align-text-bottom text-gray-400"
-                                      />
-                                    ) : null}
+                                    {preview.attachmentKind
+                                      ? renderIcon(
+                                          getAttachmentIcon(preview.attachmentKind),
+                                          'mb-0.5 mr-1 inline-block h-4 w-4 align-text-bottom text-gray-400',
+                                        )
+                                      : null}
                                     <span>{preview.text}</span>
                                   </p>
                                 </div>
@@ -1409,9 +1475,9 @@ export function MessagesPage() {
 
             {/* ─── Active thread pane ─── */}
             <article
-              className={`min-h-[calc(100dvh-9rem)] flex-col overflow-hidden rounded-2xl bg-white shadow-sm lg:flex lg:h-full lg:min-h-0 ${
-                isMobileThreadOpen ? 'flex' : 'hidden'
-              }`}
+              className={`min-h-[calc(100dvh-9rem)] flex-col overflow-hidden rounded-2xl bg-white shadow-sm ${
+                isMobileThreadOpen ? 'h-full min-h-0' : ''
+              } lg:flex lg:h-full lg:min-h-0 ${isMobileThreadOpen ? 'flex' : 'hidden'}`}
             >
               {threadShell || (activeThreadId && threadQuery.isLoading) ? (
                 <>
@@ -1424,7 +1490,7 @@ export function MessagesPage() {
                         className="inline-flex h-10 w-10 items-center justify-center rounded-full text-gray-600 transition-colors hover:bg-gray-100 lg:hidden"
                         aria-label="Back to messages"
                       >
-                        <Icon icon="mdi:arrow-left" className="h-5 w-5" />
+                        <ArrowLeft className="h-5 w-5" strokeWidth={2.2} />
                       </button>
 
                       <ThreadAvatar thread={threadShell} />
@@ -1463,7 +1529,7 @@ export function MessagesPage() {
                   {/* Message pane */}
                   <div
                     ref={messagePaneRef}
-                    className="min-h-0 flex-1 overflow-y-auto bg-white px-5 py-5"
+                    className="min-h-0 flex-1 overflow-y-auto bg-white px-4 py-4 sm:px-5 sm:py-5"
                   >
                     {threadQuery.isLoading && !activeThread ? (
                       <div className="space-y-5">
@@ -1478,7 +1544,7 @@ export function MessagesPage() {
                       </div>
                     ) : threadQuery.error ? (
                       <EmptyState
-                        icon="mdi:chat-remove-outline"
+                        icon={MessageSquareX}
                         title="Conversation unavailable"
                         description="Refresh to reload."
                         actionLabel="Refresh"
@@ -1521,7 +1587,7 @@ export function MessagesPage() {
                                 </div>
                               ) : null}
 
-                              {message.id === unreadDividerMessageId ? (
+                              {message.id === visibleUnreadDividerMessageId ? (
                                 <div className="my-4 flex items-center gap-3">
                                   <div className="h-px flex-1 bg-blue-100" />
                                   <span className="text-sm font-medium text-gray-500">
@@ -1581,7 +1647,7 @@ export function MessagesPage() {
                                         }`}
                                         aria-label="Message actions"
                                       >
-                                        <Icon icon="mdi:dots-horizontal" className="h-3.5 w-3.5" />
+                                        <Ellipsis className="h-3.5 w-3.5" strokeWidth={2.2} />
                                       </button>
                                     </div>
                                   ) : null}
@@ -1639,7 +1705,7 @@ export function MessagesPage() {
                   </div>
 
                   {/* Composer footer */}
-                  <footer className="shrink-0 border-t border-gray-100 px-4 py-1.5">
+                  <footer className="sticky bottom-0 z-10 shrink-0 border-t border-gray-100 bg-white/95 px-4 py-1.5 backdrop-blur lg:static lg:bg-white lg:backdrop-blur-0">
                     <input
                       ref={fileInputRef}
                       type="file"
@@ -1730,7 +1796,7 @@ export function MessagesPage() {
                               className="inline-flex h-9 w-9 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-200 hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-50"
                               aria-label="Attach file"
                             >
-                              <Icon icon="mdi:paperclip" className="h-4.5 w-4.5" />
+                              <Paperclip className="h-4.5 w-4.5" strokeWidth={2.2} />
                             </button>
 
                             {/* Voice note */}
@@ -1752,22 +1818,17 @@ export function MessagesPage() {
                                 }`}
                                 aria-label="Hold to record a voice note"
                               >
-                                <Icon
-                                  icon={
-                                    voiceRecordingState === 'starting' ||
-                                    voiceRecordingState === 'finishing'
-                                      ? 'mdi:loading'
-                                      : voiceRecordingActive
-                                        ? 'mdi:microphone'
-                                        : 'mdi:microphone-outline'
-                                  }
-                                  className={`h-4.5 w-4.5 ${
-                                    voiceRecordingState === 'starting' ||
-                                    voiceRecordingState === 'finishing'
-                                      ? 'animate-spin'
-                                      : ''
-                                  }`}
-                                />
+                                {voiceRecordingState === 'starting' ||
+                                voiceRecordingState === 'finishing' ? (
+                                  <LoaderCircle
+                                    className="h-4.5 w-4.5 animate-spin"
+                                    strokeWidth={2.2}
+                                  />
+                                ) : voiceRecordingActive ? (
+                                  <Mic className="h-4.5 w-4.5" strokeWidth={2.2} />
+                                ) : (
+                                  <MicOff className="h-4.5 w-4.5" strokeWidth={2.2} />
+                                )}
                               </button>
 
                               <span className="pointer-events-none absolute -top-9 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded-lg bg-gray-800 px-2.5 py-1.5 text-xs text-white shadow-sm group-hover:inline-flex">
@@ -1797,10 +1858,11 @@ export function MessagesPage() {
                               className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-white shadow-sm transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-200"
                               aria-label="Send message"
                             >
-                              <Icon
-                                icon={sendMessage.isPending ? 'mdi:loading' : 'mdi:send'}
-                                className={`h-4 w-4 ${sendMessage.isPending ? 'animate-spin' : ''}`}
-                              />
+                              {sendMessage.isPending ? (
+                                <LoaderCircle className="h-4 w-4 animate-spin" strokeWidth={2.2} />
+                              ) : (
+                                <SendHorizontal className="h-4 w-4" strokeWidth={2.2} />
+                              )}
                             </button>
                           </div>
                         </div>
@@ -1829,7 +1891,7 @@ export function MessagesPage() {
                   onClick={() => void handleReplyToMessage()}
                   className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50"
                 >
-                  <Icon icon="mdi:reply-outline" className="h-4 w-4" />
+                  <Reply className="h-4 w-4" strokeWidth={2.2} />
                   Reply
                 </button>
                 {canCopyOpenMessage ? (
@@ -1838,7 +1900,7 @@ export function MessagesPage() {
                     onClick={() => void handleCopyMessage(openMessageActionsMessage)}
                     className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50"
                   >
-                    <Icon icon="mdi:content-copy" className="h-4 w-4" />
+                    <Copy className="h-4 w-4" strokeWidth={2.2} />
                     Copy
                   </button>
                 ) : null}
@@ -1848,7 +1910,7 @@ export function MessagesPage() {
                     onClick={() => void handleDeleteMessage()}
                     className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-rose-600 transition-colors hover:bg-rose-50"
                   >
-                    <Icon icon="mdi:delete-outline" className="h-4 w-4" />
+                    <Trash2 className="h-4 w-4" strokeWidth={2.2} />
                     Delete
                   </button>
                 ) : null}

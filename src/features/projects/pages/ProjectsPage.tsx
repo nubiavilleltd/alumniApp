@@ -9,7 +9,7 @@
 // - Cream/off-white background
 
 import { useEffect, useMemo, useState } from 'react';
-import { Icon } from '@iconify/react';
+import { FolderOpen, Plus } from 'lucide-react';
 import { SEO } from '@/shared/common/SEO';
 import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { FilterDropdown } from '@/shared/components/ui/FilterDropdown';
@@ -59,7 +59,6 @@ export default function ProjectsPage() {
   const ITEMS_PER_PAGE = useItemsPerPage();
 
   const { data: projects = [], isLoading } = useProjects();
-  console.log('data project', { projects });
 
   // Year options derived from projects
   const years = useMemo(() => {
@@ -172,7 +171,7 @@ export default function ProjectsPage() {
         flex-shrink-0 flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 text-white text-sm font-semibold px-4 py-2 rounded-full transition-colors shadow-sm
       "
               >
-                <Icon icon="mdi:plus" className="w-4 h-4" />
+                <Plus className="w-4 h-4" strokeWidth={2.4} />
                 <span className="hidden sm:inline">Create Project</span>
               </button>
             )}
@@ -220,7 +219,7 @@ export default function ProjectsPage() {
             </div>
           ) : (
             <EmptyState
-              icon="mdi:folder-outline"
+              icon={<FolderOpen strokeWidth={2.4} />}
               title="No projects found"
               description={
                 searchTerm || yearFilter

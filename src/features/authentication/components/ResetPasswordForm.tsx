@@ -107,6 +107,7 @@ export function ResetPasswordForm() {
         <PasswordInput
           label="New Password"
           id="password"
+          disableCopy
           autoComplete="new-password"
           placeholder="Create a secure password"
           error={form.formState.errors.password?.message}
@@ -117,6 +118,7 @@ export function ResetPasswordForm() {
           <PasswordInput
             label="Confirm Password"
             id="confirmPassword"
+            disablePaste
             autoComplete="new-password"
             placeholder="Re-enter your new password"
             error={form.formState.errors.confirmPassword?.message}

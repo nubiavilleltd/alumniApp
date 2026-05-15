@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Lock, MapPin, Pencil, Trash2 } from 'lucide-react';
+import { Icon } from '@iconify/react';
 import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { FormInput } from '@/shared/components/ui/input/FormInput';
@@ -40,6 +40,17 @@ import {
 import { EventRegistrationQuestionField } from '../components/EventRegistrationQuestionField';
 import { AUTH_ROUTES } from '@/features/authentication/routes';
 import { CreateEventFormData, createEventSchema } from '../schemas/event.schema';
+import {
+  eventFormDateInputClassName,
+  eventFormFieldControlClassName,
+  eventFormFieldLabelClassName,
+  eventFormInputTextClassName,
+  eventFormSelectClassName,
+  eventFormSelectControlClassName,
+  eventFormTextareaClassName,
+  eventFormTimePickerClassName,
+  eventFormUploadDropzoneClassName,
+} from '../constants/eventFormStyles';
 
 type LocalRegistrationFormDraft = {
   localId: string;
@@ -262,7 +273,7 @@ export default function CreateEventPage() {
         <SEO title="Access Denied" />
         <section className="section">
           <div className="container-custom text-center">
-            <Lock className="w-16 h-16 text-red-400 mx-auto mb-4" />
+            <Icon icon="mdi:lock-outline" className="w-16 h-16 text-red-400 mx-auto mb-4" />
             <h1 className="text-3xl font-bold mb-4">Access Denied</h1>
             <p className="text-gray-600 mb-6">You don't have permission to create events.</p>
             <Button onClick={() => navigate(EVENT_ROUTES.ROOT)}>Back to Events</Button>
@@ -290,7 +301,7 @@ export default function CreateEventPage() {
       <SEO title="Create Event" description="Create a new event" />
       <Breadcrumbs items={breadcrumbItems} />
 
-      <section className="section">
+      <section className="section bg-stone-100">
         <div className="container-custom">
           <div className="mb-8">
             <h1 className="text-3xl md:text-4xl font-bold mb-2">Create Event</h1>
@@ -307,7 +318,11 @@ export default function CreateEventPage() {
                 required
                 placeholder="e.g. Annual Alumni Reunion 2026"
                 error={errors.title?.message}
+                labelClassName={eventFormFieldLabelClassName}
+                controlClassName={eventFormFieldControlClassName}
+                inputClassName={eventFormInputTextClassName}
                 {...register('title')}
+                // style={{backgroundColor:"#f5f4f0"}}
               />
 
               <FormInput
@@ -315,8 +330,11 @@ export default function CreateEventPage() {
                 id="location"
                 required
                 placeholder="Venue name, city"
-                icon={MapPin}
+                // icon={MapPin}
                 error={errors.location?.message}
+                labelClassName={eventFormFieldLabelClassName}
+                controlClassName={eventFormFieldControlClassName}
+                inputClassName={eventFormInputTextClassName}
                 {...register('location')}
               />
 
@@ -327,6 +345,8 @@ export default function CreateEventPage() {
                 min={todayDate}
                 max={endDate || undefined}
                 error={errors.start_date?.message}
+                labelClassName={eventFormFieldLabelClassName}
+                inputClassName={eventFormDateInputClassName}
                 value={startDate}
                 onValueChange={(val) =>
                   setValue('start_date', val, {
@@ -344,6 +364,8 @@ export default function CreateEventPage() {
                 id="end_date"
                 min={startDate || todayDate}
                 error={errors.end_date?.message}
+                labelClassName={eventFormFieldLabelClassName}
+                inputClassName={eventFormDateInputClassName}
                 value={endDate}
                 onValueChange={(val) =>
                   setValue('end_date', val, {
@@ -359,6 +381,7 @@ export default function CreateEventPage() {
                 id="start_time"
                 required
                 error={errors.start_time?.message}
+                className={eventFormTimePickerClassName}
                 value={watch('start_time')}
                 onValueChange={(val) =>
                   setValue('start_time', val, {
@@ -373,6 +396,7 @@ export default function CreateEventPage() {
                 label="End Time"
                 id="end_time"
                 error={errors.end_time?.message}
+                className={eventFormTimePickerClassName}
                 value={watch('end_time')}
                 onValueChange={(val) =>
                   setValue('end_time', val, {
@@ -391,20 +415,23 @@ export default function CreateEventPage() {
               rows={4}
               placeholder="Describe the event..."
               error={errors.description?.message}
+              labelClassName={eventFormFieldLabelClassName}
+              textareaClassName={eventFormTextareaClassName}
               {...register('description')}
             />
 
             {/* ── Banner image ────────────────────────────────────────── */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-[#8f8b84]">
                 Event Banner
-                <span className="text-xs text-gray-400 font-normal ml-2">Optional</span>
+                <span className="ml-2 text-xs font-normal text-[#b3afa8]">Optional</span>
               </label>
               <ImageUpload
                 previews={bannerPreview ? [bannerPreview] : []}
                 onChange={handleImageChange}
                 hint="PNG or JPG — max 2 MB. Recommended: 1200×600 px"
                 multiple={false}
+                dropzoneClassName={eventFormUploadDropzoneClassName}
               />
             </div>
 
@@ -418,6 +445,9 @@ export default function CreateEventPage() {
                 value={visibility}
                 onChange={(e) => setValue('visibility', e.target.value as any)}
                 error={errors.visibility?.message}
+                labelClassName={eventFormFieldLabelClassName}
+                className={eventFormSelectClassName}
+                controlClassName={eventFormSelectControlClassName}
               />
               <SelectInput
                 label="Status"
@@ -427,6 +457,9 @@ export default function CreateEventPage() {
                 value={status}
                 onChange={(e) => setValue('status', e.target.value as any)}
                 error={errors.status?.message}
+                labelClassName={eventFormFieldLabelClassName}
+                className={eventFormSelectClassName}
+                controlClassName={eventFormSelectControlClassName}
               />
               {/* <FormInput
                 label="Max Attendees"
@@ -439,28 +472,25 @@ export default function CreateEventPage() {
               /> */}
             </div>
 
-            <div className="rounded-[1.75rem] border border-primary-100 bg-primary-50/50 px-5 py-5">
+            <div className="rounded-[1.75rem] px-5 py-5">
               <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                 <div className="max-w-4xl">
                   <p className="text-[1.15rem] font-semibold leading-tight tracking-[0.01em] text-gray-800 md:text-[1.35rem]">
                     Would you like to request additional info from attendees regarding this event?
                   </p>
-                  <p className="mt-2 text-sm text-gray-500 md:text-base">
-                    Add optional registration forms here if this event needs extra attendee details
-                    like meal choice, dress code, logistics, or special requests.
-                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActiveRegistrationFormId(null);
+                      setIsRegistrationBuilderOpen(true);
+                    }}
+                    className="inline-flex mt-2 items-center justify-center rounded-full border-2 border-primary-500 px-6 text-sm font-semibold text-primary-500 transition-colors hover:bg-primary-50 md:px-7 md:text-base"
+                  >
+                    {registrationFormDrafts.length > 0
+                      ? 'Add another section'
+                      : 'Yes, request info'}
+                  </button>
                 </div>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setActiveRegistrationFormId(null);
-                    setIsRegistrationBuilderOpen(true);
-                  }}
-                  className="inline-flex  items-center justify-center rounded-full border-2 border-primary-500 px-6 text-sm font-semibold text-primary-500 transition-colors hover:bg-primary-50 md:px-7 md:text-base"
-                >
-                  {registrationFormDrafts.length > 0 ? 'Add another section' : 'Yes, request info'}
-                </button>
               </div>
 
               {registrationFormDrafts.length > 0 ? (
@@ -486,7 +516,7 @@ export default function CreateEventPage() {
                             }}
                             className="inline-flex items-center gap-2 rounded-full border border-primary-200 bg-white px-3 py-1.5 text-sm font-semibold text-primary-500 transition-colors hover:bg-primary-50"
                           >
-                            <Pencil className="h-4 w-4" />
+                            <Icon icon="mdi:pencil-outline" className="h-4 w-4" />
                             Edit form
                           </button>
                           <button
@@ -501,7 +531,7 @@ export default function CreateEventPage() {
                             }}
                             className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 transition-colors hover:text-red-500"
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Icon icon="mdi:delete-outline" className="h-4 w-4" />
                             Remove
                           </button>
                         </div>

@@ -206,6 +206,7 @@ function ChangePasswordSection() {
         <PasswordInput
           label="Current Password"
           id="currentPassword"
+          disableCopy
           placeholder="Enter your current password"
           error={errors.currentPassword?.message}
           autoComplete="current-password"
@@ -214,6 +215,7 @@ function ChangePasswordSection() {
         <PasswordInput
           label="New Password"
           id="newPassword"
+          disableCopy
           placeholder="Enter your new password"
           hint="Password must be at least 8 characters long with a mix of uppercase letters, lowercase letters, numbers, and symbols"
           error={errors.newPassword?.message}

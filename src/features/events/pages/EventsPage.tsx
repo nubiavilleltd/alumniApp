@@ -5,7 +5,6 @@
 
 import { useState, useMemo, useRef, useCallback, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Icon } from '@iconify/react';
 import { SEO } from '@/shared/common/SEO';
 import { RegisterEventModal } from '../components/RegisterEventModal';
 import { useUpcomingEvents, usePastEvents } from '../hooks/useEvents';
@@ -17,7 +16,16 @@ import { Pagination } from '@/shared/components/ui/Pagination';
 import { ROUTES } from '@/shared/constants/routes';
 import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { formatDateRange, parseDateInput } from '@/shared/utils/dateHelpers';
-import { Calendar } from 'lucide-react';
+import {
+  ArrowLeft,
+  ArrowRight,
+  Calendar,
+  CalendarDays,
+  ChevronRight,
+  Clock,
+  MapPin,
+  Plus,
+} from 'lucide-react';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -59,6 +67,7 @@ const MONTH_NAMES = [
 ];
 const DAY_NAMES = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const LIST_PAGE = 20;
+const EVENTS_ICON_STROKE = 2.5;
 
 // ─── Calendar event block ─────────────────────────────────────────────────────
 
@@ -102,7 +111,7 @@ function CalendarBlock({
     >
       {/* Hidden on mobile, visible on desktop */}
       <div className="hidden sm:inline-flex items-center gap-1 px-2 py-[3px] rounded-md text-[10px] font-medium text-white bg-gray-800 mb-1.5">
-        <Calendar size={12} />
+        <Calendar size={12} strokeWidth={EVENTS_ICON_STROKE} />
         {formatShort(event.startDate)}
         {event.endDate ? ` - ${formatShort(event.endDate)}` : ''}
       </div>
@@ -254,7 +263,7 @@ function EventListItem({
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <Icon icon="mdi:calendar-month-outline" className="w-6 h-6 text-gray-300" />
+            <CalendarDays size={24} strokeWidth={EVENTS_ICON_STROKE} className="text-gray-300" />
           </div>
         )}
       </div>
@@ -274,20 +283,24 @@ function EventListItem({
           {event.description}
         </p>
         {event.location && (
-          <p className="text-gray-400 text-[11px] mt-1 flex items-center gap-1 truncate">
-            <Icon icon="mdi:map-marker-outline" className="w-3 h-3 flex-shrink-0" />
+          <p className="text-gray-600 text-[11px] mt-1 flex items-center gap-1 truncate">
+            <MapPin size={13} strokeWidth={EVENTS_ICON_STROKE} />
             <span className="truncate">{event.location}</span>
           </p>
         )}
         {formatEventDate(event) && (
-          <p className="text-gray-400 text-[11px] mt-0.5 flex items-center gap-1">
-            <Icon icon="mdi:clock-outline" className="w-3 h-3 flex-shrink-0" />
+          <p className="text-gray-600 text-[11px] mt-0.5 flex items-center gap-1">
+            <Clock size={12} strokeWidth={EVENTS_ICON_STROKE} />
             {formatEventDate(event)}
           </p>
         )}
       </div>
 
-      <Icon icon="mdi:chevron-right" className="w-4 h-4 text-primary-500 flex-shrink-0" />
+      <ChevronRight
+        size={16}
+        strokeWidth={EVENTS_ICON_STROKE}
+        className="text-primary-500 flex-shrink-0"
+      />
     </div>
   );
 }
@@ -453,7 +466,11 @@ export function EventsPage() {
                 }
                 className="w-9 h-9 flex items-center justify-center rounded-full border border-gray-200 bg-white shadow-sm hover:bg-gray-50 transition-colors"
               >
-                <Icon icon="mdi:arrow-left" className="w-5 h-5 text-primary-500" />
+                <ArrowLeft
+                  size={20}
+                  strokeWidth={EVENTS_ICON_STROKE}
+                  className="text-primary-500"
+                />
               </button>
               <button
                 type="button"
@@ -464,7 +481,11 @@ export function EventsPage() {
                 }
                 className="w-9 h-9 flex items-center justify-center rounded-full border border-gray-200 bg-white shadow-sm hover:bg-gray-50 transition-colors"
               >
-                <Icon icon="mdi:arrow-right" className="w-5 h-5 text-primary-500" />
+                <ArrowRight
+                  size={20}
+                  strokeWidth={EVENTS_ICON_STROKE}
+                  className="text-primary-500"
+                />
               </button>
 
               <MonthYearPicker value={calendarDate} onChange={handleDateChange} />
@@ -472,23 +493,6 @@ export function EventsPage() {
 
             {/* Search + create */}
             <div className="flex items-center gap-2">
-              {/* <div className="relative flex-1 sm:w-60"> */}
-              {/* <Icon
-                  icon="mdi:magnify"
-                  className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
-                />
-                <input
-                  type="text"
-                  value={searchTerm}
-                  onChange={(e) => {
-                    setSearchTerm(e.target.value);
-                    setListCount(LIST_PAGE);
-                    setActiveEventId(null);
-                  }}
-                  placeholder="Search events"
-                  className="w-full pl-9 pr-4 py-2 rounded-full border border-gray-200 bg-white text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-300 shadow-sm"
-                /> */}
-
               <SearchInput
                 className="flex-1 sm:w-60"
                 value={searchTerm}
@@ -499,14 +503,13 @@ export function EventsPage() {
                 }}
                 placeholder="Search events"
               />
-              {/* </div> */}
               {isAdmin && (
                 <button
                   type="button"
                   onClick={() => navigate(EVENT_ROUTES.CREATE)}
                   className="flex-shrink-0 flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 text-white text-sm font-semibold px-4 py-2 rounded-full transition-colors shadow-sm"
                 >
-                  <Icon icon="mdi:plus" className="w-4 h-4" />
+                  <Plus size={16} strokeWidth={EVENTS_ICON_STROKE} />
                   <span className="hidden sm:inline">Create Event</span>
                 </button>
               )}
@@ -538,7 +541,11 @@ export function EventsPage() {
                   Array.from({ length: 5 }).map((_, i) => <EventListSkeleton key={i} />)
                 ) : visibleEvents.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-16 text-gray-400">
-                    <Icon icon="mdi:calendar-blank-outline" className="w-10 h-10 mb-3 opacity-40" />
+                    <CalendarDays
+                      size={40}
+                      strokeWidth={EVENTS_ICON_STROKE}
+                      className="mb-3 opacity-40"
+                    />
                     <p className="text-sm">No events found</p>
                   </div>
                 ) : (

@@ -7,7 +7,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { CalendarX, Lock, MapPin, Pencil, Trash2 } from 'lucide-react';
+import { Icon } from '@iconify/react';
+import { Trash2 } from 'lucide-react';
 import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { FormInput } from '@/shared/components/ui/input/FormInput';
@@ -25,7 +26,11 @@ import { TimePicker } from '@/shared/components/ui/input/TimePicker';
 import { DatePicker } from '@/shared/components/ui/input/DatePicker';
 import { ROUTES } from '@/shared/constants/routes';
 import { ADMIN_ROUTES } from '@/features/admin/routes';
-import { UpdateEventFormData, updateEventSchema } from '../schemas/event.schema';
+import {
+  UpdateEventFormData,
+  updateEventSchema,
+  updatePastEventSchema,
+} from '../schemas/event.schema';
 import {
   useEventSurveyForms,
   useUpsertEventSurveyForm,
@@ -44,7 +49,18 @@ import {
 } from '../lib/eventSurveyAvailability';
 import { eventsService } from '../services/event.service';
 import { useEventStatus } from '../hooks/useEventStatus';
-import { Icon } from '@iconify/react/dist/iconify.js';
+import {
+  eventFormDateInputClassName,
+  eventFormFieldControlClassName,
+  eventFormFieldLabelClassName,
+  eventFormInputTextClassName,
+  eventFormSelectClassName,
+  eventFormSelectControlClassName,
+  eventFormTextareaClassName,
+  eventFormTimePickerClassName,
+  eventFormUploadDropzoneClassName,
+} from '../constants/eventFormStyles';
+import { Pencil } from 'lucide-react';
 
 type LocalRegistrationFormDraft = {
   localId: string;
@@ -115,6 +131,18 @@ export default function EditEventPage() {
   const [isSavingSurveyForms, setIsSavingSurveyForms] = useState(false);
   const [hasInitializedSurveyForms, setHasInitializedSurveyForms] = useState(false);
 
+  const schema = isPast ? updatePastEventSchema : updateEventSchema;
+
+  // const {
+  //   register,
+  //   handleSubmit,
+  //   setValue,
+  //   watch,
+  //   reset,
+  //   trigger,
+  //   formState: { errors },
+  // } = useForm<UpdateEventFormData>({
+  //   resolver: zodResolver(updateEventSchema) as any,
   const {
     register,
     handleSubmit,
@@ -124,7 +152,7 @@ export default function EditEventPage() {
     trigger,
     formState: { errors },
   } = useForm<UpdateEventFormData>({
-    resolver: zodResolver(updateEventSchema) as any,
+    resolver: zodResolver(schema) as any,
     mode: 'onChange',
     defaultValues: {
       title: '',
@@ -214,6 +242,7 @@ export default function EditEventPage() {
   }, [startDate, isStatusManuallyChanged, setValue]);
 
   useEffect(() => {
+    if (isPast) return;
     const subscription = watch((values, { name }) => {
       if (!name) return;
 
@@ -372,7 +401,7 @@ export default function EditEventPage() {
         <SEO title="Access Denied" />
         <section className="section">
           <div className="container-custom text-center">
-            <Lock className="w-16 h-16 text-red-400 mx-auto mb-4" />
+            <Icon icon="mdi:lock-outline" className="w-16 h-16 text-red-400 mx-auto mb-4" />
             <h1 className="text-3xl font-bold mb-4">Access Denied</h1>
             <p className="text-gray-600 mb-6">You don't have permission to edit events.</p>
             <Button onClick={() => navigate(EVENT_ROUTES.ROOT)}>Back to Events</Button>
@@ -415,7 +444,7 @@ export default function EditEventPage() {
     return (
       <section className="section">
         <div className="container-custom text-center">
-          <CalendarX className="w-16 h-16 text-red-400 mx-auto mb-4" />
+          <Icon icon="mdi:calendar-alert" className="w-16 h-16 text-red-400 mx-auto mb-4" />
           <h1 className="text-3xl font-bold mb-4">Event Not Found</h1>
           <Button onClick={() => navigate(EVENT_ROUTES.ROOT)}>Back to Events</Button>
         </div>
@@ -436,7 +465,7 @@ export default function EditEventPage() {
       <SEO title={`Edit — ${event.title}`} description="Edit event details" />
       <Breadcrumbs items={breadcrumbItems} />
 
-      <section className="section">
+      <section className="section bg-stone-100">
         <div className="container-custom ">
           <div className="mb-8 flex items-center justify-between">
             <div>
@@ -444,12 +473,13 @@ export default function EditEventPage() {
               <p className="text-gray-500 text-sm">Update event details</p>
             </div>
             <button
+              title="Delete Event"
               type="button"
               onClick={() => setShowDeleteModal(true)}
               className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 border border-red-200 rounded-lg transition-colors"
             >
-              <Trash2 className="w-4 h-4" />
-              Delete Event
+              <Icon icon="mdi:trash-can-outline" className="w-4 h-4" />
+              <span className="hidden sm:inline">Delete Event</span>
             </button>
           </div>
 
@@ -475,6 +505,9 @@ export default function EditEventPage() {
                 required
                 placeholder="e.g. Annual Alumni Reunion 2026"
                 error={errors.title?.message}
+                labelClassName={eventFormFieldLabelClassName}
+                controlClassName={eventFormFieldControlClassName}
+                inputClassName={eventFormInputTextClassName}
                 {...register('title')}
               />
 
@@ -483,8 +516,11 @@ export default function EditEventPage() {
                 id="location"
                 required
                 placeholder="Venue name, city"
-                icon={MapPin}
+                icon="mdi:map-marker-outline"
                 error={errors.location?.message}
+                labelClassName={eventFormFieldLabelClassName}
+                controlClassName={eventFormFieldControlClassName}
+                inputClassName={eventFormInputTextClassName}
                 {...register('location')}
               />
 
@@ -496,6 +532,8 @@ export default function EditEventPage() {
                 min={todayDate}
                 max={endDate || undefined}
                 error={errors.start_date?.message}
+                labelClassName={eventFormFieldLabelClassName}
+                inputClassName={eventFormDateInputClassName}
                 value={startDate}
                 onValueChange={(val) =>
                   setValue('start_date', val, {
@@ -514,6 +552,8 @@ export default function EditEventPage() {
                 disabled={isPast}
                 min={startDate || todayDate}
                 error={errors.end_date?.message}
+                labelClassName={eventFormFieldLabelClassName}
+                inputClassName={eventFormDateInputClassName}
                 value={endDate}
                 onValueChange={(val) =>
                   setValue('end_date', val, {
@@ -528,6 +568,7 @@ export default function EditEventPage() {
                 id="start_time"
                 disabled={isPast}
                 error={errors.start_time?.message}
+                className={eventFormTimePickerClassName}
                 value={watch('start_time')}
                 onValueChange={(val) =>
                   setValue('start_time', val, {
@@ -543,6 +584,7 @@ export default function EditEventPage() {
                 id="end_time"
                 disabled={isPast}
                 error={errors.end_time?.message}
+                className={eventFormTimePickerClassName}
                 value={watch('end_time')}
                 onValueChange={(val) =>
                   setValue('end_time', val, {
@@ -561,14 +603,16 @@ export default function EditEventPage() {
               rows={4}
               placeholder="Describe the event..."
               error={errors.description?.message}
+              labelClassName={eventFormFieldLabelClassName}
+              textareaClassName={eventFormTextareaClassName}
               {...register('description')}
             />
 
             {/* ── Banner image ────────────────────────────────────────── */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-[#8f8b84]">
                 Event Banner (Optional)
-                <span className="text-xs text-gray-400 font-normal ml-2">
+                <span className="ml-2 text-xs font-normal text-[#b3afa8]">
                   {bannerPreview ? 'Current image shown — upload to replace' : 'Optional'}
                 </span>
               </label>
@@ -577,6 +621,7 @@ export default function EditEventPage() {
                 onChange={handleImageChange}
                 hint="PNG or JPG — max 2 MB. Recommended: 1200×600 px"
                 multiple={false}
+                dropzoneClassName={eventFormUploadDropzoneClassName}
               />
             </div>
 
@@ -591,6 +636,9 @@ export default function EditEventPage() {
                 value={visibility}
                 onChange={(e) => setValue('visibility', e.target.value as any)}
                 error={errors.visibility?.message}
+                labelClassName={eventFormFieldLabelClassName}
+                className={eventFormSelectClassName}
+                controlClassName={eventFormSelectControlClassName}
               />
               <SelectInput
                 label="Status"
@@ -605,6 +653,9 @@ export default function EditEventPage() {
                   setValue('status', e.target.value as any);
                 }}
                 error={errors.status?.message}
+                labelClassName={eventFormFieldLabelClassName}
+                className={eventFormSelectClassName}
+                controlClassName={eventFormSelectControlClassName}
               />
               {/* <FormInput
                 label="Max Attendees"

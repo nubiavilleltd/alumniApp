@@ -182,7 +182,7 @@
 // features/user/components/ui/ProfileInfoPanel.tsx
 
 import { useState } from 'react';
-import { Icon } from '@iconify/react';
+import { Check, Copy } from 'lucide-react';
 import { toast } from '@/shared/components/ui/Toast';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -238,7 +238,11 @@ function CopyButton({ value }: { value: string }) {
       title="Copy to clipboard"
       className="text-primary-400 hover:text-primary-600 transition-colors flex-shrink-0"
     >
-      <Icon icon={copied ? 'mdi:check' : 'mdi:content-copy'} className="w-4 h-4" />
+      {copied ? (
+        <Check className="w-4 h-4" strokeWidth={2.4} />
+      ) : (
+        <Copy className="w-4 h-4" strokeWidth={2.4} />
+      )}
     </button>
   );
 }
