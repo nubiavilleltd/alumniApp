@@ -15,6 +15,7 @@ interface SelectInputProps extends Omit<
   hint?: string;
   options: readonly SelectOption[];
   placeholder?: string;
+  sortOptionsAlphabetically?: boolean;
   controlClassName?: string;
   labelClassName?: string;
   onChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
@@ -34,6 +35,7 @@ export const SelectInput = forwardRef<HTMLSelectElement, SelectInputProps>(
       hint,
       options,
       placeholder = 'Select an option',
+      sortOptionsAlphabetically = true,
       controlClassName = '',
       labelClassName = '',
       chevronDownIcon = 'mdi:chevron-down',
@@ -89,13 +91,32 @@ export const SelectInput = forwardRef<HTMLSelectElement, SelectInputProps>(
     }, [ref]);
 
     const normalizedOptions = useMemo(() => {
-      return [...options]
-        .map((option) => ({
-          ...option,
-          label: normalizeSelectOptionLabel(option.label),
-        }))
-        .sort((a, b) => a.label.localeCompare(b.label));
-    }, [options]);
+      const nextOptions = [...options].map((option) => ({
+        ...option,
+        label: normalizeSelectOptionLabel(option.label),
+      }));
+
+      if (!sortOptionsAlphabetically) {
+        return nextOptions;
+      }
+
+      const [firstOption, ...remainingOptions] = nextOptions;
+
+      if (!firstOption) {
+        return nextOptions;
+      }
+
+      const sortedRemainingOptions = remainingOptions.sort((a, b) =>
+        a.label.localeCompare(b.label),
+      );
+      const normalizedPlaceholder = normalizeSelectOptionLabel(placeholder);
+      const keepFirstOptionFirst =
+        firstOption.value === '' || firstOption.label === normalizedPlaceholder;
+
+      return keepFirstOptionFirst
+        ? [firstOption, ...sortedRemainingOptions]
+        : [firstOption, ...sortedRemainingOptions].sort((a, b) => a.label.localeCompare(b.label));
+    }, [options, placeholder, sortOptionsAlphabetically]);
 
     // Filter options based on search
     const filteredOptions = normalizedOptions.filter((option) =>

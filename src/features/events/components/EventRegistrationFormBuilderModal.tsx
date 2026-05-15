@@ -941,7 +941,7 @@ export function EventRegistrationFormBuilderModal({
                               rows={2}
                               value={question.placeholder}
                               readOnly
-                              placeholder="Enter response"
+                              placeholder="Add response"
                               className="w-full resize-none border-0 bg-transparent text-base text-gray-400 outline-none placeholder:text-gray-400"
                             />
                           ) : question.type === 'short_answer' ? (
@@ -949,7 +949,7 @@ export function EventRegistrationFormBuilderModal({
                               type="text"
                               value={question.placeholder}
                               readOnly
-                              placeholder="Enter your answer"
+                              placeholder="Add response"
                               className="w-full border-0 bg-transparent text-base text-gray-400 outline-none placeholder:text-gray-400"
                             />
                           ) : (
