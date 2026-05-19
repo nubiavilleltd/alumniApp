@@ -1004,17 +1004,28 @@ export default function JobVacanciesPage() {
       <main className="min-h-full bg-[#f8f8f7] text-[#071116]">
         <section className={jobsPageShellClassName} aria-labelledby="jobs-page-title">
           <header className={jobsPageHeaderClassName}>
-            <div>
-              <h1 id="jobs-page-title" className={jobsPageTitleClassName}>
-                Job Vacancies
-              </h1>
+            <div className="flex-1">
+              <div className="flex items-center justify-between gap-4 lg:block">
+                <h1 id="jobs-page-title" className={jobsPageTitleClassName}>
+                  Job Vacancies
+                </h1>
+                <Button
+                  type="button"
+                  size="sm"
+                  className="inline-flex min-h-10 w-10 shrink-0 items-center justify-center rounded-full px-0 shadow-none lg:hidden"
+                  onClick={handleOpenPostModal}
+                  aria-label="Post a Job"
+                >
+                  <Plus strokeWidth={2.35} />
+                </Button>
+              </div>
               <p className={jobsPageSubtitleClassName}>Discover exclusive job listings</p>
             </div>
 
             <Button
               type="button"
               size="sm"
-              className={jobsPagePostButtonClassName}
+              className={`${jobsPagePostButtonClassName} hidden lg:inline-flex`}
               onClick={handleOpenPostModal}
             >
               Post a Job

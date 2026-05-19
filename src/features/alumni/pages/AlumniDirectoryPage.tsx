@@ -119,9 +119,9 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: a
     shadow-md
     group
     cursor-pointer
-    h-[320px]
-    sm:h-[420px]
-    lg:h-[500px]
+   h-[250px]
+    sm:h-[315px]
+    lg:h-[375px]
   "
     >
       {/* Image */}

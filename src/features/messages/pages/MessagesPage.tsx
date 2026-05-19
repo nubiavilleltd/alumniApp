@@ -1274,7 +1274,7 @@ export function MessagesPage() {
           isMobileThreadOpen
             ? 'h-[calc(100dvh-5.25rem)] overflow-hidden sm:h-[calc(100dvh-5.5rem)]'
             : ''
-        } lg:h-[calc(100dvh-4.75rem)] lg:overflow-hidden py-8`}
+        } lg:h-[calc(100dvh-4.75rem)] lg:overflow-hidden py-2 lg:py-4`}
       >
         <div
           className={`container-custom space-y-4 ${
@@ -1282,7 +1282,7 @@ export function MessagesPage() {
           } lg:flex lg:h-full lg:min-h-0 lg:max-w-[1560px] lg:flex-col lg:space-y-0`}
         >
           {/* Pull-to-refresh indicator */}
-          <div className="flex justify-center lg:pointer-events-none lg:absolute lg:left-1/2 lg:top-2 lg:z-20 lg:w-fit lg:-translate-x-1/2">
+          <div className="pointer-events-none absolute left-1/2 top-2 z-20 w-fit -translate-x-1/2">
             <div
               className={`flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-xs font-medium text-gray-600 shadow-sm transition-all duration-200 ${
                 refreshIndicatorVisible ? 'opacity-100' : 'pointer-events-none opacity-0'

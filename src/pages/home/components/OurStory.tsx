@@ -37,7 +37,7 @@ export default function OurStory() {
             A Legacy Woven in Crimson &amp; Gold
           </h2>
 
-          <div className="mt-6 max-w-[72rem] text-[clamp(0.6rem,1.15vw,1.2rem)] font-normal leading-[1.36] tracking-[0.03em] text-[#071116] md:mt-[2.3rem] md:tracking-[0.08em]">
+          <div className="mt-6 max-w-[72rem] text-sm md:text-base font-normal leading-[1.36] tracking-[0.03em] text-[#071116] md:mt-[2.3rem] md:tracking-[0.08em]">
             <p className="m-0">
               Federal Government Girls' College stands among Nigeria's most revered institutions, a
               place where countless women first discovered their voice, their strength, and their
