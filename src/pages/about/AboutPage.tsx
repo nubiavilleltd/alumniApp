@@ -34,7 +34,7 @@ const missionFeatures = [
 
 function SectionEyebrow({ children }: { children: string }) {
   return (
-    <div className="relative inline-flex w-fit max-w-max flex-none self-start px-3 py-2 text-sm font-medium leading-[1.4] tracking-[0.01em] text-[#061015] min-[1200px]:text-base">
+    <div className="relative inline-flex w-fit max-w-max flex-none self-start px-3 py-2 text-sm font-semibold leading-[1.4] tracking-[0.01em] text-[#061015] min-[1200px]:text-base">
       <span className="absolute bottom-0 left-0 h-[1.35rem] w-[1.35rem] border-b-2 border-l-2 border-primary-500" />
       <span className="absolute right-0 top-0 h-[1.35rem] w-[1.35rem] border-r-2 border-t-2 border-primary-500" />
       <span className="relative font-semibold">{children}</span>
