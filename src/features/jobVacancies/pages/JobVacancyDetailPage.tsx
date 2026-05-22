@@ -132,7 +132,7 @@ export default function JobVacancyDetailPage() {
         description={`View details for ${job.title} at ${job.companyName}.`}
       />
 
-      <main className="bg-[#f7f6f3] text-[#071116] px-8 py-4 lg:h-[calc(100dvh-10rem)] lg:overflow-hidden lg:flex lg:flex-col">
+      <main className="bg-[#f7f6f3] px-[var(--app-page-inline-padding)] py-4 text-[#071116] lg:flex lg:h-[calc(100dvh-10rem)] lg:flex-col lg:overflow-hidden">
         <div className="mx-auto w-full space-y-4 lg:flex lg:flex-col lg:flex-1 lg:space-y-4 lg:min-h-0">
           {/* Top card — fixed height on desktop, scrolls internally */}
           <section className="rounded-[1.5rem] bg-white p-5 shadow-sm ring-1 ring-black/5 sm:p-6 lg:shrink-0 lg:overflow-y-auto">

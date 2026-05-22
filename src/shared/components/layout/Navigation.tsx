@@ -177,8 +177,8 @@ function BrandMark({ mobile = false }: { mobile?: boolean }) {
       className={cn(
         'relative isolate flex overflow-hidden bg-white text-primary-500 no-underline',
         mobile
-          ? 'min-h-[5.25rem] items-center py-3 sm:min-h-[5.5rem] sm:py-3.5'
-          : 'items-center justify-center py-3 xl:py-4 2xl:py-5',
+          ? 'min-h-[5.25rem] items-center px-[var(--app-page-inline-padding)] py-3 sm:min-h-[5.5rem] sm:py-3.5'
+          : 'items-center justify-start px-[var(--app-page-inline-padding)] py-3 xl:py-4 2xl:py-5',
       )}
     >
       <span
@@ -188,7 +188,7 @@ function BrandMark({ mobile = false }: { mobile?: boolean }) {
       <HeaderLogo
         className={cn(
           'relative z-10 min-w-0',
-          mobile ? 'w-full justify-start gap-2.5 pl-3 sm:pl-4' : 'max-w-full justify-center gap-3',
+          mobile ? 'w-full justify-start gap-2.5' : 'max-w-full justify-start gap-3',
         )}
         imageClassName={cn(
           mobile ? 'h-[2.8rem] w-[2.8rem] sm:h-[3rem] sm:w-[3rem]' : 'h-[3.35rem] w-[3.35rem]',
@@ -641,7 +641,7 @@ export function Navigation() {
                 href={AUTH_ROUTES.LOGIN}
                 className={cn(
                   accountPillClassName,
-                  'self-center justify-center px-[1.875rem] py-[0.4rem] text-base font-extrabold tracking-[0.01em]',
+                  'self-center justify-center px-[1.875rem] py-[0.4rem] text-base font-bold tracking-[0.01em]',
                 )}
               >
                 Sign In
@@ -649,7 +649,7 @@ export function Navigation() {
             )}
           </div>
 
-          <div className="ml-auto flex w-fit items-center gap-6 pb-3 xl:gap-8 xl:pb-4 2xl:gap-12 2xl:pb-5">
+          <div className="ml-auto flex w-fit items-center gap-6 pb-3 xl:gap-12 xl:pb-4 2xl:gap-12 2xl:pb-5">
             {primaryNavItems.map((item) =>
               item.children ? (
                 <DesktopDropdown key={item.label} item={item} />

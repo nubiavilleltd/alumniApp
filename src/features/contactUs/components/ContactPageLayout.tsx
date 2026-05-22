@@ -117,18 +117,13 @@ export function ContactPageLayout({
   };
 
   return (
-    <main className="min-h-[calc(100vh-5rem)] overflow-hidden bg-[#f8f6f2] font-[Geist,_Inter,_system-ui,_sans-serif] text-[#071116]">
+    <main className="min-h-[calc(100vh-5rem)] overflow-hidden bg-[#f8f6f2] font-sans text-[#071116]">
       <div className="relative mx-auto grid gap-10 px-[var(--app-page-inline-padding)] pb-16 pt-10 min-[761px]:pt-11 min-[1180px]:grid-cols-[minmax(18rem,0.92fr)_minmax(0,1.38fr)] min-[1180px]:gap-[clamp(2.5rem,4vw,4.5rem)] min-[1180px]:pb-24 min-[1180px]:pt-[clamp(2.75rem,5vw,4.75rem)]">
         <section className="relative z-[2] pt-0" aria-labelledby="contact-title">
-          <h1
-            id="contact-title"
-            className="m-0 max-w-[33rem] text-[2.3rem] font-semibold leading-[1.02] tracking-[-0.03em] text-[#071116] md:text-[2.7rem] min-[1180px]:text-[clamp(2.3rem,3vw,3rem)]"
-          >
+          <h1 id="contact-title" className="type-contact-hero m-0 max-w-[33rem] text-[#071116]">
             {title}
           </h1>
-          <p className="mt-4 max-w-[26rem] text-[1.15rem] font-medium leading-[1.25] text-[#4e5d72] md:text-[1.28rem] min-[1180px]:text-[clamp(1.15rem,1.6vw,1.4rem)]">
-            {description}
-          </p>
+          <p className="type-card-body mt-4 max-w-[26rem] text-[#4e5d72]">{description}</p>
 
           <div
             className="mt-10 grid grid-cols-1 gap-7 min-[761px]:mt-9 min-[761px]:grid-cols-3 min-[761px]:gap-5 min-[1180px]:mt-[clamp(2.5rem,4vw,3.5rem)] min-[1180px]:grid-cols-1 min-[1180px]:gap-[clamp(1.75rem,2.75vw,2.35rem)]"
@@ -147,9 +142,7 @@ export function ContactPageLayout({
                       <Icon icon={method.icon} className="h-[1.3rem] w-[1.3rem]" />
                     ) : null}
                   </span>
-                  <h2 className="m-0 text-[1.05rem] font-extrabold leading-[1.15] text-[#071116] md:text-[1.14rem] min-[1180px]:text-[clamp(1.05rem,1.3vw,1.2rem)]">
-                    {method.label}
-                  </h2>
+                  <h2 className="type-card-title m-0 text-[#071116]">{method.label}</h2>
                 </div>
                 <AppLink
                   href={method.href}
@@ -248,7 +241,7 @@ export function ContactPageLayout({
             <Button
               type="submit"
               size="lg"
-              className="mt-[1.55rem] min-h-[2.9rem] min-w-[min(11.75rem,100%)] self-start rounded-full border-0 bg-primary-500 px-6 font-[inherit] text-[0.96rem] font-bold tracking-normal text-white shadow-[0_18px_30px_rgba(0,119,204,0.16)] hover:bg-primary-600 md:text-[1.02rem] max-md:w-full"
+              className="type-button mt-[1.55rem] min-h-[2.9rem] min-w-[min(11.75rem,100%)] self-start rounded-full border-0 bg-primary-500 px-6 font-[inherit] text-white shadow-[0_18px_30px_rgba(0,119,204,0.16)] hover:bg-primary-600 max-md:w-full"
               disabled={isSubmitting || isLoading}
             >
               Send message

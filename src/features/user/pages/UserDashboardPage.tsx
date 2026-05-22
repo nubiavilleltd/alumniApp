@@ -438,7 +438,7 @@ export function UserDashboardPage() {
               </div>
             ) : (
               <>
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+                <h1 className="type-section-title text-gray-900">
                   Welcome back,{' '}
                   {currentUser?.otherNames || currentUser?.fullName?.split(' ')[0] || 'Alumni'}
                 </h1>

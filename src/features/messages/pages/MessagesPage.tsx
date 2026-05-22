@@ -1307,7 +1307,7 @@ export function MessagesPage() {
             } lg:pb-3`}
           >
             {/* <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-950 sm:text-4xl lg:text-[2.5rem] xl:text-[2.75rem]"> */}
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-950 mb-3">Message Centre</h1>
+            <h1 className="type-section-title mb-3 text-gray-950">Message Centre</h1>
           </div>
 
           {/* Two-column layout */}

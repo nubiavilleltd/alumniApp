@@ -40,18 +40,16 @@ function HomeProjectCard({ project, index }: { project: Project; index: number }
       <div className="absolute inset-x-3 bottom-3 flex min-h-[10.5rem] flex-col rounded-[0.8rem] bg-[rgba(0,119,204,0.8)] px-[1.1rem] pb-[1.05rem] pt-4 backdrop-blur-[5px]">
         {/* CONTENT */}
         <div className="flex-1">
-          <h3 className="line-clamp-2 text-[1.08rem] font-extrabold leading-[1.24] text-white">
-            {project.title}
-          </h3>
+          <h3 className="type-card-title line-clamp-2 text-white">{project.title}</h3>
 
-          <p className="mt-[0.45rem] line-clamp-2 overflow-hidden text-[0.88rem] font-medium leading-[1.35] text-white/90">
+          <p className="type-small mt-[0.45rem] line-clamp-2 overflow-hidden text-white/90">
             {project.description}
           </p>
 
           {/* META */}
           {/* META */}
           <div className="mt-[0.75rem] space-y-[0.55rem]">
-            <div className="flex min-w-0 items-center gap-[0.3rem] text-[0.78rem] font-bold leading-[1.2] text-inherit">
+            <div className="type-small flex min-w-0 items-center gap-[0.3rem] text-inherit">
               <MapPin
                 aria-hidden="true"
                 strokeWidth={PROJECT_META_ICON_STROKE}
@@ -62,7 +60,7 @@ function HomeProjectCard({ project, index }: { project: Project; index: number }
             </div>
 
             {meta.dateRange && (
-              <div className="flex min-w-0 items-center gap-[0.3rem] text-[0.78rem] font-bold leading-[1.2] text-inherit">
+              <div className="type-small flex min-w-0 items-center gap-[0.3rem] text-inherit">
                 <Clock3
                   aria-hidden="true"
                   strokeWidth={PROJECT_META_ICON_STROKE}
@@ -78,7 +76,7 @@ function HomeProjectCard({ project, index }: { project: Project; index: number }
         {/* BUTTON */}
         <AppLink
           href={ROUTES.PROJECTS.DETAIL(project.id)}
-          className="mt-[0.1rem] inline-flex items-center gap-[0.15rem] text-sm font-extrabold leading-[1.2] text-white no-underline transition-colors hover:text-white/80"
+          className="type-small mt-[0.1rem] inline-flex items-center gap-[0.15rem] text-white no-underline transition-colors hover:text-white/80"
         >
           View Details
           <ChevronRight

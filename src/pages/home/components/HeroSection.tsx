@@ -52,11 +52,9 @@ export default function HeroSection() {
       <div className="absolute inset-0 z-[1] bg-primary-500/20" />
 
       {/* ── Content ───────────────────────────────────────────────────────── */}
-      <div className="relative z-10 w-full container-custom">
+      <div className="relative z-10 w-full px-[var(--app-page-inline-padding)]">
         <div className="max-w-3xl text-left">
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
-            Welcome home
-          </h1>
+          <h1 className="type-hero mb-6 text-white">Welcome home</h1>
           <p className="text-lg md:text-xl text-white/90 mb-8 leading-relaxed max-w-2xl">
             A global sisterhood of Federal Government Girls' College alumnae connected by shared
             memories, driven by purpose, and committed to lifting the next generation.
@@ -66,7 +64,7 @@ export default function HeroSection() {
               <AppLink href={AUTH_ROUTES.REGISTER}>
                 <Button
                   size="lg"
-                  className="h-12 w-56 justify-center rounded-full bg-white px-12 text-base font-bold text-primary-500 shadow-none hover:bg-white/90"
+                  className="type-button h-12 w-56 justify-center rounded-full bg-white px-12 text-primary-500 shadow-none hover:bg-white/90"
                 >
                   Join Us
                 </Button>
@@ -76,7 +74,7 @@ export default function HeroSection() {
             <AppLink href={ROUTES.DONATION}>
               <Button
                 size="lg"
-                className="h-12 min-w-52 justify-center rounded-full border-0 bg-[#7c3aed] px-12 text-base font-bold text-white shadow-none hover:bg-[#6d28d9]"
+                className="type-button h-12 min-w-52 justify-center rounded-full border-0 bg-[#7c3aed] px-12 text-white shadow-none hover:bg-[#6d28d9]"
               >
                 Make a Donation
                 <img

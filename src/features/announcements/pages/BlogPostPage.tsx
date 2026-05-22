@@ -169,9 +169,7 @@ export default function BlogPostPage() {
                   </span>
                 </div>
 
-                <h1 className="mt-4 text-3xl font-bold leading-tight text-accent-950 md:text-4xl">
-                  {announcement.title}
-                </h1>
+                <h1 className="type-section-title mt-4 text-accent-950">{announcement.title}</h1>
 
                 {announcement.excerpt && (
                   <p className="mt-4 max-w-3xl text-lg leading-8 text-accent-600">

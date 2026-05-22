@@ -7,7 +7,7 @@ export function TermsPage() {
 
       <section className="section">
         <div className="container-custom max-w-4xl">
-          <h1 className="text-3xl font-bold mb-6">Terms of Service</h1>
+          <h1 className="type-section-title mb-6">Terms of Service</h1>
 
           <div className="space-y-8 text-gray-600 leading-7">
             <div>

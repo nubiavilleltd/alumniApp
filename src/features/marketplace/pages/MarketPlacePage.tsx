@@ -429,9 +429,7 @@ export default function MarketPlacePage() {
           <div className="mb-10 flex flex-col gap-6 lg:mb-[3.65rem] lg:flex-row lg:items-start lg:justify-between lg:gap-8">
             <div className="min-w-0 flex-1">
               <div className="flex items-center justify-between gap-4 lg:block">
-                <h1 className="text-[clamp(2.0rem,2vw,3.0rem)] font-bold leading-[1.12] text-[#071116]">
-                  Marketplace
-                </h1>
+                <h1 className="type-section-title text-[#071116]">Marketplace</h1>
                 <Button
                   type="button"
                   size="sm"
@@ -451,7 +449,7 @@ export default function MarketPlacePage() {
               type="button"
               size="sm"
               onClick={handlePostBusinessClick}
-              leftIcon={Plus}
+              rightIcon={Plus}
               className="mt-0 hidden min-h-10 w-auto justify-center self-end rounded-full pl-3 pr-3 text-sm font-semibold leading-none tracking-normal shadow-none transition-transform hover:bg-primary-600 active:translate-y-px focus-visible:ring-4 focus-visible:ring-primary-200 [&>svg]:h-5 [&>svg]:w-5 sm:min-w-[14rem] sm:pl-5 sm:pr-6 sm:text-base sm:[&>svg]:h-5 sm:[&>svg]:w-5 lg:mt-3 lg:inline-flex"
             >
               <span>Post Your Business</span>

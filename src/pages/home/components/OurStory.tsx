@@ -18,7 +18,7 @@ export default function OurStory() {
 
       <div className="relative z-10 container-custom">
         <div className="relative z-10">
-          <div className="relative mb-6 inline-flex items-center px-[0.9rem] py-3 text-base font-extrabold leading-none text-[#071116]">
+          <div className="type-small relative mb-6 inline-flex items-center px-[0.9rem] py-3 text-[#071116]">
             <span
               aria-hidden="true"
               className="absolute bottom-0 left-0 h-[1.45rem] w-[1.45rem] border-b-2 border-l-2 border-primary-500"
@@ -30,10 +30,7 @@ export default function OurStory() {
             <span>About Us</span>
           </div>
 
-          <h2
-            id="home-about-title"
-            className="m-0 text-[clamp(1.5rem,2.7vw,2.6rem)] font-extrabold leading-[1.15] text-[#071116] md:tracking-[0.06em]"
-          >
+          <h2 id="home-about-title" className="type-section-title m-0 text-[#071116]">
             A Legacy Woven in Crimson &amp; Gold
           </h2>
 
@@ -51,7 +48,7 @@ export default function OurStory() {
               continues to produce Nigeria's finest daughters.{' '}
               <AppLink
                 href={ROUTES.ABOUT}
-                className="whitespace-nowrap font-extrabold text-primary-500 no-underline transition-colors hover:text-primary-600"
+                className="whitespace-nowrap font-semibold text-primary-500 no-underline transition-colors hover:text-primary-600"
               >
                 read more
               </AppLink>

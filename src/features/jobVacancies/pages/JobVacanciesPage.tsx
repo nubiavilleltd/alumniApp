@@ -79,12 +79,10 @@ const jobPanelToneClassNames: Record<JobCardTone, string> = {
 export const jobsPageShellClassName = 'container-custom pb-16 pt-8';
 export const jobsPageHeaderClassName =
   'mb-7 flex flex-col gap-4 md:mb-[2.7rem] md:flex-row md:items-start md:justify-between md:gap-6';
-export const jobsPageTitleClassName =
-  'text-[clamp(2rem,2.2vw,2.9rem)] font-extrabold leading-[1.05] text-[#071116]';
-export const jobsPageSubtitleClassName =
-  'mt-2 text-[clamp(1rem,1.6vw,1.25rem)] font-medium leading-[1.25] text-[#59626c]';
+export const jobsPageTitleClassName = 'type-section-title text-[#071116]';
+export const jobsPageSubtitleClassName = 'type-card-body mt-2 text-[#59626c]';
 export const jobsPagePostButtonClassName =
-  'min-h-[1.5rem] rounded-full px-[1.45rem] text-base font-extrabold tracking-normal shadow-none max-md:w-full [&>svg]:h-[1.35rem] [&>svg]:w-[1.35rem]';
+  'type-button min-h-[1.5rem] rounded-full px-[1.45rem] tracking-normal shadow-none max-md:w-full [&>svg]:h-[1.35rem] [&>svg]:w-[1.35rem]';
 export const jobsGridClassName =
   'grid grid-cols-1 gap-x-[1.4rem] gap-y-[1.05rem] md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
 const jobsModalBackdropClassName =

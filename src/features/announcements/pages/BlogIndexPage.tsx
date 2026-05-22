@@ -215,36 +215,52 @@ export default function BlogIndexPage() {
       <main className="min-h-full bg-[#f8f8f7] text-[#071116]">
         <section className={pageShellClassName} aria-labelledby="announcements-title">
           <header className="mb-6">
-            {/* Top row: Navigation links */}
-            <div className="mb-7 flex flex-wrap items-center justify-end gap-3">
-              <ButtonLink
-                href={ROUTES.PROJECTS.ROOT}
-                variant="outline"
-                className={`${actionClassName} flex-1 sm:flex-none text-center`}
-              >
-                Go to our Projects
-              </ButtonLink>
-              <ButtonLink
-                href={EVENT_ROUTES.ROOT}
-                variant="outline"
-                className={`${actionClassName} flex-1 sm:flex-none text-center`}
-              >
-                Go to Events
-              </ButtonLink>
-            </div>
-
-            {/* Middle row: Title, Subtitle, and Create button */}
-            <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+            {/* Header */}
+            <div className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
               <div className="max-w-2xl">
-                <h1
-                  id="announcements-title"
-                  className="m-0 text-xl font-bold text-gray-900 sm:text-2xl md:text-3xl"
-                >
+                <h1 id="announcements-title" className="type-section-title m-0 text-gray-900">
                   Announcements
                 </h1>
-                <p className="mt-1 text-sm text-gray-500 sm:text-base">
+                <p className="type-card-body mt-1 text-gray-500">
                   Read the latest community updates, event notices, and project news
                 </p>
+              </div>
+
+              <div className="flex w-full flex-wrap items-center justify-center gap-3 sm:w-auto sm:flex-shrink-0 sm:justify-end">
+                <ButtonLink
+                  href={ROUTES.PROJECTS.ROOT}
+                  variant="outline"
+                  className={`${actionClassName} flex-1 text-center sm:flex-none`}
+                >
+                  Go to our Projects
+                </ButtonLink>
+                <ButtonLink
+                  href={EVENT_ROUTES.ROOT}
+                  variant="outline"
+                  className={`${actionClassName} flex-1 text-center sm:flex-none`}
+                >
+                  Go to Events
+                </ButtonLink>
+              </div>
+            </div>
+
+            {/* Controls */}
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-wrap gap-2">
+                {typeFilters.map((filter) => (
+                  <button
+                    key={filter.value}
+                    type="button"
+                    onClick={() => setSelectedType(filter.value)}
+                    className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+                      selectedType === filter.value
+                        ? 'bg-primary-500 text-white'
+                        : 'bg-white text-accent-700 shadow-sm ring-1 ring-accent-100 hover:bg-primary-50'
+                    }`}
+                  >
+                    {filter.label}
+                  </button>
+                ))}
               </div>
 
               {isAdmin && (
@@ -257,24 +273,6 @@ export default function BlogIndexPage() {
                   <span>Create Announcement</span>
                 </button>
               )}
-            </div>
-
-            {/* Bottom row: Filters */}
-            <div className="mt-4 flex flex-wrap gap-2">
-              {typeFilters.map((filter) => (
-                <button
-                  key={filter.value}
-                  type="button"
-                  onClick={() => setSelectedType(filter.value)}
-                  className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
-                    selectedType === filter.value
-                      ? 'bg-primary-500 text-white'
-                      : 'bg-white text-accent-700 shadow-sm ring-1 ring-accent-100 hover:bg-primary-50'
-                  }`}
-                >
-                  {filter.label}
-                </button>
-              ))}
             </div>
           </header>
 

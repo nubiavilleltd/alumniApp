@@ -22,7 +22,7 @@ export function DonationPage() {
       {/* Title */}
 
       {/* <div className="grid lg:grid-cols-3 gap-10 items-center"> */}
-      <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">Make a Donation</h1>
+      <h1 className="type-section-title text-gray-900">Make a Donation</h1>
       <div className="flex flex-col md:flex-row gap-5 justify-between">
         {/* LEFT CARD */}
 

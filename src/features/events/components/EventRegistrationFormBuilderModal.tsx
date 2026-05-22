@@ -101,7 +101,7 @@ function createQuestionId() {
 function getDefaultPlaceholder(type: EventQuestionType) {
   switch (type) {
     case 'long_answer':
-      return 'Enter response';
+      return 'Add response';
     case 'multiple_choice':
     case 'checkbox':
     case 'dropdown':
@@ -938,7 +938,7 @@ export function EventRegistrationFormBuilderModal({
                         <div className="rounded-[0.85rem] bg-[#f8f7f4] px-4 py-3">
                           {question.type === 'long_answer' ? (
                             <textarea
-                              rows={2}
+                              rows={5}
                               value={question.placeholder}
                               readOnly
                               placeholder="Add response"

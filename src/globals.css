@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100;200;300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100;200;300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -147,6 +147,70 @@
   padding-inline: var(--app-page-inline-padding);
 }
 
+.type-hero {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: clamp(2.625rem, 7vw, 4.5rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+}
+
+.type-contact-hero {
+  font-family: Geist, Inter, system-ui, sans-serif;
+  font-size: clamp(2.625rem, 6vw, 4.5rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+}
+
+.type-section-title {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: clamp(1.75rem, 3vw, 2rem);
+  font-weight: 600;
+  line-height: 1.18;
+  letter-spacing: 0.01em;
+}
+
+.type-card-title {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: 0.005em;
+}
+
+.type-card-title-featured {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.22;
+  letter-spacing: 0.005em;
+}
+
+.type-card-body {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+
+.type-small {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+
+.type-button {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
 .home-stats-section {
   background: #f8f8f7;
   padding: 1.75rem 0;
@@ -270,9 +334,9 @@
   margin: 0 0 1.3rem;
   padding: 0.62rem 0.82rem;
   color: #071116;
-  font-size: 1rem;
-  font-weight: 800;
-  line-height: 1;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.4;
 }
 
 .home-section-kicker::before,
@@ -301,9 +365,10 @@
   max-width: 74rem;
   margin: 0;
   color: #071116;
-  font-size: 2.35rem;
-  font-weight: 800;
-  line-height: 1.24;
+  font-size: clamp(1.75rem, 3vw, 2rem);
+  font-weight: 600;
+  line-height: 1.18;
+  letter-spacing: 0.01em;
 }
 
 .home-section-link {
@@ -314,7 +379,8 @@
   margin-top: 0.65rem;
   color: rgb(var(--color-primary-500));
   font-size: 1rem;
-  font-weight: 800;
+  font-weight: 600;
+  line-height: 1.2;
   text-decoration: none;
 }
 
@@ -336,8 +402,8 @@
   gap: 0.15rem;
   color: #ffffff;
   font-size: 0.875rem;
-  font-weight: 800;
-  line-height: 1.2;
+  font-weight: 500;
+  line-height: 1.4;
   text-decoration: none;
 }
 
@@ -359,9 +425,9 @@
   align-items: center;
   gap: 0.3rem;
   color: inherit;
-  font-size: 0.78rem;
-  font-weight: 700;
-  line-height: 1.2;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.4;
 }
 
 .home-event-card__meta svg {
@@ -377,9 +443,10 @@
 .home-event-card__body h3 {
   margin: 0;
   color: #071116;
-  font-weight: 800;
-  line-height: 1.24;
-  font-size: 1.18rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: 0.005em;
 }
 
 .home-event-card--skeleton span {
@@ -440,9 +507,9 @@
   margin: 0.7rem 0 0;
   overflow: hidden;
   color: #59626c;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 500;
-  line-height: 1.38;
+  line-height: 1.5;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
@@ -473,10 +540,6 @@
     margin-bottom: 1.75rem;
   }
 
-  .home-section-title {
-    font-size: 1.75rem;
-  }
-
   .home-section-link {
     margin-top: 0;
   }
@@ -487,13 +550,8 @@
 }
 
 @media (max-width: 640px) {
-  .home-section-title {
-    font-size: 1.45rem;
-  }
-
   .home-section-kicker {
     margin-bottom: 1rem;
-    font-size: 0.95rem;
   }
 
   .home-event-card__body {
@@ -846,10 +904,10 @@ input[type='password']::-webkit-caps-lock-indicator {
   padding: 0.5rem 0.75rem;
   color: #061015;
   /* font-family: Poppins, system-ui, sans-serif; */
-  font-size: 0.95rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  line-height: 1.25;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.4;
 }
 
 .about-eyebrow__corner {
@@ -906,10 +964,11 @@ input[type='password']::-webkit-caps-lock-indicator {
   margin-top: 1.5rem;
   color: #020c12;
   /* font-family: Poppins, system-ui, sans-serif; */
-  font-size: clamp(2.15rem, 6.5vw, 3.1rem);
+  font-family: Inter, system-ui, sans-serif;
+  font-size: clamp(2.5rem, 6vw, 4rem);
   font-weight: 600;
-  letter-spacing: 0.08em;
-  line-height: 1.12;
+  letter-spacing: 0.01em;
+  line-height: 1.05;
 }
 
 .about-hero__title span {
@@ -924,10 +983,10 @@ input[type='password']::-webkit-caps-lock-indicator {
   margin-top: 2.75rem;
   color: rgb(var(--color-primary-500));
   /* font-family: Poppins, system-ui, sans-serif; */
-  font-size: clamp(1.05rem, 3.8vw, 1.55rem);
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  line-height: 1.1;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.4;
 }
 
 .about-hero__values span:nth-child(even) {
@@ -967,9 +1026,10 @@ input[type='password']::-webkit-caps-lock-indicator {
   color: #ffffff;
   box-shadow: 0 18px 40px rgba(0, 119, 204, 0.22);
   /* font-family: Poppins, system-ui, sans-serif; */
-  font-size: 1.125rem;
-  font-weight: 800;
-  letter-spacing: 0.03em;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.2;
   text-align: center;
   transition:
     background-color 0.2s ease,
@@ -1010,9 +1070,9 @@ input[type='password']::-webkit-caps-lock-indicator {
 
   .about-hero__title {
     margin-top: 1.5rem;
-    font-size: clamp(3rem, 2.55vw, 3.65rem);
-    letter-spacing: 0.085em;
-    line-height: 1.18;
+    font-size: clamp(3.5rem, 4.4vw, 4.5rem);
+    letter-spacing: 0.01em;
+    line-height: 1.05;
   }
 
   .about-hero__values {
@@ -1020,8 +1080,8 @@ input[type='password']::-webkit-caps-lock-indicator {
     margin-left: 0;
     flex-wrap: nowrap;
     gap: 0.85rem;
-    font-size: clamp(1.55rem, 1.45vw, 1.95rem);
-    letter-spacing: 0.105em;
+    font-size: 1rem;
+    letter-spacing: 0.01em;
   }
 
   .about-hero__media {
@@ -1068,10 +1128,11 @@ input[type='password']::-webkit-caps-lock-indicator {
 .about-mission__title {
   color: #061015;
   /* font-family: Poppins, system-ui, sans-serif; */
-  font-size: clamp(1.55rem, 5vw, 2.15rem);
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  line-height: 1.32;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: clamp(1.75rem, 3vw, 2rem);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.18;
 }
 
 .about-mission__description {
@@ -1079,10 +1140,10 @@ input[type='password']::-webkit-caps-lock-indicator {
   margin-top: 1.75rem;
   color: #101820;
   /* font-family: Poppins, system-ui, sans-serif; */
-  font-size: clamp(0.95rem, 3.2vw, 1.2rem);
-  font-weight: 400;
-  letter-spacing: 0.09em;
-  line-height: 1.48;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.5;
 }
 
 .about-mission__features {
@@ -1126,10 +1187,10 @@ input[type='password']::-webkit-caps-lock-indicator {
 .about-mission__feature-title {
   margin-top: 1rem;
   color: #101820;
-  font-family: Poppins, system-ui, sans-serif;
-  font-size: 1rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: 0.005em;
   line-height: 1.25;
 }
 
@@ -1137,10 +1198,10 @@ input[type='password']::-webkit-caps-lock-indicator {
   margin-top: 1rem;
   color: rgb(var(--color-accent-600));
   /* font-family: Poppins, system-ui, sans-serif; */
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 500;
-  letter-spacing: 0.075em;
-  line-height: 1.32;
+  letter-spacing: 0;
+  line-height: 1.5;
 }
 
 @media (min-width: 640px) {
@@ -1168,14 +1229,14 @@ input[type='password']::-webkit-caps-lock-indicator {
 
 @media (min-width: 1200px) {
   .about-mission__title {
-    font-size: clamp(2rem, 1.78vw, 2.35rem);
-    letter-spacing: 0.095em;
+    font-size: 2rem;
+    letter-spacing: 0.01em;
   }
 
   .about-mission__description {
-    font-size: clamp(1.25rem, 1.16vw, 1.48rem);
-    letter-spacing: 0.085em;
-    line-height: 1.48;
+    font-size: 1rem;
+    letter-spacing: 0;
+    line-height: 1.5;
   }
 
   .about-mission__icon {
@@ -1190,13 +1251,13 @@ input[type='password']::-webkit-caps-lock-indicator {
 
   .about-mission__feature-title {
     margin-top: 1.1rem;
-    font-size: clamp(0.95rem, 0.85vw, 1.1rem);
+    font-size: 1.125rem;
   }
 
   .about-mission__feature-description {
     margin-top: 1.1rem;
-    font-size: clamp(1.05rem, 1vw, 1.35rem);
-    letter-spacing: 0.085em;
+    font-size: 1rem;
+    letter-spacing: 0;
   }
 }
 
@@ -1246,10 +1307,11 @@ input[type='password']::-webkit-caps-lock-indicator {
   max-width: 33rem;
   margin: 0;
   color: #071116;
-  font-size: clamp(2.3rem, 3vw, 3rem);
+  font-family: Geist, Inter, system-ui, sans-serif;
+  font-size: clamp(2.625rem, 6vw, 4.5rem);
   font-weight: 600;
-  line-height: 1.02;
-  letter-spacing: -0.03em;
+  line-height: 1.05;
+  letter-spacing: 0.01em;
 }
 
 .contact-intro__copy {

@@ -334,7 +334,7 @@ export default function MyBusinessPage() {
           {/* Header */}
           <div className="flex items-start justify-between mb-8">
             <div>
-              <h1 className="text-2xl md:text-3xl font-semibold mb-1">My Market</h1>
+              <h1 className="type-section-title mb-1">My Market</h1>
               <p className="text-gray-500 text-sm">
                 Manage and update your business listings in the Alumnae Marketplace.
               </p>

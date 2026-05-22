@@ -37,10 +37,10 @@ function SectionHeading({ showViewAll = true }: { showViewAll: boolean }) {
             className="absolute -top-2 right-[-10px] h-4 w-[2px] bg-[#0077cc]"
           />
 
-          <p className="text-base font-semibold leading-none text-[#071116]">Announcements</p>
+          <p className="type-small text-[#071116]">Announcements</p>
         </div>
 
-        <h2 className="mt-7 max-w-5xl text-[2rem] font-extrabold leading-tight tracking-[0.01em] text-[#071116] sm:text-[2.35rem] lg:text-[2.05rem] xl:text-[2.15rem]">
+        <h2 className="type-section-title mt-7 max-w-5xl text-[#071116]">
           Important news and updates from the alumnae community
         </h2>
       </div>
@@ -48,7 +48,7 @@ function SectionHeading({ showViewAll = true }: { showViewAll: boolean }) {
       {showViewAll && (
         <AppLink
           href={ANNOUNCEMENT_ROUTES.ROOT}
-          className="mt-1 hidden shrink-0 items-center gap-1 text-base font-bold text-[#0077cc] transition-colors duration-200 hover:text-[#005fa3] md:inline-flex"
+          className="type-button mt-1 hidden shrink-0 items-center gap-1 text-[#0077cc] transition-colors duration-200 hover:text-[#005fa3] md:inline-flex"
         >
           See All
           <Icon icon="mdi:chevron-right" aria-hidden="true" className="h-5 w-5" />
@@ -60,7 +60,7 @@ function SectionHeading({ showViewAll = true }: { showViewAll: boolean }) {
 
 function AnnouncementMeta({ date }: { date: string }) {
   return (
-    <p className="inline-flex items-center gap-1.5 text-[0.95rem] font-medium leading-none text-[#556070]">
+    <p className="type-small inline-flex items-center gap-1.5 text-[#556070]">
       <Icon icon="mdi:clock-time-three-outline" aria-hidden="true" className="h-5 w-5" />
       <span>{formatAnnouncementDate(date)}</span>
     </p>
@@ -84,19 +84,17 @@ function FeaturedAnnouncementCard({ item }: { item: NewsItem }) {
       <div className="flex flex-1 flex-col px-4 pb-5 pt-4 sm:px-5">
         <AnnouncementMeta date={item.date} />
 
-        <h3 className="mt-4 line-clamp-2 text-[1.55rem] font-extrabold leading-[1.15] tracking-[0.01em] text-[#071116] sm:text-[1.65rem]">
-          {item.title}
-        </h3>
+        <h3 className="type-card-title-featured mt-4 line-clamp-2 text-[#071116]">{item.title}</h3>
 
         {item.excerpt ? (
-          <p className="mt-3 line-clamp-3 text-[1.05rem] font-medium leading-[1.25] tracking-[0.01em] text-[#556070]">
+          <p className="type-card-body mt-3 line-clamp-3 text-[#556070]">
             {item.excerpt}{' '}
-            <span className="font-bold text-[#0077cc] transition-colors duration-200 group-hover:text-[#005fa3]">
+            <span className="font-semibold text-[#0077cc] transition-colors duration-200 group-hover:text-[#005fa3]">
               Read more
             </span>
           </p>
         ) : (
-          <span className="mt-3 inline-flex text-[1rem] font-bold text-[#0077cc] transition-colors duration-200 group-hover:text-[#005fa3]">
+          <span className="type-small mt-3 inline-flex text-[#0077cc] transition-colors duration-200 group-hover:text-[#005fa3]">
             Read more
           </span>
         )}
@@ -120,14 +118,10 @@ function AnnouncementListCard({ item }: { item: NewsItem }) {
       </div>
 
       <div className="mt-4 flex min-w-0 flex-col sm:mt-0">
-        <h3 className="line-clamp-2 text-[1.18rem] font-extrabold leading-[1.18] tracking-[0.01em] text-[#071116]">
-          {item.title}
-        </h3>
+        <h3 className="type-card-title line-clamp-2 text-[#071116]">{item.title}</h3>
 
         {item.excerpt ? (
-          <p className="mt-2 line-clamp-3 text-[1.03rem] font-medium leading-[1.22] tracking-[0.01em] text-[#556070]">
-            {item.excerpt}
-          </p>
+          <p className="type-card-body mt-2 line-clamp-3 text-[#556070]">{item.excerpt}</p>
         ) : null}
 
         <div className="mt-3">
@@ -170,16 +164,14 @@ function AnnouncementSkeleton() {
 function EmptyState() {
   return (
     <div className="rounded-[1.4rem] bg-white p-8 text-[#071116] shadow-[0_16px_38px_rgba(7,17,22,0.08)] lg:col-span-2">
-      <p className="inline-flex items-center gap-2 text-[0.95rem] font-medium text-[#556070]">
+      <p className="type-small inline-flex items-center gap-2 text-[#556070]">
         <Icon icon="mdi:bullhorn-outline" aria-hidden="true" className="h-5 w-5" />
         Updates
       </p>
 
-      <h3 className="mt-4 text-[1.6rem] font-extrabold leading-tight tracking-[0.01em] text-[#071116]">
-        No announcements yet
-      </h3>
+      <h3 className="type-card-title-featured mt-4 text-[#071116]">No announcements yet</h3>
 
-      <p className="mt-3 max-w-2xl text-[1rem] font-medium leading-[1.5] text-[#556070]">
+      <p className="type-card-body mt-3 max-w-2xl text-[#556070]">
         New community updates will appear here as soon as they are published.
       </p>
     </div>
@@ -226,7 +218,7 @@ export default function HomeAnnouncements() {
 
         <AppLink
           href={ANNOUNCEMENT_ROUTES.ROOT}
-          className="mt-8 inline-flex items-center gap-1 text-base font-bold text-[#0077cc] transition-colors duration-200 hover:text-[#005fa3] md:hidden"
+          className="type-button mt-8 inline-flex items-center gap-1 text-[#0077cc] transition-colors duration-200 hover:text-[#005fa3] md:hidden"
         >
           See All
           <Icon icon="mdi:chevron-right" aria-hidden="true" className="h-5 w-5" />

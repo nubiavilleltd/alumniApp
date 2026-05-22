@@ -284,7 +284,7 @@ export function AlumniDirectoryPage() {
       <section className="bg-stone-100 min-h-screen py-8">
         <div className="container-custom mx-auto">
           {/* Title */}
-          <h1 className="text-2xl md:text-3xl font-bold mb-6">Alumnae Directory</h1>
+          <h1 className="type-section-title mb-6">Alumnae Directory</h1>
 
           {/* Filters */}
           <div className="flex flex-col sm:flex-row items-center gap-4 mb-8">

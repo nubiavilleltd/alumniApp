@@ -104,11 +104,11 @@ function ServiceCard({
             strokeWidth={2.25}
           />
         </div>
-        <h2 className="text-lg font-bold text-gray-900 leading-snug">{service.title}</h2>
+        <h2 className="type-card-title text-gray-900">{service.title}</h2>
       </div>
 
       {/* Description */}
-      <p className="text-gray-500 text-sm leading-relaxed">{service.description}</p>
+      <p className="type-small text-gray-500">{service.description}</p>
     </div>
   );
 }
@@ -129,8 +129,8 @@ export default function WelfarePage() {
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-5 mb-8">
             {/* Left: title + description */}
             <div className="max-w-2xl">
-              <h1 className="text-3xl sm:text-4xl font-black text-gray-900 mb-3">Welfare</h1>
-              <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+              <h1 className="type-section-title mb-3 text-gray-900">Welfare</h1>
+              <p className="type-card-body text-gray-600">
                 "We rise by lifting others." Our welfare program is dedicated to supporting alumni
                 in times of need and celebrating our collective milestones. Reach out to the Welfare
                 Committee directly if you have any welfare concerns. All communications are treated
@@ -142,13 +142,13 @@ export default function WelfarePage() {
             <div className="flex flex-col gap-3 flex-shrink-0">
               <Link
                 to={ROUTES.WELFARE_COMMITTEE_CONTACT}
-                className="text-center border border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white font-semibold text-sm px-5 py-2.5 rounded-full transition-colors whitespace-nowrap"
+                className="type-small text-center border border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white px-5 py-2.5 rounded-full transition-colors whitespace-nowrap"
               >
                 Contact the Committee
               </Link>
               <Link
                 to={ROUTES.WELFARE_ZONES}
-                className="text-center border border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white font-semibold text-sm px-5 py-2.5 rounded-full transition-colors whitespace-nowrap"
+                className="type-small text-center border border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white px-5 py-2.5 rounded-full transition-colors whitespace-nowrap"
               >
                 Welfare Zones
               </Link>
