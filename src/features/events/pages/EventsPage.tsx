@@ -440,13 +440,13 @@ export function EventsPage() {
             <div className="flex w-full flex-wrap items-center justify-center gap-3 sm:w-auto sm:flex-shrink-0 sm:justify-end">
               <Link
                 to={ROUTES.PROJECTS.ROOT}
-                className="flex-1 text-center border border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white font-semibold text-sm px-5 py-2.5 rounded-full transition-colors whitespace-nowrap sm:flex-none"
+                className="min-w-0 flex-1 rounded-full border border-primary-500 px-3 py-2.5 text-center text-xs font-semibold whitespace-nowrap text-primary-500 transition-colors hover:bg-primary-500 hover:text-white sm:flex-none sm:px-5 sm:text-sm"
               >
                 Go to Our Projects
               </Link>
               <Link
                 to={ROUTES.NEWS}
-                className="flex-1 text-center border border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white font-semibold text-sm px-5 py-2.5 rounded-full transition-colors whitespace-nowrap sm:flex-none"
+                className="min-w-0 flex-1 rounded-full border border-primary-500 px-3 py-2.5 text-center text-xs font-semibold whitespace-nowrap text-primary-500 transition-colors hover:bg-primary-500 hover:text-white sm:flex-none sm:px-5 sm:text-sm"
               >
                 Go to Announcement
               </Link>
