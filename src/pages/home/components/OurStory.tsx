@@ -4,7 +4,7 @@ import { ROUTES } from '@/shared/constants/routes';
 export default function OurStory() {
   return (
     <section
-      className="relative overflow-hidden bg-[url('/realAboutBg.png')] bg-cover bg-center px-0 py-10 md:py-16"
+      className="relative overflow-hidden bg-[url('/realAboutBg.png')] bg-cover bg-center px-0 py-10"
       aria-labelledby="home-about-title"
     >
       <div
@@ -18,7 +18,7 @@ export default function OurStory() {
 
       <div className="relative z-10 container-custom">
         <div className="relative z-10">
-          <div className="type-small relative mb-6 inline-flex items-center px-[0.9rem] py-3 text-[#071116]">
+          <div className="type-small relative mb-6 inline-flex items-center px-[0.9rem] py-3 font-semibold text-[#071116]">
             <span
               aria-hidden="true"
               className="absolute bottom-0 left-0 h-[1.45rem] w-[1.45rem] border-b-2 border-l-2 border-primary-500"

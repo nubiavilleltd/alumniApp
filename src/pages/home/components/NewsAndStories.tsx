@@ -37,7 +37,7 @@ function SectionHeading({ showViewAll = true }: { showViewAll: boolean }) {
             className="absolute -top-2 right-[-10px] h-4 w-[2px] bg-[#0077cc]"
           />
 
-          <p className="type-small text-[#071116]">Announcements</p>
+          <p className="type-small font-semibold text-[#071116]">Announcements</p>
         </div>
 
         <h2 className="type-section-title mt-7 max-w-5xl text-[#071116]">
