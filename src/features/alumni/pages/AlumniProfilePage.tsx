@@ -175,7 +175,7 @@ export function AlumniProfilePage() {
   return (
     <>
       <SEO title={alumnus.name || 'Alumni Profile'} description={alumnus.bio} />
-      <Breadcrumbs items={breadcrumbItems} />
+      {/* <Breadcrumbs items={breadcrumbItems} /> */}
 
       <section className="section bg-gray-100 py-8">
         <div className="container-custom">

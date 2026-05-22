@@ -1263,9 +1263,9 @@ export function MessagesPage() {
         title="Messages"
         description="Stay in touch with alumnae conversations and follow-ups."
       />
-      <div className={isMobileThreadOpen ? 'hidden' : 'lg:hidden'}>
+      {/* <div className={isMobileThreadOpen ? 'hidden' : 'lg:hidden'}>
         <Breadcrumbs items={breadcrumbItems} />
-      </div>
+      </div> */}
 
       {/* Page background matching Figma off-white */}
       <section
@@ -1274,7 +1274,7 @@ export function MessagesPage() {
           isMobileThreadOpen
             ? 'h-[calc(100dvh-5.25rem)] overflow-hidden sm:h-[calc(100dvh-5.5rem)]'
             : ''
-        } lg:h-[calc(100dvh-4.75rem)] lg:overflow-hidden lg:py-4`}
+        } lg:h-[calc(100dvh-4.75rem)] lg:overflow-hidden py-2 lg:py-4`}
       >
         <div
           className={`container-custom space-y-4 ${
@@ -1282,7 +1282,7 @@ export function MessagesPage() {
           } lg:flex lg:h-full lg:min-h-0 lg:max-w-[1560px] lg:flex-col lg:space-y-0`}
         >
           {/* Pull-to-refresh indicator */}
-          <div className="flex justify-center lg:pointer-events-none lg:absolute lg:left-1/2 lg:top-2 lg:z-20 lg:w-fit lg:-translate-x-1/2">
+          <div className="pointer-events-none absolute left-1/2 top-2 z-20 w-fit -translate-x-1/2">
             <div
               className={`flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-xs font-medium text-gray-600 shadow-sm transition-all duration-200 ${
                 refreshIndicatorVisible ? 'opacity-100' : 'pointer-events-none opacity-0'
@@ -1306,9 +1306,8 @@ export function MessagesPage() {
               isMobileThreadOpen ? 'hidden lg:block' : ''
             } lg:pb-3`}
           >
-            <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-950 sm:text-4xl lg:text-[2.5rem] xl:text-[2.75rem]">
-              Message Centre
-            </h1>
+            {/* <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-950 sm:text-4xl lg:text-[2.5rem] xl:text-[2.75rem]"> */}
+            <h1 className="type-section-title mb-3 text-gray-950">Message Centre</h1>
           </div>
 
           {/* Two-column layout */}

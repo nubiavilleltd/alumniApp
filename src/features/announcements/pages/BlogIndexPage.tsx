@@ -23,7 +23,7 @@ const cardBodyClassName =
 const metaClassName =
   'm-0 flex items-center gap-[0.55rem] text-sm font-semibold leading-[1.2] text-[#59626c]';
 const actionClassName =
-  'min-h-10 rounded-full border border-primary-500 bg-transparent px-5 py-2.5 text-sm font-semibold text-primary-500 transition-colors hover:bg-primary-500 hover:text-white whitespace-nowrap';
+  'min-h-10 rounded-full border-2 border-primary-500 bg-transparent px-5 py-2.5 text-sm font-bold text-primary-500 transition-colors hover:bg-primary-500 hover:text-white whitespace-nowrap';
 const boardClassName =
   'hidden gap-5 min-[1181px]:grid min-[1181px]:grid-cols-2 min-[1181px]:items-start';
 const sideListClassName = 'grid gap-3.5 min-[1181px]:grid-rows-3 [&>*]:h-full';
@@ -215,36 +215,52 @@ export default function BlogIndexPage() {
       <main className="min-h-full bg-[#f8f8f7] text-[#071116]">
         <section className={pageShellClassName} aria-labelledby="announcements-title">
           <header className="mb-6">
-            {/* Top row: Navigation links */}
-            <div className="mb-7 flex flex-wrap items-center justify-end gap-3">
-              <ButtonLink
-                href={ROUTES.PROJECTS.ROOT}
-                variant="outline"
-                className={`${actionClassName} flex-1 sm:flex-none text-center`}
-              >
-                Go to our Projects
-              </ButtonLink>
-              <ButtonLink
-                href={EVENT_ROUTES.ROOT}
-                variant="outline"
-                className={`${actionClassName} flex-1 sm:flex-none text-center`}
-              >
-                Go to Events
-              </ButtonLink>
-            </div>
-
-            {/* Middle row: Title, Subtitle, and Create button */}
-            <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+            {/* Header */}
+            <div className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
               <div className="max-w-2xl">
-                <h1
-                  id="announcements-title"
-                  className="m-0 text-xl font-bold text-gray-900 sm:text-2xl md:text-3xl"
-                >
+                <h1 id="announcements-title" className="type-section-title m-0 text-gray-900">
                   Announcements
                 </h1>
-                <p className="mt-1 text-sm text-gray-500 sm:text-base">
+                <p className="type-card-body mt-1 text-gray-500">
                   Read the latest community updates, event notices, and project news
                 </p>
+              </div>
+
+              <div className="flex w-full flex-wrap items-center justify-center gap-3 sm:w-auto sm:flex-shrink-0 sm:justify-end">
+                <ButtonLink
+                  href={ROUTES.PROJECTS.ROOT}
+                  variant="outline"
+                  className={`${actionClassName} flex-1 text-center sm:flex-none`}
+                >
+                  Go to our Projects
+                </ButtonLink>
+                <ButtonLink
+                  href={EVENT_ROUTES.ROOT}
+                  variant="outline"
+                  className={`${actionClassName} flex-1 text-center sm:flex-none`}
+                >
+                  Go to Events
+                </ButtonLink>
+              </div>
+            </div>
+
+            {/* Controls */}
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-wrap gap-2">
+                {typeFilters.map((filter) => (
+                  <button
+                    key={filter.value}
+                    type="button"
+                    onClick={() => setSelectedType(filter.value)}
+                    className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+                      selectedType === filter.value
+                        ? 'bg-primary-500 text-white'
+                        : 'bg-white text-accent-700 shadow-sm ring-1 ring-accent-100 hover:bg-primary-50'
+                    }`}
+                  >
+                    {filter.label}
+                  </button>
+                ))}
               </div>
 
               {isAdmin && (
@@ -253,28 +269,10 @@ export default function BlogIndexPage() {
                   onClick={() => setIsEditorOpen(true)}
                   className="flex w-full flex-shrink-0 items-center justify-center gap-1.5 rounded-full bg-primary-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-primary-600 sm:w-auto"
                 >
-                  <Plus className="h-4 w-4" />
                   <span>Create Announcement</span>
+                  <Plus className="h-4 w-4" />
                 </button>
               )}
-            </div>
-
-            {/* Bottom row: Filters */}
-            <div className="mt-4 flex flex-wrap gap-2">
-              {typeFilters.map((filter) => (
-                <button
-                  key={filter.value}
-                  type="button"
-                  onClick={() => setSelectedType(filter.value)}
-                  className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
-                    selectedType === filter.value
-                      ? 'bg-primary-500 text-white'
-                      : 'bg-white text-accent-700 shadow-sm ring-1 ring-accent-100 hover:bg-primary-50'
-                  }`}
-                >
-                  {filter.label}
-                </button>
-              ))}
             </div>
           </header>
 
@@ -335,14 +333,14 @@ export default function BlogIndexPage() {
                         read more
                       </span>
                     </p>
-                    <div className="mt-5">
+                    {/* <div className="mt-5">
                       <ButtonLink
                         href={ANNOUNCEMENT_ROUTES.DETAIL(featured.slug)}
                         variant="primary"
                       >
                         Open announcement
                       </ButtonLink>
-                    </div>
+                    </div> */}
                   </div>
                 </article>
 

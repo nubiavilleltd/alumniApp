@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100;200;300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100;200;300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -147,6 +147,70 @@
   padding-inline: var(--app-page-inline-padding);
 }
 
+.type-hero {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: clamp(2.625rem, 7vw, 4.5rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+}
+
+.type-contact-hero {
+  font-family: Geist, Inter, system-ui, sans-serif;
+  font-size: clamp(2.625rem, 6vw, 4.5rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+}
+
+.type-section-title {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: clamp(1.75rem, 3vw, 2rem);
+  font-weight: 600;
+  line-height: 1.18;
+  letter-spacing: 0.01em;
+}
+
+.type-card-title {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: 0.005em;
+}
+
+.type-card-title-featured {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.22;
+  letter-spacing: 0.005em;
+}
+
+.type-card-body {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+
+.type-small {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+
+.type-button {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
 .home-stats-section {
   background: #f8f8f7;
   padding: 1.75rem 0;
@@ -270,9 +334,9 @@
   margin: 0 0 1.3rem;
   padding: 0.62rem 0.82rem;
   color: #071116;
-  font-size: 1rem;
-  font-weight: 800;
-  line-height: 1;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.4;
 }
 
 .home-section-kicker::before,
@@ -301,9 +365,10 @@
   max-width: 74rem;
   margin: 0;
   color: #071116;
-  font-size: 2.35rem;
-  font-weight: 800;
-  line-height: 1.24;
+  font-size: clamp(1.75rem, 3vw, 2rem);
+  font-weight: 600;
+  line-height: 1.18;
+  letter-spacing: 0.01em;
 }
 
 .home-section-link {
@@ -314,7 +379,8 @@
   margin-top: 0.65rem;
   color: rgb(var(--color-primary-500));
   font-size: 1rem;
-  font-weight: 800;
+  font-weight: 600;
+  line-height: 1.2;
   text-decoration: none;
 }
 
@@ -336,8 +402,8 @@
   gap: 0.15rem;
   color: #ffffff;
   font-size: 0.875rem;
-  font-weight: 800;
-  line-height: 1.2;
+  font-weight: 500;
+  line-height: 1.4;
   text-decoration: none;
 }
 
@@ -359,9 +425,9 @@
   align-items: center;
   gap: 0.3rem;
   color: inherit;
-  font-size: 0.78rem;
-  font-weight: 700;
-  line-height: 1.2;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.4;
 }
 
 .home-event-card__meta svg {
@@ -377,9 +443,10 @@
 .home-event-card__body h3 {
   margin: 0;
   color: #071116;
-  font-weight: 800;
-  line-height: 1.24;
-  font-size: 1.18rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: 0.005em;
 }
 
 .home-event-card--skeleton span {
@@ -440,9 +507,9 @@
   margin: 0.7rem 0 0;
   overflow: hidden;
   color: #59626c;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 500;
-  line-height: 1.38;
+  line-height: 1.5;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
@@ -473,10 +540,6 @@
     margin-bottom: 1.75rem;
   }
 
-  .home-section-title {
-    font-size: 1.75rem;
-  }
-
   .home-section-link {
     margin-top: 0;
   }
@@ -487,13 +550,8 @@
 }
 
 @media (max-width: 640px) {
-  .home-section-title {
-    font-size: 1.45rem;
-  }
-
   .home-section-kicker {
     margin-bottom: 1rem;
-    font-size: 0.95rem;
   }
 
   .home-event-card__body {
@@ -830,384 +888,6 @@ input[type='password']::-webkit-caps-lock-indicator {
   outline-offset: 2px;
 }
 
-/* About page - use stable CSS for Figma-level layout accuracy. */
-.about-page {
-  background: #ffffff;
-  color: #061015;
-}
-
-.about-eyebrow {
-  position: relative;
-  display: inline-flex;
-  width: fit-content;
-  max-width: max-content;
-  flex: 0 0 auto;
-  align-self: flex-start;
-  padding: 0.5rem 0.75rem;
-  color: #061015;
-  /* font-family: Poppins, system-ui, sans-serif; */
-  font-size: 0.95rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  line-height: 1.25;
-}
-
-.about-eyebrow__corner {
-  position: absolute;
-  width: 1.35rem;
-  height: 1.35rem;
-  border-color: rgb(var(--color-primary-500));
-}
-
-.about-eyebrow__corner--left {
-  left: 0;
-  bottom: 0;
-  border-left-width: 2px;
-  border-bottom-width: 2px;
-}
-
-.about-eyebrow__corner--right {
-  top: 0;
-  right: 0;
-  border-top-width: 2px;
-  border-right-width: 2px;
-}
-
-.about-eyebrow__label {
-  position: relative;
-}
-
-.about-hero {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  background: linear-gradient(135deg, #ffffff 0%, #fbfdff 43%, #acd5ef 100%);
-}
-
-.about-hero__inner {
-  display: grid;
-  min-height: auto;
-  gap: 2.5rem;
-  padding: 2.75rem var(--app-page-inline-padding) 3.75rem;
-}
-
-.about-hero__content,
-.about-hero__media {
-  min-width: 0;
-}
-
-.about-hero__content {
-  display: flex;
-  flex-direction: column;
-}
-
-.about-hero__title {
-  max-width: 1340px;
-  margin-top: 1.5rem;
-  color: #020c12;
-  /* font-family: Poppins, system-ui, sans-serif; */
-  font-size: clamp(2.15rem, 6.5vw, 3.1rem);
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  line-height: 1.12;
-}
-
-.about-hero__title span {
-  display: block;
-}
-
-.about-hero__values {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.75rem 1rem;
-  margin-top: 2.75rem;
-  color: rgb(var(--color-primary-500));
-  /* font-family: Poppins, system-ui, sans-serif; */
-  font-size: clamp(1.05rem, 3.8vw, 1.55rem);
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  line-height: 1.1;
-}
-
-.about-hero__values span:nth-child(even) {
-  color: #020c12;
-}
-
-.about-hero__media {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.about-hero__image-frame {
-  width: 100%;
-  min-width: min(100%, 360px);
-  overflow: hidden;
-  border-radius: 1.8rem;
-}
-
-.about-hero__image {
-  width: 100%;
-  height: 17rem;
-  object-fit: cover;
-  object-position: center;
-}
-
-.about-hero__cta {
-  display: inline-flex;
-  width: 100%;
-  max-width: 17rem;
-  min-height: 4.25rem;
-  align-items: center;
-  justify-content: center;
-  margin-top: 1.25rem;
-  border-radius: 9999px;
-  background: rgb(var(--color-primary-500));
-  color: #ffffff;
-  box-shadow: 0 18px 40px rgba(0, 119, 204, 0.22);
-  /* font-family: Poppins, system-ui, sans-serif; */
-  font-size: 1.125rem;
-  font-weight: 800;
-  letter-spacing: 0.03em;
-  text-align: center;
-  transition:
-    background-color 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.about-hero__cta:hover {
-  background: rgb(var(--color-primary-600));
-}
-
-.about-hero__cta:focus {
-  outline: 4px solid rgb(var(--color-primary-200));
-  outline-offset: 2px;
-}
-
-@media (min-width: 640px) {
-  .about-hero__inner {
-    padding-inline: var(--app-page-inline-padding);
-    padding-top: 4rem;
-  }
-
-  .about-hero__image {
-    height: 21rem;
-  }
-}
-
-@media (min-width: 1200px) {
-  .about-eyebrow {
-    font-size: 1rem;
-  }
-
-  .about-hero__inner {
-    grid-template-columns: minmax(0, 1fr) clamp(420px, 25vw, 500px);
-    min-height: min(760px, calc(100svh - 7rem));
-    gap: clamp(2rem, 3.4vw, 3.75rem);
-    padding: clamp(3rem, 5.2vh, 4.25rem) var(--app-page-inline-padding) clamp(3rem, 5.8vh, 4.5rem);
-  }
-
-  .about-hero__title {
-    margin-top: 1.5rem;
-    font-size: clamp(3rem, 2.55vw, 3.65rem);
-    letter-spacing: 0.085em;
-    line-height: 1.18;
-  }
-
-  .about-hero__values {
-    margin-top: clamp(3rem, 6vh, 4.5rem);
-    margin-left: 0;
-    flex-wrap: nowrap;
-    gap: 0.85rem;
-    font-size: clamp(1.55rem, 1.45vw, 1.95rem);
-    letter-spacing: 0.105em;
-  }
-
-  .about-hero__media {
-    align-items: stretch;
-  }
-
-  .about-hero__image-frame {
-    width: 100%;
-    min-width: 0;
-    height: clamp(380px, 23vw, 460px);
-    min-height: 0;
-    border-radius: 2.25rem;
-  }
-
-  .about-hero__image {
-    height: 100%;
-  }
-
-  .about-hero__cta {
-    width: 236px;
-    max-width: none;
-    height: 66px;
-    min-height: 66px;
-    margin-top: 18px;
-    font-size: 1.18rem;
-  }
-}
-
-.about-mission {
-  background: #ffffff;
-  padding: 1rem var(--app-page-inline-padding) 5rem;
-}
-
-.about-mission__inner {
-  max-width: 1920px;
-  margin-inline: auto;
-}
-
-.about-mission__copy {
-  max-width: 1770px;
-  margin-top: 2rem;
-}
-
-.about-mission__title {
-  color: #061015;
-  /* font-family: Poppins, system-ui, sans-serif; */
-  font-size: clamp(1.55rem, 5vw, 2.15rem);
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  line-height: 1.32;
-}
-
-.about-mission__description {
-  max-width: 1850px;
-  margin-top: 1.75rem;
-  color: #101820;
-  /* font-family: Poppins, system-ui, sans-serif; */
-  font-size: clamp(0.95rem, 3.2vw, 1.2rem);
-  font-weight: 400;
-  letter-spacing: 0.09em;
-  line-height: 1.48;
-}
-
-.about-mission__features {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 3rem;
-  margin-top: 5rem;
-  align-items: start;
-  justify-content: start;
-  justify-items: start;
-}
-
-.about-mission__feature {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  height: 100%;
-  width: 100%;
-  max-width: 18rem;
-  margin-left: 0;
-  text-align: left;
-}
-
-.about-mission__icon {
-  display: flex;
-  width: 3.25rem;
-  height: 3.25rem;
-  align-items: center;
-  justify-content: center;
-  border-radius: 0.75rem;
-  background: #e5e5e5;
-}
-
-.about-mission__icon img {
-  display: block;
-  width: 1.65rem;
-  height: 1.65rem;
-  object-fit: contain;
-}
-
-.about-mission__feature-title {
-  margin-top: 1rem;
-  color: #101820;
-  font-family: Poppins, system-ui, sans-serif;
-  font-size: 1rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  line-height: 1.25;
-}
-
-.about-mission__feature-description {
-  margin-top: 1rem;
-  color: rgb(var(--color-accent-600));
-  /* font-family: Poppins, system-ui, sans-serif; */
-  font-size: 1.05rem;
-  font-weight: 500;
-  letter-spacing: 0.075em;
-  line-height: 1.32;
-}
-
-@media (min-width: 640px) {
-  .about-mission {
-    padding-inline: var(--app-page-inline-padding);
-    padding-top: 1rem;
-  }
-
-  .about-mission__features {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (min-width: 1024px) {
-  .about-mission {
-    padding: 1rem var(--app-page-inline-padding) 6rem;
-  }
-
-  .about-mission__features {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: clamp(2.5rem, 4vw, 5rem);
-    margin-top: clamp(7rem, 10vw, 12rem);
-  }
-}
-
-@media (min-width: 1200px) {
-  .about-mission__title {
-    font-size: clamp(2rem, 1.78vw, 2.35rem);
-    letter-spacing: 0.095em;
-  }
-
-  .about-mission__description {
-    font-size: clamp(1.25rem, 1.16vw, 1.48rem);
-    letter-spacing: 0.085em;
-    line-height: 1.48;
-  }
-
-  .about-mission__icon {
-    width: 3.9rem;
-    height: 3.9rem;
-  }
-
-  .about-mission__icon img {
-    width: 1.95rem;
-    height: 1.95rem;
-  }
-
-  .about-mission__feature-title {
-    margin-top: 1.1rem;
-    font-size: clamp(0.95rem, 0.85vw, 1.1rem);
-  }
-
-  .about-mission__feature-description {
-    margin-top: 1.1rem;
-    font-size: clamp(1.05rem, 1vw, 1.35rem);
-    letter-spacing: 0.085em;
-  }
-}
-
-@media (min-width: 1280px) {
-  .about-mission__features {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: clamp(3rem, 4vw, 6rem);
-    margin-top: clamp(8rem, 11vw, 14rem);
-  }
-}
-
 /* Contact page */
 .contact-page {
   font-family: 'Geist', 'Inter', system-ui, sans-serif;
@@ -1246,10 +926,11 @@ input[type='password']::-webkit-caps-lock-indicator {
   max-width: 33rem;
   margin: 0;
   color: #071116;
-  font-size: clamp(2.3rem, 3vw, 3rem);
+  font-family: Geist, Inter, system-ui, sans-serif;
+  font-size: clamp(2.625rem, 6vw, 4.5rem);
   font-weight: 600;
-  line-height: 1.02;
-  letter-spacing: -0.03em;
+  line-height: 1.05;
+  letter-spacing: 0.01em;
 }
 
 .contact-intro__copy {

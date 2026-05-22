@@ -14,6 +14,7 @@ interface FilterDropdownProps {
   clearIcon?: AppIcon;
   chevronDownIcon?: AppIcon;
   chevronUpIcon?: AppIcon;
+  sortOptionsAlphabetically?: boolean;
 }
 
 export function FilterDropdown({
@@ -29,6 +30,7 @@ export function FilterDropdown({
   clearIcon = 'mdi:close-circle',
   chevronDownIcon = 'mdi:chevron-down',
   chevronUpIcon = 'mdi:chevron-up',
+  sortOptionsAlphabetically = true,
 }: FilterDropdownProps) {
   const hasValue = value.trim().length > 0;
   const shouldShowClear = showClearButton && hasValue;
@@ -42,6 +44,7 @@ export function FilterDropdown({
           onChange={(event) => onChange(event.target.value)}
           options={options}
           placeholder={placeholder}
+          sortOptionsAlphabetically={sortOptionsAlphabetically}
           className={`w-full ${selectClassName}`}
           controlClassName={shouldShowClear ? '!pr-16' : ''}
           chevronDownIcon={chevronDownIcon}

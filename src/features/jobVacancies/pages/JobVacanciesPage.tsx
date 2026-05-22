@@ -76,15 +76,13 @@ const jobPanelToneClassNames: Record<JobCardTone, string> = {
   green: 'bg-[#e6f5e5]',
 };
 
-export const jobsPageShellClassName = 'container-custom pb-16 pt-6';
+export const jobsPageShellClassName = 'container-custom pb-16 pt-8';
 export const jobsPageHeaderClassName =
   'mb-7 flex flex-col gap-4 md:mb-[2.7rem] md:flex-row md:items-start md:justify-between md:gap-6';
-export const jobsPageTitleClassName =
-  'text-[clamp(2rem,3.2vw,2.9rem)] font-extrabold leading-[1.05] text-[#071116]';
-export const jobsPageSubtitleClassName =
-  'mt-2 text-[clamp(1rem,1.6vw,1.25rem)] font-medium leading-[1.25] text-[#59626c]';
+export const jobsPageTitleClassName = 'type-section-title text-[#071116]';
+export const jobsPageSubtitleClassName = 'type-card-body mt-2 text-[#59626c]';
 export const jobsPagePostButtonClassName =
-  'min-h-[1.5rem] rounded-full px-[1.45rem] text-base font-extrabold tracking-normal shadow-none max-md:w-full [&>svg]:h-[1.35rem] [&>svg]:w-[1.35rem]';
+  'type-button min-h-[1.5rem] rounded-full px-[1.45rem] tracking-normal shadow-none max-md:w-full [&>svg]:h-[1.35rem] [&>svg]:w-[1.35rem]';
 export const jobsGridClassName =
   'grid grid-cols-1 gap-x-[1.4rem] gap-y-[1.05rem] md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
 const jobsModalBackdropClassName =
@@ -387,10 +385,10 @@ export function JobCard({
           {panelAction ? <div className="shrink-0">{panelAction}</div> : null}
         </div>
 
-        <p className="mt-[1.35rem] text-[0.95rem] font-extrabold leading-[1.2] text-[#071116]">
+        <p className="mt-[1.35rem] text-[0.9rem] font-semibold leading-[1.2] text-gray-700">
           {job.companyName}
         </p>
-        <h2 className="mt-[0.7rem] text-[clamp(1.35rem,1.85vw,1.75rem)] font-extrabold leading-[1.18] text-[#071116]">
+        <h2 className="mt-[0.7rem] text-[clamp(1.35rem,1.5vw,1.75rem)] font-semibold leading-[1.18] text-[#071116]">
           {job.title}
         </h2>
 
@@ -398,7 +396,7 @@ export function JobCard({
           {pillLabels.map((label) => (
             <span
               key={label}
-              className="inline-flex min-h-[2.15rem] items-center rounded-full border border-[rgba(7,17,22,0.35)] px-[0.85rem] py-[0.35rem] text-[0.82rem] font-bold leading-none text-[#59626c]"
+              className="inline-flex min-h-[2.15rem] items-center rounded-full border border-[rgba(7,17,22,0.35)] px-[0.85rem] py-[0.35rem] text-[0.75rem] font-bold leading-none text-[#59626c]"
             >
               {label}
             </span>
@@ -406,12 +404,12 @@ export function JobCard({
         </div>
       </div>
 
-      <div className="mt-auto flex items-end justify-between gap-4 px-[1.35rem] pb-[1.2rem] pt-4 max-sm:flex-wrap">
+      <div className="mt-auto flex items-end justify-between gap-4 px-[1.35rem] pb-[1.0rem] pt-4 max-sm:flex-wrap">
         <div>
           <p className="text-[1.45rem] font-extrabold leading-none text-[#071116]">
             {getSalaryDisplay(job)}
           </p>
-          <p className="mt-[0.35rem] text-[0.9rem] font-bold leading-[1.15] text-[#59626c]">
+          <p className="mt-[0.35rem] text-[0.9rem] font-semibold leading-[1.15] text-[#59626c]">
             {job.location}
           </p>
         </div>
@@ -1004,17 +1002,28 @@ export default function JobVacanciesPage() {
       <main className="min-h-full bg-[#f8f8f7] text-[#071116]">
         <section className={jobsPageShellClassName} aria-labelledby="jobs-page-title">
           <header className={jobsPageHeaderClassName}>
-            <div>
-              <h1 id="jobs-page-title" className={jobsPageTitleClassName}>
-                Job Vacancies
-              </h1>
+            <div className="flex-1">
+              <div className="flex items-center justify-between gap-4 lg:block">
+                <h1 id="jobs-page-title" className={jobsPageTitleClassName}>
+                  Job Vacancies
+                </h1>
+                <Button
+                  type="button"
+                  size="sm"
+                  className="inline-flex min-h-10 w-10 shrink-0 items-center justify-center rounded-full px-0 shadow-none lg:hidden"
+                  onClick={handleOpenPostModal}
+                  aria-label="Post a Job"
+                >
+                  <Plus strokeWidth={2.35} />
+                </Button>
+              </div>
               <p className={jobsPageSubtitleClassName}>Discover exclusive job listings</p>
             </div>
 
             <Button
               type="button"
               size="sm"
-              className={jobsPagePostButtonClassName}
+              className={`${jobsPagePostButtonClassName} hidden lg:inline-flex`}
               onClick={handleOpenPostModal}
             >
               Post a Job

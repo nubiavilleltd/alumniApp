@@ -76,7 +76,7 @@ const primaryNavItems: NavItem[] = [
 const authenticatedMenuItems: NavChild[] = [
   { label: 'View Profile', url: USER_ROUTES.PROFILE },
   { label: 'Dashboard', url: USER_ROUTES.DASHBOARD },
-  { label: 'Messaging Center', url: ROUTES.MESSAGES },
+  { label: 'Message Center', url: ROUTES.MESSAGES },
   { label: 'My Registered Events', url: EVENT_ROUTES.MY_EVENTS },
   { label: 'My Market', url: MARKETPLACE_ROUTES.MY_BUSINESS },
   { label: 'My Job Posts', url: ROUTES.MY_JOB_POSTS },
@@ -87,7 +87,7 @@ const navSurfaceClassName =
   'bg-[linear-gradient(106deg,_rgb(var(--color-primary-500))_0%,_#003a5d_92%)]';
 
 const desktopLinkBaseClassName =
-  "relative no-underline font-[600] tracking-[0.1em] text-[#c4d0d9] transition-colors duration-200 hover:text-white focus-visible:text-white after:pointer-events-none after:absolute after:left-0 after:h-[5px] after:w-full after:origin-left after:scale-x-0 after:rounded-full after:bg-white/85 after:content-[''] after:transition-transform after:duration-300 after:ease-out hover:after:scale-x-100 focus-visible:after:scale-x-100";
+  "relative no-underline font-[600] tracking-[0.1em] text-[#BDBDBD] transition-colors duration-200 hover:text-white focus-visible:text-white after:pointer-events-none after:absolute after:left-0 after:h-[5px] after:w-full after:origin-left after:scale-x-0 after:rounded-full after:bg-white/85 after:content-[''] after:transition-transform after:duration-300 after:ease-out hover:after:scale-x-100 focus-visible:after:scale-x-100";
 const desktopActiveLinkClassName = 'text-white after:scale-x-100';
 const desktopPrimaryLinkClassName = `${desktopLinkBaseClassName} whitespace-nowrap text-sm xl:text-lg 2xl:text-lg after:-bottom-3 xl:after:-bottom-4`;
 const desktopSecondaryLinkClassName = `${desktopLinkBaseClassName} text-sm xl:text-base 2xl:text-lg after:-bottom-2`;
@@ -98,13 +98,13 @@ const desktopDropdownMenuLinkClassName =
   'flex items-center gap-3 px-4 py-[0.8rem] text-left text-[0.92rem] font-bold text-[#4f5864] no-underline transition-colors duration-200 hover:bg-primary-50 hover:text-primary-700';
 const desktopMenuActiveLinkClassName = 'bg-primary-50 text-primary-700';
 const accountPillClassName =
-  'inline-flex min-h-[3.35rem] items-center rounded-full border border-transparent bg-white text-[#0d78cb] no-underline shadow-none transition-opacity duration-200 hover:bg-white/95 hover:text-[#0d78cb]';
+  'inline-flex min-h-[2.3rem] items-center rounded-full border border-transparent bg-white text-[#0d78cb] no-underline shadow-none transition-opacity duration-200 hover:bg-white/95 hover:text-[#0d78cb]';
 const userAccountTriggerClassName =
   'inline-flex min-h-[3.35rem] items-center rounded-full border border-white/25 bg-transparent text-white no-underline shadow-none transition-colors duration-200 hover:border-white/40 hover:bg-white/5';
 const mobileSectionClassName =
   'mt-4 grid gap-1.5 border-t border-white/15 pt-4 first:mt-0 first:border-t-0 md:mt-5 md:gap-2 md:pt-5';
 const mobileLinkClassName =
-  'flex items-center gap-3 rounded-[1rem] px-4 py-3.5 text-[0.95rem] font-bold tracking-[0.03em] leading-[1.3] text-[#d0d9e0] no-underline transition-colors duration-200 hover:bg-white/10 hover:text-white focus-visible:bg-white/10 focus-visible:text-white md:px-5 md:py-4 md:text-base';
+  'flex items-center gap-3 rounded-[1rem] px-4 py-3.5 text-[0.95rem] font-bold tracking-[0.03em] leading-[1.3] text-[#BDBDBD] no-underline transition-colors duration-200 hover:bg-white/10 hover:text-white focus-visible:bg-white/10 focus-visible:text-white md:px-5 md:py-4 md:text-base';
 
 function cn(...inputs: Array<string | false | null | undefined>) {
   return twMerge(clsx(inputs));
@@ -177,8 +177,8 @@ function BrandMark({ mobile = false }: { mobile?: boolean }) {
       className={cn(
         'relative isolate flex overflow-hidden bg-white text-primary-500 no-underline',
         mobile
-          ? 'min-h-[5.25rem] items-center py-3 sm:min-h-[5.5rem] sm:py-3.5'
-          : 'items-center justify-center py-3 xl:py-4 2xl:py-5',
+          ? 'min-h-[5.25rem] items-center px-[var(--app-page-inline-padding)] py-3 sm:min-h-[5.5rem] sm:py-3.5'
+          : 'items-center justify-start px-[var(--app-page-inline-padding)] py-3 xl:py-4 2xl:py-5',
       )}
     >
       <span
@@ -188,7 +188,7 @@ function BrandMark({ mobile = false }: { mobile?: boolean }) {
       <HeaderLogo
         className={cn(
           'relative z-10 min-w-0',
-          mobile ? 'w-full justify-start gap-2.5 pl-3 sm:pl-4' : 'max-w-full justify-center gap-3',
+          mobile ? 'w-full justify-start gap-2.5' : 'max-w-full justify-start gap-3',
         )}
         imageClassName={cn(
           mobile ? 'h-[2.8rem] w-[2.8rem] sm:h-[3rem] sm:w-[3rem]' : 'h-[3.35rem] w-[3.35rem]',
@@ -333,13 +333,7 @@ function UserDropdown({
   }, []);
 
   const menuItems = isAdmin
-    ? [
-        {
-          label: 'Admin Dashboard',
-          url: ADMIN_ROUTES.DASHBOARD,
-        },
-        ...authenticatedMenuItems,
-      ]
+    ? [{ label: 'Admin Dashboard', url: ADMIN_ROUTES.DASHBOARD }, ...authenticatedMenuItems]
     : authenticatedMenuItems;
 
   return (
@@ -348,20 +342,23 @@ function UserDropdown({
         type="button"
         className={cn(
           userAccountTriggerClassName,
-          'cursor-pointer gap-3 px-[1.2rem] py-[0.35rem] pl-[0.45rem]',
+          'cursor-pointer gap-3 px-[0.36rem] py-[0.32rem]',
         )}
         aria-expanded={open}
         onClick={() => setOpen((prev) => !prev)}
       >
         <UserAvatar user={currentUser} />
-        <span className="flex flex-col gap-[0.1rem] text-left text-[0.95rem] leading-[1.05] text-white">
-          <span className="font-medium text-[#c9d6df]">Welcome,</span>
-          <strong className="max-w-[8.5rem] overflow-hidden text-[1.05rem] font-extrabold text-ellipsis whitespace-nowrap text-white">
+        <span className="flex flex-col gap-[0.1rem] text-left text-[0.85rem] leading-[1.05] text-white">
+          <span className="font-semibold text-[11.7px] text-[#c9d6df]">Welcome,</span>
+          <strong className="max-w-[7.65rem] overflow-hidden text-[0.9rem] font-bold text-ellipsis whitespace-nowrap text-white">
             {displayName}
           </strong>
         </span>
         <UnreadMessagesBadge count={unreadThreadCount} className="ml-1 flex-none" />
-        <Icon icon="mdi:chevron-down" className="h-5 w-5 flex-none text-[#9eb8ca]" />
+        <Icon
+          icon="mdi:chevron-down"
+          className="h-[1.125rem] w-[1.125rem] flex-none text-[#9eb8ca]"
+        />
       </button>
 
       {open && (
@@ -385,14 +382,14 @@ function UserDropdown({
 
           <button
             type="button"
-            className="flex w-full cursor-pointer items-center gap-[0.65rem] border-0 bg-transparent px-4 py-[0.8rem] text-left text-[0.92rem] font-bold text-red-600 transition-colors duration-200 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-55"
+            className="flex w-full cursor-pointer items-center gap-[0.585rem] border-0 bg-transparent px-[0.9rem] py-[0.72rem] text-left text-[0.828rem] font-bold text-red-600 transition-colors duration-200 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-55"
             disabled={isLoggingOut}
             onClick={() => {
               setOpen(false);
               onLogout();
             }}
           >
-            <Icon icon="mdi:logout" className="h-[1.15rem] w-[1.15rem] flex-none text-red-600" />
+            <Icon icon="mdi:logout" className="h-[1.035rem] w-[1.035rem] flex-none text-red-600" />
             {isLoggingOut ? 'Logging out...' : 'Logout'}
           </button>
         </div>
@@ -644,7 +641,7 @@ export function Navigation() {
                 href={AUTH_ROUTES.LOGIN}
                 className={cn(
                   accountPillClassName,
-                  'self-center justify-center px-[1.65rem] py-[0.7rem] text-base font-extrabold tracking-[0.01em]',
+                  'self-center justify-center px-[1.875rem] py-[0.4rem] text-base font-bold tracking-[0.01em]',
                 )}
               >
                 Sign In
@@ -652,7 +649,7 @@ export function Navigation() {
             )}
           </div>
 
-          <div className="ml-auto flex w-fit items-center gap-6 pb-3 xl:gap-8 xl:pb-4 2xl:gap-12 2xl:pb-5">
+          <div className="ml-auto flex w-fit items-center gap-6 pb-3 xl:gap-12 xl:pb-4 2xl:gap-12 2xl:pb-5">
             {primaryNavItems.map((item) =>
               item.children ? (
                 <DesktopDropdown key={item.label} item={item} />

@@ -434,19 +434,19 @@ export function EventsPage() {
 
       <div className="min-h-screen bg-[#f5f4f0]">
         <div className="container-custom py-5 sm:py-7">
-          <div className="flex flex-col sm:flex-row sm:justify-between mb-12">
-            <h1 className="text-2xl md:text-3xl font-bold mb-6">Events</h1>
+          <div className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+            <h1 className="type-section-title">Events</h1>
 
-            <div className="flex flex-wrap justify-center items-center gap-3 flex-shrink-0">
+            <div className="flex w-full flex-wrap items-center justify-center gap-3 sm:w-auto sm:flex-shrink-0 sm:justify-end">
               <Link
                 to={ROUTES.PROJECTS.ROOT}
-                className="flex-1 text-center border border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white font-semibold text-sm px-5 py-2.5 rounded-full transition-colors whitespace-nowrap"
+                className="min-w-0 flex-1 rounded-full border-2 border-primary-500 px-3 py-2.5 text-center text-xs font-bold whitespace-nowrap text-primary-500 transition-colors hover:bg-primary-500 hover:text-white sm:flex-none sm:px-5 sm:text-sm"
               >
                 Go to Our Projects
               </Link>
               <Link
                 to={ROUTES.NEWS}
-                className="flex-1 text-center border border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white font-semibold text-sm px-5 py-2.5 rounded-full transition-colors whitespace-nowrap"
+                className="min-w-0 flex-1 rounded-full border-2 border-primary-500 px-3 py-2.5 text-center text-xs font-bold whitespace-nowrap text-primary-500 transition-colors hover:bg-primary-500 hover:text-white sm:flex-none sm:px-5 sm:text-sm"
               >
                 Go to Announcement
               </Link>

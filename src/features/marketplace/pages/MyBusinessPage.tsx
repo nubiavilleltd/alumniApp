@@ -329,12 +329,12 @@ export default function MyBusinessPage() {
       />
       <Breadcrumbs items={breadcrumbItems} />
 
-      <section className="section">
+      <section className="section bg-stone-100">
         <div className="container-custom">
           {/* Header */}
           <div className="flex items-start justify-between mb-8">
             <div>
-              <h1 className="text-2xl md:text-3xl font-semibold mb-1">My Market</h1>
+              <h1 className="type-section-title mb-1">My Market</h1>
               <p className="text-gray-500 text-sm">
                 Manage and update your business listings in the Alumnae Marketplace.
               </p>
@@ -343,10 +343,10 @@ export default function MyBusinessPage() {
               <button
                 type="button"
                 onClick={() => setShowPostModal(true)}
-                className="flex-shrink-0 flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 text-white text-xs font-semibold px-4 py-2.5 rounded-lg transition-colors"
+                className="flex-shrink-0 flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 text-white text-xs md:text-base font-semibold px-3 md:px-8 py-2.5 rounded-3xl transition-colors"
               >
+                <span className="hidden md:inline">Add New Business</span>
                 <Plus className="h-4 w-4" />
-                Add Business
               </button>
             )}
           </div>

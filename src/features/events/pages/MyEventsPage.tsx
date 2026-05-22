@@ -415,7 +415,7 @@ export function MyEventsPage() {
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">My Registered Events</h1>
             <AppLink
               href={EVENT_ROUTES.ROOT}
-              className="px-4 py-2 text-sm font-semibold text-primary-500 border border-primary-500 rounded-full hover:bg-primary-50 transition-colors"
+              className="rounded-full border-2 border-primary-500 px-4 py-2 text-sm font-bold whitespace-nowrap text-primary-500 transition-colors hover:bg-primary-50"
             >
               Go to Events
             </AppLink>

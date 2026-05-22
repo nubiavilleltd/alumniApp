@@ -129,75 +129,63 @@ export default function AdminProjectsPage() {
       <section className="bg-gray-100 min-h-screen py-6">
         <div className="container-custom mx-auto">
           {/* Header */}
-          {/* <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6"> */}
-          <div className="flex flex-wrap justify-end items-center gap-3 mb-7">
-            <Link
-              to={ROUTES.NEWS}
-              className="flex-1 sm:flex-none text-center border border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white font-semibold text-sm px-5 py-2.5 rounded-full transition-colors whitespace-nowrap"
-            >
-              Go to Announcements
-            </Link>
-            <Link
-              to={ROUTES.EVENTS.ROOT}
-              className="flex-1 sm:flex-none text-center border border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white font-semibold text-sm px-5 py-2.5 rounded-full transition-colors whitespace-nowrap"
-            >
-              Go to Events
-            </Link>
-          </div>
-          <div className="flex justify-between items-center gap-4 mb-6">
-            {/* Text */}
+          <div className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
             <div className="max-w-2xl">
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
-                Our Projects
-              </h1>
+              <h1 className="type-section-title text-gray-900">Our Projects</h1>
               <p className="text-gray-500 text-sm sm:text-base mt-1">
                 Through the generosity of our alumni, we continue to support and improve the world
                 around us
               </p>
             </div>
 
-            {/* Admin: Create Project button */}
+            <div className="flex w-full flex-wrap items-center justify-center gap-3 sm:w-auto sm:flex-shrink-0 sm:justify-end">
+              <Link
+                to={ROUTES.NEWS}
+                className="flex-1 rounded-full border-2 border-primary-500 px-5 py-2.5 text-center text-sm font-bold whitespace-nowrap text-primary-500 transition-colors hover:bg-primary-500 hover:text-white sm:flex-none"
+              >
+                Go to Announcements
+              </Link>
+              <Link
+                to={ROUTES.EVENTS.ROOT}
+                className="flex-1 rounded-full border-2 border-primary-500 px-5 py-2.5 text-center text-sm font-bold whitespace-nowrap text-primary-500 transition-colors hover:bg-primary-500 hover:text-white sm:flex-none"
+              >
+                Go to Events
+              </Link>
+            </div>
+          </div>
+
+          {/* Filter row — identical layout to AlumniDirectoryPage */}
+          <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center">
+              <div className="flex-1 w-full sm:max-w-xl">
+                <SearchInput
+                  value={searchTerm}
+                  onValueChange={resetFilters(setSearchTerm)}
+                  placeholder="Search here..."
+                />
+              </div>
+              <div className="w-full sm:w-auto">
+                <FilterDropdown
+                  value={yearFilter}
+                  onChange={resetFilters(setYearFilter)}
+                  placeholder="Filter by Year"
+                  options={[
+                    { label: 'All', value: '' },
+                    ...years.map((y) => ({ label: String(y), value: String(y) })),
+                  ]}
+                />
+              </div>
+            </div>
             {isAdmin && visible.length > 0 && (
               <button
                 type="button"
                 onClick={openCreate}
-                //           className="
-                //   w-full sm:w-auto
-                //   flex items-center justify-center gap-1.5
-                //   bg-primary-500 hover:bg-primary-600
-                //   text-white text-sm font-semibold
-                //   px-4 py-2.5 rounded-lg transition-colors
-                // "
-                className="
-        flex-shrink-0 flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 text-white text-sm font-semibold px-4 py-2 rounded-full transition-colors shadow-sm
-      "
+                className="flex flex-shrink-0 items-center justify-center gap-1.5 rounded-full bg-primary-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-primary-600"
               >
                 <Plus className="w-4 h-4" />
                 <span className="hidden sm:inline">Create Project</span>
               </button>
             )}
-          </div>
-
-          {/* Filter row — identical layout to AlumniDirectoryPage */}
-          <div className="flex flex-col sm:flex-row items-center gap-4 mb-8">
-            <div className="flex-1 w-full sm:max-w-xl">
-              <SearchInput
-                value={searchTerm}
-                onValueChange={resetFilters(setSearchTerm)}
-                placeholder="Search here..."
-              />
-            </div>
-            <div className="w-full sm:w-auto">
-              <FilterDropdown
-                value={yearFilter}
-                onChange={resetFilters(setYearFilter)}
-                placeholder="Filter by Year"
-                options={[
-                  { label: 'All', value: '' },
-                  ...years.map((y) => ({ label: String(y), value: String(y) })),
-                ]}
-              />
-            </div>
           </div>
 
           {/* Grid */}

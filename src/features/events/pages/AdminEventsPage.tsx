@@ -14,6 +14,7 @@ import { ADMIN_ROUTES } from '@/features/admin/routes';
 import { useAllEvents } from '../hooks/useEvents';
 import { EVENT_ROUTES } from '../routes';
 import type { Event } from '../types/event.types';
+import { MapPin } from 'lucide-react';
 
 const breadcrumbItems = [
   { label: 'Home', href: ROUTES.HOME },
@@ -92,7 +93,7 @@ function AdminEventsCard({ event }: { event: Event }) {
           )}
         </div>
 
-        <div className="flex min-w-0 flex-1 flex-col justify-center self-center">
+        <div className="flex min-w-0 flex-1 flex-col items-start justify-start md:justify-center md:self-center">
           <h2 className="max-w-3xl text-[1rem] font-bold leading-tight text-accent-950 transition-colors duration-200 group-hover:text-primary-700 sm:text-[1.05rem]">
             {event.title}
           </h2>
@@ -102,19 +103,21 @@ function AdminEventsCard({ event }: { event: Event }) {
           </p>
 
           <div className="mt-2.5 space-y-1.5 text-sm text-accent-500">
-            <div className="flex items-start gap-2">
-              <Icon
+            <div className="flex items-center justify-start gap-2">
+              {/* <Icon
                 icon="mdi:map-marker-outline"
                 className="mt-0.5 h-4 w-4 flex-shrink-0 text-accent-400"
-              />
+              /> */}
+
+              <MapPin size={15} />
               <span>{event.location?.trim() || 'Location to be announced'}</span>
             </div>
 
             {formatEventSchedule(event) && (
-              <div className="flex items-start gap-2">
+              <div className="flex items-center justify-center gap-2">
                 <Icon
                   icon="mdi:clock-outline"
-                  className="mt-0.5 h-4 w-4 flex-shrink-0 text-accent-400"
+                  className="mt-0.5 h-4 w-4 flex-shrink-0 text-accent-500"
                 />
                 <span>{formatEventSchedule(event)}</span>
               </div>
@@ -265,6 +268,7 @@ export default function AdminEventsPage() {
                         setCurrentPage(1);
                       }}
                       options={monthOptions}
+                      sortOptionsAlphabetically={false}
                       className="w-full gap-0"
                       controlClassName="h-[42px] rounded-full border-white bg-white px-4 py-0 pr-10 text-[0.95rem] font-semibold text-accent-600 shadow-[0_10px_28px_rgba(15,23,42,0.06)] focus:border-primary-200 focus:ring-4 focus:ring-primary-100 [&>span]:text-[0.95rem] [&>span]:font-semibold [&>span.text-gray-400]:text-accent-400 [&>span.text-gray-700]:text-accent-600"
                     />

@@ -101,7 +101,7 @@ function createQuestionId() {
 function getDefaultPlaceholder(type: EventQuestionType) {
   switch (type) {
     case 'long_answer':
-      return 'Enter response';
+      return 'Add response';
     case 'multiple_choice':
     case 'checkbox':
     case 'dropdown':
@@ -938,10 +938,10 @@ export function EventRegistrationFormBuilderModal({
                         <div className="rounded-[0.85rem] bg-[#f8f7f4] px-4 py-3">
                           {question.type === 'long_answer' ? (
                             <textarea
-                              rows={2}
+                              rows={5}
                               value={question.placeholder}
                               readOnly
-                              placeholder="Enter response"
+                              placeholder="Add response"
                               className="w-full resize-none border-0 bg-transparent text-base text-gray-400 outline-none placeholder:text-gray-400"
                             />
                           ) : question.type === 'short_answer' ? (
@@ -949,7 +949,7 @@ export function EventRegistrationFormBuilderModal({
                               type="text"
                               value={question.placeholder}
                               readOnly
-                              placeholder="Enter your answer"
+                              placeholder="Add response"
                               className="w-full border-0 bg-transparent text-base text-gray-400 outline-none placeholder:text-gray-400"
                             />
                           ) : (

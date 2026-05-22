@@ -275,6 +275,8 @@ We welcome contributions from the community! Here's how you can help:
 
 ### For Developers
 
+- [Engineering Base Approach](docs/engineering-base-approach.md)
+- [Next.js Engineering Base Approach](docs/nextjs-engineering-base-approach.md)
 - [Architecture Overview](docs/architecture.md)
 - [Component API](docs/components.md)
 - [Content Collections](docs/collections.md)

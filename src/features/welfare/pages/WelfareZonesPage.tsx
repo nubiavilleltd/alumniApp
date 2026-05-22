@@ -120,7 +120,7 @@ function ZoneCard({
       <div className="flex-1 p-5">
         {/* Zone name */}
         <div className="flex flex-col sm:flex-row sm:items-start sm:gap-4 mb-4">
-          <span className="font-bold text-gray-900 text-base whitespace-nowrap flex-shrink-0">
+          <span className="type-card-body flex-shrink-0 whitespace-nowrap text-gray-900">
             {zone.zone}
           </span>
 
@@ -253,7 +253,7 @@ export default function WelfareZonesPage() {
         <div className="container-custom py-8 sm:py-10">
           {/* ── Header ─────────────────────────────────────────────── */}
           <div className="flex items-start justify-between mb-7 gap-4">
-            <h1 className="text-3xl sm:text-4xl font-black text-gray-900">Welfare Zones</h1>
+            <h1 className="type-section-title text-gray-900">Welfare Zones</h1>
           </div>
 
           {/* ── Grid ───────────────────────────────────────────────── */}
