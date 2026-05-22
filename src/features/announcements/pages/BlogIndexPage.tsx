@@ -269,8 +269,8 @@ export default function BlogIndexPage() {
                   onClick={() => setIsEditorOpen(true)}
                   className="flex w-full flex-shrink-0 items-center justify-center gap-1.5 rounded-full bg-primary-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-primary-600 sm:w-auto"
                 >
-                  <Plus className="h-4 w-4" />
                   <span>Create Announcement</span>
+                  <Plus className="h-4 w-4" />
                 </button>
               )}
             </div>

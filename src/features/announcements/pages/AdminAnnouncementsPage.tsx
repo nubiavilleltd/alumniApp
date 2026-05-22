@@ -168,8 +168,8 @@ export function AdminAnnouncementsPage() {
                 }}
                 className="inline-flex items-center gap-2 rounded-2xl bg-primary-500 px-5 py-3 text-sm font-semibold text-white hover:bg-primary-600"
               >
-                <Plus className="h-4 w-4" />
                 Create announcement
+                <Plus className="h-4 w-4" />
               </button>
             </div>
           </div>
