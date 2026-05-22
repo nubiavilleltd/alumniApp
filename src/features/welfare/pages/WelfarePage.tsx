@@ -142,13 +142,13 @@ export default function WelfarePage() {
             <div className="flex flex-col gap-3 flex-shrink-0">
               <Link
                 to={ROUTES.WELFARE_COMMITTEE_CONTACT}
-                className="type-small text-center border border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white px-5 py-2.5 rounded-full transition-colors whitespace-nowrap"
+                className="rounded-full border-2 border-primary-500 px-5 py-2.5 text-center text-sm font-bold whitespace-nowrap text-primary-500 transition-colors hover:bg-primary-500 hover:text-white"
               >
                 Contact the Committee
               </Link>
               <Link
                 to={ROUTES.WELFARE_ZONES}
-                className="type-small text-center border border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white px-5 py-2.5 rounded-full transition-colors whitespace-nowrap"
+                className="rounded-full border-2 border-primary-500 px-5 py-2.5 text-center text-sm font-bold whitespace-nowrap text-primary-500 transition-colors hover:bg-primary-500 hover:text-white"
               >
                 Welfare Zones
               </Link>

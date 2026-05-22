@@ -23,7 +23,7 @@ const cardBodyClassName =
 const metaClassName =
   'm-0 flex items-center gap-[0.55rem] text-sm font-semibold leading-[1.2] text-[#59626c]';
 const actionClassName =
-  'min-h-10 rounded-full border border-primary-500 bg-transparent px-5 py-2.5 text-sm font-semibold text-primary-500 transition-colors hover:bg-primary-500 hover:text-white whitespace-nowrap';
+  'min-h-10 rounded-full border-2 border-primary-500 bg-transparent px-5 py-2.5 text-sm font-bold text-primary-500 transition-colors hover:bg-primary-500 hover:text-white whitespace-nowrap';
 const boardClassName =
   'hidden gap-5 min-[1181px]:grid min-[1181px]:grid-cols-2 min-[1181px]:items-start';
 const sideListClassName = 'grid gap-3.5 min-[1181px]:grid-rows-3 [&>*]:h-full';
@@ -333,14 +333,14 @@ export default function BlogIndexPage() {
                         read more
                       </span>
                     </p>
-                    <div className="mt-5">
+                    {/* <div className="mt-5">
                       <ButtonLink
                         href={ANNOUNCEMENT_ROUTES.DETAIL(featured.slug)}
                         variant="primary"
                       >
                         Open announcement
                       </ButtonLink>
-                    </div>
+                    </div> */}
                   </div>
                 </article>
 

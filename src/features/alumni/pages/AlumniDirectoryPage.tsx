@@ -171,7 +171,7 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: a
         <div className="flex gap-2 mt-3">
           <AppLink
             href={ALUMNI_ROUTES.PROFILE(entry.memberId)}
-            className="flex-1 text-center border border-white text-white text-xs py-1.5 rounded-full"
+            className="flex-1 text-center border border-2 border-white text-white font-bold text-xs py-1.5 rounded-full"
           >
             View Profile
           </AppLink>
@@ -180,7 +180,7 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: a
             onClick={() => onMessageClick(entry)}
             disabled={!entry.memberId || isOwnProfile || isMessagePending}
             title={isOwnProfile ? 'You cannot message yourself' : ''}
-            className="flex-1 bg-white text-primary-600 text-xs py-1.5 rounded-full disabled:opacity-50"
+            className="flex-1 bg-white text-primary-600 font-bold text-xs py-1.5 rounded-full disabled:opacity-50"
           >
             {isMessagePending ? 'Opening…' : 'Send Message'}
           </button>

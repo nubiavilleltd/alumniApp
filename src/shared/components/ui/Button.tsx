@@ -32,7 +32,8 @@ interface ButtonLinkProps extends ButtonStyleProps {
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary: 'bg-primary-500 text-white hover:bg-primary-600 border border-transparent',
-  outline: 'border border-primary-500 text-primary-500 hover:bg-primary-50 bg-transparent',
+  outline:
+    'border-2 border-primary-500 text-primary-500 font-bold hover:bg-primary-50 bg-transparent',
   ghost: 'border border-transparent text-primary-500 hover:bg-primary-50 bg-transparent',
   danger: 'bg-red-500 text-white hover:bg-red-600 border border-transparent',
   white: 'bg-white text-primary-500',
