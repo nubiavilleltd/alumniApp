@@ -18,7 +18,7 @@ export function DonationPage() {
   };
 
   return (
-    <section className="page-inline-padding flex flex-col mx-auto bg-stone-100 py-6">
+    <section className="page-inline-padding mx-auto flex flex-col bg-[#F8F8F7] py-6">
       {/* Title */}
 
       {/* <div className="grid lg:grid-cols-3 gap-10 items-center"> */}

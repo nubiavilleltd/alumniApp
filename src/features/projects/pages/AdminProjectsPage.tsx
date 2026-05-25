@@ -125,11 +125,11 @@ export default function AdminProjectsPage() {
         title="Our Projects"
         description="Through the generosity of our alumni, we continue to support and improve our beloved school."
       />
-      <AdminBanner activeTab="projects" title="Admin Projects" />
-      <section className="bg-gray-100 min-h-screen py-6">
+      <AdminBanner activeTab="projects" title="Projects" />
+      <section className="min-h-screen bg-[#F8F8F7] py-8 sm:py-10">
         <div className="container-custom mx-auto">
           {/* Header */}
-          <div className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+          <div className="mb-8 flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
             <div className="max-w-2xl">
               <h1 className="type-section-title text-gray-900">Our Projects</h1>
               <p className="text-gray-500 text-sm sm:text-base mt-1">
@@ -162,6 +162,7 @@ export default function AdminProjectsPage() {
                   value={searchTerm}
                   onValueChange={resetFilters(setSearchTerm)}
                   placeholder="Search here..."
+                  inputClassName="!h-[56px] !border-0 !shadow-none focus:!ring-0"
                 />
               </div>
               <div className="w-full sm:w-auto">
@@ -173,6 +174,7 @@ export default function AdminProjectsPage() {
                     { label: 'All', value: '' },
                     ...years.map((y) => ({ label: String(y), value: String(y) })),
                   ]}
+                  selectClassName="[&_.select-input__control-wrap>button]:!h-[56px] [&_.select-input__control-wrap>button]:!border-0 [&_.select-input__control-wrap>button]:!shadow-none [&_.select-input__control-wrap>button]:focus:!ring-0"
                 />
               </div>
             </div>
@@ -234,7 +236,7 @@ export default function AdminProjectsPage() {
 
           {/* Pagination */}
           {!isLoading && totalPages > 1 && (
-            <div className="sticky bottom-0 bg-gray-100 py-4 mt-6">
+            <div className="sticky bottom-0 mt-6 bg-[#F8F8F7] py-4">
               <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}

@@ -205,7 +205,7 @@ export default function UserProfilePage() {
       <SEO title="My Profile" description="View and manage your alumni profile." />
       <Breadcrumbs items={breadcrumbItems} />
 
-      <section className="section bg-gray-100 py-8">
+      <section className="section bg-[#F8F8F7] py-8">
         <div className="container-custom">
           <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6">
             {/* ── Left: sidebar ─────────────────────────────────────── */}

@@ -216,7 +216,7 @@ export default function ResourcesPage() {
         description="A collection of tools, links, and articles to support your personal and professional growth, as well as your well-being."
       />
 
-      <div className="min-h-screen bg-[#f5f4f0]">
+      <div className="min-h-screen bg-[#F8F8F7]">
         <div className="container-custom py-8 sm:py-10">
           {/* ── Header ───────────────────────────────────────────────── */}
           <div className="mb-8">

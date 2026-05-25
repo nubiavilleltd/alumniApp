@@ -116,7 +116,6 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: a
     relative
     rounded-2xl
     overflow-hidden
-    shadow-md
     group
     cursor-pointer
    h-[250px]
@@ -281,7 +280,7 @@ export function AlumniDirectoryPage() {
     <>
       <SEO title="Alumnae Directory" />
 
-      <section className="bg-stone-100 min-h-screen py-8">
+      <section className="min-h-screen bg-[#F8F8F7] py-8">
         <div className="container-custom mx-auto">
           {/* Title */}
           <h1 className="type-section-title mb-6">Alumnae Directory</h1>
@@ -337,7 +336,7 @@ export function AlumniDirectoryPage() {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="sticky bottom-0 bg-gray-100 py-4 mt-6">
+            <div className="sticky bottom-0 mt-6 bg-[#F8F8F7] py-4">
               <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}

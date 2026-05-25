@@ -101,7 +101,7 @@ export default function MyJobPostsPage() {
         description="Manage the job vacancies you shared with the FGGC Owerri Alumnae Association."
       />
 
-      <main className="min-h-full bg-[#f8f8f7] text-[#071116]">
+      <main className="min-h-full bg-[#F8F8F7] text-[#071116]">
         <section className={jobsPageShellClassName} aria-labelledby="my-job-posts-title">
           <header className={jobsPageHeaderClassName}>
             <div>

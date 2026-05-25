@@ -95,7 +95,7 @@ export const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
             disabled={disabled}
             className={`
               w-full pl-9 py-2 
-              rounded-full border bg-white text-sm placeholder-gray-400 
+              rounded-full border bg-white text-sm placeholder-[#828282] 
               outline-none transition-all shadow-sm
               ${inputPaddingClassName}
               ${error ? 'border-red-400 focus:ring-2 focus:ring-red-100' : 'border-gray-200 focus:ring-2 focus:ring-primary-300'}

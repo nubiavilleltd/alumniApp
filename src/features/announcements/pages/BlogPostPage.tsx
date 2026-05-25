@@ -86,7 +86,7 @@ export default function BlogPostPage() {
         image={announcement?.image}
       />
 
-      <main className="announcements-page">
+      <main className="announcements-page bg-[#F8F8F7]">
         <section className={pageShellClassName}>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <AppLink
@@ -128,9 +128,9 @@ export default function BlogPostPage() {
           </div>
 
           {isLoading ? (
-            <div className="mt-6 overflow-hidden rounded-[2rem] bg-white shadow-sm ring-1 ring-accent-100 animate-pulse">
-              <div className="aspect-[16/8] bg-accent-100" />
-              <div className="space-y-4 p-6 md:p-8">
+            <div className="mt-6 animate-pulse">
+              <div className="aspect-[16/8] rounded-t-[2rem] bg-accent-100" />
+              <div className="space-y-4 py-6 md:py-8">
                 <div className="h-4 w-40 rounded bg-accent-100" />
                 <div className="h-10 w-3/4 rounded bg-accent-100" />
                 <div className="h-4 w-full rounded bg-accent-100" />
@@ -149,16 +149,16 @@ export default function BlogPostPage() {
               </p>
             </div>
           ) : (
-            <article className="mt-6 overflow-hidden rounded-[2rem] bg-white shadow-sm ring-1 ring-accent-100">
-              <div className="bg-accent-100">
+            <article className="mt-6">
+              <div className="overflow-hidden rounded-t-[2rem] bg-accent-100">
                 <img
                   src={announcement.image || FALLBACK_IMAGE}
                   alt=""
-                  className="mx-auto block max-h-[36rem] w-full object-contain"
+                  className="block max-h-[36rem] w-full object-cover"
                 />
               </div>
 
-              <div className="p-6 md:p-8">
+              <div className="py-6 md:py-8">
                 <div className="flex flex-wrap items-center gap-3">
                   <span className="rounded-full bg-primary-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-primary-700">
                     {announcement.type}

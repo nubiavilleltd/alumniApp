@@ -346,7 +346,7 @@ export const SelectInput = forwardRef<HTMLSelectElement, SelectInputProps>(
               ${controlClassName}
             `}
           >
-            <span className={displayLabel ? 'text-gray-700' : 'text-gray-400'}>
+            <span className={displayLabel ? 'text-gray-700' : 'text-[#828282]'}>
               {displayLabel || placeholder}
             </span>
           </button>

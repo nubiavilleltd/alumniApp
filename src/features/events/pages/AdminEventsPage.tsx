@@ -1,26 +1,17 @@
 import { Icon } from '@iconify/react';
 import { useEffect, useMemo, useState } from 'react';
 import { SEO } from '@/shared/common/SEO';
-import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import Button from '@/shared/components/ui/Button';
 import { Pagination } from '@/shared/components/ui/Pagination';
 import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
-import { ROUTES } from '@/shared/constants/routes';
 import { formatDateRange, parseDateInput } from '@/shared/utils/dateHelpers';
 import { AdminBanner } from '@/features/admin/components/AdminBanner';
-import { ADMIN_ROUTES } from '@/features/admin/routes';
 import { useAllEvents } from '../hooks/useEvents';
 import { EVENT_ROUTES } from '../routes';
 import type { Event } from '../types/event.types';
 import { MapPin } from 'lucide-react';
-
-const breadcrumbItems = [
-  { label: 'Home', href: ROUTES.HOME },
-  { label: 'Admin Dashboard', href: ADMIN_ROUTES.DASHBOARD },
-  { label: 'Events' },
-];
 
 const monthOptions = [
   { label: 'Month', value: 'all' },
@@ -215,11 +206,10 @@ export default function AdminEventsPage() {
   return (
     <>
       <SEO title="Admin Events" description="Manage events from the admin dashboard." />
-      <AdminBanner activeTab="events" title="Admin Events" />
-      <Breadcrumbs items={breadcrumbItems} />
+      <AdminBanner activeTab="events" title="Events" />
 
-      <main className="min-h-screen bg-[#f5f4f0]">
-        <div className="container-custom py-6">
+      <main className="min-h-screen bg-[#F8F8F7]">
+        <div className="container-custom py-8 sm:py-10">
           <h1 className="sr-only">Admin Events</h1>
 
           {isLoading ? (
@@ -254,7 +244,7 @@ export default function AdminEventsPage() {
                       }}
                       placeholder="Search events"
                       className="w-full"
-                      inputClassName="h-[42px] border-white pl-10 pr-4 text-[0.95rem] font-medium text-accent-600 placeholder:text-accent-400 shadow-[0_10px_28px_rgba(15,23,42,0.06)] focus:ring-4 focus:ring-primary-100"
+                      inputClassName="!h-[56px] !border-0 !pl-11 !pr-4 text-[0.95rem] font-medium text-accent-600 placeholder:text-accent-400 !shadow-none focus:!ring-0"
                       iconClassName="!h-[18px] !w-[18px] !text-accent-400"
                     />
                   </div>
@@ -270,7 +260,7 @@ export default function AdminEventsPage() {
                       options={monthOptions}
                       sortOptionsAlphabetically={false}
                       className="w-full gap-0"
-                      controlClassName="h-[42px] rounded-full border-white bg-white px-4 py-0 pr-10 text-[0.95rem] font-semibold text-accent-600 shadow-[0_10px_28px_rgba(15,23,42,0.06)] focus:border-primary-200 focus:ring-4 focus:ring-primary-100 [&>span]:text-[0.95rem] [&>span]:font-semibold [&>span.text-gray-400]:text-accent-400 [&>span.text-gray-700]:text-accent-600"
+                      controlClassName="h-[56px] rounded-full border-0 bg-white px-4 py-0 pr-10 text-[0.95rem] font-semibold text-accent-600 shadow-none focus:ring-0 [&>span]:text-[0.95rem] [&>span]:font-semibold [&>span.text-gray-400]:text-accent-400 [&>span.text-gray-700]:text-accent-600"
                     />
                   </div>
                 </div>

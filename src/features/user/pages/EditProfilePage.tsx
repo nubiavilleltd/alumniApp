@@ -616,7 +616,7 @@ export default function EditProfilePage() {
       <SEO title="Edit Profile" description="Edit your alumni profile." />
       <Breadcrumbs items={breadcrumbItems} />
 
-      <section className="section bg-gray-100 py-8">
+      <section className="section bg-[#F8F8F7] py-8">
         <div className="container-custom">
           <div className="space-y-5">
             {/* ── Photo ───────────────────────────────────────────────── */}

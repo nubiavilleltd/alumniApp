@@ -92,11 +92,11 @@ function ServiceCard({
   horizontal?: boolean;
 }) {
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sm:p-6 hover:border-primary-200 hover:shadow-md transition-all cursor-pointer flex flex-col gap-4">
+    <div className="flex min-h-[201px] w-full max-w-[411px] cursor-pointer flex-col gap-4 rounded-3xl border border-gray-100 bg-white p-5 shadow-sm transition-all hover:border-primary-200 hover:shadow-md sm:p-6 lg:h-[201px]">
       {/* Header: icon + title inline */}
       <div className={`flex items-center gap-4 ${horizontal ? '' : ''}`}>
         <div
-          className={`flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl ${service.iconBg}`}
+          className={`flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-4xl ${service.iconBg}`}
         >
           <service.icon
             aria-hidden="true"
@@ -104,11 +104,11 @@ function ServiceCard({
             strokeWidth={2.25}
           />
         </div>
-        <h2 className="type-card-title text-gray-900">{service.title}</h2>
+        <h2 className="text-2xl font-semibold leading-tight text-gray-900">{service.title}</h2>
       </div>
 
       {/* Description */}
-      <p className="type-small text-gray-500">{service.description}</p>
+      <p className="text-base font-medium leading-normal text-gray-500">{service.description}</p>
     </div>
   );
 }
@@ -123,12 +123,12 @@ export default function WelfarePage() {
         description="Our welfare program is dedicated to supporting alumni in times of need and celebrating our collective milestones."
       />
 
-      <div className="min-h-screen bg-[#f5f4f0]">
+      <div className="min-h-screen bg-[#F8F8F7]">
         <div className="container-custom py-8 sm:py-10">
           {/* ── Header ───────────────────────────────────────────────── */}
-          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-5 mb-8">
+          <div className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between lg:min-h-[111px]">
             {/* Left: title + description */}
-            <div className="max-w-2xl">
+            <div className="min-w-0 flex-1 lg:max-w-[66rem]">
               <h1 className="type-section-title mb-3 text-gray-900">Welfare</h1>
               <p className="type-card-body text-gray-600">
                 "We rise by lifting others." Our welfare program is dedicated to supporting alumni
@@ -139,16 +139,16 @@ export default function WelfarePage() {
             </div>
 
             {/* Right: action buttons (stacked) */}
-            <div className="flex flex-col gap-3 flex-shrink-0">
+            <div className="flex flex-shrink-0 flex-col gap-3 sm:w-[17.5rem]">
               <Link
                 to={ROUTES.WELFARE_COMMITTEE_CONTACT}
-                className="rounded-full border-2 border-primary-500 px-5 py-2.5 text-center text-sm font-bold whitespace-nowrap text-primary-500 transition-colors hover:bg-primary-500 hover:text-white"
+                className="flex min-h-10 items-center justify-center whitespace-nowrap rounded-full border-2 border-primary-500 px-5 text-center text-sm font-bold text-primary-500 transition-colors hover:bg-primary-500 hover:text-white"
               >
                 Contact the Committee
               </Link>
               <Link
                 to={ROUTES.WELFARE_ZONES}
-                className="rounded-full border-2 border-primary-500 px-5 py-2.5 text-center text-sm font-bold whitespace-nowrap text-primary-500 transition-colors hover:bg-primary-500 hover:text-white"
+                className="flex min-h-10 items-center justify-center whitespace-nowrap rounded-full border-2 border-primary-500 px-5 text-center text-sm font-bold text-primary-500 transition-colors hover:bg-primary-500 hover:text-white"
               >
                 Welfare Zones
               </Link>
@@ -156,14 +156,14 @@ export default function WelfarePage() {
           </div>
 
           {/* ── Top row: 3 columns ───────────────────────────────────── */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-5">
+          <div className="mb-8 grid grid-cols-1 justify-items-center gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {topServices.map((service) => (
               <ServiceCard key={service.id} service={service} />
             ))}
           </div>
 
           {/* ── Bottom row: 2 columns (centred) ─────────────────────── */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 lg:w-[calc(66.67%+10px)] lg:mx-auto xl:w-[calc(66.67%+10px)]">
+          <div className="grid grid-cols-1 justify-items-center gap-8 sm:grid-cols-2 lg:mx-auto lg:w-[calc(66.67%+32px)] xl:w-[calc(66.67%+32px)]">
             {bottomServices.map((service) => (
               <ServiceCard key={service.id} service={service} />
             ))}

@@ -189,7 +189,7 @@
 
 .type-card-body {
   font-family: Inter, system-ui, sans-serif;
-  font-size: 1rem;
+  font-size: 20px;
   font-weight: 500;
   line-height: 1.5;
   letter-spacing: 0;
@@ -324,6 +324,7 @@
 }
 
 .home-section-header__copy {
+  flex: 1 1 auto;
   min-width: 0;
 }
 
@@ -334,7 +335,7 @@
   margin: 0 0 1.3rem;
   padding: 0.62rem 0.82rem;
   color: #071116;
-  font-size: 0.875rem;
+  font-size: 16px;
   font-weight: 600;
   line-height: 1.4;
 }
@@ -362,7 +363,7 @@
 }
 
 .home-section-title {
-  max-width: 74rem;
+  max-width: none;
   margin: 0;
   color: #071116;
   font-size: clamp(1.75rem, 3vw, 2rem);

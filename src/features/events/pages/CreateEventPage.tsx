@@ -301,7 +301,7 @@ export default function CreateEventPage() {
       <SEO title="Create Event" description="Create a new event" />
       <Breadcrumbs items={breadcrumbItems} />
 
-      <section className="section bg-stone-100">
+      <section className="section bg-[#F8F8F7]">
         <div className="container-custom">
           <div className="mb-8">
             <h1 className="text-3xl md:text-4xl font-bold mb-2">Create Event</h1>

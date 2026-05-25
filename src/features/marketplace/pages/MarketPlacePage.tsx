@@ -62,6 +62,9 @@ const marketplaceFilterSelectClassName = [
   '[&_.select-input__icon]:!text-[#777777]',
 ].join(' ');
 
+const marketplaceGridClassName =
+  'grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8 xl:grid-cols-[repeat(auto-fit,minmax(min(100%,19.25rem),1fr))] xl:gap-x-[1.5rem] xl:gap-y-[2.75rem]';
+
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 function BusinessCardSkeleton() {
   return (
@@ -192,7 +195,7 @@ function BusinessCard({
             </button>
           </>
         )}
-        <span className="absolute left-[1.35rem] top-[1.45rem] max-w-[calc(100%-2.7rem)] truncate rounded-[0.95rem] bg-[#0b6b9f] px-4 py-[0.43rem] text-[clamp(0.86rem,0.95vw,1.28rem)] font-extrabold leading-[1.15] text-white">
+        <span className="absolute left-[1.35rem] top-[1.45rem] max-w-[calc(100%-2.7rem)] truncate rounded-[0.95rem] bg-[#0077CC99] px-4 py-[0.43rem] text-[clamp(0.86rem,0.95vw,1.28rem)] font-extrabold leading-[1.15] text-white">
           {formatCategoryLabel(business.category)}
         </span>
       </div>
@@ -424,7 +427,7 @@ export default function MarketPlacePage() {
         description="Discover and support businesses owned by Our Sisters."
       />
 
-      <main className="min-h-full bg-[#f8f8f7] text-[#071116]">
+      <main className="min-h-full bg-[#F8F8F7] text-[#071116]">
         <section className="page-inline-padding w-full max-w-[100vw] pb-16 pt-8 lg:pb-20 lg:pt-8 xl:pb-24 xl:pt-8">
           <div className="mb-10 flex flex-col gap-6 lg:mb-[3.65rem] lg:flex-row lg:items-start lg:justify-between lg:gap-8">
             <div className="min-w-0 flex-1">
@@ -500,13 +503,13 @@ export default function MarketPlacePage() {
 
           {/* Grid */}
           {isLoading ? (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8 xl:grid-cols-4 xl:gap-x-[3.45rem] xl:gap-y-[2.75rem]">
+            <div className={marketplaceGridClassName}>
               {Array.from({ length: ITEMS_PER_PAGE }).map((_, i) => (
                 <BusinessCardSkeleton key={i} />
               ))}
             </div>
           ) : !error && visible.length > 0 ? (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8 xl:grid-cols-4 xl:gap-x-[3.45rem] xl:gap-y-[2.75rem]">
+            <div className={marketplaceGridClassName}>
               {visible.map((business) => (
                 <BusinessCard
                   key={business.businessId}
