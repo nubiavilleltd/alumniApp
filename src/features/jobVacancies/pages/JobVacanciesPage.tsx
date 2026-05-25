@@ -999,7 +999,7 @@ export default function JobVacanciesPage() {
         description="Discover exclusive job listings shared with the FGGC Owerri Alumnae Association."
       />
 
-      <main className="min-h-full bg-[#f8f8f7] text-[#071116]">
+      <main className="min-h-full bg-[#F8F8F7] text-[#071116]">
         <section className={jobsPageShellClassName} aria-labelledby="jobs-page-title">
           <header className={jobsPageHeaderClassName}>
             <div className="flex-1">

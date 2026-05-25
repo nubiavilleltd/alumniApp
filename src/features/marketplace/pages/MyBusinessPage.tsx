@@ -329,7 +329,7 @@ export default function MyBusinessPage() {
       />
       <Breadcrumbs items={breadcrumbItems} />
 
-      <section className="section bg-stone-100">
+      <section className="section bg-[#F8F8F7]">
         <div className="container-custom">
           {/* Header */}
           <div className="flex items-start justify-between mb-8">

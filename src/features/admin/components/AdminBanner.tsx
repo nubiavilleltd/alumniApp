@@ -25,12 +25,12 @@ export function AdminBanner({ activeTab, title, headingLevel = 'p' }: AdminBanne
   const TitleTag = headingLevel;
 
   return (
-    <div className="bg-[#f5f4f0]">
-      <div className="container-custom pt-12">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#0f172a] via-[#1e3a5f] to-[#1e40af]">
+    <div className="bg-[#F8F8F7]">
+      <div className="container-custom pt-5 sm:pt-6">
+        <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-r from-[#06131d] via-[#06426d] to-[#087cc8]">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.05),_transparent_50%)]" />
 
-          <div className="container-custom relative z-10 flex flex-col gap-4 py-6 lg:flex-row sm:items-center sm:justify-between sm:py-8">
+          <div className="relative z-10 flex flex-col gap-6 px-6 py-7 sm:px-9 sm:py-9 lg:flex-row lg:items-center lg:justify-between">
             {/* Left: Title block */}
             <div className="shrink-0">
               <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-amber-400/30 bg-amber-400/20 px-3 py-1.5">
@@ -55,7 +55,7 @@ export function AdminBanner({ activeTab, title, headingLevel = 'p' }: AdminBanne
                     key={tab.id}
                     href={tab.href}
                     className={[
-                      'whitespace-nowrap rounded-xl px-4 py-2.5 text-sm font-medium transition-all sm:px-6',
+                      'whitespace-nowrap rounded-[14px] px-5 py-3 text-base font-semibold transition-all',
                       tab.id === activeTab
                         ? 'border border-white/30 bg-white/20 text-white shadow-lg'
                         : 'border border-white/10 bg-white/5 text-white/80 hover:bg-white/10 hover:text-white',

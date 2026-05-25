@@ -212,7 +212,7 @@ export default function BlogIndexPage() {
         description="Read the latest FGGC Owerri Alumnae Association updates, event notices, welfare reminders, and project news."
       />
 
-      <main className="min-h-full bg-[#f8f8f7] text-[#071116]">
+      <main className="min-h-full bg-[#F8F8F7] text-[#071116]">
         <section className={pageShellClassName} aria-labelledby="announcements-title">
           <header className="mb-6">
             {/* Header */}
@@ -330,7 +330,7 @@ export default function BlogIndexPage() {
                     <p className="mt-[0.65rem] text-base font-medium leading-[1.32] text-[#59626c]">
                       {getAnnouncementSummary(featured)}{' '}
                       <span className="whitespace-nowrap font-extrabold text-primary-500">
-                        read more
+                        Read more
                       </span>
                     </p>
                     {/* <div className="mt-5">

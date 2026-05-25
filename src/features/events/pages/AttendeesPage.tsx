@@ -725,7 +725,7 @@ export default function AttendeesPage() {
       <SEO title={`${pageTitle} Attendees`} description={`View attendees for ${pageTitle}.`} />
       <Breadcrumbs items={breadcrumbItems} />
 
-      <main className="min-h-screen bg-[#faf9f7]">
+      <main className="min-h-screen bg-[#F8F8F7]">
         <div className="container-custom py-8">
           <header className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between pb-6">
             <div>
@@ -763,13 +763,12 @@ export default function AttendeesPage() {
                 disabled={exportButtonDisabled}
                 className="inline-flex items-center gap-2 rounded-full bg-primary-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-600 disabled:cursor-not-allowed disabled:bg-primary-200"
               >
+                <span>{exportButtonLabel}</span>
                 {isPreparingExport || isExporting ? (
                   <Icon icon="mdi:loading" className="h-4 w-4 animate-spin" />
                 ) : (
                   <Icon icon="mdi:download-outline" className="h-4 w-4" />
                 )}
-
-                <span>{exportButtonLabel}</span>
               </button>
             </div>
           </header>

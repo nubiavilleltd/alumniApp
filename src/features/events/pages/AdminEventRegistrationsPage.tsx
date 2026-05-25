@@ -22,19 +22,11 @@ import { useEventAttendees } from '@/features/events/hooks/useEventAttendees';
 import type { Event } from '@/features/events/types/event.types';
 import type { AttendeeStatus } from '@/features/events/api/adapters/event-attendees.adapter';
 import { SEO } from '@/shared/common/SEO';
-import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { Pagination } from '@/shared/components/ui/Pagination';
-import { ROUTES } from '@/shared/constants/routes';
 import { AdminBanner } from '@/features/admin/components/AdminBanner';
-import { ADMIN_ROUTES } from '@/features/admin/routes';
 import { formatDateRange } from '@/shared/utils/dateHelpers';
 
-const breadcrumbItems = [
-  { label: 'Home', href: ROUTES.HOME },
-  { label: 'Admin Dashboard', href: ADMIN_ROUTES.DASHBOARD },
-  { label: 'Event Registrations' },
-];
 const ADMIN_REGISTRATION_EVENTS_PER_PAGE = 6;
 const ADMIN_REGISTRATION_ATTENDEES_PER_PAGE = 10;
 
@@ -274,18 +266,9 @@ export function AdminEventRegistrationsPage() {
     <>
       <SEO title="Event Registrations" description="View and manage event registrations" />
       <AdminBanner activeTab="events" title="Event Registrations" />
-      <Breadcrumbs items={breadcrumbItems} />
 
-      <section className="section py-8">
+      <section className="min-h-screen bg-[#F8F8F7] py-8 sm:py-10">
         <div className="container-custom max-w-7xl">
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-2xl font-bold text-gray-900">Event Registrations</h1>
-            <p className="text-sm text-gray-500 mt-1">
-              View attendees and manage event registrations
-            </p>
-          </div>
-
           {/* Main Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6">
             {/* Left: Events List */}
@@ -382,8 +365,8 @@ export function AdminEventRegistrationsPage() {
                   </div>
 
                   {/* Filters */}
-                  <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6">
-                    <div className="flex flex-col sm:flex-row gap-4">
+                  <div className="mb-8">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                       {/* Search */}
                       <div className="flex-1">
                         <label htmlFor="admin-event-registrations-search" className="sr-only">
@@ -398,20 +381,21 @@ export function AdminEventRegistrationsPage() {
                             setAttendeesPage(1);
                           }}
                           className="w-full"
+                          inputClassName="!h-[56px] !border-0 !shadow-none focus:!ring-0"
                         />
                       </div>
 
                       {/* Status Filter */}
-                      <div className="flex gap-2">
+                      <div className="flex flex-wrap gap-3">
                         <button
                           onClick={() => {
                             setStatusFilter('all');
                             setAttendeesPage(1);
                           }}
-                          className={`px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
+                          className={`min-h-[48px] rounded-full border px-5 py-2.5 text-sm font-semibold transition-colors ${
                             statusFilter === 'all'
-                              ? 'bg-primary-500 text-white'
-                              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                              ? 'border-primary-500 bg-primary-500 text-white'
+                              : 'border-primary-100 bg-white text-gray-600 hover:border-primary-300'
                           }`}
                         >
                           All
@@ -421,10 +405,10 @@ export function AdminEventRegistrationsPage() {
                             setStatusFilter('going');
                             setAttendeesPage(1);
                           }}
-                          className={`px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
+                          className={`min-h-[48px] rounded-full border px-5 py-2.5 text-sm font-semibold transition-colors ${
                             statusFilter === 'going'
-                              ? 'bg-green-500 text-white'
-                              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                              ? 'border-green-500 bg-green-500 text-white'
+                              : 'border-primary-100 bg-white text-gray-600 hover:border-primary-300'
                           }`}
                         >
                           Going
@@ -434,10 +418,10 @@ export function AdminEventRegistrationsPage() {
                             setStatusFilter('maybe');
                             setAttendeesPage(1);
                           }}
-                          className={`px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
+                          className={`min-h-[48px] rounded-full border px-5 py-2.5 text-sm font-semibold transition-colors ${
                             statusFilter === 'maybe'
-                              ? 'bg-amber-500 text-white'
-                              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                              ? 'border-amber-500 bg-amber-500 text-white'
+                              : 'border-primary-100 bg-white text-gray-600 hover:border-primary-300'
                           }`}
                         >
                           Maybe
@@ -448,10 +432,10 @@ export function AdminEventRegistrationsPage() {
                             setStatusFilter('not_going');
                             setAttendeesPage(1);
                           }}
-                          className={`px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
+                          className={`min-h-[48px] rounded-full border px-5 py-2.5 text-sm font-semibold transition-colors ${
                             statusFilter === 'not_going'
-                              ? 'bg-red-500 text-white'
-                              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                              ? 'border-red-500 bg-red-500 text-white'
+                              : 'border-primary-100 bg-white text-gray-600 hover:border-primary-300'
                           }`}
                         >
                           Not Going

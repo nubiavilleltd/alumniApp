@@ -65,7 +65,7 @@ export function AboutPage() {
                 <span className="block">generations and continents.</span>
               </h1>
 
-              <p className="mt-11 flex flex-wrap items-center gap-x-4 gap-y-3 text-base font-medium leading-[1.4] tracking-[0.01em] text-primary-500 min-[1200px]:mt-[clamp(3rem,6vh,4.5rem)] min-[1200px]:flex-nowrap min-[1200px]:gap-x-[0.85rem]">
+              <p className="mt-11 flex flex-wrap items-center gap-x-4 gap-y-3 text-[24px] font-medium leading-[1.4] tracking-[0.01em] text-primary-500 min-[1200px]:mt-[clamp(3rem,6vh,4.5rem)] min-[1200px]:flex-nowrap min-[1200px]:gap-x-[0.5rem]">
                 <span>Connection</span>
                 <span className="text-[#020c12]">•</span>
                 <span>Growth</span>

@@ -432,7 +432,7 @@ export function EventsPage() {
     <>
       <SEO title="Events" description="Alumni events — connect, celebrate and give back." />
 
-      <div className="min-h-screen bg-[#f5f4f0]">
+      <div className="min-h-screen bg-[#F8F8F7]">
         <div className="container-custom py-5 sm:py-7">
           <div className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
             <h1 className="type-section-title">Events</h1>

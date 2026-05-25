@@ -227,7 +227,7 @@ export function EventDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#f5f4f0]">
+      <div className="min-h-screen bg-[#F8F8F7]">
         <EventDetailSkeleton />
       </div>
     );
@@ -235,7 +235,7 @@ export function EventDetailPage() {
 
   if (error || !event) {
     return (
-      <section className="min-h-screen bg-[#f5f4f0]">
+      <section className="min-h-screen bg-[#F8F8F7]">
         <div className="container-custom text-center py-20">
           <CalendarX className="w-16 h-16 text-red-400 mx-auto mb-4" />
           <h1 className="text-2xl font-bold mb-3">Event not found</h1>
@@ -307,7 +307,7 @@ export function EventDetailPage() {
     <>
       <SEO title={event.title} description={event.description} />
 
-      <div className="min-h-screen bg-[#f5f4f0]">
+      <div className="min-h-screen bg-[#F8F8F7]">
         <div className="container-custom py-6">
           {/* ════════════════════════════════════════════════════
               ADMIN ACTION BAR

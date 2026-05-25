@@ -26,13 +26,13 @@ import LocationMessageIcon from '/locationMessage.svg';
 
 // ─── Social icon resolver ─────────────────────────────────────────────────────
 // config.social_links[].icon contains icon names like "facebook", "instagram".
-// We map them to the correct iconify identifiers.
+// We use brand icons here to match the Figma footer artwork closely.
 
 const SOCIAL_ICON_MAP: Record<string, string> = {
   facebook: 'mdi:facebook',
   instagram: 'mdi:instagram',
   tiktok: 'ic:baseline-tiktok',
-  tiktok_alt: 'simple-icons:tiktok',
+  tiktokalt: 'simple-icons:tiktok',
   twitter: 'ri:twitter-x-fill',
   x: 'ri:twitter-x-fill',
   linkedin: 'mdi:linkedin',
@@ -46,7 +46,8 @@ function resolveSocialIcon(iconName: string): string {
 }
 
 const footerSocialLinkClassName =
-  'relative flex items-center justify-center rounded-full bg-transparent transition-all duration-200 hover:scale-105 before:absolute before:inset-0 before:rounded-full before:p-px before:bg-[linear-gradient(90deg,#015C9E_0%,#FFFFFF_50%,#015C9E_100%)] before:[-webkit-mask:linear-gradient(#000_0_0)_content-box,linear-gradient(#000_0_0)] before:[-webkit-mask-composite:xor] before:[mask-composite:exclude] before:pointer-events-none';
+  'relative flex h-10 w-10 items-center justify-center rounded-full bg-transparent transition-all duration-200 hover:scale-105 before:absolute before:inset-0 before:rounded-full before:p-px before:bg-[linear-gradient(90deg,#015C9E_0%,#FFFFFF_50%,#015C9E_100%)] before:[-webkit-mask:linear-gradient(#000_0_0)_content-box,linear-gradient(#000_0_0)] before:[-webkit-mask-composite:xor] before:[mask-composite:exclude] before:pointer-events-none';
+const footerSocialIconClassName = 'h-5 w-5 text-white';
 const footerContactIconClassName = 'flex-shrink-0 opacity-80';
 // ─── Link columns ─────────────────────────────────────────────────────────────
 
@@ -216,7 +217,7 @@ export function Footer() {
 
             {/* ══ Column 3: Social icons (desktop — stacked vertically) */}
             {socialLinks.length > 0 && (
-              <div className="hidden lg:flex flex-col gap-3 items-center justify-start">
+              <div className="hidden lg:flex flex-col gap-4 items-center justify-start">
                 {socialLinks.map((social) => (
                   <AppLink
                     key={social.name}
@@ -224,9 +225,13 @@ export function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     ariaLabel={social.name}
-                    className={`${footerSocialLinkClassName} h-11 w-11`}
+                    className={footerSocialLinkClassName}
                   >
-                    <Icon icon={resolveSocialIcon(social.icon)} className="w-5 h-5 text-white" />
+                    <Icon
+                      icon={resolveSocialIcon(social.icon)}
+                      aria-hidden="true"
+                      className={footerSocialIconClassName}
+                    />
                   </AppLink>
                 ))}
               </div>
@@ -235,7 +240,7 @@ export function Footer() {
 
           {/* ── Copyright strip ──────────────────────────────────────── */}
           <div className="border-t border-white/10 py-5">
-            <p className="text-white/50 text-xs text-left">
+            <p className="text-[#BDBDBD] font-[500] text-xs text-left">
               © {currentYear} FGGC Owerri Alumni Association, Lagos Chapter. All rights reserved.
             </p>
           </div>
@@ -257,9 +262,13 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   ariaLabel={social.name}
-                  className={`${footerSocialLinkClassName} h-10 w-10`}
+                  className={footerSocialLinkClassName}
                 >
-                  <Icon icon={resolveSocialIcon(social.icon)} className="w-5 h-5 text-white" />
+                  <Icon
+                    icon={resolveSocialIcon(social.icon)}
+                    aria-hidden="true"
+                    className={footerSocialIconClassName}
+                  />
                 </AppLink>
               ))}
             </div>

@@ -1,12 +1,10 @@
 import { MegaphoneOff, Pencil, Plus, Trash2 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { SEO } from '@/shared/common/SEO';
-import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { ButtonLink } from '@/shared/components/ui/Button';
 import { Pagination } from '@/shared/components/ui/Pagination';
 import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
-import { ROUTES } from '@/shared/constants/routes';
 import { AdminBanner } from '@/features/admin/components/AdminBanner';
 import { DeleteConfirmModal } from '@/features/events/components/DeleteConfirmModal';
 import {
@@ -15,7 +13,6 @@ import {
 } from '@/features/announcements/hooks/useAnnouncements';
 import { AnnouncementEditorModal } from '@/features/announcements/components/AnnouncementEditorModal';
 import { ANNOUNCEMENT_ROUTES } from '@/features/announcements/routes';
-import { ADMIN_ROUTES } from '@/features/admin/routes';
 import type { AnnouncementType, NewsItem } from '@/features/announcements/types/announcement.types';
 
 type SortDirection = 'newest' | 'oldest';
@@ -31,12 +28,6 @@ const sortOptions = [
   { label: 'Newest first', value: 'newest' },
   { label: 'Oldest first', value: 'oldest' },
 ] as const;
-
-const breadcrumbItems = [
-  { label: 'Home', href: ROUTES.HOME },
-  { label: 'Admin Dashboard', href: ADMIN_ROUTES.DASHBOARD },
-  { label: 'Announcements' },
-];
 
 function formatAnnouncementDate(date?: string) {
   if (!date) return 'Not scheduled';
@@ -143,19 +134,11 @@ export function AdminAnnouncementsPage() {
   return (
     <>
       <SEO title="Manage Announcements" description="Create and manage community announcements." />
-      <AdminBanner activeTab="announcements" title="Manage Announcements" />
-      <Breadcrumbs items={breadcrumbItems} />
+      <AdminBanner activeTab="announcements" title="Announcements" />
 
-      <section className="section py-8">
-        <div className="container-custom w-full space-y-6">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-accent-950">Manage Announcements</h1>
-              <p className="mt-2 text-sm text-accent-500">
-                Publish updates for members, year sets, and time-sensitive notices.
-              </p>
-            </div>
-
+      <section className="min-h-screen bg-[#F8F8F7] py-8 sm:py-10">
+        <div className="container-custom w-full space-y-8">
+          <div className="flex justify-end">
             <div className="flex flex-wrap gap-3">
               <ButtonLink href={ANNOUNCEMENT_ROUTES.ROOT} variant="outline">
                 View public page
@@ -166,7 +149,7 @@ export function AdminAnnouncementsPage() {
                   setEditingAnnouncement(null);
                   setEditorOpen(true);
                 }}
-                className="inline-flex items-center gap-2 rounded-2xl bg-primary-500 px-5 py-3 text-sm font-semibold text-white hover:bg-primary-600"
+                className="flex w-full flex-shrink-0 items-center justify-center gap-1.5 rounded-full bg-primary-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-primary-600 sm:w-auto"
               >
                 Create announcement
                 <Plus className="h-4 w-4" />
@@ -191,7 +174,7 @@ export function AdminAnnouncementsPage() {
             </div>
           </div>
 
-          <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-accent-100">
+          <div>
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
               <div className="flex-1">
                 <label htmlFor="admin-announcements-search" className="sr-only">
@@ -206,6 +189,7 @@ export function AdminAnnouncementsPage() {
                   }}
                   placeholder="Search by title or content..."
                   className="w-full"
+                  inputClassName="!h-[56px] !border-0 !shadow-none focus:!ring-0"
                 />
               </div>
 

@@ -69,7 +69,7 @@ export function AlumniProfilePage() {
 
   if (isLoading || isLoadingProfile) {
     return (
-      <section className="section bg-gray-100 py-8">
+      <section className="section bg-[#F8F8F7] py-8">
         <div className="container-custom">
           <ProfileSkeleton />
         </div>
@@ -177,7 +177,7 @@ export function AlumniProfilePage() {
       <SEO title={alumnus.name || 'Alumni Profile'} description={alumnus.bio} />
       {/* <Breadcrumbs items={breadcrumbItems} /> */}
 
-      <section className="section bg-gray-100 py-8">
+      <section className="section bg-[#F8F8F7] py-8">
         <div className="container-custom">
           <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6">
             {/* ── Left: sidebar ─────────────────────────────────────── */}

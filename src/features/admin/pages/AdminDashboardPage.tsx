@@ -24,6 +24,11 @@ import { useAlumni } from '@/features/alumni/hooks/useAlumni';
 import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
 import { AdminBanner } from '../components/AdminBanner';
 
+const approvalActionButtonClassName =
+  'flex h-[33px] w-[134px] items-center justify-center gap-1 rounded-[48px] border-2 px-4 py-2 text-sm font-semibold transition-colors disabled:opacity-50';
+const confirmApprovalButtonClassName = `${approvalActionButtonClassName} border-primary-500 bg-primary-500 text-white hover:bg-primary-600`;
+const denyApprovalButtonClassName = `${approvalActionButtonClassName} border-[#C80000] bg-transparent text-[#C80000] hover:bg-red-50`;
+
 // ═══════════════════════════════════════════════════════════════════════════
 // PENDING APPROVAL ROW
 // ═══════════════════════════════════════════════════════════════════════════
@@ -117,12 +122,12 @@ function PendingApprovalRow({
 
         {/* Right: Action Buttons */}
         {!showRejectInput && (
-          <div className="flex lg:flex-col gap-3 flex-shrink-0">
+          <div className="flex flex-shrink-0 gap-3 lg:flex-col">
             <button
               type="button"
               disabled={busy}
               onClick={handleConfirm}
-              className="flex-1 lg:flex-none bg-primary-500 hover:bg-primary-600 text-white text-sm font-semibold px-8 py-2.5 rounded-full transition-colors disabled:opacity-50 min-w-[120px] flex items-center justify-center"
+              className={confirmApprovalButtonClassName}
             >
               {approveMutation.isPending ? (
                 <LoaderCircle className="w-4 h-4 animate-spin" />
@@ -137,7 +142,7 @@ function PendingApprovalRow({
                 setShowRejectInput(true);
                 setActionError('');
               }}
-              className="flex-1 lg:flex-none border-2 border-red-400 text-red-500 hover:bg-red-50 text-sm font-semibold px-8 py-2.5 rounded-full transition-colors disabled:opacity-50 min-w-[120px]"
+              className={denyApprovalButtonClassName}
             >
               Deny
             </button>
@@ -164,7 +169,7 @@ function PendingApprovalRow({
               type="button"
               disabled={busy}
               onClick={handleDeny}
-              className="bg-red-500 hover:bg-red-600 text-white text-sm font-semibold px-6 py-2 rounded-full flex items-center gap-2 disabled:opacity-50 transition-colors"
+              className={`${approvalActionButtonClassName} border-[#C80000] bg-[#C80000] text-white hover:bg-[#A90000]`}
             >
               {rejectMutation.isPending && <LoaderCircle className="w-4 h-4 animate-spin" />}
               Confirm deny
@@ -213,14 +218,16 @@ function StatCard({ label, value, icon, color }: StatCardProps) {
   };
 
   return (
-    <div className={`rounded-2xl bg-gradient-to-br ${colorClasses[color]} p-6 shadow-lg`}>
+    <div
+      className={`min-h-[180px] rounded-[2rem] bg-gradient-to-br ${colorClasses[color]} p-8 shadow-lg`}
+    >
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-medium text-white/80 mb-2">{label}</p>
           <p className="text-4xl font-bold">{value}</p>
         </div>
-        <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
-          <Icon className="w-6 h-6 text-white" />
+        <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl bg-white/20">
+          <Icon className="h-9 w-9 text-white" />
         </div>
       </div>
     </div>
@@ -233,7 +240,7 @@ function StatCard({ label, value, icon, color }: StatCardProps) {
 
 function AdminDashboardSkeleton() {
   return (
-    <div className="min-h-screen bg-[#f5f4f0]">
+    <div className="min-h-screen bg-[#F8F8F7]">
       <div className="container-custom py-6 sm:py-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 animate-pulse">
           {[1, 2, 3, 4].map((i) => (
@@ -272,7 +279,7 @@ export function AdminDashboardPage() {
     return (
       <>
         <SEO title="Admin Dashboard" description="Admin dashboard" />
-        <AdminBanner activeTab="dashboard" title="Admin Dashboard" headingLevel="h1" />
+        <AdminBanner activeTab="dashboard" title="Dashboard" headingLevel="h1" />
         <AdminDashboardSkeleton />
       </>
     );
@@ -282,8 +289,8 @@ export function AdminDashboardPage() {
     return (
       <>
         <SEO title="Admin Dashboard" description="Admin dashboard" />
-        <AdminBanner activeTab="dashboard" title="Admin Dashboard" headingLevel="h1" />
-        <section className="min-h-screen bg-[#f5f4f0]">
+        <AdminBanner activeTab="dashboard" title="Dashboard" headingLevel="h1" />
+        <section className="min-h-screen bg-[#F8F8F7]">
           <div className="container-custom py-6 sm:py-8">
             <div className="mx-auto max-w-2xl rounded-2xl border border-gray-200 bg-white p-8 text-center shadow-sm">
               <AlertCircle className="h-12 w-12 text-red-400 mx-auto mb-4" />
@@ -312,14 +319,14 @@ export function AdminDashboardPage() {
   return (
     <>
       <SEO title="Admin Dashboard" description="Admin dashboard" />
-      <AdminBanner activeTab="dashboard" title="Admin Dashboard" headingLevel="h1" />
+      <AdminBanner activeTab="dashboard" title="Dashboard" headingLevel="h1" />
 
-      <div className="min-h-screen bg-[#f5f4f0]">
-        <div className="container-custom py-6 sm:py-8">
+      <div className="min-h-screen bg-[#F8F8F7]">
+        <div className="container-custom py-8 sm:py-10">
           {/* ══════════════════════════════════════════════════════════
               STAT CARDS (4 columns)
               ═══════════════════════════════════════════════════════ */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div className="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             <StatCard label="Total Members" value={totalMembers} icon={Users} color="blue" />
             <StatCard label="Active Members" value={activeMembers} icon={UserCheck} color="cyan" />
             <StatCard label="Inactive Members" value={inactiveMembers} icon={UserX} color="gray" />

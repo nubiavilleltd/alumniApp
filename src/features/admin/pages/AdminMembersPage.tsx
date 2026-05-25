@@ -27,7 +27,6 @@ import {
 import { useEffect, useState, useMemo } from 'react';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { SEO } from '@/shared/common/SEO';
-import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import {
   useAdminDeactivateUser,
   useAdminActivateUser,
@@ -38,8 +37,6 @@ import {
   getRoleOptions,
   type UserRole,
 } from '@/features/admin/api/adapters/role-management.adapter';
-import { ROUTES } from '@/shared/constants/routes';
-import { ADMIN_ROUTES } from '../routes';
 import { useAlumni } from '@/features/alumni/hooks/useAlumni';
 import type { Alumni } from '@/features/alumni/types/alumni.types';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
@@ -49,12 +46,6 @@ import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { Pagination } from '@/shared/components/ui/Pagination';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
 import { AdminBanner } from '@/features/admin/components/AdminBanner';
-
-const breadcrumbItems = [
-  { label: 'Home', href: ROUTES.HOME },
-  { label: 'Admin Dashboard', href: ADMIN_ROUTES.DASHBOARD },
-  { label: 'Members' },
-];
 
 function generateInitialsAvatar(name: string): string {
   return `https://ui-avatars.com/api/?name=${encodeURIComponent(
@@ -77,6 +68,8 @@ type DisplayUser = {
 };
 
 const ADMIN_MEMBERS_PER_PAGE = 10;
+const memberActionButtonClassName =
+  'flex h-[33px] w-[134px] items-center justify-center gap-1 rounded-[48px] border-2 px-4 py-2 text-sm font-semibold leading-none transition-colors disabled:opacity-50';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // HELPER: MAP ALUMNI TO DISPLAY USER
@@ -101,28 +94,22 @@ function mapAlumniToDisplayUser(alumni: Alumni, currentUserMemberId?: string): D
 
 function AdminMembersPageSkeleton() {
   return (
-    <section className="section py-8 animate-pulse">
-      <div className="container-custom max-w-6xl">
-        {/* Header */}
-        <div className="mb-8 space-y-2">
-          <div className="h-6 w-48 bg-gray-200 rounded" />
-          <div className="h-4 w-64 bg-gray-100 rounded" />
-        </div>
-
+    <section className="min-h-screen animate-pulse bg-[#F8F8F7] py-8 sm:py-10">
+      <div className="container-custom space-y-10">
         {/* Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-24 rounded-xl bg-gray-200" />
+            <div key={i} className="h-[144px] rounded-[2rem] bg-gray-200" />
           ))}
         </div>
 
         {/* Filters */}
-        <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6 space-y-3">
-          <div className="h-10 bg-gray-200 rounded w-full" />
+        <div className="flex flex-col gap-4 sm:flex-row sm:gap-6">
+          <div className="h-12 flex-1 rounded-full bg-white" />
           <div className="flex gap-2">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-10 w-20 bg-gray-200 rounded" />
-            ))}
+            <div className="h-12 w-[82px] rounded-full bg-gray-200" />
+            <div className="h-12 w-[100px] rounded-full bg-gray-200" />
+            <div className="h-12 w-[100px] rounded-full bg-gray-200" />
           </div>
         </div>
 
@@ -359,12 +346,12 @@ function UserRow({ user }: { user: DisplayUser }) {
 
             {/* Action buttons */}
             {!showConfirm ? (
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 flex-shrink-0 w-full md:w-auto">
+              <div className="flex flex-col items-stretch gap-2 flex-shrink-0 w-full sm:flex-row sm:items-center md:w-auto">
                 {isActive && (
                   <button
                     onClick={() => setShowRoleModal(true)}
                     disabled={isBusy}
-                    className="px-4 py-2 rounded-lg text-sm font-semibold border border-purple-200 text-purple-600 hover:bg-purple-50 transition-colors disabled:opacity-50 text-center"
+                    className={`${memberActionButtonClassName} border-purple-200 text-purple-600 hover:bg-purple-50`}
                   >
                     Change Role
                   </button>
@@ -372,10 +359,10 @@ function UserRow({ user }: { user: DisplayUser }) {
                 <button
                   onClick={() => openConfirm(isActive ? 'deactivate' : 'activate')}
                   disabled={isBusy}
-                  className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors text-center ${
+                  className={`${memberActionButtonClassName} ${
                     isActive
-                      ? 'border border-red-200 text-red-600 hover:bg-red-50'
-                      : 'border border-green-200 text-green-600 hover:bg-green-50'
+                      ? 'border-red-200 text-red-600 hover:bg-red-50'
+                      : 'border-green-200 text-green-600 hover:bg-green-50'
                   }`}
                 >
                   {isActive ? 'Deactivate' : 'Activate'}
@@ -427,7 +414,7 @@ function UserRowSkeleton() {
             <div className="h-3 w-64 bg-gray-100 rounded" />
           </div>
         </div>
-        <div className="h-9 w-24 bg-gray-200 rounded-lg" />
+        <div className="h-[33px] w-[134px] rounded-[48px] bg-gray-200" />
       </div>
     </div>
   );
@@ -490,8 +477,7 @@ export function AdminMembersPage() {
     return (
       <>
         <SEO title="Manage Members" description="View and manage all members" />
-        <AdminBanner activeTab="members" title="Manage Members" />
-        <Breadcrumbs items={breadcrumbItems} />
+        <AdminBanner activeTab="members" title="Members" />
         <AdminMembersPageSkeleton />
       </>
     );
@@ -500,55 +486,52 @@ export function AdminMembersPage() {
   return (
     <>
       <SEO title="Manage Members" description="View and manage all members" />
-      <AdminBanner activeTab="members" title="Manage Members" />
-      <Breadcrumbs items={breadcrumbItems} />
+      <AdminBanner activeTab="members" title="Members" />
 
-      <section className="section py-8">
-        <div className="container-custom">
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-2xl font-bold text-gray-900">Manage Members</h1>
-            <p className="text-sm text-gray-500 mt-1">
-              View and manage all registered user accounts
-            </p>
-          </div>
-
+      <section className="min-h-screen bg-[#F8F8F7] py-8 sm:py-10">
+        <div className="container-custom space-y-10">
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-            <div className="bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl p-5 text-white">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div className="min-h-[144px] rounded-[2rem] bg-gradient-to-br from-primary-500 to-primary-700 p-6 text-white">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-white/80">Total Members</p>
-                  <p className="text-3xl font-bold mt-2">{users.length}</p>
+                  <p className="text-base font-semibold text-white/80">Total Members</p>
+                  <p className="mt-3 text-4xl font-bold">{users.length}</p>
                 </div>
-                <Users className="w-12 h-12 text-white/20" />
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10">
+                  <Users className="h-9 w-9 text-white" />
+                </div>
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-green-500 to-green-700 rounded-xl p-5 text-white">
+            <div className="min-h-[144px] rounded-[2rem] bg-gradient-to-br from-green-500 to-green-700 p-6 text-white">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-white/80">Active</p>
-                  <p className="text-3xl font-bold mt-2">{activeCount}</p>
+                  <p className="text-base font-semibold text-white/80">Active Members</p>
+                  <p className="mt-3 text-4xl font-bold">{activeCount}</p>
                 </div>
-                <CheckCircle className="w-12 h-12 text-white/20" />
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10">
+                  <CheckCircle className="h-9 w-9 text-white" />
+                </div>
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-gray-500 to-gray-700 rounded-xl p-5 text-white">
+            <div className="min-h-[144px] rounded-[2rem] bg-gradient-to-br from-gray-500 to-gray-700 p-6 text-white">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-white/80">Inactive</p>
-                  <p className="text-3xl font-bold mt-2">{inactiveCount}</p>
+                  <p className="text-base font-semibold text-white/80">Inactive Members</p>
+                  <p className="mt-3 text-4xl font-bold">{inactiveCount}</p>
                 </div>
-                <UserX className="w-12 h-12 text-white/20" />
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10">
+                  <UserX className="h-9 w-9 text-white" />
+                </div>
               </div>
             </div>
           </div>
 
           {/* Filters */}
-          <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6">
-            <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+            <div className="min-w-0 flex-1">
               <SearchInput
                 placeholder="Search by name or email..."
                 value={searchQuery}
@@ -557,50 +540,32 @@ export function AdminMembersPage() {
                   setCurrentPage(1);
                 }}
                 className="w-full"
+                inputClassName="!h-12 !border-0 !pl-12 !pr-5 !text-base !shadow-none focus:!ring-0"
+                iconClassName="!left-5 !h-5 !w-5 !text-[#828282]"
               />
+            </div>
 
-              {/* Status Filter */}
-              <div className="flex gap-2">
+            {/* Status Filter */}
+            <div className="flex w-full flex-wrap gap-2 sm:w-[298px] sm:flex-nowrap">
+              {(['all', 'active', 'inactive'] as const).map((filter) => (
                 <button
+                  key={filter}
+                  type="button"
                   onClick={() => {
-                    setStatusFilter('all');
+                    setStatusFilter(filter);
                     setCurrentPage(1);
                   }}
-                  className={`px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
-                    statusFilter === 'all'
-                      ? 'bg-primary-500 text-white'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  className={`h-12 rounded-[40px] border px-6 text-base font-semibold capitalize transition-colors sm:px-0 ${
+                    filter === 'all' ? 'sm:w-[82px]' : 'sm:w-[100px]'
+                  } ${
+                    statusFilter === filter
+                      ? 'border-primary-500 bg-primary-500 text-white'
+                      : 'border-primary-100 bg-white text-gray-500 hover:border-primary-300'
                   }`}
                 >
-                  All
+                  {filter}
                 </button>
-                <button
-                  onClick={() => {
-                    setStatusFilter('active');
-                    setCurrentPage(1);
-                  }}
-                  className={`px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
-                    statusFilter === 'active'
-                      ? 'bg-green-500 text-white'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                  }`}
-                >
-                  Active
-                </button>
-                <button
-                  onClick={() => {
-                    setStatusFilter('inactive');
-                    setCurrentPage(1);
-                  }}
-                  className={`px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
-                    statusFilter === 'inactive'
-                      ? 'bg-gray-500 text-white'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                  }`}
-                >
-                  Inactive
-                </button>
-              </div>
+              ))}
             </div>
           </div>
 

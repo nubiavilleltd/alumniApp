@@ -35,7 +35,7 @@ export function RootLayout() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-white text-gray-900 font-sans antialiased">
+    <div className="min-h-screen flex flex-col bg-[#F8F8F7] text-gray-900 font-sans antialiased">
       <Navigation />
 
       <main className="app-main flex-grow">

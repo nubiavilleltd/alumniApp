@@ -125,7 +125,7 @@ export default function ProjectsPage() {
         description="Through the generosity of our alumni, we continue to support and improve our beloved school."
       />
 
-      <section className="bg-gray-100 min-h-screen py-6">
+      <section className="min-h-screen bg-[#F8F8F7] py-6">
         <div className="container-custom mx-auto">
           {/* Header */}
           <div className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
@@ -223,7 +223,7 @@ export default function ProjectsPage() {
 
           {/* Pagination */}
           {!isLoading && totalPages > 1 && (
-            <div className="sticky bottom-0 bg-gray-100 py-4 mt-6">
+            <div className="sticky bottom-0 mt-6 bg-[#F8F8F7] py-4">
               <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}

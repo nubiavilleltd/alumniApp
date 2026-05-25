@@ -13,27 +13,27 @@ import { useZones } from '../hooks/useZones';
 import { WelfareZone } from '../types/welfare.type';
 import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 
-// ─── Accent colours ───────────────────────────────────────────────────────────
-// Cycles through the design palette from the screenshot.
-// Keyed by index so any number of zones from the backend gets a colour.
+// ─── Zone accent colours ──────────────────────────────────────────────────────
+// Matched to the Figma side-strip colours by zone label.
 
-const ACCENT_COLORS = [
-  'bg-green-300',
-  'bg-purple-300',
-  'bg-orange-200',
-  'bg-sky-300',
-  'bg-rose-200',
-  'bg-yellow-200',
-  'bg-stone-300',
-  'bg-slate-300',
-  'bg-green-200',
-  'bg-teal-200',
-  'bg-indigo-200',
-  'bg-pink-200',
-];
+const ZONE_CARD_COLORS: Record<string, string> = {
+  zone1: '#078E0040',
+  zone2: '#E2CDFC',
+  zone3: '#FCDDC2',
+  zone4: '#BFDDF2',
+  zone5a: '#F1BFBF',
+  zone5b: '#FFF0BF',
+  zone5c: '#C5B4B0',
+  zone6: '#BFBFBF',
+  zone7: '#DAEED9',
+};
 
-function accentFor(index: number): string {
-  return ACCENT_COLORS[index % ACCENT_COLORS.length];
+function normalizeZoneKey(zone: string): string {
+  return zone.toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+function accentColorFor(zone: string): string {
+  return ZONE_CARD_COLORS[normalizeZoneKey(zone)] ?? '#ffffff';
 }
 
 // ─── Skeleton card ────────────────────────────────────────────────────────────
@@ -71,15 +71,7 @@ function ZoneCardSkeleton() {
 }
 
 // ─── Zone card ────────────────────────────────────────────────────────────────
-function ZoneCard({
-  zone,
-  index,
-  currentUserEmail,
-}: {
-  zone: WelfareZone;
-  index: number;
-  currentUserEmail?: string;
-}) {
+function ZoneCard({ zone, currentUserEmail }: { zone: WelfareZone; currentUserEmail?: string }) {
   const isTheSameUserAsCoordinator = currentUserEmail === zone?.coordinator?.email;
 
   const hasCoordinator = zone.coordinator !== null;
@@ -112,45 +104,47 @@ function ZoneCard({
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex">
+    <div className="flex min-h-[179px] w-full max-w-[636px] overflow-hidden rounded-[24px] border border-gray-100 bg-white shadow-sm md:h-[179px]">
       {/* Coloured left accent strip */}
-      <div className={`w-2.5 flex-shrink-0 ${accentFor(index)}`} />
+      <div
+        className="w-4 flex-shrink-0 self-stretch"
+        style={{ backgroundColor: accentColorFor(zone.zone) }}
+      />
 
       {/* Content */}
-      <div className="flex-1 p-5">
+      <div className="flex min-w-0 flex-1 flex-col">
         {/* Zone name */}
-        <div className="flex flex-col sm:flex-row sm:items-start sm:gap-4 mb-4">
-          <span className="type-card-body flex-shrink-0 whitespace-nowrap text-gray-900">
+        <div className="flex min-w-0 flex-col gap-2 px-6 py-6 sm:flex-row sm:items-start sm:gap-8 md:h-[104px]">
+          <span className="flex-shrink-0 whitespace-nowrap text-2xl font-semibold leading-[1.2] text-gray-900 sm:w-[7.2rem]">
             {zone.zone}
           </span>
 
-          <span>{zone.cities}</span>
+          <span className="min-w-0 text-base font-semibold leading-[1.3] text-gray-600">
+            {zone.cities}
+          </span>
         </div>
 
         {/* Divider */}
-        <div className="border-t border-gray-100 mb-3" />
+        <div className="border-t border-gray-200" />
 
-        <div className="flex-col justify-between items-center sm:flex-row">
+        <div className="flex flex-1 flex-col gap-4 px-6 py-5 sm:flex-row sm:items-center sm:justify-between sm:gap-8 md:min-h-0">
           {/* Coordinator info */}
-          <div className="space-y-1">
+          <div className="min-w-0 space-y-1">
             {hasCoordinator ? (
               <>
-                <div className="flex items-center gap-2 text-sm text-gray-600">
+                <div className="flex items-center gap-2 text-base font-medium leading-tight text-gray-500">
                   <span>Coordinator: {zone.coordinator!.name}</span>
                 </div>
-                <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-sm text-gray-500">
+                <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-base font-medium leading-tight text-gray-500">
                   {zone.coordinator!.phone && (
                     <span className="flex items-center gap-1.5">
-                      <Icon icon="mdi:phone-outline" className="w-3.5 h-3.5 text-gray-400" />
+                      <Icon icon="mdi:phone-outline" className="h-4 w-4 text-gray-400" />
                       {zone.coordinator!.phone}
                     </span>
                   )}
                   {zone.coordinator!.email && (
                     <span className="flex items-center gap-1.5 min-w-0">
-                      <Icon
-                        icon="mdi:email-outline"
-                        className="w-3.5 h-3.5 text-gray-400 shrink-0"
-                      />
+                      <Icon icon="mdi:email-outline" className="h-4 w-4 shrink-0 text-gray-400" />
                       <span className="break-all">{zone.coordinator!.email}</span>
                     </span>
                   )}
@@ -163,7 +157,7 @@ function ZoneCard({
 
           {/* Send Message button */}
           {hasCoordinator && canMessageCoordinator && (
-            <div className="mt-4 flex justify-end">
+            <div className="flex flex-shrink-0 justify-end">
               <button
                 type="button"
                 onClick={() => {
@@ -171,7 +165,7 @@ function ZoneCard({
                 }}
                 disabled={isStartingConversation || isTheSameUserAsCoordinator}
                 title={isTheSameUserAsCoordinator ? 'You cannot message yourself' : ''}
-                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-primary-400 text-primary-500 text-sm font-medium hover:bg-primary-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+                className="inline-flex min-h-9 min-w-[7.5rem] items-center justify-center gap-1.5 rounded-full border-2 border-primary-500 px-4 text-sm font-semibold text-primary-500 transition-colors hover:bg-primary-50 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-transparent"
               >
                 {isStartingConversation ? 'Opening chat...' : 'Send Message'}
               </button>
@@ -179,9 +173,9 @@ function ZoneCard({
           )}
 
           {hasCoordinator && !canMessageCoordinator && (
-            <div className="mt-4 flex justify-end">
+            <div className="flex flex-shrink-0 justify-end">
               <span
-                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-gray-200 text-gray-400 text-sm font-medium"
+                className="inline-flex min-h-9 min-w-[7.5rem] items-center justify-center gap-1.5 rounded-full border-2 border-gray-200 px-4 text-sm font-semibold text-gray-400"
                 title="This coordinator does not have an in-app messaging profile yet."
               >
                 Send Message
@@ -249,7 +243,7 @@ export default function WelfareZonesPage() {
         description="Find your welfare zone coordinator and get support in your area."
       />
 
-      <div className="min-h-screen bg-[#f5f4f0]">
+      <div className="min-h-screen bg-[#F8F8F7]">
         <div className="container-custom py-8 sm:py-10">
           {/* ── Header ─────────────────────────────────────────────── */}
           <div className="flex items-start justify-between mb-7 gap-4">
@@ -257,7 +251,7 @@ export default function WelfareZonesPage() {
           </div>
 
           {/* ── Grid ───────────────────────────────────────────────── */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 justify-items-center gap-5 md:grid-cols-2">
             {/* ⚠️ Non-blocking profile warning */}
             {hasProfileError && !hasZonesError && (
               <div className="col-span-full text-sm text-yellow-600 bg-yellow-50 border border-yellow-200 rounded-lg px-4 py-2">
@@ -281,13 +275,8 @@ export default function WelfareZonesPage() {
 
             {/* 📦 Data */}
             {showZones &&
-              zones.map((zone, index) => (
-                <ZoneCard
-                  key={zone.zoneId}
-                  zone={zone}
-                  index={index}
-                  currentUserEmail={currentUser?.email}
-                />
+              zones.map((zone) => (
+                <ZoneCard key={zone.zoneId} zone={zone} currentUserEmail={currentUser?.email} />
               ))}
           </div>
         </div>

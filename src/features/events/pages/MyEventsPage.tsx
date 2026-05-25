@@ -405,7 +405,7 @@ export function MyEventsPage() {
       <SEO title="My Registered Events" description="View and manage your event registrations" />
       {/* <Breadcrumbs items={breadcrumbItems} /> */}
 
-      <div className="min-h-screen bg-[#f5f4f0]">
+      <div className="min-h-screen bg-[#F8F8F7]">
         <div className="container-custom py-7">
           {/* <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-7">
             My Registered Events

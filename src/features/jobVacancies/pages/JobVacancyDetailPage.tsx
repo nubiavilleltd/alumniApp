@@ -59,7 +59,7 @@ function DetailSection({ title, content }: { title: string; content: string }) {
 
 function JobDetailSkeleton() {
   return (
-    <main className="min-h-screen bg-[#f7f6f3] py-4">
+    <main className="min-h-screen bg-[#F8F8F7] py-4">
       <div className="mx-auto max-w-6xl animate-pulse space-y-8">
         <div className="h-56 rounded-[1.5rem] bg-white shadow-sm ring-1 ring-black/5" />
         <div className="h-96 rounded-[1.5rem] bg-white shadow-sm ring-1 ring-black/5" />
@@ -95,7 +95,7 @@ export default function JobVacancyDetailPage() {
 
   if (isError) {
     return (
-      <main className="min-h-screen bg-[#f7f6f3] py-10">
+      <main className="min-h-screen bg-[#F8F8F7] py-10">
         <SEO title="Job Details" description="View job vacancy details." />
         <EmptyState
           icon={SearchX}
@@ -112,7 +112,7 @@ export default function JobVacancyDetailPage() {
 
   if (!job) {
     return (
-      <main className="min-h-screen bg-[#f7f6f3] py-10">
+      <main className="min-h-screen bg-[#F8F8F7] py-10">
         <SEO title="Job Not Found" description="The requested job vacancy could not be found." />
         <EmptyState
           icon={BriefcaseBusiness}
@@ -132,7 +132,7 @@ export default function JobVacancyDetailPage() {
         description={`View details for ${job.title} at ${job.companyName}.`}
       />
 
-      <main className="bg-[#f7f6f3] px-[var(--app-page-inline-padding)] py-4 text-[#071116] lg:flex lg:h-[calc(100dvh-10rem)] lg:flex-col lg:overflow-hidden">
+      <main className="bg-[#F8F8F7] px-[var(--app-page-inline-padding)] py-4 text-[#071116] lg:flex lg:h-[calc(100dvh-10rem)] lg:flex-col lg:overflow-hidden">
         <div className="mx-auto w-full space-y-4 lg:flex lg:flex-col lg:flex-1 lg:space-y-4 lg:min-h-0">
           {/* Top card — fixed height on desktop, scrolls internally */}
           <section className="rounded-[1.5rem] bg-white p-5 shadow-sm ring-1 ring-black/5 sm:p-6 lg:shrink-0 lg:overflow-y-auto">

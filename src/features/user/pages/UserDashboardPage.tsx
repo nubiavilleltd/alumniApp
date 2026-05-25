@@ -3,7 +3,7 @@
 // Header → Profile Completeness (full width) →
 // Attestation|Suggested Alumnae (two-column) →
 // My Registered Events (left column, matching width above)
-// Background: warm off-white #f5f4f0
+// Background: warm off-white #F8F8F7
 
 import { Icon } from '@iconify/react';
 import { useState, type ReactNode } from 'react';
@@ -23,6 +23,11 @@ import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
 import { resolveProfilePhoto } from '@/features/user/utils/profileUtils';
 import { formatDateRange } from '@/shared/utils/dateHelpers';
 import { Calendar, Clock, MapPin } from 'lucide-react';
+
+const voucherActionButtonClassName =
+  'flex h-[33px] w-[134px] items-center justify-center gap-1 rounded-[48px] border-2 px-4 py-2 text-sm font-semibold transition-colors disabled:opacity-60';
+const voucherConfirmButtonClassName = `${voucherActionButtonClassName} border-primary-500 bg-primary-500 text-white hover:bg-primary-600`;
+const voucherDenyButtonClassName = `${voucherActionButtonClassName} border-[#C80000] bg-transparent text-[#C80000] hover:bg-red-50`;
 
 // ─── Profile completeness checklist ──────────────────────────────────────────
 
@@ -189,7 +194,7 @@ function AttestationRow({
               type="button"
               onClick={handleApprove}
               disabled={busy}
-              className="bg-primary-500 hover:bg-primary-600 text-white text-sm font-semibold px-5 py-1.5 rounded-full transition-colors disabled:opacity-60 min-w-[90px] flex items-center justify-center"
+              className={voucherConfirmButtonClassName}
             >
               {approveMutation.isPending ? (
                 <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" />
@@ -204,7 +209,7 @@ function AttestationRow({
                 setActionError('');
               }}
               disabled={busy}
-              className="border border-red-400 text-red-500 hover:bg-red-50 text-sm font-semibold px-5 py-1.5 rounded-full transition-colors disabled:opacity-60 min-w-[90px] text-center"
+              className={voucherDenyButtonClassName}
             >
               Deny
             </button>
@@ -230,7 +235,7 @@ function AttestationRow({
               type="button"
               onClick={handleDeny}
               disabled={busy}
-              className="bg-red-500 hover:bg-red-600 text-white text-xs font-semibold px-4 py-1.5 rounded-full flex items-center gap-1 disabled:opacity-60"
+              className={`${voucherActionButtonClassName} border-[#C80000] bg-[#C80000] text-white hover:bg-[#A90000]`}
             >
               {rejectMutation.isPending && (
                 <Icon icon="mdi:loading" className="w-3.5 h-3.5 animate-spin" />
@@ -427,7 +432,7 @@ export function UserDashboardPage() {
     <>
       <SEO title="Dashboard" description="Your alumni dashboard" />
 
-      <div className="min-h-screen bg-[#f5f4f0]">
+      <div className="min-h-screen bg-[#F8F8F7]">
         <div className="container-custom py-6 sm:py-8 space-y-4 sm:space-y-5">
           {/* ── Header ───────────────────────────────────────────────── */}
           <div className="pb-4 border-b border-gray-200">
