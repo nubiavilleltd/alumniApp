@@ -491,7 +491,7 @@ export function AdminMembersPage() {
       <section className="min-h-screen bg-[#F8F8F7] py-8 sm:py-10">
         <div className="container-custom space-y-10">
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-10 sm:grid-cols-3">
             <div className="min-h-[144px] rounded-[2rem] bg-gradient-to-br from-primary-500 to-primary-700 p-6 text-white">
               <div className="flex items-center justify-between">
                 <div>

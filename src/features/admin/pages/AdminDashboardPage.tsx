@@ -326,7 +326,7 @@ export function AdminDashboardPage() {
           {/* ══════════════════════════════════════════════════════════
               STAT CARDS (4 columns)
               ═══════════════════════════════════════════════════════ */}
-          <div className="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mb-8 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
             <StatCard label="Total Members" value={totalMembers} icon={Users} color="blue" />
             <StatCard label="Active Members" value={activeMembers} icon={UserCheck} color="cyan" />
             <StatCard label="Inactive Members" value={inactiveMembers} icon={UserX} color="gray" />
