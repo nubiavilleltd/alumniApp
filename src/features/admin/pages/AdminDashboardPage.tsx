@@ -219,15 +219,15 @@ function StatCard({ label, value, icon, color }: StatCardProps) {
 
   return (
     <div
-      className={`min-h-[180px] rounded-[2rem] bg-gradient-to-br ${colorClasses[color]} p-8 shadow-lg`}
+      className={`min-h-[120px] rounded-[24px] bg-gradient-to-br ${colorClasses[color]} p-6 shadow-lg`}
     >
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-medium text-white/80 mb-2">{label}</p>
           <p className="text-4xl font-bold">{value}</p>
         </div>
-        <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl bg-white/20">
-          <Icon className="h-9 w-9 text-white" />
+        <div className="flex h-[50px] w-[50px] flex-shrink-0 items-center justify-center rounded-2xl bg-white/20">
+          <Icon className="h-[18px] w-[20px] text-white" />
         </div>
       </div>
     </div>
@@ -326,7 +326,7 @@ export function AdminDashboardPage() {
           {/* ══════════════════════════════════════════════════════════
               STAT CARDS (4 columns)
               ═══════════════════════════════════════════════════════ */}
-          <div className="mb-8 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mb-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
             <StatCard label="Total Members" value={totalMembers} icon={Users} color="blue" />
             <StatCard label="Active Members" value={activeMembers} icon={UserCheck} color="cyan" />
             <StatCard label="Inactive Members" value={inactiveMembers} icon={UserX} color="gray" />
