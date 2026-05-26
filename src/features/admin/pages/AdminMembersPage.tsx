@@ -23,6 +23,7 @@ import {
   UserX,
   Users,
   X,
+  type LucideIcon,
 } from 'lucide-react';
 import { useEffect, useState, useMemo } from 'react';
 import { AppLink } from '@/shared/components/ui/AppLink';
@@ -71,6 +72,29 @@ const ADMIN_MEMBERS_PER_PAGE = 10;
 const memberActionButtonClassName =
   'flex h-[33px] w-[134px] items-center justify-center gap-1 rounded-[48px] border-2 px-4 py-2 text-sm font-semibold leading-none transition-colors disabled:opacity-50';
 
+type MemberStatCardProps = {
+  label: string;
+  value: number;
+  icon: LucideIcon;
+  gradient: string;
+};
+
+function MemberStatCard({ label, value, icon: Icon, gradient }: MemberStatCardProps) {
+  return (
+    <div className={`h-[116px] rounded-[24px] bg-gradient-to-br ${gradient} p-5 text-white`}>
+      <div className="flex h-full items-center justify-between gap-4">
+        <div>
+          <p className="text-sm font-semibold text-white/80">{label}</p>
+          <p className="mt-2 text-3xl font-bold">{value}</p>
+        </div>
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10">
+          <Icon className="h-7 w-7 text-white" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ═══════════════════════════════════════════════════════════════════════════
 // HELPER: MAP ALUMNI TO DISPLAY USER
 // ═══════════════════════════════════════════════════════════════════════════
@@ -97,9 +121,9 @@ function AdminMembersPageSkeleton() {
     <section className="min-h-screen animate-pulse bg-[#F8F8F7] py-8 sm:py-10">
       <div className="container-custom space-y-10">
         {/* Stats */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 min-[1390px]:grid-cols-[repeat(3,410px)] min-[1390px]:justify-between">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-[144px] rounded-[2rem] bg-gray-200" />
+            <div key={i} className="h-[116px] rounded-[24px] bg-gray-200" />
           ))}
         </div>
 
@@ -467,6 +491,26 @@ export function AdminMembersPage() {
 
   const activeCount = users.filter((u) => u.accountStatus === 'active').length;
   const inactiveCount = users.filter((u) => u.accountStatus === 'inactive').length;
+  const memberStats: MemberStatCardProps[] = [
+    {
+      label: 'Total Members',
+      value: users.length,
+      icon: Users,
+      gradient: 'from-primary-500 to-primary-700',
+    },
+    {
+      label: 'Active Members',
+      value: activeCount,
+      icon: CheckCircle,
+      gradient: 'from-green-500 to-green-700',
+    },
+    {
+      label: 'Inactive Members',
+      value: inactiveCount,
+      icon: UserX,
+      gradient: 'from-gray-500 to-gray-700',
+    },
+  ];
 
   const changePage = (page: number) => {
     setCurrentPage(page);
@@ -491,42 +535,10 @@ export function AdminMembersPage() {
       <section className="min-h-screen bg-[#F8F8F7] py-8 sm:py-10">
         <div className="container-custom space-y-10">
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <div className="min-h-[144px] rounded-[2rem] bg-gradient-to-br from-primary-500 to-primary-700 p-6 text-white">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-base font-semibold text-white/80">Total Members</p>
-                  <p className="mt-3 text-4xl font-bold">{users.length}</p>
-                </div>
-                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10">
-                  <Users className="h-9 w-9 text-white" />
-                </div>
-              </div>
-            </div>
-
-            <div className="min-h-[144px] rounded-[2rem] bg-gradient-to-br from-green-500 to-green-700 p-6 text-white">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-base font-semibold text-white/80">Active Members</p>
-                  <p className="mt-3 text-4xl font-bold">{activeCount}</p>
-                </div>
-                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10">
-                  <CheckCircle className="h-9 w-9 text-white" />
-                </div>
-              </div>
-            </div>
-
-            <div className="min-h-[144px] rounded-[2rem] bg-gradient-to-br from-gray-500 to-gray-700 p-6 text-white">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-base font-semibold text-white/80">Inactive Members</p>
-                  <p className="mt-3 text-4xl font-bold">{inactiveCount}</p>
-                </div>
-                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/10">
-                  <UserX className="h-9 w-9 text-white" />
-                </div>
-              </div>
-            </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 min-[1390px]:grid-cols-[repeat(3,410px)] min-[1390px]:justify-between">
+            {memberStats.map((stat) => (
+              <MemberStatCard key={stat.label} {...stat} />
+            ))}
           </div>
 
           {/* Filters */}
@@ -540,7 +552,7 @@ export function AdminMembersPage() {
                   setCurrentPage(1);
                 }}
                 className="w-full"
-                inputClassName="!h-12 !border-0 !pl-12 !pr-5 !text-base !shadow-none focus:!ring-0"
+                inputClassName="!h-12 !rounded-[48px] !border-0 !pl-12 !pr-5 !text-base !shadow-[0_4px_20px_0_rgba(0,0,0,0.05)] focus:!ring-0"
                 iconClassName="!left-5 !h-5 !w-5 !text-[#828282]"
               />
             </div>

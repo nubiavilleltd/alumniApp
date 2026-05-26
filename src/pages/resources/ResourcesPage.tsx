@@ -145,7 +145,7 @@ function ResourceCard({ category }: { category: ResourceCategory }) {
       <IconBadge icon={category.icon} bg={category.iconBg} color={category.iconColor} />
 
       {/* Title */}
-      <h2 className="type-card-title text-gray-900">{category.title}</h2>
+      <h2 className="text-[24px] font-[600] text-gray-900">{category.title}</h2>
 
       {/* Links / descriptions */}
       <div className="space-y-4">
@@ -180,7 +180,7 @@ function ResourceCard({ category }: { category: ResourceCategory }) {
                   href={link.href}
                   target={link.external ? '_blank' : undefined}
                   rel={link.external ? 'noopener noreferrer' : undefined}
-                  className="inline-flex items-center gap-1.5 text-primary-500 hover:text-primary-600 font-semibold text-sm transition-colors"
+                  className="inline-flex items-center gap-1.5 text-primary-500 hover:text-primary-600 font-semibold text-[18px] transition-colors"
                   endAdornment={
                     link.external ? (
                       <ExternalLink className="h-3.5 w-3.5 flex-shrink-0" strokeWidth={2.25} />
@@ -192,13 +192,13 @@ function ResourceCard({ category }: { category: ResourceCategory }) {
               ) : (
                 <button
                   type="button"
-                  className="inline-flex items-center gap-1.5 text-primary-500 hover:text-primary-600 font-semibold text-sm transition-colors text-left"
+                  className="inline-flex items-center gap-1.5 text-primary-500 hover:text-primary-600 font-semibold text-[18px] transition-colors text-left"
                 >
                   {link.label}
                 </button>
               )
             ) : null}
-            <p className="type-small text-gray-500">{link.description}</p>
+            <p className="text-[16px] font-[500] text-[#4B5563]">{link.description}</p>
           </div>
         ))}
       </div>
@@ -221,7 +221,7 @@ export default function ResourcesPage() {
           {/* ── Header ───────────────────────────────────────────────── */}
           <div className="mb-8">
             <h1 className="type-section-title mb-2 text-gray-900">Resources</h1>
-            <p className="type-card-body max-w-lg text-gray-600">
+            <p className="type-card-body max-w-2xl text-gray-600">
               A collection of tools, links, and articles to support your personal and professional
               growth, as well as your well-being.
             </p>
