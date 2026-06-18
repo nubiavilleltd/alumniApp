@@ -200,9 +200,11 @@ export default function App() {
             <Route
               path={ROUTES.ALUMNI.PROFILES}
               element={
-                <ErrorBoundary>
-                  <AlumniDirectoryPage />
-                </ErrorBoundary>
+                <ProtectedRoute>
+                  <ErrorBoundary>
+                    <AlumniDirectoryPage />
+                  </ErrorBoundary>
+                </ProtectedRoute>
               }
             />
             <Route
