@@ -1,0 +1,1562 @@
+<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+
+ERROR - 2026-05-14 00:52:02 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 00:52:02 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 00:52:02 --> JWT token found, validating...
+ERROR - 2026-05-14 00:52:02 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 00:52:02 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 00:52:02 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 00:52:02 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 00:52:02 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 00:52:02 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 00:52:02 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 00:52:02 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 00:52:02 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 00:52:02 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 00:52:21 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 00:52:21 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 00:52:21 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 00:52:21 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 00:52:21 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 00:52:21 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 00:52:21 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 00:52:21 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 00:52:21 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 00:52:21 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 00:52:22 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 00:52:22 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 00:52:22 --> JWT token found, validating...
+ERROR - 2026-05-14 01:06:59 --> 404 Page Not Found: Wp-content/plugins
+ERROR - 2026-05-14 01:31:01 --> 404 Page Not Found: Env/index
+ERROR - 2026-05-14 01:45:48 --> Severity: Warning --> Undefined array key "HTTP_REFERER" /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/core/MY_Controller.php 19
+ERROR - 2026-05-14 01:45:48 --> Severity: Warning --> Undefined array key "HTTP_REFERER" /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/core/MY_Controller.php 20
+ERROR - 2026-05-14 01:45:48 --> yes we are  notlogcon1
+ERROR - 2026-05-14 01:45:48 --> yesrequest_id
+ERROR - 2026-05-14 01:45:48 --> yesrequest_idchika
+ERROR - 2026-05-14 01:45:48 --> yes we are previous_url44
+ERROR - 2026-05-14 03:54:25 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 03:54:25 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 03:54:25 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 03:54:25 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 03:54:25 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 03:54:25 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 03:54:25 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 03:54:25 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 03:54:25 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 03:54:25 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 03:54:25 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 03:54:25 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 03:54:25 --> JWT token found, validating...
+ERROR - 2026-05-14 04:18:50 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:18:50 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:18:50 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 04:18:50 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:18:50 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:18:50 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 04:18:50 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:18:50 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:18:50 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:18:50 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:18:50 --> JWT token found, validating...
+ERROR - 2026-05-14 04:18:51 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:18:51 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:26:02 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:26:02 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:26:26 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:26:26 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:30:10 --> Get Leadership Input: array (
+)
+ERROR - 2026-05-14 04:30:10 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:30:10 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:30:13 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:30:13 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:30:14 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 04:30:14 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:30:14 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:30:14 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 04:30:14 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:30:14 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:30:14 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:30:14 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:31:06 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:31:06 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:33:49 --> Get Listings Input: array (
+  'status' => 'active',
+)
+ERROR - 2026-05-14 04:33:49 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:33:49 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:35:31 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:35:31 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:35:41 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 04:35:41 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:35:41 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:40:33 --> Get Listings Input: array (
+  'status' => 'active',
+)
+ERROR - 2026-05-14 04:40:33 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:40:33 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:40:33 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:40:33 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:40:43 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 04:40:43 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:40:43 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:46:00 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 04:46:00 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:46:00 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:46:56 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:46:56 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:46:58 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:46:58 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:46:58 --> JWT token found, validating...
+ERROR - 2026-05-14 04:46:58 --> Get Events Input: array (
+  'user_id' => '39',
+)
+ERROR - 2026-05-14 04:46:58 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:46:58 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:47:09 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:47:09 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:47:09 --> JWT token found, validating...
+ERROR - 2026-05-14 04:49:02 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:49:02 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:49:02 --> JWT token found, validating...
+ERROR - 2026-05-14 04:52:49 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:52:49 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:52:49 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:52:49 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:52:49 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:52:49 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:52:49 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:52:49 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:52:49 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:52:49 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:52:50 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:52:50 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:52:50 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:52:50 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:52:50 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:52:50 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:52:50 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:52:50 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:53:04 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:53:04 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:53:04 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:53:04 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:53:05 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:53:05 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:53:24 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:53:24 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:55:29 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:55:29 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:55:29 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:55:29 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:55:29 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:55:29 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:55:30 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:55:30 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:56:37 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:56:37 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:56:38 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:56:38 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:56:38 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:56:38 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:56:38 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:56:38 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:57:49 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:57:49 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:57:50 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:57:50 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:57:50 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:57:50 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:57:50 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:57:50 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:58:52 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:58:52 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:58:52 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:58:52 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:58:53 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:58:53 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 04:58:53 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 04:58:53 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:00:25 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:00:25 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:00:25 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:00:25 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:00:25 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:00:25 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:00:26 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:00:26 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:06:14 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:06:14 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:06:15 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:06:15 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:06:15 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:06:15 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:11:16 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:11:16 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:11:28 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 05:11:28 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:11:28 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:16:32 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:16:32 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:20:02 --> Get Listings Input: array (
+  'status' => 'active',
+)
+ERROR - 2026-05-14 05:20:02 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:20:02 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:20:03 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:20:03 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:20:03 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:20:03 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:20:03 --> JWT token found, validating...
+ERROR - 2026-05-14 05:20:20 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:20:20 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:20:35 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:20:35 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:20:35 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:20:35 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:28:25 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:28:25 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:28:26 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:28:26 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:28:26 --> JWT token found, validating...
+ERROR - 2026-05-14 05:28:27 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:28:27 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:28:27 --> Get Events Input: array (
+  'user_id' => '39',
+)
+ERROR - 2026-05-14 05:28:27 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:28:27 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:28:27 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:28:27 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:28:27 --> JWT token found, validating...
+ERROR - 2026-05-14 05:28:27 --> Severity: Warning --> Attempt to read property "id" on null /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/controllers/Api.php 9151
+ERROR - 2026-05-14 05:28:37 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:28:37 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:28:38 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:28:38 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:28:38 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:28:38 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:28:39 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 05:28:39 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:28:39 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:33:11 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:33:11 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:33:17 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 05:33:17 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:33:17 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:33:33 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:33:33 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:33:33 --> JWT token found, validating...
+ERROR - 2026-05-14 05:34:44 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 05:34:44 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:34:44 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:37:20 --> Get Events Input: array (
+  'user_id' => '39',
+)
+ERROR - 2026-05-14 05:37:20 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:37:20 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:39:11 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:39:11 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:39:11 --> JWT token found, validating...
+ERROR - 2026-05-14 05:46:33 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:46:33 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:46:33 --> JWT token found, validating...
+ERROR - 2026-05-14 05:47:09 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 05:47:09 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:47:09 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:47:13 --> Get Events Input: array (
+  'user_id' => '39',
+)
+ERROR - 2026-05-14 05:47:13 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:47:13 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:47:19 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:47:19 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:47:19 --> JWT token found, validating...
+ERROR - 2026-05-14 05:47:43 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:47:43 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:47:43 --> JWT token found, validating...
+ERROR - 2026-05-14 05:47:43 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:47:43 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:47:43 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 05:47:43 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:47:43 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:47:43 --> JWT token found, validating...
+ERROR - 2026-05-14 05:52:02 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:52:02 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:52:02 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:52:02 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:52:02 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 05:52:02 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:52:02 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:52:02 --> JWT token found, validating...
+ERROR - 2026-05-14 05:52:02 --> JWT token found, validating...
+ERROR - 2026-05-14 05:54:19 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:54:19 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:54:19 --> JWT token found, validating...
+ERROR - 2026-05-14 05:56:44 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:56:44 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:56:45 --> JWT token found, validating...
+ERROR - 2026-05-14 05:56:45 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:56:45 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:56:45 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:56:45 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:56:45 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 05:56:45 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:56:45 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:56:45 --> JWT token found, validating...
+ERROR - 2026-05-14 05:56:45 --> JWT token found, validating...
+ERROR - 2026-05-14 05:56:45 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:56:45 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:56:45 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:56:45 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 05:56:46 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 05:56:46 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 06:19:29 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 06:19:29 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 06:19:29 --> JWT token found, validating...
+ERROR - 2026-05-14 06:19:29 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 06:19:29 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 06:19:29 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 06:19:29 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 06:19:29 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 06:19:30 --> JWT token found, validating...
+ERROR - 2026-05-14 06:19:31 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 06:19:31 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 06:19:31 --> JWT token found, validating...
+ERROR - 2026-05-14 07:57:57 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 07:57:57 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 07:57:57 --> JWT token found, validating...
+ERROR - 2026-05-14 08:14:42 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 08:14:42 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:14:42 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:14:44 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:14:44 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:14:44 --> JWT token found, validating...
+ERROR - 2026-05-14 08:16:32 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:16:32 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:16:32 --> JWT token found, validating...
+ERROR - 2026-05-14 08:16:33 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:16:33 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:16:33 --> JWT token found, validating...
+ERROR - 2026-05-14 08:23:40 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:23:40 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:23:40 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 08:23:40 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:23:40 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:23:40 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:23:40 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:23:40 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 08:23:40 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:23:40 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:23:40 --> JWT token found, validating...
+ERROR - 2026-05-14 08:23:40 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:23:40 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:23:47 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:23:47 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:23:47 --> JWT token found, validating...
+ERROR - 2026-05-14 08:23:48 --> Get Events Input: array (
+  'user_id' => '39',
+)
+ERROR - 2026-05-14 08:23:48 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:23:48 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:23:59 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 08:23:59 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:23:59 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:24:47 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:24:47 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:24:48 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:24:48 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:24:48 --> Get Events Input: array (
+  'user_id' => '39',
+)
+ERROR - 2026-05-14 08:24:48 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:24:48 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:24:48 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:24:48 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:24:48 --> JWT token found, validating...
+ERROR - 2026-05-14 08:24:48 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:24:48 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:24:48 --> JWT token found, validating...
+ERROR - 2026-05-14 08:24:48 --> Severity: Warning --> Attempt to read property "id" on null /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/controllers/Api.php 9151
+ERROR - 2026-05-14 08:25:39 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:25:39 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:25:40 --> JWT token found, validating...
+ERROR - 2026-05-14 08:27:42 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:27:42 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:27:42 --> JWT token found, validating...
+ERROR - 2026-05-14 08:29:24 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:29:24 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:29:24 --> JWT token found, validating...
+ERROR - 2026-05-14 08:29:24 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 08:29:24 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:29:24 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:29:25 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:29:25 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:29:25 --> JWT token found, validating...
+ERROR - 2026-05-14 08:30:34 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:30:34 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:30:34 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 08:30:34 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:30:34 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:30:34 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:30:34 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:31:06 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:31:06 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:31:14 --> Get Listings Input: array (
+  'status' => 'active',
+)
+ERROR - 2026-05-14 08:31:14 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:31:14 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:31:23 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:31:23 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:31:23 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:31:23 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:31:48 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:31:48 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:31:55 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:31:55 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:32:27 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:32:27 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:32:36 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:32:36 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:37:50 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:37:50 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:37:57 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:37:57 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:37:57 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:37:57 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:37:57 --> JWT token found, validating...
+ERROR - 2026-05-14 08:38:02 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:38:02 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:42:17 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:42:17 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:42:26 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:42:26 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:42:27 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:42:27 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:42:27 --> JWT token found, validating...
+ERROR - 2026-05-14 08:43:13 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:43:13 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:43:13 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 08:43:13 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:43:13 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:43:13 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:43:13 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:43:13 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 08:43:13 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:43:13 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:46:11 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:46:11 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:46:28 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:46:28 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:46:35 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:46:35 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:46:35 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:46:35 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:46:35 --> JWT token found, validating...
+ERROR - 2026-05-14 08:56:27 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:56:27 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:56:27 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 08:56:27 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 08:56:27 --> JWT token found, validating...
+ERROR - 2026-05-14 09:05:57 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 09:05:57 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 09:05:57 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 09:05:57 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 09:05:57 --> JWT token found, validating...
+ERROR - 2026-05-14 09:18:02 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 09:18:02 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 09:18:02 --> JWT token found, validating...
+ERROR - 2026-05-14 09:18:03 --> Get Events Input: array (
+  'user_id' => '39',
+)
+ERROR - 2026-05-14 09:18:03 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 09:18:03 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 09:18:03 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 09:18:03 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 09:18:03 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 09:34:46 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 09:34:46 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 09:34:47 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 09:34:47 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 09:41:02 --> Get Leadership Input: array (
+)
+ERROR - 2026-05-14 09:41:02 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 09:41:02 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 09:41:52 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 09:41:52 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 09:41:52 --> Get Leadership Input: array (
+)
+ERROR - 2026-05-14 09:41:52 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 09:41:52 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 09:41:52 --> JWT token found, validating...
+ERROR - 2026-05-14 09:43:25 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 09:43:25 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 09:43:31 --> Get Listings Input: array (
+  'status' => 'active',
+)
+ERROR - 2026-05-14 09:43:31 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 09:43:31 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 09:43:37 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 09:43:37 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 09:45:21 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 09:45:21 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 09:45:30 --> Get Events Input: array (
+  'user_id' => '39',
+)
+ERROR - 2026-05-14 09:45:30 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 09:45:30 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 09:45:30 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 09:45:30 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 09:45:30 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 09:47:40 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 09:47:40 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 09:47:41 --> JWT token found, validating...
+ERROR - 2026-05-14 09:48:11 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 09:48:11 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 09:48:11 --> JWT token found, validating...
+ERROR - 2026-05-14 09:48:11 --> Get Events Input: array (
+  'user_id' => '39',
+)
+ERROR - 2026-05-14 09:48:11 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 09:48:11 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 09:48:11 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 09:48:11 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 09:48:11 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 09:58:59 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 09:58:59 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 09:58:59 --> JWT token found, validating...
+ERROR - 2026-05-14 09:59:01 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 09:59:01 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 09:59:01 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 09:59:01 --> Get Events Input: array (
+  'user_id' => '39',
+)
+ERROR - 2026-05-14 09:59:01 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 09:59:01 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:01:39 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:01:39 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:01:39 --> JWT token found, validating...
+ERROR - 2026-05-14 10:01:40 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 10:01:40 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:01:40 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:01:40 --> Get Events Input: array (
+  'user_id' => '39',
+)
+ERROR - 2026-05-14 10:01:40 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:01:40 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:01:53 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:01:53 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:01:53 --> JWT token found, validating...
+ERROR - 2026-05-14 10:03:07 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:03:07 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:03:07 --> JWT token found, validating...
+ERROR - 2026-05-14 10:05:31 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:05:31 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:05:31 --> JWT token found, validating...
+ERROR - 2026-05-14 10:05:31 --> Get Events Input: array (
+  'user_id' => '39',
+)
+ERROR - 2026-05-14 10:05:31 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:05:31 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:05:31 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 10:05:31 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:05:31 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:10:22 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:10:22 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:10:22 --> JWT token found, validating...
+ERROR - 2026-05-14 10:11:24 --> Get Events Input: array (
+  'user_id' => '39',
+)
+ERROR - 2026-05-14 10:11:24 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:11:24 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:11:24 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:11:24 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:11:24 --> JWT token found, validating...
+ERROR - 2026-05-14 10:11:41 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:11:41 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:11:41 --> JWT token found, validating...
+ERROR - 2026-05-14 10:11:42 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 10:11:42 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:11:42 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:11:42 --> Get Events Input: array (
+  'user_id' => '39',
+)
+ERROR - 2026-05-14 10:11:42 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:11:42 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:12:03 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:12:03 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:12:03 --> JWT token found, validating...
+ERROR - 2026-05-14 10:20:57 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 10:20:57 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:20:57 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:20:59 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:20:59 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:20:59 --> JWT token found, validating...
+ERROR - 2026-05-14 10:22:02 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:22:02 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:22:02 --> JWT token found, validating...
+ERROR - 2026-05-14 10:23:47 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:23:47 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:23:47 --> JWT token found, validating...
+ERROR - 2026-05-14 10:30:36 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:30:36 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:30:43 --> Get Listings Input: array (
+  'status' => 'active',
+)
+ERROR - 2026-05-14 10:30:43 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:30:43 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:30:43 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:30:43 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:30:43 --> JWT token found, validating...
+ERROR - 2026-05-14 10:32:57 --> Get Leadership Input: array (
+)
+ERROR - 2026-05-14 10:32:57 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:32:57 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:33:05 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:33:05 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:33:09 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:33:09 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:33:35 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:33:35 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:33:35 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 10:33:35 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:33:35 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:33:35 --> JWT token found, validating...
+ERROR - 2026-05-14 10:34:30 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:34:30 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:34:46 --> Manage Event Input: array (
+  'id' => '31',
+  'function_type' => 'update',
+  'title' => 'Test',
+  'description' => 'ghdf ndfjkf nfnfg fgm',
+  'location' => 'hjdfn dfkfd hdf',
+  'end_time' => '05:30',
+  'start_date' => '2026-04-28',
+  'start_time' => '2026-04-28',
+  'visibility' => 'public',
+  'status' => 'completed',
+)
+ERROR - 2026-05-14 10:34:46 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:34:46 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:34:47 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 10:34:47 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:34:47 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:34:47 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:34:47 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:34:47 --> JWT token found, validating...
+ERROR - 2026-05-14 10:34:48 --> Get Events Input: array (
+  'user_id' => '39',
+)
+ERROR - 2026-05-14 10:34:48 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:34:48 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:34:56 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:34:56 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:34:56 --> JWT token found, validating...
+ERROR - 2026-05-14 10:36:01 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:36:01 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:36:02 --> JWT token found, validating...
+ERROR - 2026-05-14 10:36:02 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:36:02 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:36:02 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:36:02 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:36:02 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:36:02 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:36:54 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 10:36:54 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:36:54 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:37:12 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 10:37:12 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:37:12 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:38:05 --> Get Events Input: array (
+  'user_id' => '39',
+)
+ERROR - 2026-05-14 10:38:05 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:38:05 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:38:30 --> Manage Event RSVP Input: array (
+  'user_id' => '39',
+  'event_id' => '35',
+  'function_type' => 'cancel',
+)
+ERROR - 2026-05-14 10:38:30 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:38:30 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:38:30 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 10:38:30 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:38:30 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:38:31 --> Get Events Input: array (
+  'user_id' => '39',
+)
+ERROR - 2026-05-14 10:38:31 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:38:31 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:38:34 --> Get Events Input: array (
+  'user_id' => '39',
+)
+ERROR - 2026-05-14 10:38:34 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:38:34 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:39:18 --> Register Event Input: array (
+  'user_id' => '39',
+  'event_id' => '35',
+  'status' => 'going',
+  'year' => '2026',
+  'additional_info' => '',
+)
+ERROR - 2026-05-14 10:39:18 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:39:18 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:39:18 --> JWT token found, validating...
+ERROR - 2026-05-14 10:39:18 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 10:39:18 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:39:18 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:39:19 --> Get Events Input: array (
+  'user_id' => '39',
+)
+ERROR - 2026-05-14 10:39:19 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:39:19 --> Get Events Input: array (
+  'user_id' => '39',
+)
+ERROR - 2026-05-14 10:39:19 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:39:19 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:39:19 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:45:58 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:45:58 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:45:58 --> JWT token found, validating...
+ERROR - 2026-05-14 10:45:59 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 10:45:59 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:45:59 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:53:04 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:53:04 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:53:04 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 10:53:04 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:53:04 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:53:05 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 10:53:05 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:53:05 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:53:05 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:53:05 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:53:06 --> Get Events Input: array (
+  'user_id' => '39',
+)
+ERROR - 2026-05-14 10:53:06 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:53:06 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:53:06 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:53:06 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:53:07 --> JWT token found, validating...
+ERROR - 2026-05-14 10:53:27 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:53:27 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:53:27 --> JWT token found, validating...
+ERROR - 2026-05-14 10:53:41 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:53:41 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:53:41 --> Get Listings Input: array (
+  'status' => 'active',
+)
+ERROR - 2026-05-14 10:53:41 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:53:41 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:59:23 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:59:23 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:59:24 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 10:59:24 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:59:24 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:59:24 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:59:24 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 10:59:24 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 10:59:24 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 10:59:24 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 11:11:26 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 11:11:26 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 11:11:26 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 11:21:10 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 11:21:10 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 11:21:10 --> JWT token found, validating...
+ERROR - 2026-05-14 11:21:32 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 11:21:32 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 11:22:49 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 11:22:49 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 11:22:49 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 11:22:49 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 11:22:49 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 11:22:49 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 11:22:49 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 11:22:49 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 11:22:49 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 11:22:49 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 11:33:29 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 11:33:29 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 11:33:29 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 11:50:22 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 11:50:22 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 11:50:22 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 11:50:22 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 11:50:22 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 11:50:22 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 11:50:22 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 11:50:22 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 11:50:22 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 11:50:22 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 11:50:22 --> JWT token found, validating...
+ERROR - 2026-05-14 11:50:22 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 11:50:22 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:08:01 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 12:08:01 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:08:01 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:08:03 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:08:03 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:08:03 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:08:03 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:08:03 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 12:08:03 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:08:03 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:08:12 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:08:12 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:08:12 --> JWT token found, validating...
+ERROR - 2026-05-14 12:08:12 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 12:08:12 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:08:12 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:08:12 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:08:12 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:08:12 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 12:08:12 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:08:12 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:08:13 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:08:13 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:08:36 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:08:36 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:08:36 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 12:08:36 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:08:36 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:08:36 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:08:36 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:08:36 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 12:08:36 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:08:36 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:08:36 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:08:36 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:08:37 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:08:37 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:08:39 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:08:39 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:08:39 --> JWT token found, validating...
+ERROR - 2026-05-14 12:08:39 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:08:39 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:08:40 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 12:08:40 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:08:40 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:08:40 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:08:40 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:08:40 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 12:08:40 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:08:40 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:08:44 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 12:08:44 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:08:44 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 12:08:44 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:08:44 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:08:44 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:08:44 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:08:44 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:08:44 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:08:44 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:08:44 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:08:44 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:08:44 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 12:08:44 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:08:44 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:08:44 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 12:08:44 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:08:44 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:08:44 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:08:44 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:08:44 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:08:44 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:08:44 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 12:08:44 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:08:44 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:08:44 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:08:44 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:08:46 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 12:08:46 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:08:46 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:09:59 --> Get Leadership Input: array (
+)
+ERROR - 2026-05-14 12:09:59 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:09:59 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:18:30 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:18:30 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:18:30 --> JWT token found, validating...
+ERROR - 2026-05-14 12:18:31 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:18:31 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:18:31 --> JWT token found, validating...
+ERROR - 2026-05-14 12:18:33 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:18:33 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:18:33 --> JWT token found, validating...
+ERROR - 2026-05-14 12:18:33 --> Get Events Input: array (
+  'user_id' => '39',
+)
+ERROR - 2026-05-14 12:18:33 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:18:33 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:18:33 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 12:18:33 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:18:33 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:24:21 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:24:21 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:24:24 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:24:24 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:27:17 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:27:17 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:30:36 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:30:36 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:30:36 --> JWT token found, validating...
+ERROR - 2026-05-14 12:30:42 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:30:42 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:31:38 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:31:38 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:31:38 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:31:38 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:32:00 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:32:00 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:33:50 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:33:50 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:33:51 --> Get Listings Input: array (
+  'status' => 'active',
+)
+ERROR - 2026-05-14 12:33:51 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:33:51 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:39:17 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 12:39:17 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:39:17 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:39:17 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 12:39:17 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:39:17 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:39:17 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:39:17 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:39:17 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:39:17 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:39:18 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 12:39:18 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:39:18 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:39:18 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 12:39:18 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:39:18 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:39:18 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:39:18 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:39:19 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:39:19 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:39:49 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:39:49 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:41:33 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:41:33 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:44:53 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:44:53 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:44:53 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:44:53 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:44:53 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:44:53 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:45:26 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:45:26 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:45:40 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 12:45:40 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:45:40 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:49:03 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:49:03 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:49:03 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:49:03 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:49:03 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 12:49:03 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:49:03 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:49:03 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 12:49:03 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:49:03 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:50:07 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:50:07 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:51:42 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:51:42 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:51:43 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:51:43 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:51:43 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:51:43 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:51:43 --> Get Events Input: array (
+  'user_id' => '13',
+)
+ERROR - 2026-05-14 12:51:43 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:51:43 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:51:43 --> JWT token found, validating...
+ERROR - 2026-05-14 12:51:43 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:51:43 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:51:43 --> JWT token found, validating...
+ERROR - 2026-05-14 12:51:43 --> Severity: Warning --> Attempt to read property "id" on null /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/controllers/Api.php 9151
+ERROR - 2026-05-14 12:51:50 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:51:50 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:51:50 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 12:51:50 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:51:50 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:51:51 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 12:51:51 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:51:51 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:51:51 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:51:51 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:52:32 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:52:32 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:52:32 --> JWT token found, validating...
+ERROR - 2026-05-14 12:53:03 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:53:03 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:53:03 --> JWT token found, validating...
+ERROR - 2026-05-14 12:53:03 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:53:03 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:53:03 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 12:53:03 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:53:03 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:53:03 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 12:53:03 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:53:03 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:53:03 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:53:03 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:59:11 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:59:11 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:59:16 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:59:16 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 12:59:16 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 12:59:16 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:05:18 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:05:18 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:07:18 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:07:18 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:07:18 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:07:18 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:10:39 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:10:39 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:10:40 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 13:10:40 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:10:40 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:10:40 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 13:10:40 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:10:40 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:11:36 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:11:36 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:11:36 --> JWT token found, validating...
+ERROR - 2026-05-14 13:11:36 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 13:11:36 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:11:36 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:11:36 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:11:36 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:11:36 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 13:11:36 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:11:36 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:11:36 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:11:36 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:11:40 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:11:40 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:11:40 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:11:40 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:11:40 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 13:11:40 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:11:40 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:11:40 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 13:11:40 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:11:40 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:11:40 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:11:40 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:11:40 --> JWT token found, validating...
+ERROR - 2026-05-14 13:16:56 --> Get Events Input: array (
+  'user_id' => '13',
+)
+ERROR - 2026-05-14 13:16:56 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:16:56 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:16:56 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:16:56 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:16:56 --> JWT token found, validating...
+ERROR - 2026-05-14 13:16:56 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 13:16:56 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:16:56 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:17:08 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:17:08 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:17:09 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 13:17:09 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:17:09 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:17:09 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 13:17:09 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:17:09 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:17:09 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:17:09 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:17:11 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:17:11 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:17:35 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:17:35 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:17:36 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:17:36 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:17:36 --> JWT token found, validating...
+ERROR - 2026-05-14 13:17:36 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:17:36 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:17:36 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:17:36 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:17:36 --> JWT token found, validating...
+ERROR - 2026-05-14 13:17:36 --> Severity: Warning --> Attempt to read property "id" on null /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/controllers/Api.php 9151
+ERROR - 2026-05-14 13:17:36 --> Get Events Input: array (
+  'user_id' => '39',
+)
+ERROR - 2026-05-14 13:17:36 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:17:36 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:31:43 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:31:43 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:31:43 --> JWT token found, validating...
+ERROR - 2026-05-14 13:31:44 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:31:44 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:31:44 --> JWT token found, validating...
+ERROR - 2026-05-14 13:32:40 --> JWT expired: Expired token
+ERROR - 2026-05-14 13:32:40 --> Chat_api JWT validation failed: token_expired
+ERROR - 2026-05-14 13:32:40 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:32:40 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:34:05 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:34:05 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 13:34:05 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:34:05 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:34:05 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:34:05 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:34:05 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:34:05 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 13:34:05 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:34:05 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:34:36 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:34:36 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:34:37 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 13:34:37 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:34:37 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:34:37 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 13:34:37 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:34:37 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:34:37 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:34:37 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:34:48 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 13:34:48 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:34:48 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:34:48 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:34:48 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:34:48 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 13:34:48 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:34:48 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 13:34:48 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 13:34:48 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 14:01:03 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 14:01:03 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 14:01:03 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 14:01:03 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 14:01:03 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 14:01:04 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 14:01:04 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 14:01:04 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 14:01:04 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 14:01:04 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 14:15:55 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 14:15:55 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 14:15:55 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 14:15:55 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 14:15:55 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 14:15:55 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 14:15:55 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 14:15:55 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 14:15:55 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 14:15:55 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 14:25:55 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 14:25:55 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 14:25:55 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 14:25:55 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 14:25:55 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 14:25:55 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 14:25:55 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 14:26:35 --> Severity: Warning --> Undefined array key "HTTP_REFERER" /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/core/MY_Controller.php 19
+ERROR - 2026-05-14 14:26:35 --> Severity: Warning --> Undefined array key "HTTP_REFERER" /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/core/MY_Controller.php 20
+ERROR - 2026-05-14 14:26:35 --> yes we are  notlogcon1
+ERROR - 2026-05-14 14:26:35 --> yesrequest_id
+ERROR - 2026-05-14 14:26:35 --> yesrequest_idchika
+ERROR - 2026-05-14 14:26:35 --> yes we are previous_url44
+ERROR - 2026-05-14 14:26:38 --> Severity: Warning --> Undefined array key "HTTP_REFERER" /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/core/MY_Controller.php 19
+ERROR - 2026-05-14 14:26:38 --> Severity: Warning --> Undefined array key "HTTP_REFERER" /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/core/MY_Controller.php 20
+ERROR - 2026-05-14 14:26:38 --> yes we are  notlogcon1
+ERROR - 2026-05-14 14:26:38 --> yesrequest_id
+ERROR - 2026-05-14 14:26:38 --> yesrequest_idchika
+ERROR - 2026-05-14 14:26:38 --> yes we are previous_url44
+ERROR - 2026-05-14 14:27:49 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 14:27:49 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 14:27:49 --> JWT token found, validating...
+ERROR - 2026-05-14 14:27:49 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 14:27:49 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 14:27:49 --> JWT token found, validating...
+ERROR - 2026-05-14 14:30:10 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 14:30:10 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 14:30:10 --> JWT token found, validating...
+ERROR - 2026-05-14 14:30:19 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 14:30:19 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 14:30:19 --> JWT token found, validating...
+ERROR - 2026-05-14 14:30:39 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 14:30:39 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 14:30:39 --> JWT token found, validating...
+ERROR - 2026-05-14 14:35:53 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 14:35:53 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 14:35:53 --> JWT token found, validating...
+ERROR - 2026-05-14 14:36:02 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 14:36:02 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 14:36:02 --> JWT token found, validating...
+ERROR - 2026-05-14 14:36:44 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 14:36:44 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 14:36:44 --> JWT token found, validating...
+ERROR - 2026-05-14 14:36:44 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 14:36:44 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 14:36:44 --> JWT token found, validating...
+ERROR - 2026-05-14 14:44:59 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 14:44:59 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 14:44:59 --> JWT token found, validating...
+ERROR - 2026-05-14 14:44:59 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 14:44:59 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 14:44:59 --> JWT token found, validating...
+ERROR - 2026-05-14 14:45:20 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 14:45:20 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 14:45:20 --> JWT token found, validating...
+ERROR - 2026-05-14 14:58:45 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 14:58:45 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 14:58:45 --> JWT token found, validating...
+ERROR - 2026-05-14 15:04:03 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:04:03 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:04:03 --> JWT token found, validating...
+ERROR - 2026-05-14 15:04:03 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:04:03 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:04:03 --> JWT token found, validating...
+ERROR - 2026-05-14 15:08:36 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:08:36 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:08:36 --> JWT token found, validating...
+ERROR - 2026-05-14 15:09:07 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:09:07 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:09:07 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:09:07 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:09:07 --> JWT token found, validating...
+ERROR - 2026-05-14 15:09:07 --> JWT token found, validating...
+ERROR - 2026-05-14 15:09:16 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:09:16 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:09:16 --> JWT token found, validating...
+ERROR - 2026-05-14 15:14:21 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:14:21 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:14:21 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 15:14:21 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:14:21 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:14:21 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:14:21 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:14:21 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:14:21 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:14:21 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 15:14:21 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:14:21 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:14:22 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:14:22 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:14:50 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 15:14:50 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:14:50 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:14:50 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:14:50 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:14:50 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 15:14:50 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:14:50 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:14:50 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:14:50 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:14:57 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:14:57 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 15:14:57 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:14:57 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:14:57 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:14:57 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 15:14:57 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:14:57 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:14:57 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:14:57 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:15:11 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:15:11 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:15:11 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:15:11 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:15:11 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 15:15:11 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:15:11 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:15:11 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 15:15:11 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:15:11 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:35:04 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 15:35:04 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:35:04 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:35:04 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 15:35:04 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:35:04 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:35:04 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:35:04 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:35:04 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:35:04 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:36:34 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:36:34 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:36:34 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:36:34 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:36:34 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 15:36:34 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:36:34 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:36:34 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 15:36:34 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:36:34 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:44:49 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:44:49 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:44:49 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 15:44:49 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:44:49 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:44:49 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:44:49 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:44:49 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 15:44:49 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:44:49 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:48:15 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 15:48:15 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:48:15 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:48:15 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:48:15 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:48:15 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 15:48:15 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:48:15 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:48:15 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:48:15 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:51:55 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:51:55 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:51:55 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 15:51:55 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:51:55 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:51:55 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 15:51:55 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:51:55 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:51:55 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:51:55 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:53:44 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:53:44 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:53:44 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 15:53:44 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:53:44 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:53:44 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 15:53:44 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:53:44 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:53:44 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:53:44 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:54:12 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:54:12 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:54:13 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:54:13 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:54:13 --> JWT token found, validating...
+ERROR - 2026-05-14 15:54:13 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:54:13 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:54:13 --> Get Events Input: array (
+  'user_id' => '13',
+)
+ERROR - 2026-05-14 15:54:13 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:54:13 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:54:13 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 15:54:13 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 15:54:13 --> JWT token found, validating...
+ERROR - 2026-05-14 15:54:13 --> Severity: Warning --> Attempt to read property "id" on null /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/controllers/Api.php 9151
+ERROR - 2026-05-14 16:05:09 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 16:05:09 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 16:05:09 --> JWT token found, validating...
+ERROR - 2026-05-14 16:05:09 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 16:05:09 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 16:56:09 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 16:56:09 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 16:56:09 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 16:56:09 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 16:56:09 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 16:56:09 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 16:56:09 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 16:56:09 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 16:56:09 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 16:56:09 --> JWT token found, validating...
+ERROR - 2026-05-14 16:56:09 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 16:56:09 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 16:56:09 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 16:56:09 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 16:56:09 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 16:56:09 --> Get Events Input: array (
+  'user_id' => '39',
+)
+ERROR - 2026-05-14 16:56:09 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 16:56:09 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 16:56:09 --> JWT token found, validating...
+ERROR - 2026-05-14 17:11:41 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 17:11:41 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 17:11:41 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 17:11:41 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 17:11:41 --> Get Events Input: array (
+)
+ERROR - 2026-05-14 17:11:41 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 17:11:41 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 17:11:41 --> Get Projects Input: array (
+)
+ERROR - 2026-05-14 17:11:41 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 17:11:41 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 17:11:42 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 17:11:42 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 17:11:42 --> JWT token found, validating...
+ERROR - 2026-05-14 17:11:42 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 17:11:42 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 17:11:42 --> Get Events Input: array (
+  'user_id' => '13',
+)
+ERROR - 2026-05-14 17:11:42 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 17:11:42 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 17:11:42 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 17:11:42 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 17:11:42 --> JWT token found, validating...
+ERROR - 2026-05-14 17:11:42 --> Severity: Warning --> Attempt to read property "id" on null /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/controllers/Api.php 9151
+ERROR - 2026-05-14 17:11:42 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 17:11:42 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 17:11:42 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 17:11:42 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 17:52:54 --> Severity: Warning --> Undefined array key "HTTP_REFERER" /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/core/MY_Controller.php 19
+ERROR - 2026-05-14 17:52:54 --> Severity: Warning --> Undefined array key "HTTP_REFERER" /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/core/MY_Controller.php 20
+ERROR - 2026-05-14 17:52:54 --> yes we are  notlogcon1
+ERROR - 2026-05-14 17:52:54 --> yesrequest_id
+ERROR - 2026-05-14 17:52:54 --> yesrequest_idchika
+ERROR - 2026-05-14 17:52:54 --> yes we are previous_url44
+ERROR - 2026-05-14 18:39:40 --> 404 Page Not Found: Git/config
+ERROR - 2026-05-14 19:12:05 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 19:12:05 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 19:12:05 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 19:12:05 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 19:12:05 --> Get Events Input: array (
+  'user_id' => '13',
+)
+ERROR - 2026-05-14 19:12:05 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 19:12:05 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 19:12:05 --> JWT token found, validating...
+ERROR - 2026-05-14 19:12:05 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-05-14 19:12:05 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-05-14 19:12:05 --> JWT token found, validating...
+ERROR - 2026-05-14 19:12:05 --> Severity: Warning --> Attempt to read property "id" on null /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/controllers/Api.php 9151
+ERROR - 2026-05-14 19:37:42 --> 404 Page Not Found: Git/config
+ERROR - 2026-05-14 20:21:47 --> Severity: Warning --> Undefined array key "HTTP_REFERER" /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/core/MY_Controller.php 19
+ERROR - 2026-05-14 20:21:47 --> Severity: Warning --> Undefined array key "HTTP_REFERER" /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/core/MY_Controller.php 20
+ERROR - 2026-05-14 20:21:47 --> yes we are  notlogcon1
+ERROR - 2026-05-14 20:21:47 --> yesrequest_id
+ERROR - 2026-05-14 20:21:47 --> yesrequest_idchika
+ERROR - 2026-05-14 20:21:47 --> yes we are previous_url44
+ERROR - 2026-05-14 21:39:13 --> 404 Page Not Found: _profiler/phpinfo
+ERROR - 2026-05-14 21:39:13 --> 404 Page Not Found: Infophp/index
+ERROR - 2026-05-14 21:39:13 --> 404 Page Not Found: Phpinfophp/index
+ERROR - 2026-05-14 21:39:14 --> 404 Page Not Found: Phpinfo/index

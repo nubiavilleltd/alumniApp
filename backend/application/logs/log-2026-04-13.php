@@ -1,0 +1,1833 @@
+<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+
+ERROR - 2026-04-13 08:56:42 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 08:56:42 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 08:56:42 --> Get Events Input: array (
+  'user_id' => '38',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzU4MTUyNjgsImV4cCI6MTc3NTkwMTY2OCwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjM4IiwiZW1haWwiOiJ5YWt1Ymp1bWF0QGdtYWlsLmNvbSIsInVzZXJfcm9sZSI6ImFsdW1uaSIsImZ1bGxuYW1lIjoiRG9lIGpheSJ9fQ.5L82msc69HM99os0rVKfnBJnhT5qsE4tjA_3fs3aGp8',
+)
+ERROR - 2026-04-13 08:56:42 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 08:56:42 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzU4MTUyNjgsImV4cCI6MTc3NTkwMTY2OCwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjM4IiwiZW1haWwiOiJ5YWt1Ymp1bWF0QGdtYWlsLmNvbSIsInVzZXJfcm9sZSI6ImFsdW1uaSIsImZ1bGxuYW1lIjoiRG9lIGpheSJ9fQ.5L82msc69HM99os0rVKfnBJnhT5qsE4tjA_3fs3aGp8',
+)
+ERROR - 2026-04-13 08:56:42 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 08:56:42 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 08:56:42 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 08:56:42 --> JWT token found, validating...
+ERROR - 2026-04-13 08:56:42 --> JWT expired: Expired token
+ERROR - 2026-04-13 08:56:42 --> JWT checkJWT failed: token_expired
+ERROR - 2026-04-13 08:56:42 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 08:56:42 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 08:56:48 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzU1NzIyNjYsImV4cCI6MTc3NTY1ODY2NiwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjM5IiwiZW1haWwiOiJvbW9sb2x1anVtYXRAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6IkxvbHUgSnVtYXQifX0.eUwEnVCwJllwTh8vwe7tk1ddkHWw0O87hqNGHEj-pqo',
+)
+ERROR - 2026-04-13 08:56:48 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 08:56:48 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 08:56:48 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 08:56:48 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 08:56:48 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 08:56:48 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 08:56:48 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 08:56:48 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 08:56:48 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 08:56:48 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 08:56:48 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 08:56:48 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 08:56:48 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 08:56:48 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 08:56:48 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 08:58:13 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 08:58:13 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 08:58:13 --> Get Projects Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 08:58:13 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 08:58:13 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 08:58:13 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 08:58:13 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 08:58:13 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 08:58:14 --> Get Leadership Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 08:58:14 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 08:58:14 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 08:58:33 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 08:58:33 --> Get Projects Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 08:58:33 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 08:58:33 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 08:58:33 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 08:58:33 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 08:58:33 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 08:58:33 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 08:58:33 --> Get Leadership Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 08:58:33 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 08:58:33 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 09:02:45 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 09:02:45 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 09:02:45 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzU4MzE0NTEsImV4cCI6MTc3NTkxNzg1MSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.UbI-anvRh1idfWTm4l8Xso4rTEJaMK3s_cvJRdOhI7c',
+)
+ERROR - 2026-04-13 09:02:45 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 09:02:45 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 09:02:45 --> Get Events Input: array (
+  'user_id' => '42',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzU4MzE0NTEsImV4cCI6MTc3NTkxNzg1MSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.UbI-anvRh1idfWTm4l8Xso4rTEJaMK3s_cvJRdOhI7c',
+)
+ERROR - 2026-04-13 09:02:45 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 09:02:45 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 09:02:45 --> JWT token found, validating...
+ERROR - 2026-04-13 09:02:45 --> JWT expired: Expired token
+ERROR - 2026-04-13 09:02:45 --> JWT checkJWT failed: token_expired
+ERROR - 2026-04-13 09:02:45 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 09:02:45 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 09:02:50 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 09:02:50 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 09:02:50 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 09:02:50 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 09:02:51 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 09:02:51 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 09:02:51 --> JWT token found, validating...
+ERROR - 2026-04-13 09:02:52 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 09:02:52 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 09:02:52 --> JWT token found, validating...
+ERROR - 2026-04-13 09:02:52 --> Severity: Warning --> Attempt to read property "id" on null /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/controllers/Api.php 11429
+ERROR - 2026-04-13 09:02:52 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 09:02:52 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 09:02:52 --> Get Events Input: array (
+  'user_id' => '42',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwNjczNzAsImV4cCI6MTc3NjE1Mzc3MCwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.1XEuO17kRdnFROwqfNTrXWLtXbhBSN7RFjIQpIcJ-Y8',
+)
+ERROR - 2026-04-13 09:02:52 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 09:02:52 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 09:02:52 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwNjczNzAsImV4cCI6MTc3NjE1Mzc3MCwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.1XEuO17kRdnFROwqfNTrXWLtXbhBSN7RFjIQpIcJ-Y8',
+)
+ERROR - 2026-04-13 09:02:52 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 09:02:52 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 09:26:32 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 09:26:32 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 09:26:32 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 09:26:32 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 09:26:32 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwNjczNzAsImV4cCI6MTc3NjE1Mzc3MCwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.1XEuO17kRdnFROwqfNTrXWLtXbhBSN7RFjIQpIcJ-Y8',
+)
+ERROR - 2026-04-13 09:26:32 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 09:26:32 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 09:26:32 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 09:26:32 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 09:26:32 --> JWT token found, validating...
+ERROR - 2026-04-13 09:26:32 --> JWT token found, validating...
+ERROR - 2026-04-13 09:26:32 --> Severity: Warning --> Attempt to read property "id" on null /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/controllers/Api.php 11429
+ERROR - 2026-04-13 10:13:14 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 10:13:14 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 10:13:14 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 10:13:14 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 10:13:14 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 10:13:14 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 10:13:14 --> JWT token found, validating...
+ERROR - 2026-04-13 10:13:14 --> Severity: Warning --> Attempt to read property "id" on null /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/controllers/Api.php 11429
+ERROR - 2026-04-13 10:13:14 --> JWT token found, validating...
+ERROR - 2026-04-13 10:55:45 --> Get Events Input: array (
+  'user_id' => '42',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwNjczNzAsImV4cCI6MTc3NjE1Mzc3MCwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.1XEuO17kRdnFROwqfNTrXWLtXbhBSN7RFjIQpIcJ-Y8',
+)
+ERROR - 2026-04-13 10:55:45 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 10:55:45 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 10:57:38 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 10:57:38 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 10:57:38 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 10:57:38 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 10:57:38 --> JWT token found, validating...
+ERROR - 2026-04-13 10:57:38 --> JWT token found, validating...
+ERROR - 2026-04-13 11:04:44 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 11:04:44 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 11:04:45 --> JWT token found, validating...
+ERROR - 2026-04-13 11:08:07 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 11:08:07 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 11:08:07 --> JWT token found, validating...
+ERROR - 2026-04-13 11:18:25 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 11:18:25 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 11:18:25 --> JWT token found, validating...
+ERROR - 2026-04-13 11:54:11 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 11:54:11 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 11:54:12 --> JWT token found, validating...
+ERROR - 2026-04-13 12:02:39 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 12:02:39 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 12:02:39 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 12:02:39 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 12:02:39 --> JWT token found, validating...
+ERROR - 2026-04-13 12:02:39 --> JWT token found, validating...
+ERROR - 2026-04-13 12:31:58 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 12:31:58 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 12:31:58 --> JWT token found, validating...
+ERROR - 2026-04-13 12:44:50 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 12:44:50 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 12:44:50 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 12:44:50 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 12:44:50 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwNjczNzAsImV4cCI6MTc3NjE1Mzc3MCwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.1XEuO17kRdnFROwqfNTrXWLtXbhBSN7RFjIQpIcJ-Y8',
+)
+ERROR - 2026-04-13 12:44:50 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 12:44:50 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 12:44:50 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 12:44:50 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 12:44:50 --> JWT token found, validating...
+ERROR - 2026-04-13 12:52:50 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 12:52:50 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 12:52:50 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 12:52:50 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 12:52:50 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwNjczNzAsImV4cCI6MTc3NjE1Mzc3MCwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.1XEuO17kRdnFROwqfNTrXWLtXbhBSN7RFjIQpIcJ-Y8',
+)
+ERROR - 2026-04-13 12:52:50 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 12:52:50 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 12:52:50 --> JWT token found, validating...
+ERROR - 2026-04-13 12:58:03 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 12:58:03 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 12:58:03 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 12:58:03 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 12:58:03 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 12:58:03 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwNjczNzAsImV4cCI6MTc3NjE1Mzc3MCwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.1XEuO17kRdnFROwqfNTrXWLtXbhBSN7RFjIQpIcJ-Y8',
+)
+ERROR - 2026-04-13 12:58:03 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 12:58:03 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 12:58:03 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 12:58:03 --> JWT token found, validating...
+ERROR - 2026-04-13 13:00:43 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:00:43 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:00:43 --> Get Projects Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 13:00:43 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:00:43 --> Get Leadership Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 13:00:43 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:00:43 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:00:43 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:00:43 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 13:00:43 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:00:43 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:00:45 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:00:45 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:00:45 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:00:45 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:00:46 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzU1NzIyNjYsImV4cCI6MTc3NTY1ODY2NiwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjM5IiwiZW1haWwiOiJvbW9sb2x1anVtYXRAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6IkxvbHUgSnVtYXQifX0.eUwEnVCwJllwTh8vwe7tk1ddkHWw0O87hqNGHEj-pqo',
+)
+ERROR - 2026-04-13 13:00:46 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:00:46 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:00:46 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 13:00:46 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:00:46 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:00:49 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 13:00:49 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:00:49 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:05:02 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:05:02 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:05:02 --> Get Leadership Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzU3MzQxMDQsImV4cCI6MTc3NTgyMDUwNCwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.k0aN1KnlSxvHIMIVOV7buCsNSjmZlocq_FAKfotfkDQ',
+)
+ERROR - 2026-04-13 13:05:02 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:05:02 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:05:02 --> Get Projects Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzU3MzQxMDQsImV4cCI6MTc3NTgyMDUwNCwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.k0aN1KnlSxvHIMIVOV7buCsNSjmZlocq_FAKfotfkDQ',
+)
+ERROR - 2026-04-13 13:05:02 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:05:02 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:05:02 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzU3MzQxMDQsImV4cCI6MTc3NTgyMDUwNCwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.k0aN1KnlSxvHIMIVOV7buCsNSjmZlocq_FAKfotfkDQ',
+)
+ERROR - 2026-04-13 13:05:02 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:05:02 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:05:02 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:05:02 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:05:02 --> JWT token found, validating...
+ERROR - 2026-04-13 13:05:02 --> JWT expired: Expired token
+ERROR - 2026-04-13 13:05:02 --> JWT checkJWT failed: token_expired
+ERROR - 2026-04-13 13:05:03 --> Get Events Input: array (
+  'user_id' => '42',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzU3MzQxMDQsImV4cCI6MTc3NTgyMDUwNCwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.k0aN1KnlSxvHIMIVOV7buCsNSjmZlocq_FAKfotfkDQ',
+)
+ERROR - 2026-04-13 13:05:03 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:05:03 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:05:03 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:05:03 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:13:44 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:13:44 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:15:28 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:15:28 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:15:29 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:15:29 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:21:37 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 13:21:37 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:21:37 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:21:47 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:21:47 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:21:47 --> Get Projects Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 13:21:47 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:21:47 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:21:47 --> Get Leadership Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 13:21:47 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:21:47 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:21:48 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:21:48 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:27:37 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 13:27:37 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:27:37 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:37:39 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:37:39 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:37:39 --> Get Projects Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 13:37:39 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:37:39 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 13:37:39 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:37:39 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:37:39 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:37:39 --> Get Leadership Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 13:37:39 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:37:39 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:37:41 --> Get Projects Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 13:37:41 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:37:41 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:37:42 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:37:42 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:37:42 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 13:37:42 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:37:42 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:37:43 --> Get Leadership Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 13:37:43 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:37:43 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:49:36 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:49:36 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:49:36 --> Get Projects Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 13:49:36 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:49:36 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:49:36 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 13:49:36 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:49:36 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:49:36 --> Get Leadership Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 13:49:36 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:49:36 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:50:46 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:50:46 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:59:29 --> Get Projects Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 13:59:29 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:59:29 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:59:30 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:59:30 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:59:30 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 13:59:30 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:59:30 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 13:59:30 --> Get Leadership Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 13:59:30 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 13:59:30 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 16:23:59 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwNjczNzAsImV4cCI6MTc3NjE1Mzc3MCwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.1XEuO17kRdnFROwqfNTrXWLtXbhBSN7RFjIQpIcJ-Y8',
+)
+ERROR - 2026-04-13 16:23:59 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 16:23:59 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 16:23:59 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 16:23:59 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 16:23:59 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 16:23:59 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 16:23:59 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 16:23:59 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 16:23:59 --> JWT token found, validating...
+ERROR - 2026-04-13 16:26:45 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 16:26:45 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 16:26:45 --> Get Leadership Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 16:26:45 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 16:26:45 --> Get Projects Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 16:26:45 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 16:26:45 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 16:26:45 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 16:26:45 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 16:26:45 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 16:26:45 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 16:27:23 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 16:27:23 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 16:27:23 --> Get Events Input: array (
+  'user_id' => '42',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwNjczNzAsImV4cCI6MTc3NjE1Mzc3MCwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.1XEuO17kRdnFROwqfNTrXWLtXbhBSN7RFjIQpIcJ-Y8',
+)
+ERROR - 2026-04-13 16:27:23 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 16:27:23 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 16:27:23 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 16:27:23 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 16:27:23 --> JWT token found, validating...
+ERROR - 2026-04-13 16:27:23 --> Severity: Warning --> Attempt to read property "id" on null /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/controllers/Api.php 11429
+ERROR - 2026-04-13 16:27:55 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 16:27:55 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 16:27:55 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 16:27:55 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 16:28:27 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 16:28:27 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 16:29:18 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 16:29:18 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 16:29:18 --> JWT token found, validating...
+ERROR - 2026-04-13 16:29:19 --> Get Listings Input: array (
+  'status' => 'active',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwNjczNzAsImV4cCI6MTc3NjE1Mzc3MCwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.1XEuO17kRdnFROwqfNTrXWLtXbhBSN7RFjIQpIcJ-Y8',
+)
+ERROR - 2026-04-13 16:29:19 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 16:29:19 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 16:29:29 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwNjczNzAsImV4cCI6MTc3NjE1Mzc3MCwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.1XEuO17kRdnFROwqfNTrXWLtXbhBSN7RFjIQpIcJ-Y8',
+)
+ERROR - 2026-04-13 16:29:29 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 16:29:29 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 16:29:29 --> Get Projects Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwNjczNzAsImV4cCI6MTc3NjE1Mzc3MCwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.1XEuO17kRdnFROwqfNTrXWLtXbhBSN7RFjIQpIcJ-Y8',
+)
+ERROR - 2026-04-13 16:29:29 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 16:29:29 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 16:30:17 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 16:30:17 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 16:30:17 --> JWT token found, validating...
+ERROR - 2026-04-13 16:30:17 --> Severity: Warning --> Attempt to read property "id" on null /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/controllers/Api.php 11429
+ERROR - 2026-04-13 16:30:19 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 16:30:19 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 16:32:12 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 16:32:12 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 16:55:57 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 16:55:57 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 16:55:57 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 16:55:57 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 16:55:57 --> JWT token found, validating...
+ERROR - 2026-04-13 17:04:22 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:04:22 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:04:22 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:04:22 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:04:22 --> JWT token found, validating...
+ERROR - 2026-04-13 17:06:15 --> <!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="x-apple-disable-message-reformatting">
+    <title>Reset Your Password – Alumni Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body style="margin:0;padding:0;background-color:#f0f4f8;font-family:'Inter',Arial,sans-serif;">
+
+    <!-- Wrapper -->
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f0f4f8;padding:40px 16px;">
+        <tr>
+            <td align="center">
+
+                <!-- Card -->
+                <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(16,24,40,0.08);">
+
+                    <!-- Header Banner -->
+                    <tr>
+                        <td style="background:linear-gradient(135deg,#0077cc 0%,#005fa3 100%);padding:36px 40px;text-align:center;">
+                            <img src="https://alumniportal.nubiaville.com/assets/img/logo.png" alt="Alumni Portal" height="44" style="display:inline-block;vertical-align:middle;">
+                            <p style="margin:14px 0 0;color:rgba(255,255,255,0.85);font-size:13px;letter-spacing:0.5px;text-transform:uppercase;font-weight:500;">Alumni Portal</p>
+                        </td>
+                    </tr>
+
+                    <!-- Body -->
+                    <tr>
+                        <td style="padding:40px 40px 32px;">
+
+                            <!-- Icon -->
+                            <div style="text-align:center;margin-bottom:24px;">
+                                <div style="display:inline-block;background:#dbeafe;border-radius:50%;width:64px;height:64px;line-height:64px;text-align:center;font-size:28px;">
+                                    🔐
+                                </div>
+                            </div>
+
+                            <h1 style="margin:0 0 8px;font-size:24px;font-weight:700;color:#111827;text-align:center;">Reset Your Password</h1>
+                            <p style="margin:0 0 28px;font-size:14px;color:#6b7280;text-align:center;">We received a request to reset your account password.</p>
+
+                            <p style="margin:0 0 8px;font-size:15px;color:#374151;">Hi <strong>Maggy</strong>,</p>
+
+                            <p style="margin:0 0 28px;font-size:15px;color:#4b5563;line-height:1.7;">
+                                Someone requested a password reset for your Alumni Portal account. If this was you, click the button below to choose a new password. The link is valid for <strong>24 hours</strong>.
+                            </p>
+
+                            <!-- CTA Button -->
+                            <div style="text-align:center;margin-bottom:28px;">
+                                <a href="https://alumni-app-three.vercel.app/auth/reset-password/iUyIQT6xi.OYwE4bnzC5YO7f7d34c1ce39a24aa6"
+                                   style="display:inline-block;background:linear-gradient(135deg,#0077cc,#005fa3);color:#ffffff;text-decoration:none;font-size:15px;font-weight:600;padding:14px 36px;border-radius:10px;letter-spacing:0.3px;box-shadow:0 4px 14px rgba(0,119,204,0.35);">
+                                    Reset Password
+                                </a>
+                            </div>
+
+                            <!-- Divider -->
+                            <hr style="border:none;border-top:1px solid #e5e7eb;margin:0 0 24px;">
+
+                            <!-- Fallback link -->
+                            <p style="margin:0 0 8px;font-size:13px;color:#6b7280;">Button not working? Copy and paste this link into your browser:</p>
+                            <p style="margin:0 0 28px;word-break:break-all;">
+                                <a href="https://alumni-app-three.vercel.app/auth/reset-password/iUyIQT6xi.OYwE4bnzC5YO7f7d34c1ce39a24aa6"
+                                   style="font-size:13px;color:#0077cc;text-decoration:underline;">
+                                    https://alumni-app-three.vercel.app/auth/reset-password/iUyIQT6xi.OYwE4bnzC5YO7f7d34c1ce39a24aa6                                </a>
+                            </p>
+
+                            <!-- Warning box -->
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;margin-bottom:8px;">
+                                <tr>
+                                    <td style="padding:16px 20px;">
+                                        <p style="margin:0 0 8px;font-size:13px;font-weight:600;color:#92400e;">&#9888;&#65039; Things to know</p>
+                                        <ul style="margin:0;padding-left:18px;font-size:13px;color:#78350f;line-height:1.8;">
+                                            <li>This reset link expires in <strong>24 hours</strong>.</li>
+                                            <li>If you didn't request this, you can safely ignore this email — your password will not change.</li>
+                                            <li>Never share this link with anyone.</li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background:#f9fafb;border-top:1px solid #e5e7eb;padding:24px 40px;text-align:center;">
+                            <p style="margin:0 0 4px;font-size:13px;color:#9ca3af;">This email was sent by Alumni Portal. Please do not reply to this email.</p>
+                            <p style="margin:0;font-size:12px;color:#d1d5db;">&copy; 2026 Alumni Portal. All rights reserved.</p>
+                        </td>
+                    </tr>
+
+                </table>
+                <!-- /Card -->
+
+            </td>
+        </tr>
+    </table>
+    <!-- /Wrapper -->
+
+</body>
+</html>
+
+ERROR - 2026-04-13 17:08:29 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:08:29 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:08:30 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:08:30 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:08:31 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:08:31 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:08:31 --> JWT token found, validating...
+ERROR - 2026-04-13 17:08:31 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:08:31 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:08:31 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTY1MDksImV4cCI6MTc3NjE4MjkwOSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjU5IiwiZW1haWwiOiJtYWdkYWxlbmVfZWRvemllQG51YmlhdmlsbGUub25taWNyb3NvZnQuY29tIiwidXNlcl9yb2xlIjoiYWx1bW5pIiwiZnVsbG5hbWUiOiJQcmluY2VzcyBFZG96aWUifX0.hZ5QXKoodbe-WhRHO4nFqCTuTdHwNOTHFZec_YI7isM',
+)
+ERROR - 2026-04-13 17:08:31 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:08:31 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:08:31 --> JWT token found, validating...
+ERROR - 2026-04-13 17:08:31 --> Severity: Warning --> Attempt to read property "id" on null /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/controllers/Api.php 11429
+ERROR - 2026-04-13 17:08:31 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:08:31 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:08:31 --> Get Events Input: array (
+  'user_id' => '59',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTY1MDksImV4cCI6MTc3NjE4MjkwOSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjU5IiwiZW1haWwiOiJtYWdkYWxlbmVfZWRvemllQG51YmlhdmlsbGUub25taWNyb3NvZnQuY29tIiwidXNlcl9yb2xlIjoiYWx1bW5pIiwiZnVsbG5hbWUiOiJQcmluY2VzcyBFZG96aWUifX0.hZ5QXKoodbe-WhRHO4nFqCTuTdHwNOTHFZec_YI7isM',
+)
+ERROR - 2026-04-13 17:08:31 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:08:31 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:09:06 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:09:06 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:09:06 --> JWT token found, validating...
+ERROR - 2026-04-13 17:09:16 --> Update Profile Input: array (
+  'user_id' => '59',
+  'bio' => 'This is my bio',
+  'residential_address' => '',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTY1MDksImV4cCI6MTc3NjE4MjkwOSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjU5IiwiZW1haWwiOiJtYWdkYWxlbmVfZWRvemllQG51YmlhdmlsbGUub25taWNyb3NvZnQuY29tIiwidXNlcl9yb2xlIjoiYWx1bW5pIiwiZnVsbG5hbWUiOiJQcmluY2VzcyBFZG96aWUifX0.hZ5QXKoodbe-WhRHO4nFqCTuTdHwNOTHFZec_YI7isM',
+)
+ERROR - 2026-04-13 17:09:16 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:09:16 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:09:16 --> JWT token found, validating...
+ERROR - 2026-04-13 17:09:58 --> Get Listings Input: array (
+  'status' => 'active',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTY1MDksImV4cCI6MTc3NjE4MjkwOSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjU5IiwiZW1haWwiOiJtYWdkYWxlbmVfZWRvemllQG51YmlhdmlsbGUub25taWNyb3NvZnQuY29tIiwidXNlcl9yb2xlIjoiYWx1bW5pIiwiZnVsbG5hbWUiOiJQcmluY2VzcyBFZG96aWUifX0.hZ5QXKoodbe-WhRHO4nFqCTuTdHwNOTHFZec_YI7isM',
+)
+ERROR - 2026-04-13 17:09:58 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:09:58 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:12:25 --> Create Listing Input: array (
+  'user_id' => '59',
+  'title' => 'Chicken Rep',
+  'description' => 'Your best location for a tasty chicken.',
+  'category' => 'other',
+  'location' => 'Lagoshttps://testrigor.com/blog/saas-testing-tools/?utm_source=chatgpt.com',
+  'phone' => '+234 8169129560',
+  'business_name' => 'Chicken Rep',
+  'contact_info' => '+234 8169129560',
+  'status' => 'active',
+  'year' => '2026',
+  'price' => '0.00',
+  'price_type' => 'free',
+  'is_featured' => '0',
+  'chapter_id' => '1',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTY1MDksImV4cCI6MTc3NjE4MjkwOSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjU5IiwiZW1haWwiOiJtYWdkYWxlbmVfZWRvemllQG51YmlhdmlsbGUub25taWNyb3NvZnQuY29tIiwidXNlcl9yb2xlIjoiYWx1bW5pIiwiZnVsbG5hbWUiOiJQcmluY2VzcyBFZG96aWUifX0.hZ5QXKoodbe-WhRHO4nFqCTuTdHwNOTHFZec_YI7isM',
+)
+ERROR - 2026-04-13 17:12:25 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:12:25 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:12:25 --> JWT token found, validating...
+ERROR - 2026-04-13 17:12:26 --> Get Listings Input: array (
+  'status' => 'active',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTY1MDksImV4cCI6MTc3NjE4MjkwOSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjU5IiwiZW1haWwiOiJtYWdkYWxlbmVfZWRvemllQG51YmlhdmlsbGUub25taWNyb3NvZnQuY29tIiwidXNlcl9yb2xlIjoiYWx1bW5pIiwiZnVsbG5hbWUiOiJQcmluY2VzcyBFZG96aWUifX0.hZ5QXKoodbe-WhRHO4nFqCTuTdHwNOTHFZec_YI7isM',
+)
+ERROR - 2026-04-13 17:12:26 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:12:26 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:14:56 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:14:56 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:14:56 --> Get Listings Input: array (
+  'status' => 'active',
+  'user_id' => '59',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTY1MDksImV4cCI6MTc3NjE4MjkwOSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjU5IiwiZW1haWwiOiJtYWdkYWxlbmVfZWRvemllQG51YmlhdmlsbGUub25taWNyb3NvZnQuY29tIiwidXNlcl9yb2xlIjoiYWx1bW5pIiwiZnVsbG5hbWUiOiJQcmluY2VzcyBFZG96aWUifX0.hZ5QXKoodbe-WhRHO4nFqCTuTdHwNOTHFZec_YI7isM',
+)
+ERROR - 2026-04-13 17:14:56 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:14:56 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:14:56 --> JWT token found, validating...
+ERROR - 2026-04-13 17:14:59 --> Manage Listing Input: array (
+  'id' => '18',
+  'function_type' => 'delete',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTY1MDksImV4cCI6MTc3NjE4MjkwOSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjU5IiwiZW1haWwiOiJtYWdkYWxlbmVfZWRvemllQG51YmlhdmlsbGUub25taWNyb3NvZnQuY29tIiwidXNlcl9yb2xlIjoiYWx1bW5pIiwiZnVsbG5hbWUiOiJQcmluY2VzcyBFZG96aWUifX0.hZ5QXKoodbe-WhRHO4nFqCTuTdHwNOTHFZec_YI7isM',
+)
+ERROR - 2026-04-13 17:14:59 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:14:59 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:14:59 --> JWT token found, validating...
+ERROR - 2026-04-13 17:15:00 --> Get Listings Input: array (
+  'status' => 'active',
+  'user_id' => '59',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTY1MDksImV4cCI6MTc3NjE4MjkwOSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjU5IiwiZW1haWwiOiJtYWdkYWxlbmVfZWRvemllQG51YmlhdmlsbGUub25taWNyb3NvZnQuY29tIiwidXNlcl9yb2xlIjoiYWx1bW5pIiwiZnVsbG5hbWUiOiJQcmluY2VzcyBFZG96aWUifX0.hZ5QXKoodbe-WhRHO4nFqCTuTdHwNOTHFZec_YI7isM',
+)
+ERROR - 2026-04-13 17:15:00 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:15:00 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:15:00 --> Get Listings Input: array (
+  'status' => 'active',
+  'user_id' => '59',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTY1MDksImV4cCI6MTc3NjE4MjkwOSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjU5IiwiZW1haWwiOiJtYWdkYWxlbmVfZWRvemllQG51YmlhdmlsbGUub25taWNyb3NvZnQuY29tIiwidXNlcl9yb2xlIjoiYWx1bW5pIiwiZnVsbG5hbWUiOiJQcmluY2VzcyBFZG96aWUifX0.hZ5QXKoodbe-WhRHO4nFqCTuTdHwNOTHFZec_YI7isM',
+)
+ERROR - 2026-04-13 17:15:00 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:15:00 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:15:00 --> Get Listings Input: array (
+  'status' => 'active',
+  'user_id' => '59',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTY1MDksImV4cCI6MTc3NjE4MjkwOSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjU5IiwiZW1haWwiOiJtYWdkYWxlbmVfZWRvemllQG51YmlhdmlsbGUub25taWNyb3NvZnQuY29tIiwidXNlcl9yb2xlIjoiYWx1bW5pIiwiZnVsbG5hbWUiOiJQcmluY2VzcyBFZG96aWUifX0.hZ5QXKoodbe-WhRHO4nFqCTuTdHwNOTHFZec_YI7isM',
+)
+ERROR - 2026-04-13 17:15:00 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:15:00 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:15:31 --> Get Events Input: array (
+  'user_id' => '59',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTY1MDksImV4cCI6MTc3NjE4MjkwOSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjU5IiwiZW1haWwiOiJtYWdkYWxlbmVfZWRvemllQG51YmlhdmlsbGUub25taWNyb3NvZnQuY29tIiwidXNlcl9yb2xlIjoiYWx1bW5pIiwiZnVsbG5hbWUiOiJQcmluY2VzcyBFZG96aWUifX0.hZ5QXKoodbe-WhRHO4nFqCTuTdHwNOTHFZec_YI7isM',
+)
+ERROR - 2026-04-13 17:15:31 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:15:31 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:15:31 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:15:31 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:15:31 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:15:31 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:15:31 --> JWT token found, validating...
+ERROR - 2026-04-13 17:15:31 --> Severity: Warning --> Attempt to read property "id" on null /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/controllers/Api.php 11429
+ERROR - 2026-04-13 17:15:38 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:15:38 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:16:28 --> 404 Page Not Found: Logout/index
+ERROR - 2026-04-13 17:16:36 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:16:36 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:16:37 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:16:37 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:16:37 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:16:37 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:16:38 --> JWT token found, validating...
+ERROR - 2026-04-13 17:16:38 --> Severity: Warning --> Attempt to read property "id" on null /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/controllers/Api.php 11429
+ERROR - 2026-04-13 17:16:50 --> 404 Page Not Found: Logout/index
+ERROR - 2026-04-13 17:16:58 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:16:58 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:16:58 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:16:58 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:16:59 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:16:59 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:16:59 --> JWT token found, validating...
+ERROR - 2026-04-13 17:16:59 --> Get Events Input: array (
+  'user_id' => '42',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTcwMTgsImV4cCI6MTc3NjE4MzQxOCwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.SLMR2JiXmyGQBZWV-rMkivyHKsAUPBu3BrFo7u3CuFo',
+)
+ERROR - 2026-04-13 17:16:59 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:16:59 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:17:02 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:17:02 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:17:02 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:17:02 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:17:13 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:17:13 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:17:13 --> Get Projects Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTcwMTgsImV4cCI6MTc3NjE4MzQxOCwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.SLMR2JiXmyGQBZWV-rMkivyHKsAUPBu3BrFo7u3CuFo',
+)
+ERROR - 2026-04-13 17:17:13 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:17:13 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:17:13 --> Get Leadership Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTcwMTgsImV4cCI6MTc3NjE4MzQxOCwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.SLMR2JiXmyGQBZWV-rMkivyHKsAUPBu3BrFo7u3CuFo',
+)
+ERROR - 2026-04-13 17:17:13 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:17:13 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:18:26 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:18:26 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:18:26 --> JWT token found, validating...
+ERROR - 2026-04-13 17:18:27 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:18:27 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:18:52 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:18:52 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:18:52 --> JWT token found, validating...
+ERROR - 2026-04-13 17:18:53 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:18:53 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:19:01 --> 404 Page Not Found: Logout/index
+ERROR - 2026-04-13 17:19:13 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:19:13 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:20:08 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:20:08 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:20:11 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:20:11 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:20:12 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:20:12 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:20:34 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTcyMTEsImV4cCI6MTc3NjE4MzYxMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.U8FByv6xA2z4pkmqzeU5daW-YFjVzTCphUSXEQRgwv4',
+)
+ERROR - 2026-04-13 17:20:34 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:20:34 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:21:05 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:21:05 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:21:05 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:21:05 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:24:02 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:24:02 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:25:13 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:25:13 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:25:13 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:25:13 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:25:13 --> JWT token found, validating...
+ERROR - 2026-04-13 17:25:13 --> JWT token found, validating...
+ERROR - 2026-04-13 17:25:21 --> Update Profile Input: array (
+  'user_id' => '42',
+  'bio' => '',
+  'residential_address' => '1 Balogun street, Ikeja',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTcyMTEsImV4cCI6MTc3NjE4MzYxMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.U8FByv6xA2z4pkmqzeU5daW-YFjVzTCphUSXEQRgwv4',
+)
+ERROR - 2026-04-13 17:25:21 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:25:21 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:25:21 --> JWT token found, validating...
+ERROR - 2026-04-13 17:27:52 --> Get Listings Input: array (
+  'status' => 'active',
+  'user_id' => '42',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTcyMTEsImV4cCI6MTc3NjE4MzYxMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.U8FByv6xA2z4pkmqzeU5daW-YFjVzTCphUSXEQRgwv4',
+)
+ERROR - 2026-04-13 17:27:52 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:27:52 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:28:09 --> Manage Listing Input: array (
+  'id' => '10',
+  'function_type' => 'update',
+  'title' => 'Maggy Cookies',
+  'description' => 'Nice pastries are available for delivery within Lagos',
+  'category' => 'other',
+  'location' => 'Lagos',
+  'phone' => '+234 4577546753',
+  'status' => 'active',
+  'website' => 'https://alumni-app-three.vercel.app/marketplace/my-business',
+  'image_action' => 'add',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTcyMTEsImV4cCI6MTc3NjE4MzYxMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.U8FByv6xA2z4pkmqzeU5daW-YFjVzTCphUSXEQRgwv4',
+)
+ERROR - 2026-04-13 17:28:09 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:28:09 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:28:09 --> JWT token found, validating...
+ERROR - 2026-04-13 17:28:09 --> Image Action: add
+ERROR - 2026-04-13 17:28:09 --> Get Listings Input: array (
+  'id' => '10',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTcyMTEsImV4cCI6MTc3NjE4MzYxMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.U8FByv6xA2z4pkmqzeU5daW-YFjVzTCphUSXEQRgwv4',
+)
+ERROR - 2026-04-13 17:28:09 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:28:09 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:28:10 --> Get Listings Input: array (
+  'status' => 'active',
+  'user_id' => '42',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTcyMTEsImV4cCI6MTc3NjE4MzYxMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.U8FByv6xA2z4pkmqzeU5daW-YFjVzTCphUSXEQRgwv4',
+)
+ERROR - 2026-04-13 17:28:10 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:28:10 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:28:10 --> Get Listings Input: array (
+  'status' => 'active',
+  'user_id' => '42',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTcyMTEsImV4cCI6MTc3NjE4MzYxMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.U8FByv6xA2z4pkmqzeU5daW-YFjVzTCphUSXEQRgwv4',
+)
+ERROR - 2026-04-13 17:28:10 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:28:10 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:28:10 --> Get Listings Input: array (
+  'status' => 'active',
+  'user_id' => '42',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTcyMTEsImV4cCI6MTc3NjE4MzYxMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.U8FByv6xA2z4pkmqzeU5daW-YFjVzTCphUSXEQRgwv4',
+)
+ERROR - 2026-04-13 17:28:10 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:28:10 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:28:59 --> Create Listing Input: array (
+  'user_id' => '42',
+  'title' => 'Gbadebo Cecelia',
+  'description' => 'Testing multiple images',
+  'category' => 'services',
+  'location' => 'Dubai',
+  'phone' => '+234 8169129560',
+  'business_name' => 'Gbadebo Cecelia',
+  'contact_info' => '+234 8169129560',
+  'status' => 'active',
+  'year' => '2026',
+  'price' => '0.00',
+  'price_type' => 'free',
+  'is_featured' => '0',
+  'chapter_id' => '1',
+  'website' => 'https://hamedghelichkhani.ae/',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTcyMTEsImV4cCI6MTc3NjE4MzYxMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.U8FByv6xA2z4pkmqzeU5daW-YFjVzTCphUSXEQRgwv4',
+)
+ERROR - 2026-04-13 17:28:59 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:28:59 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:28:59 --> JWT token found, validating...
+ERROR - 2026-04-13 17:29:00 --> Get Listings Input: array (
+  'status' => 'active',
+  'user_id' => '42',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTcyMTEsImV4cCI6MTc3NjE4MzYxMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.U8FByv6xA2z4pkmqzeU5daW-YFjVzTCphUSXEQRgwv4',
+)
+ERROR - 2026-04-13 17:29:00 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:29:00 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:29:00 --> Get Listings Input: array (
+  'status' => 'active',
+  'user_id' => '42',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTcyMTEsImV4cCI6MTc3NjE4MzYxMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.U8FByv6xA2z4pkmqzeU5daW-YFjVzTCphUSXEQRgwv4',
+)
+ERROR - 2026-04-13 17:29:00 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:29:00 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:33:13 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:33:13 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:33:13 --> JWT token found, validating...
+ERROR - 2026-04-13 17:33:25 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:33:25 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:33:25 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:33:25 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:33:25 --> JWT token found, validating...
+ERROR - 2026-04-13 17:33:25 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTcyMTEsImV4cCI6MTc3NjE4MzYxMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.U8FByv6xA2z4pkmqzeU5daW-YFjVzTCphUSXEQRgwv4',
+)
+ERROR - 2026-04-13 17:33:25 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:33:25 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:33:26 --> Get Events Input: array (
+  'user_id' => '42',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTcyMTEsImV4cCI6MTc3NjE4MzYxMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.U8FByv6xA2z4pkmqzeU5daW-YFjVzTCphUSXEQRgwv4',
+)
+ERROR - 2026-04-13 17:33:26 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:33:26 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:33:27 --> Get Leadership Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTcyMTEsImV4cCI6MTc3NjE4MzYxMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.U8FByv6xA2z4pkmqzeU5daW-YFjVzTCphUSXEQRgwv4',
+)
+ERROR - 2026-04-13 17:33:27 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:33:27 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:33:27 --> Get Projects Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTcyMTEsImV4cCI6MTc3NjE4MzYxMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.U8FByv6xA2z4pkmqzeU5daW-YFjVzTCphUSXEQRgwv4',
+)
+ERROR - 2026-04-13 17:33:27 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:33:27 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:34:09 --> Register Event Input: array (
+  'user_id' => '42',
+  'event_id' => '25',
+  'status' => 'maybe',
+  'year' => '2026',
+  'additional_info' => '',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTcyMTEsImV4cCI6MTc3NjE4MzYxMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.U8FByv6xA2z4pkmqzeU5daW-YFjVzTCphUSXEQRgwv4',
+)
+ERROR - 2026-04-13 17:34:09 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:34:09 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:34:09 --> JWT token found, validating...
+ERROR - 2026-04-13 17:34:09 --> Severity: error --> Exception: Column 'additional_info' cannot be null /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-04-13 17:34:31 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:34:31 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:34:31 --> JWT token found, validating...
+ERROR - 2026-04-13 17:34:32 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTcyMTEsImV4cCI6MTc3NjE4MzYxMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.U8FByv6xA2z4pkmqzeU5daW-YFjVzTCphUSXEQRgwv4',
+)
+ERROR - 2026-04-13 17:34:32 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:34:32 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:34:32 --> Get Events Input: array (
+  'user_id' => '42',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTcyMTEsImV4cCI6MTc3NjE4MzYxMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.U8FByv6xA2z4pkmqzeU5daW-YFjVzTCphUSXEQRgwv4',
+)
+ERROR - 2026-04-13 17:34:32 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:34:32 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:34:45 --> Register Event Input: array (
+  'user_id' => '42',
+  'event_id' => '25',
+  'status' => 'going',
+  'year' => '2026',
+  'additional_info' => '',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTcyMTEsImV4cCI6MTc3NjE4MzYxMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.U8FByv6xA2z4pkmqzeU5daW-YFjVzTCphUSXEQRgwv4',
+)
+ERROR - 2026-04-13 17:34:45 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:34:45 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:34:45 --> JWT token found, validating...
+ERROR - 2026-04-13 17:34:45 --> Severity: error --> Exception: Column 'additional_info' cannot be null /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-04-13 17:34:56 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTcyMTEsImV4cCI6MTc3NjE4MzYxMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.U8FByv6xA2z4pkmqzeU5daW-YFjVzTCphUSXEQRgwv4',
+)
+ERROR - 2026-04-13 17:34:56 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:34:56 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:34:57 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:34:57 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:34:57 --> JWT token found, validating...
+ERROR - 2026-04-13 17:34:57 --> Get Events Input: array (
+  'user_id' => '42',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTcyMTEsImV4cCI6MTc3NjE4MzYxMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.U8FByv6xA2z4pkmqzeU5daW-YFjVzTCphUSXEQRgwv4',
+)
+ERROR - 2026-04-13 17:34:57 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:34:57 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:36:04 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:36:04 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:36:04 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTcyMTEsImV4cCI6MTc3NjE4MzYxMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.U8FByv6xA2z4pkmqzeU5daW-YFjVzTCphUSXEQRgwv4',
+)
+ERROR - 2026-04-13 17:36:04 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:36:04 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:36:04 --> JWT token found, validating...
+ERROR - 2026-04-13 17:36:04 --> Get Events Input: array (
+  'user_id' => '42',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTcyMTEsImV4cCI6MTc3NjE4MzYxMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.U8FByv6xA2z4pkmqzeU5daW-YFjVzTCphUSXEQRgwv4',
+)
+ERROR - 2026-04-13 17:36:04 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:36:04 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:37:12 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:37:12 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:37:12 --> JWT token found, validating...
+ERROR - 2026-04-13 17:37:26 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:37:26 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:37:26 --> Get Projects Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTcyMTEsImV4cCI6MTc3NjE4MzYxMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.U8FByv6xA2z4pkmqzeU5daW-YFjVzTCphUSXEQRgwv4',
+)
+ERROR - 2026-04-13 17:37:26 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:37:26 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:37:26 --> Get Leadership Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTcyMTEsImV4cCI6MTc3NjE4MzYxMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.U8FByv6xA2z4pkmqzeU5daW-YFjVzTCphUSXEQRgwv4',
+)
+ERROR - 2026-04-13 17:37:26 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:37:26 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:38:12 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:38:12 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:40:07 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:40:07 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:40:07 --> JWT token found, validating...
+ERROR - 2026-04-13 17:40:07 --> Severity: Warning --> Attempt to read property "id" on null /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/controllers/Api.php 11429
+ERROR - 2026-04-13 17:40:46 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:40:46 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:40:46 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:40:46 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:41:20 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:41:20 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:41:20 --> JWT token found, validating...
+ERROR - 2026-04-13 17:41:22 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:41:22 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:41:25 --> 404 Page Not Found: Logout/index
+ERROR - 2026-04-13 17:41:34 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:41:34 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:41:34 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:41:34 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:41:35 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:41:35 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:41:35 --> JWT token found, validating...
+ERROR - 2026-04-13 17:41:36 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:41:36 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:41:36 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTg0OTQsImV4cCI6MTc3NjE4NDg5NCwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjU5IiwiZW1haWwiOiJtYWdkYWxlbmVfZWRvemllQG51YmlhdmlsbGUub25taWNyb3NvZnQuY29tIiwidXNlcl9yb2xlIjoiYWx1bW5pIiwiZnVsbG5hbWUiOiJQcmluY2VzcyBFZG96aWUifX0.LVI9OsNiKXm0sw66e6RTmv77DL58CETZoFDduP8s4UU',
+)
+ERROR - 2026-04-13 17:41:36 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:41:36 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:41:36 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:41:36 --> JWT token found, validating...
+ERROR - 2026-04-13 17:41:36 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:41:36 --> Severity: Warning --> Attempt to read property "id" on null /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/controllers/Api.php 11429
+ERROR - 2026-04-13 17:41:36 --> Get Events Input: array (
+  'user_id' => '59',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTg0OTQsImV4cCI6MTc3NjE4NDg5NCwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjU5IiwiZW1haWwiOiJtYWdkYWxlbmVfZWRvemllQG51YmlhdmlsbGUub25taWNyb3NvZnQuY29tIiwidXNlcl9yb2xlIjoiYWx1bW5pIiwiZnVsbG5hbWUiOiJQcmluY2VzcyBFZG96aWUifX0.LVI9OsNiKXm0sw66e6RTmv77DL58CETZoFDduP8s4UU',
+)
+ERROR - 2026-04-13 17:41:36 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:41:36 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:44:49 --> 404 Page Not Found: Logout/index
+ERROR - 2026-04-13 17:44:49 --> Get Projects Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 17:44:49 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:44:49 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:44:50 --> Get Leadership Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 17:44:50 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:44:50 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:44:52 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:44:52 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:45:51 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:45:51 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:45:52 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:45:52 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:45:52 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:45:52 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:45:52 --> JWT token found, validating...
+ERROR - 2026-04-13 17:45:52 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:45:52 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:45:53 --> JWT token found, validating...
+ERROR - 2026-04-13 17:45:53 --> Severity: Warning --> Attempt to read property "id" on null /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/controllers/Api.php 11429
+ERROR - 2026-04-13 17:45:53 --> Get Events Input: array (
+  'user_id' => '42',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTg3NTEsImV4cCI6MTc3NjE4NTE1MSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.VcJJ4Nhu_nDfatwNj80mIL7CVFHFgu6kLBEE1UhZOVI',
+)
+ERROR - 2026-04-13 17:45:53 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:45:53 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:45:57 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:45:57 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:45:57 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:45:57 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:46:00 --> array (
+  'user_id' => '13',
+  'action' => 'approve',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTg3NTEsImV4cCI6MTc3NjE4NTE1MSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.VcJJ4Nhu_nDfatwNj80mIL7CVFHFgu6kLBEE1UhZOVI',
+)
+ERROR - 2026-04-13 17:46:00 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:46:00 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:46:00 --> JWT token found, validating...
+ERROR - 2026-04-13 17:46:01 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:46:01 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:46:01 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:46:01 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:46:59 --> 404 Page Not Found: Logout/index
+ERROR - 2026-04-13 17:47:07 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:47:07 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:48:05 --> logging object in register
+ERROR - 2026-04-13 17:48:05 --> array (
+  'first_name' => 'Maggy',
+  'last_name' => 'Edozie',
+  'email' => '85182293@bat.com',
+  'password' => 'Password1.',
+  'phone' => '+234 8169129560',
+  'name_in_school' => 'Magdalene Edozie',
+  'nick_name' => 'Magda',
+  'graduation_year' => '2026',
+  'voucher_id' => '38',
+  'user_role' => 'alumni',
+  'chapter_id' => '1',
+  'year' => '2026',
+  'department' => '',
+  'alternative_phone' => '',
+  'birth_date' => '',
+  'house_color' => '',
+  'is_coordinator' => '0',
+  'residential_address' => 'Alapere Lagos',
+  'area' => '',
+  'state' => 'Lagos',
+  'city' => 'Lagos',
+  'employment_status' => '',
+  'occupation' => '',
+  'industry_sector' => '',
+  'years_of_experience' => '',
+  'is_volunteer' => '0',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 17:48:05 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:48:05 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:48:06 --> Before Sending out
+ERROR - 2026-04-13 17:48:06 --> array (
+  'status' => 200,
+  'message' => 'Registration successful. Please check your email for your verification code.',
+  'user_id' => 69,
+  'user_code' => 'MBR-2026-c2391b',
+  'email' => '85182293@bat.com',
+  'fullname' => 'Maggy Edozie',
+  'first_name' => 'Maggy',
+  'last_name' => 'Edozie',
+  'user_role' => 'alumni',
+  'phone' => '+234 8169129560',
+  'chapter_id' => '1',
+  'year' => '2026',
+  'graduation_year' => '2026',
+  'department' => '',
+  'email_verified' => 0,
+  'avatar' => NULL,
+  'name_in_school' => 'Magdalene Edozie',
+  'alternative_phone' => '',
+  'birth_date' => NULL,
+  'house_color' => '',
+  'is_coordinator' => false,
+  'residential_address' => 'Alapere Lagos',
+  'area' => '',
+  'city' => 'Lagos',
+  'employment_status' => '',
+  'occupation' => '',
+  'industry_sector' => '',
+  'years_of_experience' => '',
+  'is_volunteer' => false,
+  'nick_name' => 'Magda',
+  'state' => 'Lagos',
+)
+ERROR - 2026-04-13 17:48:19 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:48:19 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:48:25 --> logging object in register
+ERROR - 2026-04-13 17:48:25 --> array (
+  'first_name' => 'Maggy',
+  'last_name' => 'Edozie',
+  'email' => '85182293@bat.com',
+  'password' => 'Password1.',
+  'phone' => '+234 8169129560',
+  'name_in_school' => 'Magdalene Edozie',
+  'nick_name' => 'Magda',
+  'graduation_year' => '2026',
+  'voucher_id' => '48',
+  'user_role' => 'alumni',
+  'chapter_id' => '1',
+  'year' => '2026',
+  'department' => '',
+  'alternative_phone' => '',
+  'birth_date' => '',
+  'house_color' => '',
+  'is_coordinator' => '0',
+  'residential_address' => 'Alapere Lagos',
+  'area' => '',
+  'state' => 'Lagos',
+  'city' => 'Lagos',
+  'employment_status' => '',
+  'occupation' => '',
+  'industry_sector' => '',
+  'years_of_experience' => '',
+  'is_volunteer' => '0',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 17:48:25 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:48:25 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:48:25 --> Before Sending out
+ERROR - 2026-04-13 17:48:25 --> array (
+  'status' => 409,
+  'message' => 'Email already exists, kindly use another email',
+)
+ERROR - 2026-04-13 17:50:08 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:50:08 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:50:09 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:50:09 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:50:10 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:50:10 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:50:10 --> JWT token found, validating...
+ERROR - 2026-04-13 17:50:11 --> 404 Page Not Found: Defaultpng/index
+ERROR - 2026-04-13 17:50:17 --> 404 Page Not Found: Defaultpng/index
+ERROR - 2026-04-13 17:50:28 --> 404 Page Not Found: Defaultpng/index
+ERROR - 2026-04-13 17:50:31 --> 404 Page Not Found: Defaultpng/index
+ERROR - 2026-04-13 17:50:33 --> 404 Page Not Found: Defaultpng/index
+ERROR - 2026-04-13 17:50:46 --> 404 Page Not Found: Defaultpng/index
+ERROR - 2026-04-13 17:50:47 --> 404 Page Not Found: Defaultpng/index
+ERROR - 2026-04-13 17:51:12 --> 404 Page Not Found: Defaultpng/index
+ERROR - 2026-04-13 17:51:13 --> 404 Page Not Found: Defaultpng/index
+ERROR - 2026-04-13 17:51:15 --> 404 Page Not Found: Defaultpng/index
+ERROR - 2026-04-13 17:51:30 --> 404 Page Not Found: Defaultpng/index
+ERROR - 2026-04-13 17:52:13 --> 404 Page Not Found: Logout/index
+ERROR - 2026-04-13 17:52:17 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:52:17 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:52:32 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:52:32 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:52:32 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:52:32 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:52:33 --> 404 Page Not Found: Defaultpng/index
+ERROR - 2026-04-13 17:52:34 --> 404 Page Not Found: Defaultpng/index
+ERROR - 2026-04-13 17:52:54 --> 404 Page Not Found: Defaultpng/index
+ERROR - 2026-04-13 17:52:56 --> 404 Page Not Found: Defaultpng/index
+ERROR - 2026-04-13 17:53:13 --> 404 Page Not Found: Logout/index
+ERROR - 2026-04-13 17:53:52 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:53:52 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:53:52 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 17:53:52 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:53:52 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:53:52 --> Get Projects Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 17:53:52 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:53:52 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:53:52 --> Get Leadership Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 17:53:52 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:53:52 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:56:31 --> Get Listings Input: array (
+  'status' => 'active',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 17:56:31 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:56:31 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:56:40 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:56:40 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:56:41 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:56:41 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:56:42 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 17:56:42 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 17:56:42 --> JWT token found, validating...
+ERROR - 2026-04-13 17:56:43 --> 404 Page Not Found: Defaultpng/index
+ERROR - 2026-04-13 17:56:45 --> 404 Page Not Found: Defaultpng/index
+ERROR - 2026-04-13 17:59:06 --> 404 Page Not Found: Defaultpng/index
+ERROR - 2026-04-13 18:01:01 --> Get Events Input: array (
+  'user_id' => '42',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:01:01 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:01:01 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:01:01 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:01:01 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:01:01 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:02:23 --> Create Event Input: array (
+  'user_id' => '42',
+  'chapter_id' => '1',
+  'title' => 'Alumini Reunion 2026',
+  'description' => 'Testing events section',
+  'location' => 'Dubia',
+  'event_date' => '2026-04-06',
+  'status' => 'upcoming',
+  'visibility' => 'public',
+  'is_approved' => '1',
+  'start_time' => '10:00',
+  'end_time' => '17:00',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:02:23 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:02:23 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:02:24 --> Get Events Input: array (
+  'user_id' => '42',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:02:24 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:02:24 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:02:25 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:02:25 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:02:25 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:02:25 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:02:25 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:02:25 --> JWT token found, validating...
+ERROR - 2026-04-13 18:04:24 --> Manage Event Input: array (
+  'id' => '29',
+  'function_type' => 'update',
+  'title' => 'Alumini Reunion 2026',
+  'description' => 'Testing events section',
+  'location' => 'Dubia',
+  'event_date' => '2026-04-09',
+  'start_time' => '10:00',
+  'end_time' => '17:00',
+  'visibility' => 'public',
+  'status' => 'completed',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:04:24 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:04:24 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:04:25 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:04:25 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:04:25 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:04:26 --> Get Events Input: array (
+  'user_id' => '42',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:04:26 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:04:26 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:05:01 --> Manage Event Input: array (
+  'id' => '29',
+  'function_type' => 'update',
+  'title' => 'Alumini Reunion 2026',
+  'description' => 'Testing events section',
+  'location' => 'Dubia',
+  'event_date' => '2026-04-18',
+  'start_time' => '10:00',
+  'end_time' => '17:00',
+  'visibility' => 'public',
+  'status' => 'upcoming',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:05:01 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:05:01 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:05:02 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:05:02 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:05:02 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:05:03 --> Get Events Input: array (
+  'user_id' => '42',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:05:03 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:05:03 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:05:27 --> Register Event Input: array (
+  'user_id' => '42',
+  'event_id' => '29',
+  'status' => 'going',
+  'year' => '2026',
+  'additional_info' => 'None',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:05:27 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:05:27 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:05:27 --> JWT token found, validating...
+ERROR - 2026-04-13 18:05:28 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:05:28 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:05:28 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:06:10 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:06:10 --> Get Events Input: array (
+  'user_id' => '42',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:06:10 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:06:10 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:06:10 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:06:10 --> JWT token found, validating...
+ERROR - 2026-04-13 18:07:19 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:07:19 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:07:19 --> Get Events Input: array (
+  'user_id' => '42',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:07:19 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:07:19 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:07:19 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:07:19 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:07:19 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:07:19 --> JWT token found, validating...
+ERROR - 2026-04-13 18:07:21 --> Get Leadership Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:07:21 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:07:21 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:07:30 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 18:07:30 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:07:30 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:09:21 --> Manage Event Input: array (
+  'id' => '26',
+  'function_type' => 'update',
+  'title' => 'Christmas Party',
+  'description' => 'This party is for all 2026 graduates. Please come with fruits, gifts and goodies.',
+  'location' => 'Ikeja, Lagos',
+  'event_date' => '2026-12-25',
+  'start_time' => '08:00',
+  'end_time' => '12:00',
+  'visibility' => 'public',
+  'max_attendees' => '2',
+  'status' => 'upcoming',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:09:21 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:09:21 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:09:22 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:09:22 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:09:22 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:09:22 --> Get Events Input: array (
+  'user_id' => '42',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:09:22 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:09:22 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:09:29 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:09:29 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:09:29 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:09:29 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:09:29 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:09:29 --> JWT token found, validating...
+ERROR - 2026-04-13 18:09:29 --> Get Events Input: array (
+  'user_id' => '42',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:09:29 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:09:29 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:09:43 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:09:43 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:09:43 --> Get Events Input: array (
+  'user_id' => '42',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:09:43 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:09:43 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:09:44 --> JWT token found, validating...
+ERROR - 2026-04-13 18:09:44 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:09:44 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:09:44 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:13:24 --> Register Event Input: array (
+  'user_id' => '42',
+  'event_id' => '25',
+  'status' => 'going',
+  'year' => '2026',
+  'additional_info' => '',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:13:24 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:13:24 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:13:24 --> JWT token found, validating...
+ERROR - 2026-04-13 18:13:24 --> Severity: error --> Exception: Column 'additional_info' cannot be null /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-04-13 18:13:31 --> Get Events Input: array (
+  'user_id' => '42',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:13:31 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:13:31 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:13:31 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:13:31 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:13:31 --> JWT token found, validating...
+ERROR - 2026-04-13 18:13:31 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:13:31 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:13:31 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:13:40 --> Register Event Input: array (
+  'user_id' => '42',
+  'event_id' => '25',
+  'status' => 'going',
+  'year' => '2026',
+  'additional_info' => '',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:13:40 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:13:40 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:13:40 --> JWT token found, validating...
+ERROR - 2026-04-13 18:13:40 --> Severity: error --> Exception: Column 'additional_info' cannot be null /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-04-13 18:14:06 --> Get Events Input: array (
+  'user_id' => '42',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:14:06 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:14:06 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:14:06 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:14:06 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:14:06 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:14:06 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:14:06 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:14:06 --> JWT token found, validating...
+ERROR - 2026-04-13 18:14:21 --> Manage Event Input: array (
+  'id' => '25',
+  'function_type' => 'update',
+  'title' => 'Easter Party',
+  'description' => 'The description',
+  'location' => 'Abuja',
+  'event_date' => '2026-04-17',
+  'start_time' => '13:29',
+  'end_time' => '16:32',
+  'visibility' => 'public',
+  'max_attendees' => '3',
+  'status' => 'upcoming',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:14:21 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:14:21 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:14:22 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:14:22 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:14:22 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:14:22 --> Get Events Input: array (
+  'user_id' => '42',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:14:22 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:14:22 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:14:41 --> Register Event Input: array (
+  'user_id' => '42',
+  'event_id' => '25',
+  'status' => 'going',
+  'year' => '2026',
+  'additional_info' => '',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:14:41 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:14:41 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:14:41 --> JWT token found, validating...
+ERROR - 2026-04-13 18:14:41 --> Severity: error --> Exception: Column 'additional_info' cannot be null /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-04-13 18:14:56 --> Manage Event Input: array (
+  'id' => '26',
+  'function_type' => 'update',
+  'title' => 'Christmas Party',
+  'description' => 'This party is for all 2026 graduates. Please come with fruits, gifts and goodies.',
+  'location' => 'Ikeja, Lagos',
+  'event_date' => '2026-12-25',
+  'start_time' => '08:00',
+  'end_time' => '12:00',
+  'visibility' => 'public',
+  'max_attendees' => '3',
+  'status' => 'upcoming',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:14:56 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:14:56 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:14:57 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:14:57 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:14:57 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:14:58 --> Get Events Input: array (
+  'user_id' => '42',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYwOTk0MDEsImV4cCI6MTc3NjE4NTgwMSwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.yZKmNies5k-z679wj2EYOA4cjqL_FTZZd05z-lBziqo',
+)
+ERROR - 2026-04-13 18:14:58 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:14:58 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:15:54 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:15:54 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:15:54 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:15:54 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:17:51 --> 404 Page Not Found: Logout/index
+ERROR - 2026-04-13 18:17:54 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:17:54 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:18:04 --> logging object in register
+ERROR - 2026-04-13 18:18:04 --> array (
+  'first_name' => 'Maggy',
+  'last_name' => 'Edozie',
+  'email' => 'princessedozie@gmail.com',
+  'password' => 'Password1.',
+  'phone' => '+234 8169129560',
+  'name_in_school' => 'Magdalene Edozie',
+  'nick_name' => 'Magda',
+  'graduation_year' => '2026',
+  'voucher_id' => '38',
+  'user_role' => 'alumni',
+  'chapter_id' => '1',
+  'year' => '2026',
+  'department' => '',
+  'alternative_phone' => '',
+  'birth_date' => '',
+  'house_color' => '',
+  'is_coordinator' => '0',
+  'residential_address' => 'Alapere Lagos',
+  'area' => '',
+  'state' => 'Lagos',
+  'city' => 'Lagos',
+  'employment_status' => '',
+  'occupation' => '',
+  'industry_sector' => '',
+  'years_of_experience' => '',
+  'is_volunteer' => '0',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 18:18:04 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:18:04 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:18:04 --> Before Sending out
+ERROR - 2026-04-13 18:18:04 --> array (
+  'status' => 409,
+  'message' => 'Email already exists, kindly use another email',
+)
+ERROR - 2026-04-13 18:18:24 --> logging object in register
+ERROR - 2026-04-13 18:18:24 --> array (
+  'first_name' => 'Maggy',
+  'last_name' => 'Edozie',
+  'email' => 'edoziemagdalene5@gmail.com',
+  'password' => 'Password1.',
+  'phone' => '+234 8169129560',
+  'name_in_school' => 'Magdalene Edozie',
+  'nick_name' => 'Magda',
+  'graduation_year' => '2026',
+  'voucher_id' => '38',
+  'user_role' => 'alumni',
+  'chapter_id' => '1',
+  'year' => '2026',
+  'department' => '',
+  'alternative_phone' => '',
+  'birth_date' => '',
+  'house_color' => '',
+  'is_coordinator' => '0',
+  'residential_address' => 'Alapere Lagos',
+  'area' => '',
+  'state' => 'Lagos',
+  'city' => 'Lagos',
+  'employment_status' => '',
+  'occupation' => '',
+  'industry_sector' => '',
+  'years_of_experience' => '',
+  'is_volunteer' => '0',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 18:18:24 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:18:24 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:18:25 --> Before Sending out
+ERROR - 2026-04-13 18:18:25 --> array (
+  'status' => 200,
+  'message' => 'Registration successful. Please check your email for your verification code.',
+  'user_id' => 70,
+  'user_code' => 'MBR-2026-d8eb70',
+  'email' => 'edoziemagdalene5@gmail.com',
+  'fullname' => 'Maggy Edozie',
+  'first_name' => 'Maggy',
+  'last_name' => 'Edozie',
+  'user_role' => 'alumni',
+  'phone' => '+234 8169129560',
+  'chapter_id' => '1',
+  'year' => '2026',
+  'graduation_year' => '2026',
+  'department' => '',
+  'email_verified' => 0,
+  'avatar' => NULL,
+  'name_in_school' => 'Magdalene Edozie',
+  'alternative_phone' => '',
+  'birth_date' => NULL,
+  'house_color' => '',
+  'is_coordinator' => false,
+  'residential_address' => 'Alapere Lagos',
+  'area' => '',
+  'city' => 'Lagos',
+  'employment_status' => '',
+  'occupation' => '',
+  'industry_sector' => '',
+  'years_of_experience' => '',
+  'is_volunteer' => false,
+  'nick_name' => 'Magda',
+  'state' => 'Lagos',
+)
+ERROR - 2026-04-13 18:18:59 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:18:59 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:19:11 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:19:11 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:19:12 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:19:12 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:19:12 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:19:12 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:19:12 --> JWT token found, validating...
+ERROR - 2026-04-13 18:19:13 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:19:13 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:19:13 --> JWT token found, validating...
+ERROR - 2026-04-13 18:19:13 --> Severity: Warning --> Attempt to read property "id" on null /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/controllers/Api.php 11429
+ERROR - 2026-04-13 18:19:14 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:19:14 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:19:14 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:19:14 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:20:15 --> 404 Page Not Found: Logout/index
+ERROR - 2026-04-13 18:20:18 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:20:18 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:26:01 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:26:01 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:26:02 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:26:02 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:26:03 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:26:03 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:26:03 --> JWT token found, validating...
+ERROR - 2026-04-13 18:26:03 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:26:03 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:26:03 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYxMDExNjIsImV4cCI6MTc3NjE4NzU2MiwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.fJU3SdrPU3HLi3VhNev6_7jz7uSKr1pNnTlj_RvpL4U',
+)
+ERROR - 2026-04-13 18:26:03 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:26:03 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:26:03 --> JWT token found, validating...
+ERROR - 2026-04-13 18:26:03 --> Severity: Warning --> Attempt to read property "id" on null /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/controllers/Api.php 11429
+ERROR - 2026-04-13 18:26:04 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:26:04 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:26:04 --> Get Events Input: array (
+  'user_id' => '42',
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+  'jwt' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYWx1bW5pcG9ydGFsLm51YmlhdmlsbGUuY29tXC8iLCJpYXQiOjE3NzYxMDExNjIsImV4cCI6MTc3NjE4NzU2MiwidHlwZSI6ImFjY2VzcyIsImRhdGEiOnsidXNlcl9pZCI6IjQyIiwiZW1haWwiOiJlZG96aWVtYWdkYWxlbmVAZ21haWwuY29tIiwidXNlcl9yb2xlIjoiYWRtaW4iLCJmdWxsbmFtZSI6Ik1hZ2d5IEVkb3ppZSJ9fQ.fJU3SdrPU3HLi3VhNev6_7jz7uSKr1pNnTlj_RvpL4U',
+)
+ERROR - 2026-04-13 18:26:04 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:26:04 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:26:05 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:26:05 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:26:05 --> JWT token found, validating...
+ERROR - 2026-04-13 18:30:11 --> Get Projects Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 18:30:11 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:30:11 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:30:11 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:30:11 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:30:11 --> Get Events Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 18:30:11 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:30:11 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 18:30:11 --> Get Leadership Input: array (
+  'token' => 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784',
+)
+ERROR - 2026-04-13 18:30:11 --> Incoming API token: [cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784]
+ERROR - 2026-04-13 18:30:11 --> API token from DB: '$2y$10$/Hlu2fbc9CoY1MhkTwfGTuL1gKSjE7R6HTjvQFisRN2IksCGQ90Au'
+ERROR - 2026-04-13 20:22:29 --> Severity: Warning --> Undefined array key "HTTP_REFERER" /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/core/MY_Controller.php 19
+ERROR - 2026-04-13 20:22:29 --> Severity: Warning --> Undefined array key "HTTP_REFERER" /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/core/MY_Controller.php 20
+ERROR - 2026-04-13 20:22:29 --> yes we are  notlogcon1
+ERROR - 2026-04-13 20:22:29 --> yesrequest_id
+ERROR - 2026-04-13 20:22:29 --> yesrequest_idchika
+ERROR - 2026-04-13 20:22:29 --> yes we are previous_url44
+ERROR - 2026-04-13 20:22:29 --> Severity: Warning --> Undefined array key "HTTP_REFERER" /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/core/MY_Controller.php 19
+ERROR - 2026-04-13 20:22:29 --> Severity: Warning --> Undefined array key "HTTP_REFERER" /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/core/MY_Controller.php 20
+ERROR - 2026-04-13 20:22:29 --> yes we are  notlogcon1
+ERROR - 2026-04-13 20:22:29 --> yesrequest_id
+ERROR - 2026-04-13 20:22:29 --> yesrequest_idchika
+ERROR - 2026-04-13 20:22:29 --> yes we are previous_url44
+ERROR - 2026-04-13 21:28:27 --> Severity: Warning --> Undefined array key "HTTP_REFERER" /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/core/MY_Controller.php 19
+ERROR - 2026-04-13 21:28:27 --> Severity: Warning --> Undefined array key "HTTP_REFERER" /var/www/vhosts/nubiaville.com/alumniportal.nubiaville.com/application/core/MY_Controller.php 20
+ERROR - 2026-04-13 21:28:27 --> yes we are  notlogcon1
+ERROR - 2026-04-13 21:28:27 --> yesrequest_id
+ERROR - 2026-04-13 21:28:27 --> yesrequest_idchika
+ERROR - 2026-04-13 21:28:27 --> yes we are previous_url44
