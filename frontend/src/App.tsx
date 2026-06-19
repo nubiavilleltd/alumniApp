@@ -50,6 +50,7 @@ import { AdminDashboardPage } from './features/admin/pages/AdminDashboardPage';
 import ProjectDetailsPage from './features/projects/pages/ProjectDetail';
 import { ADMIN_ROUTES } from './features/admin/routes';
 import { AdminMembersPage } from './features/admin/pages/AdminMembersPage';
+import { AdminPagesContentPage } from './features/admin/pages/AdminPagesContentPage';
 import { AdminEventRegistrationsPage } from './features/events/pages/AdminEventRegistrationsPage';
 import { AdminAnnouncementsPage } from './features/announcements/pages/AdminAnnouncementsPage';
 import { COMING_SOON_ROUTES } from './config/comingSoonRoutes';
@@ -474,6 +475,17 @@ export default function App() {
             />
 
             <Route
+              path={ADMIN_ROUTES.PAGES_CONTENT}
+              element={
+                <AdminRoute>
+                  <ErrorBoundary>
+                    <AdminPagesContentPage />
+                  </ErrorBoundary>
+                </AdminRoute>
+              }
+            />
+
+            <Route
               path={ROUTES.STORE.ROOT}
               element={
                 <ErrorBoundary>
@@ -497,7 +509,6 @@ export default function App() {
                 </ErrorBoundary>
               }
             />
-
 
             {/* Redirects */}
             <Route path="/home" element={<Navigate to={ROUTES.HOME} replace />} />

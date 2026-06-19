@@ -5,4 +5,5 @@ export const ADMIN_ROUTES = {
   EVENT_REGISTRATIONS: '/admin/event-registrations',
   ANNOUNCEMENTS: '/admin/announcements',
   PROJECTS: '/admin/projects',
+  PAGES_CONTENT: '/admin/pages-content',
 } as const;

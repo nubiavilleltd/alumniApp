@@ -45,6 +45,11 @@ export default {
           800: withOpacity('--color-accent-800'),
           900: withOpacity('--color-accent-900'),
         },
+        cms: {
+          surface: withOpacity('--color-cms-surface'),
+          'tab-active': withOpacity('--color-cms-tab-active'),
+          'tab-inactive': withOpacity('--color-cms-tab-inactive'),
+        },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],

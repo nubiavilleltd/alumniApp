@@ -4,7 +4,13 @@ import { PROJECT_ROUTES } from '@/features/projects/routes';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { ADMIN_ROUTES } from '../routes';
 
-type AdminBannerTab = 'dashboard' | 'members' | 'events' | 'announcements' | 'projects';
+type AdminBannerTab =
+  | 'dashboard'
+  | 'members'
+  | 'events'
+  | 'announcements'
+  | 'projects'
+  | 'pages_content';
 
 type AdminBannerProps = {
   activeTab: AdminBannerTab;
@@ -18,6 +24,7 @@ const adminBannerTabs: Array<{ id: AdminBannerTab; label: string; href: string }
   { id: 'events', label: 'Events', href: ADMIN_ROUTES.EVENTS },
   { id: 'announcements', label: 'Announcements', href: ADMIN_ROUTES.ANNOUNCEMENTS },
   { id: 'projects', label: 'Projects', href: ADMIN_ROUTES.PROJECTS },
+  { id: 'pages_content', label: 'Pages Content', href: ADMIN_ROUTES.PAGES_CONTENT },
 ];
 
 export function AdminBanner({ activeTab, title, headingLevel = 'p' }: AdminBannerProps) {
