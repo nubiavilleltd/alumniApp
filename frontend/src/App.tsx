@@ -68,6 +68,7 @@ import AdminProjectsPage from './features/projects/pages/AdminProjectsPage';
 import { LogoutGate } from './shared/components/routing/LogoutGate';
 import { LIVE_NEWS_ROUTES } from './features/liveNews/routes';
 import LiveNewsPage from './features/liveNews/pages/LiveNewsPage';
+import LiveNewsDetailPage from './features/liveNews/pages/LiveNewsDetailPage';
 
 export default function App() {
   return (
@@ -137,7 +138,8 @@ export default function App() {
             <Route path={ROUTES.WELFARE} element={<WelfarePage />} />
             <Route path={ROUTES.WELFARE_ZONES} element={<WelfareZonesPage />} />
             <Route path={ROUTES.DONATION} element={<DonationPage />} />
-            <Route path={LIVE_NEWS_ROUTES.ROOT} element={<LiveNewsPage />} />
+            <Route path={ROUTES.LIVE_NEWS.ROOT} element={<LiveNewsPage />} />
+            <Route path={ROUTES.LIVE_NEWS.DETAIL(':id')} element={<LiveNewsDetailPage />} />
             <Route
               path={ROUTES.JOB_VACANCIES}
               element={

@@ -1,6 +1,8 @@
 import { LiveNewsItem } from '../types/livenews.types';
-import {formatNewsDate} from "../utils"
+import { formatNewsDate } from "../utils"
 import { Clock } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { LIVE_NEWS_ROUTES } from '../routes';
 
 
 
@@ -10,26 +12,30 @@ export function NewsCard({
     item: LiveNewsItem;
 }) {
     return (
-        <article className="flex flex-col sm:flex-row gap-4 rounded-3xl bg-white p-3 shadow-sm">
-            <img
-                src={item.imageUrl}
-                alt={item.title}
-                className="h-[140px] sm:h-[200px] md:h-[140px] w-full sm:w-[160px] rounded-2xl object-cover flex-shrink-0"
-            />
-            <div className="min-w-0 flex flex-col justify-between py-1">
-                <div>
-                    <h3 className="line-clamp-2 text-base font-bold text-gray-900">
-                        {item.title}
-                    </h3>
-                    <p className="mt-2 line-clamp-3 text-sm text-gray-600">
-                        {item.excerpt}
-                    </p>
+
+        <Link to={LIVE_NEWS_ROUTES.DETAIL(item.id)} className="block">
+            <article className="flex flex-col sm:flex-row gap-4 rounded-3xl bg-white p-3 shadow-sm">
+                <img
+                    src={item.imageUrl}
+                    alt={item.title}
+                    className="h-[140px] sm:h-[200px] md:h-[140px] w-full sm:w-[160px] rounded-2xl object-cover flex-shrink-0"
+                />
+                <div className="min-w-0 flex flex-col justify-between py-1">
+                    <div>
+                        <h3 className="line-clamp-2 text-base font-bold text-gray-900">
+                            {item.title}
+                        </h3>
+                        <p className="mt-2 line-clamp-3 text-sm text-gray-600">
+                            {item.excerpt}
+                        </p>
+                    </div>
+                    <div className="mt-3 flex items-center gap-2 text-gray-800">
+                        <Clock size={15} />
+                        <span className="text-xs">{formatNewsDate(item.publishedAt)}</span>
+                    </div>
                 </div>
-                <div className="mt-3 flex items-center gap-2 text-gray-800">
-                    <Clock size={15} />
-                    <span className="text-xs">{formatNewsDate(item.publishedAt)}</span>
-                </div>
-            </div>
-        </article>
+            </article>
+        </Link>
+
     );
 }

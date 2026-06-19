@@ -1,12 +1,12 @@
 import { LiveNewsItem } from '../types/livenews.types';
 import { Clock } from 'lucide-react';
 import { formatNewsDate } from '../utils';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { LIVE_NEWS_ROUTES } from '../routes';
 
 const EXCERPT_LIMIT = 120; // characters
 
 export function FeaturedNewsCard({ item }: { item: LiveNewsItem }) {
-  const navigate = useNavigate();
   const isTruncated = item.excerpt.length > EXCERPT_LIMIT;
   const displayText = isTruncated
     ? item.excerpt.slice(0, EXCERPT_LIMIT).trimEnd()
@@ -30,12 +30,12 @@ export function FeaturedNewsCard({ item }: { item: LiveNewsItem }) {
           {isTruncated && (
             <>
               {'... '}
-              <button
-                onClick={() => navigate(`/live-news/${item.id}`)}
+              <Link
+                to={LIVE_NEWS_ROUTES.DETAIL(item.id)}
                 className="text-primary-500 font-semibold hover:underline"
               >
                 Read more
-              </button>
+              </Link>
             </>
           )}
         </p>
