@@ -162,6 +162,16 @@ public function __construct()
         }
 
         if ($user->is_approved == 0) {
+            $data['status']  = 407;            
+            $data['message'] = 'Account profile is incomplete. Please continue your onboarding process.';
+            $data['user_id'] = $user->id;
+            $this->output->set_status_header(406);
+            header('Content-Type: application/json');
+            echo json_encode($data);
+            return;
+        }
+
+        if ($user->is_approved == 0) {
             $data['status']  = 406;
             $data['message'] = 'Account pending admin approval. You will be notified once approved.';
             $data['user_id'] = $user->id;
