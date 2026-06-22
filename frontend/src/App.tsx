@@ -139,7 +139,7 @@ export default function App() {
             <Route path={ROUTES.WELFARE_ZONES} element={<WelfareZonesPage />} />
             <Route path={ROUTES.DONATION} element={<DonationPage />} />
             <Route path={ROUTES.LIVE_NEWS.ROOT} element={<LiveNewsPage />} />
-            <Route path={ROUTES.LIVE_NEWS.DETAIL(':id')} element={<LiveNewsDetailPage />} />
+            <Route path={ROUTES.LIVE_NEWS.DETAIL_PATH} element={<LiveNewsDetailPage />} />
             <Route
               path={ROUTES.JOB_VACANCIES}
               element={

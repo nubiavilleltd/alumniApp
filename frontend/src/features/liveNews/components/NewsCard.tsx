@@ -3,6 +3,7 @@ import { formatNewsDate } from "../utils"
 import { Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { LIVE_NEWS_ROUTES } from '../routes';
+import { ROUTES } from '@/shared/constants/routes';
 
 
 
@@ -13,7 +14,7 @@ export function NewsCard({
 }) {
     return (
 
-        <Link to={LIVE_NEWS_ROUTES.DETAIL(item.id)} className="block">
+        <Link to={ROUTES.LIVE_NEWS.DETAIL(item.id, item.slug)} className="block">
             <article className="flex flex-col sm:flex-row gap-4 rounded-3xl bg-white p-3 shadow-sm">
                 <img
                     src={item.imageUrl}
@@ -25,6 +26,11 @@ export function NewsCard({
                         <h3 className="line-clamp-2 text-base font-bold text-gray-900">
                             {item.title}
                         </h3>
+                        {item.source && (
+                            <span className="mt-1 inline-block text-xs font-medium text-primary-500">
+                                {item.source}
+                            </span>
+                        )}
                         <p className="mt-2 line-clamp-3 text-sm text-gray-600">
                             {item.excerpt}
                         </p>

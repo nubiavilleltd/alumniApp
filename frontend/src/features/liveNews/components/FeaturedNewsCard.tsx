@@ -3,6 +3,7 @@ import { Clock } from 'lucide-react';
 import { formatNewsDate } from '../utils';
 import { Link } from 'react-router-dom';
 import { LIVE_NEWS_ROUTES } from '../routes';
+import { ROUTES } from '@/shared/constants/routes';
 
 const EXCERPT_LIMIT = 120; // characters
 
@@ -23,6 +24,11 @@ export function FeaturedNewsCard({ item }: { item: LiveNewsItem }) {
         <Clock size={15} />
         <span className="text-sm">{formatNewsDate(item.publishedAt)}</span>
       </div>
+      {item.source && (
+        <span className="text-xs font-medium text-primary-500">
+          {item.source}
+        </span>
+      )}
       <div className="pt-3">
         <h2 className="mb-3 text-2xl font-bold text-gray-900">{item.title}</h2>
         <p className="text-gray-600 leading-relaxed">
@@ -31,7 +37,7 @@ export function FeaturedNewsCard({ item }: { item: LiveNewsItem }) {
             <>
               {'... '}
               <Link
-                to={LIVE_NEWS_ROUTES.DETAIL(item.id)}
+                to={ROUTES.LIVE_NEWS.DETAIL(item.id, item.slug)}
                 className="text-primary-500 font-semibold hover:underline"
               >
                 Read more
