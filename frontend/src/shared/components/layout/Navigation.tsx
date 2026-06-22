@@ -15,6 +15,7 @@ import { ADMIN_ROUTES } from '@/features/admin/routes';
 import { ALUMNI_ROUTES } from '@/features/alumni/routes';
 import { EVENT_ROUTES } from '@/features/events/routes';
 import { MARKETPLACE_ROUTES } from '@/features/marketplace/routes';
+import { ANNOUNCEMENT_ROUTES } from '@/features/announcements/routes';
 
 import { useMessagesInbox } from '@/features/messages/hooks/useMessages';
 import type { MessageThreadSummary } from '@/features/messages/types/messages.types';
@@ -59,6 +60,7 @@ const primaryNavItems: NavItem[] = [
     url: ROUTES.NEWS,
     children: [
       { label: 'Announcements', url: ROUTES.NEWS },
+      { label: 'Blog', url: ANNOUNCEMENT_ROUTES.BLOG },
       { label: 'Events', url: EVENT_ROUTES.ROOT },
       { label: 'Our Projects', url: ROUTES.PROJECTS.ROOT },
       { label: 'Live News', url: ROUTES.LIVE_NEWS.ROOT },

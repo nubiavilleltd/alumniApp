@@ -47,6 +47,7 @@ export default {
         },
         cms: {
           surface: withOpacity('--color-cms-surface'),
+          'drag-dot': withOpacity('--color-cms-drag-dot'),
           'tab-active': withOpacity('--color-cms-tab-active'),
           'tab-inactive': withOpacity('--color-cms-tab-inactive'),
         },

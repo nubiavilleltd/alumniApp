@@ -54,6 +54,7 @@ const footerContactIconClassName = 'flex-shrink-0 opacity-80';
 const QUICK_LINKS = [
   { label: 'Get to Know FGGC Owerri AA', href: '/about' },
   { label: 'Announcements', href: '/news' },
+  { label: 'Blog', href: '/news/blog' },
   { label: 'Events', href: '/events' },
   { label: 'Our Projects', href: '/projects' },
   { label: 'Make a Donation', href: '/donation' },

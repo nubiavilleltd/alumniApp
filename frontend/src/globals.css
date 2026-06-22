@@ -77,6 +77,7 @@
   --color-cms-tab-active: 0 119 204;
   --color-cms-tab-inactive: 75 85 99;
   --color-cms-surface: 248 248 247;
+  --color-cms-drag-dot: 189 189 189;
 }
 
 @media (min-width: 640px) {

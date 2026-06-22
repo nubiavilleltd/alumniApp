@@ -19,6 +19,7 @@ import ProjectsPage from './features/projects/pages/ProjectsPage';
 import LeadershipPage from './features/leadership/pages/LeadershipPage';
 import AnnouncementsPage from './features/announcements/pages/BlogIndexPage';
 import BlogPostPage from './features/announcements/pages/BlogPostPage';
+import { BlogComingSoonPage } from './features/announcements/pages/BlogComingSoonPage';
 import { ANNOUNCEMENT_ROUTES } from './features/announcements/routes';
 
 import { AuthPage } from './features/authentication/pages/AuthPage';
@@ -118,6 +119,14 @@ export default function App() {
               element={
                 <ErrorBoundary>
                   <AnnouncementsPage />
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path={ANNOUNCEMENT_ROUTES.BLOG}
+              element={
+                <ErrorBoundary>
+                  <BlogComingSoonPage />
                 </ErrorBoundary>
               }
             />
