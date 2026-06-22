@@ -5,12 +5,11 @@
 </IfModule>
 
 <IfModule mod_rewrite.c>
-RewriteEngine On
-RewriteBase //
-RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
-RewriteCond $1 !^(index\.php|images|robots\.txt)
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php?/$1 [L,QSA]
-</IfModule>
+    RewriteEngine On
+    RewriteBase /alumniapp/backend/
 
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    RewriteRule ^(.*)$ index.php/$1 [L]
+</IfModule>
