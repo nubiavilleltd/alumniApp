@@ -34,6 +34,12 @@ export const API_ENDPOINTS = {
     MANAGE_LISTING: '/api/manage_listing', // update + delete via function_type flag
   },
 
+
+  LIVENEWS: {
+    GET_LIVE_NEWS: '/news/feeds',
+  },
+
+
   // ─── Events ───────────────────────────────────────────────────────────────
   EVENTS: {
     GET_EVENTS: '/api/get_events',

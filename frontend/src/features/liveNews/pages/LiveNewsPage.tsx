@@ -3,8 +3,6 @@
 // Design: 2×2 grid of category cards with coloured icon badges.
 // Each resource link is blue with an external link icon where applicable.
 
-import { ExternalLink, HeartHandshake, type LucideIcon, Rocket, Scale, Shield } from 'lucide-react';
-import { AppLink } from '@/shared/components/ui/AppLink';
 
 import { useMemo, useState } from 'react';
 import { SEO } from '@/shared/common/SEO';
@@ -12,12 +10,15 @@ import { Pagination } from '@/shared/components/ui/Pagination';
 
 import { FeaturedNewsCard } from '../components/FeaturedNewsCard';
 import { NewsCard } from '../components/NewsCard';
-import { liveNewsData } from '../mock/liveNewsData';
 import useItemsPerPage from '../hooks/useItemsPerPage';
+import { useLiveNews } from '../hooks/useLiveNews';
 
-
+import { LiveNewsSkeleton } from '../components/LiveNewsSkeleton';
 
 export default function LiveNewsPage() {
+    const { data: liveNewsData = [], isLoading } = useLiveNews();
+
+    console.log("data", { liveNewsData })
 
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -30,7 +31,7 @@ export default function LiveNewsPage() {
                     new Date(b.publishedAt).getTime() -
                     new Date(a.publishedAt).getTime(),
             ),
-        [],
+        [liveNewsData],
     );
 
     const totalPages = Math.max(
@@ -45,7 +46,7 @@ export default function LiveNewsPage() {
         start + ITEMS_PER_PAGE,
     );
 
- 
+
     const featuredNews = pageItems[0];
 
     const remainingNews = pageItems.slice(1);
@@ -75,30 +76,27 @@ export default function LiveNewsPage() {
                         </p>
                     </div>
 
-                    {featuredNews && (
+                    {isLoading ? (
+                        <LiveNewsSkeleton />
+                    ) : featuredNews ? (
                         <>
                             <div className="grid gap-6 lg:grid-cols-2 items-stretch">
                                 <FeaturedNewsCard item={featuredNews} />
-
                                 <div className="flex flex-col gap-4">
                                     {remainingNews.slice(0, 3).map((item) => (
-                                        <NewsCard
-                                            key={item.id}
-                                            item={item}
-                                        />
+                                        <NewsCard key={item.id} item={item} />
                                     ))}
                                 </div>
                             </div>
 
                             <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
                                 {remainingNews.slice(3).map((item) => (
-                                    <NewsCard
-                                        key={item.id}
-                                        item={item}
-                                    />
+                                    <NewsCard key={item.id} item={item} />
                                 ))}
                             </div>
                         </>
+                    ) : (
+                        <p className="text-gray-500">No news available at the moment.</p>
                     )}
 
                     {totalPages > 1 && (
