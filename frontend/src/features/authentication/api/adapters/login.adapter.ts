@@ -30,11 +30,13 @@ export function mapLoginPayload(values: LoginFormValues) {
 //   };
 // }
 export function mapLoginResponse(res: any): LoginResponse {
+  const userSource = res.user && typeof res.user === 'object' ? { ...res, ...res.user } : res;
+
   return {
     accessToken: res.access_token || '',
     refreshToken: res.refresh_token || '',
 
-    user: mapCurrentUserResponse(res),
+    user: mapCurrentUserResponse(userSource),
   };
 }
 

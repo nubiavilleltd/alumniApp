@@ -200,3 +200,15 @@ export function createProfileUpdatePayload(
     ...payload,
   };
 }
+
+export function createSocialOnboardingUpdatePayload(
+  userId: string,
+  updates: Partial<AuthSessionUser>,
+  extraFields: Record<string, unknown> = {},
+): Record<string, unknown> {
+  return {
+    ...createProfileUpdatePayload(userId, updates),
+    ...stripUndefined(extraFields),
+    onboarding_completion: 1,
+  };
+}

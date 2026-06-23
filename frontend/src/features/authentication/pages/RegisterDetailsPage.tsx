@@ -4,9 +4,9 @@
 // (and ultimately sent to the backend) exactly as before — only the UI changes.
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { Button } from '@/shared/components/ui/Button';
 import { FormInput } from '@/shared/components/ui/input/FormInput';
@@ -16,7 +16,7 @@ import { PasswordInput } from '@/shared/components/ui/input/PasswordInput';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
 import { authApi } from '../services/auth.service';
 import { registerDetailsSchema } from '../schemas/authSchema';
-import type { RegisterDetailsFormValues, Voucher } from '../types/auth.types';
+import type { RegisterDetailsFormValues, SocialSignupResponse, Voucher } from '../types/auth.types';
 import { PasswordStrengthMeter } from '../components/PasswordStrengthMeter';
 import { RegistrationShell } from '../components/RegistrationShell';
 import { AUTH_ROUTES } from '../routes';
@@ -26,16 +26,12 @@ import {
   saveRegistrationFlow,
 } from '../lib/registrationFlow';
 import { markInitialVerificationSend } from '../lib/verificationResendThrottle';
-import { NIGERIA_STATES } from '../constants/nigerianStates';
-import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
 import { useCities } from '../hooks/useCities';
 import { NIGERIAN_PHONE_PLACEHOLDER } from '@/shared/utils/nigerianPhoneNumber';
+import { GoogleAuthButton } from '../components/GoogleAuthButton';
+import { toast } from '@/shared/components/ui/Toast';
+import { userService } from '@/features/user/services/user.service';
 // import { useCities } from '@/features/alumni/hooks/useCities';
-
-const stateOptions = NIGERIA_STATES.map((state) => ({
-  label: state,
-  value: state,
-}));
 
 type SocialSignupProvider = {
   id: 'google' | 'facebook' | 'linkedin';
@@ -52,13 +48,27 @@ type SocialSignupProvider = {
 
 type NormalizedSocialAuthResponse = {
   provider: SocialSignupProvider['id'];
+  userId?: string;
   providerUserId: string;
   firstName: string | null;
   lastName: string | null;
   email: string | null;
   emailVerified: boolean;
   avatarUrl: string | null;
-  source: 'mock';
+  accessToken?: string;
+  source: 'mock' | 'google';
+  raw?: unknown;
+};
+
+type RegisterLocationState = {
+  socialOnboarding?: {
+    provider: 'google';
+    userId: string;
+    email?: string;
+    fullName?: string;
+    message?: string;
+    accessToken?: string;
+  };
 };
 
 const socialSignupProviders: SocialSignupProvider[] = [
@@ -139,6 +149,7 @@ function buildRegisterDefaultValues(
     graduationYear: savedValues?.graduationYear ?? currentYear,
     password: savedValues?.password ?? '',
     confirmPassword: savedValues?.confirmPassword ?? '',
+    isSocialSignup: savedValues?.isSocialSignup ?? false,
     voucherId: savedValues?.voucherId ?? '',
     city: savedValues?.city ?? '',
     area: savedValues?.area ?? '',
@@ -147,8 +158,19 @@ function buildRegisterDefaultValues(
   };
 }
 
+function splitFullName(fullName?: string) {
+  const parts = fullName?.trim().split(/\s+/).filter(Boolean) ?? [];
+
+  return {
+    firstName: parts.length > 1 ? parts.slice(0, -1).join(' ') : (parts[0] ?? ''),
+    lastName: parts.length > 1 ? parts[parts.length - 1] : '',
+  };
+}
+
 export function RegisterDetailsPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const locationState = (location.state as RegisterLocationState | null) ?? null;
   const currentYear = new Date().getFullYear();
   const savedFlow = useMemo(() => loadRegistrationFlow(), []);
 
@@ -222,8 +244,45 @@ export function RegisterDetailsPage() {
     mode: 'onChange',
   });
 
+  useEffect(() => {
+    const onboarding = locationState?.socialOnboarding;
+    if (!onboarding || onboarding.provider !== 'google') {
+      return;
+    }
+
+    const { firstName, lastName } = splitFullName(onboarding.fullName);
+
+    detailForm.setValue('isSocialSignup', true, { shouldDirty: true, shouldValidate: true });
+    detailForm.setValue('otherNames', firstName, { shouldDirty: true, shouldValidate: true });
+    detailForm.setValue('surname', lastName, { shouldDirty: true, shouldValidate: true });
+    detailForm.setValue('email', onboarding.email ?? '', {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+    detailForm.setValue('password', '', { shouldDirty: false, shouldValidate: false });
+    detailForm.setValue('confirmPassword', '', { shouldDirty: false, shouldValidate: false });
+    detailForm.clearErrors(['password', 'confirmPassword']);
+
+    setSelectedSocialProvider('google');
+    setSocialAuthResponse({
+      provider: 'google',
+      userId: onboarding.userId,
+      providerUserId: '',
+      firstName: firstName || null,
+      lastName: lastName || null,
+      email: onboarding.email ?? null,
+      emailVerified: Boolean(onboarding.email),
+      avatarUrl: null,
+      accessToken: onboarding.accessToken,
+      source: 'google',
+      raw: onboarding,
+    });
+    setSocialAuthStatus(onboarding.message ?? 'Google connected. Complete the remaining fields.');
+  }, [detailForm, locationState]);
+
   const passwordValue = detailForm.watch('password') ?? '';
   const confirmPasswordValue = detailForm.watch('confirmPassword') ?? '';
+  const isSocialSignup = Boolean(detailForm.watch('isSocialSignup'));
   const graduationYear = detailForm.watch('graduationYear');
   const cityValue = detailForm.watch('city');
   const passwordsMatch = passwordValue.length > 0 && confirmPasswordValue === passwordValue;
@@ -309,9 +368,39 @@ export function RegisterDetailsPage() {
       });
     }
 
+    detailForm.setValue('isSocialSignup', profile.source === 'google', {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+    if (profile.source === 'google') {
+      detailForm.setValue('password', '', { shouldDirty: true, shouldValidate: false });
+      detailForm.setValue('confirmPassword', '', { shouldDirty: true, shouldValidate: false });
+      detailForm.clearErrors(['password', 'confirmPassword']);
+    }
+
     setSelectedSocialProvider(provider.id);
     setSocialAuthResponse(profile);
     setSocialAuthStatus(statusMessage);
+  };
+
+  const applyGoogleSocialSignup = (profile: SocialSignupResponse) => {
+    applySocialProfile(
+      socialSignupProviders[0],
+      {
+        provider: 'google',
+        userId: profile.userId,
+        providerUserId: profile.providerUserId,
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        email: profile.email,
+        emailVerified: profile.emailVerified,
+        avatarUrl: profile.avatarUrl,
+        accessToken: profile.accessToken,
+        source: 'google',
+        raw: profile.raw,
+      },
+      'Google connected. Complete the remaining fields.',
+    );
   };
 
   const applyMockSocialSignup = (provider: SocialSignupProvider) => {
@@ -333,14 +422,87 @@ export function RegisterDetailsPage() {
     );
   };
 
+  const handleGoogleSignupCredential = useCallback(async (idToken: string) => {
+    try {
+      setSelectedSocialProvider('google');
+      setSocialAuthStatus('Checking your Google account...');
+      const signupResponse = await authApi.socialSignup({ provider: 'google', idToken });
+      console.log('Google signup response:', signupResponse);
+      applyGoogleSocialSignup(signupResponse);
+    } catch (error) {
+      console.log('Google signup error:', {
+        message: error instanceof Error ? error.message : 'Google sign up failed.',
+        status: error instanceof Error ? (error as Error & { status?: number }).status : undefined,
+        response:
+          error instanceof Error
+            ? (error as Error & { details?: { response?: unknown } }).details?.response
+            : undefined,
+      });
+      setSocialAuthStatus(null);
+      toast.error('We could not continue with Google. Please try again.');
+    }
+  }, []);
+
   const submitDetails = detailForm.handleSubmit(async (values) => {
     try {
+      if (values.isSocialSignup) {
+        if (!socialAuthResponse?.userId) {
+          console.error('Google signup missing user ID:', socialAuthResponse);
+          detailForm.setError('root', {
+            message: 'We could not complete Google registration. Please try again.',
+          });
+          return;
+        }
+
+        if (!socialAuthResponse.accessToken) {
+          console.error('Social onboarding update requires an app access token:', {
+            userId: socialAuthResponse.userId,
+            response: socialAuthResponse.raw,
+          });
+          detailForm.setError('root', {
+            message: 'We could not complete your profile. Please try again.',
+          });
+          return;
+        }
+
+        const saved = await userService.completeSocialOnboarding({
+          userId: socialAuthResponse.userId,
+          accessToken: socialAuthResponse.accessToken,
+          updates: {
+            otherNames: values.otherNames,
+            surname: values.surname,
+            email: values.email,
+            whatsappPhone: values.whatsappPhone,
+            nameInSchool: values.nameInSchool,
+            nickName: values.nickName,
+            graduationYear: values.graduationYear,
+            residentialAddress: values.residentialAddress,
+            area: values.area,
+            city: values.city,
+            birthDate: birthDate || undefined,
+          },
+          extraFields: {
+            birth_date: birthDate || undefined,
+            voucher_id: values.voucherId,
+          },
+        });
+
+        console.log('Google onboarding update response:', saved);
+        navigate(AUTH_ROUTES.LOGIN, {
+          replace: true,
+          state: {
+            loginNotice: 'Profile completed successfully. Your account is now pending approval.',
+          },
+        });
+        return;
+      }
+
       const response = await authApi.startRegistration(values);
 
       if (!response.userId) {
         console.error('Registration response did not include user ID:', response);
         detailForm.setError('root', {
-          message: 'Server did not return a user ID. Please contact support if this persists.',
+          message: 'We could not continue registration. Please try again.',
         });
         return;
       }
@@ -370,42 +532,52 @@ export function RegisterDetailsPage() {
         onSubmit={submitDetails}
         noValidate
       >
-        <div className="auth-social-signup" aria-label="Social sign up options">
-          <div className="auth-social-signup__buttons">
-            {socialSignupProviders.map((provider) => (
-              <button
-                key={provider.id}
-                type="button"
-                className={`auth-social-button ${
-                  selectedSocialProvider === provider.id ? 'auth-social-button--selected' : ''
-                }`}
-                aria-label={provider.label}
-                aria-pressed={selectedSocialProvider === provider.id}
-                onClick={() => applyMockSocialSignup(provider)}
-              >
-                {provider.icon}
-                <span className="auth-social-button__text">{provider.label}</span>
-              </button>
-            ))}
-          </div>
+        {!isSocialSignup || socialAuthStatus ? (
+          <div className="auth-social-signup" aria-label="Social sign up options">
+            {!isSocialSignup ? (
+              <>
+                <div className="auth-social-signup__buttons">
+                  <GoogleAuthButton
+                    label="Sign up with Google"
+                    text="signup_with"
+                    onCredential={handleGoogleSignupCredential}
+                  />
+                  {socialSignupProviders
+                    .filter((provider) => provider.id !== 'google')
+                    .map((provider) => (
+                      <button
+                        key={provider.id}
+                        type="button"
+                        className={`auth-social-button ${
+                          selectedSocialProvider === provider.id
+                            ? 'auth-social-button--selected'
+                            : ''
+                        }`}
+                        aria-label={provider.label}
+                        aria-pressed={selectedSocialProvider === provider.id}
+                        onClick={() => applyMockSocialSignup(provider)}
+                      >
+                        {provider.icon}
+                        <span className="auth-social-button__text">{provider.label}</span>
+                      </button>
+                    ))}
+                </div>
 
-          {socialAuthStatus ? (
-            <div className="auth-social-status-panel" aria-live="polite">
-              <p className="auth-social-status">{socialAuthStatus}</p>
-              {socialAuthResponse ? (
-                <pre className="auth-social-response-preview">
-                  {JSON.stringify(socialAuthResponse, null, 2)}
-                </pre>
-              ) : null}
-            </div>
-          ) : null}
+                <div className="auth-social-divider" aria-hidden="true">
+                  <span />
+                  <p>or</p>
+                  <span />
+                </div>
+              </>
+            ) : null}
 
-          <div className="auth-social-divider" aria-hidden="true">
-            <span />
-            <p>or</p>
-            <span />
+            {socialAuthStatus ? (
+              <div className="auth-social-status-panel" aria-live="polite">
+                <p className="auth-social-status">{socialAuthStatus}</p>
+              </div>
+            ) : null}
           </div>
-        </div>
+        ) : null}
 
         <div className="auth-form-grid auth-form-grid--two">
           <FormInput
@@ -473,40 +645,44 @@ export function RegisterDetailsPage() {
           />
         </div>
 
-        <PasswordInput
-          label="Password"
-          id="password"
-          disableCopy
-          required
-          autoComplete="new-password"
-          placeholder="Create a secure password"
-          error={detailForm.formState.errors.password?.message}
-          {...detailForm.register('password')}
-        />
+        {!isSocialSignup ? (
+          <>
+            <PasswordInput
+              label="Password"
+              id="password"
+              disableCopy
+              required
+              autoComplete="new-password"
+              placeholder="Create a secure password"
+              error={detailForm.formState.errors.password?.message}
+              {...detailForm.register('password')}
+            />
 
-        <div>
-          <PasswordInput
-            label="Confirm Password"
-            id="confirmPassword"
-            disablePaste
-            required
-            autoComplete="new-password"
-            placeholder="Re-enter your password"
-            error={detailForm.formState.errors.confirmPassword?.message}
-            {...detailForm.register('confirmPassword')}
-          />
-          {!detailForm.formState.errors.confirmPassword && confirmPasswordValue ? (
-            <p
-              className={`auth-field-hint ${
-                passwordsMatch ? 'auth-field-hint--success' : 'auth-field-hint--muted'
-              }`}
-            >
-              {passwordsMatch ? 'Passwords match' : 'Passwords must match exactly'}
-            </p>
-          ) : null}
-        </div>
+            <div>
+              <PasswordInput
+                label="Confirm Password"
+                id="confirmPassword"
+                disablePaste
+                required
+                autoComplete="new-password"
+                placeholder="Re-enter your password"
+                error={detailForm.formState.errors.confirmPassword?.message}
+                {...detailForm.register('confirmPassword')}
+              />
+              {!detailForm.formState.errors.confirmPassword && confirmPasswordValue ? (
+                <p
+                  className={`auth-field-hint ${
+                    passwordsMatch ? 'auth-field-hint--success' : 'auth-field-hint--muted'
+                  }`}
+                >
+                  {passwordsMatch ? 'Passwords match' : 'Passwords must match exactly'}
+                </p>
+              ) : null}
+            </div>
 
-        {passwordValue && <PasswordStrengthMeter password={passwordValue} />}
+            {passwordValue && <PasswordStrengthMeter password={passwordValue} />}
+          </>
+        ) : null}
 
         <div className="auth-phone-field">
           <PhoneNumberInput

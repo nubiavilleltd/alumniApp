@@ -161,6 +161,25 @@ export interface LoginResponse {
   refreshToken: string;
 }
 
+export interface SocialAuthRequest {
+  provider: 'google';
+  idToken: string;
+}
+
+export interface SocialSignupResponse {
+  raw: unknown;
+  provider: 'google';
+  userId: string;
+  providerUserId: string;
+  firstName: string | null;
+  lastName: string | null;
+  email: string | null;
+  emailVerified: boolean;
+  avatarUrl: string | null;
+  accessToken?: string;
+  refreshToken?: string;
+}
+
 export interface ForgotPasswordResponse {
   status: 'email_sent';
   message: string;

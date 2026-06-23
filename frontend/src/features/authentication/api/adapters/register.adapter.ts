@@ -7,12 +7,11 @@ import { formatOptionalNigerianPhoneNumber } from '@/shared/utils/nigerianPhoneN
 // ─────────────────────────────────────────────────────────────
 
 export function mapRegistrationPayload(values: RegisterDetailsFormValues) {
-  return {
+  const payload = {
     // Basic
     first_name: values.otherNames,
     last_name: values.surname,
     email: values.email,
-    password: values.password,
 
     // Contact
     phone: formatOptionalNigerianPhoneNumber(values.whatsappPhone),
@@ -44,6 +43,18 @@ export function mapRegistrationPayload(values: RegisterDetailsFormValues) {
     industry_sector: '',
     years_of_experience: '',
     is_volunteer: '0',
+  };
+
+  if (!values.isSocialSignup) {
+    return {
+      ...payload,
+      password: values.password,
+    };
+  }
+
+  return {
+    ...payload,
+    provider: 'google',
   };
 }
 

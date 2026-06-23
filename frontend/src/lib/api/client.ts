@@ -32,6 +32,8 @@ const BEARER_EXCLUDED_ENDPOINTS = new Set<string>([
   API_ENDPOINTS.AUTH.VERIFY_EMAIL,
   API_ENDPOINTS.AUTH.RESEND_VERIFY_EMAIL,
   API_ENDPOINTS.AUTH.REFRESH_TOKEN,
+  API_ENDPOINTS.AUTH.SOCIAL_LOGIN,
+  API_ENDPOINTS.AUTH.SOCIAL_SIGNUP,
   API_ENDPOINTS.CONTACT.CREATE,
 ]);
 
@@ -66,7 +68,7 @@ apiClient.interceptors.request.use(
 
     if (shouldSendBearer) {
       config.headers.Authorization = `Bearer ${accessToken}`;
-    } else {
+    } else if (BEARER_EXCLUDED_ENDPOINTS.has(pathname)) {
       delete config.headers.Authorization;
     }
 
@@ -95,6 +97,7 @@ apiClient.interceptors.response.use(
       const pathname = getPathname(error.config?.url);
       const isRefreshRequest = pathname === API_ENDPOINTS.AUTH.REFRESH_TOKEN;
       const isBearerExcludedRequest = BEARER_EXCLUDED_ENDPOINTS.has(pathname);
+      const shouldSkipAuthRedirect = Boolean(error.config?._skipAuthRedirect);
 
       // ✅ NEW: Check if logout is in progress
       const isLoggingOut = useTokenStore.getState()._isLoggingOut;
@@ -104,7 +107,8 @@ apiClient.interceptors.response.use(
         !error.config._retry &&
         !isRefreshRequest &&
         !isBearerExcludedRequest &&
-        !isLoggingOut
+        !isLoggingOut &&
+        !shouldSkipAuthRedirect
       ) {
         error.config._retry = true;
 

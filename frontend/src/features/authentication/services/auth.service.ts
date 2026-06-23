@@ -14,6 +14,8 @@ import type {
   RegisterDetailsFormValues,
   ResetPasswordRequest,
   ResetPasswordResponse,
+  SocialAuthRequest,
+  SocialSignupResponse,
   StartRegistrationResponse,
   VerifyRegistrationRequest,
   Voucher,
@@ -31,6 +33,7 @@ import {
   mapLoginPayload,
   mapLoginResponse,
 } from '../api/adapters/login.adapter';
+import { mapSocialSignupResponse } from '../api/adapters/social.adapter';
 import {
   mapForgotPasswordError,
   mapForgotPasswordPayload,
@@ -68,6 +71,47 @@ export const authApi = {
       return mapLoginResponse(data);
     } catch (error) {
       throw handleApiError(error, mapLoginError(error), 'authApi.login');
+    }
+  },
+
+  /** POST /socials/social_login */
+  async socialLogin(values: SocialAuthRequest): Promise<LoginResponse> {
+    try {
+      const { data } = await apiClient.post(API_ENDPOINTS.AUTH.SOCIAL_LOGIN, {
+        provider: values.provider,
+        id_token: values.idToken,
+      });
+      console.log('Google login raw response:', data);
+      return mapLoginResponse(data);
+    } catch (error) {
+      console.log('Google login raw error response:', {
+        status:
+          error instanceof Error
+            ? (error as Error & { response?: { status?: number } }).response?.status
+            : undefined,
+        response:
+          error instanceof Error
+            ? (error as Error & { response?: { data?: unknown } }).response?.data
+            : undefined,
+      });
+      throw handleApiError(error, 'Google login failed. Please try again.', 'authApi.socialLogin');
+    }
+  },
+
+  /** POST /socials/social_signup */
+  async socialSignup(values: SocialAuthRequest): Promise<SocialSignupResponse> {
+    try {
+      const { data } = await apiClient.post(API_ENDPOINTS.AUTH.SOCIAL_SIGNUP, {
+        provider: values.provider,
+        id_token: values.idToken,
+      });
+      return mapSocialSignupResponse(data);
+    } catch (error) {
+      throw handleApiError(
+        error,
+        'Google sign up failed. Please try again.',
+        'authApi.socialSignup',
+      );
     }
   },
 
