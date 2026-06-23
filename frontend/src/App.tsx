@@ -69,6 +69,7 @@ import { LogoutGate } from './shared/components/routing/LogoutGate';
 import { LIVE_NEWS_ROUTES } from './features/liveNews/routes';
 import LiveNewsPage from './features/liveNews/pages/LiveNewsPage';
 import LiveNewsDetailPage from './features/liveNews/pages/LiveNewsDetailPage';
+import { StorePage } from './features/store/pages/StorePage';
 
 export default function App() {
   return (
@@ -469,6 +470,16 @@ export default function App() {
                 </AdminRoute>
               }
             />
+
+            <Route
+              path={ROUTES.STORE.ROOT}
+              element={
+                <ErrorBoundary>
+                  <StorePage />
+                </ErrorBoundary>
+              }
+            />
+
 
             {/* Redirects */}
             <Route path="/home" element={<Navigate to={ROUTES.HOME} replace />} />

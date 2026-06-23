@@ -69,6 +69,7 @@ const primaryNavItems: NavItem[] = [
     children: [
       { label: 'Marketplace', url: MARKETPLACE_ROUTES.ROOT },
       { label: 'Job Vacancies', url: ROUTES.JOB_VACANCIES },
+      { label: 'Alumnae Store', url: ROUTES.STORE.ROOT },
     ],
   },
 ];
