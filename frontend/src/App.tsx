@@ -70,6 +70,8 @@ import { LIVE_NEWS_ROUTES } from './features/liveNews/routes';
 import LiveNewsPage from './features/liveNews/pages/LiveNewsPage';
 import LiveNewsDetailPage from './features/liveNews/pages/LiveNewsDetailPage';
 import { StorePage } from './features/store/pages/StorePage';
+import { CartPage } from './features/store/pages/CartPage';
+import { CheckoutPage } from './features/store/pages/CheckoutPage';
 
 export default function App() {
   return (
@@ -476,6 +478,22 @@ export default function App() {
               element={
                 <ErrorBoundary>
                   <StorePage />
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path={ROUTES.STORE.CART}
+              element={
+                <ErrorBoundary>
+                  <CartPage />
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path={ROUTES.STORE.CHECKOUT}
+              element={
+                <ErrorBoundary>
+                  <CheckoutPage />
                 </ErrorBoundary>
               }
             />

@@ -145,6 +145,8 @@ import { StoreSkeleton } from '../components/StoreSkeleton';
 import { useCartCount } from '../hooks/useCartCount';
 import { useProductModalStore } from '../stores/useProductModalStore';
 import { ProductDetailsModal } from '../components/ProductDetailsModal';
+import { useNavigate } from 'react-router-dom';
+import { STORE_ROUTES } from '../routes';
 
 export function StorePage() {
     const { products, isLoading } = useProducts();
@@ -160,6 +162,7 @@ export function StorePage() {
     const openProduct = useProductModalStore(
         (s) => s.openForAdd,
     );
+    const navigate = useNavigate();
 
     const categories = useMemo(
         () => [...new Set(products.map((p) => p.category))],
@@ -208,7 +211,7 @@ export function StorePage() {
                             </p>
                         </div>
 
-                        <StoreCartButton count={cartCount} />
+                        <StoreCartButton count={cartCount} onClick={() => navigate(`${STORE_ROUTES.ROOT}/cart`)} />
                     </div>
 
                     {/* FILTERS */}
