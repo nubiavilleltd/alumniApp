@@ -10,13 +10,14 @@ import { authApi } from '../services/auth.service';
 import { loginSchema } from '../schemas/authSchema';
 import { useIdentityStore } from '../stores/useIdentityStore';
 import { useTokenStore } from '../stores/useTokenStore';
-import type { AuthSessionUser, LoginFormValues } from '../types/auth.types';
+import type { AuthSessionUser, LoginFormValues, SocialAuthProvider } from '../types/auth.types';
 import { AuthCard } from './AuthCard';
 import { toast } from '@/shared/components/ui/Toast';
 import { USER_ROUTES } from '@/features/user/routes';
 import { ADMIN_ROUTES } from '@/features/admin/routes';
 import { AUTH_ROUTES } from '../routes';
 import { GoogleAuthButton } from './GoogleAuthButton';
+import { FacebookAuthButton } from './FacebookAuthButton';
 import {
   formatVerificationResendDuration,
   getVerificationResendStatus,
@@ -28,7 +29,7 @@ interface LoginLocationState {
   loginNotice?: string;
 }
 
-type GoogleLoginOnboardingResponse = {
+type SocialLoginOnboardingResponse = {
   status?: number;
   message?: string;
   user_id?: string;
@@ -44,6 +45,10 @@ function isIncompleteProfileMessage(message?: string) {
 
 function isPendingApprovalMessage(message?: string) {
   return (message?.toLowerCase() ?? '').includes('pending admin approval');
+}
+
+function getProviderLabel(provider: SocialAuthProvider) {
+  return provider === 'facebook' ? 'Facebook' : 'Google';
 }
 
 export function LoginForm() {
@@ -99,6 +104,43 @@ export function LoginForm() {
     [from, navigate, setIdentity, setTokens],
   );
 
+  const handleSocialLoginError = useCallback(
+    (error: unknown, provider: SocialAuthProvider) => {
+      const providerLabel = getProviderLabel(provider);
+      const status =
+        error instanceof Error ? (error as Error & { status?: number }).status : undefined;
+      const response =
+        error instanceof Error
+          ? (error as Error & { details?: { response?: SocialLoginOnboardingResponse } }).details
+              ?.response
+          : undefined;
+
+      if (status === 406 && response?.user_id && isIncompleteProfileMessage(response.message)) {
+        navigate(AUTH_ROUTES.REGISTER, {
+          state: {
+            socialOnboarding: {
+              provider,
+              userId: response.user_id,
+              email: response.email,
+              fullName: response.fullname,
+              message: response.message,
+              accessToken: response.access_token,
+            },
+          },
+        });
+        return;
+      }
+
+      if (status === 406 && isPendingApprovalMessage(response?.message)) {
+        toast.info('Your account is pending admin approval. You will be notified once approved.');
+        return;
+      }
+
+      toast.error(`We could not continue with ${providerLabel}. Please try again.`);
+    },
+    [navigate],
+  );
+
   const handleGoogleCredential = useCallback(
     async (idToken: string) => {
       try {
@@ -106,39 +148,23 @@ export function LoginForm() {
         setRememberMe(true);
         completeLogin(loginResponse);
       } catch (error) {
-        const status =
-          error instanceof Error ? (error as Error & { status?: number }).status : undefined;
-        const response =
-          error instanceof Error
-            ? (error as Error & { details?: { response?: GoogleLoginOnboardingResponse } }).details
-                ?.response
-            : undefined;
-
-        if (status === 406 && response?.user_id && isIncompleteProfileMessage(response.message)) {
-          navigate(AUTH_ROUTES.REGISTER, {
-            state: {
-              socialOnboarding: {
-                provider: 'google',
-                userId: response.user_id,
-                email: response.email,
-                fullName: response.fullname,
-                message: response.message,
-                accessToken: response.access_token,
-              },
-            },
-          });
-          return;
-        }
-
-        if (status === 406 && isPendingApprovalMessage(response?.message)) {
-          toast.info('Your account is pending admin approval. You will be notified once approved.');
-          return;
-        }
-
-        toast.error('We could not continue with Google. Please try again.');
+        handleSocialLoginError(error, 'google');
       }
     },
-    [completeLogin, navigate],
+    [completeLogin, handleSocialLoginError],
+  );
+
+  const handleFacebookAccessToken = useCallback(
+    async (accessToken: string) => {
+      try {
+        const loginResponse = await authApi.socialLogin({ provider: 'facebook', accessToken });
+        setRememberMe(true);
+        completeLogin(loginResponse);
+      } catch (error) {
+        handleSocialLoginError(error, 'facebook');
+      }
+    },
+    [completeLogin, handleSocialLoginError],
   );
 
   const {
@@ -254,11 +280,17 @@ export function LoginForm() {
   return (
     <AuthCard title="Welcome Back" subtitle="Glad to see you again. Sign in to your account below.">
       <div className="auth-social-signup auth-social-signup--login">
-        <GoogleAuthButton
-          label="Sign in with Google"
-          text="signin_with"
-          onCredential={handleGoogleCredential}
-        />
+        <div className="auth-social-signup__buttons auth-social-signup__buttons--login">
+          <GoogleAuthButton
+            label="Sign in with Google"
+            text="signin_with"
+            onCredential={handleGoogleCredential}
+          />
+          <FacebookAuthButton
+            label="Sign in with Facebook"
+            onAccessToken={handleFacebookAccessToken}
+          />
+        </div>
         <div className="auth-social-divider" aria-hidden="true">
           <span />
           <p>or</p>

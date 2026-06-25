@@ -4,7 +4,7 @@
 // (and ultimately sent to the backend) exactly as before — only the UI changes.
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AppLink } from '@/shared/components/ui/AppLink';
@@ -16,7 +16,12 @@ import { PasswordInput } from '@/shared/components/ui/input/PasswordInput';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
 import { authApi } from '../services/auth.service';
 import { registerDetailsSchema } from '../schemas/authSchema';
-import type { RegisterDetailsFormValues, SocialSignupResponse, Voucher } from '../types/auth.types';
+import type {
+  RegisterDetailsFormValues,
+  SocialAuthProvider,
+  SocialSignupResponse,
+  Voucher,
+} from '../types/auth.types';
 import { PasswordStrengthMeter } from '../components/PasswordStrengthMeter';
 import { RegistrationShell } from '../components/RegistrationShell';
 import { AUTH_ROUTES } from '../routes';
@@ -29,25 +34,13 @@ import { markInitialVerificationSend } from '../lib/verificationResendThrottle';
 import { useCities } from '../hooks/useCities';
 import { NIGERIAN_PHONE_PLACEHOLDER } from '@/shared/utils/nigerianPhoneNumber';
 import { GoogleAuthButton } from '../components/GoogleAuthButton';
+import { FacebookAuthButton } from '../components/FacebookAuthButton';
 import { toast } from '@/shared/components/ui/Toast';
 import { userService } from '@/features/user/services/user.service';
 // import { useCities } from '@/features/alumni/hooks/useCities';
 
-type SocialSignupProvider = {
-  id: 'google' | 'facebook' | 'linkedin';
-  label: string;
-  icon: ReactNode;
-  mockProfile: {
-    providerUserId: string;
-    firstName: string;
-    lastName: string;
-    email?: string;
-    avatarUrl?: string;
-  };
-};
-
 type NormalizedSocialAuthResponse = {
-  provider: SocialSignupProvider['id'];
+  provider: SocialAuthProvider;
   userId?: string;
   providerUserId: string;
   firstName: string | null;
@@ -56,13 +49,13 @@ type NormalizedSocialAuthResponse = {
   emailVerified: boolean;
   avatarUrl: string | null;
   accessToken?: string;
-  source: 'mock' | 'google';
+  source: SocialAuthProvider;
   raw?: unknown;
 };
 
 type RegisterLocationState = {
   socialOnboarding?: {
-    provider: 'google';
+    provider: SocialAuthProvider;
     userId: string;
     email?: string;
     fullName?: string;
@@ -71,69 +64,9 @@ type RegisterLocationState = {
   };
 };
 
-const socialSignupProviders: SocialSignupProvider[] = [
-  {
-    id: 'google',
-    label: 'Sign up with Google',
-    mockProfile: {
-      providerUserId: 'google_112233445566',
-      firstName: 'Adaeze',
-      lastName: 'Okonkwo',
-      email: 'adaeze.okonkwo@example.com',
-      avatarUrl: 'https://example.com/mock/google-avatar.jpg',
-    },
-    icon: (
-      <svg className="auth-social-icon auth-social-icon--google" viewBox="0 0 24 24" aria-hidden>
-        <path
-          fill="#4285F4"
-          d="M23.5 12.27c0-.84-.08-1.64-.22-2.42H12v4.58h6.44a5.5 5.5 0 0 1-2.39 3.61v2.95h3.87c2.26-2.08 3.58-5.14 3.58-8.72Z"
-        />
-        <path
-          fill="#34A853"
-          d="M12 24c3.24 0 5.96-1.07 7.95-2.91l-3.87-2.95c-1.08.72-2.45 1.14-4.08 1.14-3.13 0-5.77-2.1-6.72-4.93H1.29v3.05A12 12 0 0 0 12 24Z"
-        />
-        <path
-          fill="#FBBC05"
-          d="M5.28 14.35A7.21 7.21 0 0 1 4.9 12c0-.82.13-1.61.38-2.35V6.6H1.29A12 12 0 0 0 0 12c0 1.94.47 3.77 1.29 5.4l3.99-3.05Z"
-        />
-        <path
-          fill="#EA4335"
-          d="M12 4.72c1.76 0 3.34.6 4.58 1.78l3.44-3.38C17.95 1.19 15.23 0 12 0A12 12 0 0 0 1.29 6.6l3.99 3.05C6.23 6.82 8.87 4.72 12 4.72Z"
-        />
-      </svg>
-    ),
-  },
-  {
-    id: 'facebook',
-    label: 'Sign up with Facebook',
-    mockProfile: {
-      providerUserId: 'facebook_998877665544',
-      firstName: 'Chidinma',
-      lastName: 'Nwosu',
-    },
-    icon: (
-      <span className="auth-social-icon auth-social-icon--facebook" aria-hidden>
-        f
-      </span>
-    ),
-  },
-  {
-    id: 'linkedin',
-    label: 'Sign up with LinkedIn',
-    mockProfile: {
-      providerUserId: 'linkedin_556677889900',
-      firstName: 'Ifeoma',
-      lastName: 'Eze',
-      email: 'ifeoma.eze@example.com',
-      avatarUrl: 'https://example.com/mock/linkedin-avatar.jpg',
-    },
-    icon: (
-      <span className="auth-social-icon auth-social-icon--linkedin" aria-hidden>
-        in
-      </span>
-    ),
-  },
-];
+function getProviderLabel(provider: SocialAuthProvider) {
+  return provider === 'facebook' ? 'Facebook' : 'Google';
+}
 
 function buildRegisterDefaultValues(
   currentYear: number,
@@ -226,9 +159,9 @@ export function RegisterDetailsPage() {
   const [filteredVouchers, setFilteredVouchers] = useState<Voucher[]>([]);
   const [isLoadingVouchers, setIsLoadingVouchers] = useState(false);
   const [birthDate, setBirthDate] = useState('');
-  const [selectedSocialProvider, setSelectedSocialProvider] = useState<
-    SocialSignupProvider['id'] | null
-  >(null);
+  const [selectedSocialProvider, setSelectedSocialProvider] = useState<SocialAuthProvider | null>(
+    null,
+  );
   const [socialAuthResponse, setSocialAuthResponse] = useState<NormalizedSocialAuthResponse | null>(
     null,
   );
@@ -246,11 +179,12 @@ export function RegisterDetailsPage() {
 
   useEffect(() => {
     const onboarding = locationState?.socialOnboarding;
-    if (!onboarding || onboarding.provider !== 'google') {
+    if (!onboarding) {
       return;
     }
 
     const { firstName, lastName } = splitFullName(onboarding.fullName);
+    const providerLabel = getProviderLabel(onboarding.provider);
 
     detailForm.setValue('isSocialSignup', true, { shouldDirty: true, shouldValidate: true });
     detailForm.setValue('otherNames', firstName, { shouldDirty: true, shouldValidate: true });
@@ -263,9 +197,9 @@ export function RegisterDetailsPage() {
     detailForm.setValue('confirmPassword', '', { shouldDirty: false, shouldValidate: false });
     detailForm.clearErrors(['password', 'confirmPassword']);
 
-    setSelectedSocialProvider('google');
+    setSelectedSocialProvider(onboarding.provider);
     setSocialAuthResponse({
-      provider: 'google',
+      provider: onboarding.provider,
       userId: onboarding.userId,
       providerUserId: '',
       firstName: firstName || null,
@@ -274,10 +208,12 @@ export function RegisterDetailsPage() {
       emailVerified: Boolean(onboarding.email),
       avatarUrl: null,
       accessToken: onboarding.accessToken,
-      source: 'google',
+      source: onboarding.provider,
       raw: onboarding,
     });
-    setSocialAuthStatus(onboarding.message ?? 'Google connected. Complete the remaining fields.');
+    setSocialAuthStatus(
+      onboarding.message ?? `${providerLabel} connected. Complete the remaining fields.`,
+    );
   }, [detailForm, locationState]);
 
   const passwordValue = detailForm.watch('password') ?? '';
@@ -337,57 +273,47 @@ export function RegisterDetailsPage() {
     value: String(voucher.id),
   }));
 
-  const selectedSocialProfile = selectedSocialProvider
-    ? socialSignupProviders.find((provider) => provider.id === selectedSocialProvider)
+  const selectedSocialLabel = selectedSocialProvider
+    ? getProviderLabel(selectedSocialProvider)
     : null;
 
-  const applySocialProfile = (
-    provider: SocialSignupProvider,
-    profile: NormalizedSocialAuthResponse,
-    statusMessage: string,
-  ) => {
-    detailForm.setValue('otherNames', profile.firstName ?? '', {
-      shouldDirty: true,
-      shouldValidate: true,
-    });
-    detailForm.setValue('surname', profile.lastName ?? '', {
-      shouldDirty: true,
-      shouldValidate: true,
-    });
+  const applySocialProfile = useCallback(
+    (profile: SocialSignupResponse) => {
+      const providerLabel = getProviderLabel(profile.provider);
 
-    if (profile.email) {
-      detailForm.setValue('email', profile.email, {
+      detailForm.setValue('otherNames', profile.firstName ?? '', {
         shouldDirty: true,
         shouldValidate: true,
       });
-      detailForm.clearErrors('email');
-    } else {
-      detailForm.setValue('email', '', {
+      detailForm.setValue('surname', profile.lastName ?? '', {
         shouldDirty: true,
         shouldValidate: true,
       });
-    }
 
-    detailForm.setValue('isSocialSignup', profile.source === 'google', {
-      shouldDirty: true,
-      shouldValidate: true,
-    });
-    if (profile.source === 'google') {
+      if (profile.email) {
+        detailForm.setValue('email', profile.email, {
+          shouldDirty: true,
+          shouldValidate: true,
+        });
+        detailForm.clearErrors('email');
+      } else {
+        detailForm.setValue('email', '', {
+          shouldDirty: true,
+          shouldValidate: true,
+        });
+      }
+
+      detailForm.setValue('isSocialSignup', true, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
       detailForm.setValue('password', '', { shouldDirty: true, shouldValidate: false });
       detailForm.setValue('confirmPassword', '', { shouldDirty: true, shouldValidate: false });
       detailForm.clearErrors(['password', 'confirmPassword']);
-    }
 
-    setSelectedSocialProvider(provider.id);
-    setSocialAuthResponse(profile);
-    setSocialAuthStatus(statusMessage);
-  };
-
-  const applyGoogleSocialSignup = (profile: SocialSignupResponse) => {
-    applySocialProfile(
-      socialSignupProviders[0],
-      {
-        provider: 'google',
+      setSelectedSocialProvider(profile.provider);
+      setSocialAuthResponse({
+        provider: profile.provider,
         userId: profile.userId,
         providerUserId: profile.providerUserId,
         firstName: profile.firstName,
@@ -396,60 +322,71 @@ export function RegisterDetailsPage() {
         emailVerified: profile.emailVerified,
         avatarUrl: profile.avatarUrl,
         accessToken: profile.accessToken,
-        source: 'google',
+        source: profile.provider,
         raw: profile.raw,
-      },
-      'Google connected. Complete the remaining fields.',
-    );
-  };
-
-  const applyMockSocialSignup = (provider: SocialSignupProvider) => {
-    applySocialProfile(
-      provider,
-      {
-        provider: provider.id,
-        providerUserId: provider.mockProfile.providerUserId,
-        firstName: provider.mockProfile.firstName,
-        lastName: provider.mockProfile.lastName,
-        email: provider.mockProfile.email ?? null,
-        emailVerified: Boolean(provider.mockProfile.email),
-        avatarUrl: provider.mockProfile.avatarUrl ?? null,
-        source: 'mock',
-      },
-      `${provider.label.replace('Sign up with ', '')} mock profile added${
-        provider.mockProfile.email ? ' with verified email.' : '. Add your email below.'
-      }`,
-    );
-  };
-
-  const handleGoogleSignupCredential = useCallback(async (idToken: string) => {
-    try {
-      setSelectedSocialProvider('google');
-      setSocialAuthStatus('Checking your Google account...');
-      const signupResponse = await authApi.socialSignup({ provider: 'google', idToken });
-      console.log('Google signup response:', signupResponse);
-      applyGoogleSocialSignup(signupResponse);
-    } catch (error) {
-      console.log('Google signup error:', {
-        message: error instanceof Error ? error.message : 'Google sign up failed.',
-        status: error instanceof Error ? (error as Error & { status?: number }).status : undefined,
-        response:
-          error instanceof Error
-            ? (error as Error & { details?: { response?: unknown } }).details?.response
-            : undefined,
       });
-      setSocialAuthStatus(null);
-      toast.error('We could not continue with Google. Please try again.');
-    }
-  }, []);
+      setSocialAuthStatus(`${providerLabel} connected. Complete the remaining fields.`);
+    },
+    [detailForm],
+  );
+
+  const handleGoogleSignupCredential = useCallback(
+    async (idToken: string) => {
+      try {
+        setSelectedSocialProvider('google');
+        setSocialAuthStatus('Checking your Google account...');
+        const signupResponse = await authApi.socialSignup({ provider: 'google', idToken });
+        console.log('Google signup response:', signupResponse);
+        applySocialProfile(signupResponse);
+      } catch (error) {
+        console.log('Google signup error:', {
+          message: error instanceof Error ? error.message : 'Google sign up failed.',
+          status:
+            error instanceof Error ? (error as Error & { status?: number }).status : undefined,
+          response:
+            error instanceof Error
+              ? (error as Error & { details?: { response?: unknown } }).details?.response
+              : undefined,
+        });
+        setSocialAuthStatus(null);
+        toast.error('We could not continue with Google. Please try again.');
+      }
+    },
+    [applySocialProfile],
+  );
+
+  const handleFacebookSignupAccessToken = useCallback(
+    async (accessToken: string) => {
+      try {
+        setSelectedSocialProvider('facebook');
+        setSocialAuthStatus('Checking your Facebook account...');
+        const signupResponse = await authApi.socialSignup({ provider: 'facebook', accessToken });
+        console.log('Facebook signup response:', signupResponse);
+        applySocialProfile(signupResponse);
+      } catch (error) {
+        console.log('Facebook signup error:', {
+          message: error instanceof Error ? error.message : 'Facebook sign up failed.',
+          status:
+            error instanceof Error ? (error as Error & { status?: number }).status : undefined,
+          response:
+            error instanceof Error
+              ? (error as Error & { details?: { response?: unknown } }).details?.response
+              : undefined,
+        });
+        setSocialAuthStatus(null);
+        toast.error('We could not continue with Facebook. Please try again.');
+      }
+    },
+    [applySocialProfile],
+  );
 
   const submitDetails = detailForm.handleSubmit(async (values) => {
     try {
       if (values.isSocialSignup) {
         if (!socialAuthResponse?.userId) {
-          console.error('Google signup missing user ID:', socialAuthResponse);
+          console.error('Social signup missing user ID:', socialAuthResponse);
           detailForm.setError('root', {
-            message: 'We could not complete Google registration. Please try again.',
+            message: 'We could not complete social registration. Please try again.',
           });
           return;
         }
@@ -487,7 +424,7 @@ export function RegisterDetailsPage() {
           },
         });
 
-        console.log('Google onboarding update response:', saved);
+        console.log('Social onboarding update response:', saved);
         navigate(AUTH_ROUTES.LOGIN, {
           replace: true,
           state: {
@@ -542,25 +479,13 @@ export function RegisterDetailsPage() {
                     text="signup_with"
                     onCredential={handleGoogleSignupCredential}
                   />
-                  {socialSignupProviders
-                    .filter((provider) => provider.id !== 'google')
-                    .map((provider) => (
-                      <button
-                        key={provider.id}
-                        type="button"
-                        className={`auth-social-button ${
-                          selectedSocialProvider === provider.id
-                            ? 'auth-social-button--selected'
-                            : ''
-                        }`}
-                        aria-label={provider.label}
-                        aria-pressed={selectedSocialProvider === provider.id}
-                        onClick={() => applyMockSocialSignup(provider)}
-                      >
-                        {provider.icon}
-                        <span className="auth-social-button__text">{provider.label}</span>
-                      </button>
-                    ))}
+                  <FacebookAuthButton
+                    label="Sign up with Facebook"
+                    className={
+                      selectedSocialProvider === 'facebook' ? 'auth-social-button--selected' : ''
+                    }
+                    onAccessToken={handleFacebookSignupAccessToken}
+                  />
                 </div>
 
                 <div className="auth-social-divider" aria-hidden="true">
@@ -627,8 +552,8 @@ export function RegisterDetailsPage() {
             placeholder="you@example.com"
             readOnly={Boolean(socialAuthResponse?.emailVerified)}
             hint={
-              socialAuthResponse?.emailVerified && selectedSocialProfile
-                ? `${selectedSocialProfile.label.replace('Sign up with ', '')} email verified`
+              socialAuthResponse?.emailVerified && selectedSocialLabel
+                ? `${selectedSocialLabel} email verified`
                 : undefined
             }
             error={detailForm.formState.errors.email?.message}

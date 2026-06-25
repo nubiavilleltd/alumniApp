@@ -1369,16 +1369,18 @@ input[type='password']::-webkit-caps-lock-indicator {
 
 .auth-social-signup__buttons {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
 }
 
-.auth-google-signin {
+.auth-google-signin,
+.auth-facebook-signin {
   position: relative;
   min-width: 0;
 }
 
-.auth-google-signin__visual {
+.auth-google-signin__visual,
+.auth-facebook-signin .auth-social-button {
   width: 100%;
   height: 100%;
 }
@@ -1485,16 +1487,6 @@ input[type='password']::-webkit-caps-lock-indicator {
   font-weight: 700;
   line-height: 1.1;
   padding-top: 0.18rem;
-}
-
-.auth-social-icon--linkedin {
-  border-radius: 999px;
-  background: #0a66c2;
-  color: #ffffff;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 0.78rem;
-  font-weight: 700;
-  line-height: 1;
 }
 
 .auth-social-divider {
@@ -2227,7 +2219,7 @@ input[type='password']::-webkit-caps-lock-indicator {
   }
 
   .auth-social-signup__buttons {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.75rem;
   }
 
@@ -2257,10 +2249,6 @@ input[type='password']::-webkit-caps-lock-indicator {
 
   .auth-social-icon--facebook {
     font-size: 1.45rem;
-  }
-
-  .auth-social-icon--linkedin {
-    font-size: 0.88rem;
   }
 
   .auth-social-divider {

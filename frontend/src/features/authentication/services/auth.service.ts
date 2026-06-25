@@ -63,6 +63,14 @@ function toUserSummary(values: RegisterDetailsFormValues): AuthUserSummary {
   };
 }
 
+function mapSocialAuthPayload(values: SocialAuthRequest) {
+  return {
+    provider: values.provider,
+    ...(values.idToken ? { id_token: values.idToken } : {}),
+    ...(values.accessToken ? { access_token: values.accessToken } : {}),
+  };
+}
+
 export const authApi = {
   /** POST /login */
   async login(values: LoginFormValues): Promise<LoginResponse> {
@@ -77,14 +85,14 @@ export const authApi = {
   /** POST /socials/social_login */
   async socialLogin(values: SocialAuthRequest): Promise<LoginResponse> {
     try {
-      const { data } = await apiClient.post(API_ENDPOINTS.AUTH.SOCIAL_LOGIN, {
-        provider: values.provider,
-        id_token: values.idToken,
-      });
-      console.log('Google login raw response:', data);
+      const { data } = await apiClient.post(
+        API_ENDPOINTS.AUTH.SOCIAL_LOGIN,
+        mapSocialAuthPayload(values),
+      );
+      console.log(`${values.provider} login raw response:`, data);
       return mapLoginResponse(data);
     } catch (error) {
-      console.log('Google login raw error response:', {
+      console.log(`${values.provider} login raw error response:`, {
         status:
           error instanceof Error
             ? (error as Error & { response?: { status?: number } }).response?.status
@@ -94,22 +102,26 @@ export const authApi = {
             ? (error as Error & { response?: { data?: unknown } }).response?.data
             : undefined,
       });
-      throw handleApiError(error, 'Google login failed. Please try again.', 'authApi.socialLogin');
+      throw handleApiError(
+        error,
+        `${values.provider === 'facebook' ? 'Facebook' : 'Google'} login failed. Please try again.`,
+        'authApi.socialLogin',
+      );
     }
   },
 
   /** POST /socials/social_signup */
   async socialSignup(values: SocialAuthRequest): Promise<SocialSignupResponse> {
     try {
-      const { data } = await apiClient.post(API_ENDPOINTS.AUTH.SOCIAL_SIGNUP, {
-        provider: values.provider,
-        id_token: values.idToken,
-      });
-      return mapSocialSignupResponse(data);
+      const { data } = await apiClient.post(
+        API_ENDPOINTS.AUTH.SOCIAL_SIGNUP,
+        mapSocialAuthPayload(values),
+      );
+      return mapSocialSignupResponse(data, values.provider);
     } catch (error) {
       throw handleApiError(
         error,
-        'Google sign up failed. Please try again.',
+        `${values.provider === 'facebook' ? 'Facebook' : 'Google'} sign up failed. Please try again.`,
         'authApi.socialSignup',
       );
     }

@@ -161,14 +161,17 @@ export interface LoginResponse {
   refreshToken: string;
 }
 
+export type SocialAuthProvider = 'google' | 'facebook';
+
 export interface SocialAuthRequest {
-  provider: 'google';
-  idToken: string;
+  provider: SocialAuthProvider;
+  idToken?: string;
+  accessToken?: string;
 }
 
 export interface SocialSignupResponse {
   raw: unknown;
-  provider: 'google';
+  provider: SocialAuthProvider;
   userId: string;
   providerUserId: string;
   firstName: string | null;

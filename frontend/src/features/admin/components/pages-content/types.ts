@@ -4,6 +4,7 @@ export type HomepageImage = {
   id: string;
   src: string;
   fileName?: string;
+  altText?: string;
   isHidden: boolean;
   sortOrder: number;
 };
@@ -21,12 +22,13 @@ export type BlogPost = {
   excerpt: string;
 };
 
-export type BlogPanelMode = 'list' | 'create';
+export type BlogPanelMode = 'list' | 'create' | 'edit';
 
 export type FaqItem = {
   id: string;
   question: string;
   answer: string;
+  isPublished: boolean;
 };
 
 export type DropPosition = 'before' | 'after';

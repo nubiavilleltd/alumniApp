@@ -20,6 +20,7 @@ import LeadershipPage from './features/leadership/pages/LeadershipPage';
 import AnnouncementsPage from './features/announcements/pages/BlogIndexPage';
 import BlogPostPage from './features/announcements/pages/BlogPostPage';
 import { BlogComingSoonPage } from './features/announcements/pages/BlogComingSoonPage';
+import { BlogDetailPage } from './features/blogs/pages/BlogDetailPage';
 import { ANNOUNCEMENT_ROUTES } from './features/announcements/routes';
 
 import { AuthPage } from './features/authentication/pages/AuthPage';
@@ -74,6 +75,7 @@ import LiveNewsDetailPage from './features/liveNews/pages/LiveNewsDetailPage';
 import { StorePage } from './features/store/pages/StorePage';
 import { CartPage } from './features/store/pages/CartPage';
 import { CheckoutPage } from './features/store/pages/CheckoutPage';
+import { FaqPage } from './features/faqs/pages/FaqPage';
 
 export default function App() {
   return (
@@ -107,6 +109,14 @@ export default function App() {
               }
             />
             <Route
+              path={ROUTES.FAQS}
+              element={
+                <ErrorBoundary>
+                  <FaqPage />
+                </ErrorBoundary>
+              }
+            />
+            <Route
               path={ROUTES.WELFARE_COMMITTEE_CONTACT}
               element={
                 <ErrorBoundary>
@@ -127,6 +137,14 @@ export default function App() {
               element={
                 <ErrorBoundary>
                   <BlogComingSoonPage />
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path={ANNOUNCEMENT_ROUTES.BLOG_DETAIL_PATH}
+              element={
+                <ErrorBoundary>
+                  <BlogDetailPage />
                 </ErrorBoundary>
               }
             />

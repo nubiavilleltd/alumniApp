@@ -1,76 +1,35 @@
 import { useEffect, useRef, useState, type ChangeEvent } from 'react';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
 import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
 import { BaseInput } from '@/shared/components/ui/input/BaseInput';
 import { DeleteConfirmModal } from '@/features/events/components/DeleteConfirmModal';
+import { toast } from '@/shared/components/ui/Toast';
+import {
+  homepageContentKeys,
+  useAdminHomepageContent,
+  useCreateCarouselImage,
+  useDeleteCarouselImage,
+  useReorderCarousel,
+  useUpdateCarouselImage,
+  useUpdateHomepageText,
+} from '@/features/homepage/hooks/useHomepageContent';
 import { DragHandle } from './DragHandle';
 import type { HomepageImage, PagesContentTab } from './types';
 
-const initialHomepageImages: HomepageImage[] = [
-  { id: 'carousel-1', src: '/alumni-hero-img1.jpg', isHidden: false, sortOrder: 1 },
-  { id: 'carousel-2', src: '/alumni-hero-img4.jpg', isHidden: false, sortOrder: 2 },
-  { id: 'carousel-3', src: '/alumni-hero-img5.jpg', isHidden: false, sortOrder: 3 },
-];
-
-const HOMEPAGE_CONTENT_STORAGE_KEY = 'admin_pages_content_homepage_draft';
-
-type HomepageContentDraft = {
-  carouselImages: HomepageImage[];
-  greetingTitle: string;
-  greetingMessage: string;
-};
-
 type ImageUploadIntent = { type: 'add' } | { type: 'replace'; imageId: string };
 
-function normalizeCarouselOrder(images: HomepageImage[]) {
+type AdminHomepageImage = HomepageImage & {
+  isNew?: boolean;
+  localFile?: File;
+  replacementFile?: File;
+};
+
+function normalizeCarouselOrder<T extends HomepageImage>(images: T[]): T[] {
   return images.map((image, index) => ({
     ...image,
     sortOrder: index + 1,
   }));
-}
-
-function buildHomepageContentPayload(draft: HomepageContentDraft) {
-  return {
-    function_type: 'update',
-    content_type: 'homepage',
-    greeting_title: draft.greetingTitle,
-    greeting_message: draft.greetingMessage,
-    carousel_images: normalizeCarouselOrder(draft.carouselImages).map((image) => ({
-      id: image.id,
-      image_url: image.src,
-      file_name: image.fileName ?? null,
-      sort_order: image.sortOrder,
-      is_hidden: image.isHidden ? '1' : '0',
-    })),
-  };
-}
-
-function readStoredHomepageContent(): HomepageContentDraft | null {
-  if (typeof window === 'undefined') return null;
-
-  try {
-    const rawValue = window.localStorage.getItem(HOMEPAGE_CONTENT_STORAGE_KEY);
-    if (!rawValue) return null;
-
-    const parsedValue = JSON.parse(rawValue) as Partial<HomepageContentDraft>;
-    if (!Array.isArray(parsedValue.carouselImages)) return null;
-
-    return {
-      carouselImages: normalizeCarouselOrder(
-        parsedValue.carouselImages
-          .filter((image): image is HomepageImage => Boolean(image?.id && image?.src))
-          .map((image, index) => ({
-            ...image,
-            isHidden: Boolean(image.isHidden),
-            sortOrder: Number(image.sortOrder) || index + 1,
-          })),
-      ),
-      greetingTitle: parsedValue.greetingTitle ?? '',
-      greetingMessage: parsedValue.greetingMessage ?? '',
-    };
-  } catch {
-    return null;
-  }
 }
 
 function fileToDataUrl(file: File) {
@@ -82,12 +41,15 @@ function fileToDataUrl(file: File) {
   });
 }
 
-function createLocalCarouselImage(file: File, src: string, sortOrder: number): HomepageImage {
+function createLocalCarouselImage(file: File, src: string, sortOrder: number): AdminHomepageImage {
   return {
     id: `carousel-local-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
     src,
     fileName: file.name,
+    altText: file.name,
     isHidden: false,
+    isNew: true,
+    localFile: file,
     sortOrder,
   };
 }
@@ -147,26 +109,44 @@ function ImageCardActions({
 }
 
 export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) {
+  const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [orderedImages, setOrderedImages] = useState<HomepageImage[]>(initialHomepageImages);
+  const { data: homepageContent, isLoading, isError, error } = useAdminHomepageContent();
+  const updateHomepageText = useUpdateHomepageText();
+  const createCarouselImage = useCreateCarouselImage();
+  const updateCarouselImage = useUpdateCarouselImage();
+  const reorderCarousel = useReorderCarousel();
+  const deleteCarouselImage = useDeleteCarouselImage();
+  const [orderedImages, setOrderedImages] = useState<AdminHomepageImage[]>([]);
   const [draggedImageId, setDraggedImageId] = useState<string | null>(null);
   const [dropTargetImageId, setDropTargetImageId] = useState<string | null>(null);
   const [imageUploadIntent, setImageUploadIntent] = useState<ImageUploadIntent | null>(null);
   const [greetingTitle, setGreetingTitle] = useState('');
   const [greetingMessage, setGreetingMessage] = useState('');
   const [saveStatus, setSaveStatus] = useState('');
+  const [deletedImageIds, setDeletedImageIds] = useState<string[]>([]);
   const [pendingDeleteImage, setPendingDeleteImage] = useState<HomepageImage | null>(null);
 
   useEffect(() => {
-    const storedDraft = readStoredHomepageContent();
-    if (!storedDraft) return;
+    if (!homepageContent) return;
 
     setOrderedImages(
-      storedDraft.carouselImages.length ? storedDraft.carouselImages : initialHomepageImages,
+      normalizeCarouselOrder(
+        homepageContent.carouselImages.map((image) => ({
+          id: image.id,
+          src: image.imageUrl,
+          fileName: image.fileName,
+          altText: image.altText,
+          isHidden: image.isHidden,
+          sortOrder: image.sortOrder + 1,
+        })),
+      ),
     );
-    setGreetingTitle(storedDraft.greetingTitle);
-    setGreetingMessage(storedDraft.greetingMessage);
-  }, []);
+    setGreetingTitle(homepageContent.greetingTitle);
+    setGreetingMessage(homepageContent.greetingMessage);
+    setDeletedImageIds([]);
+    setSaveStatus('');
+  }, [homepageContent]);
 
   const moveImage = (fromId: string, toId: string) => {
     if (fromId === toId) return;
@@ -213,6 +193,8 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
                   ...image,
                   src,
                   fileName: file.name,
+                  altText: image.altText || file.name,
+                  replacementFile: file,
                 }
               : image,
           ),
@@ -225,9 +207,16 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
   };
 
   const deleteImage = (imageId: string) => {
-    setOrderedImages((currentImages) =>
-      normalizeCarouselOrder(currentImages.filter((image) => image.id !== imageId)),
-    );
+    setOrderedImages((currentImages) => {
+      const imageToDelete = currentImages.find((image) => image.id === imageId);
+      if (imageToDelete && !imageToDelete.isNew) {
+        setDeletedImageIds((currentIds) =>
+          currentIds.includes(imageToDelete.id) ? currentIds : [...currentIds, imageToDelete.id],
+        );
+      }
+
+      return normalizeCarouselOrder(currentImages.filter((image) => image.id !== imageId));
+    });
     setPendingDeleteImage(null);
     setSaveStatus('');
   };
@@ -241,17 +230,70 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
     setSaveStatus('');
   };
 
-  const saveHomepageContent = () => {
-    const draft: HomepageContentDraft = {
-      carouselImages: normalizeCarouselOrder(orderedImages),
-      greetingTitle,
-      greetingMessage,
-    };
+  const isSaving =
+    updateHomepageText.isPending ||
+    createCarouselImage.isPending ||
+    updateCarouselImage.isPending ||
+    reorderCarousel.isPending ||
+    deleteCarouselImage.isPending;
 
-    window.localStorage.setItem(HOMEPAGE_CONTENT_STORAGE_KEY, JSON.stringify(draft));
-    console.log('Mock homepage content payload', buildHomepageContentPayload(draft));
-    setOrderedImages(draft.carouselImages);
-    setSaveStatus('Homepage content saved locally.');
+  const saveHomepageContent = async () => {
+    try {
+      setSaveStatus('');
+
+      await updateHomepageText.mutateAsync({
+        greetingTitle: greetingTitle.trim(),
+        greetingMessage: greetingMessage.trim(),
+      });
+
+      await Promise.all(deletedImageIds.map((imageId) => deleteCarouselImage.mutateAsync(imageId)));
+
+      const persistedImages = [];
+
+      for (const [index, image] of normalizeCarouselOrder(orderedImages).entries()) {
+        if (image.isNew && image.localFile) {
+          const createdImage = await createCarouselImage.mutateAsync({
+            image: image.localFile,
+            altText: image.altText || image.fileName,
+            sortOrder: index,
+            isHidden: image.isHidden,
+          });
+          persistedImages.push({ id: createdImage.id, sortOrder: index });
+          continue;
+        }
+
+        if (image.replacementFile) {
+          const updatedImage = await updateCarouselImage.mutateAsync({
+            id: image.id,
+            image: image.replacementFile,
+            altText: image.altText || image.fileName,
+            isHidden: image.isHidden,
+          });
+          persistedImages.push({ id: updatedImage.id || image.id, sortOrder: index });
+          continue;
+        }
+
+        await updateCarouselImage.mutateAsync({
+          id: image.id,
+          altText: image.altText || image.fileName,
+          isHidden: image.isHidden,
+        });
+        persistedImages.push({ id: image.id, sortOrder: index });
+      }
+
+      if (persistedImages.length > 0) {
+        await reorderCarousel.mutateAsync(persistedImages);
+      }
+
+      await queryClient.invalidateQueries({ queryKey: homepageContentKeys.all });
+      setDeletedImageIds([]);
+      setSaveStatus('Homepage content updated successfully.');
+      toast.success('Homepage content updated successfully.');
+    } catch (saveError) {
+      console.error('Homepage content update failed:', saveError);
+      setSaveStatus('');
+      toast.error('We could not update homepage content. Please try again.');
+    }
   };
 
   return (
@@ -270,13 +312,25 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
 
             <button
               type="button"
+              disabled={isSaving}
               onClick={() => openImagePicker({ type: 'add' })}
-              className="inline-flex w-fit items-center gap-2 rounded-full border-2 border-primary-500 px-4 py-[5px] text-base font-semibold text-primary-500 transition-all duration-200 hover:bg-primary-50"
+              className="inline-flex w-fit items-center gap-2 rounded-full border-2 border-primary-500 px-4 py-[5px] text-base font-semibold text-primary-500 transition-all duration-200 hover:bg-primary-50 disabled:cursor-not-allowed disabled:opacity-60"
             >
               <Plus className="h-5 w-5" />
               Add new image
             </button>
           </div>
+
+          {isLoading ? (
+            <p className="mb-4 text-sm font-medium text-gray-500">Loading homepage content...</p>
+          ) : null}
+
+          {isError ? (
+            <p className="mb-4 text-sm font-medium text-red-600">
+              Homepage content could not be loaded. You can still add content and try saving.
+              {error instanceof Error ? ` ${error.message}` : ''}
+            </p>
+          ) : null}
 
           <input
             ref={fileInputRef}
@@ -287,6 +341,12 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
           />
 
           <div className="scrollbar-hide flex snap-x gap-4 overflow-x-auto scroll-smooth pb-3 [-webkit-overflow-scrolling:touch]">
+            {!isLoading && orderedImages.length === 0 ? (
+              <div className="flex min-h-[12rem] w-full items-center justify-center rounded-xl border border-dashed border-cms-tab-active/35 bg-white text-sm font-medium text-gray-500">
+                No carousel images yet. Add an image to start building the homepage carousel.
+              </div>
+            ) : null}
+
             {orderedImages.map((image, index) => {
               const isDragging = draggedImageId === image.id;
               const isDropTarget = dropTargetImageId === image.id && draggedImageId !== image.id;
@@ -395,10 +455,11 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
           <div className="flex justify-center pt-8">
             <button
               type="button"
+              disabled={isSaving}
               onClick={saveHomepageContent}
-              className="rounded-full bg-primary-500 tracking-[3%] px-8 py-2 text-base font-bold text-white shadow-sm transition-all duration-200 hover:bg-primary-600 hover:shadow-lg"
+              className="rounded-full bg-primary-500 tracking-[3%] px-8 py-2 text-base font-bold text-white shadow-sm transition-all duration-200 hover:bg-primary-600 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Update Homepage
+              {isSaving ? 'Updating...' : 'Update Homepage'}
             </button>
           </div>
           {saveStatus ? (

@@ -1,4 +1,4 @@
-import type { SocialSignupResponse } from '../../types/auth.types';
+import type { SocialAuthProvider, SocialSignupResponse } from '../../types/auth.types';
 
 function readString(...values: unknown[]) {
   const value = values.find((item) => typeof item === 'string' && item.trim().length > 0);
@@ -17,7 +17,10 @@ function readBoolean(...values: unknown[]) {
   return false;
 }
 
-export function mapSocialSignupResponse(raw: unknown): SocialSignupResponse {
+export function mapSocialSignupResponse(
+  raw: unknown,
+  provider: SocialAuthProvider,
+): SocialSignupResponse {
   const data = (raw ?? {}) as Record<string, any>;
   const user = (data.user ?? data.profile ?? data.data ?? {}) as Record<string, any>;
 
@@ -29,7 +32,7 @@ export function mapSocialSignupResponse(raw: unknown): SocialSignupResponse {
 
   return {
     raw,
-    provider: 'google',
+    provider,
     userId:
       readString(data.user_id, data.userId, data.id, user.user_id, user.userId, user.id) ?? '',
     providerUserId:
@@ -37,11 +40,15 @@ export function mapSocialSignupResponse(raw: unknown): SocialSignupResponse {
         data.provider_user_id,
         data.social_id,
         data.google_id,
+        data.facebook_id,
         data.sub,
+        data.id,
         user.provider_user_id,
         user.social_id,
         user.google_id,
+        user.facebook_id,
         user.sub,
+        user.id,
       ) ?? '',
     firstName: firstName ?? inferredFirstName ?? null,
     lastName: lastName ?? (splitName.length > 1 ? splitName[splitName.length - 1] : null),

@@ -36,11 +36,9 @@ export const API_ENDPOINTS = {
     MANAGE_LISTING: '/api/manage_listing', // update + delete via function_type flag
   },
 
-
   LIVENEWS: {
     GET_LIVE_NEWS: '/news/feeds',
   },
-
 
   // ─── Events ───────────────────────────────────────────────────────────────
   EVENTS: {
@@ -121,6 +119,27 @@ export const API_ENDPOINTS = {
     LIST: '/api/get_announcements',
     CREATE: '/api/create_announcement',
     MANAGE: '/api/manage_announcement',
+  },
+
+  // ─── Pages Content ────────────────────────────────────────────────────────
+  CONTENT: {
+    HOMEPAGE: '/homepage',
+    UPDATE_HOMEPAGE_TEXT: '/update_homepage_text',
+    CREATE_CAROUSEL_IMAGE: '/create_carousel_image',
+    UPDATE_CAROUSEL_IMAGE: '/update_carousel_image',
+    REORDER_CAROUSEL: '/reorder_carousel',
+    DELETE_CAROUSEL_IMAGE: '/delete_carousel_image',
+    FAQS: '/faqs',
+    CREATE_FAQ: '/create_faq',
+    UPDATE_FAQ: '/update_faq',
+    REORDER_FAQS: '/reorder_faqs',
+    DELETE_FAQ: '/delete_faq',
+    BLOG_CATEGORIES: '/blog_categories',
+    BLOG_POSTS: '/blog_posts',
+    BLOG_POST_DETAIL: (idOrSlug: string) => `/blog_post_detail/${idOrSlug}`,
+    CREATE_BLOG_POST: '/create_blog_post',
+    UPDATE_BLOG_POST: '/update_blog_post',
+    DELETE_BLOG_POST: '/delete_blog_post',
   },
 
   ADMIN_ENDPOINTS: {
