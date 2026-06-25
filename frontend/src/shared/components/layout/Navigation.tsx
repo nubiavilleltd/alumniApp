@@ -61,6 +61,7 @@ const primaryNavItems: NavItem[] = [
       { label: 'Announcements', url: ROUTES.NEWS },
       { label: 'Events', url: EVENT_ROUTES.ROOT },
       { label: 'Our Projects', url: ROUTES.PROJECTS.ROOT },
+      { label: 'Live News', url: ROUTES.LIVE_NEWS.ROOT },
     ],
   },
   {
@@ -81,6 +82,7 @@ const authenticatedMenuItems: NavChild[] = [
   { label: 'My Registered Events', url: EVENT_ROUTES.MY_EVENTS },
   { label: 'My Market', url: MARKETPLACE_ROUTES.MY_BUSINESS },
   { label: 'My Job Posts', url: ROUTES.MY_JOB_POSTS },
+  { label: 'My Shopping Cart', url: ROUTES.STORE.CART },
   { label: 'Settings', url: USER_ROUTES.SETTINGS },
 ];
 
