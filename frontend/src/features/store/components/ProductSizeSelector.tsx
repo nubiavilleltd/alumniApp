@@ -6,6 +6,13 @@ interface Props {
   onChange: (size: string) => void;
 }
 
+// const sizeToTextMap: Record<string, string> =  {
+//     "S": "Small",
+//     "M": "Medium",
+//     "L": "Large",
+//     "XL": "Extra Large",
+// }
+
 export function ProductSizeSelector({ sizes, selected, onChange }: Props) {
   return (
     <div>
@@ -23,12 +30,12 @@ export function ProductSizeSelector({ sizes, selected, onChange }: Props) {
               disabled={isOutOfStock}
               onClick={() => !isOutOfStock && onChange(s.size)}
               className={[
-                'min-w-[44px] h-[44px] px-3 rounded-lg text-sm font-medium transition-all',
+                'min-w-[30px] h-[30px] px-5 rounded-lg text-sm font-medium transition-all',
                 isOutOfStock
-                  ? 'border-2 border-dashed border-gray-300 text-gray-300 cursor-not-allowed'
+                  ? 'border border-dashed border-gray-300 text-gray-300 cursor-not-allowed'
                   : isSelected
-                    ? 'border-2 border-primary-500 bg-primary-500 text-white shadow-sm'
-                    : 'border-2 border-gray-300 text-gray-700 hover:border-primary-400 hover:text-primary-500',
+                    ? 'border border-primary-500 text-primary-500 shadow-sm'
+                    : 'border border-gray-300 text-gray-700 hover:border-primary-400 hover:text-primary-500',
               ].join(' ')}
             >
               {s.size}

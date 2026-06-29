@@ -1,3 +1,4 @@
+import { X } from 'lucide-react';
 import { useEffect } from 'react';
 
 // ─── Reusable Modal Shell ─────────────────────────────────────────────────────
@@ -44,7 +45,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
               className="text-gray-500 hover:text-gray-800 font-semibold text-lg leading-none transition-colors"
               aria-label="Close modal"
             >
-              ✕
+              <X />
             </button>
           </div>
 

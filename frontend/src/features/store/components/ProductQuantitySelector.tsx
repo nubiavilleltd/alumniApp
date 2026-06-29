@@ -1,62 +1,4 @@
-// interface Props {
-//     value: number;
-//     max: number;
-//     /** Raw inventory stock — used only for the "Only N left" hint, not for capping */
-//     rawStock?: number;
-//     onChange: (value: number) => void;
-// }
-
-// export function ProductQuantitySelector({ value, max, rawStock, onChange }: Props) {
-//     const stockForHint = rawStock ?? max;
-
-//     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-//         const raw = e.target.value;
-//         if (raw === '') { onChange(1); return; }
-//         const parsed = parseInt(raw, 10);
-//         if (!isNaN(parsed)) onChange(Math.max(1, Math.min(parsed, max)));
-//     };
-
-//     return (
-//         <div>
-//             <p className="text-sm font-semibold text-gray-800 mb-2">Quantity</p>
-//             <div className="flex items-center gap-3">
-//                 <button
-//                     onClick={() => onChange(Math.max(1, value - 1))}
-//                     disabled={value <= 1}
-//                     className="w-9 h-9 rounded-full border-2 border-gray-300 flex items-center justify-center text-gray-600 hover:border-primary-400 hover:text-primary-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-lg font-medium"
-//                 >−</button>
-//                 <input
-//                     type="number" min={1} max={max} value={value}
-//                     onChange={handleInputChange}
-//                     className="w-14 h-9 text-center border-2 border-gray-300 rounded-lg text-sm font-semibold focus:outline-none focus:border-primary-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-//                 />
-//                 <button
-//                     onClick={() => onChange(Math.min(max, value + 1))}
-//                     disabled={value >= max}
-//                     className="w-9 h-9 rounded-full border-2 border-gray-300 flex items-center justify-center text-gray-600 hover:border-primary-400 hover:text-primary-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-lg font-medium"
-//                 >+</button>
-//             </div>
-
-//             {/* Show stock count based on real inventory, not cart-adjusted stock */}
-//             {stockForHint > 0 && (
-//                 <p className="text-xs text-gray-500 mt-1.5">Only {stockForHint} left</p>
-//             )}
-//             {/* Never show "Out of stock" here — that reflects cart state, not true inventory */}
-//         </div>
-//     );
-// }
-
-
-
-
-
-
-
-
-
-
-
-
+import { Minus, Plus } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 interface Props {
@@ -109,8 +51,8 @@ export function ProductQuantitySelector({ value, max, rawStock, onChange }: Prop
         <button
           onClick={decrement}
           disabled={value <= 1}
-          className="w-9 h-9 rounded-full border-2 border-gray-300 flex items-center justify-center text-gray-600 hover:border-primary-400 hover:text-primary-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-lg font-medium"
-        >−</button>
+          className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 hover:border-primary-400 hover:text-primary-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        ><Minus /></button>
 
         {/* Input — free typing, committed on blur or Enter */}
         <input
@@ -128,8 +70,8 @@ export function ProductQuantitySelector({ value, max, rawStock, onChange }: Prop
         <button
           onClick={increment}
           disabled={value >= max}
-          className="w-9 h-9 rounded-full border-2 border-gray-300 flex items-center justify-center text-gray-600 hover:border-primary-400 hover:text-primary-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-lg font-medium"
-        >+</button>
+          className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 hover:border-primary-400 hover:text-primary-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        ><Plus /></button>
       </div>
 
       {stockForHint > 0 && (

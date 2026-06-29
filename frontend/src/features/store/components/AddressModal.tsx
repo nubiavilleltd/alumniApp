@@ -130,12 +130,14 @@ export function AddressModal({ isOpen, onClose }: Props) {
             placeholder="Enter your first name"
             error={errors.firstName?.message}
             {...register('firstName')}
+            style={{backgroundColor:'#F8F7F4'}}
           />
           <FormInput
             label="Last Name" id="lastName" required
             placeholder="Enter your last name"
             error={errors.lastName?.message}
             {...register('lastName')}
+             style={{backgroundColor:'#F8F7F4'}}
           />
         </div>
 
@@ -146,12 +148,14 @@ export function AddressModal({ isOpen, onClose }: Props) {
             placeholder="e.g. 08012345678"
             error={errors.phone?.message}
             {...register('phone')}
+             style={{backgroundColor:'#F8F7F4'}}
           />
           <FormInput
             label="Additional Phone Number" id="altPhone"
             placeholder="e.g. 09087654321"
             error={errors.altPhone?.message}
             {...register('altPhone')}
+             style={{backgroundColor:'#F8F7F4'}}
           />
         </div>
 
@@ -161,6 +165,7 @@ export function AddressModal({ isOpen, onClose }: Props) {
           placeholder="Enter your address"
           error={errors.address?.message}
           {...register('address')}
+            style={{backgroundColor:'#F8F7F4'}}
         />
 
         {/* Landmark */}
@@ -169,6 +174,7 @@ export function AddressModal({ isOpen, onClose }: Props) {
           placeholder="Enter landmark"
           error={errors.landmark?.message}
           {...register('landmark')}
+           style={{backgroundColor:'#F8F7F4'}}
         />
 
         {/* State + Area */}
@@ -210,8 +216,8 @@ export function AddressModal({ isOpen, onClose }: Props) {
           </div>
         </div>
 
-        <div className="pt-2">
-          <Button type="submit" className="w-full rounded-full" disabled={isSubmitting}>
+        <div className="mt-12 flex items-center justify-center">
+          <Button type="submit" className="self-center max-w-[200px] rounded-full" disabled={isSubmitting} disabled:opacity-50 disabled:cursor-not-allowed>
             {isEditing ? 'Save Changes' : 'Add Address'}
           </Button>
         </div>

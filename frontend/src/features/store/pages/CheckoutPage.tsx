@@ -5,6 +5,7 @@ import { useCartStore } from '../stores/useCartStore';
 import { useCheckoutStore } from '../stores/useCheckoutStore';
 import { AddressModal } from '../components/AddressModal';
 import { STORE_ROUTES } from '../routes';
+import { Info } from 'lucide-react';
 
 // ─── Pickup address (static for now) ─────────────────────────────────────────
 const PICKUP_ADDRESS =
@@ -98,7 +99,7 @@ export function CheckoutPage() {
                                                 e.stopPropagation();
                                                 setAddressModalOpen(true);
                                             }}
-                                            className="shrink-0 text-sm font-semibold text-primary-500 border border-primary-300 rounded-full px-4 py-1.5 hover:bg-primary-50 transition-colors"
+                                            className="shrink-0 text-sm font-semibold text-primary-500 border border-primary-500 rounded-full px-4 py-1.5 hover:bg-primary-50 transition-colors"
                                         >
                                             {hasAddress ? 'Change' : 'Add Shipping Address'}
                                         </button>
@@ -193,6 +194,8 @@ export function CheckoutPage() {
                                 >
                                     Pay Now
                                 </button>
+
+                                <p className='mt-3 text-xs flex items-center text-gray-600 gap-1'><Info size={15}/> There are no refunds on purchases</p>
 
                                 {deliveryMethod === 'delivery' && !hasAddress && (
                                     <p className="text-xs text-gray-400 text-center mt-2">

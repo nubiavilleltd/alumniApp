@@ -8,7 +8,7 @@
   --app-page-inline-padding: 16px;
 
   /* Primary */
-  --color-primary-50: 240 248 255;
+  /* --color-primary-50: 240 248 255;
   --color-primary-100: 217 239 255;
   --color-primary-200: 191 228 255;
   --color-primary-300: 143 209 255;
@@ -18,7 +18,21 @@
   --color-primary-700: 0 85 153;
   --color-primary-800: 0 68 122;
   --color-primary-900: 0 52 92;
-  --color-primary-950: 0 31 56;
+  --color-primary-950: 0 31 56; */
+
+
+  /* Primary - #021E44 */
+--color-primary-50: 242 246 252;
+--color-primary-100: 226 234 247;
+--color-primary-200: 194 211 236;
+--color-primary-300: 149 177 220;
+--color-primary-400: 95 136 197;
+--color-primary-500: 2 30 68;
+--color-primary-600: 2 26 59;
+--color-primary-700: 2 22 50;
+--color-primary-800: 1 18 41;
+--color-primary-900: 1 13 31;
+--color-primary-950: 0 8 20;
 
   /* Secondary */
   --color-secondary-50: 240 249 255;
