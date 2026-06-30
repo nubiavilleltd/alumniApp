@@ -32,14 +32,20 @@ function toStatus(value: unknown): BlogPostStatus {
 
 export function mapBlogCategory(rawCategory: unknown): BlogCategory {
   const category = toRecord(rawCategory);
-
-  return {
+  const mappedCategory = {
     id: toStringValue(category.id),
     name: toStringValue(category.name),
     slug: toStringValue(category.slug),
     sortOrder: toNumberValue(category.sort_order),
     isActive: toBooleanValue(category.is_active ?? true),
   };
+
+  console.log('[Blog Categories] map category:', {
+    raw: rawCategory,
+    mapped: mappedCategory,
+  });
+
+  return mappedCategory;
 }
 
 export function mapBlogCategories(response: unknown): BlogCategory[] {
@@ -52,10 +58,18 @@ export function mapBlogCategories(response: unknown): BlogCategory[] {
         ? response
         : [];
 
-  return rawCategories
+  const mappedCategories = rawCategories
     .map(mapBlogCategory)
     .filter((category) => category.id && category.name)
     .sort((a, b) => a.sortOrder - b.sortOrder);
+
+  console.log('[Blog Categories] map categories response:', {
+    response,
+    rawCategories,
+    mappedCategories,
+  });
+
+  return mappedCategories;
 }
 
 export function mapBlogPostSummary(rawPost: unknown): BlogPostSummary {

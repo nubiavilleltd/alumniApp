@@ -1,12 +1,18 @@
 import { contentApiClient } from '@/lib/api/contentClient';
 import { API_ENDPOINTS } from '@/lib/api/endpoints';
-import { mapBlogCategories, mapBlogPostDetail, mapBlogPosts } from '../api/adapters/blog.adapter';
+import {
+  mapBlogCategories,
+  mapBlogCategory,
+  mapBlogPostDetail,
+  mapBlogPosts,
+} from '../api/adapters/blog.adapter';
 import type {
   BlogCategory,
   BlogPostDetail,
   BlogPostStatus,
   BlogPostsResult,
   BlogSection,
+  SaveBlogCategoryInput,
 } from '../types/blog.types';
 
 export type GetBlogPostsInput = {
@@ -26,7 +32,18 @@ export type SaveBlogPostInput = {
   status: BlogPostStatus;
   sections: BlogSection[];
   images?: File[];
+  mainImageIndex?: number;
+  mainImageUrl?: string;
 };
+
+export type ReorderBlogCategoryInput = {
+  id: string;
+  sortOrder: number;
+};
+
+function activeValue(isActive?: boolean) {
+  return isActive ? 1 : 0;
+}
 
 function summarizeBlogPostInput(input: SaveBlogPostInput) {
   return {
@@ -73,6 +90,12 @@ function appendBlogPostFields(formData: FormData, input: SaveBlogPostInput) {
       })),
     ),
   );
+  if (input.mainImageIndex !== undefined) {
+    formData.append('main_image_index', String(input.mainImageIndex));
+  }
+  if (input.mainImageUrl) {
+    formData.append('main_image_url', input.mainImageUrl);
+  }
   input.images?.forEach((image) => formData.append('images[]', image));
 }
 
@@ -81,7 +104,146 @@ export const blogService = {
     const { data } = await contentApiClient.get(API_ENDPOINTS.CONTENT.BLOG_CATEGORIES, {
       headers: { 'X-Skip-Bearer': '1' },
     });
-    return mapBlogCategories(data).filter((category) => category.isActive);
+    const categories = mapBlogCategories(data).filter((category) => category.isActive);
+
+    console.log('[Blog Categories] get public categories:', {
+      response: data,
+      categories,
+    });
+
+    return categories;
+  },
+
+  async getAdminCategories(): Promise<BlogCategory[]> {
+    const { data } = await contentApiClient.get(API_ENDPOINTS.CONTENT.BLOG_CATEGORIES);
+    const categories = mapBlogCategories(data);
+
+    console.log('[Blog Categories] get admin categories:', {
+      response: data,
+      categories,
+    });
+
+    return categories;
+  },
+
+  async createCategory(input: SaveBlogCategoryInput): Promise<BlogCategory> {
+    const payload = {
+      name: input.name,
+      ...(input.slug !== undefined ? { slug: input.slug } : {}),
+      is_active: activeValue(input.isActive ?? true),
+      sort_order: input.sortOrder ?? 0,
+    };
+    const { data } = await contentApiClient.post(
+      API_ENDPOINTS.CONTENT.CREATE_BLOG_CATEGORY,
+      payload,
+    );
+    const category = mapBlogCategory(data?.category ?? data?.data ?? data);
+
+    console.log('[Blog Categories] create category:', {
+      input,
+      payload,
+      response: data,
+      category,
+    });
+
+    return category;
+  },
+
+  async updateCategory(input: SaveBlogCategoryInput): Promise<BlogCategory> {
+    const payload = {
+      id: input.id,
+      ...(input.name !== undefined ? { name: input.name } : {}),
+      ...(input.slug !== undefined ? { slug: input.slug } : {}),
+      ...(input.isActive !== undefined ? { is_active: activeValue(input.isActive) } : {}),
+      ...(input.sortOrder !== undefined ? { sort_order: input.sortOrder } : {}),
+    };
+    const { data } = await contentApiClient.post(
+      API_ENDPOINTS.CONTENT.UPDATE_BLOG_CATEGORY,
+      payload,
+    );
+
+    const category = mapBlogCategory(data?.category ?? data?.data ?? data);
+    const baseCategory = category.id
+      ? category
+      : {
+          id: String(input.id ?? ''),
+          name: '',
+          slug: '',
+          sortOrder: 0,
+          isActive: true,
+        };
+
+    const mergedCategory = {
+      ...baseCategory,
+      name: input.name ?? baseCategory.name,
+      slug: input.slug ?? baseCategory.slug,
+      sortOrder: input.sortOrder ?? baseCategory.sortOrder,
+      isActive: input.isActive ?? baseCategory.isActive,
+    };
+
+    console.log('[Blog Categories] update category:', {
+      input,
+      payload,
+      response: data,
+      mappedCategory: category,
+      mergedCategory,
+    });
+
+    try {
+      const { data: verifyData } = await contentApiClient.get(API_ENDPOINTS.CONTENT.BLOG_CATEGORIES);
+      const persistedCategories = mapBlogCategories(verifyData);
+      const persistedCategory = persistedCategories.find(
+        (item) => String(item.id) === String(mergedCategory.id),
+      );
+
+      console.log('[Blog Categories] update category persisted check:', {
+        requestedCategory: mergedCategory,
+        response: verifyData,
+        persistedCategories,
+        persistedCategory,
+      });
+
+      return persistedCategory ?? mergedCategory;
+    } catch (error) {
+      console.log('[Blog Categories] update category persisted check failed:', error);
+      return mergedCategory;
+    }
+  },
+
+  async deleteCategory(id: string): Promise<void> {
+    const payload = { id };
+    const { data } = await contentApiClient.post(
+      API_ENDPOINTS.CONTENT.DELETE_BLOG_CATEGORY,
+      payload,
+    );
+
+    console.log('[Blog Categories] delete category:', {
+      payload,
+      response: data,
+    });
+  },
+
+  async reorderCategories(categories: ReorderBlogCategoryInput[]): Promise<BlogCategory[]> {
+    const payload = {
+      categories: categories.map((category) => ({
+        id: category.id,
+        sort_order: category.sortOrder,
+      })),
+    };
+    const { data } = await contentApiClient.post(
+      API_ENDPOINTS.CONTENT.REORDER_BLOG_CATEGORIES,
+      payload,
+    );
+    const reorderedCategories = mapBlogCategories(data);
+
+    console.log('[Blog Categories] reorder categories:', {
+      categories,
+      payload,
+      response: data,
+      reorderedCategories,
+    });
+
+    return reorderedCategories;
   },
 
   async getPosts(input: GetBlogPostsInput = {}): Promise<BlogPostsResult> {

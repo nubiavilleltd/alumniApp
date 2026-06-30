@@ -54,9 +54,9 @@ export function AdminBanner({ activeTab, title, headingLevel = 'p' }: AdminBanne
               </p>
             </div>
 
-            {/* Right: Nav tabs — scrollable on mobile, wrapping on desktop */}
-            <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:overflow-visible sm:px-0">
-              <div className="flex w-max gap-2 sm:w-auto sm:flex-wrap sm:justify-end sm:gap-3">
+            {/* Right: Nav tabs */}
+            <div className="scrollbar-hide -mx-4 min-w-0 overflow-x-auto px-4 scroll-smooth sm:mx-0 sm:px-0 lg:flex-1 [-webkit-overflow-scrolling:touch]">
+              <div className="flex w-max gap-2 sm:gap-3 lg:ml-auto">
                 {adminBannerTabs.map((tab) => (
                   <AppLink
                     key={tab.id}

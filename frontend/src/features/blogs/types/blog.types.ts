@@ -8,6 +8,14 @@ export type BlogCategory = {
   isActive: boolean;
 };
 
+export type SaveBlogCategoryInput = {
+  id?: string;
+  name?: string;
+  slug?: string;
+  sortOrder?: number;
+  isActive?: boolean;
+};
+
 export type BlogImage = {
   id: string;
   imageUrl: string;

@@ -1,6 +1,18 @@
-import { useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, ChevronDown, Clock3, FileText, LoaderCircle, Plus } from 'lucide-react';
+import { useEffect, useMemo, useState, type FormEvent } from 'react';
+import {
+  ArrowLeft,
+  Check,
+  ChevronDown,
+  Clock3,
+  FileText,
+  LoaderCircle,
+  Pencil,
+  Plus,
+  Trash2,
+  X,
+} from 'lucide-react';
 import { ImageUpload } from '@/shared/components/ui/ImageUpload';
+import { Modal } from '@/shared/components/ui/Modal';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
 import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
 import { FormInput } from '@/shared/components/ui/input/FormInput';
@@ -16,11 +28,15 @@ import {
   eventFormUploadDropzoneClassName,
 } from '@/features/events/constants/eventFormStyles';
 import {
+  useAdminBlogCategories,
   useBlogCategories,
   useBlogPostDetail,
   useBlogPosts,
+  useCreateBlogCategory,
   useCreateBlogPost,
+  useDeleteBlogCategory,
   useDeleteBlogPost,
+  useUpdateBlogCategory,
   useUpdateBlogPost,
 } from '@/features/blogs/hooks/useBlogs';
 import type {
@@ -39,6 +55,7 @@ type BlogFormState = {
   excerpt: string;
   imageFiles: File[];
   imagePreviews: string[];
+  mainImagePreview: string | null;
   sections: BlogSection[];
 };
 
@@ -54,6 +71,7 @@ const emptyFormState: BlogFormState = {
   excerpt: '',
   imageFiles: [],
   imagePreviews: [],
+  mainImagePreview: null,
   sections: [emptySection],
 };
 
@@ -79,16 +97,19 @@ function formatReadTime(minutes?: number | null) {
 function createStateFromPost(post?: BlogPostDetail | null): BlogFormState {
   if (!post) return emptyFormState;
   console.log('createStateFromPost', post);
+  const imagePreviews = post.galleryImages.length
+    ? post.galleryImages.map((image) => image.imageUrl)
+    : post.coverImageUrl
+      ? [post.coverImageUrl]
+      : [];
+
   return {
     title: post.title,
     categoryId: post.categoryId,
     excerpt: post.excerpt,
     imageFiles: [],
-    imagePreviews: post.galleryImages.length
-      ? post.galleryImages.map((image) => image.imageUrl)
-      : post.coverImageUrl
-        ? [post.coverImageUrl]
-        : [],
+    imagePreviews,
+    mainImagePreview: post.coverImageUrl ?? imagePreviews[0] ?? null,
     sections: post.sections.length
       ? post.sections.map((section, index) => ({ ...section, sortOrder: index }))
       : [emptySection],
@@ -116,6 +137,245 @@ function validateBlogForm(formState: BlogFormState) {
   }
 
   return null;
+}
+
+function moveItemToFront<T>(items: T[], itemIndex: number) {
+  if (itemIndex <= 0 || itemIndex >= items.length) return items;
+  const nextItems = [...items];
+  const [item] = nextItems.splice(itemIndex, 1);
+  nextItems.unshift(item);
+  return nextItems;
+}
+
+function isLocalPreview(preview: string) {
+  return preview.startsWith('blob:') || preview.startsWith('data:');
+}
+
+function getLocalPreviewFileIndex(previews: string[], removedPreviewIndex: number) {
+  const removedPreview = previews[removedPreviewIndex];
+  if (!removedPreview || !isLocalPreview(removedPreview)) return -1;
+
+  return previews
+    .slice(0, removedPreviewIndex + 1)
+    .filter((preview) => isLocalPreview(preview)).length - 1;
+}
+
+function CategoryManagerModal({
+  categories,
+  isOpen,
+  onClose,
+  onCategoryCreated,
+}: {
+  categories: BlogCategory[];
+  isOpen: boolean;
+  onClose: () => void;
+  onCategoryCreated?: (category: BlogCategory) => void;
+}) {
+  const createCategory = useCreateBlogCategory();
+  const updateCategory = useUpdateBlogCategory();
+  const deleteCategory = useDeleteBlogCategory();
+  const [newCategoryName, setNewCategoryName] = useState('');
+  const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null);
+  const [editingCategoryName, setEditingCategoryName] = useState('');
+
+  const isSaving =
+    createCategory.isPending || updateCategory.isPending || deleteCategory.isPending;
+
+  useEffect(() => {
+    if (!isOpen) {
+      setNewCategoryName('');
+      setEditingCategoryId(null);
+      setEditingCategoryName('');
+    }
+  }, [isOpen]);
+
+  const submitNewCategory = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const name = newCategoryName.trim();
+
+    if (!name) {
+      toast.error('Please enter a category name.');
+      return;
+    }
+
+    const createdCategory = await createCategory.mutateAsync({
+      name,
+      isActive: true,
+      sortOrder: categories.length,
+    });
+    setNewCategoryName('');
+    onCategoryCreated?.(createdCategory);
+  };
+
+  const startEditingCategory = (category: BlogCategory) => {
+    setEditingCategoryId(category.id);
+    setEditingCategoryName(category.name);
+  };
+
+  const cancelEditingCategory = () => {
+    setEditingCategoryId(null);
+    setEditingCategoryName('');
+  };
+
+  const saveEditingCategory = async (category: BlogCategory) => {
+    const name = editingCategoryName.trim();
+
+    if (!name) {
+      toast.error('Please enter a category name.');
+      return;
+    }
+
+    await updateCategory.mutateAsync({
+      id: category.id,
+      name,
+      slug: category.slug,
+      sortOrder: category.sortOrder,
+      isActive: category.isActive,
+    });
+    cancelEditingCategory();
+  };
+
+  const toggleCategoryStatus = async (category: BlogCategory) => {
+    await updateCategory.mutateAsync({
+      id: category.id,
+      name: category.name,
+      slug: category.slug,
+      sortOrder: category.sortOrder,
+      isActive: !category.isActive,
+    });
+  };
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={() => {
+        if (!isSaving) onClose();
+      }}
+      title="Manage Blog Categories"
+    >
+      <div className="space-y-5">
+        <form onSubmit={submitNewCategory} className="flex flex-col gap-3 sm:flex-row">
+          <FormInput
+            id="new-blog-category"
+            label="New category"
+            placeholder="Enter category name"
+            value={newCategoryName}
+            onChange={(event) => setNewCategoryName(event.target.value)}
+            disabled={isSaving}
+            className="flex-1"
+          />
+          <button
+            type="submit"
+            disabled={isSaving}
+            className="inline-flex h-12 items-center justify-center gap-1.5 self-end rounded-full bg-cms-tab-active px-5 text-sm font-semibold text-white transition-colors hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {createCategory.isPending ? 'Adding...' : 'Add'}
+            <Plus className="h-4 w-4" />
+          </button>
+        </form>
+
+        <div className="max-h-[22rem] space-y-3 overflow-y-auto pr-1">
+          {categories.length === 0 ? (
+            <p className="rounded-xl bg-gray-50 px-4 py-5 text-sm font-medium text-[#858585]">
+              No blog categories yet.
+            </p>
+          ) : null}
+
+          {categories.map((category) => {
+            const isEditing = editingCategoryId === category.id;
+
+            return (
+              <div
+                key={category.id}
+                className="flex flex-col gap-3 rounded-xl border border-gray-100 px-4 py-3 sm:flex-row sm:items-center"
+              >
+                <div className="min-w-0 flex-1">
+                  {isEditing ? (
+                    <FormInput
+                      id={`blog-category-${category.id}`}
+                      label="Category name"
+                      value={editingCategoryName}
+                      onChange={(event) => setEditingCategoryName(event.target.value)}
+                      disabled={isSaving}
+                    />
+                  ) : (
+                    <>
+                      <p className="truncate text-sm font-semibold text-[#071116]">
+                        {category.name}
+                      </p>
+                      <p className="mt-1 truncate text-xs font-medium text-[#858585]">
+                        {category.slug || 'No slug'}
+                      </p>
+                    </>
+                  )}
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+                  <button
+                    type="button"
+                    onClick={() => void toggleCategoryStatus(category)}
+                    disabled={isSaving || isEditing}
+                    className={[
+                      'rounded-full px-3 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-60',
+                      category.isActive
+                        ? 'bg-success-50 text-success-700 hover:bg-success-100'
+                        : 'bg-gray-100 text-gray-500 hover:bg-gray-200',
+                    ].join(' ')}
+                  >
+                    {category.isActive ? 'Active' : 'Hidden'}
+                  </button>
+
+                  {isEditing ? (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => void saveEditingCategory(category)}
+                        disabled={isSaving}
+                        className="inline-flex h-9 w-9 items-center justify-center rounded-full text-cms-tab-active transition-colors hover:bg-primary-50 disabled:cursor-not-allowed disabled:opacity-60"
+                        aria-label={`Save ${category.name}`}
+                      >
+                        <Check className="h-4 w-4" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={cancelEditingCategory}
+                        disabled={isSaving}
+                        className="inline-flex h-9 w-9 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60"
+                        aria-label={`Cancel editing ${category.name}`}
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => startEditingCategory(category)}
+                        disabled={isSaving}
+                        className="inline-flex h-9 w-9 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-primary-50 hover:text-primary-500 disabled:cursor-not-allowed disabled:opacity-60"
+                        aria-label={`Edit ${category.name}`}
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => void deleteCategory.mutateAsync(category.id)}
+                        disabled={isSaving}
+                        className="inline-flex h-9 w-9 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-red-50 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-60"
+                        aria-label={`Delete ${category.name}`}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </Modal>
+  );
 }
 
 function BlogPostCard({
@@ -197,12 +457,16 @@ function BlogPostForm({
   post,
   categories,
   isLoadingPost,
+  selectedCategoryId,
+  onManageCategories,
   onBack,
 }: {
   mode: Extract<BlogPanelMode, 'create' | 'edit'>;
   post?: BlogPostDetail;
   categories: BlogCategory[];
   isLoadingPost: boolean;
+  selectedCategoryId?: string | null;
+  onManageCategories: () => void;
   onBack: () => void;
 }) {
   const [formState, setFormState] = useState<BlogFormState>(emptyFormState);
@@ -217,6 +481,11 @@ function BlogPostForm({
   useEffect(() => {
     setFormState(createStateFromPost(mode === 'edit' ? post : null));
   }, [mode, post]);
+
+  useEffect(() => {
+    if (!selectedCategoryId) return;
+    setFormState((current) => ({ ...current, categoryId: selectedCategoryId }));
+  }, [selectedCategoryId]);
 
   const updateSection = (index: number, values: Partial<BlogSection>) => {
     setFormState((current) => ({
@@ -244,11 +513,46 @@ function BlogPostForm({
     }));
   };
 
-  const handleImagesChange = (files: File[], previews: string[]) => {
+  const handleImagesChange = (
+    files: File[],
+    previews: string[],
+    change?: { type: 'replace' } | { type: 'remove'; index: number },
+  ) => {
+    setFormState((current) => {
+      if (files.length > 0) {
+        const nextPreviews = [...current.imagePreviews, ...previews];
+
+        return {
+          ...current,
+          imageFiles: [...current.imageFiles, ...files],
+          imagePreviews: nextPreviews,
+          mainImagePreview: current.mainImagePreview ?? nextPreviews[0] ?? null,
+        };
+      }
+
+      const removedFileIndex =
+        change?.type === 'remove'
+          ? getLocalPreviewFileIndex(current.imagePreviews, change.index)
+          : -1;
+
+      return {
+        ...current,
+        imageFiles:
+          removedFileIndex >= 0
+            ? current.imageFiles.filter((_, index) => index !== removedFileIndex)
+            : current.imageFiles,
+        imagePreviews: previews,
+        mainImagePreview: previews.includes(current.mainImagePreview ?? '')
+          ? current.mainImagePreview
+          : previews[0] ?? null,
+      };
+    });
+  };
+
+  const selectMainImage = (preview: string) => {
     setFormState((current) => ({
       ...current,
-      imageFiles: files.length > 0 ? files : current.imageFiles,
-      imagePreviews: previews,
+      mainImagePreview: preview,
     }));
   };
 
@@ -260,6 +564,21 @@ function BlogPostForm({
       return;
     }
 
+    const mainImageIndex = formState.mainImagePreview
+      ? formState.imagePreviews.findIndex((preview) => preview === formState.mainImagePreview)
+      : -1;
+    const mainImageFileIndex =
+      mainImageIndex >= 0 ? getLocalPreviewFileIndex(formState.imagePreviews, mainImageIndex) : -1;
+    const orderedImageFiles =
+      mainImageFileIndex >= 0
+        ? moveItemToFront(formState.imageFiles, mainImageFileIndex)
+        : formState.imageFiles;
+    const mainImageIndexPayload = mainImageFileIndex >= 0 ? 0 : undefined;
+    const mainImageUrlPayload =
+      formState.mainImagePreview && !isLocalPreview(formState.mainImagePreview)
+        ? formState.mainImagePreview
+        : undefined;
+
     const payload = {
       ...(mode === 'edit' && post ? { id: post.id } : {}),
       title: formState.title.trim(),
@@ -267,7 +586,9 @@ function BlogPostForm({
       excerpt: formState.excerpt.trim(),
       status,
       sections: normalizeSections(formState.sections),
-      images: formState.imageFiles,
+      images: orderedImageFiles,
+      ...(mainImageIndexPayload !== undefined ? { mainImageIndex: mainImageIndexPayload } : {}),
+      ...(mainImageUrlPayload ? { mainImageUrl: mainImageUrlPayload } : {}),
     };
     console.log('Blog form submit payload:', {
       ...payload,
@@ -331,21 +652,31 @@ function BlogPostForm({
               inputClassName={eventFormInputTextClassName}
             />
 
-            <SelectInput
-              id="blog-category"
-              name="blog-category"
-              label="Category"
-              options={categoryOptions}
-              placeholder="Select the category of the post"
-              value={formState.categoryId}
-              onChange={(event) =>
-                setFormState((current) => ({ ...current, categoryId: event.target.value }))
-              }
-              labelClassName={eventFormFieldLabelClassName}
-              className={eventFormSelectClassName}
-              controlClassName={eventFormSelectControlClassName}
-              sortOptionsAlphabetically={false}
-            />
+            <div className="space-y-2">
+              <SelectInput
+                id="blog-category"
+                name="blog-category"
+                label="Category"
+                options={categoryOptions}
+                placeholder="Select the category of the post"
+                value={formState.categoryId}
+                onChange={(event) =>
+                  setFormState((current) => ({ ...current, categoryId: event.target.value }))
+                }
+                labelClassName={eventFormFieldLabelClassName}
+                className={eventFormSelectClassName}
+                controlClassName={eventFormSelectControlClassName}
+                sortOptionsAlphabetically={false}
+              />
+              <button
+                type="button"
+                onClick={onManageCategories}
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-cms-tab-active transition-colors hover:text-primary-600"
+              >
+                <Plus className="h-3.5 w-3.5" />
+                Add category
+              </button>
+            </div>
           </div>
 
           <TextareaInput
@@ -377,6 +708,52 @@ function BlogPostForm({
             idleIcon="mdi:cloud-upload-outline"
             activeIcon="mdi:cloud-upload-outline"
           />
+
+          {formState.imagePreviews.length > 0 ? (
+            <div className="rounded-2xl border border-gray-100 bg-white p-4">
+              <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <p className="text-sm font-semibold text-[#071116]">Image role</p>
+                  <p className="mt-1 text-xs font-medium text-[#858585]">
+                    Select one main image. The remaining images will appear in the gallery.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-3 overflow-x-auto pb-1">
+                {formState.imagePreviews.map((preview, index) => {
+                  const isMainImage = formState.mainImagePreview === preview;
+
+                  return (
+                    <button
+                      key={`${preview}-${index}`}
+                      type="button"
+                      onClick={() => selectMainImage(preview)}
+                      className={[
+                        'relative h-24 w-24 shrink-0 overflow-hidden rounded-xl border-2 text-left transition',
+                        isMainImage
+                          ? 'border-cms-tab-active shadow-[0_0.75rem_1.5rem_rgba(0,119,204,0.16)]'
+                          : 'border-gray-100 hover:border-primary-200',
+                      ].join(' ')}
+                      aria-label={`Set image ${index + 1} as main image`}
+                    >
+                      <img src={preview} alt="" className="h-full w-full object-cover" />
+                      <span
+                        className={[
+                          'absolute bottom-2 left-2 right-2 rounded-full px-2 py-1 text-center text-[10px] font-bold leading-none',
+                          isMainImage
+                            ? 'bg-cms-tab-active text-white'
+                            : 'bg-white/90 text-[#59626c]',
+                        ].join(' ')}
+                      >
+                        {isMainImage ? 'Main image' : 'Gallery'}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ) : null}
 
           {formState.sections.map((section, index) => (
             <div key={index} className="space-y-4 rounded-2xl border border-gray-100 p-4">
@@ -456,12 +833,12 @@ export function BlogContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
   const [mode, setMode] = useState<BlogPanelMode>('list');
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<BlogPostStatus | 'all'>('all');
-  const { data: categories = [] } = useBlogCategories();
-  // const categories: BlogCategory[] = [
-  //   { id: '1', name: 'News', slug: 'news', sortOrder: 1, isActive: true },
-  //   { id: '2', name: 'Updates', slug: 'updates', sortOrder: 2, isActive: true },
-  //   { id: '3', name: 'Events', slug: 'events', sortOrder: 3, isActive: true },
-  // ];
+  const [isCategoryManagerOpen, setIsCategoryManagerOpen] = useState(false);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+  const { data: publicCategories = [] } = useBlogCategories();
+  const { data: adminCategories = [] } = useAdminBlogCategories();
+  const categories = adminCategories.length > 0 ? adminCategories : publicCategories;
+  const activeCategories = categories.filter((category) => category.isActive);
   const {
     data: postsResult,
     isLoading,
@@ -478,6 +855,8 @@ export function BlogContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
   const deletePost = useDeleteBlogPost();
   const posts = useMemo(() => postsResult?.posts ?? [], [postsResult?.posts]);
 
+  console.log(posts, "all the posts")
+
   const detailedPosts = posts.map((post) => ({
     ...post,
     sections: [],
@@ -486,11 +865,16 @@ export function BlogContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
 
   const closeForm = () => {
     setSelectedPostId(null);
+    setSelectedCategoryId(null);
     setMode('list');
   };
 
   const handleDelete = async (postId: string) => {
     await deletePost.mutateAsync(postId);
+  };
+
+  const handleCategoryCreated = (category: BlogCategory) => {
+    setSelectedCategoryId(category.id);
   };
 
   return (
@@ -504,13 +888,15 @@ export function BlogContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
         <BlogPostForm
           mode={mode}
           post={selectedPost}
-          categories={categories}
+          categories={activeCategories}
           isLoadingPost={mode === 'edit' && isLoadingSelectedPost}
+          selectedCategoryId={selectedCategoryId}
+          onManageCategories={() => setIsCategoryManagerOpen(true)}
           onBack={closeForm}
         />
       ) : (
         <>
-          <div className="mb-12 flex items-center justify-between gap-4">
+          <div className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="relative">
               <select
                 value={statusFilter}
@@ -525,17 +911,27 @@ export function BlogContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
               <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#858585]" />
             </div>
 
-            <button
-              type="button"
-              onClick={() => {
-                setSelectedPostId(null);
-                setMode('create');
-              }}
-              className="inline-flex items-center gap-1.5 rounded-full bg-cms-tab-active px-6 py-2 text-[16px] font-semibold text-white transition-colors hover:bg-primary-600 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-200"
-            >
-              New Post
-              <Plus className="h-4 w-4" strokeWidth={3} />
-            </button>
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setIsCategoryManagerOpen(true)}
+                className="inline-flex items-center gap-1.5 rounded-full border border-cms-tab-active px-5 py-2 text-sm font-semibold text-cms-tab-active transition-colors hover:bg-primary-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-200"
+              >
+                Manage Categories
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedPostId(null);
+                  setSelectedCategoryId(null);
+                  setMode('create');
+                }}
+                className="inline-flex items-center gap-1.5 rounded-full bg-cms-tab-active px-6 py-2 text-[16px] font-semibold text-white transition-colors hover:bg-primary-600 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-200"
+              >
+                New Post
+                <Plus className="h-4 w-4" strokeWidth={3} />
+              </button>
+            </div>
           </div>
 
           {isLoading ? (
@@ -567,6 +963,7 @@ export function BlogContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
               actionLabel="Create Blog Post"
               onAction={() => {
                 setSelectedPostId(null);
+                setSelectedCategoryId(null);
                 setMode('create');
               }}
             />
@@ -590,6 +987,12 @@ export function BlogContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
           ) : null}
         </>
       )}
+      <CategoryManagerModal
+        categories={categories}
+        isOpen={isCategoryManagerOpen}
+        onClose={() => setIsCategoryManagerOpen(false)}
+        onCategoryCreated={handleCategoryCreated}
+      />
     </div>
   );
 }
