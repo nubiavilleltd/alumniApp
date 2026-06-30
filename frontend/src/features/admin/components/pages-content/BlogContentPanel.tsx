@@ -732,7 +732,7 @@ function BlogPostForm({
                       className={[
                         'relative h-24 w-24 shrink-0 overflow-hidden rounded-xl border-2 text-left transition',
                         isMainImage
-                          ? 'border-cms-tab-active shadow-[0_0.75rem_1.5rem_rgba(0,119,204,0.16)]'
+                          ? 'border-cms-tab-active shadow-[0_0.75rem_1.5rem_rgb(var(--color-primary-500)/0.16)]'
                           : 'border-gray-100 hover:border-primary-200',
                       ].join(' ')}
                       aria-label={`Set image ${index + 1} as main image`}

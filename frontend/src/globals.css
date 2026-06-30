@@ -7,20 +7,6 @@
 :root {
   --app-page-inline-padding: 16px;
 
-  /* Primary */
-  /* --color-primary-50: 240 248 255;
-  --color-primary-100: 217 239 255;
-  --color-primary-200: 191 228 255;
-  --color-primary-300: 143 209 255;
-  --color-primary-400: 79 182 255;
-  --color-primary-500: 0 119 204;
-  --color-primary-600: 0 102 179;
-  --color-primary-700: 0 85 153;
-  --color-primary-800: 0 68 122;
-  --color-primary-900: 0 52 92;
-  --color-primary-950: 0 31 56; */
-
-
   /* Primary - #021E44 */
 --color-primary-50: 242 246 252;
 --color-primary-100: 226 234 247;
@@ -74,7 +60,7 @@
   --color-success-950: 5 46 22;
 
   /* CMS */
-  --color-cms-tab-active: 0 119 204;
+  --color-cms-tab-active: var(--color-primary-500);
   --color-cms-tab-inactive: 75 85 99;
   --color-cms-surface: 248 248 247;
   --color-cms-drag-dot: 189 189 189;
@@ -905,7 +891,7 @@ input[type='password']::-webkit-caps-lock-indicator {
 }
 
 .password-input__toggle:focus-visible {
-  outline: 3px solid rgba(0, 119, 204, 0.22);
+  outline: 3px solid rgb(var(--color-primary-500) / 0.22);
   outline-offset: 2px;
 }
 
@@ -1132,7 +1118,7 @@ input[type='password']::-webkit-caps-lock-indicator {
 
 .contact-form-card .base-input__control:focus-within,
 .contact-form-card .textarea-input__field:focus {
-  outline: 3px solid rgba(0, 119, 204, 0.18);
+  outline: 3px solid rgb(var(--color-primary-500) / 0.18);
 }
 
 .contact-form-card__button {
@@ -1147,7 +1133,7 @@ input[type='password']::-webkit-caps-lock-indicator {
   font-size: clamp(0.96rem, 1.05vw, 1.02rem);
   font-weight: 700;
   letter-spacing: 0;
-  box-shadow: 0 18px 30px rgba(0, 119, 204, 0.16);
+  box-shadow: 0 18px 30px rgb(var(--color-primary-500) / 0.16);
 }
 
 .contact-form-card__button:hover {
@@ -1424,7 +1410,7 @@ input[type='password']::-webkit-caps-lock-indicator {
   align-items: center;
   justify-content: center;
   gap: 0.55rem;
-  border: 1px solid #0077cc40;
+  border: 1px solid rgb(var(--color-primary-500) / 0.25);
   border-radius: 999px;
   background: #ffffff;
   color: #7a7a7a;
@@ -1441,19 +1427,19 @@ input[type='password']::-webkit-caps-lock-indicator {
 }
 
 .auth-social-button:hover {
-  border-color: rgba(0, 119, 204, 0.52);
-  box-shadow: 0 0.7rem 1.4rem rgba(0, 119, 204, 0.08);
+  border-color: rgb(var(--color-primary-500) / 0.52);
+  box-shadow: 0 0.7rem 1.4rem rgb(var(--color-primary-500) / 0.08);
   transform: translateY(-1px);
 }
 
 .auth-social-button--selected {
-  border-color: rgba(0, 119, 204, 0.72);
+  border-color: rgb(var(--color-primary-500) / 0.72);
   background: rgb(var(--color-primary-50));
   color: rgb(var(--color-primary-700));
 }
 
 .auth-social-button:focus-visible {
-  outline: 3px solid rgba(0, 119, 204, 0.18);
+  outline: 3px solid rgb(var(--color-primary-500) / 0.18);
   outline-offset: 2px;
 }
 
@@ -1527,7 +1513,7 @@ input[type='password']::-webkit-caps-lock-indicator {
 .auth-social-response-preview {
   max-height: 11rem;
   overflow: auto;
-  border: 1px solid rgba(0, 119, 204, 0.14);
+  border: 1px solid rgb(var(--color-primary-500) / 0.14);
   border-radius: 1rem;
   background: #f8f8f7;
   color: #334155;
@@ -1636,7 +1622,7 @@ input[type='password']::-webkit-caps-lock-indicator {
 .auth-card .select-input__field:focus,
 .auth-card .textarea-input__field:focus,
 .auth-card .input:focus {
-  outline: 3px solid rgba(0, 119, 204, 0.18);
+  outline: 3px solid rgb(var(--color-primary-500) / 0.18);
 }
 
 .auth-card .select-input__icon {

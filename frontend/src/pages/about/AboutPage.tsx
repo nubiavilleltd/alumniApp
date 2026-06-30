@@ -89,7 +89,7 @@ export function AboutPage() {
                 <ButtonLink
                   href={AUTH_ROUTES.REGISTER}
                   size="lg"
-                  className="type-button mt-5 inline-flex min-h-[3.4rem] w-full items-center justify-center rounded-full bg-primary-500 text-center text-white shadow-[0_18px_40px_rgba(0,119,204,0.22)] transition-colors hover:bg-primary-600 focus:outline focus:outline-4 focus:outline-offset-2 focus:outline-primary-200 min-[1200px]:mt-[18px] min-[1200px]:h-[53px] min-[1200px]:min-h-[53px] min-[1200px]:w-[189px] min-[1200px]:max-w-none"
+                  className="type-button mt-5 inline-flex min-h-[3.4rem] w-full items-center justify-center rounded-full bg-primary-500 text-center text-white shadow-[0_18px_40px_rgb(var(--color-primary-500)/0.22)] transition-colors hover:bg-primary-600 focus:outline focus:outline-4 focus:outline-offset-2 focus:outline-primary-200 min-[1200px]:mt-[18px] min-[1200px]:h-[53px] min-[1200px]:min-h-[53px] min-[1200px]:w-[189px] min-[1200px]:max-w-none"
                 >
                   Join Us
                 </ButtonLink>

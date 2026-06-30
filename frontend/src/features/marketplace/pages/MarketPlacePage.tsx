@@ -195,7 +195,7 @@ function BusinessCard({
             </button>
           </>
         )}
-        <span className="absolute left-[1.35rem] top-[1.45rem] max-w-[calc(100%-2.7rem)] truncate rounded-[0.95rem] bg-[#0077CC99] px-4 py-[0.43rem] text-[clamp(0.86rem,0.95vw,1.28rem)] font-extrabold leading-[1.15] text-white">
+        <span className="absolute left-[1.35rem] top-[1.45rem] max-w-[calc(100%-2.7rem)] truncate rounded-[0.95rem] bg-primary-500/60 px-4 py-[0.43rem] text-[clamp(0.86rem,0.95vw,1.28rem)] font-extrabold leading-[1.15] text-white">
           {formatCategoryLabel(business.category)}
         </span>
       </div>

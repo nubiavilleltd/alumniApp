@@ -20,7 +20,7 @@ function FaqPageSkeleton() {
           {Array.from({ length: 10 }).map((_, index) => (
             <div
               key={index}
-              className="h-[6.4rem] animate-pulse rounded-[0.85rem] border border-[#dceffc] bg-white"
+              className="h-[6.4rem] animate-pulse rounded-[0.85rem] border border-primary-100 bg-white"
             />
           ))}
         </div>
@@ -33,7 +33,7 @@ function FaqCard({ faq, isOpen, onToggle }: { faq: Faq; isOpen: boolean; onToggl
   const answerId = `faq-answer-${faq.id}`;
 
   return (
-    <article className="rounded-[0.85rem] border border-[#dceffc] bg-white shadow-[0_1px_2px_rgba(0,119,204,0.03)]">
+    <article className="rounded-[0.85rem] border border-primary-100 bg-white shadow-[0_1px_2px_rgb(var(--color-primary-500)/0.03)]">
       <button
         type="button"
         className="flex min-h-[4.5rem] w-full items-center justify-between gap-5 px-6 text-left sm:px-8"
@@ -50,9 +50,9 @@ function FaqCard({ faq, isOpen, onToggle }: { faq: Faq; isOpen: boolean; onToggl
           {faq.question}
         </span>
         {isOpen ? (
-          <Minus className="h-7 w-7 shrink-0 text-[#0077cc]" strokeWidth={2.4} />
+          <Minus className="h-7 w-7 shrink-0 text-primary-500" strokeWidth={2.4} />
         ) : (
-          <Plus className="h-7 w-7 shrink-0 text-[#0077cc]" strokeWidth={2.4} />
+          <Plus className="h-7 w-7 shrink-0 text-primary-500" strokeWidth={2.4} />
         )}
       </button>
 
@@ -96,13 +96,13 @@ export function FaqPage() {
           </header>
 
           {isError ? (
-            <div className="mt-16 rounded-[0.85rem] border border-[#dceffc] bg-white px-6 py-8 text-[#556070]">
+            <div className="mt-16 rounded-[0.85rem] border border-primary-100 bg-white px-6 py-8 text-[#556070]">
               We could not load FAQs right now. Please try again later.
             </div>
           ) : null}
 
           {!isError && faqs.length === 0 ? (
-            <div className="mt-16 rounded-[0.85rem] border border-[#dceffc] bg-white px-6 py-8 text-[#556070]">
+            <div className="mt-16 rounded-[0.85rem] border border-primary-100 bg-white px-6 py-8 text-[#556070]">
               No FAQs have been published yet.
             </div>
           ) : null}

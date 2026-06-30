@@ -183,7 +183,7 @@ export function BlogDetailPage() {
                         className={[
                           'h-16 w-16 shrink-0 overflow-hidden rounded-xl border-2 transition sm:h-20 sm:w-20',
                           isActive
-                            ? 'border-primary-500 shadow-[0_0.65rem_1.4rem_rgba(0,119,204,0.18)]'
+                            ? 'border-primary-500 shadow-[0_0.65rem_1.4rem_rgb(var(--color-primary-500)/0.18)]'
                             : 'border-transparent opacity-80 hover:opacity-100',
                         ].join(' ')}
                         aria-label={`Show image ${index + 1}`}
