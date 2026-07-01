@@ -50,7 +50,7 @@ import { MessagesPage } from './features/messages/pages/MessagesPage';
 
 import { AdminDashboardPage } from './features/admin/pages/AdminDashboardPage';
 import ProjectDetailsPage from './features/projects/pages/ProjectDetail';
-import { ADMIN_ROUTES } from './features/admin/routes';
+import { ADMIN_ROUTES, ADMIN_STORE_ROUTES } from './features/admin/routes';
 import { AdminMembersPage } from './features/admin/pages/AdminMembersPage';
 import { AdminPagesContentPage } from './features/admin/pages/AdminPagesContentPage';
 import { AdminEventRegistrationsPage } from './features/events/pages/AdminEventRegistrationsPage';
@@ -76,6 +76,9 @@ import { StorePage } from './features/store/pages/StorePage';
 import { CartPage } from './features/store/pages/CartPage';
 import { CheckoutPage } from './features/store/pages/CheckoutPage';
 import { FaqPage } from './features/faqs/pages/FaqPage';
+import { AdminStorePage } from './features/admin/pages/AdminStorePage';
+import { ProductCreatePage } from './features/admin/pages/ProductCreatePage';
+import { ProductEditPage } from './features/admin/pages/ProductEditPage';
 
 export default function App() {
   return (
@@ -536,6 +539,10 @@ export default function App() {
                 </ErrorBoundary>
               }
             />
+
+            <Route path={ADMIN_STORE_ROUTES.ROOT} element={<AdminRoute><AdminStorePage /></AdminRoute>} />
+            <Route path={ADMIN_STORE_ROUTES.PRODUCT_CREATE} element={<AdminRoute><ProductCreatePage /></AdminRoute>} />
+            <Route path={ADMIN_STORE_ROUTES.PRODUCT_EDIT_PATH} element={<AdminRoute><ProductEditPage /></AdminRoute>} />
 
             {/* Redirects */}
             <Route path="/home" element={<Navigate to={ROUTES.HOME} replace />} />
