@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { SEO } from '@/shared/common/SEO';
 import { AdminBanner } from '../components/AdminBanner';
 import { BlogContentPanel } from '../components/pages-content/BlogContentPanel';
@@ -7,8 +8,26 @@ import { HomeContentPanel } from '../components/pages-content/HomeContentPanel';
 import { PagesContentTabs } from '../components/pages-content/PagesContentTabs';
 import type { PagesContentTab } from '../components/pages-content/types';
 
+const pagesContentTabs: PagesContentTab[] = ['home', 'blog', 'faqs'];
+
+function getPagesContentTab(value: string | null): PagesContentTab {
+  return pagesContentTabs.includes(value as PagesContentTab) ? (value as PagesContentTab) : 'home';
+}
+
 export function AdminPagesContentPage() {
-  const [activeTab, setActiveTab] = useState<PagesContentTab>('home');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = getPagesContentTab(searchParams.get('tab'));
+
+  const setActiveTab = (tab: PagesContentTab) => {
+    setSearchParams(
+      (currentParams) => {
+        const nextParams = new URLSearchParams(currentParams);
+        nextParams.set('tab', tab);
+        return nextParams;
+      },
+      { replace: true },
+    );
+  };
 
   const activePanel = useMemo(() => {
     if (activeTab === 'home') return <HomeContentPanel activeTab={activeTab} />;

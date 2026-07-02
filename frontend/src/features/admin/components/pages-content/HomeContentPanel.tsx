@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ChangeEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
@@ -52,6 +52,19 @@ function createLocalCarouselImage(file: File, src: string, sortOrder: number): A
     localFile: file,
     sortOrder,
   };
+}
+
+function getComparableHomepageImages(images: AdminHomepageImage[]) {
+  return normalizeCarouselOrder(images).map((image) => ({
+    id: image.id,
+    isHidden: image.isHidden,
+    sortOrder: image.sortOrder,
+    hasLocalChange: Boolean(image.isNew || image.localFile || image.replacementFile),
+  }));
+}
+
+function areComparableValuesEqual(left: unknown, right: unknown) {
+  return JSON.stringify(left) === JSON.stringify(right);
 }
 
 function ImageCardActions({
@@ -237,7 +250,44 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
     reorderCarousel.isPending ||
     deleteCarouselImage.isPending;
 
+  const hasHomepageChanges = useMemo(() => {
+    if (!homepageContent) {
+      return Boolean(
+        greetingTitle.trim() ||
+          greetingMessage.trim() ||
+          orderedImages.length > 0 ||
+          deletedImageIds.length > 0,
+      );
+    }
+
+    const hasTextChanges =
+      greetingTitle.trim() !== homepageContent.greetingTitle.trim() ||
+      greetingMessage.trim() !== homepageContent.greetingMessage.trim();
+    const hasDeletedImages = deletedImageIds.length > 0;
+    const currentImages = getComparableHomepageImages(orderedImages);
+    const originalImages = getComparableHomepageImages(
+      homepageContent.carouselImages.map((image) => ({
+        id: image.id,
+        src: image.imageUrl,
+        fileName: image.fileName,
+        altText: image.altText,
+        isHidden: image.isHidden,
+        sortOrder: image.sortOrder + 1,
+      })),
+    );
+    const hasImageChanges =
+      currentImages.some((image) => image.hasLocalChange) ||
+      !areComparableValuesEqual(
+        currentImages.map(({ hasLocalChange, ...image }) => image),
+        originalImages.map(({ hasLocalChange, ...image }) => image),
+      );
+
+    return hasTextChanges || hasDeletedImages || hasImageChanges;
+  }, [deletedImageIds.length, greetingMessage, greetingTitle, homepageContent, orderedImages]);
+
   const saveHomepageContent = async () => {
+    if (!hasHomepageChanges) return;
+
     try {
       setSaveStatus('');
 
@@ -452,16 +502,18 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
             textareaClassName="!min-h-24 !resize-none !rounded-[1.5rem] !border-0 !bg-cms-surface !px-4 !py-4 !text-base !font-normal !leading-snug !text-gray-900 !shadow-none placeholder:!text-[#858585] placeholder:!opacity-100 focus:!border-transparent focus:!outline focus:!outline-3 focus:!outline-primary-500/20"
           />
 
-          <div className="flex justify-center pt-8">
-            <button
-              type="button"
-              disabled={isSaving}
-              onClick={saveHomepageContent}
-              className="rounded-full bg-primary-500 tracking-[3%] px-8 py-2 text-base font-bold text-white shadow-sm transition-all duration-200 hover:bg-primary-600 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {isSaving ? 'Updating...' : 'Update Homepage'}
-            </button>
-          </div>
+          {hasHomepageChanges ? (
+            <div className="flex justify-center pt-8">
+              <button
+                type="button"
+                disabled={isSaving}
+                onClick={saveHomepageContent}
+                className="rounded-full bg-primary-500 tracking-[3%] px-8 py-2 text-base font-bold text-white shadow-sm transition-all duration-200 hover:bg-primary-600 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {isSaving ? 'Updating...' : 'Update Homepage'}
+              </button>
+            </div>
+          ) : null}
           {saveStatus ? (
             <p className="text-center text-sm font-medium text-success-700">{saveStatus}</p>
           ) : null}

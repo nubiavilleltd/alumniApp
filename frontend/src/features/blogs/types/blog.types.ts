@@ -13,7 +13,7 @@ export type SaveBlogCategoryInput = {
   name?: string;
   slug?: string;
   sortOrder?: number;
-  isActive?: boolean;
+  isActive?: number | boolean;
 };
 
 export type BlogImage = {

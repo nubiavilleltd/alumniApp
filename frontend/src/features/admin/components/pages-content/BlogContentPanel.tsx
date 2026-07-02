@@ -147,6 +147,15 @@ function moveItemToFront<T>(items: T[], itemIndex: number) {
   return nextItems;
 }
 
+function createBlogCategorySlug(name: string) {
+  return name
+    .trim()
+    .toLowerCase()
+    .replace(/['"]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 function isLocalPreview(preview: string) {
   return preview.startsWith('blob:') || preview.startsWith('data:');
 }
@@ -200,6 +209,7 @@ function CategoryManagerModal({
 
     const createdCategory = await createCategory.mutateAsync({
       name,
+      slug: createBlogCategorySlug(name),
       isActive: true,
       sortOrder: categories.length,
     });
@@ -228,7 +238,7 @@ function CategoryManagerModal({
     await updateCategory.mutateAsync({
       id: category.id,
       name,
-      slug: category.slug,
+      slug: createBlogCategorySlug(name),
       sortOrder: category.sortOrder,
       isActive: category.isActive,
     });
@@ -239,7 +249,7 @@ function CategoryManagerModal({
     await updateCategory.mutateAsync({
       id: category.id,
       name: category.name,
-      slug: category.slug,
+      slug: createBlogCategorySlug(category.name),
       sortOrder: category.sortOrder,
       isActive: !category.isActive,
     });
@@ -283,6 +293,7 @@ function CategoryManagerModal({
 
           {categories.map((category) => {
             const isEditing = editingCategoryId === category.id;
+            const displaySlug = createBlogCategorySlug(category.name) || category.slug;
 
             return (
               <div
@@ -300,11 +311,11 @@ function CategoryManagerModal({
                     />
                   ) : (
                     <>
-                      <p className="truncate text-sm font-semibold text-[#071116]">
+                      <p className="whitespace-normal break-words text-sm font-semibold text-[#071116] [overflow-wrap:anywhere]">
                         {category.name}
                       </p>
-                      <p className="mt-1 truncate text-xs font-medium text-[#858585]">
-                        {category.slug || 'No slug'}
+                      <p className="mt-1 whitespace-normal break-words text-xs font-medium text-[#858585] [overflow-wrap:anywhere]">
+                        {displaySlug || 'No slug'}
                       </p>
                     </>
                   )}
@@ -839,6 +850,8 @@ export function BlogContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
   const { data: adminCategories = [] } = useAdminBlogCategories();
   const categories = adminCategories.length > 0 ? adminCategories : publicCategories;
   const activeCategories = categories.filter((category) => category.isActive);
+
+  console.log(categories, "all the categories")
   const {
     data: postsResult,
     isLoading,
