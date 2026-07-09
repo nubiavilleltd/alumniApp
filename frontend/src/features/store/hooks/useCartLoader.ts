@@ -13,7 +13,7 @@ import type { CartItem } from '../types/cart.types';
  * On logout: clears local cart
  */
 export function useCartLoader(isAuthenticated: boolean) {
-    const { items: localItems, setItems, clearCart } = useCartStore();
+    const { items: localItems, setItems } = useCartStore();
     const hasFetched = useRef(false);
     const wasAuthenticated = useRef(false);
 
@@ -51,6 +51,10 @@ export function useCartLoader(isAuthenticated: boolean) {
                         }
                     }
 
+                    console.log('Guest-only items', guestOnlyItems);
+                    console.log('Duplicate items', duplicateItems);
+
+
                     // Upload guest-only items
                     for (const item of guestOnlyItems) {
                         await cartService.addToCart({
@@ -62,8 +66,18 @@ export function useCartLoader(isAuthenticated: boolean) {
                         });
                     }
 
-                    console.log('Guest-only items', guestOnlyItems);
-                    console.log('Duplicate items', duplicateItems);
+                    for (const { local, server } of duplicateItems) {
+                        if (
+                            local.quantity !== server.quantity &&
+                            server.cartItemId
+                        ) {
+                            await cartService.updateCart({
+                                cart_item_id: Number(server.cartItemId),
+                                quantity: local.quantity,
+                            });
+                        }
+                    }
+
 
                     // Fetch the authoritative server cart.
                     const refreshed = await cartService.fetchCart();
