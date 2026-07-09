@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/shared/components/ui/Toast';
 import { adminStoreService } from '../services/adminstore.service';
-import { CreateProductFormData, UpdateProductFormData } from '../types/adminstore.types';
+import type { CreateProductFormData, UpdateProductFormData } from '../types/adminstore.types';
 
 export const adminStoreKeys = {
   all: ['admin-products'] as const,

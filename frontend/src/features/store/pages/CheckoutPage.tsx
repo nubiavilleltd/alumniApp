@@ -1,11 +1,13 @@
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { SEO } from '@/shared/common/SEO';
 import { useCartStore } from '../stores/useCartStore';
 import { useCheckoutStore } from '../stores/useCheckoutStore';
 import { AddressModal } from '../components/AddressModal';
 import { STORE_ROUTES } from '../routes';
 import { Info } from 'lucide-react';
+import { useAuth } from '@/features/authentication/hooks/useAuth';
+import { AUTH_ROUTES } from '@/features/authentication/routes';
 
 // ─── Pickup address (static for now) ─────────────────────────────────────────
 const PICKUP_ADDRESS =
@@ -13,6 +15,8 @@ const PICKUP_ADDRESS =
 
 export function CheckoutPage() {
     const { items } = useCartStore();
+    const navigate = useNavigate();
+    const { isAuthenticated } = useAuth();
     const { deliveryMethod, setDeliveryMethod, shippingAddress, shippingFee } = useCheckoutStore();
 
     const [addressModalOpen, setAddressModalOpen] = useState(false);
@@ -35,6 +39,19 @@ export function CheckoutPage() {
         return [...map.values()];
     }, [items]);
 
+
+
+    // on Pay Now button click:
+    const handlePayNow = () => {
+        if (!isAuthenticated) {
+            navigate(AUTH_ROUTES.LOGIN, {
+                state: { from: '/store/checkout' }  // same pattern ProtectedRoute uses
+            });
+            return;
+        }
+        // TODO: initiate payment here
+    };
+
     return (
         <>
             <SEO title="Checkout" />
@@ -52,8 +69,8 @@ export function CheckoutPage() {
                             <button
                                 onClick={() => setDeliveryMethod('delivery')}
                                 className={`w-full text-left p-4 rounded-2xl border-2 bg-white transition-all ${deliveryMethod === 'delivery'
-                                        ? 'border-primary-500'
-                                        : 'border-gray-200 hover:border-gray-300'
+                                    ? 'border-primary-500'
+                                    : 'border-gray-200 hover:border-gray-300'
                                     }`}
                             >
                                 <div className="flex items-start justify-between gap-4">
@@ -61,8 +78,8 @@ export function CheckoutPage() {
                                         {/* Radio circle */}
                                         <span
                                             className={`mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${deliveryMethod === 'delivery'
-                                                    ? 'border-primary-500'
-                                                    : 'border-gray-400'
+                                                ? 'border-primary-500'
+                                                : 'border-gray-400'
                                                 }`}
                                         >
                                             {deliveryMethod === 'delivery' && (
@@ -111,8 +128,8 @@ export function CheckoutPage() {
                             <button
                                 onClick={() => setDeliveryMethod('pickup')}
                                 className={`w-full text-left p-4 rounded-2xl border-2 bg-white transition-all ${deliveryMethod === 'pickup'
-                                        ? 'border-primary-500'
-                                        : 'border-gray-200 hover:border-gray-300'
+                                    ? 'border-primary-500'
+                                    : 'border-gray-200 hover:border-gray-300'
                                     }`}
                             >
                                 <div className="flex items-start gap-3">
@@ -186,6 +203,7 @@ export function CheckoutPage() {
 
                                 {/* Pay Now */}
                                 <button
+                                    onClick={handlePayNow}
                                     disabled={
                                         items.length === 0 ||
                                         (deliveryMethod === 'delivery' && !hasAddress)
@@ -195,7 +213,7 @@ export function CheckoutPage() {
                                     Pay Now
                                 </button>
 
-                                <p className='mt-3 text-xs flex items-center text-gray-600 gap-1'><Info size={15}/> There are no refunds on purchases</p>
+                                <p className='mt-3 text-xs flex items-center text-gray-600 gap-1'><Info size={15} /> There are no refunds on purchases</p>
 
                                 {deliveryMethod === 'delivery' && !hasAddress && (
                                     <p className="text-xs text-gray-400 text-center mt-2">

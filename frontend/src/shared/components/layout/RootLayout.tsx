@@ -8,10 +8,14 @@ import { Footer } from './Footer';
 import { ToastContainer } from '@/shared/components/ui/Toast';
 import { DonationButton } from '../ui/DonationButton';
 import { ROUTES } from '@/shared/constants/routes';
+import { useCartLoader } from '@/features/store/hooks/useCartLoader';
+import { useAuth } from '@/features/authentication/hooks/useAuth';
 
 export function RootLayout() {
   const [showBackToTop, setShowBackToTop] = useState(false);
   const { pathname } = useLocation();
+  const { isAuthenticated } = useAuth();
+  useCartLoader(isAuthenticated);  
 
   const isHomePage = pathname === ROUTES.HOME;
   const isDonationPage = pathname.includes(ROUTES.DONATION);
