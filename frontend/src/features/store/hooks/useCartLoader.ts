@@ -20,7 +20,6 @@ export function useCartLoader(isAuthenticated: boolean) {
     useEffect(() => {
         // ── User just logged in ────────────────────────────────────────────────
         if (isAuthenticated && !wasAuthenticated.current) {
-            console.log('LOGIN detected');
             wasAuthenticated.current = true;
             if (hasFetched.current) return;
             hasFetched.current = true;
@@ -83,11 +82,9 @@ export function useCartLoader(isAuthenticated: boolean) {
         }
 
         // ── User just logged out ───────────────────────────────────────────────
-        if (!isAuthenticated && wasAuthenticated.current) {
-            console.log('LOGOUT detected');
+        if (!isAuthenticated) {
             wasAuthenticated.current = false;
             hasFetched.current = false;
-            clearCart();
         }
     }, [isAuthenticated]);
 }
