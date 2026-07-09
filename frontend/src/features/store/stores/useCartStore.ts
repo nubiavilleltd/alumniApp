@@ -68,6 +68,7 @@ interface CartStore {
     items: CartItem[];
     syncStatus: CartSyncStatus;
     cartId: number | null;
+    ownerId: string | null;
 
     addItemLocally: (item: CartItem) => void;
     updateItemLocally: (id: string, quantity: number) => void;
@@ -77,6 +78,8 @@ interface CartStore {
     patchItem: (localId: string, patch: Partial<CartItem>) => void;
     clearCart: () => void;
     setSyncStatus: (status: CartSyncStatus) => void;
+    setOwnerId: (ownerId: string | null) => void;
+    clearOwner: () => void;
 }
 
 export const useCartStore = create<CartStore>()(
@@ -85,6 +88,7 @@ export const useCartStore = create<CartStore>()(
             items: [],
             syncStatus: 'idle',
             cartId: null,
+            ownerId: null,
 
             addItemLocally: (item) =>
                 set((state) => {
@@ -135,10 +139,14 @@ export const useCartStore = create<CartStore>()(
             clearCart: () => set({ items: [], cartId: null }),
 
             setSyncStatus: (syncStatus) => set({ syncStatus }),
+            setOwnerId: (ownerId) => set({ ownerId }),
+            clearOwner: () => set({ ownerId: null }),
         }),
         {
             name: 'store-cart',
             partialize: (state) => ({
+                ownerId: state.ownerId,
+                cartId: state.cartId,
                 items: state.items,
             }),
         }

@@ -26,6 +26,7 @@ import { USER_ROUTES } from '@/features/user/routes';
 import { AppLink } from '../ui/AppLink';
 import { useToastStore } from '../ui/Toast';
 import HeaderLogo from '../ui/HeaderLogo';
+import { useCartStore } from '@/features/store/stores/useCartStore';
 
 type NavChild = {
   label: string;
@@ -622,6 +623,10 @@ export function Navigation() {
     } finally {
       clearTokens();
       clearIdentity();
+
+      const { clearCart, clearOwner } = useCartStore.getState();
+      clearCart();
+      clearOwner();
 
       window.location.replace(window.location.origin + ROUTES.HOME);
     }

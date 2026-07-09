@@ -25,6 +25,7 @@ export function useCart() {
         setItems,
         clearCart: clearCartLocally,
         setSyncStatus,
+        setOwnerId,
     } = useCartStore();
 
     const { isAuthenticated } = useAuth();
@@ -32,6 +33,9 @@ export function useCart() {
     // ── Add ────────────────────────────────────────────────────────────────────
     const addItem = useCallback(
         async (item: CartItem) => {
+            if (!isAuthenticated) {
+                setOwnerId(null);
+            }
             addItemLocally(item);
 
             // Guest users keep a local cart only.

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useCartStore } from '../stores/useCartStore';
-import { cartService } from '../services/cart.service';
-import type { CartItem } from '../types/cart.types';
+import { useAuth } from '@/features/authentication/hooks/useAuth';
+import { hydrateAuthenticatedCart } from '../services/cartHydration.service';
 
 /**
  * useCartLoader
@@ -13,7 +13,13 @@ import type { CartItem } from '../types/cart.types';
  * On logout: clears local cart
  */
 export function useCartLoader(isAuthenticated: boolean) {
-    const { items: localItems, setItems } = useCartStore();
+    const { user } = useAuth();
+    const {
+        items: localItems,
+        ownerId,
+        setOwnerId,
+        setItems,
+    } = useCartStore();
     const hasFetched = useRef(false);
     const wasAuthenticated = useRef(false);
 
@@ -23,63 +29,17 @@ export function useCartLoader(isAuthenticated: boolean) {
             wasAuthenticated.current = true;
             if (hasFetched.current) return;
             hasFetched.current = true;
+            const currentUserId = String(user?.id ?? '');
 
             const loadAndMerge = async () => {
                 try {
-                    const { items: serverItems, cartId } = await cartService.fetchCart();
-
-                    if (localItems.length === 0) {
-                        setItems(serverItems, cartId);
-                        return;
-                    }
-                    const guestOnlyItems: CartItem[] = [];
-                    const duplicateItems: Array<{
-                        local: CartItem;
-                        server: CartItem;
-                    }> = [];
-
-                    for (const local of localItems) {
-                        const server = serverItems.find((s) => s.id === local.id);
-
-                        if (server) {
-                            duplicateItems.push({
-                                local,
-                                server,
-                            });
-                        } else {
-                            guestOnlyItems.push(local);
-                        }
-                    }
-
-                    await Promise.all([
-                        ...guestOnlyItems.map((item) =>
-                            cartService.addToCart({
-                                product_id: parseInt(item.productId, 10),
-                                ...(item.variantId
-                                    ? { variant_id: parseInt(item.variantId, 10) }
-                                    : {}),
-                                quantity: item.quantity,
-                            }),
-                        ),
-
-                        ...duplicateItems
-                            .filter(
-                                ({ local, server }) =>
-                                    local.quantity !== server.quantity && server.cartItemId,
-                            )
-                            .map(({ local, server }) =>
-                                cartService.updateCart({
-                                    cart_item_id: Number(server.cartItemId),
-                                    quantity: local.quantity,
-                                }),
-                            ),
-                    ]);
-
-
-                    // Fetch the authoritative server cart.
-                    const refreshed = await cartService.fetchCart();
-
-                    setItems(refreshed.items, refreshed.cartId);
+                    await hydrateAuthenticatedCart({
+                        ownerId,
+                        currentUserId,
+                        localItems,
+                        setItems,
+                        setOwnerId,
+                    });
                 } catch {
                     // Silently fail — local cart remains usable
                 }
@@ -97,6 +57,6 @@ export function useCartLoader(isAuthenticated: boolean) {
             wasAuthenticated.current = false;
             hasFetched.current = false;
         }
-    }, [isAuthenticated]);
+    }, [isAuthenticated, user]);
 }
 
