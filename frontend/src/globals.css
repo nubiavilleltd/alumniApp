@@ -1362,20 +1362,25 @@ input[type='password']::-webkit-caps-lock-indicator {
 .auth-google-signin,
 .auth-facebook-signin {
   position: relative;
+  display: flex;
+  min-height: 2.75rem;
   min-width: 0;
+  flex-direction: column;
+  gap: 0.45rem;
 }
 
 .auth-google-signin__visual,
 .auth-facebook-signin .auth-social-button {
   width: 100%;
-  height: 100%;
+  min-height: 2.75rem;
 }
 
 .auth-google-signin__button {
   position: absolute;
-  inset: 0;
+  inset: 0 0 auto;
   z-index: 2;
   width: 100% !important;
+  height: 2.75rem !important;
   opacity: 0.01;
 }
 
@@ -1391,6 +1396,9 @@ input[type='password']::-webkit-caps-lock-indicator {
 }
 
 .auth-google-signin__loading {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 3;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1402,6 +1410,7 @@ input[type='password']::-webkit-caps-lock-indicator {
   color: #475569;
   font-size: 0.9rem;
   font-weight: 600;
+  pointer-events: none;
 }
 
 .auth-social-button {
@@ -1642,6 +1651,11 @@ input[type='password']::-webkit-caps-lock-indicator {
   font-weight: 500;
   line-height: 1.4;
   letter-spacing: 0;
+}
+
+.auth-google-signin > .auth-field-error,
+.auth-facebook-signin > .auth-field-error {
+  min-height: 2.4rem;
 }
 
 .auth-card .base-input__message svg,

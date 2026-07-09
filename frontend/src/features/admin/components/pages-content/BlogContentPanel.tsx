@@ -139,14 +139,6 @@ function validateBlogForm(formState: BlogFormState) {
   return null;
 }
 
-function moveItemToFront<T>(items: T[], itemIndex: number) {
-  if (itemIndex <= 0 || itemIndex >= items.length) return items;
-  const nextItems = [...items];
-  const [item] = nextItems.splice(itemIndex, 1);
-  nextItems.unshift(item);
-  return nextItems;
-}
-
 function createBlogCategorySlug(name: string) {
   return name
     .trim()
@@ -580,11 +572,7 @@ function BlogPostForm({
       : -1;
     const mainImageFileIndex =
       mainImageIndex >= 0 ? getLocalPreviewFileIndex(formState.imagePreviews, mainImageIndex) : -1;
-    const orderedImageFiles =
-      mainImageFileIndex >= 0
-        ? moveItemToFront(formState.imageFiles, mainImageFileIndex)
-        : formState.imageFiles;
-    const mainImageIndexPayload = mainImageFileIndex >= 0 ? 0 : undefined;
+    const mainImageIndexPayload = mainImageFileIndex >= 0 ? mainImageFileIndex : undefined;
     const mainImageUrlPayload =
       formState.mainImagePreview && !isLocalPreview(formState.mainImagePreview)
         ? formState.mainImagePreview
@@ -597,7 +585,7 @@ function BlogPostForm({
       excerpt: formState.excerpt.trim(),
       status,
       sections: normalizeSections(formState.sections),
-      images: orderedImageFiles,
+      images: formState.imageFiles,
       ...(mainImageIndexPayload !== undefined ? { mainImageIndex: mainImageIndexPayload } : {}),
       ...(mainImageUrlPayload ? { mainImageUrl: mainImageUrlPayload } : {}),
     };

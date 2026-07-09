@@ -5,6 +5,7 @@ import {
   mapBlogCategory,
   mapBlogPostDetail,
   mapBlogPosts,
+  toBooleanActive,
 } from '../api/adapters/blog.adapter';
 import type {
   BlogCategory,
@@ -41,8 +42,14 @@ export type ReorderBlogCategoryInput = {
   sortOrder: number;
 };
 
-function activeValue(isActive?: boolean) {
-  return isActive ? 1 : 0;
+function activeValue(value: number | boolean | undefined, fallback = true): 1 | 0 {
+  const finalValue = value ?? fallback;
+
+  if (typeof finalValue === 'number') {
+    return finalValue === 1 ? 1 : 0;
+  }
+
+  return finalValue ? 1 : 0;
 }
 
 function summarizeBlogPostInput(input: SaveBlogPostInput) {
@@ -98,6 +105,8 @@ function appendBlogPostFields(formData: FormData, input: SaveBlogPostInput) {
   }
   input.images?.forEach((image) => formData.append('images[]', image));
 }
+
+
 
 export const blogService = {
   async getCategories(): Promise<BlogCategory[]> {
@@ -178,7 +187,8 @@ export const blogService = {
       name: input.name ?? baseCategory.name,
       slug: input.slug ?? baseCategory.slug,
       sortOrder: input.sortOrder ?? baseCategory.sortOrder,
-      isActive: input.isActive ?? baseCategory.isActive,
+      isActive: toBooleanActive(input.isActive, baseCategory.isActive),
+
     };
 
     console.log('[Blog Categories] update category:', {

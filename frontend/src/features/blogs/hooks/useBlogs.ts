@@ -8,6 +8,7 @@ import type {
   SaveBlogPostInput,
 } from '../services/blog.service';
 import type { BlogCategory, SaveBlogCategoryInput } from '../types/blog.types';
+import { toBooleanActive } from '../api/adapters/blog.adapter';
 
 export const blogKeys = {
   all: ['blogs'] as const,
@@ -128,7 +129,7 @@ export function useUpdateBlogCategory() {
         name: input.name ?? category.name,
         slug: input.slug ?? category.slug,
         sortOrder: input.sortOrder ?? category.sortOrder,
-        isActive: input.isActive ?? category.isActive,
+        isActive: toBooleanActive(input.isActive, category.isActive),
       };
 
       console.log('[Blog Categories] update mutation success:', {
