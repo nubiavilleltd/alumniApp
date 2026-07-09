@@ -51,32 +51,29 @@ export function useCartLoader(isAuthenticated: boolean) {
                         }
                     }
 
-                    console.log('Guest-only items', guestOnlyItems);
-                    console.log('Duplicate items', duplicateItems);
+                    await Promise.all([
+                        ...guestOnlyItems.map((item) =>
+                            cartService.addToCart({
+                                product_id: parseInt(item.productId, 10),
+                                ...(item.variantId
+                                    ? { variant_id: parseInt(item.variantId, 10) }
+                                    : {}),
+                                quantity: item.quantity,
+                            }),
+                        ),
 
-
-                    // Upload guest-only items
-                    for (const item of guestOnlyItems) {
-                        await cartService.addToCart({
-                            product_id: parseInt(item.productId, 10),
-                            ...(item.variantId
-                                ? { variant_id: parseInt(item.variantId, 10) }
-                                : {}),
-                            quantity: item.quantity,
-                        });
-                    }
-
-                    for (const { local, server } of duplicateItems) {
-                        if (
-                            local.quantity !== server.quantity &&
-                            server.cartItemId
-                        ) {
-                            await cartService.updateCart({
-                                cart_item_id: Number(server.cartItemId),
-                                quantity: local.quantity,
-                            });
-                        }
-                    }
+                        ...duplicateItems
+                            .filter(
+                                ({ local, server }) =>
+                                    local.quantity !== server.quantity && server.cartItemId,
+                            )
+                            .map(({ local, server }) =>
+                                cartService.updateCart({
+                                    cart_item_id: Number(server.cartItemId),
+                                    quantity: local.quantity,
+                                }),
+                            ),
+                    ]);
 
 
                     // Fetch the authoritative server cart.
@@ -103,15 +100,3 @@ export function useCartLoader(isAuthenticated: boolean) {
     }, [isAuthenticated]);
 }
 
-function mergeCartItems(local: CartItem[], server: CartItem[]): CartItem[] {
-    const merged = new Map<string, CartItem>();
-    for (const item of server) merged.set(item.id, item);
-    for (const item of local) {
-        const serverVersion = merged.get(item.id);
-        merged.set(item.id, {
-            ...item,
-            cartItemId: serverVersion?.cartItemId ?? item.cartItemId,
-        });
-    }
-    return [...merged.values()];
-}
