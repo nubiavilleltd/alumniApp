@@ -286,7 +286,7 @@
 
 import { useMemo, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Pencil, Trash2, ShoppingCart } from 'lucide-react';
+import { Pencil, Trash2, ShoppingCart, Plus, Minus } from 'lucide-react';
 import { SEO } from '@/shared/common/SEO';
 import { useCart } from '../hooks/useCart';
 import { useCartStore } from '../stores/useCartStore';
@@ -380,7 +380,7 @@ function CartQtyStepper({ itemId, quantity, stockCap, onUpdate }: CartQtyStepper
                 onClick={() => onUpdate(itemId, Math.max(1, quantity - 1))}
                 disabled={quantity <= 1}
                 className="w-8 h-8 rounded-full border-2 border-gray-200 flex items-center justify-center text-gray-500 hover:border-gray-400 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            >−</button>
+            ><Minus size={15}/></button>
             <input
                 type="number"
                 min={1}
@@ -395,7 +395,7 @@ function CartQtyStepper({ itemId, quantity, stockCap, onUpdate }: CartQtyStepper
                 onClick={() => onUpdate(itemId, Math.min(stockCap, quantity + 1))}
                 disabled={quantity >= stockCap}
                 className="w-8 h-8 rounded-full border-2 border-gray-200 flex items-center justify-center text-gray-500 hover:border-gray-400 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            >+</button>
+            ><Plus size={15}/></button>
         </div>
     );
 }
@@ -510,7 +510,7 @@ export function CartPage() {
                         <div className="flex items-center gap-3">
                             <Link
                                 to={STORE_ROUTES.ROOT}
-                                className="hidden sm:flex items-center gap-2 text-sm font-semibold text-primary-500 border border-primary-300 rounded-full px-4 py-2 hover:bg-primary-50 transition-colors"
+                                className="hidden sm:flex items-center gap-2 text-sm font-semibold text-primary-500 border border-primary-500 rounded-full px-4 py-2 hover:bg-primary-50 transition-colors"
                             >
                                 Continue Shopping
                             </Link>
@@ -541,7 +541,7 @@ export function CartPage() {
                             <button
                                 disabled={!someSelected}
                                 onClick={() => setConfirmDelete('bulk')}
-                                className="text-sm font-semibold text-primary-500 border border-primary-300 rounded-full px-4 py-1.5 hover:bg-primary-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                                className="text-sm font-semibold text-primary-500 border border-primary-500 rounded-full px-4 py-1.5 hover:bg-primary-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                             >
                                 Delete Selected Items
                             </button>
@@ -567,62 +567,32 @@ export function CartPage() {
                                     const stockCap = getRawStock(item);
                                     const isOverStock = item.quantity > stockCap;
                                     return (
-                                        <div
-                                            key={item.id}
-                                            className={`bg-white rounded-2xl border p-4 flex items-start gap-4 ${isOverStock ? 'border-amber-300' : 'border-gray-100'
-                                                }`}
-                                        >
-                                            <input
-                                                type="checkbox"
-                                                checked={selectedIds.has(item.id)}
-                                                onChange={() => toggleItem(item.id)}
-                                                className="mt-1 w-4 h-4 rounded border-gray-300 text-primary-500 focus:ring-primary-400 shrink-0"
-                                            />
-                                            <img
-                                                src={item.image}
-                                                alt={item.productName}
-                                                className="w-[80px] h-[80px] sm:w-[100px] sm:h-[100px] object-cover rounded-xl bg-gray-50 shrink-0"
-                                            />
-                                            <div className="flex-1 min-w-0">
-                                                <p className="font-semibold text-gray-800 text-sm sm:text-base leading-snug">
-                                                    {item.productName}
-                                                </p>
-                                                <p className="font-bold text-gray-900 mt-0.5">
-                                                    ₦{item.price.toLocaleString()}
-                                                </p>
-                                                {(item.color || item.size) && (
-                                                    <p className="text-xs text-gray-400 mt-0.5">
-                                                        {[item.color, item.size].filter(Boolean).join('/')}
-                                                    </p>
-                                                )}
-                                                {isOverStock && (
-                                                    <p className="text-xs text-amber-600 mt-1">
-                                                        Only {stockCap} available — please reduce quantity
-                                                    </p>
-                                                )}
-                                                <CartQtyStepper
+                                        <div key={item.id} className={`bg-white rounded-2xl border p-4 flex flex-col ${isOverStock ? 'border-amber-300' : 'border-gray-100'}`}>
+                                            <div className='flex items-start gap-2'>
+                                                <input type="checkbox" checked={selectedIds.has(item.id)} onChange={() => toggleItem(item.id)}
+                                                    className="mt-1 w-4 h-4 rounded border-gray-300 text-primary-500 focus:ring-primary-400 shrink-0" />
+                                                <img src={item.image} alt={item.productName} className="w-[80px] h-[80px] sm:w-[100px] sm:h-[100px] object-cover rounded-xl bg-gray-50 shrink-0" />
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="font-semibold text-gray-800 text-sm sm:text-base leading-snug">{item.productName}</p>
+                                                    <p className="font-bold text-gray-900 mt-0.5">₦{item.price.toLocaleString()}</p>
+                                                    {(item.color || item.size) && (
+                                                        <p className="text-xs text-gray-400 mt-0.5">{[item.color, item.size].filter(Boolean).join('/')}</p>
+                                                    )}
+                                                    {isOverStock && (
+                                                        <p className="text-xs text-amber-600 mt-1">Only {stockCap} available — please reduce quantity</p>
+                                                    )}
+                                                </div>
+                                                <div className="flex items-end gap-2 shrink-0">
+                                                    <button onClick={() => handleEdit(item.id)} className="text-primary-500 hover:text-primary-600 transition-colors p-1" title="Edit item"><Pencil size={16} /></button>
+                                                    <button onClick={() => setConfirmDelete(item.id)} className="text-red-500 hover:text-red-600 transition-colors p-1" title="Remove item"><Trash2 size={16} /></button>
+                                                </div>
+                                            </div>
+                                            <div className='flex justify-end'><CartQtyStepper
                                                     itemId={item.id}
                                                     quantity={item.quantity}
                                                     stockCap={stockCap}
                                                     onUpdate={(id, qty) => void updateItem(id, qty)}
-                                                />
-                                            </div>
-                                            <div className="flex flex-col items-end gap-2 shrink-0">
-                                                <button
-                                                    onClick={() => handleEdit(item.id)}
-                                                    className="text-primary-400 hover:text-primary-600 transition-colors p-1"
-                                                    title="Edit item"
-                                                >
-                                                    <Pencil size={16} />
-                                                </button>
-                                                <button
-                                                    onClick={() => setConfirmDelete(item.id)}
-                                                    className="text-red-400 hover:text-red-600 transition-colors p-1"
-                                                    title="Remove item"
-                                                >
-                                                    <Trash2 size={16} />
-                                                </button>
-                                            </div>
+                                                /></div>
                                         </div>
                                     );
                                 })
@@ -634,15 +604,18 @@ export function CartPage() {
                             <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
                                 <h2 className="font-bold text-gray-900 text-lg mb-4">Summary</h2>
                                 <div className="flex flex-col gap-2 text-sm">
-                                    <div className="flex justify-between text-gray-500 mb-1">
+                                    <div className="flex justify-between font-medium text-gray-800 mb-1">
                                         <span>Items Total</span>
                                         <span className="font-medium text-gray-800">{itemsTotal}</span>
                                     </div>
                                     {groupedBreakdown.map((b, i) => (
                                         <div key={i} className="flex justify-between text-gray-500 gap-2">
-                                            <span className="truncate min-w-0">{b.name}</span>
+                                          <div className="flex gap-2 font-medium text-gray-800 shrink-0 whitespace-nowrap">
+                                              <span className="truncate min-w-0">{b.name}</span>
+                                              <span>×{b.qty}</span>
+                                          </div>
                                             <span className="font-medium text-gray-800 shrink-0 whitespace-nowrap">
-                                                ×{b.qty}&nbsp;₦{b.lineTotal.toLocaleString()}
+                                                ₦{b.lineTotal.toLocaleString()}
                                             </span>
                                         </div>
                                     ))}

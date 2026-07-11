@@ -65,7 +65,32 @@ export function CheckoutPage() {
                         <div className="lg:col-span-2 flex flex-col gap-4">
 
                             {/* ── Delivery method cards ────────────────────────────────── */}
-                            {/* Door Delivery */}
+                           
+                            {/* Self Pickup */}
+                            <button
+                                onClick={() => setDeliveryMethod('pickup')}
+                                className={`w-full text-left p-4 rounded-2xl border-2 bg-white transition-all ${deliveryMethod === 'pickup'
+                                    ? 'border-primary-500'
+                                    : 'border-gray-200 hover:border-gray-300'
+                                    }`}
+                            >
+                                <div className="flex items-start gap-3">
+                                    <span
+                                        className={`mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${deliveryMethod === 'pickup' ? 'border-primary-500' : 'border-gray-400'
+                                            }`}
+                                    >
+                                        {deliveryMethod === 'pickup' && (
+                                            <span className="w-2.5 h-2.5 rounded-full bg-primary-500" />
+                                        )}
+                                    </span>
+                                    <div>
+                                        <p className="font-bold text-gray-900 text-sm">Self Pickup</p>
+                                        <p className="text-sm text-gray-500 leading-snug mt-0.5">{PICKUP_ADDRESS}</p>
+                                    </div>
+                                </div>
+                            </button>
+
+                             {/* Door Delivery */}
                             <button
                                 onClick={() => setDeliveryMethod('delivery')}
                                 className={`w-full text-left p-4 rounded-2xl border-2 bg-white transition-all ${deliveryMethod === 'delivery'
@@ -121,30 +146,6 @@ export function CheckoutPage() {
                                             {hasAddress ? 'Change' : 'Add Shipping Address'}
                                         </button>
                                     )}
-                                </div>
-                            </button>
-
-                            {/* Self Pickup */}
-                            <button
-                                onClick={() => setDeliveryMethod('pickup')}
-                                className={`w-full text-left p-4 rounded-2xl border-2 bg-white transition-all ${deliveryMethod === 'pickup'
-                                    ? 'border-primary-500'
-                                    : 'border-gray-200 hover:border-gray-300'
-                                    }`}
-                            >
-                                <div className="flex items-start gap-3">
-                                    <span
-                                        className={`mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${deliveryMethod === 'pickup' ? 'border-primary-500' : 'border-gray-400'
-                                            }`}
-                                    >
-                                        {deliveryMethod === 'pickup' && (
-                                            <span className="w-2.5 h-2.5 rounded-full bg-primary-500" />
-                                        )}
-                                    </span>
-                                    <div>
-                                        <p className="font-bold text-gray-900 text-sm">Self Pickup</p>
-                                        <p className="text-sm text-gray-500 leading-snug mt-0.5">{PICKUP_ADDRESS}</p>
-                                    </div>
                                 </div>
                             </button>
 
