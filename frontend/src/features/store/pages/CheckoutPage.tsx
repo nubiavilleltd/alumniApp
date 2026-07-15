@@ -6,12 +6,13 @@ import { AddressModal } from '../components/AddressModal';
 import { AddressCard } from '../components/AddressCard';
 import { useAddresses } from '../hooks/useAddresses';
 import { useDeliveryZones } from '../hooks/useDeliveryZones';
-// import { useCheckout } from '../hooks/useCheckout';
+import { useCheckout } from '../hooks/useCheckout';
 import { STORE_ROUTES } from '../routes';
 import { Info } from 'lucide-react';
 import { useAuth } from '@/features/authentication/hooks/useAuth';
 import type { Address } from '../types/address.types';
 import { AUTH_ROUTES } from '@/features/authentication/routes';
+import { toast } from '@/shared/components/ui/Toast';
 
 // ─── Pickup address (static for now) ─────────────────────────────────────────
 const PICKUP_ADDRESS =
@@ -24,7 +25,7 @@ export function CheckoutPage() {
         'pickup' | 'delivery'
     >('pickup');
 
-    const { isAuthenticated } = useAuth();
+    const { user } = useAuth();
     const [editingAddress, setEditingAddress] = useState<Address | null>(null);
     const [addressModalOpen, setAddressModalOpen] = useState(false);
     const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
@@ -32,7 +33,7 @@ export function CheckoutPage() {
     const { data: addresses = [], isLoading: addressesLoading, deleteAddress } = useAddresses();
 
     const { data: zones = [] } = useDeliveryZones();
-    // const { checkout, isLoading: checkoutLoading } = useCheckout();
+    const { checkout, isLoading: checkoutLoading } = useCheckout();
 
 
 
@@ -51,10 +52,10 @@ export function CheckoutPage() {
 
     // Auto-select first address when addresses load
     useEffect(() => {
-    if (addresses.length > 0 && !selectedAddressId) {
-        setSelectedAddressId(addresses[0].id);
-    }
-}, [addresses, selectedAddressId]);
+        if (addresses.length > 0 && !selectedAddressId) {
+            setSelectedAddressId(addresses[0].id);
+        }
+    }, [addresses, selectedAddressId]);
 
     const selectedAddress = addresses.find((a) => a.id === selectedAddressId) ?? null;
 
@@ -64,13 +65,13 @@ export function CheckoutPage() {
 
 
     // Compute shipping fee from zones
-   const shippingFee =
-    deliveryMethod === 'delivery' && selectedAddress
-        ? zones
-              .find((z) => z.state === selectedAddress.state)
-              ?.areas.find((a) => a.area === selectedAddress.area)
-              ?.fee ?? 0
-        : 0;
+    const shippingFee =
+        deliveryMethod === 'delivery' && selectedAddress
+            ? zones
+                .find((z) => z.state === selectedAddress.state)
+                ?.areas.find((a) => a.area === selectedAddress.area)
+                ?.fee ?? 0
+            : 0;
 
 
     const subtotal = items.reduce(
@@ -78,23 +79,35 @@ export function CheckoutPage() {
         0,
     );
 
-   const total =
-    subtotal +
-    (deliveryMethod === 'delivery' ? shippingFee : 0);
+    const total =
+        subtotal +
+        (deliveryMethod === 'delivery' ? shippingFee : 0);
 
 
 
     // on Pay Now button click:
-    const handlePayNow = () => {
-        if (!isAuthenticated) {
-            navigate(AUTH_ROUTES.LOGIN, {
-                state: { from: '/store/checkout' }  // same pattern ProtectedRoute uses
-            });
+    const handlePayNow = async () => {
+        if (!user) {
+            navigate(AUTH_ROUTES.LOGIN, { state: { from: '/store/checkout' } });
             return;
         }
-        // TODO: initiate payment here
-    };
+        if (deliveryMethod === 'delivery' && !selectedAddressId) {
+            toast.error('Please select a delivery address.');
+            return;
+        }
 
+    const payload =
+    deliveryMethod === 'pickup'
+        ? {
+              deliveryType: 'self_pickup' as const,
+          }
+        : {
+              deliveryType: 'door_delivery' as const,
+              addressId: Number(selectedAddressId),
+          };
+
+        await checkout(payload, user.email);
+    };
     return (
         <>
             <SEO title="Checkout" />
@@ -136,80 +149,80 @@ export function CheckoutPage() {
 
                             <div className="bg-white rounded-2xl p-5 border border-gray-100">
                                 {/* Door Delivery */}
-                            <button
-                                onClick={() => setDeliveryMethod('delivery')}
-                                className={`w-full text-left p-4 rounded-2xl border-2 bg-white transition-all ${deliveryMethod === 'delivery'
-                                    ? 'border-primary-500'
-                                    : 'border-gray-200 hover:border-gray-300'
-                                    }`}
-                            >
-                                <div className="flex items-start justify-between gap-4">
-                                    <div className="flex items-start gap-3">
-                                        {/* Radio circle */}
-                                        <span
-                                            className={`mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${deliveryMethod === 'delivery'
-                                                ? 'border-primary-500'
-                                                : 'border-gray-400'
-                                                }`}
-                                        >
-                                            {deliveryMethod === 'delivery' && (
-                                                <span className="w-2.5 h-2.5 rounded-full bg-primary-500" />
-                                            )}
-                                        </span>
+                                <button
+                                    onClick={() => setDeliveryMethod('delivery')}
+                                    className={`w-full text-left p-4 rounded-2xl border-2 bg-white transition-all ${deliveryMethod === 'delivery'
+                                        ? 'border-primary-500'
+                                        : 'border-gray-200 hover:border-gray-300'
+                                        }`}
+                                >
+                                    <div className="flex items-start justify-between gap-4">
+                                        <div className="flex items-start gap-3">
+                                            {/* Radio circle */}
+                                            <span
+                                                className={`mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${deliveryMethod === 'delivery'
+                                                    ? 'border-primary-500'
+                                                    : 'border-gray-400'
+                                                    }`}
+                                            >
+                                                {deliveryMethod === 'delivery' && (
+                                                    <span className="w-2.5 h-2.5 rounded-full bg-primary-500" />
+                                                )}
+                                            </span>
 
-                                        <div>
-                                            <p className="font-bold text-gray-900 text-sm">Door Delivery</p>
-                                           <p className="text-xs text-gray-400 mt-0.5">
+                                            <div>
+                                                <p className="font-bold text-gray-900 text-sm">Door Delivery</p>
+                                                <p className="text-xs text-gray-400 mt-0.5">
                                                     Order will be delivered in 3 to 5 working days
                                                 </p>
+                                            </div>
                                         </div>
+
+                                        {/* Add/Change address button — only when door delivery is active */}
+                                        {deliveryMethod === 'delivery' && (
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setEditingAddress(null);
+                                                    setAddressModalOpen(true);
+                                                }}
+                                                className="shrink-0 text-sm font-semibold text-primary-500 border border-primary-500 rounded-full px-4 py-1.5 hover:bg-primary-50 transition-colors"
+                                            >
+                                                Add Shipping Address
+                                            </button>
+                                        )}
                                     </div>
+                                </button>
 
-                                    {/* Add/Change address button — only when door delivery is active */}
-                                    {deliveryMethod === 'delivery' && (
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                setEditingAddress(null);
-                                                setAddressModalOpen(true);
-                                            }}
-                                            className="shrink-0 text-sm font-semibold text-primary-500 border border-primary-500 rounded-full px-4 py-1.5 hover:bg-primary-50 transition-colors"
-                                        >
-                                            Add Shipping Address
-                                        </button>
-                                    )}
-                                </div>
-                            </button>
+                                {/* Address list */}
+                                {deliveryMethod === 'delivery' && (
+                                    <div className="mt-3 flex flex-col gap-2">
+                                        {addressesLoading ? (
+                                            <p className="text-xs text-gray-400 animate-pulse">Loading addresses...</p>
+                                        ) : (
+                                            addresses.map((addr) => (
+                                                <AddressCard
+                                                    key={addr.id}
+                                                    address={addr}
+                                                    isSelected={selectedAddressId === addr.id}
+                                                    onSelect={() => setSelectedAddressId(addr.id)}
+                                                    onEdit={() => { setEditingAddress(addr); setAddressModalOpen(true); }}
+                                                    onDelete={() => deleteAddress.mutate(addr.id)}
+                                                    isDeleting={deleteAddress.isPending}
+                                                />
+                                            ))
+                                        )}
+                                        {/* Add Shipping Address — always visible for delivery */}
 
-                            {/* Address list */}
-                            {deliveryMethod === 'delivery' && (
-                                <div className="mt-3 flex flex-col gap-2">
-                                    {addressesLoading ? (
-                                        <p className="text-xs text-gray-400 animate-pulse">Loading addresses...</p>
-                                    ) : (
-                                        addresses.map((addr) => (
-                                            <AddressCard
-                                                key={addr.id}
-                                                address={addr}
-                                                isSelected={selectedAddressId === addr.id}
-                                                onSelect={() => setSelectedAddressId(addr.id)}
-                                                onEdit={() => { setEditingAddress(addr); setAddressModalOpen(true); }}
-                                                onDelete={() => deleteAddress.mutate(addr.id)}
-                                                isDeleting={deleteAddress.isPending}
-                                            />
-                                        ))
-                                    )}
-                                    {/* Add Shipping Address — always visible for delivery */}
-                                  
-                                </div>
-                            )}
+                                    </div>
+                                )}
 
 
                             </div>
 
-                            
 
-                            
+
+
                             {/* ── Order Summary tiles ──────────────────────────────────── */}
                             {items.length > 0 && (
                                 <div className="bg-white rounded-2xl p-5 border border-gray-100">
@@ -265,14 +278,15 @@ export function CheckoutPage() {
 
                                 {/* Pay Now */}
                                 <button
-                                    onClick={handlePayNow}
+                                    onClick={() => void handlePayNow()}
                                     disabled={
                                         items.length === 0 ||
-                                        (deliveryMethod === 'delivery' && !hasAddress)
+                                        checkoutLoading ||
+                                        (deliveryMethod === 'delivery' && !selectedAddressId)
                                     }
                                     className="mt-5 w-full py-3.5 rounded-full bg-primary-500 text-white font-semibold hover:bg-primary-600 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    Pay Now
+                                    {checkoutLoading ? 'Processing...' : 'Pay Now'}
                                 </button>
 
                                 <p className='mt-3 text-xs flex items-center text-gray-600 gap-1'><Info size={15} /> There are no refunds on purchases</p>
