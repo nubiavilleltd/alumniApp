@@ -1,21 +1,3 @@
-// export interface CartItem {
-//   id: string;
-
-//   productId: string;
-//   productName: string;
-
-//   image: string;
-
-//   price: number;
-
-//   quantity: number;
-
-//   color?: string;
-//   size?: string;
-// }
-
-
-
 // ─── Server cart types (from fetch_cart response) ─────────────────────────────
 
 export interface ServerCartVariant {

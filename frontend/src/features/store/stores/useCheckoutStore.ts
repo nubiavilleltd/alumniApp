@@ -111,15 +111,15 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { DeliveryMethod } from '../types/checkout.types';
-import type { ShippingAddress } from '../types/address.types';
+import type { Address } from '../types/address.types';
 import { getShippingFee } from '../constants/shippingRates';
 
 interface CheckoutStore {
   deliveryMethod: DeliveryMethod;
-  shippingAddress: ShippingAddress | null;
+  shippingAddress: Address | null;
   shippingFee: number;
   setDeliveryMethod: (m: DeliveryMethod) => void;
-  setShippingAddress: (a: ShippingAddress) => void;
+  setShippingAddress: (a: Address) => void;
   setShippingFee: (fee: number) => void;
   resetCheckout: () => void;
 }

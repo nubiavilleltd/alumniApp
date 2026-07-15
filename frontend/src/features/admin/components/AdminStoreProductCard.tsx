@@ -1,5 +1,5 @@
 import { Pencil, Trash2 } from 'lucide-react';
-import { AdminApiProduct } from '../types/adminstore.types';
+import { AdminApiProduct } from '../types/adminStore.types';
 
 interface Props {
   product: AdminApiProduct;

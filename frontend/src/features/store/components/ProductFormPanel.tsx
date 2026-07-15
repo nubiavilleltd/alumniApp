@@ -1021,8 +1021,8 @@ import { SelectInput } from '@/shared/components/ui/SelectInput';
 import { ImageUpload } from '@/shared/components/ui/ImageUpload';
 import Button from '@/shared/components/ui/Button';
 import { toast } from '@/shared/components/ui/Toast';
-import { AdminApiProduct, ColourEntry, CreateProductFormData, FormImage, SizeEntry, StockCell, UpdateProductFormData, VariantPayloadItem } from '@/features/admin/types/adminstore.types';
-import { BasicInfoFormValues, basicInfoSchema, STORE_CATEGORIES } from '@/features/admin/schemas/adminstore.schema';
+import { AdminApiProduct, ColourEntry, CreateProductFormData, FormImage, SizeEntry, StockCell, UpdateProductFormData, VariantPayloadItem } from '@/features/admin/types/adminStore.types';
+import { BasicInfoFormValues, basicInfoSchema, STORE_CATEGORIES } from '@/features/admin/schemas/adminStore.schema';
 
 
 

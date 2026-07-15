@@ -155,4 +155,16 @@ export const API_ENDPOINTS = {
     GET_PENDING: '/api/voucher_pending',
     ACTION: '/api/vouch_action',
   },
+
+STORE: {
+  FETCH_ADDRESSES: '/product/fetch_addresses',
+  ADD_ADDRESS: '/product/add_address',
+  EDIT_ADDRESS: '/product/edit_address',
+  DELETE_ADDRESS: '/product/delete_address',
+
+  FETCH_DELIVERY_ZONES: '/product/fetch_delivery_zones',
+
+  INITIATE_CHECKOUT: '/product/initiate_checkout',
+  VERIFY_PAYMENT: '/product/verify_payment',
+}
 } as const;

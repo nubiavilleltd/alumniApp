@@ -5,7 +5,7 @@ import { ROUTES } from '@/shared/constants/routes';
 import { ADMIN_ROUTES } from '@/features/admin/routes';
 import { ADMIN_STORE_ROUTES } from '../routes';
 import { useCreateProduct } from '../hooks/useAdminStore';
-import type { CreateProductFormData } from '../types/adminstore.types';
+import type { CreateProductFormData } from '../types/adminStore.types';
 import { ProductFormPanel } from '@/features/store/components/ProductFormPanel';
 
 export function ProductCreatePage() {

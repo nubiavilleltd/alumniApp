@@ -1,6 +1,6 @@
 import { apiClient } from '@/lib/api/client';
 import { handleApiError } from '@/lib/errors/apiErrorHandler';
-import { AdminApiProduct, CreateProductFormData, UpdateProductFormData } from '../types/adminstore.types';
+import { AdminApiProduct, CreateProductFormData, UpdateProductFormData } from '../types/adminStore.types';
 
 const ENDPOINTS = {
   FETCH: '/product/fetch_products',

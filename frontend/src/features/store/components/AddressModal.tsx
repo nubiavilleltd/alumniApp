@@ -7,11 +7,13 @@ import { FormInput } from '@/shared/components/ui/input/FormInput';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
 import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
 import Button from '@/shared/components/ui/Button';
-import { useCheckoutStore } from '../stores/useCheckoutStore';
-import { NIGERIA_STATES } from '../constants/nigerianStates';
-import { getAreasForState, getShippingFee } from '../constants/shippingRates';
-import type { ShippingAddress } from '../types/address.types';
-import type { NigeriaState } from '../constants/nigerianStates';
+import type { Address } from '../types/address.types';
+import { useDeliveryZones } from '../hooks/useDeliveryZones';
+import { useAddresses } from '../hooks/useAddresses';
+
+
+
+
 
 const addressSchema = z.object({
   firstName: z.string().trim().min(1, 'First name is required'),
@@ -20,7 +22,7 @@ const addressSchema = z.object({
     .string()
     .trim()
     .regex(/^0[789][01]\d{8}$/, 'Enter a valid 11-digit Nigerian phone number'),
-  altPhone: z
+  additionalPhone: z
     .string()
     .trim()
     .regex(/^(0[789][01]\d{8})?$/, 'Enter a valid 11-digit phone number or leave blank')
@@ -36,10 +38,25 @@ type AddressFormValues = z.infer<typeof addressSchema>;
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  editAddress?: Address | null;
 }
 
-export function AddressModal({ isOpen, onClose }: Props) {
-  const { setShippingAddress, shippingAddress } = useCheckoutStore();
+export function AddressModal({
+  isOpen,
+  onClose,
+  editAddress,
+}: Props) {
+const {
+  addAddress,
+  editAddress: editAddressMutation,
+} = useAddresses();
+
+  const { data: deliveryZones = [] } = useDeliveryZones();
+
+const stateOptions = deliveryZones.map((zone) => ({
+  label: zone.state,
+  value: zone.state,
+}));
 
   const {
     register,
@@ -53,30 +70,38 @@ export function AddressModal({ isOpen, onClose }: Props) {
     resolver: zodResolver(addressSchema),
     mode: 'onChange',
     defaultValues: {
-      firstName: '', lastName: '', phone: '', altPhone: '',
+      firstName: '', lastName: '', phone: '', additionalPhone: '',
       address: '', landmark: '', state: '', area: '',
     },
   });
 
-  useEffect(() => {
-    if (isOpen && shippingAddress) {
-      reset({
-        firstName: shippingAddress.firstName,
-        lastName: shippingAddress.lastName,
-        phone: shippingAddress.phone,
-        altPhone: shippingAddress.altPhone ?? '',
-        address: shippingAddress.address,
-        landmark: shippingAddress.landmark ?? '',
-        state: shippingAddress.state,
-        area: shippingAddress.area,
-      });
-    } else if (isOpen) {
-      reset({
-        firstName: '', lastName: '', phone: '', altPhone: '',
-        address: '', landmark: '', state: '', area: '',
-      });
-    }
-  }, [isOpen, shippingAddress, reset]);
+
+
+useEffect(() => {
+  if (isOpen && editAddress) {
+    reset({
+      firstName: editAddress.firstName,
+      lastName: editAddress.lastName,
+      phone: editAddress.phone,
+      additionalPhone: editAddress.additionalPhone ?? '',
+      address: editAddress.address,
+      landmark: editAddress.landmark ?? '',
+      state: editAddress.state,
+      area: editAddress.area,
+    });
+  } else if (isOpen) {
+    reset({
+      firstName: '',
+      lastName: '',
+      phone: '',
+      additionalPhone: '',
+      address: '',
+      landmark: '',
+      state: '',
+      area: '',
+    });
+  }
+}, [isOpen, editAddress, reset]);
 
   const selectedState = watch('state');
   const selectedArea = watch('area');
@@ -87,34 +112,47 @@ export function AddressModal({ isOpen, onClose }: Props) {
   }, [selectedState, setValue]);
 
   // All 37 states
-  const stateOptions = NIGERIA_STATES.map((s) => ({ label: s, value: s }));
 
   // Areas for the selected state — always populated since every state has areas
-  const areaOptions = selectedState
-    ? getAreasForState(selectedState as NigeriaState).map((a) => ({
-        label: a.area,
-        value: a.area,
-      }))
-    : [];
+  const selectedZone = deliveryZones.find(
+  (zone) => zone.state === selectedState,
+);
 
+const areaOptions =
+  selectedZone?.areas.map((area) => ({
+    label: area.area,
+    value: area.area,
+  })) ?? [];
   // Shipping fee hint for the selected area
-  const selectedAreaFee =
-    selectedState && selectedArea
-      ? getShippingFee(selectedState, selectedArea)
-      : null;
+ const selectedAreaFee =
+  selectedZone?.areas.find(
+    (area) => area.area === selectedArea,
+  )?.fee ?? null;
 
-  const onSubmit = (data: AddressFormValues) => {
-    const payload: ShippingAddress = {
-      ...data,
-      altPhone: data.altPhone || undefined,
-      landmark: data.landmark || undefined,
-      id: shippingAddress?.id ?? crypto.randomUUID(),
-    };
-    setShippingAddress(payload);
+ const onSubmit = async (data: AddressFormValues) => {
+  try {
+    if (editAddress) {
+      await editAddressMutation.mutateAsync({
+  id: Number(editAddress.id),
+        ...data,
+        additionalPhone: data.additionalPhone || undefined,
+        landmark: data.landmark || undefined,
+      });
+    } else {
+      await addAddress.mutateAsync({
+        ...data,
+        additionalPhone: data.additionalPhone || undefined,
+        landmark: data.landmark || undefined,
+      });
+    }
+
     onClose();
-  };
+  } catch (error) {
+    console.error(error);
+  }
+};
 
-  const isEditing = !!shippingAddress;
+  const isEditing = !!editAddress;
 
   return (
     <Modal
@@ -151,10 +189,10 @@ export function AddressModal({ isOpen, onClose }: Props) {
              style={{backgroundColor:'#F8F7F4'}}
           />
           <FormInput
-            label="Additional Phone Number" id="altPhone"
+            label="Additional Phone Number" id="additionalPhone"
             placeholder="e.g. 09087654321"
-            error={errors.altPhone?.message}
-            {...register('altPhone')}
+            error={errors.additionalPhone?.message}
+            {...register('additionalPhone')}
              style={{backgroundColor:'#F8F7F4'}}
           />
         </div>
@@ -217,8 +255,18 @@ export function AddressModal({ isOpen, onClose }: Props) {
         </div>
 
         <div className="mt-12 flex items-center justify-center">
-          <Button type="submit" className="self-center max-w-[200px] rounded-full" disabled={isSubmitting} disabled:opacity-50 disabled:cursor-not-allowed>
-            {isEditing ? 'Save Changes' : 'Add Address'}
+          <Button type="submit" className="self-center max-w-[200px] rounded-full"  disabled={
+  isSubmitting ||
+  addAddress.isPending ||
+  editAddressMutation.isPending
+} disabled:opacity-50 disabled:cursor-not-allowed>
+           {isEditing
+  ? editAddressMutation.isPending
+      ? 'Saving...'
+      : 'Save Changes'
+  : addAddress.isPending
+      ? 'Adding...'
+      : 'Add Address'}
           </Button>
         </div>
       </form>
