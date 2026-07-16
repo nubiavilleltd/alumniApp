@@ -3972,6 +3972,48 @@ public function get_chapters()
         header('Content-Type: application/json');
         echo json_encode($data);
     }
+
+    private function normalize_incident_status($status)
+    {
+        return strtolower(str_replace([' ', '-'], '_', trim((string)$status)));
+    }
+
+    private function is_hse_incident_role($user_role)
+    {
+        $role = strtolower(trim((string)$user_role));
+
+        return $role === 'hse'
+            || $role === 'hse_inspector'
+            || $role === 'hse inspector'
+            || strpos($role, 'hse') !== false;
+    }
+
+    private function is_final_incident_status($status)
+    {
+        return in_array($this->normalize_incident_status($status), ['resolved', 'closed'], true);
+    }
+
+    private function add_incident_verification_fields($updateData, $notes, $user_id)
+    {
+        if ($this->db->field_exists('verification_notes', 'incident_reports')) {
+            $updateData['verification_notes'] = $notes;
+        }
+
+        if ($this->db->field_exists('hse_verification_notes', 'incident_reports')) {
+            $updateData['hse_verification_notes'] = $notes;
+        }
+
+        if ($this->db->field_exists('hse_verified_by', 'incident_reports')) {
+            $updateData['hse_verified_by'] = $user_id;
+        }
+
+        if ($this->db->field_exists('hse_verified_at', 'incident_reports')) {
+            $updateData['hse_verified_at'] = date('Y-m-d H:i:s');
+        }
+
+        return $updateData;
+    }
+
     public function manage_incident_report()
     {
         $contentType = $this->input->server('CONTENT_TYPE');
@@ -4015,6 +4057,109 @@ public function get_chapters()
         }
 
         $user_role = $user->user_role;
+        $is_hse_user = $this->is_hse_incident_role($user_role);
+
+        if (!$incident_id && in_array($function_type, ['update', 'delete', 'verify_close', 'verify_and_close', 'hse_verify_close', 'not_resolved', 'reopen', 'hse_reopen'], true)) {
+            $data['status']  = 400;
+            $data['message'] = 'incident_id is required';
+            $this->output->set_status_header(400);
+            header('Content-Type: application/json');
+            echo json_encode($data);
+            return;
+        }
+
+        $incident = null;
+        if ($incident_id) {
+            $incident = $this->db->get_where('incident_reports', ['incident_id' => $incident_id])->row();
+            if (!$incident) {
+                $data['status']  = 404;
+                $data['message'] = 'Incident report not found';
+                $this->output->set_status_header(404);
+                header('Content-Type: application/json');
+                echo json_encode($data);
+                return;
+            }
+        }
+
+        // --- HSE VERIFICATION: Verify and Close ---
+        if (in_array($function_type, ['verify_close', 'verify_and_close', 'hse_verify_close'], true)) {
+            $verification_notes = trim($object['verification_notes'] ?? $object['notes'] ?? '');
+
+            if (!$is_hse_user) {
+                $data['status']  = 403;
+                $data['message'] = 'Only HSE can verify and close incident reports';
+                $this->output->set_status_header(403);
+                header('Content-Type: application/json');
+                echo json_encode($data);
+                return;
+            }
+
+            if ($verification_notes === '') {
+                $data['status']  = 422;
+                $data['message'] = 'Verification notes are required to close an incident report';
+                $this->output->set_status_header(422);
+                header('Content-Type: application/json');
+                echo json_encode($data);
+                return;
+            }
+
+            $updateData = [
+                'status'       => 'Resolved',
+                'date_updated' => date('Y-m-d H:i:s')
+            ];
+            $updateData = $this->add_incident_verification_fields($updateData, $verification_notes, $user_id);
+
+            $this->db->where('incident_id', $incident_id);
+            $this->db->update('incident_reports', $updateData);
+
+            $data['status']  = 200;
+            $data['message'] = 'Incident report verified and closed successfully';
+            $data['updated'] = $updateData;
+            $this->output->set_status_header(200);
+            header('Content-Type: application/json');
+            echo json_encode($data, JSON_UNESCAPED_SLASHES);
+            return;
+        }
+
+        // --- HSE VERIFICATION: Not Resolved / Reopen ---
+        if (in_array($function_type, ['not_resolved', 'reopen', 'hse_reopen'], true)) {
+            $verification_notes = trim($object['verification_notes'] ?? $object['notes'] ?? $object['reason'] ?? '');
+
+            if (!$is_hse_user) {
+                $data['status']  = 403;
+                $data['message'] = 'Only HSE can reopen incident reports after verification';
+                $this->output->set_status_header(403);
+                header('Content-Type: application/json');
+                echo json_encode($data);
+                return;
+            }
+
+            if ($verification_notes === '') {
+                $data['status']  = 422;
+                $data['message'] = 'Reason is required when marking an incident report as not resolved';
+                $this->output->set_status_header(422);
+                header('Content-Type: application/json');
+                echo json_encode($data);
+                return;
+            }
+
+            $updateData = [
+                'status'       => 'Action Required',
+                'date_updated' => date('Y-m-d H:i:s')
+            ];
+            $updateData = $this->add_incident_verification_fields($updateData, $verification_notes, $user_id);
+
+            $this->db->where('incident_id', $incident_id);
+            $this->db->update('incident_reports', $updateData);
+
+            $data['status']  = 200;
+            $data['message'] = 'Incident report marked for further action';
+            $data['updated'] = $updateData;
+            $this->output->set_status_header(200);
+            header('Content-Type: application/json');
+            echo json_encode($data, JSON_UNESCAPED_SLASHES);
+            return;
+        }
 
         // --- DELETE FUNCTION ---
         if ($function_type === 'delete') {
@@ -4042,15 +4187,41 @@ public function get_chapters()
             $description   = isset($object['description']) ? trim($object['description']) : null;
             $location      = isset($object['location']) ? trim($object['location']) : null;
             $status      = isset($object['status']) ? trim($object['status']) : null;
+            $verification_notes = trim($object['verification_notes'] ?? $object['notes'] ?? '');
 
             if ($incident_type) $updateData['incident_type'] = $incident_type;
             if ($incident_name) $updateData['incident_name'] = $incident_name;
             if ($description)   $updateData['description']   = $description;
             if ($location)      $updateData['location']      = $location;
-            if ($status)        $updateData['status']        = $status;
+
+            if ($status) {
+                if ($this->is_final_incident_status($status)) {
+                    if (!$is_hse_user) {
+                        $data['status']  = 403;
+                        $data['message'] = 'Only HSE can close or resolve incident reports';
+                        $this->output->set_status_header(403);
+                        header('Content-Type: application/json');
+                        echo json_encode($data);
+                        return;
+                    }
+
+                    if ($verification_notes === '') {
+                        $data['status']  = 422;
+                        $data['message'] = 'Verification notes are required to close or resolve an incident report';
+                        $this->output->set_status_header(422);
+                        header('Content-Type: application/json');
+                        echo json_encode($data);
+                        return;
+                    }
+
+                    $updateData = $this->add_incident_verification_fields($updateData, $verification_notes, $user_id);
+                }
+
+                $updateData['status'] = $status;
+            }
 
             // --- Handle Emergency Category ---
-            if (strtolower($incident_type) === 'emergency') {
+            if ($incident_type && strtolower($incident_type) === 'emergency') {
                 $incident_category = isset($object['incident_category']) ? trim($object['incident_category']) : null;
                 $updateData['incident_category'] = $incident_category;
             }
@@ -4099,12 +4270,7 @@ public function get_chapters()
                 $updateData['image'] = json_encode($mergedImages, JSON_UNESCAPED_SLASHES);
             }
 
-            // === Permission: Only Manager or Security can mark as Resolved ===
-            if (in_array($user_role, ['Manager', 'Security'])) {
-                // $updateData['status'] = 'Resolved';
-                $updateData['status'] = $status;
-            }
-            $message_type=(strtolower($incident_type) === 'emergency')?'Emergency':'Incident';
+            $message_type = ($incident_type && strtolower($incident_type) === 'emergency') ? 'Emergency' : 'Incident';
             $updateData['date_updated'] = date('Y-m-d H:i:s');
 
             if (!empty($updateData)) {
