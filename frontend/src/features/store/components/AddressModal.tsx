@@ -10,6 +10,7 @@ import Button from '@/shared/components/ui/Button';
 import type { Address } from '../types/address.types';
 import { useDeliveryZones } from '../hooks/useDeliveryZones';
 import { useAddresses } from '../hooks/useAddresses';
+import { eventFormFieldLabelClassName, eventFormSelectClassName, eventFormSelectControlClassName } from '@/features/events/constants/eventFormStyles';
 
 
 
@@ -27,7 +28,7 @@ const addressSchema = z.object({
     .trim()
     .regex(/^(0[789][01]\d{8})?$/, 'Enter a valid 11-digit phone number or leave blank')
     .optional(),
-  address: z.string().trim().min(5, 'Please enter a valid delivery address'),
+  address: z.string().trim().min(5, 'Please enter a valid delivery address').max(200, "Character limits exceeded"),
   landmark: z.string().trim().optional(),
   state: z.string().min(1, 'Please select a state'),
   area: z.string().min(1, 'Please select an area'),
@@ -89,6 +90,11 @@ useEffect(() => {
       state: editAddress.state,
       area: editAddress.area,
     });
+
+     setTimeout(() => {
+      trigger('state');
+      trigger('area');
+    }, 0);
   } else if (isOpen) {
     reset({
       firstName: '',
@@ -106,12 +112,13 @@ useEffect(() => {
   const selectedState = watch('state');
   const selectedArea = watch('area');
 
-  // Reset area whenever state changes
-  useEffect(() => {
-    setValue('area', '', { shouldValidate: false });
-  }, [selectedState, setValue]);
 
-  // All 37 states
+useEffect(() => {
+  if (selectedState && !editAddress) {
+    setValue('area', '', { shouldValidate: false });
+  }
+}, [selectedState, setValue, editAddress]);
+
 
   // Areas for the selected state — always populated since every state has areas
   const selectedZone = deliveryZones.find(
@@ -128,6 +135,22 @@ const areaOptions =
   selectedZone?.areas.find(
     (area) => area.area === selectedArea,
   )?.fee ?? null;
+
+useEffect(() => {
+  if (isOpen && editAddress && selectedState) {
+    // Verify the area belongs to the selected state
+    const areaExists = selectedZone?.areas.some(
+      (area) => area.area === editAddress.area
+    );
+    
+    if (areaExists) {
+      setValue('area', editAddress.area, { 
+        shouldValidate: true, 
+        shouldDirty: false 
+      });
+    }
+  }
+}, [selectedState, editAddress, selectedZone, setValue, isOpen]);
 
  const onSubmit = async (data: AddressFormValues) => {
   try {
@@ -160,7 +183,7 @@ const areaOptions =
       onClose={onClose}
       title={isEditing ? 'Change Address' : 'Add Address'}
     >
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-4">
         {/* Name */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <FormInput
@@ -201,6 +224,7 @@ const areaOptions =
         <TextareaInput
           label="Delivery Address" id="address" required rows={3}
           placeholder="Enter your address"
+          maxLength = {200}
           error={errors.address?.message}
           {...register('address')}
             style={{backgroundColor:'#F8F7F4'}}
@@ -223,9 +247,15 @@ const areaOptions =
             placeholder="Select your state"
             error={errors.state?.message}
             value={selectedState}
-            onChange={(e) =>
-              setValue('state', e.target.value, { shouldValidate: true, shouldDirty: true })
-            }
+            labelClassName={eventFormFieldLabelClassName}
+            className={eventFormSelectClassName}
+            controlClassName={eventFormSelectControlClassName}
+            onChange={(e) => {
+              const newState = e.target.value;
+              setValue('state', newState, { shouldValidate: true, shouldDirty: true });
+              setValue('area', '', { shouldValidate: false });
+            }}
+            
             onBlur={() => trigger('state')}
           />
 
@@ -237,6 +267,9 @@ const areaOptions =
               disabled={!selectedState}
               error={errors.area?.message}
               value={selectedArea}
+              labelClassName={eventFormFieldLabelClassName}
+              className={eventFormSelectClassName}
+              controlClassName={eventFormSelectControlClassName}
               onChange={(e) =>
                 setValue('area', e.target.value, { shouldValidate: true, shouldDirty: true })
               }
@@ -255,18 +288,22 @@ const areaOptions =
         </div>
 
         <div className="mt-12 flex items-center justify-center">
-          <Button type="submit" className="self-center max-w-[200px] rounded-full"  disabled={
-  isSubmitting ||
-  addAddress.isPending ||
-  editAddressMutation.isPending
-} disabled:opacity-50 disabled:cursor-not-allowed>
-           {isEditing
-  ? editAddressMutation.isPending
-      ? 'Saving...'
-      : 'Save Changes'
-  : addAddress.isPending
-      ? 'Adding...'
-      : 'Add Address'}
+          <Button type="submit" className="self-center max-w-[200px] rounded-full" 
+          disabled={
+            isSubmitting ||
+            addAddress.isPending ||
+            editAddressMutation.isPending
+          } 
+          disabled:opacity-50 disabled:cursor-not-allowed>
+
+          {isEditing
+            ? editAddressMutation.isPending
+                ? 'Saving...'
+                : 'Save Changes'
+            : addAddress.isPending
+                ? 'Adding...'
+                : 'Add Address'
+            }
           </Button>
         </div>
       </form>

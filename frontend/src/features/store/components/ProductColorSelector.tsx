@@ -20,9 +20,9 @@ export function ProductColorSelector({ variants, selected, onChange }: Props) {
               key={v.color}
               onClick={() => onChange(v.color)}
               title={v.color}
-              className={`w-[56px] h-[56px] rounded-lg overflow-hidden border transition-all ${
+              className={`w-[56px] h-[56px] rounded-lg overflow-hidden transition-all ${
                 isSelected
-                  ? 'border-primary-500 ring-2 ring-primary-200'
+                  ? 'border border-primary-900'
                   : 'border-gray-200 opacity-75 hover:opacity-100 hover:border-gray-400'
               }`}
             >

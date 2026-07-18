@@ -8,7 +8,7 @@ import { useAddresses } from '../hooks/useAddresses';
 import { useDeliveryZones } from '../hooks/useDeliveryZones';
 import { useCheckout } from '../hooks/useCheckout';
 import { STORE_ROUTES } from '../routes';
-import { Info } from 'lucide-react';
+import { Info, Plus } from 'lucide-react';
 import { useAuth } from '@/features/authentication/hooks/useAuth';
 import type { Address } from '../types/address.types';
 import { AUTH_ROUTES } from '@/features/authentication/routes';
@@ -96,15 +96,15 @@ export function CheckoutPage() {
             return;
         }
 
-    const payload =
-    deliveryMethod === 'pickup'
-        ? {
-              deliveryType: 'self_pickup' as const,
-          }
-        : {
-              deliveryType: 'door_delivery' as const,
-              addressId: Number(selectedAddressId),
-          };
+        const payload =
+            deliveryMethod === 'pickup'
+                ? {
+                    deliveryType: 'self_pickup' as const,
+                }
+                : {
+                    deliveryType: 'door_delivery' as const,
+                    addressId: Number(selectedAddressId),
+                };
 
         await checkout(payload, user.email);
     };
@@ -125,10 +125,7 @@ export function CheckoutPage() {
                             {/* Self Pickup */}
                             <button
                                 onClick={() => setDeliveryMethod('pickup')}
-                                className={`w-full text-left p-4 rounded-2xl border-2 bg-white transition-all ${deliveryMethod === 'pickup'
-                                    ? 'border-primary-500'
-                                    : 'border-gray-200 hover:border-gray-300'
-                                    }`}
+                                className={`w-full text-left p-4 rounded-3xl border-2 bg-white transition-all`}
                             >
                                 <div className="flex items-start gap-3">
                                     <span
@@ -139,22 +136,27 @@ export function CheckoutPage() {
                                             <span className="w-2.5 h-2.5 rounded-full bg-primary-500" />
                                         )}
                                     </span>
-                                    <div>
-                                        <p className="font-bold text-gray-900 text-sm">Self Pickup</p>
+                                    <div className='flex flex-col sm:flex-row gap-2'>
+                                        <p className="font-bold text-gray-900 text-sm whitespace-nowrap">Self Pickup</p>
                                         <p className="text-sm text-gray-500 leading-snug mt-0.5">{PICKUP_ADDRESS}</p>
                                     </div>
                                 </div>
                             </button>
 
 
-                            <div className="bg-white rounded-2xl p-5 border border-gray-100">
+                            <div className="bg-white rounded-3xl p-4 border-2 border-gray-100">
                                 {/* Door Delivery */}
-                                <button
+                                <div
                                     onClick={() => setDeliveryMethod('delivery')}
-                                    className={`w-full text-left p-4 rounded-2xl border-2 bg-white transition-all ${deliveryMethod === 'delivery'
-                                        ? 'border-primary-500'
-                                        : 'border-gray-200 hover:border-gray-300'
-                                        }`}
+                                    className={`w-full text-left rounded-3xl bg-white transition-all`}
+                                    role="button"
+                                    tabIndex={0}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            e.preventDefault();
+                                            setDeliveryMethod('delivery');
+                                        }
+                                    }}
                                 >
                                     <div className="flex items-start justify-between gap-4">
                                         <div className="flex items-start gap-3">
@@ -170,7 +172,7 @@ export function CheckoutPage() {
                                                 )}
                                             </span>
 
-                                            <div>
+                                            <div className='flex flex-col sm:flex-row gap-2'>
                                                 <p className="font-bold text-gray-900 text-sm">Door Delivery</p>
                                                 <p className="text-xs text-gray-400 mt-0.5">
                                                     Order will be delivered in 3 to 5 working days
@@ -178,7 +180,6 @@ export function CheckoutPage() {
                                             </div>
                                         </div>
 
-                                        {/* Add/Change address button — only when door delivery is active */}
                                         {deliveryMethod === 'delivery' && (
                                             <button
                                                 onClick={(e) => {
@@ -186,13 +187,13 @@ export function CheckoutPage() {
                                                     setEditingAddress(null);
                                                     setAddressModalOpen(true);
                                                 }}
-                                                className="shrink-0 text-sm font-semibold text-primary-500 border border-primary-500 rounded-full px-4 py-1.5 hover:bg-primary-50 transition-colors"
+                                                className="shrink-0 text-sm font-semibold text-primary-500 border border-primary-500 rounded-full px-2 py-1 sm:px-4 sm:py-1.5 hover:bg-primary-50 transition-colors"
                                             >
-                                                Add Shipping Address
+                                                <Plus className='block sm:hidden' /> <span className='hidden sm:block'> Add Shipping Address</span>
                                             </button>
                                         )}
                                     </div>
-                                </button>
+                                </div>
 
                                 {/* Address list */}
                                 {deliveryMethod === 'delivery' && (
@@ -212,7 +213,6 @@ export function CheckoutPage() {
                                                 />
                                             ))
                                         )}
-                                        {/* Add Shipping Address — always visible for delivery */}
 
                                     </div>
                                 )}
