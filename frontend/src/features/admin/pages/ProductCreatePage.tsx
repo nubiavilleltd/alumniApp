@@ -32,11 +32,11 @@ export function ProductCreatePage() {
 
       <section className="section bg-[#F8F8F7]">
         <div className="container-custom">
-          <div className="mb-8">
-            <h1 className="text-2xl font-bold text-gray-900">Add Item</h1>
-          </div>
 
           <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm">
+            <div className="mb-8">
+            <h1 className="text-2xl font-bold text-gray-900">Add Item</h1>
+          </div>
             <ProductFormPanel
               mode="create"
               isSubmitting={createProduct.isPending}

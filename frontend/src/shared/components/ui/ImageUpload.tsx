@@ -192,7 +192,7 @@ export function ImageUpload({
         {renderIcon(
           isDragActive ? activeIcon : idleIcon,
           `h-8 w-8 transition-colors ${
-            error || validationError ? 'text-red-400' : 'text-gray-400 group-hover:text-primary-400'
+            error || validationError ? 'text-red-400' : 'text-primary-900 group-hover:text-primary-400'
           }`,
         )}
         <span className="text-primary-500 text-sm font-medium">

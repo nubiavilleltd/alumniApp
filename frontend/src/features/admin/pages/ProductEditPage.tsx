@@ -60,12 +60,13 @@ export function ProductEditPage() {
 
       <section className="section bg-[#F8F8F7]">
         <div className="container-custom">
-          <div className="mb-8">
-            <h1 className="text-2xl font-bold text-gray-900">Edit Item</h1>
-            <p className="text-sm text-gray-500 mt-1">{product.product_name}</p>
-          </div>
+
 
           <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm">
+            <div className="mb-8">
+              <h1 className="text-2xl font-bold text-gray-900">Edit Item</h1>
+              {/* <p className="text-sm text-gray-500 mt-1">{product.product_name}</p> */}
+            </div>
             <ProductFormPanel
               mode="edit"
               existingProduct={product}
