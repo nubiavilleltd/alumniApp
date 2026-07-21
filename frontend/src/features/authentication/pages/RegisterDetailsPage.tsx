@@ -18,6 +18,7 @@ import { authApi } from '../services/auth.service';
 import { registerDetailsSchema } from '../schemas/authSchema';
 import type {
   RegisterDetailsFormValues,
+  RegisterDetailsSubmitValues,
   SocialAuthProvider,
   SocialSignupResponse,
   Voucher,
@@ -168,7 +169,7 @@ export function RegisterDetailsPage() {
   const [socialAuthStatus, setSocialAuthStatus] = useState<string | null>(null);
   const todayDate = new Date().toISOString().split('T')[0];
 
-  const detailForm = useForm<RegisterDetailsFormValues>({
+  const detailForm = useForm<RegisterDetailsFormValues, unknown, RegisterDetailsSubmitValues>({
     resolver: zodResolver(registerDetailsSchema),
     defaultValues: buildRegisterDefaultValues(
       currentYear,
