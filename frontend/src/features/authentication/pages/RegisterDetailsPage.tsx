@@ -101,6 +101,15 @@ function splitFullName(fullName?: string) {
   };
 }
 
+function getRegistrationErrorDetails(error: unknown) {
+  const apiError = error as Partial<Error> & { status?: number };
+
+  return {
+    message: apiError.message || 'Registration failed. Please try again.',
+    status: apiError.status,
+  };
+}
+
 export function RegisterDetailsPage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -220,6 +229,7 @@ export function RegisterDetailsPage() {
   const passwordValue = detailForm.watch('password') ?? '';
   const confirmPasswordValue = detailForm.watch('confirmPassword') ?? '';
   const isSocialSignup = Boolean(detailForm.watch('isSocialSignup'));
+  const emailValue = detailForm.watch('email') ?? '';
   const graduationYear = detailForm.watch('graduationYear');
   const cityValue = detailForm.watch('city');
   const passwordsMatch = passwordValue.length > 0 && confirmPasswordValue === passwordValue;
@@ -350,10 +360,18 @@ export function RegisterDetailsPage() {
               : undefined,
         });
         setSocialAuthStatus(null);
-        toast.error('We could not continue with Google. Please try again.');
+        const { message, status } = getRegistrationErrorDetails(error);
+
+        if (status === 409 && detailForm.getValues('email')) {
+          detailForm.setError('email', { type: 'server', message }, { shouldFocus: true });
+        } else {
+          detailForm.setError('root', { type: 'server', message });
+        }
+
+        toast.error(message);
       }
     },
-    [applySocialProfile],
+    [applySocialProfile, detailForm],
   );
 
   const handleFacebookSignupAccessToken = useCallback(
@@ -375,10 +393,18 @@ export function RegisterDetailsPage() {
               : undefined,
         });
         setSocialAuthStatus(null);
-        toast.error('We could not continue with Facebook. Please try again.');
+        const { message, status } = getRegistrationErrorDetails(error);
+
+        if (status === 409 && detailForm.getValues('email')) {
+          detailForm.setError('email', { type: 'server', message }, { shouldFocus: true });
+        } else {
+          detailForm.setError('root', { type: 'server', message });
+        }
+
+        toast.error(message);
       }
     },
-    [applySocialProfile],
+    [applySocialProfile, detailForm],
   );
 
   const submitDetails = detailForm.handleSubmit(async (values) => {
@@ -456,9 +482,16 @@ export function RegisterDetailsPage() {
       });
 
       navigate(AUTH_ROUTES.REGISTER_VERIFY);
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const { message, status } = getRegistrationErrorDetails(error);
+
+      if (status === 409) {
+        detailForm.setError('email', { type: 'server', message }, { shouldFocus: true });
+        return;
+      }
+
       detailForm.setError('root', {
-        message: error.message || 'Registration failed. Please try again.',
+        message,
       });
     }
   });
@@ -545,20 +578,24 @@ export function RegisterDetailsPage() {
         </div>
 
         <div className="auth-form-grid auth-form-grid--two">
+          {socialAuthResponse?.emailVerified ? (
+            <input type="hidden" value={emailValue} {...detailForm.register('email')} />
+          ) : null}
           <FormInput
             label="Email Address"
             id="email"
             required
             type="email"
             placeholder="you@example.com"
-            readOnly={Boolean(socialAuthResponse?.emailVerified)}
+            disabled={Boolean(socialAuthResponse?.emailVerified)}
             hint={
               socialAuthResponse?.emailVerified && selectedSocialLabel
                 ? `${selectedSocialLabel} email verified`
                 : undefined
             }
+            value={socialAuthResponse?.emailVerified ? emailValue : undefined}
             error={detailForm.formState.errors.email?.message}
-            {...detailForm.register('email')}
+            {...(!socialAuthResponse?.emailVerified ? detailForm.register('email') : {})}
           />
 
           <DatePicker
