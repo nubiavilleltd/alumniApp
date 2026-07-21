@@ -19,6 +19,8 @@ import ProjectsPage from './features/projects/pages/ProjectsPage';
 import LeadershipPage from './features/leadership/pages/LeadershipPage';
 import AnnouncementsPage from './features/announcements/pages/BlogIndexPage';
 import BlogPostPage from './features/announcements/pages/BlogPostPage';
+import { BlogComingSoonPage } from './features/announcements/pages/BlogComingSoonPage';
+import { BlogDetailPage } from './features/blogs/pages/BlogDetailPage';
 import { ANNOUNCEMENT_ROUTES } from './features/announcements/routes';
 
 import { AuthPage } from './features/authentication/pages/AuthPage';
@@ -48,8 +50,9 @@ import { MessagesPage } from './features/messages/pages/MessagesPage';
 
 import { AdminDashboardPage } from './features/admin/pages/AdminDashboardPage';
 import ProjectDetailsPage from './features/projects/pages/ProjectDetail';
-import { ADMIN_ROUTES } from './features/admin/routes';
+import { ADMIN_ROUTES, ADMIN_STORE_ROUTES } from './features/admin/routes';
 import { AdminMembersPage } from './features/admin/pages/AdminMembersPage';
+import { AdminPagesContentPage } from './features/admin/pages/AdminPagesContentPage';
 import { AdminEventRegistrationsPage } from './features/events/pages/AdminEventRegistrationsPage';
 import { AdminAnnouncementsPage } from './features/announcements/pages/AdminAnnouncementsPage';
 import { COMING_SOON_ROUTES } from './config/comingSoonRoutes';
@@ -66,6 +69,16 @@ import { DonationPage } from './features/donation/pages/DonationPage';
 import { WelfareCommitteeContactPage } from './features/contactUs/pages/WelfareCommitteeContactPage';
 import AdminProjectsPage from './features/projects/pages/AdminProjectsPage';
 import { LogoutGate } from './shared/components/routing/LogoutGate';
+import { LIVE_NEWS_ROUTES } from './features/liveNews/routes';
+import LiveNewsPage from './features/liveNews/pages/LiveNewsPage';
+import LiveNewsDetailPage from './features/liveNews/pages/LiveNewsDetailPage';
+import { StorePage } from './features/store/pages/StorePage';
+import { CartPage } from './features/store/pages/CartPage';
+import { CheckoutPage } from './features/store/pages/CheckoutPage';
+import { FaqPage } from './features/faqs/pages/FaqPage';
+import { AdminStorePage } from './features/admin/pages/AdminStorePage';
+import { ProductCreatePage } from './features/admin/pages/ProductCreatePage';
+import { ProductEditPage } from './features/admin/pages/ProductEditPage';
 
 export default function App() {
   return (
@@ -99,6 +112,14 @@ export default function App() {
               }
             />
             <Route
+              path={ROUTES.FAQS}
+              element={
+                <ErrorBoundary>
+                  <FaqPage />
+                </ErrorBoundary>
+              }
+            />
+            <Route
               path={ROUTES.WELFARE_COMMITTEE_CONTACT}
               element={
                 <ErrorBoundary>
@@ -111,6 +132,22 @@ export default function App() {
               element={
                 <ErrorBoundary>
                   <AnnouncementsPage />
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path={ANNOUNCEMENT_ROUTES.BLOG}
+              element={
+                <ErrorBoundary>
+                  <BlogComingSoonPage />
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path={ANNOUNCEMENT_ROUTES.BLOG_DETAIL_PATH}
+              element={
+                <ErrorBoundary>
+                  <BlogDetailPage />
                 </ErrorBoundary>
               }
             />
@@ -135,6 +172,8 @@ export default function App() {
             <Route path={ROUTES.WELFARE} element={<WelfarePage />} />
             <Route path={ROUTES.WELFARE_ZONES} element={<WelfareZonesPage />} />
             <Route path={ROUTES.DONATION} element={<DonationPage />} />
+            <Route path={ROUTES.LIVE_NEWS.ROOT} element={<LiveNewsPage />} />
+            <Route path={ROUTES.LIVE_NEWS.DETAIL_PATH} element={<LiveNewsDetailPage />} />
             <Route
               path={ROUTES.JOB_VACANCIES}
               element={
@@ -464,6 +503,46 @@ export default function App() {
                 </AdminRoute>
               }
             />
+
+            <Route
+              path={ADMIN_ROUTES.PAGES_CONTENT}
+              element={
+                <AdminRoute>
+                  <ErrorBoundary>
+                    <AdminPagesContentPage />
+                  </ErrorBoundary>
+                </AdminRoute>
+              }
+            />
+
+            <Route
+              path={ROUTES.STORE.ROOT}
+              element={
+                <ErrorBoundary>
+                  <StorePage />
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path={ROUTES.STORE.CART}
+              element={
+                <ErrorBoundary>
+                  <CartPage />
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path={ROUTES.STORE.CHECKOUT}
+              element={
+                <ErrorBoundary>
+                  <CheckoutPage />
+                </ErrorBoundary>
+              }
+            />
+
+            <Route path={ADMIN_STORE_ROUTES.ROOT} element={<AdminRoute><AdminStorePage /></AdminRoute>} />
+            <Route path={ADMIN_STORE_ROUTES.PRODUCT_CREATE} element={<AdminRoute><ProductCreatePage /></AdminRoute>} />
+            <Route path={ADMIN_STORE_ROUTES.PRODUCT_EDIT_PATH} element={<AdminRoute><ProductEditPage /></AdminRoute>} />
 
             {/* Redirects */}
             <Route path="/home" element={<Navigate to={ROUTES.HOME} replace />} />

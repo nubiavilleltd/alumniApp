@@ -32,11 +32,11 @@ interface Props {
 const contactFieldLabelClassName =
   'text-[0.94rem] font-semibold leading-[1.2] text-[#858585] md:text-[1rem]';
 const contactInputControlClassName =
-  'min-h-[2.8rem] rounded-full !border-0 !bg-[#f7f5f1] !shadow-none focus-within:!border-0 focus-within:outline focus-within:outline-3 focus-within:outline-[rgba(0,119,204,0.18)] md:min-h-[3.15rem]';
+  'min-h-[2.8rem] rounded-full !border-0 !bg-[#f7f5f1] !shadow-none focus-within:!border-0 focus-within:outline focus-within:outline-3 focus-within:outline-primary-500/20 md:min-h-[3.15rem]';
 const contactInputClassName =
   'h-[2.8rem] px-4 font-[inherit] text-[0.94rem] font-medium tracking-normal text-[#071116] placeholder:text-[#858585] md:h-[3.15rem] md:px-[1.05rem] md:text-[1rem]';
 const contactTextareaClassName =
-  'min-h-[7.9rem] rounded-[1.35rem] !border-0 !bg-[#f7f5f1] !shadow-none px-4 py-4 font-[inherit] text-[0.94rem] font-medium leading-[1.45] tracking-normal text-[#071116] placeholder:text-[#858585] focus:!border-0 focus:outline focus:outline-3 focus:outline-[rgba(0,119,204,0.18)] md:min-h-[8.9rem] md:px-[1.05rem] md:py-[1.05rem] md:text-[1rem]';
+  'min-h-[7.9rem] rounded-[1.35rem] !border-0 !bg-[#f7f5f1] !shadow-none px-4 py-4 font-[inherit] text-[0.94rem] font-medium leading-[1.45] tracking-normal text-[#071116] placeholder:text-[#858585] focus:!border-0 focus:outline focus:outline-3 focus:outline-primary-500/20 md:min-h-[8.9rem] md:px-[1.05rem] md:py-[1.05rem] md:text-[1rem]';
 
 /* ───────────────── FORM SETUP ───────────────── */
 
@@ -241,7 +241,7 @@ export function ContactPageLayout({
             <Button
               type="submit"
               size="lg"
-              className="type-button mt-[1.55rem] min-h-[2.9rem] min-w-[min(11.75rem,100%)] self-start rounded-full border-0 bg-primary-500 px-6 font-[inherit] text-white shadow-[0_18px_30px_rgba(0,119,204,0.16)] hover:bg-primary-600 max-md:w-full"
+              className="type-button mt-[1.55rem] min-h-[2.9rem] min-w-[min(11.75rem,100%)] self-start rounded-full border-0 bg-primary-500 px-6 font-[inherit] text-white shadow-[0_18px_30px_rgb(var(--color-primary-500)/0.16)] hover:bg-primary-600 max-md:w-full"
               disabled={isSubmitting || isLoading}
             >
               Send message

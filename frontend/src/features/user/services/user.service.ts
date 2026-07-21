@@ -7,6 +7,7 @@ import type { AuthSessionUser } from '@/features/authentication/types/auth.types
 import {
   createProfileUpdateFormData,
   createProfileUpdatePayload,
+  createSocialOnboardingUpdatePayload,
   mapBackendResponseToFrontendUser,
 } from '../api/adapters/user.adapter';
 import { ChangePasswordRequest } from '../types/user.type';
@@ -19,6 +20,13 @@ export interface UpdateProfileParams {
   userId: string;
   updates: Partial<AuthSessionUser>;
   photoFile?: File;
+}
+
+export interface CompleteSocialOnboardingParams {
+  userId: string;
+  updates: Partial<AuthSessionUser>;
+  extraFields?: Record<string, unknown>;
+  accessToken?: string;
 }
 
 export const userService = {
@@ -49,6 +57,35 @@ export const userService = {
         error,
         'Unable to save your profile. Please check your information and try again.',
         'userService.updateProfile',
+      );
+    }
+  },
+
+  async completeSocialOnboarding(
+    params: CompleteSocialOnboardingParams,
+  ): Promise<Partial<AuthSessionUser>> {
+    const { userId, updates, extraFields, accessToken } = params;
+
+    try {
+      const response = await apiClient.post(
+        API_ENDPOINTS.USER.UPDATE_PROFILE,
+        createSocialOnboardingUpdatePayload(userId, updates, extraFields),
+        {
+          _skipAuthRedirect: true,
+          headers: accessToken
+            ? {
+                Authorization: `Bearer ${accessToken}`,
+              }
+            : undefined,
+        } as any,
+      );
+
+      return mapBackendResponseToFrontendUser(response.data);
+    } catch (error) {
+      throw handleApiError(
+        error,
+        'Unable to complete your profile. Please check your information and try again.',
+        'userService.completeSocialOnboarding',
       );
     }
   },

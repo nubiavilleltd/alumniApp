@@ -77,8 +77,9 @@ export const registerDetailsSchema = z
       .min(1966, 'FGGC Owerri was established in 1966')
       .max(currentYear, `Graduation year cannot be later than ${currentYear}`),
 
-    password: passwordSchema,
-    confirmPassword: z.string().min(1, 'Please confirm your password'),
+    isSocialSignup: z.boolean().optional(),
+    password: z.string().optional(),
+    confirmPassword: z.string().optional(),
     voucherId: z.string().min(1, 'Please select a voucher who will approve your registration'),
   })
   .superRefine((data, ctx) => {
@@ -86,10 +87,31 @@ export const registerDetailsSchema = z
     if (phoneError) {
       ctx.addIssue({ code: 'custom', path: ['whatsappPhone'], message: phoneError });
     }
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    path: ['confirmPassword'],
-    message: 'Passwords do not match',
+
+    if (data.isSocialSignup) {
+      return;
+    }
+
+    const passwordResult = passwordSchema.safeParse(data.password ?? '');
+    if (!passwordResult.success) {
+      passwordResult.error.issues.forEach((issue) => {
+        ctx.addIssue({ ...issue, path: ['password'] });
+      });
+    }
+
+    if (!data.confirmPassword) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['confirmPassword'],
+        message: 'Please confirm your password',
+      });
+    } else if (data.password !== data.confirmPassword) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['confirmPassword'],
+        message: 'Passwords do not match',
+      });
+    }
   });
 
 // Only validates the code the user types.

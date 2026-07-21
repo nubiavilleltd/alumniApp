@@ -88,7 +88,9 @@ function PrivacyRow({
           role="switch"
           aria-checked={isPublic}
           className={`relative inline-flex h-4 w-10 flex-shrink-0 items-center rounded-full transition-all duration-300 ease-in-out focus:outline-none ${
-            isPublic ? 'bg-primary-500/60 shadow-[0_0_0_2px_rgba(0,119,204,0.15)]' : 'bg-gray-300'
+            isPublic
+              ? 'bg-primary-500/60 shadow-[0_0_0_2px_rgb(var(--color-primary-500)/0.15)]'
+              : 'bg-gray-300'
           } ${isUpdating ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}`}
         >
           {/* Knob */}

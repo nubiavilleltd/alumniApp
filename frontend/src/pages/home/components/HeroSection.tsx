@@ -1,51 +1,96 @@
 import { useState, useEffect } from 'react';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import Button from '@/shared/components/ui/Button';
-// import HeroBg from '/hero-bg.png';
-import HeroBg1 from '../../../../public/alumni-hero-img1.jpg';
-// import HeroBg2 from '../../../../public/alumni-hero-img2.jpg'
-import HeroBg3 from '../../../../public/alumni-hero-img3.jpg';
-import HeroBg4 from '../../../../public/alumni-hero-img4.jpg';
-import HeroBg5 from '../../../../public/alumni-hero-img5.jpg';
-import HeroBg6 from '../../../../public/alumni-hero-img6.jpg';
-
 import { AUTH_ROUTES } from '@/features/authentication/routes';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
+import { useHomepageContent } from '@/features/homepage/hooks/useHomepageContent';
 import { ROUTES } from '@/shared/constants/routes';
 
-// const heroImages = [
-//   HeroBg,
-//   'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1400&q=80', // group of women laughing together
-//   'https://images.unsplash.com/photo-1607748862156-7c548e7e98f4?w=1400&q=80', // African women at a gathering
-//   'https://images.unsplash.com/photo-1573497491765-dccce02b29df?w=1400&q=80', // professional women networking
-//   'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=1400&q=80', // women in meeting, smiling
-// ];
-const heroImages = [HeroBg1, HeroBg3, HeroBg4, HeroBg5, HeroBg6];
+function HeroSectionSkeleton() {
+  return (
+    <section
+      className="relative flex min-h-[72vh] items-center overflow-hidden bg-primary-700 px-0 lg:min-h-[78vh]"
+      aria-hidden="true"
+    >
+      <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-primary-700 via-primary-600 to-primary-800" />
+      <div className="absolute inset-0 bg-primary-900/25" />
+
+      <div className="relative z-10 w-full px-[var(--app-page-inline-padding)]">
+        <div className="max-w-3xl animate-pulse text-left">
+          <div className="mb-6 h-14 w-4/5 rounded-full bg-white/25 md:h-20" />
+          <div className="mb-3 h-6 w-full max-w-2xl rounded-full bg-white/20 md:h-8" />
+          <div className="mb-8 h-6 w-3/4 max-w-xl rounded-full bg-white/20 md:h-8" />
+
+          <div className="flex flex-col items-start gap-4">
+            <div className="h-14 w-44 rounded-full bg-white/30" />
+            <div className="h-14 w-56 rounded-full bg-white/20" />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 export default function HeroSection() {
   const [current, setCurrent] = useState(0);
   const currentUser = useIdentityStore((state) => state.user);
+  const { data: homepageContent, isLoading, isError } = useHomepageContent();
+  const heroImages = homepageContent?.carouselImages ?? [];
+  const hasHeroImages = heroImages.length > 0;
+  const headingText = isLoading
+    ? 'Loading homepage...'
+    : isError
+      ? 'Homepage unavailable'
+      : homepageContent?.greetingTitle;
+  const messageText = isError
+    ? 'Homepage content could not be loaded right now.'
+    : homepageContent?.greetingMessage;
 
   useEffect(() => {
+    if (heroImages.length < 2) {
+      return undefined;
+    }
+
     const interval = setInterval(() => {
       setCurrent((prev) => (prev + 1) % heroImages.length);
     }, 3000);
     return () => clearInterval(interval);
-  }, []);
+  }, [heroImages.length]);
+
+  useEffect(() => {
+    if (current >= heroImages.length) {
+      setCurrent(0);
+    }
+  }, [current, heroImages.length]);
+
+  if (isLoading) {
+    return <HeroSectionSkeleton />;
+  }
 
   return (
-    <section className="relative flex min-h-[72vh] items-center overflow-hidden px-0 lg:min-h-[78vh]">
+    <section
+      className="relative flex min-h-[72vh] items-center overflow-hidden px-0 lg:min-h-[78vh]"
+      aria-busy={isLoading}
+    >
       {/* ── Background Images ─────────────────────────────────────────────── */}
-      {heroImages.map((src, i) => (
-        <div
-          key={i}
-          className={`absolute inset-0 z-0 transition-opacity duration-1000 ${
-            i === current ? 'opacity-100' : 'opacity-0'
-          }`}
-        >
-          <img src={src} alt="" className="w-full h-full object-cover object-center" />
-        </div>
-      ))}
+      {hasHeroImages ? (
+        heroImages.map((image, i) => (
+          <div
+            key={image.id || image.imageUrl}
+            className={`absolute inset-0 z-0 transition-opacity duration-1000 ${
+              i === current ? 'opacity-100' : 'opacity-0'
+            }`}
+          >
+            <img
+              src={image.imageUrl}
+              alt={image.altText}
+              className="w-full h-full object-cover object-center"
+            />
+          </div>
+        ))
+      ) : (
+        <div className="absolute inset-0 z-0 bg-primary-700" />
+      )}
 
       {/* ── Blue overlay ──────────────────────────────────────────────────── */}
       <div className="absolute inset-0 z-[1] bg-gradient-to-r from-primary-700/90 via-primary-600/72 to-primary-900/28" />
@@ -55,11 +100,10 @@ export default function HeroSection() {
       <div className="relative z-10 w-full px-[var(--app-page-inline-padding)]">
         <div className="max-w-3xl text-left">
           <h1 className="type-hero text-4xl md:text-[80px] font-[500] mb-6 text-white">
-            Welcome home
+            {headingText}
           </h1>
           <p className="text-lg md:text-[24px] font-[500] text-white/90 mb-8 max-w-2xl">
-            A global sisterhood of Federal Government Girls' College alumnae connected by shared
-            memories, driven by purpose, and committed to lifting the next generation.
+            {messageText}
           </p>
           <div className="flex flex-col items-start gap-4">
             {!currentUser ? (

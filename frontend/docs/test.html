@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Google Login Test</title>
+  <!-- <script src="https://accounts.google.com/gsi/client" async defer></script> -->
+  <script async defer src="https://connect.facebook.net/en_US/sdk.js"></script>
+</head>
+<body>
+
+  <!-- <h2>Google Sign-In Test</h2>
+
+  <div id="g_id_onload"
+       data-client_id="637486102873-2eua6021flh70c575brpnd1i5i5cntr1.apps.googleusercontent.com"
+       data-callback="handleGoogleLogin">
+  </div>
+  <div class="g_id_signin"></div>
+
+  <pre id="output" style="margin-top:20px; background:#f4f4f4; padding:12px; border-radius:6px;"></pre> -->
+
+  <h3>Login with Facebook</h3>
+  <button type="button" onclick="loginWithFacebook()">Login with Facebook</button>
+  <script>
+    const LOGIN_URL = 'http://localhost/alumniapp/backend/socials/social_login';
+    const REGISTER_URL = 'http://localhost/alumniapp/backend/socials/social_signup';
+    const API_KEY = 'cd039bb10325fcba7ee93ff628ba395b484c229cf5654778e26604ed2f967784';
+
+    // function log(msg) {
+    //   document.getElementById('output').textContent = typeof msg === 'object'
+    //     ? JSON.stringify(msg, null, 2)
+    //     : msg;
+    // }
+
+    // async function handleGoogleLogin(response) {
+    //   console.log('Got token from Google. Calling API...');
+
+    //   try {
+    //     const res = await fetch(REGISTER_URL, {
+    //       method: 'POST',
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //         'X-API-Key': API_KEY,
+    //       },
+    //       body: JSON.stringify({
+    //         provider: 'google',
+    //         id_token: response.credential,
+    //       }),
+    //     });
+
+    //     const data = await res.json();
+    //     console.log(data);
+
+    //     if (data.status === 200) {
+    //       console.log({"access_token": data.access_token})
+    //       // localStorage.setItem('access_token', data.access_token);
+    //       // redirect to dashboard etc.
+    //     }
+    //   } catch (err) {
+    //     console.log('Error: ' + err.message);
+    //   }
+    // }
+  
+    window.fbAsyncInit = function() {
+      FB.init({ appId: '856165983804869', cookie: true, xfbml: false, version: 'v19.0'});
+    };
+  
+    function loginWithFacebook() {
+      event.preventDefault()
+      FB.login(function(response) {
+        console.log('FB.login callback fired', response);
+        if (response.authResponse) {
+          const accessToken = response.authResponse.accessToken;
+
+          fetch(LOGIN_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-API-Key': API_KEY
+            },
+            body: JSON.stringify({
+              provider: 'facebook',
+              access_token: accessToken
+            })
+          })
+          .then(res => res.json())
+          .then(data => {
+            console.log({data});            
+            localStorage.setItem('data', JSON.stringify(data));
+            if (data.status === 200) {
+              localStorage.setItem('access_token', data.access_token);
+            }
+          })
+          .catch(err => console.error('fetch failed', err)); // <-- add this, you're missing error handling entirely
+        } else {
+          console.log('No authResponse — user cancelled or denied permissions', response);
+        }
+      }, { scope: 'email,public_profile' });
+    }
+  </script>
+</body>
+</html>

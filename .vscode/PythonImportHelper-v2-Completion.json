@@ -1,0 +1,29 @@
+[
+    {
+        "label": "sphinx_rtd_theme",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "sphinx_rtd_theme",
+        "description": "sphinx_rtd_theme",
+        "detail": "sphinx_rtd_theme",
+        "documentation": {}
+    },
+    {
+        "label": "extensions",
+        "kind": 5,
+        "importPath": "backend.vendor.simplesamlphp.simplesamlphp.docs.conf",
+        "description": "backend.vendor.simplesamlphp.simplesamlphp.docs.conf",
+        "peekOfCode": "extensions = [\n    'sphinx_rtd_theme',\n]\nhtml_theme = \"sphinx_rtd_theme\"",
+        "detail": "backend.vendor.simplesamlphp.simplesamlphp.docs.conf",
+        "documentation": {}
+    },
+    {
+        "label": "html_theme",
+        "kind": 5,
+        "importPath": "backend.vendor.simplesamlphp.simplesamlphp.docs.conf",
+        "description": "backend.vendor.simplesamlphp.simplesamlphp.docs.conf",
+        "peekOfCode": "html_theme = \"sphinx_rtd_theme\"",
+        "detail": "backend.vendor.simplesamlphp.simplesamlphp.docs.conf",
+        "documentation": {}
+    }
+]

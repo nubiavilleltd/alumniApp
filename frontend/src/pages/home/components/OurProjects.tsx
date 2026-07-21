@@ -37,7 +37,7 @@ function HomeProjectCard({ project, index }: { project: Project; index: number }
         className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-300 group-hover:scale-[1.03]"
       />
 
-      <div className="absolute inset-x-3 bottom-3 flex min-h-[10.5rem] flex-col rounded-[0.8rem] bg-[rgba(0,119,204,0.8)] px-[1.1rem] pb-[1.05rem] pt-4 backdrop-blur-[5px]">
+      <div className="absolute inset-x-3 bottom-3 flex min-h-[10.5rem] flex-col rounded-[0.8rem] bg-primary-500/80 px-[1.1rem] pb-[1.05rem] pt-4 backdrop-blur-[5px]">
         {/* CONTENT */}
         <div className="flex-1">
           <h3 className="type-card-title line-clamp-2 text-white">{project.title}</h3>
@@ -93,7 +93,7 @@ function HomeProjectCard({ project, index }: { project: Project; index: number }
 function HomeProjectSkeleton() {
   return (
     <div className="pointer-events-none relative min-h-[22rem] animate-pulse overflow-hidden rounded-2xl bg-[#e9edf1] shadow-[0_1rem_2rem_rgba(7,17,22,0.08)] sm:min-h-[23rem]">
-      <div className="absolute inset-x-3 bottom-3 rounded-[0.8rem] bg-[rgba(0,119,204,0.8)] px-[1.1rem] pb-[1.05rem] pt-4 backdrop-blur-[5px]">
+      <div className="absolute inset-x-3 bottom-3 rounded-[0.8rem] bg-primary-500/80 px-[1.1rem] pb-[1.05rem] pt-4 backdrop-blur-[5px]">
         <span className="block h-3 rounded-full bg-white/55" />
         <span className="mt-[0.65rem] block h-3 rounded-full bg-white/55" />
         <span className="mt-[0.65rem] block h-3 rounded-full bg-white/55" />

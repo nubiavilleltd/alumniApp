@@ -128,6 +128,7 @@ export interface AuthSessionUser {
 export type LoginFormValues = z.input<typeof loginSchema>;
 export type ForgotPasswordFormValues = z.input<typeof forgotPasswordSchema>;
 export type RegisterDetailsFormValues = z.input<typeof registerDetailsSchema>;
+export type RegisterDetailsSubmitValues = z.output<typeof registerDetailsSchema>;
 export type ResetPasswordFormValues = z.input<typeof resetPasswordSchema>;
 export type ChangePasswordFormValues = z.input<typeof changePasswordSchema>;
 
@@ -159,6 +160,28 @@ export interface LoginResponse {
   user: AuthSessionUser;
   accessToken: string;
   refreshToken: string;
+}
+
+export type SocialAuthProvider = 'google' | 'facebook';
+
+export interface SocialAuthRequest {
+  provider: SocialAuthProvider;
+  idToken?: string;
+  accessToken?: string;
+}
+
+export interface SocialSignupResponse {
+  raw: unknown;
+  provider: SocialAuthProvider;
+  userId: string;
+  providerUserId: string;
+  firstName: string | null;
+  lastName: string | null;
+  email: string | null;
+  emailVerified: boolean;
+  avatarUrl: string | null;
+  accessToken?: string;
+  refreshToken?: string;
 }
 
 export interface ForgotPasswordResponse {

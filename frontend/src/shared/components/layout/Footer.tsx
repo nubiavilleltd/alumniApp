@@ -23,6 +23,7 @@ import FooterLogo from '../ui/FooterLogo';
 import AddressLocationIcon from '/addressLocation.svg';
 import LocationPhoneIcon from '/locationPhone.svg';
 import LocationMessageIcon from '/locationMessage.svg';
+import { ROUTES } from '@/shared/constants/routes';
 
 // ─── Social icon resolver ─────────────────────────────────────────────────────
 // config.social_links[].icon contains icon names like "facebook", "instagram".
@@ -52,12 +53,14 @@ const footerContactIconClassName = 'flex-shrink-0 opacity-80';
 // ─── Link columns ─────────────────────────────────────────────────────────────
 
 const QUICK_LINKS = [
-  { label: 'Get to Know FGGC Owerri AA', href: '/about' },
-  { label: 'Announcements', href: '/news' },
-  { label: 'Events', href: '/events' },
-  { label: 'Our Projects', href: '/projects' },
-  { label: 'Make a Donation', href: '/donation' },
-  { label: 'Contact Us', href: '/contact' },
+  { label: 'Get to Know FGGC Owerri AA', href: ROUTES.ABOUT },
+  { label: 'Announcements', href: ROUTES.NEWS },
+  { label: 'Blog', href: '/news/blog' },
+  { label: 'Events', href: ROUTES.EVENTS.ROOT },
+  { label: 'Our Projects', href: ROUTES.PROJECTS.ROOT },
+  { label: 'Make a Donation', href: ROUTES.DONATION },
+  { label: 'FAQs', href: ROUTES.FAQS },
+  { label: 'Contact Us', href: ROUTES.CONTACT },
 ];
 
 const COMMUNITY_LINKS = [

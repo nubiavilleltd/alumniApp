@@ -16,6 +16,8 @@ export const API_ENDPOINTS = {
     RESEND_VERIFY_EMAIL: '/api/resend_verify_email',
     GET_VOUCHERS: '/api/get_vouchers',
     GET_CITIES: '/api/get_cities',
+    SOCIAL_LOGIN: '/socials/social_login',
+    SOCIAL_SIGNUP: '/socials/social_signup',
   },
 
   // ─── Alumni ───────────────────────────────────────────────────────────────
@@ -32,6 +34,10 @@ export const API_ENDPOINTS = {
     GET_LISTINGS: '/api/get_listings',
     CREATE_LISTING: '/api/create_listing',
     MANAGE_LISTING: '/api/manage_listing', // update + delete via function_type flag
+  },
+
+  LIVENEWS: {
+    GET_LIVE_NEWS: '/news/feeds',
   },
 
   // ─── Events ───────────────────────────────────────────────────────────────
@@ -115,6 +121,31 @@ export const API_ENDPOINTS = {
     MANAGE: '/api/manage_announcement',
   },
 
+  // ─── Pages Content ────────────────────────────────────────────────────────
+  CONTENT: {
+    HOMEPAGE: '/homepage',
+    UPDATE_HOMEPAGE_TEXT: '/update_homepage_text',
+    CREATE_CAROUSEL_IMAGE: '/create_carousel_image',
+    UPDATE_CAROUSEL_IMAGE: '/update_carousel_image',
+    REORDER_CAROUSEL: '/reorder_carousel',
+    DELETE_CAROUSEL_IMAGE: '/delete_carousel_image',
+    FAQS: '/faqs',
+    CREATE_FAQ: '/create_faq',
+    UPDATE_FAQ: '/update_faq',
+    REORDER_FAQS: '/reorder_faqs',
+    DELETE_FAQ: '/delete_faq',
+    BLOG_CATEGORIES: '/blog_categories',
+    CREATE_BLOG_CATEGORY: '/create_blog_category',
+    UPDATE_BLOG_CATEGORY: '/update_blog_category',
+    DELETE_BLOG_CATEGORY: '/delete_blog_category',
+    REORDER_BLOG_CATEGORIES: '/reorder_categories',
+    BLOG_POSTS: '/blog_posts',
+    BLOG_POST_DETAIL: (idOrSlug: string) => `/blog_post_detail/${idOrSlug}`,
+    CREATE_BLOG_POST: '/create_blog_post',
+    UPDATE_BLOG_POST: '/update_blog_post',
+    DELETE_BLOG_POST: '/delete_blog_post',
+  },
+
   ADMIN_ENDPOINTS: {
     MEMBER_LIST: '/api/get_users_by_action', // POST — action_type flag in body
     APPROVE_USER: '/api/approve_user', // POST — action: approve | reject
@@ -124,4 +155,16 @@ export const API_ENDPOINTS = {
     GET_PENDING: '/api/voucher_pending',
     ACTION: '/api/vouch_action',
   },
+
+STORE: {
+  FETCH_ADDRESSES: '/product/fetch_addresses',
+  ADD_ADDRESS: '/product/add_address',
+  EDIT_ADDRESS: '/product/edit_address',
+  DELETE_ADDRESS: '/product/delete_address',
+
+  FETCH_DELIVERY_ZONES: '/product/fetch_delivery_zones',
+
+  INITIATE_CHECKOUT: '/product/initiate_checkout',
+  VERIFY_PAYMENT: '/product/verify_payment',
+}
 } as const;

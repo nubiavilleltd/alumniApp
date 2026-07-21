@@ -310,11 +310,15 @@ export function AdminDashboardPage() {
 
   const visiblePending = dashboard.pendingApprovals.filter((m) => !removedIds.has(m.id));
 
+  console.log(dashboard, 'dashboard.pendingApprovals');
+
   // Calculate stats
   const totalMembers = alumniList.length; // This should come from backend
   const activeMembers = alumniList.filter((m) => m.isActive !== false).length;
   const inactiveMembers = totalMembers - activeMembers;
   const pendingApprovals = visiblePending.length;
+
+  console.log('Stats:', { alumniList});
 
   return (
     <>

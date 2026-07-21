@@ -2,9 +2,16 @@ import { Crown } from 'lucide-react';
 import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 import { PROJECT_ROUTES } from '@/features/projects/routes';
 import { AppLink } from '@/shared/components/ui/AppLink';
-import { ADMIN_ROUTES } from '../routes';
+import { ADMIN_ROUTES, ADMIN_STORE_ROUTES } from '../routes';
 
-type AdminBannerTab = 'dashboard' | 'members' | 'events' | 'announcements' | 'projects';
+type AdminBannerTab =
+  | 'dashboard'
+  | 'members'
+  | 'events'
+  | 'announcements'
+  | 'projects'
+  | 'pages_content'
+  | 'store';
 
 type AdminBannerProps = {
   activeTab: AdminBannerTab;
@@ -18,6 +25,8 @@ const adminBannerTabs: Array<{ id: AdminBannerTab; label: string; href: string }
   { id: 'events', label: 'Events', href: ADMIN_ROUTES.EVENTS },
   { id: 'announcements', label: 'Announcements', href: ADMIN_ROUTES.ANNOUNCEMENTS },
   { id: 'projects', label: 'Projects', href: ADMIN_ROUTES.PROJECTS },
+  { id: 'pages_content', label: 'Pages Content', href: ADMIN_ROUTES.PAGES_CONTENT },
+  { id: 'store', label: 'Store', href: ADMIN_STORE_ROUTES.ROOT },
 ];
 
 export function AdminBanner({ activeTab, title, headingLevel = 'p' }: AdminBannerProps) {
@@ -47,9 +56,9 @@ export function AdminBanner({ activeTab, title, headingLevel = 'p' }: AdminBanne
               </p>
             </div>
 
-            {/* Right: Nav tabs — scrollable on mobile, wrapping on desktop */}
-            <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:overflow-visible sm:px-0">
-              <div className="flex w-max gap-2 sm:w-auto sm:flex-wrap sm:justify-end sm:gap-3">
+            {/* Right: Nav tabs */}
+            <div className="scrollbar-hide -mx-4 min-w-0 overflow-x-auto px-4 scroll-smooth sm:mx-0 sm:px-0 lg:flex-1 [-webkit-overflow-scrolling:touch]">
+              <div className="flex w-max gap-2 sm:gap-3 lg:ml-auto">
                 {adminBannerTabs.map((tab) => (
                   <AppLink
                     key={tab.id}

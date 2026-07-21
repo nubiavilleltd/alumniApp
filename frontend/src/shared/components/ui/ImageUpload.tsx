@@ -10,7 +10,11 @@ import { renderIcon, type AppIcon } from '@/shared/utils/renderIcon';
 
 interface ImageUploadProps {
   previews: string[];
-  onChange: (files: File[], previews: string[]) => void;
+  onChange: (
+    files: File[],
+    previews: string[],
+    change?: { type: 'replace' } | { type: 'remove'; index: number },
+  ) => void;
   label?: string;
   error?: string;
   hint?: string;
@@ -75,7 +79,7 @@ export function ImageUpload({
       previews.forEach((url) => URL.revokeObjectURL(url));
     }
 
-    onChange(validFiles, urls);
+    onChange(validFiles, urls, { type: 'replace' });
 
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
@@ -135,11 +139,12 @@ export function ImageUpload({
   };
 
   const removePreview = (index: number) => {
-    // Revoke the URL to prevent memory leaks
-    URL.revokeObjectURL(previews[index]);
+    if (previews[index]?.startsWith('blob:')) {
+      URL.revokeObjectURL(previews[index]);
+    }
 
     const newPreviews = previews.filter((_, i) => i !== index);
-    onChange([], newPreviews);
+    onChange([], newPreviews, { type: 'remove', index });
   };
 
   // Clean up preview URLs when component unmounts or previews change
@@ -187,7 +192,7 @@ export function ImageUpload({
         {renderIcon(
           isDragActive ? activeIcon : idleIcon,
           `h-8 w-8 transition-colors ${
-            error || validationError ? 'text-red-400' : 'text-gray-400 group-hover:text-primary-400'
+            error || validationError ? 'text-red-400' : 'text-primary-900 group-hover:text-primary-400'
           }`,
         )}
         <span className="text-primary-500 text-sm font-medium">

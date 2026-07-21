@@ -15,6 +15,7 @@ import { ADMIN_ROUTES } from '@/features/admin/routes';
 import { ALUMNI_ROUTES } from '@/features/alumni/routes';
 import { EVENT_ROUTES } from '@/features/events/routes';
 import { MARKETPLACE_ROUTES } from '@/features/marketplace/routes';
+import { ANNOUNCEMENT_ROUTES } from '@/features/announcements/routes';
 
 import { useMessagesInbox } from '@/features/messages/hooks/useMessages';
 import type { MessageThreadSummary } from '@/features/messages/types/messages.types';
@@ -25,6 +26,7 @@ import { USER_ROUTES } from '@/features/user/routes';
 import { AppLink } from '../ui/AppLink';
 import { useToastStore } from '../ui/Toast';
 import HeaderLogo from '../ui/HeaderLogo';
+import { useCartStore } from '@/features/store/stores/useCartStore';
 
 type NavChild = {
   label: string;
@@ -59,8 +61,10 @@ const primaryNavItems: NavItem[] = [
     url: ROUTES.NEWS,
     children: [
       { label: 'Announcements', url: ROUTES.NEWS },
+      { label: 'Blog', url: ANNOUNCEMENT_ROUTES.BLOG },
       { label: 'Events', url: EVENT_ROUTES.ROOT },
       { label: 'Our Projects', url: ROUTES.PROJECTS.ROOT },
+      { label: 'Live News', url: ROUTES.LIVE_NEWS.ROOT },
     ],
   },
   {
@@ -69,6 +73,7 @@ const primaryNavItems: NavItem[] = [
     children: [
       { label: 'Marketplace', url: MARKETPLACE_ROUTES.ROOT },
       { label: 'Job Vacancies', url: ROUTES.JOB_VACANCIES },
+      { label: 'Alumnae Store', url: ROUTES.STORE.ROOT },
     ],
   },
 ];
@@ -80,6 +85,7 @@ const authenticatedMenuItems: NavChild[] = [
   { label: 'My Registered Events', url: EVENT_ROUTES.MY_EVENTS },
   { label: 'My Market', url: MARKETPLACE_ROUTES.MY_BUSINESS },
   { label: 'My Job Posts', url: ROUTES.MY_JOB_POSTS },
+  { label: 'My Shopping Cart', url: ROUTES.STORE.CART },
   { label: 'Settings', url: USER_ROUTES.SETTINGS },
 ];
 
@@ -573,35 +579,68 @@ export function Navigation() {
     previousThreadStatesRef.current = nextThreadStates;
   }, [activeMessagesThreadId, authenticatedUser, inboxQuery.data, pathname]);
 
-  const handleLogout = () => {
+  // const handleLogout = () => {
+  //   const setLoggingOut = useTokenStore.getState().setLoggingOut;
+
+  //   setMobileOpen(false);
+  //   setIsLoggingOut(true);
+  //   setLoggingOut(true);
+
+  //   requestAnimationFrame(() => {
+  //     // if (authenticatedUser) {
+  //     //   authApi.logout().catch(() => {});
+  //     // }
+
+  //     if (authenticatedUser) {
+  //       console.log('Starting logout request');
+
+  //       authApi.logout().then(() => {
+  //         console.log('Logout request finished');
+  //       });
+  //     }
+
+  //     clearTokens();
+  //     clearIdentity();
+
+  //     requestAnimationFrame(() => {
+  //       window.location.replace(window.location.origin + ROUTES.HOME);
+  //     });
+  //   });
+  // };
+
+
+  const handleLogout = async () => {
     const setLoggingOut = useTokenStore.getState().setLoggingOut;
 
     setMobileOpen(false);
     setIsLoggingOut(true);
     setLoggingOut(true);
 
-    requestAnimationFrame(() => {
+    try {
       if (authenticatedUser) {
-        authApi.logout().catch(() => {});
+        await authApi.logout();
       }
-
+    } finally {
       clearTokens();
       clearIdentity();
 
-      requestAnimationFrame(() => {
-        window.location.replace(window.location.origin + ROUTES.HOME);
-      });
-    });
+      const { clearCart, clearOwner } = useCartStore.getState();
+      clearCart();
+      clearOwner();
+
+      window.location.replace(window.location.origin + ROUTES.HOME);
+    }
   };
+
 
   const mobileMenuItems = isAdmin
     ? [
-        {
-          label: 'Admin Dashboard',
-          url: ADMIN_ROUTES.DASHBOARD,
-        },
-        ...authenticatedMenuItems,
-      ]
+      {
+        label: 'Admin Dashboard',
+        url: ADMIN_ROUTES.DASHBOARD,
+      },
+      ...authenticatedMenuItems,
+    ]
     : authenticatedMenuItems;
 
   return (

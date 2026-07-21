@@ -1,3 +1,4 @@
+import { X } from 'lucide-react';
 import { useEffect } from 'react';
 
 // ─── Reusable Modal Shell ─────────────────────────────────────────────────────
@@ -36,15 +37,17 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-gray-100 px-6 pb-4 pt-6">
-            <h2 className="text-primary-500 font-bold text-xl">{title}</h2>
+          <div className="flex items-start justify-between gap-4 border-b border-gray-100 px-6 pb-4 pt-6">
+            <h2 className="min-w-0 whitespace-normal break-words text-xl font-bold text-primary-500 [overflow-wrap:anywhere]">
+              {title}
+            </h2>
             <button
               type="button"
               onClick={onClose}
-              className="text-gray-500 hover:text-gray-800 font-semibold text-lg leading-none transition-colors"
+              className="shrink-0 text-lg font-semibold leading-none text-gray-500 transition-colors hover:text-gray-800"
               aria-label="Close modal"
             >
-              ✕
+              <X />
             </button>
           </div>
 

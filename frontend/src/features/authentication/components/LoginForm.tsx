@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { AppLink } from '@/shared/components/ui/AppLink';
@@ -10,13 +10,14 @@ import { authApi } from '../services/auth.service';
 import { loginSchema } from '../schemas/authSchema';
 import { useIdentityStore } from '../stores/useIdentityStore';
 import { useTokenStore } from '../stores/useTokenStore';
-import type { AuthSessionUser, LoginFormValues } from '../types/auth.types';
+import type { AuthSessionUser, LoginFormValues, SocialAuthProvider } from '../types/auth.types';
 import { AuthCard } from './AuthCard';
 import { toast } from '@/shared/components/ui/Toast';
 import { USER_ROUTES } from '@/features/user/routes';
 import { ADMIN_ROUTES } from '@/features/admin/routes';
 import { AUTH_ROUTES } from '../routes';
-import { mapCurrentUserResponse } from '../api/adapters/login.adapter';
+import { GoogleAuthButton } from './GoogleAuthButton';
+import { FacebookAuthButton } from './FacebookAuthButton';
 import {
   formatVerificationResendDuration,
   getVerificationResendStatus,
@@ -26,6 +27,28 @@ import {
 interface LoginLocationState {
   from?: string;
   loginNotice?: string;
+}
+
+type SocialLoginOnboardingResponse = {
+  status?: number;
+  message?: string;
+  user_id?: string;
+  email?: string;
+  fullname?: string;
+  access_token?: string;
+};
+
+function isIncompleteProfileMessage(message?: string) {
+  const normalized = message?.toLowerCase() ?? '';
+  return normalized.includes('profile is incomplete') || normalized.includes('onboarding');
+}
+
+function isPendingApprovalMessage(message?: string) {
+  return (message?.toLowerCase() ?? '').includes('pending admin approval');
+}
+
+function getProviderLabel(provider: SocialAuthProvider) {
+  return provider === 'facebook' ? 'Facebook' : 'Google';
 }
 
 export function LoginForm() {
@@ -66,6 +89,84 @@ export function LoginForm() {
 
   const from = locationState?.from;
 
+  const completeLogin = useCallback(
+    (loginResponse: { user: AuthSessionUser; accessToken: string; refreshToken: string }) => {
+      const fullProfile = loginResponse.user;
+
+      setIdentity(fullProfile);
+      setTokens(loginResponse.accessToken, loginResponse.refreshToken);
+
+      const fallbackDestination =
+        fullProfile?.role === 'admin' ? ADMIN_ROUTES.DASHBOARD : USER_ROUTES.DASHBOARD;
+
+      navigate(from ?? fallbackDestination, { replace: true });
+    },
+    [from, navigate, setIdentity, setTokens],
+  );
+
+  const handleSocialLoginError = useCallback(
+    (error: unknown, provider: SocialAuthProvider) => {
+      const providerLabel = getProviderLabel(provider);
+      const status =
+        error instanceof Error ? (error as Error & { status?: number }).status : undefined;
+      const response =
+        error instanceof Error
+          ? (error as Error & { details?: { response?: SocialLoginOnboardingResponse } }).details
+              ?.response
+          : undefined;
+
+      if (status === 406 && response?.user_id && isIncompleteProfileMessage(response.message)) {
+        navigate(AUTH_ROUTES.REGISTER, {
+          state: {
+            socialOnboarding: {
+              provider,
+              userId: response.user_id,
+              email: response.email,
+              fullName: response.fullname,
+              message: response.message,
+              accessToken: response.access_token,
+            },
+          },
+        });
+        return;
+      }
+
+      if (status === 406 && isPendingApprovalMessage(response?.message)) {
+        toast.info('Your account is pending admin approval. You will be notified once approved.');
+        return;
+      }
+
+      toast.error(`We could not continue with ${providerLabel}. Please try again.`);
+    },
+    [navigate],
+  );
+
+  const handleGoogleCredential = useCallback(
+    async (idToken: string) => {
+      try {
+        const loginResponse = await authApi.socialLogin({ provider: 'google', idToken });
+        setRememberMe(true);
+        completeLogin(loginResponse);
+      } catch (error) {
+        handleSocialLoginError(error, 'google');
+      }
+    },
+    [completeLogin, handleSocialLoginError],
+  );
+
+  const handleFacebookAccessToken = useCallback(
+    async (accessToken: string) => {
+      try {
+        const loginResponse = await authApi.socialLogin({ provider: 'facebook', accessToken });
+        setRememberMe(true);
+        completeLogin(loginResponse);
+      } catch (error) {
+        handleSocialLoginError(error, 'facebook');
+      }
+    },
+    [completeLogin, handleSocialLoginError],
+  );
+
   const {
     register,
     handleSubmit,
@@ -83,7 +184,6 @@ export function LoginForm() {
 
       // Step 2: Fetch the full profile using the returned user ID
       // This gives us fullName, photo, role, etc. for the nav to render immediately.
-      let fullProfile = loginResponse.user;
       // try {
       //   const rawProfile = await authApi.getCurrentUserRaw(loginResponse.user.id);
       //   fullProfile = mapCurrentUserResponse(rawProfile);
@@ -106,19 +206,8 @@ export function LoginForm() {
       // Step 3: Persist full profile to localStorage — nav renders synchronously
       // setSession(fullProfile, loginResponse.accessToken, loginResponse.refreshToken, values.rememberMe);
 
-      setIdentity(fullProfile);
-
-      setTokens(loginResponse.accessToken, loginResponse.refreshToken);
-
       setRememberMe(values.rememberMe as boolean);
-
-      const fallbackDestination =
-        fullProfile?.role === 'admin' ? ADMIN_ROUTES.DASHBOARD : USER_ROUTES.DASHBOARD;
-
-      console.log('from', { from });
-
-      // Step 4: Navigate
-      navigate(from ?? fallbackDestination, { replace: true });
+      completeLogin(loginResponse);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Login failed. Please try again.';
       const verificationUserId =
@@ -190,6 +279,25 @@ export function LoginForm() {
 
   return (
     <AuthCard title="Welcome Back" subtitle="Glad to see you again. Sign in to your account below.">
+      <div className="auth-social-signup auth-social-signup--login">
+        <div className="auth-social-signup__buttons auth-social-signup__buttons--login">
+          <GoogleAuthButton
+            label="Sign in with Google"
+            text="signin_with"
+            onCredential={handleGoogleCredential}
+          />
+          <FacebookAuthButton
+            label="Sign in with Facebook"
+            onAccessToken={handleFacebookAccessToken}
+          />
+        </div>
+        <div className="auth-social-divider" aria-hidden="true">
+          <span />
+          <p>or</p>
+          <span />
+        </div>
+      </div>
+
       <form onSubmit={onSubmit} className="auth-form auth-form--login">
         {/* Email */}
         <FormInput

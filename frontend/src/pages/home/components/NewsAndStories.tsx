@@ -26,15 +26,15 @@ function SectionHeading({ showViewAll = true }: { showViewAll: boolean }) {
         <div className="relative inline-flex">
           <span
             aria-hidden="true"
-            className="absolute -left-2 top-1/2 h-5 w-[2px] -translate-y-1/2 bg-[#0077cc]"
+            className="absolute -left-2 top-1/2 h-5 w-[2px] -translate-y-1/2 bg-primary-500"
           />
           <span
             aria-hidden="true"
-            className="absolute -top-2 right-[-10px] h-[2px] w-4 bg-[#0077cc]"
+            className="absolute -top-2 right-[-10px] h-[2px] w-4 bg-primary-500"
           />
           <span
             aria-hidden="true"
-            className="absolute -top-2 right-[-10px] h-4 w-[2px] bg-[#0077cc]"
+            className="absolute -top-2 right-[-10px] h-4 w-[2px] bg-primary-500"
           />
 
           <p className="type-small font-semibold text-[#071116]">Announcements</p>
@@ -48,7 +48,7 @@ function SectionHeading({ showViewAll = true }: { showViewAll: boolean }) {
       {showViewAll && (
         <AppLink
           href={ANNOUNCEMENT_ROUTES.ROOT}
-          className="type-button mt-1 hidden shrink-0 items-center gap-1 text-[#0077cc] transition-colors duration-200 hover:text-[#005fa3] md:inline-flex"
+          className="type-button mt-1 hidden shrink-0 items-center gap-1 text-primary-500 transition-colors duration-200 hover:text-primary-600 md:inline-flex"
         >
           See All
           <Icon icon="mdi:chevron-right" aria-hidden="true" className="h-5 w-5" />
@@ -89,12 +89,12 @@ function FeaturedAnnouncementCard({ item }: { item: NewsItem }) {
         {item.excerpt ? (
           <p className="type-card-body mt-3 line-clamp-3 text-[#556070]">
             {item.excerpt}{' '}
-            <span className="font-semibold text-[#0077cc] transition-colors duration-200 group-hover:text-[#005fa3]">
+            <span className="font-semibold text-primary-500 transition-colors duration-200 group-hover:text-primary-600">
               Read more
             </span>
           </p>
         ) : (
-          <span className="type-small mt-3 inline-flex text-[#0077cc] transition-colors duration-200 group-hover:text-[#005fa3]">
+          <span className="type-small mt-3 inline-flex text-primary-500 transition-colors duration-200 group-hover:text-primary-600">
             Read more
           </span>
         )}
@@ -218,7 +218,7 @@ export default function HomeAnnouncements() {
 
         <AppLink
           href={ANNOUNCEMENT_ROUTES.ROOT}
-          className="type-button mt-8 inline-flex items-center gap-1 text-[#0077cc] transition-colors duration-200 hover:text-[#005fa3] md:hidden"
+          className="type-button mt-8 inline-flex items-center gap-1 text-primary-500 transition-colors duration-200 hover:text-primary-600 md:hidden"
         >
           See All
           <Icon icon="mdi:chevron-right" aria-hidden="true" className="h-5 w-5" />
