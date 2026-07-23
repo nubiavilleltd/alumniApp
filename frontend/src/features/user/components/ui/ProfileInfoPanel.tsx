@@ -225,6 +225,7 @@ function CopyButton({ value }: { value: string }) {
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(value);
+      toast.success("Text successfully copied")
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
@@ -236,7 +237,7 @@ function CopyButton({ value }: { value: string }) {
       type="button"
       onClick={handleCopy}
       title="Copy to clipboard"
-      className="text-primary-400 hover:text-primary-600 transition-colors flex-shrink-0"
+      className="text-primary-500 hover:text-primary-600 transition-colors flex-shrink-0"
     >
       {copied ? (
         <Check className="w-4 h-4" strokeWidth={2.4} />
@@ -367,9 +368,9 @@ export function ProfileInfoPanel({
           <FieldRow label="Full Name" value={data.fullName} />
           <FieldRow label="Maiden Name" value={data.maidenName} />
           <FieldRow label="Nickname in School" value={data.nicknameInSchool} />
-          {hasSocials && <FieldRow label="Email" value={data.email} copyable={copyable} />}
-          <FieldRow label="WhatsApp" value={data.whatsapp} copyable={copyable} />
-          <FieldRow label="Alt. Phone" value={data.altPhone} copyable={copyable} />
+          {hasSocials && <FieldRow label="Email" value={data.email} copyable={true} />}
+          <FieldRow label="WhatsApp" value={data.whatsapp} copyable={true} />
+          <FieldRow label="Alt. Phone" value={data.altPhone} copyable={true} />
           <FieldRow label="Date of Birth" value={data.dateOfBirth} />
         </Section>
       )}
