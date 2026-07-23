@@ -399,11 +399,11 @@ export function ProfileInfoPanel({
       {/* Socials */}
       {hasSocials && (
         <Section title="Social Links">
-          <FieldRow label="Instagram" value={data.instagram} copyable={copyable} />
-          <FieldRow label="Facebook" value={data.facebook} copyable={copyable} />
-          <FieldRow label="X (Twitter)" value={data.twitter} copyable={copyable} />
-          <FieldRow label="TikTok" value={data.tiktok} copyable={copyable} />
-          <FieldRow label="LinkedIn" value={data.linkedin} copyable={copyable} />
+          <FieldRow label="Instagram" value={data.instagram} copyable={true} />
+          <FieldRow label="Facebook" value={data.facebook} copyable={true} />
+          <FieldRow label="X (Twitter)" value={data.twitter} copyable={true} />
+          <FieldRow label="TikTok" value={data.tiktok} copyable={true} />
+          <FieldRow label="LinkedIn" value={data.linkedin} copyable={true} />
         </Section>
       )}
 
