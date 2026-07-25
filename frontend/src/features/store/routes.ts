@@ -4,3 +4,7 @@ export const STORE_ROUTES = {
   CART: '/store/cart',
   CHECKOUT: '/store/checkout',
 };
+
+export const ORDER_ROUTES = {
+  ROOT: '/orders',
+};

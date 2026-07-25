@@ -7,7 +7,7 @@ import { MARKETPLACE_ROUTES } from '@/features/marketplace/routes';
 import { PROJECT_ROUTES } from '@/features/projects/routes';
 import { ANNOUNCEMENT_ROUTES } from '@/features/announcements/routes';
 import { LIVE_NEWS_ROUTES } from '@/features/liveNews/routes';
-import { STORE_ROUTES } from '@/features/store/routes';
+import { ORDER_ROUTES, STORE_ROUTES } from '@/features/store/routes';
 
 export const ROUTES = {
   HOME: '/',
@@ -37,4 +37,5 @@ export const ROUTES = {
   MARKETPLACE: MARKETPLACE_ROUTES,
   LIVE_NEWS: LIVE_NEWS_ROUTES,
   STORE: STORE_ROUTES,
+  ORDER: ORDER_ROUTES
 } as const;
