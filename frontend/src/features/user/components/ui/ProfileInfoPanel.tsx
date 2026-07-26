@@ -184,6 +184,7 @@
 import { useState } from 'react';
 import { Check, Copy } from 'lucide-react';
 import { toast } from '@/shared/components/ui/Toast';
+import CopyButton from '@/shared/components/ui/CopyButton';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -220,32 +221,7 @@ interface ProfileInfoPanelProps {
 
 // ─── Copy button ──────────────────────────────────────────────────────────────
 
-function CopyButton({ value }: { value: string }) {
-  const [copied, setCopied] = useState(false);
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(value);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      toast.error('Could not copy to clipboard');
-    }
-  };
-  return (
-    <button
-      type="button"
-      onClick={handleCopy}
-      title="Copy to clipboard"
-      className="text-primary-400 hover:text-primary-600 transition-colors flex-shrink-0"
-    >
-      {copied ? (
-        <Check className="w-4 h-4" strokeWidth={2.4} />
-      ) : (
-        <Copy className="w-4 h-4" strokeWidth={2.4} />
-      )}
-    </button>
-  );
-}
+
 
 // ─── Section ──────────────────────────────────────────────────────────────────
 
@@ -331,8 +307,6 @@ export function ProfileInfoPanel({
     data.dateOfBirth,
   );
 
-  console.log('data data data =>', { data });
-
   const hasAddress = hasAny(data.streetAddress, data.area, data.state, data.city, data.zone);
 
   const hasProfessional = hasAny(
@@ -367,9 +341,9 @@ export function ProfileInfoPanel({
           <FieldRow label="Full Name" value={data.fullName} />
           <FieldRow label="Maiden Name" value={data.maidenName} />
           <FieldRow label="Nickname in School" value={data.nicknameInSchool} />
-          {hasSocials && <FieldRow label="Email" value={data.email} copyable={copyable} />}
-          <FieldRow label="WhatsApp" value={data.whatsapp} copyable={copyable} />
-          <FieldRow label="Alt. Phone" value={data.altPhone} copyable={copyable} />
+          {hasSocials && <FieldRow label="Email" value={data.email} copyable={true} />}
+          <FieldRow label="WhatsApp" value={data.whatsapp} copyable={true} />
+          <FieldRow label="Alt. Phone" value={data.altPhone} copyable={true} />
           <FieldRow label="Date of Birth" value={data.dateOfBirth} />
         </Section>
       )}
@@ -398,11 +372,11 @@ export function ProfileInfoPanel({
       {/* Socials */}
       {hasSocials && (
         <Section title="Social Links">
-          <FieldRow label="Instagram" value={data.instagram} copyable={copyable} />
-          <FieldRow label="Facebook" value={data.facebook} copyable={copyable} />
-          <FieldRow label="X (Twitter)" value={data.twitter} copyable={copyable} />
-          <FieldRow label="TikTok" value={data.tiktok} copyable={copyable} />
-          <FieldRow label="LinkedIn" value={data.linkedin} copyable={copyable} />
+          <FieldRow label="Instagram" value={data.instagram} copyable={true} />
+          <FieldRow label="Facebook" value={data.facebook} copyable={true} />
+          <FieldRow label="X (Twitter)" value={data.twitter} copyable={true} />
+          <FieldRow label="TikTok" value={data.tiktok} copyable={true} />
+          <FieldRow label="LinkedIn" value={data.linkedin} copyable={true} />
         </Section>
       )}
 

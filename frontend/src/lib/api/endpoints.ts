@@ -166,5 +166,15 @@ STORE: {
 
   INITIATE_CHECKOUT: '/product/initiate_checkout',
   VERIFY_PAYMENT: '/product/verify_payment',
+},
+
+ORDER:{
+  FETCH_ORDERS: '/product/fetch_orders',
+  // TEMPORARY: backend has not provided this endpoint yet.
+  // Pointing at FETCH_ORDERS as a stand-in so admin UI can be built/tested.
+  // ⚠️ This means the "admin" order list currently only returns the
+  // current user's own orders, NOT all orders across the system.
+  // TODO: revert to '/product/fetch_orders_management' once backend ships it.
+  FETCH_ORDERS_MANAGEMENT: '/product/fetch_orders',
 }
 } as const;

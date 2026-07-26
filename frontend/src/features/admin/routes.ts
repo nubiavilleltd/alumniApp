@@ -18,3 +18,8 @@ export const ADMIN_STORE_ROUTES = {
   PRODUCT_EDIT: (id: string) => `/admin/store/${id}/edit`,
   PRODUCT_EDIT_PATH: '/admin/store/:id/edit',
 } as const;
+
+export const ADMIN_ORDER_ROUTES = {
+  ROOT: '/admin/orders',
+} as const;
+

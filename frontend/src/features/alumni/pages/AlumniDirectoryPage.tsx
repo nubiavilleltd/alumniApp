@@ -89,27 +89,6 @@ function AlumnaeCard({ entry, currentUser, onMessageClick, isMessagePending }: a
   //   : null;
 
   return (
-    // <div className="relative rounded-2xl overflow-hidden shadow-md group cursor-pointer aspect-[3/4] sm:aspect-[4/5] lg:aspect-[3/4]">
-    //   <div
-    //     className="relative rounded-2xl overflow-hidden shadow-md group cursor-pointer
-    // aspect-[4/5] sm:aspect-[4/5] lg:aspect-[3/4]"
-    //   >
-
-    //   <div
-    //   className="
-    //     relative
-    //     w-full
-    //     max-w-[260px]
-    //     sm:max-w-none
-    //     rounded-2xl
-    //     overflow-hidden
-    //     shadow-md
-    //     group
-    //     cursor-pointer
-    //     aspect-[4/5]
-    //     lg:aspect-[3/4]
-    //   "
-    // >
 
     <div
       className="
@@ -278,12 +257,12 @@ export function AlumniDirectoryPage() {
 
   return (
     <>
-      <SEO title="Alumnae Directory" />
+      <SEO title="OGA Directory" />
 
       <section className="min-h-screen bg-[#F8F8F7] py-8">
         <div className="container-custom mx-auto">
           {/* Title */}
-          <h1 className="type-section-title mb-6">Alumnae Directory</h1>
+          <h1 className="type-section-title mb-6">OGA Directory</h1>
 
           {/* Filters */}
           <div className="flex flex-col sm:flex-row items-center gap-4 mb-8">

@@ -50,7 +50,7 @@ import { MessagesPage } from './features/messages/pages/MessagesPage';
 
 import { AdminDashboardPage } from './features/admin/pages/AdminDashboardPage';
 import ProjectDetailsPage from './features/projects/pages/ProjectDetail';
-import { ADMIN_ROUTES, ADMIN_STORE_ROUTES } from './features/admin/routes';
+import { ADMIN_ORDER_ROUTES, ADMIN_ROUTES, ADMIN_STORE_ROUTES } from './features/admin/routes';
 import { AdminMembersPage } from './features/admin/pages/AdminMembersPage';
 import { AdminPagesContentPage } from './features/admin/pages/AdminPagesContentPage';
 import { AdminEventRegistrationsPage } from './features/events/pages/AdminEventRegistrationsPage';
@@ -79,6 +79,8 @@ import { FaqPage } from './features/faqs/pages/FaqPage';
 import { AdminStorePage } from './features/admin/pages/AdminStorePage';
 import { ProductCreatePage } from './features/admin/pages/ProductCreatePage';
 import { ProductEditPage } from './features/admin/pages/ProductEditPage';
+import OrderHistoryPage from './features/store/pages/OrderHistoryPage';
+import AdminOrderManagementPage from './features/admin/pages/AdminOrderManagementPage';
 
 export default function App() {
   return (
@@ -537,6 +539,29 @@ export default function App() {
                 <ErrorBoundary>
                   <CheckoutPage />
                 </ErrorBoundary>
+              }
+            />
+
+
+            {/* ORDER ROUTES */}
+             <Route
+              path={ROUTES.ORDER.ROOT}
+              element={
+                <ProtectedRoute>
+                  <ErrorBoundary>
+                    <OrderHistoryPage />
+                  </ErrorBoundary>
+                </ProtectedRoute>
+              }
+            />
+             <Route
+              path={ADMIN_ORDER_ROUTES.ROOT}
+              element={
+                <AdminRoute>
+                  <ErrorBoundary>
+                    <AdminOrderManagementPage />
+                  </ErrorBoundary>
+                </AdminRoute>
               }
             />
 

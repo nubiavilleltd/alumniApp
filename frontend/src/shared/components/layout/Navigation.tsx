@@ -86,6 +86,7 @@ const authenticatedMenuItems: NavChild[] = [
   { label: 'My Market', url: MARKETPLACE_ROUTES.MY_BUSINESS },
   { label: 'My Job Posts', url: ROUTES.MY_JOB_POSTS },
   { label: 'My Shopping Cart', url: ROUTES.STORE.CART },
+  { label: 'My Order History', url: ROUTES.ORDER.ROOT },
   { label: 'Settings', url: USER_ROUTES.SETTINGS },
 ];
 
