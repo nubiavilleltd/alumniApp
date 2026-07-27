@@ -81,6 +81,8 @@ import { ProductCreatePage } from './features/admin/pages/ProductCreatePage';
 import { ProductEditPage } from './features/admin/pages/ProductEditPage';
 import OrderHistoryPage from './features/store/pages/OrderHistoryPage';
 import AdminOrderManagementPage from './features/admin/pages/AdminOrderManagementPage';
+import OrderDetailsPage from './features/store/pages/OrderDetailsPage';
+import AdminOrderDetailsPage from './features/admin/pages/AdminOrderDetailsPage';
 
 export default function App() {
   return (
@@ -542,9 +544,8 @@ export default function App() {
               }
             />
 
-
             {/* ORDER ROUTES */}
-             <Route
+            <Route
               path={ROUTES.ORDER.ROOT}
               element={
                 <ProtectedRoute>
@@ -554,7 +555,17 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
-             <Route
+            <Route
+              path={ROUTES.ORDER.DETAIL_PATH}
+              element={
+                <ProtectedRoute>
+                  <ErrorBoundary>
+                    <OrderDetailsPage />
+                  </ErrorBoundary>
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path={ADMIN_ORDER_ROUTES.ROOT}
               element={
                 <AdminRoute>
@@ -564,10 +575,41 @@ export default function App() {
                 </AdminRoute>
               }
             />
+            <Route
+              path={ADMIN_ORDER_ROUTES.DETAIL_PATH}
+              element={
+                <AdminRoute>
+                  <ErrorBoundary>
+                    <AdminOrderDetailsPage />
+                  </ErrorBoundary>
+                </AdminRoute>
+              }
+            />
 
-            <Route path={ADMIN_STORE_ROUTES.ROOT} element={<AdminRoute><AdminStorePage /></AdminRoute>} />
-            <Route path={ADMIN_STORE_ROUTES.PRODUCT_CREATE} element={<AdminRoute><ProductCreatePage /></AdminRoute>} />
-            <Route path={ADMIN_STORE_ROUTES.PRODUCT_EDIT_PATH} element={<AdminRoute><ProductEditPage /></AdminRoute>} />
+            <Route
+              path={ADMIN_STORE_ROUTES.ROOT}
+              element={
+                <AdminRoute>
+                  <AdminStorePage />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path={ADMIN_STORE_ROUTES.PRODUCT_CREATE}
+              element={
+                <AdminRoute>
+                  <ProductCreatePage />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path={ADMIN_STORE_ROUTES.PRODUCT_EDIT_PATH}
+              element={
+                <AdminRoute>
+                  <ProductEditPage />
+                </AdminRoute>
+              }
+            />
 
             {/* Redirects */}
             <Route path="/home" element={<Navigate to={ROUTES.HOME} replace />} />

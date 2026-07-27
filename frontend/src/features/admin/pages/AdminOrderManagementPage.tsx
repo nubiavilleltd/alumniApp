@@ -1,14 +1,13 @@
 import { OrderFilters } from '@/features/store/components/OrderFilters';
 import OrderListCard from '@/features/store/components/OrderListCard';
 import useItemsPerPage from '@/features/store/hooks/useItemsPerPage';
-import { useOrders } from '@/features/store/hooks/useOrders';
 import { SEO } from '@/shared/common/SEO';
 import { Pagination } from '@/shared/components/ui/Pagination';
 import ContainerBackground from '@/shared/containers/ContainerBackground';
-import React, { useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
 import { useAdminOrders } from '../hooks/useAdminOrders';
-import { FilterDropdown } from '@/shared/components/ui/FilterDropdown';
+import { ADMIN_ORDER_ROUTES } from '../routes'; // adjust to wherever this actually lives
 
 export default function AdminOrderManagementPage() {
 
@@ -16,8 +15,9 @@ export default function AdminOrderManagementPage() {
     const [activeTab, setActiveTab] = useState('all');
     const [dateFrom, setDateFrom] = useState('');
     const [dateTo, setDateTo] = useState('');
+    const [page, setPage] = useState(1);
 
-    // Fetch all orders (filtering happens on frontend)
+    // Fetch all orders (filtering happens inside the hook via useOrdersBase)
     const { orders, counts, isLoading, isError, error } = useAdminOrders({
         search,
         status: activeTab,
@@ -33,24 +33,14 @@ export default function AdminOrderManagementPage() {
         { label: 'Completed', value: 'completed', count: counts.completed },
     ];
 
-    const [page, setPage] = useState(1);
-
     const ITEMS_PER_PAGE = useItemsPerPage();
 
-    const filtered = useMemo(() => {
-        return orders?.filter((orders) => {
-            const searchMatch = orders.orderNumber
-                .toLowerCase()
-                .includes(search.toLowerCase());
+    const totalPages = Math.ceil(orders.length / ITEMS_PER_PAGE);
 
-            return searchMatch
-        });
-    }, [orders, search]);
-
-
-    const totalPages = filtered ? Math.ceil(
-        filtered?.length / ITEMS_PER_PAGE,
-    ) : 0;
+    const visible = orders.slice(
+        (page - 1) * ITEMS_PER_PAGE,
+        page * ITEMS_PER_PAGE,
+    );
 
     if (isLoading) {
         return <ContainerBackground>
@@ -101,14 +91,14 @@ export default function AdminOrderManagementPage() {
                 />
 
                 <div className="mt-6 space-y-4">
-                    {orders.length === 0 ? (
+                    {visible.length === 0 ? (
                         <p className="text-center text-gray-500 py-8">
                             {search.trim() ? 'No orders match your search' : 'No orders found'}
                         </p>
                     ) : (
-                        orders.map((order) => (
+                        visible.map((order) => (
                             <OrderListCard order={order} key={order.id} variant='admin' action={
-                                <Link to={`/admin/orders/${order.id}`} className="border-2 p-0.5 px-3 font-semibold rounded-2xl border-primary-500 text-primary-500">
+                                <Link to={ADMIN_ORDER_ROUTES.DETAIL(order.id)} className="border-2 p-0.5 px-3 font-semibold rounded-2xl border-primary-500 text-primary-500">
                                     View Details
                                 </Link>
                             } />

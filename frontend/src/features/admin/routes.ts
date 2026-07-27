@@ -21,5 +21,7 @@ export const ADMIN_STORE_ROUTES = {
 
 export const ADMIN_ORDER_ROUTES = {
   ROOT: '/admin/orders',
+  DETAIL: (id: string) => `/admin/orders/${id}`,
+  DETAIL_PATH: '/admin/orders/:id',
 } as const;
 
