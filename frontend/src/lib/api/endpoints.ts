@@ -175,6 +175,7 @@ ORDER:{
   // ⚠️ This means the "admin" order list currently only returns the
   // current user's own orders, NOT all orders across the system.
   // TODO: revert to '/product/fetch_orders_management' once backend ships it.
-  FETCH_ORDERS_MANAGEMENT: '/product/fetch_orders',
+  FETCH_ORDERS_MANAGEMENT: '/product/order_management',
+  UPDATE_ORDER_STATUS: '/product/update_order_status',
 }
 } as const;

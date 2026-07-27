@@ -7,4 +7,5 @@ export const STORE_ROUTES = {
 
 export const ORDER_ROUTES = {
   ROOT: '/orders',
+  DETAIL: (id: string) => `/orders/${id}`,
 };

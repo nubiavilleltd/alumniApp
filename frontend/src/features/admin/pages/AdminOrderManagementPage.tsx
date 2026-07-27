@@ -108,7 +108,7 @@ export default function AdminOrderManagementPage() {
                     ) : (
                         orders.map((order) => (
                             <OrderListCard order={order} key={order.id} variant='admin' action={
-                                <Link to={`/admin/orders/${order.id}`} className="border border-2 p-0.5 px-3 font-semibold rounded-2xl border-primary-500 text-primary-500">
+                                <Link to={`/admin/orders/${order.id}`} className="border-2 p-0.5 px-3 font-semibold rounded-2xl border-primary-500 text-primary-500">
                                     View Details
                                 </Link>
                             } />

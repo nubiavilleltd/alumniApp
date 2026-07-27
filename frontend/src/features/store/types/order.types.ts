@@ -50,6 +50,20 @@ export interface Order {
   items: OrderItem[];
 }
 
+// order.types.ts — add below the Order interface
+
+/** One row in the flattened "My Order History" list — a single item
+ * paired with the shared fields it inherits from its parent order. */
+export interface FlattenedOrderItem {
+  id: string;              // unique row key: `${orderId}-${item.id}`
+  orderId: string;         // for the "View Details" link → /orders/{orderId}
+  orderNumber: string;
+  status: OrderStatus | AdminOrderStatus;
+  placedAt: string;
+  item: OrderItem;
+  lineTotal: number;       // item.price * item.quantity
+}
+
 
 export type DeliveryMethodResponse = 'door_delivery' | 'self_pickup';
 
@@ -91,3 +105,4 @@ export interface OrderItemResponse {
   line_total: string;
   image_url: string;
 }
+
