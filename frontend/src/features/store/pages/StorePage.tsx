@@ -93,6 +93,7 @@ export function StorePage() {
                         categories={categories}
                         onSearch={setSearch}
                         onCategoryChange={setCategory}
+                        className='mb-8'
                     />
 
                     {/* GRID */}

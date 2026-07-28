@@ -83,6 +83,18 @@ export function AdminStorePage() {
     [products],
   );
 
+  const filtered = useMemo(() => {
+    return products.filter((product) => {
+      const searchMatch = product.product_name
+        .toLowerCase()
+        .includes(search.toLowerCase());
+
+      const categoryMatch = !category || product.category === category;
+
+      return searchMatch && categoryMatch;
+    });
+  }, [products, search, category]);
+
   const deleteProduct = useDeleteProduct();
 
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
@@ -106,7 +118,7 @@ export function AdminStorePage() {
 
           {/* Header */}
           <div className="flex flex-col sm:flex-row items-center justify-between mb-8">
-          
+
             <div className='flex-1'><StoreFilters
               search={search}
               category={category}
@@ -158,9 +170,9 @@ export function AdminStorePage() {
           )}
 
           {/* Grid */}
-          {!isLoading && !isError && products.length > 0 && (
+          {!isLoading && !isError && filtered.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
-              {products.map((product) => (
+              {filtered.map((product) => (
                 <AdminStoreProductCard
                   key={product.id}
                   product={product}

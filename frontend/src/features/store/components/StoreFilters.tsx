@@ -1,5 +1,6 @@
 import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { FilterDropdown } from '@/shared/components/ui/FilterDropdown';
+import clsx from 'clsx';
 
 interface Props {
     search: string;
@@ -20,7 +21,7 @@ export function StoreFilters({
     className
 }: Props) {
     return (
-        <div className={`flex flex-col sm:flex-row items-center gap-4${className ?? ""}`}>
+        <div className={clsx('flex flex-col sm:flex-row items-center gap-4', className)}>
             <div className="flex-1 w-full sm:max-w-xl">
                 <SearchInput
                     value={search}
