@@ -46,6 +46,11 @@ export interface Order {
   area: string;
   state: string;
   phone: string;
+  customerFirstName:string;
+  customerLastName:string;
+  customerFullName:string;
+  customerEmail:string;
+  customerPhone:string;
   additionalPhone:string;
   items: OrderItem[];
 }
@@ -90,6 +95,10 @@ export interface OrderResponse {
   completion_date?: string | null;
   created_at: string;
   updated_at: string;
+  customer_first_name:string;
+  customer_last_name:string;
+  customer_email:string;
+  customer_phone:string;
   items: OrderItemResponse
 }
 

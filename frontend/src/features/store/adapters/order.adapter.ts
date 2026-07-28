@@ -26,6 +26,11 @@ export function adaptOrder(
     state: order.state,
     phone: order.phone,
     additionalPhone: order.additional_phone,
+    customerFirstName:order.customer_first_name,
+    customerLastName:order.customer_last_name,
+    customerFullName:`${order.customer_first_name} ${order.customer_last_name}`,
+    customerEmail:order.customer_email,
+    customerPhone:order.customer_phone,
     items: Array.isArray(order.items) 
       ? order.items.map(adaptOrderItem) 
       : [],

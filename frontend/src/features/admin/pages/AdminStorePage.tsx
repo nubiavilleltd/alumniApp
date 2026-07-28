@@ -1,10 +1,12 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useMemo, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 import { SEO } from '@/shared/common/SEO';
 import { useAdminProducts, useDeleteProduct } from '../hooks/useAdminStore';
-import { ADMIN_STORE_ROUTES } from '../routes';
+import { ADMIN_ORDER_ROUTES, ADMIN_STORE_ROUTES } from '../routes';
 import { AdminStoreProductCard } from '../components/AdminStoreProductCard';
+import { AdminBanner } from '../components/AdminBanner';
+import { StoreFilters } from '@/features/store/components/StoreFilters';
 
 // ─── Confirmation dialog ──────────────────────────────────────────────────────
 
@@ -74,6 +76,13 @@ function StoreSkeleton() {
 export function AdminStorePage() {
   const navigate = useNavigate();
   const { data: products = [], isLoading, isError } = useAdminProducts();
+  const [search, setSearch] = useState('');
+  const [category, setCategory] = useState('');
+  const categories = useMemo(
+    () => [...new Set(products.map((p) => p.category))],
+    [products],
+  );
+
   const deleteProduct = useDeleteProduct();
 
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
@@ -90,25 +99,38 @@ export function AdminStorePage() {
   return (
     <>
       <SEO title="Admin — Store" />
+      <AdminBanner activeTab="store" title="Store" />
 
       <div className="min-h-screen bg-[#F8F8F7]">
         <div className="container-custom py-8 sm:py-10">
 
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Store Products</h1>
-              <p className="text-sm text-gray-500 mt-1">
-                {products.length} product{products.length !== 1 ? 's' : ''} in the store
-              </p>
+          <div className="flex flex-col sm:flex-row items-center justify-between mb-8">
+          
+            <div className='flex-1'><StoreFilters
+              search={search}
+              category={category}
+              categories={categories}
+              onSearch={setSearch}
+              onCategoryChange={setCategory}
+            /></div>
+
+            <div className="flex items-center gap-3">
+              <Link
+                to={ADMIN_ORDER_ROUTES.ROOT}
+                className="hidden sm:flex items-center gap-2 text-sm font-semibold text-primary-500 border border-primary-500 rounded-full px-4 py-2 hover:bg-primary-50 transition-colors"
+              >
+                Order Management
+              </Link>
+              <button
+                onClick={() => navigate(ADMIN_STORE_ROUTES.PRODUCT_CREATE)}
+                className="inline-flex items-center gap-2 bg-primary-500 hover:bg-primary-600 text-white font-semibold text-sm rounded-full px-5 py-2.5 transition-colors"
+              >
+                Add an Item
+                <Plus size={16} strokeWidth={2.5} />
+              </button>
             </div>
-            <button
-              onClick={() => navigate(ADMIN_STORE_ROUTES.PRODUCT_CREATE)}
-              className="inline-flex items-center gap-2 bg-primary-500 hover:bg-primary-600 text-white font-semibold text-sm rounded-full px-5 py-2.5 transition-colors"
-            >
-              Add an Item
-              <Plus size={16} strokeWidth={2.5} />
-            </button>
+
           </div>
 
           {/* Loading */}

@@ -17,7 +17,7 @@ export default function AdminOrderDetailsPage() {
     const { orders, isLoading, isError, error } = useAdminOrders();
     const { mutate: updateStatus, isPending } = useUpdateOrderStatus();
 
-    const order = orders.find((o) => o.id === id);
+    const order = orders.find((o) => o.orderNumber === id);
 
     if (isLoading) {
         return <ContainerBackground><p>Loading order...</p></ContainerBackground>;

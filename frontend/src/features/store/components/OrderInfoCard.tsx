@@ -22,9 +22,9 @@ export default function OrderInfoCard({ order, showPlacedBy = false }: OrderInfo
 
       <div className="flex items-center gap-1 text-sm text-gray-500">
         <span>
-          Order Number:{' '}
+          Order Number:
           <span className="text-gray-900 font-medium">
-            {order.orderNumber || 'Not populated by the backend dev'}
+            {order.orderNumber || ''}
           </span>
         </span>
         <CopyButton value={order.orderNumber} />
@@ -33,7 +33,7 @@ export default function OrderInfoCard({ order, showPlacedBy = false }: OrderInfo
       {showPlacedBy && (
         <p className="text-sm text-gray-500">
           Order Placed By:{' '}
-          <span className="text-gray-900 font-medium">{order.firstName} {order.lastName}</span>
+          <span className="text-gray-900 font-medium">{order.customerFullName}</span>
         </p>
       )}
 

@@ -95,7 +95,7 @@ export default function OrderHistoryPage() {
                                 flatItem={flatItem}
                                 onAddToCart={handleAddToCart}
                                 action={
-                                    <Link to={`/orders/${flatItem.orderId}`} className="border-2 p-0.5 px-3 font-semibold rounded-2xl border-primary-500 text-primary-500">
+                                    <Link to={`/orders/${flatItem.orderNumber}`} className="border-2 p-0.5 px-3 font-semibold rounded-2xl border-primary-500 text-primary-500">
                                         View Details
                                     </Link>
                                 }

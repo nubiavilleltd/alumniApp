@@ -19,7 +19,7 @@ export default function OrderDetailsPage() {
     const { products } = useProducts();
     const openForAdd = useProductModalStore((s) => s.openForAdd);
 
-    const order = orders.find((o) => o.id === id);
+    const order = orders.find((o) => o.orderNumber === id);
 
     const handleAddToCart = (item: OrderItem) => {
         const product = products.find((p) => p.id === item.productId);

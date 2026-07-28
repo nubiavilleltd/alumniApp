@@ -28,7 +28,7 @@ export default function AdminOrderManagementPage() {
     // Build tabs with counts
     const tabs = [
         { label: 'All', value: 'all', count: counts.total },
-        { label: 'New Orders', value: 'processing', count: counts.newOrders },
+        { label: 'New Orders', value: 'new_order', count: counts.newOrders },
         { label: 'Out for Delivery / Ready for Pickup', value: 'out_for_delivery', count: counts.outForDelivery },
         { label: 'Completed', value: 'completed', count: counts.completed },
     ];
@@ -97,8 +97,8 @@ export default function AdminOrderManagementPage() {
                         </p>
                     ) : (
                         visible.map((order) => (
-                            <OrderListCard order={order} key={order.id} variant='admin' action={
-                                <Link to={ADMIN_ORDER_ROUTES.DETAIL(order.id)} className="border-2 p-0.5 px-3 font-semibold rounded-2xl border-primary-500 text-primary-500">
+                            <OrderListCard order={order} key={order.orderNumber} variant='admin' action={
+                                <Link to={ADMIN_ORDER_ROUTES.DETAIL(order.orderNumber)} className="border-2 p-0.5 px-3 font-semibold rounded-2xl border-primary-500 text-primary-500">
                                     View Details
                                 </Link>
                             } />

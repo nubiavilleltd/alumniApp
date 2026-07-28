@@ -198,23 +198,23 @@ export default function OrderListCard({ order, action, variant="user" }: OrderLi
                     <OrderStatusBadge status={order.status} />
                     <span className="text-gray-300">•</span>
                     <span className="text-gray-500">{formattedDate}</span>
-                    {/* {order.customerName && (
+                    {order.customerFullName && (
                         <>
                             <span className="text-gray-300">•</span>
-                            <span className="text-gray-700">{order.customerName}</span>
+                            <span className="text-gray-700">{order.customerFullName}</span>
                         </>
-                    )} */}
-                    {/* {order.customerEmail && (
+                    )}
+                    {order.customerEmail && (
                         <>
                             <span className="text-gray-300">•</span>
                             <span className="text-gray-500">{order.customerEmail}</span>
                         </>
-                    )} */}
+                    )}
                 </div>
 
                 <div className="flex items-center gap-5">
                     <div className='flex gap-1'>          <span className="text-sm text-gray-500">
-                        Order Number: <span className="text-gray-700">{order.orderNumber || "Not populated by the backend dev"}</span>
+                        Order Number: <span className="text-gray-700">{order.orderNumber || ""}</span>
                     </span>
 
                         <CopyButton value={order.orderNumber}/>

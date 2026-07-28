@@ -48,7 +48,7 @@ export default function OrderItemListCard({
             <span className="text-sm text-gray-500">
               Order Number:{' '}
               <span className="text-gray-700">
-                {orderNumber || 'Not populated by the backend dev'}
+                {orderNumber || ''}
               </span>
             </span>
             <CopyButton value={orderNumber} />

@@ -7,6 +7,8 @@ interface Props {
     categories: string[];
     onSearch: (value: string) => void;
     onCategoryChange: (value: string) => void;
+
+    className?:string
 }
 
 export function StoreFilters({
@@ -15,9 +17,10 @@ export function StoreFilters({
     categories,
     onSearch,
     onCategoryChange,
+    className
 }: Props) {
     return (
-        <div className="flex flex-col sm:flex-row items-center gap-4 mb-8">
+        <div className={`flex flex-col sm:flex-row items-center gap-4${className ?? ""}`}>
             <div className="flex-1 w-full sm:max-w-xl">
                 <SearchInput
                     value={search}

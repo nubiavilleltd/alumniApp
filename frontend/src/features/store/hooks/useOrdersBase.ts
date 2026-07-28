@@ -1,6 +1,7 @@
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { Order } from "../types/order.types";
+import { filterOrders } from "../utils/order-filtering.utils";
 
 interface UseOrdersBaseParams<TStatus extends string> {
   queryKey: readonly unknown[];
@@ -32,30 +33,10 @@ export function useOrdersBase<TStatus extends string>({
     ...queryOptions,
   });
 
-  const filteredOrders = useMemo(() => {
-    const orders = query.data || [];
-
-    return orders.filter((order) => {
-      if (status !== 'all') {
-        const allowedStatuses = statusMap[status] || [];
-        if (!allowedStatuses.includes(order.status)) {
-          return false;
-        }
-      }
-
-      if (search.trim()) {
-        const searchLower = search.toLowerCase().trim();
-        if (!matchesSearch(order, searchLower)) {
-          return false;
-        }
-      }
-
-      if (dateFrom && order.placedAt < dateFrom) return false;
-      if (dateTo && order.placedAt > dateTo) return false;
-
-      return true;
-    });
-  }, [query.data, search, status, dateFrom, dateTo, statusMap, matchesSearch]);
+  const filteredOrders = useMemo(
+    () => filterOrders(query.data || [], { status, statusMap, search, matchesSearch, dateFrom, dateTo }),
+    [query.data, search, status, dateFrom, dateTo, statusMap, matchesSearch]
+  );
 
   return {
     orders: filteredOrders,
