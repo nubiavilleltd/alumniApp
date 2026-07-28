@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/shared/components/ui/Toast';
 import { adminStoreService } from '../services/adminStore.service';
-import type { CreateProductFormData, UpdateProductFormData } from '../types/adminStore.types';
+import type { CreateProductFormData, PinProductPayload, UpdateProductFormData } from '../types/adminStore.types';
 
 export const adminStoreKeys = {
   all: ['admin-products'] as const,
@@ -49,5 +49,16 @@ export function useDeleteProduct() {
       toast.success('Product deleted.');
     },
     onError: (error: any) => toast.fromError(error),
+  });
+}
+export function usePinProduct() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data:PinProductPayload) => adminStoreService.pin(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: adminStoreKeys.all })
+
+    },
+    onError: (error: any) => console.log(error),
   });
 }

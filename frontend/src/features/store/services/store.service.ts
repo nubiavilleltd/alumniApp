@@ -1,9 +1,13 @@
 import { apiClient } from '@/lib/api/client';
 import { handleApiError } from '@/lib/errors/apiErrorHandler';
-import type { ApiProduct, Product, ProductVariant } from '../types/product.types';
+import type { ApiProduct, ApiProductMeta, Product, ProductMeta, ProductVariant } from '../types/product.types';
 
 // ─── Adapter ──────────────────────────────────────────────────────────────────
 
+
+function adaptProductMeta({total_pinned, total_products, max_pinned}:ApiProductMeta) : ProductMeta {
+ return {totalPinned:total_pinned, totalProducts:total_products, maxPinned:max_pinned }
+}
 export function adaptProduct(api: ApiProduct): Product {
   const imageMap = new Map(api.images.map((img) => [img.id, img.image_url]));
 
@@ -57,6 +61,8 @@ export function adaptProduct(api: ApiProduct): Product {
     ];
   }
 
+  
+
   return {
     id: api.id,
     name: api.product_name,
@@ -70,6 +76,8 @@ export function adaptProduct(api: ApiProduct): Product {
     variants,
     totalStock: api.total_stock,
     status: api.status,
+    isPinned:api.pin_item,
+    meta:adaptProductMeta(api.meta)
   };
 }
 

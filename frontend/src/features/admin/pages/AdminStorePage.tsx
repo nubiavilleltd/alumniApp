@@ -2,11 +2,12 @@ import { useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 import { SEO } from '@/shared/common/SEO';
-import { useAdminProducts, useDeleteProduct } from '../hooks/useAdminStore';
+import { useAdminProducts, useDeleteProduct, usePinProduct } from '../hooks/useAdminStore';
 import { ADMIN_ORDER_ROUTES, ADMIN_STORE_ROUTES } from '../routes';
 import { AdminStoreProductCard } from '../components/AdminStoreProductCard';
 import { AdminBanner } from '../components/AdminBanner';
 import { StoreFilters } from '@/features/store/components/StoreFilters';
+import { toast } from '@/shared/components/ui/Toast';
 
 // ─── Confirmation dialog ──────────────────────────────────────────────────────
 
@@ -96,16 +97,29 @@ export function AdminStorePage() {
   }, [products, search, category]);
 
   const deleteProduct = useDeleteProduct();
+  const pinProduct = usePinProduct();
 
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+  // const [pendingPinId, setPendingPinId] = useState<string | null>(null);
 
   const pendingProduct = products.find((p) => p.id === pendingDeleteId);
+  // const productToPin = products.find((p) => p.id === pendingPinId);
 
   const handleConfirmDelete = () => {
     if (!pendingDeleteId) return;
     deleteProduct.mutate(pendingDeleteId, {
       onSettled: () => setPendingDeleteId(null),
     });
+  };
+  const handlePinProduct = async (productId:string, currentPinStatus:boolean) => {
+    if (!productId) return;
+    try {
+       await pinProduct.mutateAsync({productId, pinItem:!currentPinStatus});
+    toast.success(`Product ${currentPinStatus ? "unpinned": "pinned"}`);
+    } catch (error) {
+      toast.error("Failed to pin item")
+    }
+   
   };
 
   return (
@@ -178,6 +192,7 @@ export function AdminStorePage() {
                   product={product}
                   onEdit={() => navigate(ADMIN_STORE_ROUTES.PRODUCT_EDIT(product.id))}
                   onDelete={() => setPendingDeleteId(product.id)}
+                  onPin={() => handlePinProduct(product.id, product.pin_item)}
                   isDeleting={deleteProduct.isPending && pendingDeleteId === product.id}
                 />
               ))}

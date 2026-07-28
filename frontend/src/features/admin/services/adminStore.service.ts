@@ -1,12 +1,13 @@
 import { apiClient } from '@/lib/api/client';
 import { handleApiError } from '@/lib/errors/apiErrorHandler';
-import { AdminApiProduct, CreateProductFormData, UpdateProductFormData } from '../types/adminStore.types';
+import { AdminApiProduct, CreateProductFormData, PinProductPayload, UpdateProductFormData } from '../types/adminStore.types';
 
 const ENDPOINTS = {
   FETCH: '/product/fetch_products',
   ADD: '/product/add_product',
   EDIT: '/product/edit_product',
   DELETE: '/product/delete_product',
+  PIN: '/product/pin_product_item',
 } as const;
 
 // ─── Build FormData for create ────────────────────────────────────────────────
@@ -105,6 +106,14 @@ export const adminStoreService = {
       await apiClient.post(ENDPOINTS.DELETE, fd);
     } catch (error) {
       throw handleApiError(error, 'Failed to delete product.', 'adminStoreService.delete');
+    }
+  },
+
+  async pin({productId, pinItem}:PinProductPayload): Promise<void> {
+    try {
+      await apiClient.post(ENDPOINTS.PIN, { "product_id": productId, "pin_item": pinItem});
+    } catch (error) {
+      throw handleApiError(error, `Failed to ${pinItem ? "pin" : "unpin"} product.`, 'adminStoreService.pin');
     }
   },
 };

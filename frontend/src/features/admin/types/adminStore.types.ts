@@ -1,5 +1,7 @@
 // ─── API response types ───────────────────────────────────────────────────────
 
+import { ApiProductMeta } from "@/features/store/types/product.types";
+
 export interface AdminProductImage {
   id: string;
   image_path: string;
@@ -14,6 +16,8 @@ export interface AdminProductVariant {
   quantity: string;
   image_id: string | null;
 }
+
+
 
 export interface AdminApiProduct {
   id: string;
@@ -31,6 +35,8 @@ export interface AdminApiProduct {
   images: AdminProductImage[];
   variants: AdminProductVariant[];
   total_stock: number;
+  pin_item:boolean;
+  meta:ApiProductMeta
 }
 
 // ─── Local form state ─────────────────────────────────────────────────────────
@@ -110,4 +116,9 @@ export interface UpdateProductFormData {
   spotlightImageId?: string;
   spotlightIndex?: number;
   variants: VariantPayloadItem[];
+}
+
+export interface PinProductPayload {
+  productId: string | null;
+  pinItem:boolean;
 }
