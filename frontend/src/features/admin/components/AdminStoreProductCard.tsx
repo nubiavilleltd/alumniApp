@@ -1,3 +1,4 @@
+
 import { Pencil, Pin, PinOffIcon, Trash2 } from 'lucide-react';
 import { AdminApiProduct } from '../types/adminStore.types';
 
@@ -16,12 +17,12 @@ export function AdminStoreProductCard({ product, onEdit, onDelete, onPin, isDele
     '';
 
   const price = parseFloat(product.price);
-  const isPinned = product.pin_item
+  const isPinned = product.pin_item;
 
   return (
-    <div className="bg-white rounded-[20px] overflow-hidden shadow-sm border border-gray-100 flex flex-col">
+    <div className="bg-white rounded-[20px] overflow-hidden shadow-sm hover:shadow-md transition-shadow">
       {/* Image */}
-      <div className="relative h-[200px] sm:h-[220px]">
+      <div className="relative h-[200px] sm:h-[240px] lg:h-[280px]">
         <span className="absolute top-3 left-3 z-10 bg-[#3393E6] text-white text-xs font-medium px-3 py-1 rounded-full">
           {product.category}
         </span>
@@ -29,10 +30,10 @@ export function AdminStoreProductCard({ product, onEdit, onDelete, onPin, isDele
           <button
             onClick={onPin}
             disabled={isDeleting}
-            className={`w-8 h-8 rounded-full backdrop-blur-sm flex items-center justify-center ${isPinned ? "bg-primary-500 text-white" : "bg-white/90 text-primary-500"} hover:bg-primary-50 hover:text-primary-600 transition-colors shadow-sm disabled:opacity-50`}
+            className={`w-8 h-8 rounded-full backdrop-blur-sm flex items-center justify-center ${isPinned ? "bg-primary-500 text-white hover:bg-primary-600" : "bg-white/90 text-primary-500 hover:bg-primary-50 hover:text-primary-600"} transition-colors shadow-sm disabled:opacity-50`}
             title="Pin product"
           >
-            {isPinned? <PinOffIcon size={14}/> :<Pin size={14} />}
+            {isPinned ? <PinOffIcon size={14} /> : <Pin size={14} />}
           </button>
           <button
             onClick={onEdit}
@@ -55,7 +56,7 @@ export function AdminStoreProductCard({ product, onEdit, onDelete, onPin, isDele
           <img
             src={spotlightImage}
             alt={product.product_name}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
             loading="lazy"
           />
         ) : (

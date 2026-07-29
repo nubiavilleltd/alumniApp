@@ -8,6 +8,7 @@ import type { ApiProduct, ApiProductMeta, Product, ProductMeta, ProductVariant }
 function adaptProductMeta({total_pinned, total_products, max_pinned}:ApiProductMeta) : ProductMeta {
  return {totalPinned:total_pinned, totalProducts:total_products, maxPinned:max_pinned }
 }
+
 export function adaptProduct(api: ApiProduct): Product {
   const imageMap = new Map(api.images.map((img) => [img.id, img.image_url]));
 
@@ -60,7 +61,6 @@ export function adaptProduct(api: ApiProduct): Product {
       },
     ];
   }
-
   
 
   return {
@@ -77,17 +77,26 @@ export function adaptProduct(api: ApiProduct): Product {
     totalStock: api.total_stock,
     status: api.status,
     isPinned:api.pin_item,
-    meta:adaptProductMeta(api.meta)
   };
+}
+
+
+
+export function adaptProductList(data:ApiProduct[], meta:ApiProductMeta):{data:Product[], meta:ProductMeta}{
+  const mappedMetaData = adaptProductMeta(meta)
+  const mappedData = data.map(adaptProduct)
+  return {data:mappedData, meta:mappedMetaData}
 }
 
 // ─── Service ──────────────────────────────────────────────────────────────────
 
-export async function getProducts(): Promise<Product[]> {
+export async function getProducts(): Promise<{data:Product[], meta:ProductMeta}> {
   try {
     const { data } = await apiClient.get('/product/fetch_products');
+
     const raw: ApiProduct[] = data?.data ?? data?.products ?? [];
-    return raw.filter((p) => p.status === 'active').map(adaptProduct);
+    const meta: ApiProductMeta = data?.meta
+    return adaptProductList(raw, meta)
   } catch (error) {
     throw handleApiError(error, 'Failed to load products.', 'getProducts');
   }

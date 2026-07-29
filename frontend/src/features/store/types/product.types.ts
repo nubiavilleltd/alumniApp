@@ -38,7 +38,6 @@ export interface ApiProduct {
   images: ApiProductImage[];
   variants: ApiProductVariant[];
   total_stock: number;
-  meta: ApiProductMeta;
   pin_item:boolean;
 }
 
@@ -79,5 +78,4 @@ export interface Product {
   totalStock: number;
   status: 'active' | 'inactive';
   isPinned:boolean;
-  meta:ProductMeta;
 }
