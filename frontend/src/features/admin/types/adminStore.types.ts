@@ -122,3 +122,9 @@ export interface PinProductPayload {
   productId: string | null;
   pinItem:boolean;
 }
+
+// New — response-level wrapper, matching how you already modeled this for the storefront
+export interface AdminProductsListResponse {
+  data: AdminApiProduct[];
+  meta: ApiProductMeta;
+}

@@ -12,7 +12,8 @@ import { ProductFormPanel } from '@/features/store/components/ProductFormPanel';
 export function ProductEditPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { data: products = [], isLoading } = useAdminProducts();
+  const { data: response, isLoading } = useAdminProducts();
+const products = response?.data ?? [];
   const updateProduct = useUpdateProduct();
 
   const product = products.find((p) => p.id === id);

@@ -79,7 +79,10 @@ function StoreSkeleton() {
 
 export function AdminStorePage() {
   const navigate = useNavigate();
-  const { data: products = [], isLoading, isError } = useAdminProducts();
+
+  const { data: response, isLoading, isError } = useAdminProducts();
+  const products = response?.data ?? [];
+  const meta = response?.meta;
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
 
@@ -132,6 +135,11 @@ export function AdminStorePage() {
   const handlePinProduct = async (productId: string, currentPinStatus: boolean) => {
     if (!productId) return;
     try {
+      const atCap = !!meta && meta.total_pinned >= meta.max_pinned;
+      if (!currentPinStatus && atCap) {
+        toast.error(`You can only pin up to ${meta!.max_pinned} products. Unpin one first.`);
+        return;
+      }
       await pinProduct.mutateAsync({ productId, pinItem: !currentPinStatus });
       toast.success(`Product ${currentPinStatus ? "unpinned" : "pinned"}`);
     } catch (error) {
@@ -151,15 +159,21 @@ export function AdminStorePage() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row items-center justify-between mb-8">
 
-            <div className='flex-1'><StoreFilters
-              search={search}
-              category={category}
-              categories={categories}
-              onSearch={setSearch}
-              onCategoryChange={setCategory}
-            /></div>
+            <div className='flex-1'>
+              <StoreFilters
+                search={search}
+                category={category}
+                categories={categories}
+                onSearch={setSearch}
+                onCategoryChange={setCategory}
+              /></div>
 
             <div className="flex items-center gap-3">
+              {meta && (
+                <span className="text-sm font-semibold text-gray-500 border border-gray-200 rounded-full px-4 py-2 whitespace-nowrap">
+                  {meta.total_pinned}/{meta.max_pinned} Pinned
+                </span>
+              )}
               <Link
                 to={ADMIN_ORDER_ROUTES.ROOT}
                 className="hidden sm:flex items-center gap-2 text-sm font-semibold text-primary-500 border border-primary-500 rounded-full px-4 py-2 hover:bg-primary-50 transition-colors"
@@ -232,6 +246,7 @@ export function AdminStorePage() {
                   onDelete={() => setPendingDeleteId(product.id)}
                   onPin={() => handlePinProduct(product.id, product.pin_item)}
                   isDeleting={deleteProduct.isPending && pendingDeleteId === product.id}
+                  pinDisabled={!product.pin_item && !!meta && meta.total_pinned >= meta.max_pinned}
                 />
               ))}
             </div>

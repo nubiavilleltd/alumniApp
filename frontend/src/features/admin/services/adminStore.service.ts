@@ -1,6 +1,6 @@
 import { apiClient } from '@/lib/api/client';
 import { handleApiError } from '@/lib/errors/apiErrorHandler';
-import { AdminApiProduct, CreateProductFormData, PinProductPayload, UpdateProductFormData } from '../types/adminStore.types';
+import { AdminApiProduct, AdminProductsListResponse, CreateProductFormData, PinProductPayload, UpdateProductFormData } from '../types/adminStore.types';
 
 const ENDPOINTS = {
   FETCH: '/product/fetch_products',
@@ -74,10 +74,13 @@ function buildUpdatePayload(data: UpdateProductFormData): FormData {
 // ─── Service ──────────────────────────────────────────────────────────────────
 
 export const adminStoreService = {
-  async fetchAll(): Promise<AdminApiProduct[]> {
+ async fetchAll(): Promise<AdminProductsListResponse> {
     try {
       const { data } = await apiClient.get(ENDPOINTS.FETCH);
-      return (data?.data ?? data?.products ?? []) as AdminApiProduct[];
+      return {
+        data: (data?.data ?? data?.products ?? []) as AdminApiProduct[],
+        meta: data?.meta,
+      };
     } catch (error) {
       throw handleApiError(error, 'Failed to load products.', 'adminStoreService.fetchAll');
     }

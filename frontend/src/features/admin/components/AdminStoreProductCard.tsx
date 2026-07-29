@@ -8,9 +8,10 @@ interface Props {
   onPin: () => void;
   onDelete: () => void;
   isDeleting?: boolean;
+  pinDisabled?: boolean;
 }
 
-export function AdminStoreProductCard({ product, onEdit, onDelete, onPin, isDeleting }: Props) {
+export function AdminStoreProductCard({ product, onEdit, onDelete, onPin, isDeleting, pinDisabled }: Props) {
   const spotlightImage =
     product.images.find((img) => img.is_spotlight)?.image_url ??
     product.images[0]?.image_url ??
@@ -29,9 +30,9 @@ export function AdminStoreProductCard({ product, onEdit, onDelete, onPin, isDele
         <div className="absolute top-3 right-3 z-10 flex gap-1.5">
           <button
             onClick={onPin}
-            disabled={isDeleting}
+            disabled={isDeleting || pinDisabled}
+            title={pinDisabled ? "Pin limit reached — unpin another product first" : "Pin product"}
             className={`w-8 h-8 rounded-full backdrop-blur-sm flex items-center justify-center ${isPinned ? "bg-primary-500 text-white hover:bg-primary-600" : "bg-white/90 text-primary-500 hover:bg-primary-50 hover:text-primary-600"} transition-colors shadow-sm disabled:opacity-50`}
-            title="Pin product"
           >
             {isPinned ? <PinOffIcon size={14} /> : <Pin size={14} />}
           </button>
