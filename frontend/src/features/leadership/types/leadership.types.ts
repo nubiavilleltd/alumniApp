@@ -25,3 +25,20 @@ export interface LeadershipMember {
   bio?: string;
   since?: string; // ISO date — when they took on this role
 }
+
+
+
+export interface LeadershipFormPayload {
+  memberId: string; // FK → the alumni being assigned this position
+  name: string;
+  role: string; // position title, e.g. 'Vice President'
+  image: string;
+}
+
+export interface LeadershipPositionOption {
+  value: string;
+  label: string;
+}
+
+
+

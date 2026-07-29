@@ -19,6 +19,7 @@ import {
   LoaderCircle,
   Mail,
   Phone,
+  Plus,
   UserSearch,
   UserX,
   Users,
@@ -47,6 +48,10 @@ import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { Pagination } from '@/shared/components/ui/Pagination';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
 import { AdminBanner } from '@/features/admin/components/AdminBanner';
+import { useLeadership, useRemoveLeadershipMember } from '@/features/leadership/hooks/useLeadership';
+import { AddExcoModal } from '@/features/leadership/components/AddExcoModal';
+import { LeadershipMember } from '@/features/leadership/types/leadership.types';
+import { EditLeadershipModal } from '@/features/leadership/components/EditLeadershipModal';
 
 function generateInitialsAvatar(name: string): string {
   return `https://ui-avatars.com/api/?name=${encodeURIComponent(
@@ -66,7 +71,12 @@ type DisplayUser = {
   role: 'admin' | 'member';
   accountStatus: AccountStatus;
   photo?: string;
+  excoRole?: string
+  leadership?: LeadershipMember;
 };
+
+  type MemberFilterValue = 'all' | 'active' | 'inactive' | 'admin' | 'exco';
+
 
 const ADMIN_MEMBERS_PER_PAGE = 10;
 const memberActionButtonClassName =
@@ -99,7 +109,7 @@ function MemberStatCard({ label, value, icon: Icon, gradient }: MemberStatCardPr
 // HELPER: MAP ALUMNI TO DISPLAY USER
 // ═══════════════════════════════════════════════════════════════════════════
 
-function mapAlumniToDisplayUser(alumni: Alumni, currentUserMemberId?: string): DisplayUser {
+function mapAlumniToDisplayUser(alumni: Alumni, currentUserMemberId?: string, excoRole?: string, leadership?: LeadershipMember): DisplayUser {
   return {
     id: alumni.memberId,
     fullName: alumni.name,
@@ -113,6 +123,8 @@ function mapAlumniToDisplayUser(alumni: Alumni, currentUserMemberId?: string): D
       isOwner: alumni.memberId === currentUserMemberId,
       isSignedIn: Boolean(currentUserMemberId),
     }),
+    excoRole,
+    leadership
   };
 }
 
@@ -281,16 +293,169 @@ function ChangeRoleModal({
 // USER ROW COMPONENT - UPDATED WITH ROLE CHANGE BUTTON
 // ═══════════════════════════════════════════════════════════════════════════
 
-function UserRow({ user }: { user: DisplayUser }) {
+// function UserRow({ user }: { user: DisplayUser }) {
+//   const [showConfirm, setShowConfirm] = useState(false);
+//   const [actionType, setActionType] = useState<'activate' | 'deactivate' | null>(null);
+//   const [showRoleModal, setShowRoleModal] = useState(false); // ← NEW
+
+//   const deactivate = useAdminDeactivateUser();
+//   const activate = useAdminActivateUser();
+
+//   const isActive = user.accountStatus === 'active';
+//   const isBusy = deactivate.isPending || activate.isPending;
+
+//   const handleAction = async () => {
+//     try {
+//       if (actionType === 'deactivate') {
+//         await deactivate.mutateAsync(user.id);
+//       } else if (actionType === 'activate') {
+//         await activate.mutateAsync(user.id);
+//       }
+//       setShowConfirm(false);
+//       setActionType(null);
+//     } catch (error) {
+//       // Error toast shown by mutation
+//     }
+//   };
+
+//   const openConfirm = (action: 'activate' | 'deactivate') => {
+//     setActionType(action);
+//     setShowConfirm(true);
+//   };
+
+//   const closeConfirm = () => {
+//     setShowConfirm(false);
+//     setActionType(null);
+//   };
+
+//   // Get initials
+//   const initials = user.fullName
+//     .split(' ')
+//     .slice(0, 2)
+//     .map((n) => n[0])
+//     .join('')
+//     .toUpperCase();
+
+//   return (
+//     <>
+//       <div className="bg-white rounded-xl border border-gray-100 p-4 hover:border-primary-200 hover:shadow-sm transition-all">
+//         <div className="flex items-center gap-3">
+//           {/* Avatar */}
+//           <Avatar
+//             src={user.photo ?? generateInitialsAvatar(user.fullName)}
+//             alt={user.fullName}
+//             size={48}
+//           />
+
+//           {/* Info + buttons wrapper */}
+//           <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+//             {/* User info */}
+//             <div className="min-w-0">
+//               <div className="flex items-center gap-2 flex-wrap">
+//                 <p className="font-semibold text-gray-900">{user.fullName}</p>
+//                 {user.role === 'admin' && (
+//                   <span className="px-2 py-0.5 bg-purple-100 text-purple-700 text-[10px] font-bold rounded-full flex-shrink-0">
+//                     ADMIN
+//                   </span>
+//                 )}
+//                 <span
+//                   className={`px-2 py-0.5 text-[10px] font-bold rounded-full flex-shrink-0 ${isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
+//                     }`}
+//                 >
+//                   {isActive ? 'ACTIVE' : 'INACTIVE'}
+//                 </span>
+//               </div>
+
+//               <div className="flex items-center gap-1 mt-1 text-xs text-gray-500 min-w-0">
+//                 <Mail className="w-3.5 h-3.5 flex-shrink-0" />
+//                 <span className="truncate">{user.email}</span>
+//               </div>
+
+//               {user.phone && (
+//                 <div className="flex items-center gap-1 mt-0.5 text-xs text-gray-500">
+//                   <Phone className="w-3.5 h-3.5 flex-shrink-0" />
+//                   <span>{user.phone}</span>
+//                 </div>
+//               )}
+//             </div>
+
+//             {/* Action buttons */}
+//             {!showConfirm ? (
+//               <div className="flex flex-col items-stretch gap-2 flex-shrink-0 w-full sm:flex-row sm:items-center md:w-auto">
+//                 {isActive && (
+//                   <button
+//                     onClick={() => setShowRoleModal(true)}
+//                     disabled={isBusy}
+//                     className={`${memberActionButtonClassName} border-purple-200 text-purple-600 hover:bg-purple-50`}
+//                   >
+//                     Change Role
+//                   </button>
+//                 )}
+//                 <button
+//                   onClick={() => openConfirm(isActive ? 'deactivate' : 'activate')}
+//                   disabled={isBusy}
+//                   className={`${memberActionButtonClassName} ${isActive
+//                     ? 'border-red-200 text-red-600 hover:bg-red-50'
+//                     : 'border-green-200 text-green-600 hover:bg-green-50'
+//                     }`}
+//                 >
+//                   {isActive ? 'Deactivate' : 'Activate'}
+//                 </button>
+//               </div>
+//             ) : (
+//               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 flex-shrink-0 w-full md:w-auto">
+//                 <button
+//                   onClick={handleAction}
+//                   disabled={isBusy}
+//                   className={`px-4 py-2 rounded-lg text-sm font-semibold text-white transition-colors text-center ${actionType === 'deactivate'
+//                     ? 'bg-red-500 hover:bg-red-600'
+//                     : 'bg-green-500 hover:bg-green-600'
+//                     }`}
+//                 >
+//                   {isBusy ? <LoaderCircle className="w-4 h-4 animate-spin mx-auto" /> : 'Confirm'}
+//                 </button>
+//                 <button
+//                   onClick={closeConfirm}
+//                   disabled={isBusy}
+//                   className="px-4 py-2 rounded-lg text-sm font-semibold border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors text-center"
+//                 >
+//                   Cancel
+//                 </button>
+//               </div>
+//             )}
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* <ChangeRoleModal user={user} isOpen={showRoleModal} onClose={() => setShowRoleModal(false)} /> */}
+
+//     </>
+//   );
+// }
+
+
+function UserRow({
+  user,
+  activeFilter,
+  onEditLeadership,
+}: {
+  user: DisplayUser;
+  activeFilter: MemberFilterValue;
+  onEditLeadership: (leader: LeadershipMember) => void;
+}) {
   const [showConfirm, setShowConfirm] = useState(false);
-  const [actionType, setActionType] = useState<'activate' | 'deactivate' | null>(null);
-  const [showRoleModal, setShowRoleModal] = useState(false); // ← NEW
+  const [actionType, setActionType] = useState
+    <'activate' | 'deactivate' | 'removeAdmin' | 'removeExco' | null
+  >(null);
 
   const deactivate = useAdminDeactivateUser();
   const activate = useAdminActivateUser();
+  const changeRole = useChangeUserRole(); // reused for "Remove as Admin" — real endpoint today
+  const removeLeadershipMember = useRemoveLeadershipMember();
 
   const isActive = user.accountStatus === 'active';
-  const isBusy = deactivate.isPending || activate.isPending;
+  const isBusy =
+    deactivate.isPending || activate.isPending || changeRole.isPending || removeLeadershipMember.isPending;
 
   const handleAction = async () => {
     try {
@@ -298,6 +463,10 @@ function UserRow({ user }: { user: DisplayUser }) {
         await deactivate.mutateAsync(user.id);
       } else if (actionType === 'activate') {
         await activate.mutateAsync(user.id);
+      } else if (actionType === 'removeAdmin') {
+        await changeRole.mutateAsync({ userId: user.id, newRole: 'alumni' });
+      } else if (actionType === 'removeExco' && user.leadership) {
+        await removeLeadershipMember.mutateAsync(user.leadership.id);
       }
       setShowConfirm(false);
       setActionType(null);
@@ -306,7 +475,7 @@ function UserRow({ user }: { user: DisplayUser }) {
     }
   };
 
-  const openConfirm = (action: 'activate' | 'deactivate') => {
+  const openConfirm = (action: 'activate' | 'deactivate' | 'removeAdmin' | 'removeExco') => {
     setActionType(action);
     setShowConfirm(true);
   };
@@ -316,70 +485,77 @@ function UserRow({ user }: { user: DisplayUser }) {
     setActionType(null);
   };
 
-  // Get initials
-  const initials = user.fullName
-    .split(' ')
-    .slice(0, 2)
-    .map((n) => n[0])
-    .join('')
-    .toUpperCase();
-
   return (
-    <>
-      <div className="bg-white rounded-xl border border-gray-100 p-4 hover:border-primary-200 hover:shadow-sm transition-all">
-        <div className="flex items-center gap-3">
-          {/* Avatar */}
-          <Avatar
-            src={user.photo ?? generateInitialsAvatar(user.fullName)}
-            alt={user.fullName}
-            size={48}
-          />
+    <div className="bg-white rounded-xl border border-gray-100 p-4 hover:border-primary-200 hover:shadow-sm transition-all">
+      <div className="flex items-center gap-3">
+        <Avatar src={user.photo ?? generateInitialsAvatar(user.fullName)} alt={user.fullName} size={48} />
 
-          {/* Info + buttons wrapper */}
-          <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-            {/* User info */}
-            <div className="min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <p className="font-semibold text-gray-900">{user.fullName}</p>
-                {user.role === 'admin' && (
-                  <span className="px-2 py-0.5 bg-purple-100 text-purple-700 text-[10px] font-bold rounded-full flex-shrink-0">
-                    ADMIN
-                  </span>
-                )}
-                <span
-                  className={`px-2 py-0.5 text-[10px] font-bold rounded-full flex-shrink-0 ${
-                    isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
-                  }`}
-                >
-                  {isActive ? 'ACTIVE' : 'INACTIVE'}
+        <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <p className="font-semibold text-gray-900">{user.fullName}</p>
+              {user.role === 'admin' && (
+                <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-[10px] font-bold rounded-full flex-shrink-0">
+                  ADMIN
                 </span>
-              </div>
-
-              <div className="flex items-center gap-1 mt-1 text-xs text-gray-500 min-w-0">
-                <Mail className="w-3.5 h-3.5 flex-shrink-0" />
-                <span className="truncate">{user.email}</span>
-              </div>
-
-              {user.phone && (
-                <div className="flex items-center gap-1 mt-0.5 text-xs text-gray-500">
-                  <Phone className="w-3.5 h-3.5 flex-shrink-0" />
-                  <span>{user.phone}</span>
-                </div>
               )}
+              {user.leadership && (
+                <span className="px-2 py-0.5 bg-purple-100 text-purple-700 text-[10px] font-bold rounded-full flex-shrink-0">
+                  {user.leadership.role.toUpperCase()}
+                </span>
+              )}
+              <span
+                className={`px-2 py-0.5 text-[10px] font-bold rounded-full flex-shrink-0 ${
+                  isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
+                }`}
+              >
+                {isActive ? 'ACTIVE' : 'INACTIVE'}
+              </span>
             </div>
 
-            {/* Action buttons */}
-            {!showConfirm ? (
-              <div className="flex flex-col items-stretch gap-2 flex-shrink-0 w-full sm:flex-row sm:items-center md:w-auto">
-                {isActive && (
+            <div className="flex items-center gap-1 mt-1 text-xs text-gray-500 min-w-0">
+              <Mail className="w-3.5 h-3.5 flex-shrink-0" />
+              <span className="truncate">{user.email}</span>
+            </div>
+
+            {user.phone && (
+              <div className="flex items-center gap-1 mt-0.5 text-xs text-gray-500">
+                <Phone className="w-3.5 h-3.5 flex-shrink-0" />
+                <span>{user.phone}</span>
+              </div>
+            )}
+          </div>
+
+          {!showConfirm ? (
+            <div className="flex flex-col items-stretch gap-2 flex-shrink-0 w-full sm:flex-row sm:items-center md:w-auto">
+              {activeFilter === 'exco' && user.leadership ? (
+                <>
                   <button
-                    onClick={() => setShowRoleModal(true)}
+                    onClick={() => onEditLeadership(user.leadership!)}
                     disabled={isBusy}
                     className={`${memberActionButtonClassName} border-purple-200 text-purple-600 hover:bg-purple-50`}
                   >
-                    Change Role
+                    Edit Leadership Role
                   </button>
-                )}
+                  <button
+                    onClick={() => openConfirm('removeExco')}
+                    disabled={isBusy}
+                    className={`${memberActionButtonClassName} border-red-200 text-red-600 hover:bg-red-50`}
+                  >
+                    Remove as Exco
+                  </button>
+                </>
+              ) : activeFilter === 'admin' ? (
+                // "Edit Admin Role" intentionally not here yet — needs the
+                // admin sub-role picker we haven't built. Remove is real today.
+                <button
+                  onClick={() => openConfirm('removeAdmin')}
+                  disabled={isBusy}
+                  className={`${memberActionButtonClassName} border-red-200 text-red-600 hover:bg-red-50`}
+                >
+                  Remove as Admin
+                </button>
+              ) : (
                 <button
                   onClick={() => openConfirm(isActive ? 'deactivate' : 'activate')}
                   disabled={isBusy}
@@ -391,35 +567,31 @@ function UserRow({ user }: { user: DisplayUser }) {
                 >
                   {isActive ? 'Deactivate' : 'Activate'}
                 </button>
-              </div>
-            ) : (
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 flex-shrink-0 w-full md:w-auto">
-                <button
-                  onClick={handleAction}
-                  disabled={isBusy}
-                  className={`px-4 py-2 rounded-lg text-sm font-semibold text-white transition-colors text-center ${
-                    actionType === 'deactivate'
-                      ? 'bg-red-500 hover:bg-red-600'
-                      : 'bg-green-500 hover:bg-green-600'
-                  }`}
-                >
-                  {isBusy ? <LoaderCircle className="w-4 h-4 animate-spin mx-auto" /> : 'Confirm'}
-                </button>
-                <button
-                  onClick={closeConfirm}
-                  disabled={isBusy}
-                  className="px-4 py-2 rounded-lg text-sm font-semibold border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors text-center"
-                >
-                  Cancel
-                </button>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          ) : (
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 flex-shrink-0 w-full md:w-auto">
+              <button
+                onClick={handleAction}
+                disabled={isBusy}
+                className={`px-4 py-2 rounded-lg text-sm font-semibold text-white transition-colors text-center ${
+                  actionType === 'activate' ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'
+                }`}
+              >
+                {isBusy ? <LoaderCircle className="w-4 h-4 animate-spin mx-auto" /> : 'Confirm'}
+              </button>
+              <button
+                onClick={closeConfirm}
+                disabled={isBusy}
+                className="px-4 py-2 rounded-lg text-sm font-semibold border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors text-center"
+              >
+                Cancel
+              </button>
+            </div>
+          )}
         </div>
       </div>
-
-      <ChangeRoleModal user={user} isOpen={showRoleModal} onClose={() => setShowRoleModal(false)} />
-    </>
+    </div>
   );
 }
 
@@ -451,20 +623,47 @@ function UserRowSkeleton() {
 export function AdminMembersPage() {
   const currentUser = useIdentityStore((state) => state.user);
   const { data: alumniList = [], isLoading } = useAlumni();
+  const { data: leadershipList = [] } = useLeadership();
+
+  const excoRoleByMemberId = useMemo(() => {
+    const map = new Map<string, string>();
+    leadershipList.forEach((leader) => {
+      map.set(leader.memberId, leader.role);
+    });
+    return map;
+  }, [leadershipList]);
+
+
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | AccountStatus>('all');
+  // const [statusFilter, setStatusFilter] = useState<'all' | AccountStatus>('all');
+  const [statusFilter, setStatusFilter] = useState<MemberFilterValue>('all');
   const [currentPage, setCurrentPage] = useState(1);
+  const [isAddAdminModalOpen, setIsAddAdminModalOpen] = useState(false);
+  const [isAddExcoModalOpen, setIsAddExcoModalOpen] = useState(false);
+  const [editingLeader, setEditingLeader] = useState<LeadershipMember | null>(null);
+
+  const leadershipByMemberId = useMemo(() => {
+  const map = new Map<string, LeadershipMember>();
+  leadershipList.forEach((leader) => {
+    map.set(leader.memberId, leader);
+  });
+  return map;
+}, [leadershipList]);
 
   const users = useMemo(() => {
-    return alumniList.map((alumni) => mapAlumniToDisplayUser(alumni, currentUser?.memberId));
-  }, [alumniList, currentUser?.memberId]);
+    return alumniList.map((alumni) => mapAlumniToDisplayUser(alumni, currentUser?.memberId, excoRoleByMemberId.get(alumni.memberId)));
+  }, [alumniList, currentUser?.memberId, excoRoleByMemberId, leadershipList]);
 
   const filteredUsers = useMemo(() => {
     let filtered = users;
 
-    if (statusFilter !== 'all') {
+    if (statusFilter === 'active' || statusFilter === 'inactive') {
       filtered = filtered.filter((u) => u.accountStatus === statusFilter);
+    } else if (statusFilter === 'admin') {
+      filtered = filtered.filter((u) => u.role === 'admin');
+    } else if (statusFilter === 'exco') {
+      filtered = filtered.filter((u) => Boolean(u.excoRole));
     }
 
     if (searchQuery.trim()) {
@@ -482,6 +681,8 @@ export function AdminMembersPage() {
     (currentPage - 1) * ADMIN_MEMBERS_PER_PAGE,
     currentPage * ADMIN_MEMBERS_PER_PAGE,
   );
+
+
 
   useEffect(() => {
     if (currentPage > totalPages) {
@@ -510,6 +711,13 @@ export function AdminMembersPage() {
       icon: UserX,
       gradient: 'from-gray-500 to-gray-700',
     },
+  ];
+  const MEMBER_FILTERS: Array<{ label: string; value: MemberFilterValue }> = [
+    { label: 'All', value: 'all' },
+    { label: 'Active', value: 'active' },
+    { label: 'Inactive', value: 'inactive' },
+    { label: 'Admins', value: 'admin' },
+    { label: 'Excos', value: 'exco' },
   ];
 
   const changePage = (page: number) => {
@@ -558,28 +766,47 @@ export function AdminMembersPage() {
             </div>
 
             {/* Status Filter */}
-            <div className="flex w-full flex-wrap gap-2 sm:w-[298px] sm:flex-nowrap">
-              {(['all', 'active', 'inactive'] as const).map((filter) => (
+            <div className="flex w-full flex-wrap gap-2 sm:w-auto sm:flex-nowrap">
+              {MEMBER_FILTERS.map((filter) => (
                 <button
-                  key={filter}
+                  key={filter.value}
                   type="button"
                   onClick={() => {
-                    setStatusFilter(filter);
+                    setStatusFilter(filter.value);
                     setCurrentPage(1);
                   }}
-                  className={`h-12 rounded-[40px] border px-6 text-base font-semibold capitalize transition-colors sm:px-0 ${
-                    filter === 'all' ? 'sm:w-[82px]' : 'sm:w-[100px]'
-                  } ${
-                    statusFilter === filter
-                      ? 'border-primary-500 bg-primary-500 text-white'
-                      : 'border-primary-100 bg-white text-gray-500 hover:border-primary-300'
-                  }`}
+                  className={`h-12 whitespace-nowrap rounded-[40px] border px-6 text-base font-semibold transition-colors ${statusFilter === filter.value
+                    ? 'border-primary-500 bg-primary-500 text-white'
+                    : 'border-primary-100 bg-white text-gray-500 hover:border-primary-300'
+                    }`}
                 >
-                  {filter}
+                  {filter.label}
                 </button>
               ))}
             </div>
           </div>
+
+          {statusFilter === 'admin' && (
+            <button
+              type="button"
+              onClick={() => setIsAddAdminModalOpen(true)}
+              className="flex w-fit items-center gap-2 rounded-full bg-primary-500 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-primary-600"
+            >
+              Add Admin
+              <Plus className="h-4 w-4" />
+            </button>
+          )}
+
+          {statusFilter === 'exco' && (
+            <button
+              type="button"
+              onClick={() => setIsAddExcoModalOpen(true)}
+              className="flex w-fit items-center gap-2 rounded-full bg-primary-500 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-primary-600"
+            >
+              Add Exco
+              <Plus className="h-4 w-4" />
+            </button>
+          )}
 
           {/* Users List */}
           <div className="space-y-3">
@@ -593,7 +820,9 @@ export function AdminMembersPage() {
                 </p>
               </div>
             ) : (
-              visibleUsers.map((user) => <UserRow key={user.id} user={user} />)
+              visibleUsers.map((user) => (
+  <UserRow key={user.id} user={user} activeFilter={statusFilter} onEditLeadership={setEditingLeader} />
+))
             )}
           </div>
 
@@ -606,6 +835,20 @@ export function AdminMembersPage() {
           ) : null}
         </div>
       </section>
+
+      <AddExcoModal
+        isOpen={isAddExcoModalOpen}
+        onClose={() => setIsAddExcoModalOpen(false)}
+        excludeMemberIds={leadershipList.map((leader) => leader.memberId)}
+      />
+
+      {editingLeader && (
+        <EditLeadershipModal
+          leader={editingLeader}
+          isOpen={Boolean(editingLeader)}
+          onClose={() => setEditingLeader(null)}
+        />
+      )}
     </>
   );
 }

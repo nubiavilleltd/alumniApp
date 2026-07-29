@@ -41,7 +41,7 @@
 import { apiClient } from '@/lib/api/client';
 import { API_ENDPOINTS } from '@/lib/api/endpoints';
 import { handleApiError } from '@/lib/errors/apiErrorHandler';
-import type { LeadershipMember } from '../types/leadership.types';
+import type { LeadershipFormPayload, LeadershipMember, LeadershipPositionOption } from '../types/leadership.types';
 import {
   extractLeadershipFromResponse,
   mapBackendLeaderToFrontend,
@@ -146,5 +146,71 @@ export const leadershipService = {
       handleApiError(error, `Failed to fetch leader ${id}`);
       throw error;
     }
+  },
+
+  /**
+   * Create a new leadership (Exco) member
+   * TODO: replace mock with real endpoint once available.
+   * Expected shape: POST /api/create_leadership { memberId, name, role, image }
+   */
+  create: async (payload: LeadershipFormPayload): Promise<LeadershipMember> => {
+    // const response = await apiClient.post(API_ENDPOINTS.LEADERSHIP.CREATE, payload);
+    // return mapBackendLeaderToFrontend(response.data);
+
+    await new Promise((resolve) => setTimeout(resolve, 400));
+
+    return {
+      id: Date.now(),
+      memberId: payload.memberId,
+      name: payload.name,
+      role: payload.role,
+      image: payload.image,
+    };
+  },
+
+  /**
+   * Update an existing leadership member's position/photo
+   * TODO: replace mock with real endpoint once available.
+   * Expected shape: POST /api/update_leadership { id, memberId, name, role, image }
+   */
+  update: async (id: number, payload: LeadershipFormPayload): Promise<LeadershipMember> => {
+    // const response = await apiClient.post(API_ENDPOINTS.LEADERSHIP.UPDATE, { id, ...payload });
+    // return mapBackendLeaderToFrontend(response.data);
+
+    await new Promise((resolve) => setTimeout(resolve, 400));
+
+    return { id, ...payload };
+  },
+
+  /**
+   * Remove a leadership member (Remove as Exco)
+   * TODO: replace mock with real endpoint once available.
+   * Expected shape: POST /api/remove_leadership { id }
+   */
+  remove: async (id: number): Promise<void> => {
+    // await apiClient.post(API_ENDPOINTS.LEADERSHIP.REMOVE, { id });
+
+    await new Promise((resolve) => setTimeout(resolve, 400));
+  },
+
+
+  /**
+   * Get available leadership position options for the Add/Edit Exco form
+   * TODO: replace mock with real endpoint once available.
+   * Expected shape: GET /api/leadership_positions
+   */
+  getPositionOptions: async (): Promise<LeadershipPositionOption[]> => {
+    // const response = await apiClient.get(API_ENDPOINTS.LEADERSHIP.POSITIONS);
+    // return response.data;
+
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    return [
+      { value: 'President', label: 'President' },
+      { value: 'Vice President', label: 'Vice President' },
+      { value: 'Secretary', label: 'Secretary' },
+      { value: 'P.R.O.', label: 'P.R.O.' },
+      { value: 'Social Media Manager', label: 'Social Media Manager' },
+    ];
   },
 };
