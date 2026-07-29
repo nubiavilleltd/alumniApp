@@ -7,7 +7,7 @@ interface BirthdaySliderProps<T> {
   getKey: (item: T) => string | number;
 }
 
-const CARD_WIDTH_CLASS = 'w-[clamp(150px,42vw,220px)] sm:w-[clamp(180px,26vw,220px)] lg:w-[220px]';
+export const CARD_WIDTH_CLASS = 'w-[clamp(150px,42vw,220px)] sm:w-[clamp(180px,26vw,220px)] lg:w-[220px]';
 
 export function BirthdaySlider<T>({ items, renderItem, getKey }: BirthdaySliderProps<T>) {
   const trackRef = useRef<HTMLDivElement>(null);

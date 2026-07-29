@@ -135,7 +135,6 @@ export default function BlogIndexPage() {
 
    const { data: birthdays, isLoading:isLoadingBirthdays } = useBirthdayAnnouncements();
   
-    console.log("birthdays", birthdays)
 
 
   const sortedAnnouncements = useMemo(
@@ -283,9 +282,9 @@ export default function BlogIndexPage() {
             </div>
           </header>
 
-          {!isLoadingBirthdays && birthdays && birthdays.length > 0 && (
-            <BirthdaySection people={birthdays} />
-      )}
+          {/* {!isLoadingBirthdays && birthdays && birthdays.length > 0 && (
+          )} */}
+          <BirthdaySection people={birthdays ?? []} isLoading={isLoadingBirthdays} />
 
           {isLoading ? (
             <>
