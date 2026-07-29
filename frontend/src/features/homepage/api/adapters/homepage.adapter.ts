@@ -29,6 +29,13 @@ function readBoolean(...values: unknown[]) {
   return false;
 }
 
+function readOptionalBoolean(...values: unknown[]) {
+  const value = values.find((item) => item !== undefined && item !== null);
+
+  if (value === undefined || value === null) return undefined;
+  return readBoolean(value);
+}
+
 export function mapCarouselImage(raw: unknown): HomepageCarouselImage {
   const image = (raw ?? {}) as Record<string, unknown>;
   const imageUrl = readString(image.image_url, image.imageUrl, image.url, image.src);
@@ -40,6 +47,13 @@ export function mapCarouselImage(raw: unknown): HomepageCarouselImage {
     altText: readString(image.alt_text, image.altText),
     sortOrder: readNumber(image.sort_order, image.sortOrder),
     isHidden: readBoolean(image.is_hidden, image.isHidden),
+    showGreetingMessage:
+      readOptionalBoolean(
+        image.show_greeting_message,
+        image.showGreetingMessage,
+        image.show_message_on_hero,
+        image.showMessageOnHero,
+      ) ?? true,
     createdAt: readString(image.created_at, image.createdAt) || undefined,
     updatedAt: readString(image.updated_at, image.updatedAt) || undefined,
   };

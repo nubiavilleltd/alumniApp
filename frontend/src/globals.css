@@ -8,7 +8,7 @@
   --app-page-inline-padding: 16px;
 
   /* Primary - #021E44 */
-/* --color-primary-50: 242 246 252;
+  /* --color-primary-50: 242 246 252;
 --color-primary-100: 226 234 247;
 --color-primary-200: 194 211 236;
 --color-primary-300: 149 177 220;
@@ -20,7 +20,7 @@
 --color-primary-900: 1 13 31;
 --color-primary-950: 0 8 20; */
 
---color-primary-50: 240 248 255;
+  --color-primary-50: 240 248 255;
   --color-primary-100: 217 239 255;
   --color-primary-200: 191 228 255;
   --color-primary-300: 143 209 255;
@@ -230,30 +230,56 @@
 }
 
 .home-stats-section {
-  background: #f8f8f7;
-  padding: 1.75rem 0;
+  position: absolute;
+  left: 50%;
+  bottom: clamp(1.5rem, 4.3vw, 3.875rem);
+  z-index: 10;
+  display: flex;
+  min-height: 7.5rem;
+  width: min(82rem, calc(100% - 8rem));
+  transform: translateX(-50%);
+  align-items: center;
+  border-radius: 1.5rem;
+  background: #021e4480;
+  padding: 0 clamp(1rem, 1.7vw, 1.5rem);
+  box-shadow: 0 1.5rem 3rem rgba(0, 12, 31, 0.22);
+  backdrop-filter: blur(18px);
 }
 
 .home-stats-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1.5rem;
+  width: 100%;
+  gap: 0;
 }
 
 .home-stats-card {
+  position: relative;
   display: flex;
   min-height: 7.5rem;
   align-items: center;
-  gap: 1rem;
-  border-radius: 1.1rem;
-  padding: 1.35rem 1.5rem;
-  box-shadow: 0 1.25rem 2.5rem rgba(7, 17, 22, 0.08);
+  justify-content: flex-start;
+  gap: clamp(0.75rem, 1.12vw, 1rem);
+  color: #ffffff;
+  padding: 1.5rem clamp(0.9rem, 1.7vw, 1.5rem);
+}
+
+.home-stats-card:not(:last-child)::after {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 1px;
+  height: 4.25rem;
+  content: '';
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.62);
 }
 
 .home-stats-card__icon {
-  width: 2.55rem;
-  height: 2.55rem;
+  width: clamp(2.3rem, 3.05vw, 2.75rem);
+  height: clamp(2.3rem, 2.78vw, 2.5rem);
   flex: 0 0 auto;
+  filter: brightness(0) invert(1);
 }
 
 .home-stats-card__copy {
@@ -262,69 +288,73 @@
 
 .home-stats-card__copy h3 {
   margin: 0;
-  font-size: clamp(2rem, 3vw, 2.75rem);
+  font-size: clamp(2.25rem, 2.78vw, 2.5rem);
   font-weight: 800;
-  letter-spacing: 0.08em;
+  letter-spacing: 0;
   line-height: 1;
+  color: #ffffff;
 }
 
 .home-stats-card__copy p {
-  margin: 0.45rem 0 0;
-  font-size: clamp(0.95rem, 1.35vw, 1.25rem);
+  margin: 0.15rem 0 0;
+  font-size: clamp(1rem, 1.4vw, 1.25rem);
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0;
   line-height: 1.15;
-}
-
-.home-stats-card--light {
-  background: #ffffff;
-  color: #071116;
-}
-
-.home-stats-card--light .home-stats-card__copy p {
-  color: #858585;
-}
-
-.home-stats-card--dark {
-  background: linear-gradient(110deg, #7e7e7e 0%, #111111 100%);
-  color: #ffffff;
-}
-
-.home-stats-card--dark .home-stats-card__copy p,
-.home-stats-card--blue .home-stats-card__copy p,
-.home-stats-card--navy .home-stats-card__copy p {
-  color: rgba(255, 255, 255, 0.78);
-}
-
-.home-stats-card--blue {
-  background: rgb(var(--color-primary-500));
-  color: #ffffff;
-}
-
-.home-stats-card--navy {
-  background: #001928;
-  color: #ffffff;
+  color: rgba(255, 255, 255, 0.74);
 }
 
 @media (max-width: 1024px) {
+  .home-hero {
+    padding-bottom: 11rem;
+  }
+
+  .home-stats-section {
+    bottom: 1.25rem;
+    min-height: auto;
+    width: calc(100% - 2rem);
+  }
+
   .home-stats-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .home-stats-card:nth-child(2)::after {
+    display: none;
   }
 }
 
 @media (max-width: 640px) {
+  .home-hero {
+    min-height: 62rem;
+    padding-bottom: 18rem;
+  }
+
   .home-stats-section {
-    padding: 1.25rem 0;
+    bottom: 1rem;
+    width: min(100% - 1rem, 26rem);
+    border-radius: 1.1rem;
+    padding: 0.75rem;
   }
 
   .home-stats-grid {
     grid-template-columns: 1fr;
-    gap: 1rem;
   }
 
   .home-stats-card {
-    min-height: 6.5rem;
-    padding: 1.1rem 1.25rem;
+    min-height: 4.7rem;
+    justify-content: flex-start;
+    padding: 0.75rem 0.85rem;
+  }
+
+  .home-stats-card:not(:last-child)::after {
+    top: auto;
+    right: auto;
+    bottom: 0;
+    left: 0.85rem;
+    width: calc(100% - 1.7rem);
+    height: 1px;
+    transform: none;
   }
 }
 
@@ -1447,6 +1477,7 @@ input[type='password']::-webkit-caps-lock-indicator {
     transform 180ms ease;
 }
 
+.auth-google-signin:hover .auth-google-signin__visual,
 .auth-social-button:hover {
   border-color: rgb(var(--color-primary-500) / 0.52);
   box-shadow: 0 0.7rem 1.4rem rgb(var(--color-primary-500) / 0.08);

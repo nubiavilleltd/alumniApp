@@ -25,7 +25,7 @@ export default function HomeStats() {
     },
     {
       label: 'Founded',
-      value: '1985',
+      value: '1973',
       iconSrc: '/home-cards/founded.svg',
       className: 'home-stats-card--dark',
     },
@@ -37,26 +37,24 @@ export default function HomeStats() {
     },
     {
       label: 'Raised for Welfare',
-      value: '-',
+      value: '₦5M+',
       iconSrc: '/home-cards/raised4welfare.svg',
       className: 'home-stats-card--navy',
     },
   ];
 
   return (
-    <section className="home-stats-section">
-      <div className="container-custom">
-        <div className="home-stats-grid">
-          {stats.map((stat) => (
-            <article key={stat.label} className={`home-stats-card ${stat.className}`}>
-              <img src={stat.iconSrc} alt="" aria-hidden="true" className="home-stats-card__icon" />
-              <div className="home-stats-card__copy">
-                <h3>{stat.value}</h3>
-                <p>{stat.label}</p>
-              </div>
-            </article>
-          ))}
-        </div>
+    <section className="home-stats-section" aria-label="Association stats">
+      <div className="home-stats-grid">
+        {stats.map((stat) => (
+          <article key={stat.label} className={`home-stats-card ${stat.className}`}>
+            <img src={stat.iconSrc} alt="" aria-hidden="true" className="home-stats-card__icon" />
+            <div className="home-stats-card__copy">
+              <h3>{stat.value}</h3>
+              <p>{stat.label}</p>
+            </div>
+          </article>
+        ))}
       </div>
     </section>
   );

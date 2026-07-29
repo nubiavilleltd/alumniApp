@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react';
-import { Pencil, Plus, Trash2 } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState, type ChangeEvent, type DragEvent } from 'react';
+import { Grid2X2, List, Pencil, Plus, Trash2 } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
 import { BaseInput } from '@/shared/components/ui/input/BaseInput';
@@ -14,10 +14,12 @@ import {
   useUpdateCarouselImage,
   useUpdateHomepageText,
 } from '@/features/homepage/hooks/useHomepageContent';
+import { setLocalCarouselGreetingVisibility } from '@/features/homepage/services/homepage.service';
 import { DragHandle } from './DragHandle';
 import type { HomepageImage, PagesContentTab } from './types';
 
 type ImageUploadIntent = { type: 'add' } | { type: 'replace'; imageId: string };
+type CarouselViewMode = 'grid' | 'list';
 
 type AdminHomepageImage = HomepageImage & {
   isNew?: boolean;
@@ -48,6 +50,7 @@ function createLocalCarouselImage(file: File, src: string, sortOrder: number): A
     fileName: file.name,
     altText: file.name,
     isHidden: false,
+    showGreetingMessage: true,
     isNew: true,
     localFile: file,
     sortOrder,
@@ -65,6 +68,93 @@ function getComparableHomepageImages(images: AdminHomepageImage[]) {
 
 function areComparableValuesEqual(left: unknown, right: unknown) {
   return JSON.stringify(left) === JSON.stringify(right);
+}
+
+function clampPosition(position: number, total: number) {
+  return Math.min(Math.max(position, 1), Math.max(total, 1));
+}
+
+function moveImageToIndex<T extends HomepageImage>(
+  images: T[],
+  imageId: string,
+  targetIndex: number,
+) {
+  const fromIndex = images.findIndex((image) => image.id === imageId);
+
+  if (
+    fromIndex < 0 ||
+    targetIndex < 0 ||
+    targetIndex >= images.length ||
+    fromIndex === targetIndex
+  ) {
+    return images;
+  }
+
+  const nextImages = [...images];
+  const [movedImage] = nextImages.splice(fromIndex, 1);
+  nextImages.splice(targetIndex, 0, movedImage);
+  return normalizeCarouselOrder(nextImages);
+}
+
+function PositionInput({
+  imageId,
+  position,
+  total,
+  onCommit,
+}: {
+  imageId: string;
+  position: number;
+  total: number;
+  onCommit: (imageId: string, position: number) => void;
+}) {
+  const [draftPosition, setDraftPosition] = useState(String(position));
+
+  useEffect(() => {
+    setDraftPosition(String(position));
+  }, [position]);
+
+  const revertPosition = () => setDraftPosition(String(position));
+
+  const commitPosition = () => {
+    if (!/^\d+$/.test(draftPosition)) {
+      revertPosition();
+      return;
+    }
+
+    const nextPosition = clampPosition(Number(draftPosition), total);
+    setDraftPosition(String(nextPosition));
+    onCommit(imageId, nextPosition);
+  };
+
+  return (
+    <input
+      type="text"
+      inputMode="numeric"
+      pattern="[0-9]*"
+      aria-label={`Position, editable, currently ${position} of ${total}`}
+      value={draftPosition}
+      onChange={(event) => {
+        const nextValue = event.target.value;
+        if (/^\d*$/.test(nextValue)) {
+          setDraftPosition(nextValue);
+        }
+      }}
+      onBlur={commitPosition}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          event.currentTarget.blur();
+        }
+
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          revertPosition();
+          event.currentTarget.blur();
+        }
+      }}
+      className="h-10 w-14 rounded-full border border-cms-tab-active/25 bg-white text-center text-lg font-semibold text-gray-950 shadow-sm transition focus:border-cms-tab-active focus:outline-none focus:ring-4 focus:ring-primary-500/15"
+    />
+  );
 }
 
 function ImageCardActions({
@@ -121,9 +211,39 @@ function ImageCardActions({
   );
 }
 
+function GreetingVisibilityCheckbox({
+  checked,
+  onChange,
+  className = '',
+}: {
+  checked: boolean;
+  onChange: () => void;
+  className?: string;
+}) {
+  return (
+    <label
+      className={[
+        'inline-flex cursor-pointer items-center gap-2.5 text-sm font-semibold text-gray-500 transition-colors hover:text-cms-tab-active',
+        className,
+      ].join(' ')}
+    >
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={onChange}
+        className="h-5 w-5 rounded border-gray-300 text-cms-tab-active accent-cms-tab-active focus:ring-cms-tab-active/25"
+      />
+      <span>Show the greeting message on this image</span>
+    </label>
+  );
+}
+
 export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) {
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const carouselScrollRef = useRef<HTMLDivElement>(null);
+  const autoScrollFrameRef = useRef<number | null>(null);
+  const autoScrollSpeedRef = useRef(0);
   const { data: homepageContent, isLoading, isError, error } = useAdminHomepageContent();
   const updateHomepageText = useUpdateHomepageText();
   const createCarouselImage = useCreateCarouselImage();
@@ -139,6 +259,55 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
   const [saveStatus, setSaveStatus] = useState('');
   const [deletedImageIds, setDeletedImageIds] = useState<string[]>([]);
   const [pendingDeleteImage, setPendingDeleteImage] = useState<HomepageImage | null>(null);
+  const [carouselViewMode, setCarouselViewMode] = useState<CarouselViewMode>(() => {
+    if (typeof window === 'undefined') return 'grid';
+    return window.sessionStorage.getItem('home-carousel-view') === 'list' ? 'list' : 'grid';
+  });
+
+  const stopAutoScroll = () => {
+    autoScrollSpeedRef.current = 0;
+    if (autoScrollFrameRef.current !== null) {
+      window.cancelAnimationFrame(autoScrollFrameRef.current);
+      autoScrollFrameRef.current = null;
+    }
+  };
+
+  const continueAutoScroll = () => {
+    const container = carouselScrollRef.current;
+    const speed = autoScrollSpeedRef.current;
+
+    if (!container || speed === 0) {
+      stopAutoScroll();
+      return;
+    }
+
+    container.scrollLeft += speed;
+    autoScrollFrameRef.current = window.requestAnimationFrame(continueAutoScroll);
+  };
+
+  const updateAutoScroll = (event: DragEvent<HTMLElement>) => {
+    const container = carouselScrollRef.current;
+    if (!container) return;
+
+    const triggerZone = 60;
+    const rect = container.getBoundingClientRect();
+    const distanceFromLeft = event.clientX - rect.left;
+    const distanceFromRight = rect.right - event.clientX;
+    let nextSpeed = 0;
+
+    if (distanceFromLeft < triggerZone) {
+      nextSpeed = -Math.max(4, ((triggerZone - distanceFromLeft) / triggerZone) * 22);
+    } else if (distanceFromRight < triggerZone) {
+      nextSpeed = Math.max(4, ((triggerZone - distanceFromRight) / triggerZone) * 22);
+    }
+
+    autoScrollSpeedRef.current = nextSpeed;
+    if (nextSpeed !== 0 && autoScrollFrameRef.current === null) {
+      autoScrollFrameRef.current = window.requestAnimationFrame(continueAutoScroll);
+    } else if (nextSpeed === 0) {
+      stopAutoScroll();
+    }
+  };
 
   useEffect(() => {
     if (!homepageContent) return;
@@ -151,6 +320,7 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
           fileName: image.fileName,
           altText: image.altText,
           isHidden: image.isHidden,
+          showGreetingMessage: image.showGreetingMessage,
           sortOrder: image.sortOrder + 1,
         })),
       ),
@@ -161,6 +331,12 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
     setSaveStatus('');
   }, [homepageContent]);
 
+  useEffect(() => stopAutoScroll, []);
+
+  useEffect(() => {
+    window.sessionStorage.setItem('home-carousel-view', carouselViewMode);
+  }, [carouselViewMode]);
+
   const moveImage = (fromId: string, toId: string) => {
     if (fromId === toId) return;
 
@@ -170,11 +346,44 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
 
       if (fromIndex < 0 || toIndex < 0) return currentImages;
 
-      const nextImages = [...currentImages];
-      const [movedImage] = nextImages.splice(fromIndex, 1);
-      nextImages.splice(toIndex, 0, movedImage);
-      return normalizeCarouselOrder(nextImages);
+      return moveImageToIndex(currentImages, fromId, toIndex);
     });
+    setSaveStatus('');
+  };
+
+  const moveImageToPosition = (imageId: string, position: number) => {
+    setOrderedImages((currentImages) =>
+      moveImageToIndex(currentImages, imageId, clampPosition(position, currentImages.length) - 1),
+    );
+    setSaveStatus('');
+  };
+
+  const startDrag = (event: DragEvent<HTMLElement>, imageId: string) => {
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/plain', imageId);
+    setDraggedImageId(imageId);
+  };
+
+  const dragOverImage = (event: DragEvent<HTMLElement>, imageId: string) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+    updateAutoScroll(event);
+    setDropTargetImageId(imageId);
+  };
+
+  const dropOnImage = (event: DragEvent<HTMLElement>, imageId: string) => {
+    event.preventDefault();
+    const sourceImageId = event.dataTransfer.getData('text/plain') || draggedImageId;
+    if (sourceImageId) moveImage(sourceImageId, imageId);
+    setDraggedImageId(null);
+    setDropTargetImageId(null);
+    stopAutoScroll();
+  };
+
+  const endDrag = () => {
+    setDraggedImageId(null);
+    setDropTargetImageId(null);
+    stopAutoScroll();
   };
 
   const openImagePicker = (intent: ImageUploadIntent) => {
@@ -243,6 +452,22 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
     setSaveStatus('');
   };
 
+  const toggleImageGreetingMessage = (imageId: string) => {
+    let nextShowGreetingMessage = true;
+
+    setOrderedImages((currentImages) =>
+      currentImages.map((image) => {
+        if (image.id !== imageId) return image;
+
+        nextShowGreetingMessage = !image.showGreetingMessage;
+        return { ...image, showGreetingMessage: nextShowGreetingMessage };
+      }),
+    );
+
+    setLocalCarouselGreetingVisibility(imageId, nextShowGreetingMessage);
+    queryClient.invalidateQueries({ queryKey: homepageContentKeys.all });
+  };
+
   const isSaving =
     updateHomepageText.isPending ||
     createCarouselImage.isPending ||
@@ -254,9 +479,9 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
     if (!homepageContent) {
       return Boolean(
         greetingTitle.trim() ||
-          greetingMessage.trim() ||
-          orderedImages.length > 0 ||
-          deletedImageIds.length > 0,
+        greetingMessage.trim() ||
+        orderedImages.length > 0 ||
+        deletedImageIds.length > 0,
       );
     }
 
@@ -272,6 +497,7 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
         fileName: image.fileName,
         altText: image.altText,
         isHidden: image.isHidden,
+        showGreetingMessage: image.showGreetingMessage,
         sortOrder: image.sortOrder + 1,
       })),
     );
@@ -360,15 +586,45 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
               Upload and organise the carousel images displayed on the homepage.
             </p>
 
-            <button
-              type="button"
-              disabled={isSaving}
-              onClick={() => openImagePicker({ type: 'add' })}
-              className="inline-flex w-fit items-center gap-2 rounded-full border-2 border-primary-500 px-4 py-[5px] text-base font-semibold text-primary-500 transition-all duration-200 hover:bg-primary-50 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              <Plus className="h-5 w-5" />
-              Add new image
-            </button>
+            <div className="flex flex-wrap items-center gap-3">
+              <div
+                className="inline-flex rounded-full border border-cms-tab-active/20 bg-cms-surface p-1"
+                aria-label="Carousel view"
+              >
+                {(['grid', 'list'] as const).map((mode) => {
+                  const isActive = carouselViewMode === mode;
+                  const Icon = mode === 'grid' ? Grid2X2 : List;
+
+                  return (
+                    <button
+                      key={mode}
+                      type="button"
+                      onClick={() => setCarouselViewMode(mode)}
+                      className={[
+                        'inline-flex h-9 items-center gap-2 rounded-full px-3 text-sm font-semibold transition-colors',
+                        isActive
+                          ? 'bg-white text-cms-tab-active shadow-sm'
+                          : 'text-gray-500 hover:text-cms-tab-active',
+                      ].join(' ')}
+                      aria-pressed={isActive}
+                    >
+                      <Icon className="h-4 w-4" />
+                      {mode === 'grid' ? 'Grid' : 'List'}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <button
+                type="button"
+                disabled={isSaving}
+                onClick={() => openImagePicker({ type: 'add' })}
+                className="inline-flex w-fit items-center gap-2 rounded-full border-2 border-primary-500 px-4 py-[5px] text-base font-semibold text-primary-500 transition-all duration-200 hover:bg-primary-50 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                <Plus className="h-5 w-5" />
+                Add new image
+              </button>
+            </div>
           </div>
 
           {isLoading ? (
@@ -390,48 +646,38 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
             onChange={handleImageFileChange}
           />
 
-          <div className="scrollbar-hide flex snap-x gap-4 overflow-x-auto scroll-smooth pb-3 [-webkit-overflow-scrolling:touch]">
+          <div
+            ref={carouselScrollRef}
+            onDragOver={updateAutoScroll}
+            onDragLeave={stopAutoScroll}
+            className={[
+              'scrollbar-hide overflow-x-auto scroll-smooth pb-3 [-webkit-overflow-scrolling:touch]',
+              carouselViewMode === 'grid' ? 'flex snap-x gap-4' : 'space-y-3',
+            ].join(' ')}
+          >
             {!isLoading && orderedImages.length === 0 ? (
               <div className="flex min-h-[12rem] w-full items-center justify-center rounded-xl border border-dashed border-cms-tab-active/35 bg-white text-sm font-medium text-gray-500">
                 No carousel images yet. Add an image to start building the homepage carousel.
               </div>
             ) : null}
 
-            {orderedImages.map((image, index) => {
+            {orderedImages.map((image) => {
               const isDragging = draggedImageId === image.id;
               const isDropTarget = dropTargetImageId === image.id && draggedImageId !== image.id;
 
-              return (
+              return carouselViewMode === 'grid' ? (
                 <article
                   key={image.id}
                   draggable
-                  onDragStart={(event) => {
-                    event.dataTransfer.effectAllowed = 'move';
-                    event.dataTransfer.setData('text/plain', image.id);
-                    setDraggedImageId(image.id);
-                  }}
-                  onDragOver={(event) => {
-                    event.preventDefault();
-                    event.dataTransfer.dropEffect = 'move';
-                    setDropTargetImageId(image.id);
-                  }}
+                  onDragStart={(event) => startDrag(event, image.id)}
+                  onDragOver={(event) => dragOverImage(event, image.id)}
                   onDragLeave={() => {
                     setDropTargetImageId((currentId) =>
                       currentId === image.id ? null : currentId,
                     );
                   }}
-                  onDrop={(event) => {
-                    event.preventDefault();
-                    const sourceImageId =
-                      event.dataTransfer.getData('text/plain') || draggedImageId;
-                    if (sourceImageId) moveImage(sourceImageId, image.id);
-                    setDraggedImageId(null);
-                    setDropTargetImageId(null);
-                  }}
-                  onDragEnd={() => {
-                    setDraggedImageId(null);
-                    setDropTargetImageId(null);
-                  }}
+                  onDrop={(event) => dropOnImage(event, image.id)}
+                  onDragEnd={endDrag}
                   className={[
                     'relative flex min-h-[24rem] w-full shrink-0 snap-start flex-col rounded-xl border border-cms-tab-active/25 bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg sm:max-w-[38rem] lg:h-[488px] lg:w-[608px] lg:max-w-none lg:p-0',
                     isDragging ? 'scale-[0.98] opacity-60' : '',
@@ -443,9 +689,14 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
                   <div className="mx-auto lg:absolute lg:left-1/2 lg:top-2.5 lg:-translate-x-1/2">
                     <DragHandle />
                   </div>
-                  <p className="mt-6 text-xl font-medium leading-none text-gray-950 lg:absolute lg:left-6 lg:top-[43px] lg:mt-0">
-                    {index + 1}
-                  </p>
+                  <div className="mt-6 lg:absolute lg:left-6 lg:top-[35px] lg:mt-0">
+                    <PositionInput
+                      imageId={image.id}
+                      position={image.sortOrder}
+                      total={orderedImages.length}
+                      onCommit={moveImageToPosition}
+                    />
+                  </div>
                   <img
                     src={image.src}
                     alt=""
@@ -454,12 +705,103 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
                       image.isHidden ? 'opacity-45 grayscale' : '',
                     ].join(' ')}
                   />
+                  <GreetingVisibilityCheckbox
+                    checked={image.showGreetingMessage}
+                    onChange={() => toggleImageGreetingMessage(image.id)}
+                    className="mt-5 lg:absolute lg:left-6 lg:top-[448px] lg:mt-0 lg:max-w-[22rem]"
+                  />
                   <ImageCardActions
                     isHidden={image.isHidden}
                     onDelete={() => setPendingDeleteImage(image)}
                     onEdit={() => openImagePicker({ type: 'replace', imageId: image.id })}
                     onToggleHidden={() => toggleImageHidden(image.id)}
                   />
+                </article>
+              ) : (
+                <article
+                  key={image.id}
+                  draggable
+                  onDragStart={(event) => startDrag(event, image.id)}
+                  onDragOver={(event) => dragOverImage(event, image.id)}
+                  onDragLeave={() => {
+                    setDropTargetImageId((currentId) =>
+                      currentId === image.id ? null : currentId,
+                    );
+                  }}
+                  onDrop={(event) => dropOnImage(event, image.id)}
+                  onDragEnd={endDrag}
+                  className={[
+                    'grid min-w-[66rem] grid-cols-[2.5rem_4.5rem_5rem_minmax(12rem,1fr)_17rem_7rem_8rem] items-center gap-3 rounded-xl border border-cms-tab-active/20 bg-white px-4 py-3 transition-all',
+                    isDragging ? 'opacity-60' : '',
+                    isDropTarget
+                      ? 'border-cms-tab-active shadow-md ring-2 ring-cms-tab-active/20'
+                      : 'hover:border-primary-200 hover:shadow-sm',
+                  ].join(' ')}
+                >
+                  <DragHandle />
+                  <PositionInput
+                    imageId={image.id}
+                    position={image.sortOrder}
+                    total={orderedImages.length}
+                    onCommit={moveImageToPosition}
+                  />
+                  <div className="h-14 w-20 overflow-hidden rounded-md border border-gray-100 bg-cms-surface">
+                    {image.src ? (
+                      <img
+                        src={image.src}
+                        alt=""
+                        className={[
+                          'h-full w-full object-cover',
+                          image.isHidden ? 'opacity-45 grayscale' : '',
+                        ].join(' ')}
+                      />
+                    ) : null}
+                  </div>
+                  <p
+                    className={[
+                      'truncate text-sm font-semibold text-gray-800',
+                      image.src ? '' : 'text-gray-400',
+                    ].join(' ')}
+                    title={image.fileName || image.altText || `Carousel image ${image.sortOrder}`}
+                  >
+                    {image.fileName || image.altText || `Carousel image ${image.sortOrder}`}
+                  </p>
+                  <GreetingVisibilityCheckbox
+                    checked={image.showGreetingMessage}
+                    onChange={() => toggleImageGreetingMessage(image.id)}
+                    className="text-xs"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => toggleImageHidden(image.id)}
+                    className={[
+                      'w-fit rounded-full px-3 py-1 text-xs font-semibold',
+                      image.isHidden
+                        ? 'bg-gray-100 text-gray-500'
+                        : 'bg-primary-50 text-cms-tab-active',
+                    ].join(' ')}
+                    aria-pressed={image.isHidden}
+                  >
+                    {image.isHidden ? 'Hidden' : 'Visible'}
+                  </button>
+                  <div className="flex items-center justify-end gap-4">
+                    <button
+                      type="button"
+                      onClick={() => openImagePicker({ type: 'replace', imageId: image.id })}
+                      className="text-gray-500 transition-colors hover:text-cms-tab-active"
+                      aria-label="Edit carousel image"
+                    >
+                      <Pencil className="h-5 w-5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPendingDeleteImage(image)}
+                      className="text-gray-500 transition-colors hover:text-red-500"
+                      aria-label="Delete carousel image"
+                    >
+                      <Trash2 className="h-5 w-5" />
+                    </button>
+                  </div>
                 </article>
               );
             })}

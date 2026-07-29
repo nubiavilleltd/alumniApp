@@ -1,20 +1,3 @@
-// shared/components/layout/Footer.tsx
-//
-// NEW DESIGN — builds on the existing code.
-// Three columns on desktop, separated by thin white/20 dividers:
-//   Col 1 (left):   Logo · tagline · contact info
-//   Col 2 (middle): Quick Links | Community | Legal & Policies sub-columns
-//   Col 3 (right):  Social icons stacked vertically
-//
-// The National Theatre image shows in the upper portion of the footer.
-// Content is anchored to the bottom via large top padding (pushes content down).
-// Gradient goes transparent → deep navy so text is always readable.
-//
-// Responsive:
-//   Mobile:  full-width stacked sections + horizontal social row at bottom
-//   Tablet:  2-col links grid, socials move to bottom row
-//   Desktop: full 3-column layout with vertical dividers
-
 import { Icon } from '@iconify/react';
 import { getSiteConfig } from '@/data/content';
 import { AppLink } from '../ui/AppLink';
@@ -24,10 +7,6 @@ import AddressLocationIcon from '/addressLocation.svg';
 import LocationPhoneIcon from '/locationPhone.svg';
 import LocationMessageIcon from '/locationMessage.svg';
 import { ROUTES } from '@/shared/constants/routes';
-
-// ─── Social icon resolver ─────────────────────────────────────────────────────
-// config.social_links[].icon contains icon names like "facebook", "instagram".
-// We use brand icons here to match the Figma footer artwork closely.
 
 const SOCIAL_ICON_MAP: Record<string, string> = {
   facebook: 'mdi:facebook',
@@ -47,37 +26,34 @@ function resolveSocialIcon(iconName: string): string {
 }
 
 const footerSocialLinkClassName =
-  'relative flex h-10 w-10 items-center justify-center rounded-full bg-transparent transition-all duration-200 hover:scale-105 before:absolute before:inset-0 before:rounded-full before:p-px before:bg-[linear-gradient(90deg,#015C9E_0%,#FFFFFF_50%,#015C9E_100%)] before:[-webkit-mask:linear-gradient(#000_0_0)_content-box,linear-gradient(#000_0_0)] before:[-webkit-mask-composite:xor] before:[mask-composite:exclude] before:pointer-events-none';
+  'relative flex h-10 w-10 items-center justify-center rounded-full bg-transparent transition-all duration-200 hover:scale-105 before:absolute before:inset-0 before:rounded-full before:p-px before:bg-[linear-gradient(90deg,#015C9E_0%,#FFFFFF_50%,#015C9E_100%)] before:[-webkit-mask:linear-gradient(#000_0_0)_content-box,linear-gradient(#000_0_0)] before:[-webkit-mask-composite:xor] before:[mask-composite:exclude] before:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white';
 const footerSocialIconClassName = 'h-5 w-5 text-white';
 const footerContactIconClassName = 'flex-shrink-0 opacity-80';
-// ─── Link columns ─────────────────────────────────────────────────────────────
 
 const QUICK_LINKS = [
-  { label: 'Get to Know FGGC Owerri AA', href: ROUTES.ABOUT },
+  { label: 'About Us', href: ROUTES.ABOUT },
   { label: 'Announcements', href: ROUTES.NEWS },
-  { label: 'Blog', href: '/news/blog' },
   { label: 'Events', href: ROUTES.EVENTS.ROOT },
   { label: 'Our Projects', href: ROUTES.PROJECTS.ROOT },
-  { label: 'Make a Donation', href: ROUTES.DONATION },
+  { label: 'Volunteer', href: '/alumni/profiles' },
   { label: 'FAQs', href: ROUTES.FAQS },
   { label: 'Contact Us', href: ROUTES.CONTACT },
 ];
 
 const COMMUNITY_LINKS = [
-  // { label: 'Alumnae Directory', href: '/alumni/profiles' },
   { label: 'Check on your Sisters', href: '/alumni/profiles' },
-  { label: 'Marketplace', href: '/marketplace' },
-  { label: 'Resources', href: '/resources' },
-  { label: 'Welfare', href: '/welfare' },
+  { label: 'Marketplace', href: ROUTES.MARKETPLACE.ROOT },
+  { label: 'Resources', href: ROUTES.RESOURCES },
+  { label: 'Welfare', href: ROUTES.WELFARE },
+  { label: 'Social Media Feed', href: ROUTES.LIVE_NEWS.ROOT },
+  { label: 'Polls', href: '/polls' },
 ];
 
 const LEGAL_LINKS = [
-  { label: 'Privacy Policy', href: '/privacy' },
-  { label: 'Terms of Use', href: '/terms' },
+  { label: 'Privacy Policy', href: ROUTES.PRIVACY },
+  { label: 'Terms of Use', href: ROUTES.TERMS },
   { label: 'Code of Conduct', href: '/code-of-conduct' },
 ];
-
-// ─── Sub-components ───────────────────────────────────────────────────────────
 
 function LinkColumn({
   heading,
@@ -88,13 +64,13 @@ function LinkColumn({
 }) {
   return (
     <div>
-      <h4 className="text-white font-bold text-sm mb-4 tracking-wide">{heading}</h4>
-      <ul className="space-y-3">
+      <h4 className="mb-4 text-sm font-bold tracking-wide text-white">{heading}</h4>
+      <ul className="space-y-3.5">
         {links.map(({ label, href }) => (
           <li key={label}>
             <AppLink
               href={href}
-              className="text-white hover:text-white text-sm transition-colors duration-150"
+              className="text-sm leading-snug text-white/90 transition-colors duration-150 hover:text-white"
             >
               {label}
             </AppLink>
@@ -105,8 +81,6 @@ function LinkColumn({
   );
 }
 
-// ─── Footer ───────────────────────────────────────────────────────────────────
-
 export function Footer() {
   const config = getSiteConfig();
   const currentYear = new Date().getFullYear();
@@ -114,11 +88,7 @@ export function Footer() {
   const socialLinks: { name: string; url: string; icon: string }[] = config.social_links ?? [];
 
   return (
-    <footer className="relative text-white overflow-hidden">
-      {/* ── Background image ─────────────────────────────────────────
-          Positioned at the top so the building shows in the upper half.
-          object-cover + bg-[center_top] keeps the building centred.
-      ─────────────────────────────────────────────────────────────── */}
+    <footer className="relative min-h-[626px] overflow-hidden bg-[#021E44] text-white">
       <div
         className="absolute inset-0 bg-cover bg-[center_top] bg-no-repeat"
         style={{ backgroundImage: `url(${FooterBgImage})` }}
@@ -126,38 +96,24 @@ export function Footer() {
       />
 
       <div
-        // className="absolute inset-0"
-        // style={{
-        //   background:
-        //     'linear-gradient(to bottom, rgba(13,31,60,0.18) 0%, rgba(13,31,60,0.55) 38%, rgba(13,31,60,0.88) 58%, rgba(13,31,60,0.97) 75%, rgba(13,31,60,1) 100%)',
-        // }}
+        className="absolute inset-0 bg-[linear-gradient(180deg,rgba(2,30,68,0)_0%,rgba(2,30,68,0.35)_34%,rgba(2,30,68,0.88)_58%,#021E44_78%,#021E44_100%)]"
         aria-hidden="true"
       />
 
-      {/* ── Content ───────────────────────────────────────────────────
-          Large top padding pushes content to the bottom half so the
-          building image shows above. Bottom padding gives breathing room
-          before the copyright strip.
-      ─────────────────────────────────────────────────────────────── */}
       <div className="relative z-10">
-        <div className="container-custom pt-52 sm:pt-60 lg:pt-72 xl:pt-80 pb-0">
-          {/* ── Three main columns ──────────────────────────────────── */}
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr_auto_auto] lg:items-start gap-10 lg:gap-0 pb-10 lg:pb-14">
-            {/* ══ Column 1: Logo + tagline + contact ══════════════════ */}
+        <div className="container-custom flex min-h-[626px] flex-col justify-end pt-48 sm:pt-60 lg:pt-72 xl:pt-80">
+          <div className="grid grid-cols-1 gap-10 pb-9 sm:pb-11 lg:grid-cols-[minmax(17rem,0.95fr)_auto_minmax(27rem,1fr)_auto_auto] lg:items-start lg:gap-0">
             <div className="lg:pr-10 xl:pr-14">
-              {/* Logo wordmark */}
-              <div className="mb-5">
-                <FooterLogo />
-              </div>
-
-              {/* Tagline */}
-              <p className="text-white text-sm leading-relaxed max-w-[340px]">
-                Connecting generations of extraordinary women since 1985. A global sisterhood built
+              <p className="max-w-[340px] text-sm leading-relaxed text-white">
+                Connecting generations of extraordinary women since 1973. A global sisterhood built
                 on excellence, integrity, and service to Nigeria and beyond.
               </p>
 
-              {/* Contact details */}
-              <div className="space-y-3 mt-6">
+              <div className="mt-6">
+                <FooterLogo />
+              </div>
+
+              <div className="mt-6 space-y-3">
                 <div className="flex items-start gap-3">
                   <img
                     src={AddressLocationIcon}
@@ -165,7 +121,7 @@ export function Footer() {
                     aria-hidden="true"
                     className={`${footerContactIconClassName} mt-0.5 h-5 w-[17px]`}
                   />
-                  <span className="text-white text-sm leading-snug">
+                  <span className="text-sm leading-snug text-white">
                     {config.organization?.address || 'Lagos, Nigeria'}
                   </span>
                 </div>
@@ -178,7 +134,7 @@ export function Footer() {
                   />
                   <AppLink
                     href={`mailto:${config.contact?.email || 'info@fggcowerrilagos.org'}`}
-                    className="text-white hover:text-white text-sm transition-colors"
+                    className="text-sm text-white transition-colors hover:text-white"
                   >
                     {config.contact?.email || 'info@fggcowerrilagos.org'}
                   </AppLink>
@@ -192,7 +148,7 @@ export function Footer() {
                   />
                   <AppLink
                     href={`tel:${config.contact?.phone || '+2348000000000'}`}
-                    className="text-white hover:text-white text-sm transition-colors"
+                    className="text-sm text-white transition-colors hover:text-white"
                   >
                     {config.contact?.phone || '+234 800 000 0000'}
                   </AppLink>
@@ -200,12 +156,9 @@ export function Footer() {
               </div>
             </div>
 
-            {/* ── Vertical divider 1 (desktop only) ────────────────── */}
-            <div className="hidden lg:block w-px self-stretch mx-6 xl:mx-10 bg-gradient-to-b from-white/0 via-white/70 to-white/0" />
+            <div className="mx-6 hidden w-px min-h-52 self-stretch bg-gradient-to-b from-white/0 via-white/70 to-white/0 lg:block xl:mx-10" />
 
-            {/* ══ Column 2: Link groups ════════════════════════════════ */}
             <div className="lg:px-2">
-              {/* Mobile/tablet: 2-col grid; desktop: 3-col */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 lg:gap-x-10 xl:gap-x-14">
                 <LinkColumn heading="Quick Links" links={QUICK_LINKS} />
                 <LinkColumn heading="Community" links={COMMUNITY_LINKS} />
@@ -215,12 +168,10 @@ export function Footer() {
               </div>
             </div>
 
-            {/* ── Vertical divider 2 (desktop only) ────────────────── */}
-            <div className="hidden lg:block w-px self-stretch mx-6 xl:mx-10 bg-[linear-gradient(180deg,#015C9E_0%,#FFFFFF_50%,#015C9E_100%)]" />
+            <div className="mx-6 hidden w-px min-h-52 self-stretch bg-[linear-gradient(180deg,#015C9E_0%,#FFFFFF_50%,#015C9E_100%)] lg:block xl:mx-10" />
 
-            {/* ══ Column 3: Social icons (desktop — stacked vertically) */}
             {socialLinks.length > 0 && (
-              <div className="hidden lg:flex flex-col gap-4 items-center justify-start">
+              <div className="hidden flex-col items-center justify-start gap-4 lg:flex">
                 {socialLinks.map((social) => (
                   <AppLink
                     key={social.name}
@@ -241,23 +192,18 @@ export function Footer() {
             )}
           </div>
 
-          {/* ── Copyright strip ──────────────────────────────────────── */}
-          <div className="border-t border-white/10 py-5">
-            <p className="text-[#BDBDBD] font-[500] text-xs text-left">
+          <div className="py-5">
+            <p className="text-left text-xs font-[500] text-[#BDBDBD]">
               © {currentYear} FGGC Owerri Alumni Association, Lagos Chapter. All rights reserved.
             </p>
           </div>
         </div>
       </div>
 
-      {/* ── Mobile / tablet social icons ─────────────────────────────
-          Shown below the link columns on smaller screens.
-          Hidden on desktop (lg+) where they appear in Col 3.
-      ─────────────────────────────────────────────────────────────── */}
       {socialLinks.length > 0 && (
-        <div className="lg:hidden relative z-10 border-t border-white/10">
+        <div className="relative z-10 border-t border-white/10 lg:hidden">
           <div className="container-custom py-5">
-            <div className="flex items-center justify-center gap-3 flex-wrap">
+            <div className="flex flex-wrap items-center justify-center gap-3">
               {socialLinks.map((social) => (
                 <AppLink
                   key={social.name}

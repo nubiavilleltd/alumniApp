@@ -6,6 +6,7 @@ export type HomepageImage = {
   fileName?: string;
   altText?: string;
   isHidden: boolean;
+  showGreetingMessage: boolean;
   sortOrder: number;
 };
 

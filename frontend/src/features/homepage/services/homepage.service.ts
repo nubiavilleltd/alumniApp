@@ -31,6 +31,45 @@ function visibilityValue(isHidden?: boolean) {
   return isHidden ? '1' : '0';
 }
 
+const LOCAL_GREETING_VISIBILITY_KEY = 'home-carousel-greeting-visibility';
+
+function canUseLocalStorage() {
+  return typeof window !== 'undefined' && Boolean(window.localStorage);
+}
+
+function readLocalGreetingVisibility() {
+  if (!canUseLocalStorage()) return {};
+
+  try {
+    return JSON.parse(window.localStorage.getItem(LOCAL_GREETING_VISIBILITY_KEY) ?? '{}') as Record<
+      string,
+      boolean
+    >;
+  } catch {
+    return {};
+  }
+}
+
+function applyLocalGreetingVisibility(homepage: HomepageContent): HomepageContent {
+  const localVisibility = readLocalGreetingVisibility();
+
+  return {
+    ...homepage,
+    carouselImages: homepage.carouselImages.map((image) => ({
+      ...image,
+      showGreetingMessage: localVisibility[image.id] ?? image.showGreetingMessage,
+    })),
+  };
+}
+
+export function setLocalCarouselGreetingVisibility(imageId: string, showGreetingMessage: boolean) {
+  if (!imageId || !canUseLocalStorage()) return;
+
+  const localVisibility = readLocalGreetingVisibility();
+  localVisibility[imageId] = showGreetingMessage;
+  window.localStorage.setItem(LOCAL_GREETING_VISIBILITY_KEY, JSON.stringify(localVisibility));
+}
+
 export const homepageService = {
   async getHomepage(options?: { admin?: boolean }): Promise<HomepageContent> {
     const { data } = await contentApiClient.get(API_ENDPOINTS.CONTENT.HOMEPAGE, {
@@ -47,12 +86,14 @@ export const homepageService = {
     }
 
     if (options?.admin) {
-      return homepage;
+      return applyLocalGreetingVisibility(homepage);
     }
 
+    const homepageWithLocalVisibility = applyLocalGreetingVisibility(homepage);
+
     return {
-      ...homepage,
-      carouselImages: homepage.carouselImages.filter((image) => !image.isHidden),
+      ...homepageWithLocalVisibility,
+      carouselImages: homepageWithLocalVisibility.carouselImages.filter((image) => !image.isHidden),
     };
   },
 
@@ -85,6 +126,10 @@ export const homepageService = {
   },
 
   async updateCarouselImage(input: UpdateCarouselImageInput): Promise<HomepageCarouselImage> {
+    if (!input.id) {
+      throw new Error('Unable to update carousel image.');
+    }
+
     if (input.image) {
       const formData = new FormData();
       formData.append('id', input.id);
@@ -110,6 +155,10 @@ export const homepageService = {
   },
 
   async reorderCarousel(images: ReorderCarouselImageInput[]): Promise<HomepageCarouselImage[]> {
+    if (images.some((image) => !image.id)) {
+      throw new Error('Unable to update carousel order.');
+    }
+
     const { data } = await contentApiClient.post(API_ENDPOINTS.CONTENT.REORDER_CAROUSEL, {
       images: images.map((image) => ({
         id: image.id,

@@ -2,7 +2,7 @@ import { AUTH_ROUTES } from '@/features/authentication/routes';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 import { SEO } from '@/shared/common/SEO';
 import { ButtonLink } from '@/shared/components/ui/Button';
-import Leadership from './Leadership';
+import Leadership, { MessageFromPresident } from './Leadership';
 
 const missionFeatures = [
   {
@@ -97,6 +97,8 @@ export function AboutPage() {
             </div>
           </div>
         </section>
+
+        <MessageFromPresident />
 
         <section className="bg-white px-[var(--app-page-inline-padding)] pb-20 pt-4 lg:pb-24">
           <div className="mx-auto max-w-[1920px]">

@@ -5,6 +5,7 @@ import { AUTH_ROUTES } from '@/features/authentication/routes';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 import { useHomepageContent } from '@/features/homepage/hooks/useHomepageContent';
 import { ROUTES } from '@/shared/constants/routes';
+import HomeStats from './HomeStats';
 
 function HeroSectionSkeleton() {
   return (
@@ -12,8 +13,8 @@ function HeroSectionSkeleton() {
       className="relative flex min-h-[72vh] items-center overflow-hidden bg-primary-700 px-0 lg:min-h-[78vh]"
       aria-hidden="true"
     >
-      <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-primary-700 via-primary-600 to-primary-800" />
-      <div className="absolute inset-0 bg-primary-900/25" />
+      <div className="absolute inset-0 animate-pulse bg-[linear-gradient(90deg,#021E4480_0%,#021E4480_52%,rgba(2,30,68,0.18)_100%)]" />
+      <div className="absolute inset-0 bg-[#021E4480]" />
 
       <div className="relative z-10 w-full px-[var(--app-page-inline-padding)]">
         <div className="max-w-3xl animate-pulse text-left">
@@ -31,12 +32,34 @@ function HeroSectionSkeleton() {
   );
 }
 
+function renderHeroHeading(text?: string) {
+  if (!text) return null;
+
+  const trimmedText = text.trim();
+  const homeMatch = trimmedText.match(/^(.*?)(\s+home)$/i);
+
+  if (!homeMatch) {
+    return trimmedText;
+  }
+
+  return (
+    <>
+      {homeMatch[1]}
+      <span className="bg-[linear-gradient(95deg,#ffffff_10%,#1b7dc2_129%)] bg-clip-text text-transparent">
+        {homeMatch[2]}
+      </span>
+    </>
+  );
+}
+
 export default function HeroSection() {
   const [current, setCurrent] = useState(0);
   const currentUser = useIdentityStore((state) => state.user);
   const { data: homepageContent, isLoading, isError } = useHomepageContent();
   const heroImages = homepageContent?.carouselImages ?? [];
   const hasHeroImages = heroImages.length > 0;
+  const currentHeroImage = heroImages[current];
+  const shouldShowHeroContent = !hasHeroImages || currentHeroImage?.showGreetingMessage !== false;
   const headingText = isLoading
     ? 'Loading homepage...'
     : isError
@@ -69,7 +92,7 @@ export default function HeroSection() {
 
   return (
     <section
-      className="relative flex min-h-[72vh] items-center overflow-hidden px-0 lg:min-h-[78vh]"
+      className="home-hero relative flex min-h-[72vh] items-center overflow-hidden px-0 pb-36 pt-20 lg:h-[728px] lg:min-h-[728px] lg:pb-44 lg:pt-28"
       aria-busy={isLoading}
     >
       {/* ── Background Images ─────────────────────────────────────────────── */}
@@ -89,51 +112,54 @@ export default function HeroSection() {
           </div>
         ))
       ) : (
-        <div className="absolute inset-0 z-0 bg-primary-700" />
+        <div className="absolute inset-0 z-0 bg-[#021E4480]" />
       )}
 
-      {/* ── Blue overlay ──────────────────────────────────────────────────── */}
-      <div className="absolute inset-0 z-[1] bg-gradient-to-r from-primary-700/90 via-primary-600/72 to-primary-900/28" />
-      <div className="absolute inset-0 z-[1] bg-primary-500/20" />
+      {shouldShowHeroContent ? (
+        <div className="absolute inset-0 z-[1] bg-[linear-gradient(90deg,#021E4480_0%,#021E4480_52%,rgba(2,30,68,0.18)_100%)]" />
+      ) : null}
 
-      {/* ── Content ───────────────────────────────────────────────────────── */}
-      <div className="relative z-10 w-full px-[var(--app-page-inline-padding)]">
-        <div className="max-w-3xl text-left">
-          <h1 className="type-hero text-4xl md:text-[80px] font-[500] mb-6 text-white">
-            {headingText}
-          </h1>
-          <p className="text-lg md:text-[24px] font-[500] text-white/90 mb-8 max-w-2xl">
-            {messageText}
-          </p>
-          <div className="flex flex-col items-start gap-4">
-            {!currentUser ? (
-              <AppLink href={AUTH_ROUTES.REGISTER}>
+      {shouldShowHeroContent ? (
+        <div className="relative z-10 flex w-full justify-center px-[var(--app-page-inline-padding)]">
+          <div className="mx-auto flex max-w-[43.125rem] flex-col items-center text-center">
+            <h1 className="type-hero mb-4 text-4xl font-bold text-white md:text-[80px]">
+              {renderHeroHeading(headingText)}
+            </h1>
+            <p className="mb-[38px] max-w-[43.125rem] text-lg font-[500] text-white md:text-[24px]">
+              {messageText}
+            </p>
+            <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+              {!currentUser ? (
+                <AppLink href={AUTH_ROUTES.REGISTER}>
+                  <Button
+                    size="lg"
+                    className="type-button min-w-[13.5rem] justify-center rounded-full bg-white px-16 py-5 text-primary-500 shadow-none hover:bg-white/90"
+                  >
+                    Join Us
+                  </Button>
+                </AppLink>
+              ) : null}
+
+              <AppLink href={ROUTES.DONATION}>
                 <Button
                   size="lg"
-                  className="type-button justify-center rounded-full bg-white px-16 py-5 text-primary-500 shadow-none hover:bg-white/90"
+                  className="type-button min-w-[18.5rem] justify-center rounded-full border-0 bg-[#7c3aed] px-6 py-5 text-white shadow-none hover:bg-[#6d28d9]"
                 >
-                  Join Us
+                  Make a Donation
+                  <img
+                    src="/donationIcon.svg"
+                    alt=""
+                    aria-hidden="true"
+                    className="h-5 w-5 shrink-0"
+                  />
                 </Button>
               </AppLink>
-            ) : null}
-
-            <AppLink href={ROUTES.DONATION}>
-              <Button
-                size="lg"
-                className="type-button justify-center rounded-full border-0 bg-[#7c3aed] px-6 py-5 text-white shadow-none hover:bg-[#6d28d9]"
-              >
-                Make a Donation
-                <img
-                  src="/donationIcon.svg"
-                  alt=""
-                  aria-hidden="true"
-                  className="h-5 w-5 shrink-0"
-                />
-              </Button>
-            </AppLink>
+            </div>
           </div>
         </div>
-      </div>
+      ) : null}
+
+      {shouldShowHeroContent ? <HomeStats /> : null}
     </section>
   );
 }
