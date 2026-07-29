@@ -21,6 +21,22 @@ function makeKey() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
+function formatWithCommas(digits: string): string {
+  if (!digits) return '';
+  const [intPart, decPart] = digits.split('.');
+  const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return decPart !== undefined ? `${formattedInt}.${decPart}` : formattedInt;
+}
+
+function sanitizePriceInput(value: string): string {
+  let cleaned = value.replace(/,/g, '').replace(/[^0-9.]/g, '');
+  const parts = cleaned.split('.');
+  if (parts.length > 2) {
+    cleaned = parts[0] + '.' + parts.slice(1).join('');
+  }
+  return cleaned;
+}
+
 function digitsOnly(value: string): string {
   return value.replace(/[^0-9]/g, '');
 }
@@ -76,7 +92,7 @@ function StockMatrix({ colours, sizes, hasColor, hasSize, cells, onChange }: Sto
                 value={getLocal(c.colorName, 'One Size')}
                 onChange={(e) => setLocal(c.colorName, 'One Size', e.target.value)}
                 className={cellClass}
-                style={{backgroundColor:'#F8F7F4'}}
+                style={{ backgroundColor: '#F8F7F4' }}
               />
             </div>
           ))}
@@ -100,7 +116,7 @@ function StockMatrix({ colours, sizes, hasColor, hasSize, cells, onChange }: Sto
                 value={getLocal('Default', s.sizeName)}
                 onChange={(e) => setLocal('Default', s.sizeName, e.target.value)}
                 className={cellClass}
-                style={{backgroundColor:'#F8F7F4'}}
+                style={{ backgroundColor: '#F8F7F4' }}
               />
             </div>
           ))}
@@ -141,7 +157,7 @@ function StockMatrix({ colours, sizes, hasColor, hasSize, cells, onChange }: Sto
                     value={getLocal(c.colorName, s.sizeName)}
                     onChange={(e) => setLocal(c.colorName, s.sizeName, e.target.value)}
                     className={cellClass}
-                    style={{backgroundColor:'#F8F7F4'}}
+                    style={{ backgroundColor: '#F8F7F4' }}
                   />
                 </td>
               ))}
@@ -571,7 +587,10 @@ export function ProductFormPanel({
             style={{ backgroundColor: '#F8F7F4' }}
             error={basicErrors.price?.message}
             required
-            {...register('price')}
+            value={formatWithCommas(watchBasic('price'))}
+            onChange={(e) => {
+              setBasicValue('price', sanitizePriceInput(e.target.value), { shouldValidate: true });
+            }}
           />
         </div>
         <TextareaInput
@@ -586,7 +605,7 @@ export function ProductFormPanel({
 
       {/* ── Item Images ─────────────────────────────────────────────────── */}
       <section className="space-y-4 max-w-2xl">
-        <h3 className="text-sm font-bold text-gray-800">Item Images</h3>
+        <h3 className="text-sm font-bold text-gray-800">Item Images <sup className='text-red-500 text-base'>*</sup></h3>
         <ImageUpload
           label="Item Gallery"
           previews={imagePreviews}

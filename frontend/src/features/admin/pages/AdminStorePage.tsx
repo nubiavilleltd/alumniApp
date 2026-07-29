@@ -107,6 +107,13 @@ export function AdminStorePage() {
     });
   }, [products, search, category]);
 
+  const sorted = useMemo(() => {
+    return [...filtered].sort((a, b) => {
+      if (a.pin_item === b.pin_item) return 0;
+      return a.pin_item ? -1 : 1;
+    });
+}, [filtered]);
+
   const deleteProduct = useDeleteProduct();
   const pinProduct = usePinProduct();
 
@@ -117,10 +124,10 @@ export function AdminStorePage() {
   // const productToPin = products.find((p) => p.id === pendingPinId);
 
   const totalPages = Math.ceil(
-    filtered.length / ITEMS_PER_PAGE,
+    sorted.length / ITEMS_PER_PAGE,
   );
 
-  const visible = filtered.slice(
+  const visible = sorted.slice(
     (page - 1) * ITEMS_PER_PAGE,
     page * ITEMS_PER_PAGE,
   );
