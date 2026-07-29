@@ -55,7 +55,8 @@ export default function LiveNewsDetailPage() {
             <img
               src={item.imageUrl}
               alt={item.title}
-              className="h-[300px] sm:h-[400px] w-full object-cover rounded-2xl"
+              // className="h-[300px] sm:h-[400px] w-full object-cover rounded-2xl"
+              className="w-full object-cover rounded-2xl"
             />
             <div className="py-8">
               <div className="mb-4 flex items-center gap-2 text-gray-800">
