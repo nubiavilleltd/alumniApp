@@ -119,6 +119,7 @@ export const API_ENDPOINTS = {
     LIST: '/api/get_announcements',
     CREATE: '/api/create_announcement',
     MANAGE: '/api/manage_announcement',
+    BIRTHDAYS:'/api/get_birthdays'
   },
 
   // ─── Pages Content ────────────────────────────────────────────────────────

@@ -6,6 +6,7 @@ import { AppLink } from '@/shared/components/ui/AppLink';
 import { AnnouncementEditorModal } from '@/features/announcements/components/AnnouncementEditorModal';
 import {
   useAnnouncement,
+  useBirthdayAnnouncements,
   useDeleteAnnouncement,
 } from '@/features/announcements/hooks/useAnnouncements';
 import { ANNOUNCEMENT_ROUTES } from '@/features/announcements/routes';
@@ -53,6 +54,7 @@ export default function BlogPostPage() {
   const navigate = useNavigate();
   const user = useIdentityStore((state) => state.user);
   const { data: announcement, isLoading } = useAnnouncement(slug);
+ 
   const deleteAnnouncement = useDeleteAnnouncement();
   const [isEditorOpen, setIsEditorOpen] = useState(false);
 

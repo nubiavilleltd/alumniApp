@@ -4,6 +4,7 @@ import { apiClient } from '@/lib/api/client';
 import { API_ENDPOINTS } from '@/lib/api/endpoints';
 import { handleApiError } from '@/lib/errors/apiErrorHandler';
 import {
+  adaptBirthday,
   extractAnnouncementFromResponse,
   extractAnnouncementIdFromSlug,
   mapAnnouncementToCreatePayload,
@@ -15,6 +16,7 @@ import {
 import type {
   AnnouncementMutationInput,
   AnnouncementType,
+  Birthday,
   GetAnnouncementsParams,
   NewsItem,
 } from '@/features/announcements/types/announcement.types';
@@ -146,6 +148,7 @@ export const announcementService = {
     }
   },
 
+
   async delete(id: string): Promise<void> {
     try {
       const payload = mapAnnouncementToDeletePayload(id);
@@ -160,4 +163,21 @@ export const announcementService = {
       );
     }
   },
+
+
+  async getBirthdays(): Promise<Birthday[]> {
+
+    try {
+      const { data } = await apiClient.post(API_ENDPOINTS.ANNOUNCEMENTS.BIRTHDAYS);
+
+      console.log("bdays", data)
+
+      return data.birthdays.map(adaptBirthday)
+
+    } catch (error) {
+      throw handleApiError(error, 'Unable to load birthdays.', 'announcementService.getAll');
+    }
+  },
+
+
 };

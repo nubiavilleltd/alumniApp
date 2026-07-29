@@ -164,7 +164,6 @@ export function mapBackendAlumniList(raw: unknown): Alumni[] {
   return raw
     .map((item) => {
       try {
-        console.log('enyter here');
         return mapBackendAlumniToFrontend(item);
       } catch (err) {
         console.error('Failed to map alumni item:', item, err);

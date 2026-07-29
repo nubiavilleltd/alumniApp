@@ -251,7 +251,6 @@ export const authApi = {
     try {
       const data = await authApi.getCurrentUserRaw(userId);
 
-      console.log('raw for current', { data, mapped: mapCurrentUserResponse(data) });
       return mapCurrentUserResponse(data);
     } catch (error) {
       throw handleApiError(error, 'Unable to fetch user profile', 'authApi.getCurrentUser');
