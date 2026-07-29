@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { BirthdaySlider } from './BirthdaySlider';
 import { BirthdayCard } from './BirtthdayCard';
 import { Birthday } from '../types/announcement.types';
+import { useDismissedBirthdays } from '../hooks/useDismissedBirthdays';
 
 interface BirthdaySectionProps {
   people: Birthday[];
@@ -9,13 +10,13 @@ interface BirthdaySectionProps {
 
 export function BirthdaySection({ people }: BirthdaySectionProps) {
   // TODO: replace with localStorage-backed dismissal (keyed by today's date)
-  const [dismissedIds, setDismissedIds] = useState<Set<string>>(new Set());
+  const { visiblePeople, dismiss } = useDismissedBirthdays(people);
 
-  const visiblePeople = people.filter((person) => !dismissedIds.has(person.userId));
+//   const visiblePeople = people.filter((person) => !dismissedIds.has(person.userId));
 
-  const handleDismiss = (userId: string) => {
-    setDismissedIds((prev) => new Set(prev).add(userId));
-  };
+//   const handleDismiss = (userId: string) => {
+//     setDismissedIds((prev) => new Set(prev).add(userId));
+//   };
 
   if (visiblePeople.length === 0) return null;
 
@@ -24,7 +25,7 @@ export function BirthdaySection({ people }: BirthdaySectionProps) {
       <BirthdaySlider
         items={visiblePeople}
         getKey={(person) => person.userId}
-        renderItem={(person) => <BirthdayCard person={person} onDismiss={handleDismiss} />}
+        renderItem={(person) => <BirthdayCard person={person} onDismiss={dismiss} />}
       />
     </div>
   );
