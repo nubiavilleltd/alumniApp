@@ -71,7 +71,6 @@ type DisplayUser = {
   role: 'admin' | 'member';
   accountStatus: AccountStatus;
   photo?: string;
-  excoRole?: string
   leadership?: LeadershipMember;
 };
 
@@ -80,7 +79,7 @@ type DisplayUser = {
 
 const ADMIN_MEMBERS_PER_PAGE = 10;
 const memberActionButtonClassName =
-  'flex h-[33px] w-[134px] items-center justify-center gap-1 rounded-[48px] border-2 px-4 py-2 text-sm font-semibold leading-none transition-colors disabled:opacity-50';
+  'flex h-[33px] items-center justify-center gap-1 rounded-[48px] border-2 px-4 py-2 text-sm font-semibold leading-none transition-colors disabled:opacity-50';
 
 type MemberStatCardProps = {
   label: string;
@@ -109,7 +108,7 @@ function MemberStatCard({ label, value, icon: Icon, gradient }: MemberStatCardPr
 // HELPER: MAP ALUMNI TO DISPLAY USER
 // ═══════════════════════════════════════════════════════════════════════════
 
-function mapAlumniToDisplayUser(alumni: Alumni, currentUserMemberId?: string, excoRole?: string, leadership?: LeadershipMember): DisplayUser {
+function mapAlumniToDisplayUser(alumni: Alumni, currentUserMemberId?: string, leadership?: LeadershipMember): DisplayUser {
   return {
     id: alumni.memberId,
     fullName: alumni.name,
@@ -123,7 +122,6 @@ function mapAlumniToDisplayUser(alumni: Alumni, currentUserMemberId?: string, ex
       isOwner: alumni.memberId === currentUserMemberId,
       isSignedIn: Boolean(currentUserMemberId),
     }),
-    excoRole,
     leadership
   };
 }
@@ -625,13 +623,13 @@ export function AdminMembersPage() {
   const { data: alumniList = [], isLoading } = useAlumni();
   const { data: leadershipList = [] } = useLeadership();
 
-  const excoRoleByMemberId = useMemo(() => {
-    const map = new Map<string, string>();
-    leadershipList.forEach((leader) => {
-      map.set(leader.memberId, leader.role);
-    });
-    return map;
-  }, [leadershipList]);
+  // const excoRoleByMemberId = useMemo(() => {
+  //   const map = new Map<string, string>();
+  //   leadershipList.forEach((leader) => {
+  //     map.set(leader.memberId, leader.role);
+  //   });
+  //   return map;
+  // }, [leadershipList]);
 
 
 
@@ -651,9 +649,20 @@ export function AdminMembersPage() {
   return map;
 }, [leadershipList]);
 
+  // const users = useMemo(() => {
+  //   return alumniList.map((alumni) => mapAlumniToDisplayUser(alumni, currentUser?.memberId, excoRoleByMemberId.get(alumni.memberId)));
+  // }, [alumniList, currentUser?.memberId, excoRoleByMemberId, leadershipList]);
+
+
   const users = useMemo(() => {
-    return alumniList.map((alumni) => mapAlumniToDisplayUser(alumni, currentUser?.memberId, excoRoleByMemberId.get(alumni.memberId)));
-  }, [alumniList, currentUser?.memberId, excoRoleByMemberId, leadershipList]);
+  return alumniList.map((alumni) =>
+    mapAlumniToDisplayUser(
+      alumni,
+      currentUser?.memberId,
+      leadershipByMemberId.get(alumni.memberId),
+    ),
+  );
+}, [alumniList, currentUser?.memberId, leadershipByMemberId]);
 
   const filteredUsers = useMemo(() => {
     let filtered = users;
@@ -663,7 +672,7 @@ export function AdminMembersPage() {
     } else if (statusFilter === 'admin') {
       filtered = filtered.filter((u) => u.role === 'admin');
     } else if (statusFilter === 'exco') {
-      filtered = filtered.filter((u) => Boolean(u.excoRole));
+      filtered = filtered.filter((u) => Boolean(u.leadership));
     }
 
     if (searchQuery.trim()) {

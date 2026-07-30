@@ -148,51 +148,32 @@ export const leadershipService = {
     }
   },
 
-  /**
-   * Create a new leadership (Exco) member
-   * TODO: replace mock with real endpoint once available.
-   * Expected shape: POST /api/create_leadership { memberId, name, role, image }
-   */
-  create: async (payload: LeadershipFormPayload): Promise<LeadershipMember> => {
-    // const response = await apiClient.post(API_ENDPOINTS.LEADERSHIP.CREATE, payload);
-    // return mapBackendLeaderToFrontend(response.data);
+create: async (payload: FormData | Record<string, string>): Promise<LeadershipMember> => {
+  const response = await apiClient.post(API_ENDPOINTS.LEADERSHIP.CREATE_LEADER, payload);
+  return mapBackendLeaderToFrontend(response.data.leader);
+},
 
-    await new Promise((resolve) => setTimeout(resolve, 400));
+update: async (id: number, payload: FormData | Record<string, string>): Promise<LeadershipMember> => {
+  let body: FormData | Record<string, string>;
 
-    return {
-      id: Date.now(),
-      memberId: payload.memberId,
-      name: payload.name,
-      role: payload.role,
-      image: payload.image,
-    };
-  },
+  if (payload instanceof FormData) {
+    payload.append('id', String(id));
+    payload.append('function_type', 'update');
+    body = payload;
+  } else {
+    body = { ...payload, id: String(id), function_type: 'update' };
+  }
 
-  /**
-   * Update an existing leadership member's position/photo
-   * TODO: replace mock with real endpoint once available.
-   * Expected shape: POST /api/update_leadership { id, memberId, name, role, image }
-   */
-  update: async (id: number, payload: LeadershipFormPayload): Promise<LeadershipMember> => {
-    // const response = await apiClient.post(API_ENDPOINTS.LEADERSHIP.UPDATE, { id, ...payload });
-    // return mapBackendLeaderToFrontend(response.data);
+  const response = await apiClient.post(API_ENDPOINTS.LEADERSHIP.MANAGE_LEADER, body);
+  return mapBackendLeaderToFrontend(response.data.leader);
+},
 
-    await new Promise((resolve) => setTimeout(resolve, 400));
-
-    return { id, ...payload };
-  },
-
-  /**
-   * Remove a leadership member (Remove as Exco)
-   * TODO: replace mock with real endpoint once available.
-   * Expected shape: POST /api/remove_leadership { id }
-   */
-  remove: async (id: number): Promise<void> => {
-    // await apiClient.post(API_ENDPOINTS.LEADERSHIP.REMOVE, { id });
-
-    await new Promise((resolve) => setTimeout(resolve, 400));
-  },
-
+remove: async (id: number): Promise<void> => {
+  await apiClient.post(API_ENDPOINTS.LEADERSHIP.MANAGE_LEADER, {
+    id: String(id),
+    function_type: 'delete',
+  });
+},
 
   /**
    * Get available leadership position options for the Add/Edit Exco form

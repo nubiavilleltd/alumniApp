@@ -30,6 +30,7 @@ interface AddExcoModalProps {
 export function AddExcoModal({ isOpen, onClose, excludeMemberIds = [] }: AddExcoModalProps) {
   const [selectedAlumni, setSelectedAlumni] = useState<Alumni | null>(null);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imageError, setImageError] = useState<string | null>(null);
 
   const { data: positionOptions = [], isLoading: isLoadingPositions } = useExcoPositionOptions();
@@ -59,20 +60,19 @@ export function AddExcoModal({ isOpen, onClose, excludeMemberIds = [] }: AddExco
   const isBusy = createLeadershipMember.isPending;
 
   const onSubmit = async (values: AddExcoFormValues) => {
-    if (imagePreviews.length === 0) {
-      setImageError('Please upload a photo for this member');
-      return;
-    }
+    // if (imagePreviews.length === 0) {
+    //   setImageError('Please upload a photo for this member');
+    //   return;
+    // }
 
-    if (!selectedAlumni) return; // guarded by memberId validation above
+    // if (!selectedAlumni) return; // guarded by memberId validation above
 
     try {
-      await createLeadershipMember.mutateAsync({
-        memberId: values.memberId,
-        name: selectedAlumni.name,
-        role: values.role,
-        image: imagePreviews[0],
-      });
+    await createLeadershipMember.mutateAsync({
+    memberId: values.memberId,
+    role: values.role,
+    photoFile: imageFiles[0],
+  });
       onClose();
     } catch (error) {
       // Error toast shown by the mutation's onError
@@ -117,10 +117,11 @@ export function AddExcoModal({ isOpen, onClose, excludeMemberIds = [] }: AddExco
         <ImageUpload
           label="Upload an Image of the Member"
           previews={imagePreviews}
-          onChange={(_files, previews) => {
-            setImagePreviews(previews);
-            setImageError(null);
-          }}
+           onChange={(files, previews) => {
+    setImageFiles(files);
+    setImagePreviews(previews);
+    setImageError(null);
+  }}
           multiple={false}
           error={imageError ?? undefined}
         />

@@ -39,7 +39,24 @@ export function useCreateLeadershipMember() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (payload: LeadershipFormPayload) => leadershipService.create(payload),
+    mutationFn: (payload: LeadershipFormPayload) => {
+  if (payload.photoFile) {
+    const formData = new FormData();
+    formData.append('user_id', payload.memberId);
+    formData.append('position_title', payload.role);
+    formData.append('sort_order', '0');
+    formData.append('is_featured', '0');
+    formData.append('leadership_photo', payload.photoFile);
+    return leadershipService.create(formData);
+  }
+
+  return leadershipService.create({
+    user_id: payload.memberId,
+    position_title: payload.role,
+    sort_order: '0',
+    is_featured: '0',
+  });
+},
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: leadershipKeys.list() });
     },
@@ -54,8 +71,27 @@ export function useUpdateLeadershipMember() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, payload }: { id: number; payload: LeadershipFormPayload }) =>
-      leadershipService.update(id, payload),
+    mutationFn: ({
+  id,
+  payload,
+  photoRemoved,
+}: {
+  id: number;
+  payload: LeadershipFormPayload;
+  photoRemoved?: boolean;
+}) => {
+  if (payload.photoFile) {
+    const formData = new FormData();
+    formData.append('position_title', payload.role);
+    formData.append('leadership_photo', payload.photoFile);
+    return leadershipService.update(id, formData);
+  }
+
+  return leadershipService.update(id, {
+    position_title: payload.role,
+    ...(photoRemoved ? { remove_photo: '1' } : {}),
+  });
+},
     onSuccess: (_, { id }) => {
       queryClient.invalidateQueries({ queryKey: leadershipKeys.list() });
       queryClient.invalidateQueries({ queryKey: leadershipKeys.detail(id) });

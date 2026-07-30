@@ -110,8 +110,8 @@ export const API_ENDPOINTS = {
   LEADERSHIP: {
     GET_LEADERSHIP: '/api/get_leadership',
     // CMS endpoints (future):
-    // CREATE_LEADER: '/create_leader',
-    // MANAGE_LEADER: '/manage_leader',
+    CREATE_LEADER: '/api/create_leader',
+    MANAGE_LEADER: '/api/manage_leader',
   },
 
   // ─── Announcements ────────────────────────────────────────────────────────

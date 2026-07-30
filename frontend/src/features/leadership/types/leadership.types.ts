@@ -29,10 +29,9 @@ export interface LeadershipMember {
 
 
 export interface LeadershipFormPayload {
-  memberId: string; // FK → the alumni being assigned this position
-  name: string;
-  role: string; // position title, e.g. 'Vice President'
-  image: string;
+  memberId: string; // → user_id
+  role: string; // → position_title
+  photoFile?: File; // → leadership_photo (optional; backend falls back to avatar if omitted)
 }
 
 export interface LeadershipPositionOption {
