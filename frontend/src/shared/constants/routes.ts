@@ -8,6 +8,7 @@ import { PROJECT_ROUTES } from '@/features/projects/routes';
 import { ANNOUNCEMENT_ROUTES } from '@/features/announcements/routes';
 import { LIVE_NEWS_ROUTES } from '@/features/liveNews/routes';
 import { ORDER_ROUTES, STORE_ROUTES } from '@/features/store/routes';
+import { JOIN_PROJECT_ROUTES } from '@/features/joinProject/routes';
 
 export const ROUTES = {
   HOME: '/',
@@ -29,6 +30,7 @@ export const ROUTES = {
   TERMS: '/terms',
   LEADERSHIP: '/leadership',
   PROJECTS: PROJECT_ROUTES,
+  JOIN_PROJECTS: JOIN_PROJECT_ROUTES,
   EVENTS: EVENT_ROUTES,
   AUTH: AUTH_ROUTES,
   ALUMNI: ALUMNI_ROUTES,

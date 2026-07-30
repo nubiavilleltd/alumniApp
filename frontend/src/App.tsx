@@ -83,6 +83,7 @@ import OrderHistoryPage from './features/store/pages/OrderHistoryPage';
 import AdminOrderManagementPage from './features/admin/pages/AdminOrderManagementPage';
 import OrderDetailsPage from './features/store/pages/OrderDetailsPage';
 import AdminOrderDetailsPage from './features/admin/pages/AdminOrderDetailsPage';
+import JoinProjectsPage from './features/joinProject/pages/JoinProjectsPage';
 
 export default function App() {
   return (
@@ -209,6 +210,14 @@ export default function App() {
               element={
                 <ErrorBoundary>
                   <TermsPage />
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path={ROUTES.JOIN_PROJECTS.ROOT}
+              element={
+                <ErrorBoundary>
+                  <JoinProjectsPage />
                 </ErrorBoundary>
               }
             />
