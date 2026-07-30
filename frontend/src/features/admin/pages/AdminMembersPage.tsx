@@ -375,6 +375,8 @@ function UserRowSkeleton() {
 export function AdminMembersPage() {
   const currentUser = useIdentityStore((state) => state.user);
   const { data: alumniList = [], isLoading } = useAlumni();
+
+  console.log("alumn list", {alumniList})
   const { data: leadershipList = [] } = useLeadership();
 
   // const excoRoleByMemberId = useMemo(() => {
@@ -435,6 +437,8 @@ export function AdminMembersPage() {
       ),
     );
   }, [alumniList, currentUser?.memberId, leadershipByMemberId]);
+
+  console.log("user ==>", users)
 
   const filteredUsers = useMemo(() => {
     let filtered = users;

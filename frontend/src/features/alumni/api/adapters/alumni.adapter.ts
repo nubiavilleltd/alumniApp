@@ -84,19 +84,6 @@ export function mapBackendAlumniToFrontend(raw: unknown): Alumni {
   // ✅ NEW: Privacy mapping
   // ═══════════════════════════════════════════════════════════════════════
 
-  //   if (d.privacy || d.field_visibility) {
-  //     try {
-  //       privacy = {
-  //         ...defaultPrivacySettings,
-  //         ...mapBackendPrivacyToFrontend(d),
-  //       };
-  //     } catch (error) {
-  //       console.warn('Failed to map privacy for alumni:', name, error);
-  //     }
-  //   }
-  //   if (d.privacy || d.field_visibility) {
-  //      privacy = mapBackendPrivacyToFrontend(d)
-  //   }
 
   return {
     id: String(d.id ?? ''),
