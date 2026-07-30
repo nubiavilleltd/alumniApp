@@ -34,9 +34,15 @@ export interface LeadershipFormPayload {
   photoFile?: File; // → leadership_photo (optional; backend falls back to avatar if omitted)
 }
 
+
 export interface LeadershipPositionOption {
   value: string;
   label: string;
+}
+
+export interface AdminFormPayload {
+  memberId: string; // → user_id
+  role: string; // → position_title
 }
 
 

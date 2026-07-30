@@ -11,6 +11,8 @@
  * ============================================================================
  */
 
+import { UserRole } from "./role-management.adapter";
+
 export type AccountStatus = 'active' | 'inactive';
 
 /**
@@ -120,11 +122,11 @@ export function createSelfDeactivatePayload(): Record<string, any> {
  */
 export function createChangeRolePayload(
   userId: string,
-  role: 'admin' | 'alumni',
+  role: UserRole,
 ): Record<string, any> {
   return {
     user_id: userId,
-    user_role: role === 'admin' ? 'admin' : 'alumni',
+    user_role: role,
   };
 }
 

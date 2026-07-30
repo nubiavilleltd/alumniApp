@@ -52,6 +52,8 @@ import { useLeadership, useRemoveLeadershipMember } from '@/features/leadership/
 import { AddExcoModal } from '@/features/leadership/components/AddExcoModal';
 import { LeadershipMember } from '@/features/leadership/types/leadership.types';
 import { EditLeadershipModal } from '@/features/leadership/components/EditLeadershipModal';
+import { AddAdminModal } from '@/features/admin/components/AddAdminModal';
+import { EditAdminModal } from '@/features/admin/components/EditAdminModal';
 
 function generateInitialsAvatar(name: string): string {
   return `https://ui-avatars.com/api/?name=${encodeURIComponent(
@@ -72,9 +74,10 @@ type DisplayUser = {
   accountStatus: AccountStatus;
   photo?: string;
   leadership?: LeadershipMember;
+  alumni: Alumni;
 };
 
-  type MemberFilterValue = 'all' | 'active' | 'inactive' | 'admin' | 'exco';
+type MemberFilterValue = 'all' | 'active' | 'inactive' | 'admin' | 'exco';
 
 
 const ADMIN_MEMBERS_PER_PAGE = 10;
@@ -114,7 +117,7 @@ function mapAlumniToDisplayUser(alumni: Alumni, currentUserMemberId?: string, le
     fullName: alumni.name,
     email: alumni.email,
     phone: alumni.whatsappPhone,
-    role: alumni.role === 'admin' ? 'admin' : 'member',
+    role: ['alumni', 'member'].includes(alumni.role ?? 'alumni') ? 'member' : 'admin',
     accountStatus: alumni.isActive ? 'active' : 'inactive',
     photo: resolveProfilePhoto({
       photoUrl: alumni.photo,
@@ -122,7 +125,8 @@ function mapAlumniToDisplayUser(alumni: Alumni, currentUserMemberId?: string, le
       isOwner: alumni.memberId === currentUserMemberId,
       isSignedIn: Boolean(currentUserMemberId),
     }),
-    leadership
+    leadership,
+    alumni
   };
 }
 
@@ -162,289 +166,30 @@ function AdminMembersPageSkeleton() {
 // ✅ NEW: CHANGE ROLE MODAL
 // ═══════════════════════════════════════════════════════════════════════════
 
-function ChangeRoleModal({
-  user,
-  isOpen,
-  onClose,
-}: {
-  user: DisplayUser;
-  isOpen: boolean;
-  onClose: () => void;
-}) {
-  const [selectedRole, setSelectedRole] = useState<UserRole>(
-    user.role === 'admin' ? 'admin' : 'alumni',
-  );
 
-  const changeRole = useChangeUserRole();
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    try {
-      await changeRole.mutateAsync({
-        userId: user.id,
-        newRole: selectedRole,
-      });
-      onClose();
-    } catch (error) {
-      // Error toast shown by mutation
-    }
-  };
-
-  const roleOptions = getRoleOptions();
-  const isBusy = changeRole.isPending;
-
-  // Get initials
-  const initials = user.fullName
-    .split(' ')
-    .slice(0, 2)
-    .map((n) => n[0])
-    .join('')
-    .toUpperCase();
-
-  if (!isOpen) return null;
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-gray-900">Change User Role</h2>
-          <button
-            onClick={onClose}
-            disabled={isBusy}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
-          >
-            <X className="w-6 h-6" />
-          </button>
-        </div>
-
-        {/* User Info */}
-        <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl mb-6">
-          {/* <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary-100 to-accent-100 flex items-center justify-center flex-shrink-0">
-            <span className="text-sm font-bold text-primary-700">{initials}</span>
-          </div> */}
-          <Avatar
-            src={user.photo ?? generateInitialsAvatar(user.fullName)}
-            alt={user.fullName}
-            size={48}
-          />
-          <div className="min-w-0 flex-1">
-            <p className="font-semibold text-gray-900 truncate">{user.fullName}</p>
-            <p className="text-xs text-gray-500 truncate">{user.email}</p>
-          </div>
-          <span className="px-2 py-0.5 bg-purple-100 text-purple-700 text-[10px] font-bold rounded-full flex-shrink-0">
-            {user.role === 'admin' ? 'ADMIN' : 'MEMBER'}
-          </span>
-        </div>
-
-        {/* Form */}
-        <form onSubmit={handleSubmit}>
-          <div className="mb-6">
-            <SelectInput
-              label="New Role"
-              value={selectedRole}
-              onChange={(e) => setSelectedRole(e.target.value as UserRole)}
-              options={roleOptions}
-              disabled={isBusy}
-              hint="This will change the user's role and permissions immediately."
-              controlClassName="rounded-lg px-4 py-2.5 pr-10 text-sm shadow-none"
-              className="gap-2"
-            />
-          </div>
-
-          {/* Actions */}
-          <div className="flex gap-3">
-            <button
-              type="submit"
-              disabled={isBusy || selectedRole === (user.role === 'admin' ? 'admin' : 'alumni')}
-              className="flex-1 btn btn-primary flex items-center justify-center gap-2 whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isBusy ? (
-                <>
-                  <LoaderCircle className="w-4 h-4 animate-spin" />
-                  Changing...
-                </>
-              ) : (
-                <>
-                  {/* <Check className="w-4 h-4" /> */}
-                  Change Role
-                </>
-              )}
-            </button>
-            <button
-              type="button"
-              onClick={onClose}
-              disabled={isBusy}
-              className="flex-1 btn btn-outline whitespace-nowrap disabled:opacity-50"
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-}
 
 // ═══════════════════════════════════════════════════════════════════════════
 // USER ROW COMPONENT - UPDATED WITH ROLE CHANGE BUTTON
 // ═══════════════════════════════════════════════════════════════════════════
 
-// function UserRow({ user }: { user: DisplayUser }) {
-//   const [showConfirm, setShowConfirm] = useState(false);
-//   const [actionType, setActionType] = useState<'activate' | 'deactivate' | null>(null);
-//   const [showRoleModal, setShowRoleModal] = useState(false); // ← NEW
 
-//   const deactivate = useAdminDeactivateUser();
-//   const activate = useAdminActivateUser();
-
-//   const isActive = user.accountStatus === 'active';
-//   const isBusy = deactivate.isPending || activate.isPending;
-
-//   const handleAction = async () => {
-//     try {
-//       if (actionType === 'deactivate') {
-//         await deactivate.mutateAsync(user.id);
-//       } else if (actionType === 'activate') {
-//         await activate.mutateAsync(user.id);
-//       }
-//       setShowConfirm(false);
-//       setActionType(null);
-//     } catch (error) {
-//       // Error toast shown by mutation
-//     }
-//   };
-
-//   const openConfirm = (action: 'activate' | 'deactivate') => {
-//     setActionType(action);
-//     setShowConfirm(true);
-//   };
-
-//   const closeConfirm = () => {
-//     setShowConfirm(false);
-//     setActionType(null);
-//   };
-
-//   // Get initials
-//   const initials = user.fullName
-//     .split(' ')
-//     .slice(0, 2)
-//     .map((n) => n[0])
-//     .join('')
-//     .toUpperCase();
-
-//   return (
-//     <>
-//       <div className="bg-white rounded-xl border border-gray-100 p-4 hover:border-primary-200 hover:shadow-sm transition-all">
-//         <div className="flex items-center gap-3">
-//           {/* Avatar */}
-//           <Avatar
-//             src={user.photo ?? generateInitialsAvatar(user.fullName)}
-//             alt={user.fullName}
-//             size={48}
-//           />
-
-//           {/* Info + buttons wrapper */}
-//           <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-//             {/* User info */}
-//             <div className="min-w-0">
-//               <div className="flex items-center gap-2 flex-wrap">
-//                 <p className="font-semibold text-gray-900">{user.fullName}</p>
-//                 {user.role === 'admin' && (
-//                   <span className="px-2 py-0.5 bg-purple-100 text-purple-700 text-[10px] font-bold rounded-full flex-shrink-0">
-//                     ADMIN
-//                   </span>
-//                 )}
-//                 <span
-//                   className={`px-2 py-0.5 text-[10px] font-bold rounded-full flex-shrink-0 ${isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
-//                     }`}
-//                 >
-//                   {isActive ? 'ACTIVE' : 'INACTIVE'}
-//                 </span>
-//               </div>
-
-//               <div className="flex items-center gap-1 mt-1 text-xs text-gray-500 min-w-0">
-//                 <Mail className="w-3.5 h-3.5 flex-shrink-0" />
-//                 <span className="truncate">{user.email}</span>
-//               </div>
-
-//               {user.phone && (
-//                 <div className="flex items-center gap-1 mt-0.5 text-xs text-gray-500">
-//                   <Phone className="w-3.5 h-3.5 flex-shrink-0" />
-//                   <span>{user.phone}</span>
-//                 </div>
-//               )}
-//             </div>
-
-//             {/* Action buttons */}
-//             {!showConfirm ? (
-//               <div className="flex flex-col items-stretch gap-2 flex-shrink-0 w-full sm:flex-row sm:items-center md:w-auto">
-//                 {isActive && (
-//                   <button
-//                     onClick={() => setShowRoleModal(true)}
-//                     disabled={isBusy}
-//                     className={`${memberActionButtonClassName} border-purple-200 text-purple-600 hover:bg-purple-50`}
-//                   >
-//                     Change Role
-//                   </button>
-//                 )}
-//                 <button
-//                   onClick={() => openConfirm(isActive ? 'deactivate' : 'activate')}
-//                   disabled={isBusy}
-//                   className={`${memberActionButtonClassName} ${isActive
-//                     ? 'border-red-200 text-red-600 hover:bg-red-50'
-//                     : 'border-green-200 text-green-600 hover:bg-green-50'
-//                     }`}
-//                 >
-//                   {isActive ? 'Deactivate' : 'Activate'}
-//                 </button>
-//               </div>
-//             ) : (
-//               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 flex-shrink-0 w-full md:w-auto">
-//                 <button
-//                   onClick={handleAction}
-//                   disabled={isBusy}
-//                   className={`px-4 py-2 rounded-lg text-sm font-semibold text-white transition-colors text-center ${actionType === 'deactivate'
-//                     ? 'bg-red-500 hover:bg-red-600'
-//                     : 'bg-green-500 hover:bg-green-600'
-//                     }`}
-//                 >
-//                   {isBusy ? <LoaderCircle className="w-4 h-4 animate-spin mx-auto" /> : 'Confirm'}
-//                 </button>
-//                 <button
-//                   onClick={closeConfirm}
-//                   disabled={isBusy}
-//                   className="px-4 py-2 rounded-lg text-sm font-semibold border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors text-center"
-//                 >
-//                   Cancel
-//                 </button>
-//               </div>
-//             )}
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* <ChangeRoleModal user={user} isOpen={showRoleModal} onClose={() => setShowRoleModal(false)} /> */}
-
-//     </>
-//   );
-// }
 
 
 function UserRow({
   user,
   activeFilter,
   onEditLeadership,
+  onEditAdminRole,
 }: {
   user: DisplayUser;
   activeFilter: MemberFilterValue;
   onEditLeadership: (leader: LeadershipMember) => void;
+  onEditAdminRole: (admin: Alumni) => void;
 }) {
   const [showConfirm, setShowConfirm] = useState(false);
   const [actionType, setActionType] = useState
     <'activate' | 'deactivate' | 'removeAdmin' | 'removeExco' | null
-  >(null);
+    >(null);
 
   const deactivate = useAdminDeactivateUser();
   const activate = useAdminActivateUser();
@@ -503,9 +248,8 @@ function UserRow({
                 </span>
               )}
               <span
-                className={`px-2 py-0.5 text-[10px] font-bold rounded-full flex-shrink-0 ${
-                  isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
-                }`}
+                className={`px-2 py-0.5 text-[10px] font-bold rounded-full flex-shrink-0 ${isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
+                  }`}
               >
                 {isActive ? 'ACTIVE' : 'INACTIVE'}
               </span>
@@ -546,22 +290,33 @@ function UserRow({
               ) : activeFilter === 'admin' ? (
                 // "Edit Admin Role" intentionally not here yet — needs the
                 // admin sub-role picker we haven't built. Remove is real today.
+                <>
+
                 <button
-                  onClick={() => openConfirm('removeAdmin')}
-                  disabled={isBusy}
-                  className={`${memberActionButtonClassName} border-red-200 text-red-600 hover:bg-red-50`}
-                >
-                  Remove as Admin
-                </button>
+                    onClick={() => onEditAdminRole(user.alumni)}
+                    disabled={isBusy}
+                    className={`${memberActionButtonClassName} border-primary-500 text-primary-600 hover:bg-primary-50`}
+                  >
+                    Edit Admin Role
+                  </button>
+
+                  <button
+                    onClick={() => openConfirm('removeAdmin')}
+                    disabled={isBusy}
+                    className={`${memberActionButtonClassName} border-red-200 text-red-600 hover:bg-red-50`}
+                  >
+                    Remove as Admin
+                  </button>
+                </>
+
               ) : (
                 <button
                   onClick={() => openConfirm(isActive ? 'deactivate' : 'activate')}
                   disabled={isBusy}
-                  className={`${memberActionButtonClassName} ${
-                    isActive
+                  className={`${memberActionButtonClassName} ${isActive
                       ? 'border-red-200 text-red-600 hover:bg-red-50'
                       : 'border-green-200 text-green-600 hover:bg-green-50'
-                  }`}
+                    }`}
                 >
                   {isActive ? 'Deactivate' : 'Activate'}
                 </button>
@@ -572,9 +327,8 @@ function UserRow({
               <button
                 onClick={handleAction}
                 disabled={isBusy}
-                className={`px-4 py-2 rounded-lg text-sm font-semibold text-white transition-colors text-center ${
-                  actionType === 'activate' ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'
-                }`}
+                className={`px-4 py-2 rounded-lg text-sm font-semibold text-white transition-colors text-center ${actionType === 'activate' ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'
+                  }`}
               >
                 {isBusy ? <LoaderCircle className="w-4 h-4 animate-spin mx-auto" /> : 'Confirm'}
               </button>
@@ -640,14 +394,32 @@ export function AdminMembersPage() {
   const [isAddAdminModalOpen, setIsAddAdminModalOpen] = useState(false);
   const [isAddExcoModalOpen, setIsAddExcoModalOpen] = useState(false);
   const [editingLeader, setEditingLeader] = useState<LeadershipMember | null>(null);
+  const [editingAdmin, setEditingAdmin] = useState<Alumni | null>(null);
 
   const leadershipByMemberId = useMemo(() => {
-  const map = new Map<string, LeadershipMember>();
-  leadershipList.forEach((leader) => {
-    map.set(leader.memberId, leader);
-  });
-  return map;
-}, [leadershipList]);
+    const map = new Map<string, LeadershipMember>();
+    leadershipList.forEach((leader) => {
+      map.set(leader.memberId, leader);
+    });
+    return map;
+  }, [leadershipList]);
+
+
+    const adminMemberIds = useMemo(
+    () =>
+      alumniList
+        .filter((alumni) => !['alumni', 'member'].includes(alumni.role ?? 'alumni'))
+        .map((alumni) => alumni.memberId),
+    [alumniList],
+  );
+
+  // const alumniByMemberId = useMemo(() => {
+  //   const map = new Map<string, Alumni>();
+  //   alumniList.forEach((alumni) => {
+  //     map.set(alumni.memberId, alumni);
+  //   });
+  //   return map;
+  // }, [alumniList]);
 
   // const users = useMemo(() => {
   //   return alumniList.map((alumni) => mapAlumniToDisplayUser(alumni, currentUser?.memberId, excoRoleByMemberId.get(alumni.memberId)));
@@ -655,14 +427,14 @@ export function AdminMembersPage() {
 
 
   const users = useMemo(() => {
-  return alumniList.map((alumni) =>
-    mapAlumniToDisplayUser(
-      alumni,
-      currentUser?.memberId,
-      leadershipByMemberId.get(alumni.memberId),
-    ),
-  );
-}, [alumniList, currentUser?.memberId, leadershipByMemberId]);
+    return alumniList.map((alumni) =>
+      mapAlumniToDisplayUser(
+        alumni,
+        currentUser?.memberId,
+        leadershipByMemberId.get(alumni.memberId),
+      ),
+    );
+  }, [alumniList, currentUser?.memberId, leadershipByMemberId]);
 
   const filteredUsers = useMemo(() => {
     let filtered = users;
@@ -830,8 +602,8 @@ export function AdminMembersPage() {
               </div>
             ) : (
               visibleUsers.map((user) => (
-  <UserRow key={user.id} user={user} activeFilter={statusFilter} onEditLeadership={setEditingLeader} />
-))
+                <UserRow key={user.id} user={user} activeFilter={statusFilter} onEditLeadership={setEditingLeader} onEditAdminRole={setEditingAdmin} />
+              ))
             )}
           </div>
 
@@ -856,6 +628,20 @@ export function AdminMembersPage() {
           leader={editingLeader}
           isOpen={Boolean(editingLeader)}
           onClose={() => setEditingLeader(null)}
+        />
+      )}
+
+           <AddAdminModal
+        isOpen={isAddAdminModalOpen}
+        onClose={() => setIsAddAdminModalOpen(false)}
+        excludeMemberIds={adminMemberIds}
+      />
+
+      {editingAdmin && (
+        <EditAdminModal
+          admin={editingAdmin}
+          isOpen={Boolean(editingAdmin)}
+          onClose={() => setEditingAdmin(null)}
         />
       )}
     </>
