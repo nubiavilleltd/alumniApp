@@ -20,6 +20,7 @@ export type UpdateCarouselImageInput = {
   image?: File;
   altText?: string;
   isHidden?: boolean;
+  showGreetingMessage?: boolean;
 };
 
 export type ReorderCarouselImageInput = {
@@ -31,43 +32,8 @@ function visibilityValue(isHidden?: boolean) {
   return isHidden ? '1' : '0';
 }
 
-const LOCAL_GREETING_VISIBILITY_KEY = 'home-carousel-greeting-visibility';
-
-function canUseLocalStorage() {
-  return typeof window !== 'undefined' && Boolean(window.localStorage);
-}
-
-function readLocalGreetingVisibility() {
-  if (!canUseLocalStorage()) return {};
-
-  try {
-    return JSON.parse(window.localStorage.getItem(LOCAL_GREETING_VISIBILITY_KEY) ?? '{}') as Record<
-      string,
-      boolean
-    >;
-  } catch {
-    return {};
-  }
-}
-
-function applyLocalGreetingVisibility(homepage: HomepageContent): HomepageContent {
-  const localVisibility = readLocalGreetingVisibility();
-
-  return {
-    ...homepage,
-    carouselImages: homepage.carouselImages.map((image) => ({
-      ...image,
-      showGreetingMessage: localVisibility[image.id] ?? image.showGreetingMessage,
-    })),
-  };
-}
-
-export function setLocalCarouselGreetingVisibility(imageId: string, showGreetingMessage: boolean) {
-  if (!imageId || !canUseLocalStorage()) return;
-
-  const localVisibility = readLocalGreetingVisibility();
-  localVisibility[imageId] = showGreetingMessage;
-  window.localStorage.setItem(LOCAL_GREETING_VISIBILITY_KEY, JSON.stringify(localVisibility));
+function greetingVisibilityValue(showGreetingMessage?: boolean) {
+  return showGreetingMessage ? '1' : '0';
 }
 
 export const homepageService = {
@@ -86,16 +52,12 @@ export const homepageService = {
     }
 
     if (options?.admin) {
-      return applyLocalGreetingVisibility(homepage);
+      return homepage;
     }
 
-    const homepageWithLocalVisibility = applyLocalGreetingVisibility(homepage);
-
     return {
-      ...homepageWithLocalVisibility,
-      carouselImages: homepageWithLocalVisibility.carouselImages.filter(
-        (image) => !image.isHidden && image.showGreetingMessage,
-      ),
+      ...homepage,
+      carouselImages: homepage.carouselImages.filter((image) => !image.isHidden),
     };
   },
 
@@ -140,6 +102,9 @@ export const homepageService = {
       if (input.isHidden !== undefined) {
         formData.append('is_hidden', visibilityValue(input.isHidden));
       }
+      if (input.showGreetingMessage !== undefined) {
+        formData.append('show_greeting', greetingVisibilityValue(input.showGreetingMessage));
+      }
 
       const { data } = await contentApiClient.post(
         API_ENDPOINTS.CONTENT.UPDATE_CAROUSEL_IMAGE,
@@ -152,6 +117,9 @@ export const homepageService = {
       id: input.id,
       ...(input.altText !== undefined ? { alt_text: input.altText } : {}),
       ...(input.isHidden !== undefined ? { is_hidden: visibilityValue(input.isHidden) } : {}),
+      ...(input.showGreetingMessage !== undefined
+        ? { show_greeting: greetingVisibilityValue(input.showGreetingMessage) }
+        : {}),
     });
     return mapCarouselImage(data?.image);
   },

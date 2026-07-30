@@ -49,6 +49,7 @@ export function mapCarouselImage(raw: unknown): HomepageCarouselImage {
     isHidden: readBoolean(image.is_hidden, image.isHidden),
     showGreetingMessage:
       readOptionalBoolean(
+        image.show_greeting,
         image.show_greeting_message,
         image.showGreetingMessage,
         image.show_message_on_hero,

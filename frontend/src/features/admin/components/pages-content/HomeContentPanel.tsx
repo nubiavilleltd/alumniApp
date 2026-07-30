@@ -14,7 +14,6 @@ import {
   useUpdateCarouselImage,
   useUpdateHomepageText,
 } from '@/features/homepage/hooks/useHomepageContent';
-import { setLocalCarouselGreetingVisibility } from '@/features/homepage/services/homepage.service';
 import { DragHandle } from './DragHandle';
 import type { HomepageImage, PagesContentTab } from './types';
 
@@ -218,7 +217,7 @@ function GreetingVisibilityCheckbox({
   className = '',
 }: {
   checked: boolean;
-  onChange: () => void;
+  onChange: (checked: boolean) => void;
   className?: string;
 }) {
   return (
@@ -231,7 +230,10 @@ function GreetingVisibilityCheckbox({
       <input
         type="checkbox"
         checked={checked}
-        onChange={onChange}
+        onChange={(event) => {
+          console.log('Show greeting checkbox checked:', event.target.checked);
+          onChange(event.target.checked);
+        }}
         className="h-5 w-5 rounded border-gray-300 text-cms-tab-active accent-cms-tab-active focus:ring-cms-tab-active/25"
       />
       <span>Show the greeting message on this image</span>
@@ -453,16 +455,11 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
     setSaveStatus('');
   };
 
-  const toggleImageGreetingMessage = (imageId: string) => {
-    let nextShowGreetingMessage = true;
-
+  const setImageGreetingMessageVisibility = (imageId: string, showGreetingMessage: boolean) => {
     setOrderedImages((currentImages) =>
-      currentImages.map((image) => {
-        if (image.id !== imageId) return image;
-
-        nextShowGreetingMessage = !image.showGreetingMessage;
-        return { ...image, showGreetingMessage: nextShowGreetingMessage };
-      }),
+      currentImages.map((image) =>
+        image.id === imageId ? { ...image, showGreetingMessage } : image,
+      ),
     );
 
     setSaveStatus('');
@@ -534,7 +531,14 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
             sortOrder: index,
             isHidden: image.isHidden,
           });
-          setLocalCarouselGreetingVisibility(createdImage.id, image.showGreetingMessage);
+
+          await updateCarouselImage.mutateAsync({
+            id: createdImage.id,
+            altText: image.altText || image.fileName,
+            isHidden: image.isHidden,
+            showGreetingMessage: image.showGreetingMessage,
+          });
+
           persistedImages.push({ id: createdImage.id, sortOrder: index });
           continue;
         }
@@ -545,8 +549,8 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
             image: image.replacementFile,
             altText: image.altText || image.fileName,
             isHidden: image.isHidden,
+            showGreetingMessage: image.showGreetingMessage,
           });
-          setLocalCarouselGreetingVisibility(updatedImage.id || image.id, image.showGreetingMessage);
           persistedImages.push({ id: updatedImage.id || image.id, sortOrder: index });
           continue;
         }
@@ -555,8 +559,8 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
           id: image.id,
           altText: image.altText || image.fileName,
           isHidden: image.isHidden,
+          showGreetingMessage: image.showGreetingMessage,
         });
-        setLocalCarouselGreetingVisibility(image.id, image.showGreetingMessage);
         persistedImages.push({ id: image.id, sortOrder: index });
       }
 
@@ -710,7 +714,7 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
                   />
                   <GreetingVisibilityCheckbox
                     checked={image.showGreetingMessage}
-                    onChange={() => toggleImageGreetingMessage(image.id)}
+                    onChange={(checked) => setImageGreetingMessageVisibility(image.id, checked)}
                     className="mt-5 lg:absolute lg:left-6 lg:top-[448px] lg:mt-0 lg:max-w-[22rem]"
                   />
                   <ImageCardActions
@@ -771,7 +775,7 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
                   </p>
                   <GreetingVisibilityCheckbox
                     checked={image.showGreetingMessage}
-                    onChange={() => toggleImageGreetingMessage(image.id)}
+                    onChange={(checked) => setImageGreetingMessageVisibility(image.id, checked)}
                     className="text-xs"
                   />
                   <button
