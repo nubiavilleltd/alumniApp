@@ -93,7 +93,9 @@ export const homepageService = {
 
     return {
       ...homepageWithLocalVisibility,
-      carouselImages: homepageWithLocalVisibility.carouselImages.filter((image) => !image.isHidden),
+      carouselImages: homepageWithLocalVisibility.carouselImages.filter(
+        (image) => !image.isHidden && image.showGreetingMessage,
+      ),
     };
   },
 

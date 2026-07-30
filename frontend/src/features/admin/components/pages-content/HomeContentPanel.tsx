@@ -61,6 +61,7 @@ function getComparableHomepageImages(images: AdminHomepageImage[]) {
   return normalizeCarouselOrder(images).map((image) => ({
     id: image.id,
     isHidden: image.isHidden,
+    showGreetingMessage: image.showGreetingMessage,
     sortOrder: image.sortOrder,
     hasLocalChange: Boolean(image.isNew || image.localFile || image.replacementFile),
   }));
@@ -464,8 +465,7 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
       }),
     );
 
-    setLocalCarouselGreetingVisibility(imageId, nextShowGreetingMessage);
-    queryClient.invalidateQueries({ queryKey: homepageContentKeys.all });
+    setSaveStatus('');
   };
 
   const isSaving =
@@ -534,6 +534,7 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
             sortOrder: index,
             isHidden: image.isHidden,
           });
+          setLocalCarouselGreetingVisibility(createdImage.id, image.showGreetingMessage);
           persistedImages.push({ id: createdImage.id, sortOrder: index });
           continue;
         }
@@ -545,6 +546,7 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
             altText: image.altText || image.fileName,
             isHidden: image.isHidden,
           });
+          setLocalCarouselGreetingVisibility(updatedImage.id || image.id, image.showGreetingMessage);
           persistedImages.push({ id: updatedImage.id || image.id, sortOrder: index });
           continue;
         }
@@ -554,6 +556,7 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
           altText: image.altText || image.fileName,
           isHidden: image.isHidden,
         });
+        setLocalCarouselGreetingVisibility(image.id, image.showGreetingMessage);
         persistedImages.push({ id: image.id, sortOrder: index });
       }
 
