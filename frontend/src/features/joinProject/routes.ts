@@ -1,3 +1,4 @@
 export const JOIN_PROJECT_ROUTES = {
-  ROOT: '/join-projects',
+  VOLUNTEER: '/volunteer',
+  PROJECTS: '/join-projects',
 } as const;

@@ -97,7 +97,7 @@ export default function JoinProjectsPage() {
   return (
     <>
       <SEO
-        title="Our Projects"
+        title="Join Projects"
         description="Through the generosity of our alumni, we continue to support and improve our beloved school."
       />
 
