@@ -70,6 +70,10 @@ function areComparableValuesEqual(left: unknown, right: unknown) {
   return JSON.stringify(left) === JSON.stringify(right);
 }
 
+function getImageAltText(image: Pick<AdminHomepageImage, 'altText' | 'fileName'>) {
+  return image.altText || image.fileName || '';
+}
+
 function clampPosition(position: number, total: number) {
   return Math.min(Math.max(position, 1), Math.max(total, 1));
 }
@@ -522,6 +526,9 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
       await Promise.all(deletedImageIds.map((imageId) => deleteCarouselImage.mutateAsync(imageId)));
 
       const persistedImages = [];
+      const originalImagesById = new Map(
+        homepageContent?.carouselImages.map((image) => [image.id, image]) ?? [],
+      );
 
       for (const [index, image] of normalizeCarouselOrder(orderedImages).entries()) {
         if (image.isNew && image.localFile) {
@@ -543,11 +550,19 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
           continue;
         }
 
+        const originalImage = originalImagesById.get(image.id);
+        const hasMetadataChanges =
+          !originalImage ||
+          getImageAltText(image) !==
+            getImageAltText({ altText: originalImage.altText, fileName: originalImage.fileName }) ||
+          image.isHidden !== originalImage.isHidden ||
+          image.showGreetingMessage !== originalImage.showGreetingMessage;
+
         if (image.replacementFile) {
           const updatedImage = await updateCarouselImage.mutateAsync({
             id: image.id,
             image: image.replacementFile,
-            altText: image.altText || image.fileName,
+            altText: getImageAltText(image),
             isHidden: image.isHidden,
             showGreetingMessage: image.showGreetingMessage,
           });
@@ -555,12 +570,14 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
           continue;
         }
 
-        await updateCarouselImage.mutateAsync({
-          id: image.id,
-          altText: image.altText || image.fileName,
-          isHidden: image.isHidden,
-          showGreetingMessage: image.showGreetingMessage,
-        });
+        if (hasMetadataChanges) {
+          await updateCarouselImage.mutateAsync({
+            id: image.id,
+            altText: getImageAltText(image),
+            isHidden: image.isHidden,
+            showGreetingMessage: image.showGreetingMessage,
+          });
+        }
         persistedImages.push({ id: image.id, sortOrder: index });
       }
 

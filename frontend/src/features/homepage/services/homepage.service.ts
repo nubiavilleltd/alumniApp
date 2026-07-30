@@ -106,21 +106,26 @@ export const homepageService = {
         formData.append('show_greeting', greetingVisibilityValue(input.showGreetingMessage));
       }
 
+      console.log('updateCarouselImage multipart payload:', Object.fromEntries(formData.entries()));
       const { data } = await contentApiClient.post(
         API_ENDPOINTS.CONTENT.UPDATE_CAROUSEL_IMAGE,
         formData,
       );
+      console.log('updateCarouselImage response:', data);
       return mapCarouselImage(data?.image);
     }
 
-    const { data } = await contentApiClient.post(API_ENDPOINTS.CONTENT.UPDATE_CAROUSEL_IMAGE, {
+    const payload = {
       id: input.id,
       ...(input.altText !== undefined ? { alt_text: input.altText } : {}),
       ...(input.isHidden !== undefined ? { is_hidden: visibilityValue(input.isHidden) } : {}),
       ...(input.showGreetingMessage !== undefined
         ? { show_greeting: greetingVisibilityValue(input.showGreetingMessage) }
         : {}),
-    });
+    };
+    console.log('updateCarouselImage JSON payload:', payload);
+    const { data } = await contentApiClient.post(API_ENDPOINTS.CONTENT.UPDATE_CAROUSEL_IMAGE, payload);
+    console.log('updateCarouselImage response:', data);
     return mapCarouselImage(data?.image);
   },
 
