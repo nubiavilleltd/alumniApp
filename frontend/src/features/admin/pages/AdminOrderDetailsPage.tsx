@@ -25,9 +25,9 @@ export default function AdminOrderDetailsPage() {
 
     if (isError) {
         return (
-            <div className="container mx-auto px-4 py-6">
+            <ContainerBackground>
                 <div className="text-red-500">Error loading order: {error?.message}</div>
-            </div>
+            </ContainerBackground>
         );
     }
 
@@ -42,8 +42,10 @@ export default function AdminOrderDetailsPage() {
             <SEO title="Order Details" />
 
             <ContainerBackground>
-                <div className="flex items-center justify-between mb-8">
-                    <div className="flex items-center gap-3">
+
+
+                <div className="flex flex-col gap-4 mb-8 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex flex-wrap items-center gap-3">
                         <h1 className="type-section-title">Order Details</h1>
                         <OrderStatusBadge status={order.status} />
                     </div>
@@ -53,7 +55,7 @@ export default function AdminOrderDetailsPage() {
                             type="button"
                             disabled={isPending}
                             onClick={() => updateStatus({ orderId: order.id, status: transition.nextRawStatus })}
-                            className="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-full font-semibold text-sm transition-colors disabled:opacity-50"
+                            className="w-full sm:w-auto bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-full font-semibold text-sm transition-colors disabled:opacity-50 whitespace-nowrap"
                         >
                             {isPending ? 'Updating...' : transition.buttonLabel}
                         </button>

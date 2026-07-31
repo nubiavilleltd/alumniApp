@@ -57,67 +57,255 @@ export function OrderFilters({
     ? 'Search by order number or customer name'
     : 'Search by order number or product name';
 
+// return (
+//     <div className={`flex w-full flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between ${className}`}>
+//       {/* Top row: Search + Tabs (desktop) / Search + Dropdown (mobile) */}
+//       <div className="flex flex-col sm:flex-row flex-1 items-center gap-2 min-w-0 sm:flex-wrap">
+//         <div className="w-full flex-1 min-w-0 sm:min-w-[200px]">
+//           <SearchInput
+//             value={search}
+//             onValueChange={onSearch}
+//             placeholder={searchPlaceholder}
+//           />
+//         </div>
+
+//         {/* Mobile: tabs collapse into a dropdown */}
+//         <div className="w-full flex-1 min-w-0 sm:hidden">
+//           <FilterSheet
+//             value={activeTab}
+//             onChange={onTabChange}
+//             placeholder="Filter"
+//             title="Filter Orders"
+//             className="w-full"
+//             options={tabs.map((tab) => ({
+//               label:
+//                 tab.count !== undefined && tab.count >= 0
+//                   ? `${tab.label} (${tab.count})`
+//                   : tab.label,
+//               value: tab.value,
+//             }))}
+//           />
+//         </div>
+
+//         {/* Desktop: tab pills */}
+//         <div className="hidden sm:flex sm:flex-wrap sm:items-center sm:gap-2">
+//           {tabs.map((tab) => {
+//             const isActive = activeTab === tab.value;
+//             const hasCount = tab.count !== undefined && tab.count >= 0;
+
+//             return (
+//               <button
+//                 key={tab.value}
+//                 type="button"
+//                 onClick={() => onTabChange(tab.value)}
+//                 className={`
+//                   px-4 py-2.5 text-sm font-semibold rounded-full border whitespace-nowrap transition-colors
+//                   ${isActive
+//                     ? 'bg-primary-600 text-white border-primary-600'
+//                     : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300'
+//                   }
+//                 `}
+//               >
+//                 {tab.label}
+//                 {hasCount && ` (${tab.count})`}
+//               </button>
+//             );
+//           })}
+//         </div>
+//       </div>
+
+//    {/* Bottom row on mobile / right side on desktop: Date Range (Admin only) */}
+//       {isAdmin && dateRange && (
+//         <div className="flex items-center gap-2 w-full sm:w-auto">
+//           <div className="flex-1 sm:w-36">
+//             <DatePicker
+//               placeholder="Date From"
+//               value={dateRange.from}
+//               onValueChange={dateRange.onFromChange}
+//               inputClassName="h-10 text-sm rounded-full"
+//             />
+//           </div>
+//           <span className="text-sm text-gray-400 shrink-0">→</span>
+//           <div className="flex-1 sm:w-36">
+//             <DatePicker
+//               placeholder="Date To"
+//               value={dateRange.to}
+//               onValueChange={dateRange.onToChange}
+//               inputClassName="h-10 text-sm rounded-full"
+//             />
+//           </div>
+//           {(dateRange.from || dateRange.to) && (
+//             <button
+//               type="button"
+//               onClick={() => {
+//                 dateRange.onFromChange('');
+//                 dateRange.onToChange('');
+//               }}
+//               className="text-sm font-medium text-gray-400 hover:text-gray-600 shrink-0 whitespace-nowrap"
+//             >
+//               Clear
+//             </button>
+//           )}
+//         </div>
+//       )}
+//     </div>
+//   );
+
+
+// return (
+//     <div className={`flex w-full flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-center lg:justify-between ${className}`}>
+//       {/* Top row: Search + Tabs (desktop) / Search + Dropdown (mobile) */}
+//       <div className="flex flex-col lg:flex-row flex-1 items-stretch lg:items-center gap-2 min-w-0 lg:flex-wrap">
+//         <div className="w-full lg:w-64 lg:flex-shrink-0 min-w-0">
+//           <SearchInput
+//             value={search}
+//             onValueChange={onSearch}
+//             placeholder={searchPlaceholder}
+//           />
+//         </div>
+
+//         {/* Mobile/tablet: tabs collapse into a dropdown */}
+//         <div className="w-full lg:hidden">
+//           <FilterSheet
+//             value={activeTab}
+//             onChange={onTabChange}
+//             placeholder="Filter"
+//             title="Filter Orders"
+//             className="w-full"
+//             options={tabs.map((tab) => ({
+//               label:
+//                 tab.count !== undefined && tab.count >= 0
+//                   ? `${tab.label} (${tab.count})`
+//                   : tab.label,
+//               value: tab.value,
+//             }))}
+//           />
+//         </div>
+
+//         {/* Desktop: tab pills */}
+//         <div className="hidden lg:flex lg:flex-wrap lg:items-center lg:gap-2">
+//           {tabs.map((tab) => {
+//             const isActive = activeTab === tab.value;
+//             const hasCount = tab.count !== undefined && tab.count >= 0;
+
+//             return (
+//               <button
+//                 key={tab.value}
+//                 type="button"
+//                 onClick={() => onTabChange(tab.value)}
+//                 className={`
+//                   px-4 py-2.5 text-sm font-semibold rounded-full border whitespace-nowrap transition-colors
+//                   ${isActive
+//                     ? 'bg-primary-600 text-white border-primary-600'
+//                     : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300'
+//                   }
+//                 `}
+//               >
+//                 {tab.label}
+//                 {hasCount && ` (${tab.count})`}
+//               </button>
+//             );
+//           })}
+//         </div>
+//       </div>
+
+//       {/* Bottom row on mobile / right side on desktop: Date Range (Admin only) */}
+//       {isAdmin && dateRange && (
+//         <div className="flex items-center gap-2 w-full lg:w-auto lg:flex-shrink-0">
+//           <div className="flex-1 lg:w-36">
+//             <DatePicker
+//               placeholder="Date From"
+//               value={dateRange.from}
+//               onValueChange={dateRange.onFromChange}
+//               inputClassName="h-10 text-sm rounded-full"
+//             />
+//           </div>
+//           <span className="text-sm text-gray-400 shrink-0">→</span>
+//           <div className="flex-1 lg:w-36">
+//             <DatePicker
+//               placeholder="Date To"
+//               value={dateRange.to}
+//               onValueChange={dateRange.onToChange}
+//               inputClassName="h-10 text-sm rounded-full"
+//             />
+//           </div>
+//           {(dateRange.from || dateRange.to) && (
+//             <button
+//               type="button"
+//               onClick={() => {
+//                 dateRange.onFromChange('');
+//                 dateRange.onToChange('');
+//               }}
+//               className="text-sm font-medium text-gray-400 hover:text-gray-600 shrink-0 whitespace-nowrap"
+//             >
+//               Clear
+//             </button>
+//           )}
+//         </div>
+//       )}
+//     </div>
+//   );
+
+
 return (
-    <div className={`flex w-full flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between ${className}`}>
-      {/* Top row: Search + Tabs (desktop) / Search + Dropdown (mobile) */}
-      <div className="flex flex-col sm:flex-row flex-1 items-center gap-2 min-w-0 sm:flex-wrap">
-        <div className="w-full flex-1 min-w-0 sm:min-w-[200px]">
-          <SearchInput
-            value={search}
-            onValueChange={onSearch}
-            placeholder={searchPlaceholder}
-          />
-        </div>
-
-        {/* Mobile: tabs collapse into a dropdown */}
-        <div className="w-full flex-1 min-w-0 sm:hidden">
-          <FilterSheet
-            value={activeTab}
-            onChange={onTabChange}
-            placeholder="Filter"
-            title="Filter Orders"
-            className="w-full"
-            options={tabs.map((tab) => ({
-              label:
-                tab.count !== undefined && tab.count >= 0
-                  ? `${tab.label} (${tab.count})`
-                  : tab.label,
-              value: tab.value,
-            }))}
-          />
-        </div>
-
-        {/* Desktop: tab pills */}
-        <div className="hidden sm:flex sm:flex-wrap sm:items-center sm:gap-2">
-          {tabs.map((tab) => {
-            const isActive = activeTab === tab.value;
-            const hasCount = tab.count !== undefined && tab.count >= 0;
-
-            return (
-              <button
-                key={tab.value}
-                type="button"
-                onClick={() => onTabChange(tab.value)}
-                className={`
-                  px-4 py-2.5 text-sm font-semibold rounded-full border whitespace-nowrap transition-colors
-                  ${isActive
-                    ? 'bg-primary-600 text-white border-primary-600'
-                    : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300'
-                  }
-                `}
-              >
-                {tab.label}
-                {hasCount && ` (${tab.count})`}
-              </button>
-            );
-          })}
-        </div>
+    <div className={`flex w-full flex-wrap items-center gap-3 ${className}`}>
+      {/* Search */}
+      <div className="w-full lg:w-64 lg:flex-shrink-0 min-w-0">
+        <SearchInput
+          value={search}
+          onValueChange={onSearch}
+          placeholder={searchPlaceholder}
+        />
       </div>
 
-   {/* Bottom row on mobile / right side on desktop: Date Range (Admin only) */}
+      {/* Mobile/tablet: tabs collapse into a dropdown */}
+      <div className="w-full lg:hidden">
+        <FilterSheet
+          value={activeTab}
+          onChange={onTabChange}
+          placeholder="Filter"
+          title="Filter Orders"
+          className="w-full"
+          options={tabs.map((tab) => ({
+            label:
+              tab.count !== undefined && tab.count >= 0
+                ? `${tab.label} (${tab.count})`
+                : tab.label,
+            value: tab.value,
+          }))}
+        />
+      </div>
+
+      {/* Desktop: tab pills */}
+      <div className="hidden lg:flex lg:flex-wrap lg:items-center lg:gap-2">
+        {tabs.map((tab) => {
+          const isActive = activeTab === tab.value;
+          const hasCount = tab.count !== undefined && tab.count >= 0;
+
+          return (
+            <button
+              key={tab.value}
+              type="button"
+              onClick={() => onTabChange(tab.value)}
+              className={`
+                px-4 py-2.5 text-sm font-semibold rounded-full border whitespace-nowrap transition-colors
+                ${isActive
+                  ? 'bg-primary-600 text-white border-primary-600'
+                  : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300'
+                }
+              `}
+            >
+              {tab.label}
+              {hasCount && ` (${tab.count})`}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Date Range (Admin only): flows right after tabs, wraps to its own row only if there's no room */}
       {isAdmin && dateRange && (
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          <div className="flex-1 sm:w-36">
+        <div className="flex items-center gap-2 w-full lg:w-auto lg:ml-auto lg:flex-shrink-0">
+          <div className="flex-1 lg:w-36">
             <DatePicker
               placeholder="Date From"
               value={dateRange.from}
@@ -126,7 +314,7 @@ return (
             />
           </div>
           <span className="text-sm text-gray-400 shrink-0">→</span>
-          <div className="flex-1 sm:w-36">
+          <div className="flex-1 lg:w-36">
             <DatePicker
               placeholder="Date To"
               value={dateRange.to}
@@ -150,4 +338,7 @@ return (
       )}
     </div>
   );
+
+
+
 }

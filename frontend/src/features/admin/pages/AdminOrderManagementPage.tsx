@@ -98,7 +98,7 @@ export default function AdminOrderManagementPage() {
                     ) : (
                         visible.map((order) => (
                             <OrderListCard order={order} key={order.orderNumber} variant='admin' action={
-                                <Link to={ADMIN_ORDER_ROUTES.DETAIL(order.orderNumber)} className="border-2 p-0.5 px-3 font-semibold rounded-2xl border-primary-500 text-primary-500">
+                                <Link to={ADMIN_ORDER_ROUTES.DETAIL(order.orderNumber)} className="border-2 whitespace-nowrap p-0.5 px-3 font-semibold rounded-2xl border-primary-500 text-primary-500">
                                     View Details
                                 </Link>
                             } />

@@ -34,18 +34,18 @@ export default function OrderItemListCard({
   })();
 
   return (
-    <div className="bg-white rounded-2xl p-7">
+    <div className="bg-white rounded-2xl p-4 sm:p-7">
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pb-4 mb-4 border-b border-gray-200">
+      <div className="flex flex-col gap-3 pb-4 mb-4 border-b border-gray-200 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-wrap items-center gap-2 text-sm">
           <OrderStatusBadge status={status} />
           <span className="text-gray-300">•</span>
           <span className="text-gray-500">{relativeDate}</span>
         </div>
 
-        <div className="flex items-center gap-5">
-          <div className="flex gap-1">
-            <span className="text-sm text-gray-500">
+        <div className="flex flex-col gap-3 w-full sm:w-auto sm:flex-row sm:items-center sm:gap-5">
+          <div className="flex items-start gap-1 min-w-0">
+            <span className="text-sm text-gray-500 break-all">
               Order Number:{' '}
               <span className="text-gray-700">
                 {orderNumber || ''}
@@ -53,12 +53,12 @@ export default function OrderItemListCard({
             </span>
             <CopyButton value={orderNumber} />
           </div>
-          {action}
+          {action && <div className="w-full sm:w-auto">{action}</div>}
         </div>
       </div>
 
       {/* Single item row */}
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex items-start gap-3 min-w-0">
           <div className="w-16 h-16 flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden">
             <img
@@ -68,7 +68,7 @@ export default function OrderItemListCard({
             />
           </div>
           <div className="min-w-0">
-            <p className="text-sm font-medium text-gray-800 truncate">
+            <p className="text-sm font-medium text-gray-800 line-clamp-2 sm:truncate">
               {item.productName}
             </p>
             <p className="text-sm text-gray-600">
@@ -82,7 +82,7 @@ export default function OrderItemListCard({
           </div>
         </div>
 
-        <div className="flex flex-col items-end gap-2 shrink-0">
+        <div className="flex flex-row items-center justify-between gap-3 sm:flex-col sm:items-end sm:gap-2 sm:shrink-0">
           <p className="text-sm font-semibold text-gray-900 whitespace-nowrap">
             Total: ₦{lineTotal.toLocaleString()}
           </p>
@@ -90,13 +90,14 @@ export default function OrderItemListCard({
             <button
               type="button"
               onClick={() => onAddToCart(flatItem)}
-              className="text-xs bg-primary-500 hover:bg-primary-600 text-white px-4 py-1.5 rounded-full transition-colors"
+              className="text-xs bg-primary-500 hover:bg-primary-600 text-white px-4 py-1.5 rounded-full transition-colors flex-shrink-0"
             >
               Add to Cart
             </button>
           )}
         </div>
       </div>
+
     </div>
   );
 }
