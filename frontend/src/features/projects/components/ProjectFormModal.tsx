@@ -118,7 +118,6 @@ export function ProjectFormModal({ isOpen, onClose, editData }: ProjectFormModal
   // Sync form + images when edit data changes
   useEffect(() => {
     if (isOpen && editData) {
-      console.log('edit data', { editData });
       reset({
         title: editData.title,
         description: editData.description,

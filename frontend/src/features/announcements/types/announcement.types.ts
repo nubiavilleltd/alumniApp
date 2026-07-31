@@ -40,3 +40,18 @@ export interface AnnouncementMutationInput {
   endsAt?: string;
   image?: File | null;
 }
+
+export interface BirthdayResponse {
+  user_id:string;
+  fullname:string;
+  name_in_school:string;
+  avatar:string;
+  class_label:string;
+}
+export interface Birthday {
+  userId:string;
+  fullName:string;
+  nameInSchool:string;
+  avatar:string;
+  classLabel:string;
+}

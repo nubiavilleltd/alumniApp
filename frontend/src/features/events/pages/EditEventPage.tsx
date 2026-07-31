@@ -277,7 +277,6 @@ export default function EditEventPage() {
       setBannerPreview(previews[0]);
     } else {
       // User cleared the image
-      console.log('files 2  ==', files);
       setBannerFile(null);
       setBannerPreview(previews[0] ?? '');
     }

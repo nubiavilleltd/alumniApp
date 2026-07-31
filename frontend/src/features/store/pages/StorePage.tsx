@@ -31,9 +31,9 @@ export function StorePage() {
 
     const cartCount = useCartCount();
 
-    const openProduct = useProductModalStore(
-        (s) => s.openForAdd,
-    );
+    // const openProduct = useProductModalStore(
+    //     (s) => s.openForAdd,
+    // );
     const navigate = useNavigate();
 
     const categories = useMemo(
@@ -93,6 +93,7 @@ export function StorePage() {
                         categories={categories}
                         onSearch={setSearch}
                         onCategoryChange={setCategory}
+                        className='mb-8'
                     />
 
                     {/* GRID */}

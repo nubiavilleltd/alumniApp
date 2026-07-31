@@ -92,3 +92,12 @@ export function useDeleteAnnouncement() {
     },
   });
 }
+
+export function useBirthdayAnnouncements() {
+  return useQuery({
+    queryKey: ["birthdays"],
+    queryFn: () => announcementService.getBirthdays(),
+    staleTime: 1000 * 60 * 5,
+  });
+}
+

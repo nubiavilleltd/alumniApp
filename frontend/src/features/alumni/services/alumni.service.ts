@@ -23,7 +23,7 @@ export const alumniService = {
       const { data } = await apiClient.post(API_ENDPOINTS.ALUMNI.LIST, params ?? {});
       const list = extractList(data, ['users', 'data']);
 
-      console.log('mapped', { raw: list, mapped: mapBackendAlumniList(list) });
+      console.log("mapped =>", mapBackendAlumniList(list))
       return mapBackendAlumniList(list);
     } catch (error) {
       throw handleApiError(

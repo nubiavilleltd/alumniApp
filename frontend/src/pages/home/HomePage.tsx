@@ -2,7 +2,6 @@ import { SEO } from '@/shared/common/SEO';
 import { getSiteConfig } from '@/data/content';
 import { SectionErrorBoundary } from '@/shared/components/ui/ErrorBoundary';
 import HeroSection from './components/HeroSection';
-import HomeStats from './components/HomeStats';
 import OurStory from './components/OurStory';
 import OurProjects from './components/OurProjects';
 import UpcomingEvents from './components/UpcomingEvents';
@@ -16,21 +15,20 @@ export function HomePage() {
 
       {/* Static sections — no boundary needed */}
       <HeroSection />
-      <HomeStats />
       <OurStory />
 
       {/* Dynamic sections — each isolated so one failure doesn't affect others */}
-      <SectionErrorBoundary>
+      {/* <SectionErrorBoundary>
         <OurProjects />
-      </SectionErrorBoundary>
+      </SectionErrorBoundary> */}
 
-      <SectionErrorBoundary>
+      {/* <SectionErrorBoundary>
         <UpcomingEvents />
-      </SectionErrorBoundary>
+      </SectionErrorBoundary> */}
 
-      <SectionErrorBoundary>
+      {/* <SectionErrorBoundary>
         <HomeAnnouncements />
-      </SectionErrorBoundary>
+      </SectionErrorBoundary> */}
     </div>
   );
 }

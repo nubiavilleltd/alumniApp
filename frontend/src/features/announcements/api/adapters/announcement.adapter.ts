@@ -9,6 +9,8 @@ import type {
   Announcement,
   AnnouncementMutationInput,
   AnnouncementType,
+  Birthday,
+  BirthdayResponse,
   GetAnnouncementsParams,
 } from '@/features/announcements/types/announcement.types';
 
@@ -179,4 +181,14 @@ export function mapBackendAnnouncementList(data: unknown): Announcement[] {
 export function extractAnnouncementFromResponse(data: unknown): Announcement | null {
   const object = extractObject(data, ['data', 'announcement', 'item']);
   return object ? mapBackendAnnouncement(object) : null;
+}
+
+export function adaptBirthday(data:BirthdayResponse):Birthday{
+  return {
+    userId:data.user_id,
+    nameInSchool:data.name_in_school,
+    classLabel:data.class_label,
+    avatar:data.avatar,
+    fullName:data.fullname
+  }
 }

@@ -20,6 +20,7 @@ export type UpdateCarouselImageInput = {
   image?: File;
   altText?: string;
   isHidden?: boolean;
+  showGreetingMessage?: boolean;
 };
 
 export type ReorderCarouselImageInput = {
@@ -29,6 +30,10 @@ export type ReorderCarouselImageInput = {
 
 function visibilityValue(isHidden?: boolean) {
   return isHidden ? '1' : '0';
+}
+
+function greetingVisibilityValue(showGreetingMessage?: boolean) {
+  return showGreetingMessage ? '1' : '0';
 }
 
 export const homepageService = {
@@ -85,6 +90,10 @@ export const homepageService = {
   },
 
   async updateCarouselImage(input: UpdateCarouselImageInput): Promise<HomepageCarouselImage> {
+    if (!input.id) {
+      throw new Error('Unable to update carousel image.');
+    }
+
     if (input.image) {
       const formData = new FormData();
       formData.append('id', input.id);
@@ -93,23 +102,38 @@ export const homepageService = {
       if (input.isHidden !== undefined) {
         formData.append('is_hidden', visibilityValue(input.isHidden));
       }
+      if (input.showGreetingMessage !== undefined) {
+        formData.append('show_greeting', greetingVisibilityValue(input.showGreetingMessage));
+      }
 
+      console.log('updateCarouselImage multipart payload:', Object.fromEntries(formData.entries()));
       const { data } = await contentApiClient.post(
         API_ENDPOINTS.CONTENT.UPDATE_CAROUSEL_IMAGE,
         formData,
       );
+      console.log('updateCarouselImage response:', data);
       return mapCarouselImage(data?.image);
     }
 
-    const { data } = await contentApiClient.post(API_ENDPOINTS.CONTENT.UPDATE_CAROUSEL_IMAGE, {
+    const payload = {
       id: input.id,
       ...(input.altText !== undefined ? { alt_text: input.altText } : {}),
       ...(input.isHidden !== undefined ? { is_hidden: visibilityValue(input.isHidden) } : {}),
-    });
+      ...(input.showGreetingMessage !== undefined
+        ? { show_greeting: greetingVisibilityValue(input.showGreetingMessage) }
+        : {}),
+    };
+    console.log('updateCarouselImage JSON payload:', payload);
+    const { data } = await contentApiClient.post(API_ENDPOINTS.CONTENT.UPDATE_CAROUSEL_IMAGE, payload);
+    console.log('updateCarouselImage response:', data);
     return mapCarouselImage(data?.image);
   },
 
   async reorderCarousel(images: ReorderCarouselImageInput[]): Promise<HomepageCarouselImage[]> {
+    if (images.some((image) => !image.id)) {
+      throw new Error('Unable to update carousel order.');
+    }
+
     const { data } = await contentApiClient.post(API_ENDPOINTS.CONTENT.REORDER_CAROUSEL, {
       images: images.map((image) => ({
         id: image.id,

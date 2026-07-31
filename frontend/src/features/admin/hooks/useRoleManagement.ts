@@ -8,7 +8,7 @@
  * ============================================================================
  */
 
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { roleManagementApi } from '../services/role-management.service';
 import { toast } from '@/shared/components/ui/Toast';
 import type { UserRole } from '../api/adapters/role-management.adapter';
@@ -48,5 +48,15 @@ export function useChangeUserRole() {
       // Error message already sanitized in service
       toast.error(error.message || 'Failed to change user role');
     },
+  });
+}
+
+
+
+export function useAdminCategoryOptions() {
+  return useQuery({
+    queryKey: ['roleManagement', 'admin-category-options'],
+    queryFn: roleManagementApi.getAdminCategoryOptions,
+    staleTime: 1000 * 60 * 60, // options change rarely
   });
 }

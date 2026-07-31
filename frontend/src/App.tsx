@@ -50,7 +50,7 @@ import { MessagesPage } from './features/messages/pages/MessagesPage';
 
 import { AdminDashboardPage } from './features/admin/pages/AdminDashboardPage';
 import ProjectDetailsPage from './features/projects/pages/ProjectDetail';
-import { ADMIN_ROUTES, ADMIN_STORE_ROUTES } from './features/admin/routes';
+import { ADMIN_ORDER_ROUTES, ADMIN_ROUTES, ADMIN_STORE_ROUTES } from './features/admin/routes';
 import { AdminMembersPage } from './features/admin/pages/AdminMembersPage';
 import { AdminPagesContentPage } from './features/admin/pages/AdminPagesContentPage';
 import { AdminEventRegistrationsPage } from './features/events/pages/AdminEventRegistrationsPage';
@@ -72,6 +72,7 @@ import { LogoutGate } from './shared/components/routing/LogoutGate';
 import { LIVE_NEWS_ROUTES } from './features/liveNews/routes';
 import LiveNewsPage from './features/liveNews/pages/LiveNewsPage';
 import LiveNewsDetailPage from './features/liveNews/pages/LiveNewsDetailPage';
+import SocialMediaFeedPage from './features/socialMedia/pages/SocialMediaFeedPage';
 import { StorePage } from './features/store/pages/StorePage';
 import { CartPage } from './features/store/pages/CartPage';
 import { CheckoutPage } from './features/store/pages/CheckoutPage';
@@ -79,6 +80,12 @@ import { FaqPage } from './features/faqs/pages/FaqPage';
 import { AdminStorePage } from './features/admin/pages/AdminStorePage';
 import { ProductCreatePage } from './features/admin/pages/ProductCreatePage';
 import { ProductEditPage } from './features/admin/pages/ProductEditPage';
+import OrderHistoryPage from './features/store/pages/OrderHistoryPage';
+import AdminOrderManagementPage from './features/admin/pages/AdminOrderManagementPage';
+import OrderDetailsPage from './features/store/pages/OrderDetailsPage';
+import AdminOrderDetailsPage from './features/admin/pages/AdminOrderDetailsPage';
+import JoinProjectsPage from './features/joinProject/pages/JoinProjectsPage';
+import VolunteerPage from './features/joinProject/pages/VolunteerPage';
 
 export default function App() {
   return (
@@ -172,6 +179,7 @@ export default function App() {
             <Route path={ROUTES.WELFARE} element={<WelfarePage />} />
             <Route path={ROUTES.WELFARE_ZONES} element={<WelfareZonesPage />} />
             <Route path={ROUTES.DONATION} element={<DonationPage />} />
+            <Route path={ROUTES.SOCIAL_MEDIA_FEED} element={<SocialMediaFeedPage />} />
             <Route path={ROUTES.LIVE_NEWS.ROOT} element={<LiveNewsPage />} />
             <Route path={ROUTES.LIVE_NEWS.DETAIL_PATH} element={<LiveNewsDetailPage />} />
             <Route
@@ -205,6 +213,22 @@ export default function App() {
               element={
                 <ErrorBoundary>
                   <TermsPage />
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path={ROUTES.JOIN_PROJECTS.PROJECTS}
+              element={
+                <ErrorBoundary>
+                  <JoinProjectsPage />
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path={ROUTES.JOIN_PROJECTS.VOLUNTEER}
+              element={
+                <ErrorBoundary>
+                  <VolunteerPage />
                 </ErrorBoundary>
               }
             />
@@ -540,9 +564,72 @@ export default function App() {
               }
             />
 
-            <Route path={ADMIN_STORE_ROUTES.ROOT} element={<AdminRoute><AdminStorePage /></AdminRoute>} />
-            <Route path={ADMIN_STORE_ROUTES.PRODUCT_CREATE} element={<AdminRoute><ProductCreatePage /></AdminRoute>} />
-            <Route path={ADMIN_STORE_ROUTES.PRODUCT_EDIT_PATH} element={<AdminRoute><ProductEditPage /></AdminRoute>} />
+            {/* ORDER ROUTES */}
+            <Route
+              path={ROUTES.ORDER.ROOT}
+              element={
+                <ProtectedRoute>
+                  <ErrorBoundary>
+                    <OrderHistoryPage />
+                  </ErrorBoundary>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path={ROUTES.ORDER.DETAIL_PATH}
+              element={
+                <ProtectedRoute>
+                  <ErrorBoundary>
+                    <OrderDetailsPage />
+                  </ErrorBoundary>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path={ADMIN_ORDER_ROUTES.ROOT}
+              element={
+                <AdminRoute>
+                  <ErrorBoundary>
+                    <AdminOrderManagementPage />
+                  </ErrorBoundary>
+                </AdminRoute>
+              }
+            />
+            <Route
+              path={ADMIN_ORDER_ROUTES.DETAIL_PATH}
+              element={
+                <AdminRoute>
+                  <ErrorBoundary>
+                    <AdminOrderDetailsPage />
+                  </ErrorBoundary>
+                </AdminRoute>
+              }
+            />
+
+            <Route
+              path={ADMIN_STORE_ROUTES.ROOT}
+              element={
+                <AdminRoute>
+                  <AdminStorePage />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path={ADMIN_STORE_ROUTES.PRODUCT_CREATE}
+              element={
+                <AdminRoute>
+                  <ProductCreatePage />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path={ADMIN_STORE_ROUTES.PRODUCT_EDIT_PATH}
+              element={
+                <AdminRoute>
+                  <ProductEditPage />
+                </AdminRoute>
+              }
+            />
 
             {/* Redirects */}
             <Route path="/home" element={<Navigate to={ROUTES.HOME} replace />} />

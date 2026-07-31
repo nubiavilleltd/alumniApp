@@ -7,10 +7,11 @@ import { Pagination } from '@/shared/components/ui/Pagination';
 import { ROUTES } from '@/shared/constants/routes';
 import { EVENT_ROUTES } from '@/features/events/routes';
 import { AnnouncementEditorModal } from '@/features/announcements/components/AnnouncementEditorModal';
-import { useAnnouncements } from '@/features/announcements/hooks/useAnnouncements';
+import { useAnnouncements, useBirthdayAnnouncements } from '@/features/announcements/hooks/useAnnouncements';
 import { ANNOUNCEMENT_ROUTES } from '@/features/announcements/routes';
 import type { AnnouncementType, NewsItem } from '@/features/announcements/types/announcement.types';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
+import { BirthdaySection } from '../components/BirthdaySection';
 
 const FALLBACK_IMAGE = '/news-1.png';
 const pageShellClassName = 'container-custom pb-16 pt-4 sm:pb-14 sm:pt-5';
@@ -127,9 +128,14 @@ export default function BlogIndexPage() {
   const sideListRef = useRef<HTMLDivElement | null>(null);
   const [sideListHeight, setSideListHeight] = useState<number | null>(null);
 
+  
   const { data: announcements = [], isLoading } = useAnnouncements(
     selectedType === 'all' ? undefined : { type: selectedType },
   );
+
+   const { data: birthdays, isLoading:isLoadingBirthdays } = useBirthdayAnnouncements();
+  
+
 
   const sortedAnnouncements = useMemo(
     () =>
@@ -275,6 +281,10 @@ export default function BlogIndexPage() {
               )}
             </div>
           </header>
+
+          {/* {!isLoadingBirthdays && birthdays && birthdays.length > 0 && (
+          )} */}
+          <BirthdaySection people={birthdays ?? []} isLoading={isLoadingBirthdays} />
 
           {isLoading ? (
             <>

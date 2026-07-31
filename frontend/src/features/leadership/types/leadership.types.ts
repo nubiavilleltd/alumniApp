@@ -25,3 +25,25 @@ export interface LeadershipMember {
   bio?: string;
   since?: string; // ISO date — when they took on this role
 }
+
+
+
+export interface LeadershipFormPayload {
+  memberId: string; // → user_id
+  role: string; // → position_title
+  photoFile?: File; // → leadership_photo (optional; backend falls back to avatar if omitted)
+}
+
+
+export interface LeadershipPositionOption {
+  value: string;
+  label: string;
+}
+
+export interface AdminFormPayload {
+  memberId: string; // → user_id
+  role: string; // → position_title
+}
+
+
+

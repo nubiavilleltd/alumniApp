@@ -1,10 +1,16 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useMemo, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Plus } from 'lucide-react';
 import { SEO } from '@/shared/common/SEO';
-import { useAdminProducts, useDeleteProduct } from '../hooks/useAdminStore';
-import { ADMIN_STORE_ROUTES } from '../routes';
+import { useAdminProducts, useDeleteProduct, usePinProduct } from '../hooks/useAdminStore';
+import { ADMIN_ORDER_ROUTES, ADMIN_STORE_ROUTES } from '../routes';
 import { AdminStoreProductCard } from '../components/AdminStoreProductCard';
+import { AdminBanner } from '../components/AdminBanner';
+import { StoreFilters } from '@/features/store/components/StoreFilters';
+import { toast } from '@/shared/components/ui/Toast';
+import { Pagination } from '@/shared/components/ui/Pagination';
+import useItemsPerPage from '@/features/store/hooks/useItemsPerPage';
+import EmptyState from '@/shared/components/ui/EmptyState';
 
 // ─── Confirmation dialog ──────────────────────────────────────────────────────
 
@@ -73,12 +79,59 @@ function StoreSkeleton() {
 
 export function AdminStorePage() {
   const navigate = useNavigate();
-  const { data: products = [], isLoading, isError } = useAdminProducts();
+
+  const { data: response, isLoading, isError } = useAdminProducts();
+  const products = response?.data ?? [];
+  const meta = response?.meta;
+  const [search, setSearch] = useState('');
+  const [category, setCategory] = useState('');
+
+  const categories = useMemo(
+    () => [...new Set(products.map((p) => p.category))],
+    [products],
+  );
+
+  const [page, setPage] = useState(1);
+
+  const ITEMS_PER_PAGE = useItemsPerPage();
+
+  const filtered = useMemo(() => {
+    return products.filter((product) => {
+      const searchMatch = product.product_name
+        .toLowerCase()
+        .includes(search.toLowerCase());
+
+      const categoryMatch = !category || product.category === category;
+
+      return searchMatch && categoryMatch;
+    });
+  }, [products, search, category]);
+
+  const sorted = useMemo(() => {
+    return [...filtered].sort((a, b) => {
+      if (a.pin_item === b.pin_item) return 0;
+      return a.pin_item ? -1 : 1;
+    });
+}, [filtered]);
+
   const deleteProduct = useDeleteProduct();
+  const pinProduct = usePinProduct();
 
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+  // const [pendingPinId, setPendingPinId] = useState<string | null>(null);
 
   const pendingProduct = products.find((p) => p.id === pendingDeleteId);
+  // const productToPin = products.find((p) => p.id === pendingPinId);
+
+  const totalPages = Math.ceil(
+    sorted.length / ITEMS_PER_PAGE,
+  );
+
+  const visible = sorted.slice(
+    (page - 1) * ITEMS_PER_PAGE,
+    page * ITEMS_PER_PAGE,
+  );
+
 
   const handleConfirmDelete = () => {
     if (!pendingDeleteId) return;
@@ -86,29 +139,63 @@ export function AdminStorePage() {
       onSettled: () => setPendingDeleteId(null),
     });
   };
+  const handlePinProduct = async (productId: string, currentPinStatus: boolean) => {
+    if (!productId) return;
+    try {
+      const atCap = !!meta && meta.total_pinned >= meta.max_pinned;
+      if (!currentPinStatus && atCap) {
+        toast.error(`You can only pin up to ${meta!.max_pinned} products. Unpin one first.`);
+        return;
+      }
+      await pinProduct.mutateAsync({ productId, pinItem: !currentPinStatus });
+      toast.success(`Product ${currentPinStatus ? "unpinned" : "pinned"}`);
+    } catch (error) {
+      toast.error("Failed to pin item")
+    }
+
+  };
 
   return (
     <>
       <SEO title="Admin — Store" />
+      <AdminBanner activeTab="store" title="Store" />
 
       <div className="min-h-screen bg-[#F8F8F7]">
         <div className="container-custom py-8 sm:py-10">
 
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Store Products</h1>
-              <p className="text-sm text-gray-500 mt-1">
-                {products.length} product{products.length !== 1 ? 's' : ''} in the store
-              </p>
+          <div className="flex flex-col sm:flex-row items-center justify-between mb-8">
+
+            <div className='flex-1'>
+              <StoreFilters
+                search={search}
+                category={category}
+                categories={categories}
+                onSearch={setSearch}
+                onCategoryChange={setCategory}
+              /></div>
+
+            <div className="flex items-center gap-3">
+              {meta && (
+                <span className="text-sm font-semibold text-gray-500 border border-gray-200 rounded-full px-4 py-2 whitespace-nowrap">
+                  {meta.total_pinned}/{meta.max_pinned} Pinned
+                </span>
+              )}
+              <Link
+                to={ADMIN_ORDER_ROUTES.ROOT}
+                className="hidden sm:flex items-center gap-2 text-sm font-semibold text-primary-500 border border-primary-500 rounded-full px-4 py-2 hover:bg-primary-50 transition-colors"
+              >
+                Order Management
+              </Link>
+              <button
+                onClick={() => navigate(ADMIN_STORE_ROUTES.PRODUCT_CREATE)}
+                className="inline-flex items-center gap-2 bg-primary-500 hover:bg-primary-600 text-white font-semibold text-sm rounded-full px-5 py-2.5 transition-colors"
+              >
+                Add an Item
+                <Plus size={16} strokeWidth={2.5} />
+              </button>
             </div>
-            <button
-              onClick={() => navigate(ADMIN_STORE_ROUTES.PRODUCT_CREATE)}
-              className="inline-flex items-center gap-2 bg-primary-500 hover:bg-primary-600 text-white font-semibold text-sm rounded-full px-5 py-2.5 transition-colors"
-            >
-              Add an Item
-              <Plus size={16} strokeWidth={2.5} />
-            </button>
+
           </div>
 
           {/* Loading */}
@@ -136,17 +223,54 @@ export function AdminStorePage() {
           )}
 
           {/* Grid */}
-          {!isLoading && !isError && products.length > 0 && (
+          {/* {!isLoading && !isError && filtered.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
-              {products.map((product) => (
+              {filtered.map((product) => (
                 <AdminStoreProductCard
                   key={product.id}
                   product={product}
                   onEdit={() => navigate(ADMIN_STORE_ROUTES.PRODUCT_EDIT(product.id))}
                   onDelete={() => setPendingDeleteId(product.id)}
+                  onPin={() => handlePinProduct(product.id, product.pin_item)}
                   isDeleting={deleteProduct.isPending && pendingDeleteId === product.id}
                 />
               ))}
+            </div>
+          )} */}
+
+
+
+
+          {isLoading ? (
+            <StoreSkeleton />
+          ) : visible.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
+              {visible.map((product) => (
+                <AdminStoreProductCard
+                  key={product.id}
+                  product={product}
+                  onEdit={() => navigate(ADMIN_STORE_ROUTES.PRODUCT_EDIT(product.id))}
+                  onDelete={() => setPendingDeleteId(product.id)}
+                  onPin={() => handlePinProduct(product.id, product.pin_item)}
+                  isDeleting={deleteProduct.isPending && pendingDeleteId === product.id}
+                  pinDisabled={!product.pin_item && !!meta && meta.total_pinned >= meta.max_pinned}
+                />
+              ))}
+            </div>
+          ) : (
+            <EmptyState
+              title="No products found"
+              description="Try adjusting your search or category filter."
+            />
+          )}
+
+          {totalPages > 1 && (
+            <div className="sticky bottom-0 mt-6 bg-[#F8F8F7] py-4">
+              <Pagination
+                currentPage={page}
+                totalPages={totalPages}
+                onPageChange={setPage}
+              />
             </div>
           )}
         </div>

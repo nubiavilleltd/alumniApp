@@ -5,6 +5,7 @@ export interface HomepageCarouselImage {
   altText: string;
   sortOrder: number;
   isHidden: boolean;
+  showGreetingMessage: boolean;
   createdAt?: string;
   updatedAt?: string;
 }

@@ -2,7 +2,7 @@ import { AUTH_ROUTES } from '@/features/authentication/routes';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 import { SEO } from '@/shared/common/SEO';
 import { ButtonLink } from '@/shared/components/ui/Button';
-import Leadership from './Leadership';
+import Leadership, { MessageFromPresident } from './Leadership';
 
 const missionFeatures = [
   {
@@ -52,7 +52,7 @@ export function AboutPage() {
         description="Learn about our alumni network, mission, and the team behind the Open Alumns Portal."
       />
 
-      <main className="bg-white text-[#061015]">
+      <main className="text-[#061015]">
         <section className="relative isolate overflow-hidden bg-[linear-gradient(135deg,#ffffff_0%,#fbfdff_43%,#acd5ef_100%)]">
           <div className="grid gap-10 px-[var(--app-page-inline-padding)] pb-[3.75rem] pt-11 sm:pt-16 min-[1200px]:min-h-[min(760px,calc(100svh-7rem))] min-[1200px]:grid-cols-[minmax(0,1fr)_clamp(360px,21vw,430px)] min-[1200px]:gap-[clamp(1.75rem,2.6vw,3rem)] min-[1200px]:py-[clamp(3rem,5.2vh,4.25rem)]">
             <div className="flex min-w-0 flex-col">
@@ -98,7 +98,9 @@ export function AboutPage() {
           </div>
         </section>
 
-        <section className="bg-white px-[var(--app-page-inline-padding)] pb-20 pt-4 lg:pb-24">
+        <MessageFromPresident />
+
+        <section className="px-[var(--app-page-inline-padding)] pb-20 pt-4 lg:pb-24">
           <div className="mx-auto max-w-[1920px]">
             <SectionEyebrow>Our Mission</SectionEyebrow>
 

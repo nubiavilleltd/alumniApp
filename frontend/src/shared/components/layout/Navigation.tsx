@@ -31,6 +31,7 @@ import { useCartStore } from '@/features/store/stores/useCartStore';
 type NavChild = {
   label: string;
   url: string;
+  description?: string;
 };
 
 type NavItem = NavChild & {
@@ -47,37 +48,6 @@ type CurrentUser = {
   id?: string;
 };
 
-const secondaryNavItems: NavItem[] = [
-  { label: 'Resources', url: ROUTES.RESOURCES },
-  { label: 'Welfare', url: ROUTES.WELFARE },
-  { label: 'Contact Us', url: ROUTES.CONTACT },
-];
-
-const primaryNavItems: NavItem[] = [
-  { label: 'About Us', url: ROUTES.ABOUT },
-  { label: 'Alumnae Directory', url: ALUMNI_ROUTES.PROFILES },
-  {
-    label: 'News & Events',
-    url: ROUTES.NEWS,
-    children: [
-      { label: 'Announcements', url: ROUTES.NEWS },
-      { label: 'Blog', url: ANNOUNCEMENT_ROUTES.BLOG },
-      { label: 'Events', url: EVENT_ROUTES.ROOT },
-      { label: 'Our Projects', url: ROUTES.PROJECTS.ROOT },
-      { label: 'Live News', url: ROUTES.LIVE_NEWS.ROOT },
-    ],
-  },
-  {
-    label: 'Marketplace',
-    url: MARKETPLACE_ROUTES.ROOT,
-    children: [
-      { label: 'Marketplace', url: MARKETPLACE_ROUTES.ROOT },
-      { label: 'Job Vacancies', url: ROUTES.JOB_VACANCIES },
-      { label: 'Alumnae Store', url: ROUTES.STORE.ROOT },
-    ],
-  },
-];
-
 const authenticatedMenuItems: NavChild[] = [
   { label: 'View Profile', url: USER_ROUTES.PROFILE },
   { label: 'Dashboard', url: USER_ROUTES.DASHBOARD },
@@ -86,31 +56,87 @@ const authenticatedMenuItems: NavChild[] = [
   { label: 'My Market', url: MARKETPLACE_ROUTES.MY_BUSINESS },
   { label: 'My Job Posts', url: ROUTES.MY_JOB_POSTS },
   { label: 'My Shopping Cart', url: ROUTES.STORE.CART },
+  { label: 'My Order History', url: ROUTES.ORDER.ROOT },
   { label: 'Settings', url: USER_ROUTES.SETTINGS },
 ];
 
-const navSurfaceClassName =
-  'bg-[linear-gradient(106deg,_rgb(var(--color-primary-500))_0%,_#003a5d_92%)]';
+const navSurfaceClassName = 'bg-[#05245B]';
 
-const desktopLinkBaseClassName =
-  "relative no-underline font-[600] tracking-[0.1em] text-[#BDBDBD] transition-colors duration-200 hover:text-white focus-visible:text-white after:pointer-events-none after:absolute after:left-0 after:h-[5px] after:w-full after:origin-left after:scale-x-0 after:rounded-full after:bg-white/85 after:content-[''] after:transition-transform after:duration-300 after:ease-out hover:after:scale-x-100 focus-visible:after:scale-x-100";
-const desktopActiveLinkClassName = 'text-white after:scale-x-100';
-const desktopPrimaryLinkClassName = `${desktopLinkBaseClassName} whitespace-nowrap text-sm xl:text-lg 2xl:text-lg after:-bottom-3 xl:after:-bottom-4`;
-const desktopSecondaryLinkClassName = `${desktopLinkBaseClassName} text-sm xl:text-base 2xl:text-lg after:-bottom-2`;
-const desktopPanelClassName =
-  'absolute top-[calc(100%+1rem)] z-[60] overflow-hidden border border-[#d7e6ef] bg-white shadow-[0_1.25rem_2.5rem_rgba(7,17,22,0.14)]';
-const desktopDropdownPanelSizeClassName = 'w-[17.5rem] rounded-[0.9rem] py-[0.45rem]';
-const desktopDropdownMenuLinkClassName =
-  'flex items-center gap-3 px-4 py-[0.8rem] text-left text-[0.92rem] font-bold text-[#4f5864] no-underline transition-colors duration-200 hover:bg-primary-50 hover:text-primary-700';
-const desktopMenuActiveLinkClassName = 'bg-primary-50 text-primary-700';
-const accountPillClassName =
-  'inline-flex min-h-[2.3rem] items-center rounded-full border border-transparent bg-white text-[#0d78cb] no-underline shadow-none transition-opacity duration-200 hover:bg-white/95 hover:text-[#0d78cb]';
+const expandedNavColumns: NavItem[][] = [
+  [
+    { label: 'About Us', url: ROUTES.ABOUT },
+    {
+      label: 'News & Events',
+      url: ROUTES.NEWS,
+      children: [
+        {
+          label: 'Announcements',
+          url: ROUTES.NEWS,
+          description: 'Latest association updates',
+        },
+        {
+          label: 'Events',
+          url: EVENT_ROUTES.ROOT,
+          description: 'Upcoming events and reunions',
+        },
+        {
+          label: 'Our Projects',
+          url: ROUTES.PROJECTS.ROOT,
+          description: 'Community initiatives in action',
+        },
+        {
+          label: 'Blog',
+          url: ANNOUNCEMENT_ROUTES.BLOG,
+          description: 'Stories, insights and updates',
+        },
+        {
+          label: 'Live News',
+          url: ROUTES.LIVE_NEWS.ROOT,
+          description: 'Trusted local and global news',
+        },
+      ],
+    },
+  ],
+  [
+    {
+      label: 'Marketplace',
+      url: MARKETPLACE_ROUTES.ROOT,
+      children: [
+        {
+          label: 'Marketplace',
+          url: MARKETPLACE_ROUTES.ROOT,
+          description: 'Discover alumnae-owned businesses',
+        },
+        {
+          label: 'Job Vacancies',
+          url: ROUTES.JOB_VACANCIES,
+          description: 'Explore career opportunities',
+        },
+        {
+          label: 'Alumnae Store',
+          url: ROUTES.STORE.ROOT,
+          description: 'Official alumnae merchandise',
+        },
+      ],
+    },
+    { label: 'OGA Directory', url: ALUMNI_ROUTES.PROFILES },
+  ],
+  [
+    { label: 'Resources', url: ROUTES.RESOURCES },
+    { label: 'Welfare', url: ROUTES.WELFARE },
+  ],
+  [
+    { label: 'Volunteer', url: ROUTES.JOIN_PROJECTS.VOLUNTEER },
+    { label: 'Contact Us', url: ROUTES.CONTACT },
+  ],
+];
+
 const userAccountTriggerClassName =
-  'inline-flex min-h-[3.35rem] items-center rounded-full border border-white/25 bg-transparent text-white no-underline shadow-none transition-colors duration-200 hover:border-white/40 hover:bg-white/5';
-const mobileSectionClassName =
-  'mt-4 grid gap-1.5 border-t border-white/15 pt-4 first:mt-0 first:border-t-0 md:mt-5 md:gap-2 md:pt-5';
-const mobileLinkClassName =
-  'flex items-center gap-3 rounded-[1rem] px-4 py-3.5 text-[0.95rem] font-bold tracking-[0.03em] leading-[1.3] text-[#BDBDBD] no-underline transition-colors duration-200 hover:bg-white/10 hover:text-white focus-visible:bg-white/10 focus-visible:text-white md:px-5 md:py-4 md:text-base';
+  'inline-flex min-h-[3.35rem] w-full items-center rounded-full border border-white/25 bg-transparent text-white no-underline shadow-none transition-colors duration-200 hover:border-white/40 hover:bg-white/5';
+const expandedNavHeadingClassName =
+  'text-left text-[1.05rem] font-semibold leading-normal tracking-[0.03em] text-white no-underline transition-colors duration-150 hover:text-white/85 focus-visible:text-white lg:text-[1.125rem]';
+const expandedNavChildClassName =
+  'text-left text-sm font-semibold leading-normal text-white no-underline transition-colors duration-150 hover:text-white/90 focus-visible:text-white';
 
 function cn(...inputs: Array<string | false | null | undefined>) {
   return twMerge(clsx(inputs));
@@ -181,110 +207,85 @@ function BrandMark({ mobile = false }: { mobile?: boolean }) {
     <AppLink
       href={ROUTES.HOME}
       className={cn(
-        'relative isolate flex overflow-hidden bg-white text-primary-500 no-underline',
+        'relative isolate flex overflow-hidden bg-transparent text-white no-underline',
         mobile
-          ? 'min-h-[5.25rem] items-center px-[var(--app-page-inline-padding)] py-3 sm:min-h-[5.5rem] sm:py-3.5'
-          : 'items-center justify-start px-[var(--app-page-inline-padding)] py-3 xl:py-4 2xl:py-5',
+          ? 'min-h-[5.25rem] items-center py-3 sm:min-h-[5.5rem] sm:py-3.5'
+          : 'items-center justify-start py-3 xl:py-4 2xl:py-5',
       )}
     >
-      <span
-        className="absolute inset-0 -z-10 bg-[url('/navbarImage.png')] bg-[length:auto_100%] bg-right bg-no-repeat"
-        aria-hidden="true"
-      />
       <HeaderLogo
         className={cn(
           'relative z-10 min-w-0',
           mobile ? 'w-full justify-start gap-2.5' : 'max-w-full justify-start gap-3',
         )}
-        imageClassName={cn(
-          mobile ? 'h-[2.8rem] w-[2.8rem] sm:h-[3rem] sm:w-[3rem]' : 'h-[3.35rem] w-[3.35rem]',
-        )}
+        imageClassName={cn(mobile ? 'h-12 w-12 sm:h-14 sm:w-14' : 'h-16 w-16')}
         wordmarkClassName={cn(
           mobile
-            ? 'w-[10.75rem] max-w-[calc(100vw-9.5rem)] sm:w-[12rem] sm:max-w-[calc(100vw-10.5rem)]'
-            : 'w-[14.75rem] max-w-full',
+            ? 'w-[11.25rem] max-w-[calc(100vw-8rem)] text-white sm:w-[13.25rem]'
+            : 'w-[15.75rem] max-w-full text-white',
         )}
       />
     </AppLink>
   );
 }
 
-function DesktopNavLink({ item }: { item: NavItem }) {
+function ExpandedNavItem({ item, onNavigate }: { item: NavItem; onNavigate: () => void }) {
   const { pathname } = useLocation();
-
-  const active = isPathActive(pathname, item.url);
-
-  return (
-    <AppLink
-      href={item.url}
-      className={cn(desktopPrimaryLinkClassName, active && desktopActiveLinkClassName)}
-    >
-      {item.label}
-    </AppLink>
-  );
-}
-
-function DesktopDropdown({ item }: { item: NavItem }) {
+  const active =
+    isPathActive(pathname, item.url) ||
+    Boolean(item.children?.some((child) => isPathActive(pathname, child.url)));
   const [open, setOpen] = useState(false);
 
-  const ref = useRef<HTMLDivElement>(null);
-
-  const { pathname } = useLocation();
-
-  const isActive = item.children?.some((child) => isPathActive(pathname, child.url)) ?? false;
-
-  useEffect(() => {
-    const handleOutsideClick = (event: MouseEvent) => {
-      if (!ref.current?.contains(event.target as Node)) {
-        setOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleOutsideClick);
-
-    return () => document.removeEventListener('mousedown', handleOutsideClick);
-  }, []);
-
-  return (
-    <div ref={ref} className="relative">
-      <button
-        type="button"
-        className={cn(
-          desktopPrimaryLinkClassName,
-          'inline-flex cursor-pointer items-center gap-[0.45rem] border-0 bg-transparent',
-          isActive && desktopActiveLinkClassName,
-        )}
-        aria-expanded={open}
-        onClick={() => setOpen((prev) => !prev)}
-      >
-        {item.label}
-        <Icon icon="mdi:chevron-down" className="h-5 w-5 flex-none" />
-      </button>
-
-      {open && (
-        <div
+  if (item.children) {
+    return (
+      <div className="grid gap-3">
+        <button
+          type="button"
           className={cn(
-            desktopPanelClassName,
-            desktopDropdownPanelSizeClassName,
-            'max-w-[calc(100vw-2rem)]',
-            item.label === 'Marketplace' ? 'right-0 left-auto' : 'left-0',
+            expandedNavHeadingClassName,
+            'flex w-full cursor-pointer items-center justify-between gap-4 border-0 bg-transparent p-0',
+            active && 'text-white',
           )}
+          aria-expanded={open}
+          onClick={() => setOpen((prev) => !prev)}
         >
-          {item.children?.map((child) => (
+          <span>{item.label}</span>
+          <Icon icon={open ? 'mdi:chevron-up' : 'mdi:chevron-down'} className="h-5 w-5 flex-none" />
+        </button>
+
+        <div className={cn('grid gap-4 overflow-hidden', !open && 'hidden')}>
+          {item.children.map((child) => (
             <AppLink
               key={child.url}
               href={child.url}
+              onClick={onNavigate}
               className={cn(
-                desktopDropdownMenuLinkClassName,
-                isPathActive(pathname, child.url) && desktopMenuActiveLinkClassName,
+                expandedNavChildClassName,
+                isPathActive(pathname, child.url) && 'text-white',
               )}
-              onClick={() => setOpen(false)}
             >
-              {child.label}
+              <span className="block text-white">{child.label}</span>
+              {child.description ? (
+                <span className="block pt-0.5 text-xs font-semibold leading-snug text-[#BDBDBD] lg:text-[0.78rem]">
+                  {child.description}
+                </span>
+              ) : null}
             </AppLink>
           ))}
         </div>
-      )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid gap-3">
+      <AppLink
+        href={item.url}
+        onClick={onNavigate}
+        className={cn(expandedNavHeadingClassName, active && 'text-white')}
+      >
+        {item.label}
+      </AppLink>
     </div>
   );
 }
@@ -317,38 +318,38 @@ function UserDropdown({
   onLogout,
   isLoggingOut,
   unreadThreadCount,
+  onNavigate,
 }: {
   currentUser: CurrentUser;
   onLogout: () => void;
   isLoggingOut: boolean;
   unreadThreadCount: number;
+  onNavigate: () => void;
 }) {
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
   const { pathname } = useLocation();
   const isAdmin = currentUser.role === 'admin';
   const displayName = getDisplayName(currentUser);
 
-  useEffect(() => {
-    const handleOutsideClick = (event: MouseEvent) => {
-      if (!ref.current?.contains(event.target as Node)) setOpen(false);
-    };
+  const baseMenuItems = authenticatedMenuItems.map((item) => {
+    if (item.url === USER_ROUTES.PROFILE) return { ...item, label: 'My Profile' };
+    if (item.url === USER_ROUTES.DASHBOARD) return { ...item, label: 'My Dashboard' };
+    if (item.url === ROUTES.MESSAGES) return { ...item, label: 'Message Centre' };
 
-    document.addEventListener('mousedown', handleOutsideClick);
-    return () => document.removeEventListener('mousedown', handleOutsideClick);
-  }, []);
+    return item;
+  });
 
   const menuItems = isAdmin
-    ? [{ label: 'Admin Dashboard', url: ADMIN_ROUTES.DASHBOARD }, ...authenticatedMenuItems]
-    : authenticatedMenuItems;
+    ? [{ label: 'Admin Dashboard', url: ADMIN_ROUTES.DASHBOARD }, ...baseMenuItems]
+    : baseMenuItems;
 
   return (
-    <div ref={ref} className="relative flex-none self-center">
+    <div className="w-full overflow-hidden rounded-[1rem] border border-white/25">
       <button
         type="button"
         className={cn(
           userAccountTriggerClassName,
-          'cursor-pointer gap-3 px-[0.36rem] py-[0.32rem]',
+          'cursor-pointer gap-3 border-0 px-[0.36rem] py-[0.32rem]',
         )}
         aria-expanded={open}
         onClick={() => setOpen((prev) => !prev)}
@@ -362,22 +363,26 @@ function UserDropdown({
         </span>
         <UnreadMessagesBadge count={unreadThreadCount} className="ml-1 flex-none" />
         <Icon
-          icon="mdi:chevron-down"
+          icon={open ? 'mdi:chevron-up' : 'mdi:chevron-down'}
           className="h-[1.125rem] w-[1.125rem] flex-none text-[#9eb8ca]"
         />
       </button>
 
       {open && (
-        <div className={cn(desktopPanelClassName, desktopDropdownPanelSizeClassName, 'right-0')}>
+        <div className="grid gap-3 px-4 pb-4 pt-2">
           {menuItems.map((item) => (
             <AppLink
               key={item.url}
               href={item.url}
               className={cn(
-                `${desktopDropdownMenuLinkClassName} justify-between`,
-                isPathActive(pathname, item.url) && desktopMenuActiveLinkClassName,
+                expandedNavChildClassName,
+                'flex items-center justify-between text-white/90',
+                isPathActive(pathname, item.url) && 'text-white',
               )}
-              onClick={() => setOpen(false)}
+              onClick={() => {
+                setOpen(false);
+                onNavigate();
+              }}
             >
               <span>{item.label}</span>
               {item.url === ROUTES.MESSAGES ? (
@@ -388,65 +393,17 @@ function UserDropdown({
 
           <button
             type="button"
-            className="flex w-full cursor-pointer items-center gap-[0.585rem] border-0 bg-transparent px-[0.9rem] py-[0.72rem] text-left text-[0.828rem] font-bold text-red-600 transition-colors duration-200 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-55"
+            className="cursor-pointer border-0 bg-transparent p-0 text-left text-sm font-semibold text-white/90 transition-colors duration-150 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
             disabled={isLoggingOut}
             onClick={() => {
               setOpen(false);
               onLogout();
             }}
           >
-            <Icon icon="mdi:logout" className="h-[1.035rem] w-[1.035rem] flex-none text-red-600" />
             {isLoggingOut ? 'Logging out...' : 'Logout'}
           </button>
         </div>
       )}
-    </div>
-  );
-}
-
-function MobileNavGroup({ item, onNavigate }: { item: NavItem; onNavigate: () => void }) {
-  const { pathname } = useLocation();
-  const isActive = item.children?.some((child) => isPathActive(pathname, child.url)) ?? false;
-  const [open, setOpen] = useState(isActive);
-
-  useEffect(() => {
-    if (isActive) setOpen(true);
-  }, [isActive]);
-
-  return (
-    <div className="grid gap-1">
-      <button
-        type="button"
-        aria-expanded={open}
-        onClick={() => setOpen((prev) => !prev)}
-        className={cn(
-          mobileLinkClassName,
-          'w-full cursor-pointer justify-between border-0 bg-transparent text-left',
-          isActive && 'bg-white/10 text-white',
-        )}
-      >
-        <span>{item.label}</span>
-        <Icon
-          icon={open ? 'mdi:chevron-up' : 'mdi:chevron-down'}
-          className="pointer-events-none h-[1.15rem] w-[1.15rem] flex-none md:h-5 md:w-5"
-        />
-      </button>
-      <div className={cn('grid gap-1 overflow-hidden', open ? 'mt-1' : 'hidden')}>
-        {item.children?.map((child) => (
-          <AppLink
-            key={child.url}
-            href={child.url}
-            onClick={onNavigate}
-            className={cn(
-              mobileLinkClassName,
-              'pl-[1.45rem]',
-              isPathActive(pathname, child.url) && 'bg-white/10 text-white',
-            )}
-          >
-            <span>{child.label}</span>
-          </AppLink>
-        ))}
-      </div>
     </div>
   );
 }
@@ -470,7 +427,6 @@ export function Navigation() {
     Map<string, { unreadCount: number; lastActivityAt: string }>
   >(new Map());
   const hasPrimedMessageFlashRef = useRef(false);
-  const isAdmin = authenticatedUser?.role === 'admin';
   const activeMessagesThreadId =
     pathname === ROUTES.MESSAGES ? new URLSearchParams(search).get('threadId') : null;
 
@@ -494,17 +450,11 @@ export function Navigation() {
       }
     };
 
-    const handleResize = () => {
-      if (window.innerWidth >= 1024) setMobileOpen(false);
-    };
-
     document.addEventListener('pointerdown', handleOutsideClick);
     document.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('resize', handleResize);
     return () => {
       document.removeEventListener('pointerdown', handleOutsideClick);
       document.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
@@ -608,7 +558,6 @@ export function Navigation() {
   //   });
   // };
 
-
   const handleLogout = async () => {
     const setLoggingOut = useTokenStore.getState().setLoggingOut;
 
@@ -632,196 +581,72 @@ export function Navigation() {
     }
   };
 
-
-  const mobileMenuItems = isAdmin
-    ? [
-      {
-        label: 'Admin Dashboard',
-        url: ADMIN_ROUTES.DASHBOARD,
-      },
-      ...authenticatedMenuItems,
-    ]
-    : authenticatedMenuItems;
-
   return (
     <nav
-      className="relative z-50 bg-[#003c5f] text-white shadow-[0_1px_0_rgba(7,17,22,0.12)]"
+      className={cn(navSurfaceClassName, 'relative z-50 text-white')}
       aria-label="Primary navigation"
     >
-      <div className="hidden min-h-36 grid-cols-[minmax(20rem,28.5vw)_minmax(0,1fr)] pr-[var(--app-page-inline-padding)] lg:grid xl:min-h-44 2xl:min-h-48 lg:max-[1360px]:grid-cols-[minmax(18rem,31vw)_minmax(0,1fr)]">
-        <BrandMark />
-
-        <div className={cn(navSurfaceClassName, 'grid grid-rows-[44%_56%]')}>
-          <div className="flex items-center justify-end gap-6 xl:gap-8 2xl:gap-12">
-            <div className="flex items-center gap-8 xl:gap-10 2xl:gap-16">
-              {secondaryNavItems.map((item) => (
-                <AppLink
-                  key={item.url}
-                  href={item.url}
-                  className={cn(
-                    desktopSecondaryLinkClassName,
-                    isPathActive(pathname, item.url) && desktopActiveLinkClassName,
-                  )}
-                >
-                  {item.label}
-                </AppLink>
-              ))}
-            </div>
-
-            {authenticatedUser ? (
-              <UserDropdown
-                currentUser={authenticatedUser}
-                onLogout={handleLogout}
-                isLoggingOut={isLoggingOut}
-                unreadThreadCount={unreadThreadCount}
-              />
-            ) : (
-              <AppLink
-                href={AUTH_ROUTES.LOGIN}
-                className={cn(
-                  accountPillClassName,
-                  'self-center justify-center px-[1.875rem] py-[0.4rem] text-base font-bold tracking-[0.01em]',
-                )}
-              >
-                Sign In
-              </AppLink>
-            )}
-          </div>
-
-          <div className="ml-auto flex w-fit items-center gap-6 pb-3 xl:gap-12 xl:pb-4 2xl:gap-12 2xl:pb-5">
-            {primaryNavItems.map((item) =>
-              item.children ? (
-                <DesktopDropdown key={item.label} item={item} />
-              ) : (
-                <DesktopNavLink key={item.label} item={item} />
-              ),
-            )}
-          </div>
-        </div>
-      </div>
-
-      <div className={cn(navSurfaceClassName, 'relative block lg:hidden')}>
-        <div className="grid min-h-[5.25rem] grid-cols-[minmax(0,1fr)_auto] items-stretch sm:min-h-[5.5rem]">
+      <div className="container-custom">
+        <div className="grid min-h-[5.5rem] grid-cols-[minmax(0,1fr)_auto] items-center gap-4 lg:min-h-[5.4375rem]">
           <BrandMark mobile />
+
           <button
             ref={mobileButtonRef}
             type="button"
-            className="relative z-10 inline-flex min-h-[5.25rem] shrink-0 cursor-pointer items-center justify-center border-0 bg-transparent px-2.5 text-white focus-visible:outline-none sm:min-h-[5.5rem] sm:px-3"
+            className="inline-flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border-0 bg-transparent text-white transition-colors duration-150 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
             aria-label="Toggle navigation menu"
             aria-expanded={mobileOpen}
-            aria-controls="mobile-navigation-menu"
+            aria-controls="primary-navigation-menu"
             onClick={() => setMobileOpen((prev) => !prev)}
           >
             <Icon
               icon={mobileOpen ? 'mdi:close' : 'mdi:menu'}
-              className="pointer-events-none h-8 w-8 sm:h-9 sm:w-9"
+              className="pointer-events-none h-9 w-9"
             />
           </button>
         </div>
+      </div>
 
-        <div
-          id="mobile-navigation-menu"
-          ref={mobileMenuRef}
-          className={cn(
-            navSurfaceClassName,
-            'absolute inset-x-0 top-full z-40 border-t border-white/10 shadow-[0_1.2rem_2.8rem_rgba(4,18,28,0.28)] transition-[opacity,transform,visibility] duration-200',
-            mobileOpen
-              ? 'visible translate-y-0 opacity-100'
-              : 'pointer-events-none invisible -translate-y-2 opacity-0',
-          )}
-        >
-          <div className="max-h-[calc(100dvh-5.25rem)] overflow-y-auto overscroll-contain px-[var(--app-page-inline-padding)] pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-3 sm:max-h-[calc(100dvh-5.5rem)] sm:pt-4">
-            <div className={mobileSectionClassName}>
-              {secondaryNavItems.map((item) => (
-                <AppLink
-                  key={item.url}
-                  href={item.url}
-                  onClick={closeMobileMenu}
-                  className={cn(
-                    mobileLinkClassName,
-                    isPathActive(pathname, item.url) && 'bg-white/10 text-white',
-                  )}
-                >
-                  {item.label}
-                </AppLink>
-              ))}
-            </div>
-
-            <div className={mobileSectionClassName}>
-              {primaryNavItems.map((item) =>
-                item.children ? (
-                  <MobileNavGroup key={item.label} item={item} onNavigate={closeMobileMenu} />
-                ) : (
-                  <AppLink
-                    key={item.url}
-                    href={item.url}
-                    onClick={closeMobileMenu}
-                    className={cn(
-                      mobileLinkClassName,
-                      isPathActive(pathname, item.url) && 'bg-white/10 text-white',
-                    )}
-                  >
-                    {item.label}
-                  </AppLink>
-                ),
-              )}
-            </div>
-
-            {authenticatedUser ? (
-              <div className={mobileSectionClassName}>
-                <div className="flex items-center gap-3 px-4 pb-3 pt-1 md:px-5">
-                  <UserAvatar user={authenticatedUser} />
-                  <div className="flex min-w-0 flex-col text-[0.85rem] text-[#c4d0d9] md:text-[0.92rem]">
-                    <span>Welcome,</span>
-                    <strong className="overflow-hidden whitespace-nowrap text-ellipsis text-base font-bold text-white md:text-[1.05rem]">
-                      {getDisplayName(authenticatedUser)}
-                    </strong>
-                  </div>
-                  <UnreadMessagesBadge count={unreadThreadCount} className="ml-auto flex-none" />
-                </div>
-
-                {mobileMenuItems.map((item) => (
-                  <AppLink
-                    key={item.url}
-                    href={item.url}
-                    onClick={closeMobileMenu}
-                    className={cn(
-                      mobileLinkClassName,
-                      'justify-between',
-                      isPathActive(pathname, item.url) && 'bg-white/10 text-white',
-                    )}
-                  >
-                    <span>{item.label}</span>
-                    {item.url === ROUTES.MESSAGES ? (
-                      <UnreadMessagesBadge count={unreadThreadCount} />
-                    ) : null}
-                  </AppLink>
+      <div
+        id="primary-navigation-menu"
+        ref={mobileMenuRef}
+        className={cn(
+          navSurfaceClassName,
+          'absolute inset-x-0 top-full z-40 border-t border-white/20 shadow-[0_1.5rem_3rem_rgba(2,30,68,0.32)] transition-[opacity,transform,visibility] duration-200',
+          mobileOpen
+            ? 'visible translate-y-0 opacity-100'
+            : 'pointer-events-none invisible -translate-y-2 opacity-0',
+        )}
+      >
+        <div className="container-custom max-h-[calc(100dvh-5.5rem)] overflow-y-auto overscroll-contain pb-[max(2rem,env(safe-area-inset-bottom))] pt-7 lg:max-h-[calc(100dvh-5.4375rem)] lg:pb-8 lg:pt-8">
+          <div className="grid gap-8 lg:grid-cols-[repeat(4,minmax(0,1fr))_auto] lg:gap-[clamp(2.25rem,6vw,9rem)]">
+            {expandedNavColumns.map((column, index) => (
+              <div key={index} className="grid content-start gap-8">
+                {column.map((item) => (
+                  <ExpandedNavItem key={item.label} item={item} onNavigate={closeMobileMenu} />
                 ))}
-
-                <button
-                  type="button"
-                  className="flex w-full cursor-pointer items-center gap-3 rounded-[1rem] border-0 bg-transparent px-4 py-3.5 text-left text-[0.98rem] font-bold tracking-[0.03em] text-red-200 transition-colors duration-200 hover:bg-white/10 hover:text-red-100 md:px-5 md:py-4 md:text-base"
-                  disabled={isLoggingOut}
-                  onClick={handleLogout}
-                >
-                  <Icon
-                    icon="mdi:logout"
-                    className="h-[1.15rem] w-[1.15rem] flex-none md:h-5 md:w-5"
-                  />
-                  <span>{isLoggingOut ? 'Logging out...' : 'Logout'}</span>
-                </button>
               </div>
-            ) : (
-              <div className={mobileSectionClassName}>
+            ))}
+
+            <div className="grid content-start gap-4 lg:w-[15rem]">
+              {authenticatedUser ? (
+                <UserDropdown
+                  currentUser={authenticatedUser}
+                  onLogout={handleLogout}
+                  isLoggingOut={isLoggingOut}
+                  unreadThreadCount={unreadThreadCount}
+                  onNavigate={closeMobileMenu}
+                />
+              ) : (
                 <AppLink
                   href={AUTH_ROUTES.LOGIN}
                   onClick={closeMobileMenu}
-                  className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/30 px-6 text-center text-base font-extrabold tracking-[0.06em] text-white no-underline transition-colors duration-200 hover:bg-white/10"
+                  className="inline-flex h-10 w-[7.5rem] items-center justify-center rounded-full bg-white text-center text-base font-semibold tracking-[0.03em] text-[#05245B] no-underline transition-colors duration-150 hover:bg-white/90"
                 >
                   Sign In
                 </AppLink>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </div>

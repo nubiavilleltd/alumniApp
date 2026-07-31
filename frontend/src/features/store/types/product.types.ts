@@ -15,6 +15,13 @@ export interface ApiProductVariant {
   image_id: string | null;
 }
 
+export interface ApiProductMeta {
+  total_products: number;
+  total_pinned: number;
+  max_pinned: number;
+}
+
+
 export interface ApiProduct {
   id: string;
   user_id: string;
@@ -31,6 +38,7 @@ export interface ApiProduct {
   images: ApiProductImage[];
   variants: ApiProductVariant[];
   total_stock: number;
+  pin_item:boolean;
 }
 
 // ─── Internal shape consumed by components ────────────────────────────────────
@@ -49,6 +57,12 @@ export interface ProductVariant {
   sizes: ProductSize[];
 }
 
+export interface ProductMeta {
+  totalProducts: number;
+  totalPinned: number;
+  maxPinned: number;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -63,4 +77,5 @@ export interface Product {
   variants: ProductVariant[];
   totalStock: number;
   status: 'active' | 'inactive';
+  isPinned:boolean;
 }

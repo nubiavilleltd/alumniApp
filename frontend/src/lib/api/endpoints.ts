@@ -110,8 +110,8 @@ export const API_ENDPOINTS = {
   LEADERSHIP: {
     GET_LEADERSHIP: '/api/get_leadership',
     // CMS endpoints (future):
-    // CREATE_LEADER: '/create_leader',
-    // MANAGE_LEADER: '/manage_leader',
+    CREATE_LEADER: '/api/create_leader',
+    MANAGE_LEADER: '/api/manage_leader',
   },
 
   // ─── Announcements ────────────────────────────────────────────────────────
@@ -119,6 +119,7 @@ export const API_ENDPOINTS = {
     LIST: '/api/get_announcements',
     CREATE: '/api/create_announcement',
     MANAGE: '/api/manage_announcement',
+    BIRTHDAYS:'/api/get_birthdays'
   },
 
   // ─── Pages Content ────────────────────────────────────────────────────────
@@ -166,5 +167,16 @@ STORE: {
 
   INITIATE_CHECKOUT: '/product/initiate_checkout',
   VERIFY_PAYMENT: '/product/verify_payment',
+},
+
+ORDER:{
+  FETCH_ORDERS: '/product/fetch_orders',
+  // TEMPORARY: backend has not provided this endpoint yet.
+  // Pointing at FETCH_ORDERS as a stand-in so admin UI can be built/tested.
+  // ⚠️ This means the "admin" order list currently only returns the
+  // current user's own orders, NOT all orders across the system.
+  // TODO: revert to '/product/fetch_orders_management' once backend ships it.
+  FETCH_ORDERS_MANAGEMENT: '/product/order_management',
+  UPDATE_ORDER_STATUS: '/product/update_order_status',
 }
 } as const;

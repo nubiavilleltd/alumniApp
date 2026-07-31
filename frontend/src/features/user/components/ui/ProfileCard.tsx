@@ -89,7 +89,6 @@ export function ProfileCard({
   isMessaging,
   onShare,
 }: ProfileCardProps) {
-  // console.log('mode mode', { mode });
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sm:p-6 flex flex-col items-center text-center">
       {/* Top row: share + volunteer */}

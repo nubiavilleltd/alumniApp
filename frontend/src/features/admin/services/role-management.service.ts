@@ -11,7 +11,7 @@
 
 import { apiClient } from '@/lib/api/client';
 import { API_ENDPOINTS } from '@/lib/api/endpoints';
-import { UserRole } from '../api/adapters/role-management.adapter';
+import { AdminCategoryOption, UserRole } from '../api/adapters/role-management.adapter';
 import { createChangeRolePayload } from '../api/adapters/user-management.adapter';
 
 export const roleManagementApi = {
@@ -42,6 +42,19 @@ export const roleManagementApi = {
       const userMessage = getUserFriendlyErrorMessage(error);
       throw new Error(userMessage);
     }
+  },
+
+    async getAdminCategoryOptions(): Promise<AdminCategoryOption[]> {
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    return [
+      { value: 'admin', label: 'Admin' },
+      { value: 'approval admin', label: 'Approval Admin' },
+      { value: 'content admin', label: 'Content Admin' },
+      { value: 'storekeeper admin', label: 'Storekeeper Admin' },
+      { value: 'events admin', label: 'Events Admin' },
+      { value: 'finances admin', label: 'Finances Admin' },
+    ];
   },
 };
 

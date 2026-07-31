@@ -384,7 +384,11 @@ export function DatePicker({
       >
         {/* <Icon icon="mdi:calendar-outline" className="w-4 h-4 text-gray-400 flex-shrink-0" /> */}
         <Calendar className="text-gray-400" size={15} />
-        <span className={`flex-1 ${value ? 'text-gray-700' : 'text-gray-400'}`}>
+        {/* <span className={`flex-1 ${value ? 'text-gray-700' : 'text-gray-400'}`}>
+          {value ? formatDisplay(value) : placeholder}
+        </span> */}
+
+        <span className={`flex-1 min-w-0 whitespace-nowrap ${value ? 'text-gray-700' : 'text-gray-400'}`}>
           {value ? formatDisplay(value) : placeholder}
         </span>
         <Icon

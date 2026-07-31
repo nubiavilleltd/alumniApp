@@ -5,6 +5,9 @@ import { Link } from 'react-router-dom';
 import { LIVE_NEWS_ROUTES } from '../routes';
 import { ROUTES } from '@/shared/constants/routes';
 
+import placeholderImg from '/placeholder-image.png';
+// const mainImage = project.images?.[0] || placeholderImg;
+
 
 
 export function NewsCard({
@@ -17,7 +20,7 @@ export function NewsCard({
         <Link to={ROUTES.LIVE_NEWS.DETAIL(item.id, item.slug)} className="block">
             <article className="flex flex-col sm:flex-row gap-4 rounded-3xl bg-white p-3 shadow-sm">
                 <img
-                    src={item.imageUrl}
+                    src={item.imageUrl || placeholderImg}
                     alt={item.title}
                     className="h-[140px] sm:h-[200px] md:h-[140px] w-full sm:w-[160px] rounded-2xl object-cover flex-shrink-0"
                 />

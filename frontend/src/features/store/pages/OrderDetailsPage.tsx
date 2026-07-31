@@ -1,0 +1,89 @@
+import { useParams } from 'react-router-dom';
+import { SEO } from '@/shared/common/SEO';
+import ContainerBackground from '@/shared/containers/ContainerBackground';
+import { useOrders } from '../hooks/useOrders';
+import { useProducts } from '../hooks/useProducts';
+import { useProductModalStore } from '../stores/useProductModalStore';
+import { ProductDetailsModal } from '../components/ProductDetailsModal';
+
+import { OrderItem } from '../types/order.types';
+import { OrderStatusBadge } from '../components/OrderStatusBadge';
+import OrderInfoCard from '../components/OrderInfoCard';
+import OrderItemDetailRow from '../components/OrderItemDetailRow';
+import OrderSummaryCard from '../components/OrderSummaryCard';
+import OrderAddressCard from '../components/OrderAddressCard';
+
+export default function OrderDetailsPage() {
+    const { id } = useParams<{ id: string }>();
+    const { orders, isLoading, isError, error } = useOrders();
+    const { products } = useProducts();
+    const openForAdd = useProductModalStore((s) => s.openForAdd);
+
+    const order = orders.find((o) => o.orderNumber === id);
+
+    const handleAddToCart = (item: OrderItem) => {
+        const product = products.find((p) => p.id === item.productId);
+        if (!product) return; // product may have been removed since order was placed
+        openForAdd(product);
+    };
+
+    if (isLoading) {
+        return <ContainerBackground><p>Loading order...</p></ContainerBackground>;
+    }
+
+    if (isError) {
+        return (
+            <div className="container mx-auto px-4 py-6">
+                <div className="text-red-500">Error loading order: {error?.message}</div>
+            </div>
+        );
+    }
+
+    if (!order) {
+        return <ContainerBackground><p>Order not found.</p></ContainerBackground>;
+    }
+
+    return (
+        <>
+            <SEO title="Order Details" />
+
+            <ContainerBackground>
+                <div className="flex items-center gap-3 mb-8">
+                    <h1 className="type-section-title">Order Details</h1>
+                    <OrderStatusBadge status={order.status} />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
+                    <OrderInfoCard order={order} />
+                    {order.deliveryType === 'delivery' && <OrderAddressCard order={order} />}
+                </div>
+
+                <div className="flex flex-col gap-5 mb-5">
+                    {order.items.map((item) => (
+                        <OrderItemDetailRow
+                            key={item.id}
+                            item={item}
+                            action={
+                                <button
+                                    type="button"
+                                    onClick={() => handleAddToCart(item)}
+                                    className="bg-primary-500 hover:bg-primary-600 text-white px-6 py-2 rounded-full font-semibold text-sm transition-colors shrink-0"
+                                >
+                                    Add to Cart
+                                </button>
+                            }
+                        />
+                    ))}
+                </div>
+
+                <OrderSummaryCard
+                    subtotal={order.subtotal}
+                    shippingFee={order.shippingFee}
+                    total={order.total}
+                />
+            </ContainerBackground>
+
+            <ProductDetailsModal />
+        </>
+    );
+}

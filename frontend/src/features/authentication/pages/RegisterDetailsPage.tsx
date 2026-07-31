@@ -561,7 +561,6 @@ export function RegisterDetailsPage() {
           <FormInput
             label="Maiden Name"
             id="nameInSchool"
-            required
             placeholder="Ezegburu"
             hint=""
             error={detailForm.formState.errors.nameInSchool?.message}

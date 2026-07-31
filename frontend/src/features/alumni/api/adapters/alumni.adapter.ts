@@ -84,19 +84,6 @@ export function mapBackendAlumniToFrontend(raw: unknown): Alumni {
   // ✅ NEW: Privacy mapping
   // ═══════════════════════════════════════════════════════════════════════
 
-  //   if (d.privacy || d.field_visibility) {
-  //     try {
-  //       privacy = {
-  //         ...defaultPrivacySettings,
-  //         ...mapBackendPrivacyToFrontend(d),
-  //       };
-  //     } catch (error) {
-  //       console.warn('Failed to map privacy for alumni:', name, error);
-  //     }
-  //   }
-  //   if (d.privacy || d.field_visibility) {
-  //      privacy = mapBackendPrivacyToFrontend(d)
-  //   }
 
   return {
     id: String(d.id ?? ''),
@@ -149,7 +136,8 @@ export function mapBackendAlumniToFrontend(raw: unknown): Alumni {
     isEmailVerified: stringToBoolean(d.email_verified) ?? false,
     isActive: stringToBoolean(d.active) ?? false,
     isVisible: profile.is_visible !== false,
-    role: d.user_role === 'admin' ? 'admin' : 'member',
+    // role: d.user_role === 'admin' ? 'admin' : 'member',
+    role: mapActualUserRole(d.user_role),
 
     // ═══════════════════════════════════════════════════════════════════════
     // ✅ NEW: Privacy settings
@@ -158,13 +146,20 @@ export function mapBackendAlumniToFrontend(raw: unknown): Alumni {
   };
 }
 
+function mapActualUserRole(userRole:string){
+  if(!userRole || typeof userRole !== "string") return "member";
+  const memberRoles = ["alumni", "member"];
+  const userRoleInLowerCase = userRole?.toLowerCase()
+  if(memberRoles.includes(userRoleInLowerCase)) return "member"
+  return userRoleInLowerCase
+}
+
 export function mapBackendAlumniList(raw: unknown): Alumni[] {
   if (!Array.isArray(raw)) return [];
 
   return raw
     .map((item) => {
       try {
-        console.log('enyter here');
         return mapBackendAlumniToFrontend(item);
       } catch (err) {
         console.error('Failed to map alumni item:', item, err);

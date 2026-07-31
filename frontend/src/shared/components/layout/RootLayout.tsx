@@ -20,6 +20,12 @@ export function RootLayout() {
   const isHomePage = pathname === ROUTES.HOME;
   const isDonationPage = pathname.includes(ROUTES.DONATION);
 
+  const isRouteOrChild = (route: string): boolean =>
+  pathname === route || pathname.startsWith(`${route}/`);
+
+  const isEcommerceRoute = isRouteOrChild(ROUTES.ORDER.ROOT) || isRouteOrChild(ROUTES.STORE.ROOT) || pathname.includes('admin/store') || pathname.includes('admin/orders');
+
+
   const showDonationButton = !isHomePage && !isDonationPage;
 
   useEffect(() => {
@@ -39,7 +45,7 @@ export function RootLayout() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8F8F7] text-gray-900 font-sans antialiased">
+    <div className={`app-root-surface min-h-screen flex flex-col text-gray-900 font-sans antialiased ${isEcommerceRoute ? '' : 'alumni-page-background'}`}>
       <Navigation />
 
       <main className="app-main flex-grow">

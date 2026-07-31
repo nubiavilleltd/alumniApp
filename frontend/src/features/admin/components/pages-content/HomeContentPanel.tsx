@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react';
-import { Pencil, Plus, Trash2 } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState, type ChangeEvent, type DragEvent } from 'react';
+import { Grid2X2, List, Pencil, Plus, Trash2 } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
 import { BaseInput } from '@/shared/components/ui/input/BaseInput';
@@ -18,6 +18,7 @@ import { DragHandle } from './DragHandle';
 import type { HomepageImage, PagesContentTab } from './types';
 
 type ImageUploadIntent = { type: 'add' } | { type: 'replace'; imageId: string };
+type CarouselViewMode = 'grid' | 'list';
 
 type AdminHomepageImage = HomepageImage & {
   isNew?: boolean;
@@ -48,6 +49,7 @@ function createLocalCarouselImage(file: File, src: string, sortOrder: number): A
     fileName: file.name,
     altText: file.name,
     isHidden: false,
+    showGreetingMessage: true,
     isNew: true,
     localFile: file,
     sortOrder,
@@ -58,6 +60,7 @@ function getComparableHomepageImages(images: AdminHomepageImage[]) {
   return normalizeCarouselOrder(images).map((image) => ({
     id: image.id,
     isHidden: image.isHidden,
+    showGreetingMessage: image.showGreetingMessage,
     sortOrder: image.sortOrder,
     hasLocalChange: Boolean(image.isNew || image.localFile || image.replacementFile),
   }));
@@ -67,19 +70,117 @@ function areComparableValuesEqual(left: unknown, right: unknown) {
   return JSON.stringify(left) === JSON.stringify(right);
 }
 
+function getImageAltText(image: Pick<AdminHomepageImage, 'altText' | 'fileName'>) {
+  return image.altText || image.fileName || '';
+}
+
+function clampPosition(position: number, total: number) {
+  return Math.min(Math.max(position, 1), Math.max(total, 1));
+}
+
+function moveImageToIndex<T extends HomepageImage>(
+  images: T[],
+  imageId: string,
+  targetIndex: number,
+) {
+  const fromIndex = images.findIndex((image) => image.id === imageId);
+
+  if (
+    fromIndex < 0 ||
+    targetIndex < 0 ||
+    targetIndex >= images.length ||
+    fromIndex === targetIndex
+  ) {
+    return images;
+  }
+
+  const nextImages = [...images];
+  const [movedImage] = nextImages.splice(fromIndex, 1);
+  nextImages.splice(targetIndex, 0, movedImage);
+  return normalizeCarouselOrder(nextImages);
+}
+
+function PositionInput({
+  imageId,
+  position,
+  total,
+  onCommit,
+}: {
+  imageId: string;
+  position: number;
+  total: number;
+  onCommit: (imageId: string, position: number) => void;
+}) {
+  const [draftPosition, setDraftPosition] = useState(String(position));
+
+  useEffect(() => {
+    setDraftPosition(String(position));
+  }, [position]);
+
+  const revertPosition = () => setDraftPosition(String(position));
+
+  const commitPosition = () => {
+    if (!/^\d+$/.test(draftPosition)) {
+      revertPosition();
+      return;
+    }
+
+    const nextPosition = clampPosition(Number(draftPosition), total);
+    setDraftPosition(String(nextPosition));
+    onCommit(imageId, nextPosition);
+  };
+
+  return (
+    <input
+      type="text"
+      inputMode="numeric"
+      pattern="[0-9]*"
+      aria-label={`Position, editable, currently ${position} of ${total}`}
+      value={draftPosition}
+      onChange={(event) => {
+        const nextValue = event.target.value;
+        if (/^\d*$/.test(nextValue)) {
+          setDraftPosition(nextValue);
+        }
+      }}
+      onBlur={commitPosition}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          event.currentTarget.blur();
+        }
+
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          revertPosition();
+          event.currentTarget.blur();
+        }
+      }}
+      className="h-10 w-14 rounded-full border border-cms-tab-active/25 bg-white text-center text-lg font-semibold text-gray-950 shadow-sm transition focus:border-cms-tab-active focus:outline-none focus:ring-4 focus:ring-primary-500/15"
+    />
+  );
+}
+
 function ImageCardActions({
   isHidden,
   onDelete,
   onEdit,
   onToggleHidden,
+  className = '',
 }: {
   isHidden: boolean;
   onDelete: () => void;
   onEdit: () => void;
   onToggleHidden: () => void;
+  className?: string;
 }) {
   return (
-    <div className="flex items-center justify-end gap-5 border-t border-gray-200 pt-4 text-gray-500 lg:absolute lg:left-[411px] lg:top-[448px] lg:h-6 lg:w-[173px] lg:gap-6 lg:border-t-0 lg:pt-0">
+    <div
+      className={[
+        'flex items-center justify-end gap-5 border-t border-gray-200 pt-4 text-gray-500 lg:absolute lg:left-[411px] lg:top-[448px] lg:h-6 lg:w-[173px] lg:gap-6 lg:border-t-0 lg:pt-0',
+        className,
+      ].join(' ')}
+    >
       <button
         type="button"
         onClick={onToggleHidden}
@@ -121,9 +222,42 @@ function ImageCardActions({
   );
 }
 
+function GreetingVisibilityCheckbox({
+  checked,
+  onChange,
+  className = '',
+}: {
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+  className?: string;
+}) {
+  return (
+    <label
+      className={[
+        'inline-flex cursor-pointer items-center gap-2.5 text-sm font-semibold text-gray-500 transition-colors hover:text-cms-tab-active',
+        className,
+      ].join(' ')}
+    >
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(event) => {
+          console.log('Show greeting checkbox checked:', event.target.checked);
+          onChange(event.target.checked);
+        }}
+        className="h-5 w-5 rounded border-gray-300 text-cms-tab-active accent-cms-tab-active focus:ring-cms-tab-active/25"
+      />
+      <span>Show the greeting message on this image</span>
+    </label>
+  );
+}
+
 export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) {
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const carouselScrollRef = useRef<HTMLDivElement>(null);
+  const autoScrollFrameRef = useRef<number | null>(null);
+  const autoScrollSpeedRef = useRef(0);
   const { data: homepageContent, isLoading, isError, error } = useAdminHomepageContent();
   const updateHomepageText = useUpdateHomepageText();
   const createCarouselImage = useCreateCarouselImage();
@@ -139,6 +273,55 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
   const [saveStatus, setSaveStatus] = useState('');
   const [deletedImageIds, setDeletedImageIds] = useState<string[]>([]);
   const [pendingDeleteImage, setPendingDeleteImage] = useState<HomepageImage | null>(null);
+  const [carouselViewMode, setCarouselViewMode] = useState<CarouselViewMode>(() => {
+    if (typeof window === 'undefined') return 'list';
+    return window.sessionStorage.getItem('home-carousel-view') === 'grid' ? 'grid' : 'list';
+  });
+
+  const stopAutoScroll = () => {
+    autoScrollSpeedRef.current = 0;
+    if (autoScrollFrameRef.current !== null) {
+      window.cancelAnimationFrame(autoScrollFrameRef.current);
+      autoScrollFrameRef.current = null;
+    }
+  };
+
+  const continueAutoScroll = () => {
+    const container = carouselScrollRef.current;
+    const speed = autoScrollSpeedRef.current;
+
+    if (!container || speed === 0) {
+      stopAutoScroll();
+      return;
+    }
+
+    container.scrollLeft += speed;
+    autoScrollFrameRef.current = window.requestAnimationFrame(continueAutoScroll);
+  };
+
+  const updateAutoScroll = (event: DragEvent<HTMLElement>) => {
+    const container = carouselScrollRef.current;
+    if (!container) return;
+
+    const triggerZone = 60;
+    const rect = container.getBoundingClientRect();
+    const distanceFromLeft = event.clientX - rect.left;
+    const distanceFromRight = rect.right - event.clientX;
+    let nextSpeed = 0;
+
+    if (distanceFromLeft < triggerZone) {
+      nextSpeed = -Math.max(4, ((triggerZone - distanceFromLeft) / triggerZone) * 22);
+    } else if (distanceFromRight < triggerZone) {
+      nextSpeed = Math.max(4, ((triggerZone - distanceFromRight) / triggerZone) * 22);
+    }
+
+    autoScrollSpeedRef.current = nextSpeed;
+    if (nextSpeed !== 0 && autoScrollFrameRef.current === null) {
+      autoScrollFrameRef.current = window.requestAnimationFrame(continueAutoScroll);
+    } else if (nextSpeed === 0) {
+      stopAutoScroll();
+    }
+  };
 
   useEffect(() => {
     if (!homepageContent) return;
@@ -151,6 +334,7 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
           fileName: image.fileName,
           altText: image.altText,
           isHidden: image.isHidden,
+          showGreetingMessage: image.showGreetingMessage,
           sortOrder: image.sortOrder + 1,
         })),
       ),
@@ -161,6 +345,12 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
     setSaveStatus('');
   }, [homepageContent]);
 
+  useEffect(() => stopAutoScroll, []);
+
+  useEffect(() => {
+    window.sessionStorage.setItem('home-carousel-view', carouselViewMode);
+  }, [carouselViewMode]);
+
   const moveImage = (fromId: string, toId: string) => {
     if (fromId === toId) return;
 
@@ -170,11 +360,44 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
 
       if (fromIndex < 0 || toIndex < 0) return currentImages;
 
-      const nextImages = [...currentImages];
-      const [movedImage] = nextImages.splice(fromIndex, 1);
-      nextImages.splice(toIndex, 0, movedImage);
-      return normalizeCarouselOrder(nextImages);
+      return moveImageToIndex(currentImages, fromId, toIndex);
     });
+    setSaveStatus('');
+  };
+
+  const moveImageToPosition = (imageId: string, position: number) => {
+    setOrderedImages((currentImages) =>
+      moveImageToIndex(currentImages, imageId, clampPosition(position, currentImages.length) - 1),
+    );
+    setSaveStatus('');
+  };
+
+  const startDrag = (event: DragEvent<HTMLElement>, imageId: string) => {
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/plain', imageId);
+    setDraggedImageId(imageId);
+  };
+
+  const dragOverImage = (event: DragEvent<HTMLElement>, imageId: string) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+    updateAutoScroll(event);
+    setDropTargetImageId(imageId);
+  };
+
+  const dropOnImage = (event: DragEvent<HTMLElement>, imageId: string) => {
+    event.preventDefault();
+    const sourceImageId = event.dataTransfer.getData('text/plain') || draggedImageId;
+    if (sourceImageId) moveImage(sourceImageId, imageId);
+    setDraggedImageId(null);
+    setDropTargetImageId(null);
+    stopAutoScroll();
+  };
+
+  const endDrag = () => {
+    setDraggedImageId(null);
+    setDropTargetImageId(null);
+    stopAutoScroll();
   };
 
   const openImagePicker = (intent: ImageUploadIntent) => {
@@ -243,6 +466,32 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
     setSaveStatus('');
   };
 
+  const setImageGreetingMessageVisibility = (imageId: string, showGreetingMessage: boolean) => {
+    let preventedLastVisibleGreeting = false;
+
+    setOrderedImages((currentImages) => {
+      const visibleGreetingCount = currentImages.filter(
+        (image) => image.showGreetingMessage,
+      ).length;
+
+      if (!showGreetingMessage && visibleGreetingCount <= 1) {
+        preventedLastVisibleGreeting = true;
+        return currentImages;
+      }
+
+      return currentImages.map((image) =>
+        image.id === imageId ? { ...image, showGreetingMessage } : image,
+      );
+    });
+
+    if (preventedLastVisibleGreeting) {
+      toast.error('At least one carousel image must show the greeting message.');
+      return;
+    }
+
+    setSaveStatus('');
+  };
+
   const isSaving =
     updateHomepageText.isPending ||
     createCarouselImage.isPending ||
@@ -254,9 +503,9 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
     if (!homepageContent) {
       return Boolean(
         greetingTitle.trim() ||
-          greetingMessage.trim() ||
-          orderedImages.length > 0 ||
-          deletedImageIds.length > 0,
+        greetingMessage.trim() ||
+        orderedImages.length > 0 ||
+        deletedImageIds.length > 0,
       );
     }
 
@@ -272,6 +521,7 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
         fileName: image.fileName,
         altText: image.altText,
         isHidden: image.isHidden,
+        showGreetingMessage: image.showGreetingMessage,
         sortOrder: image.sortOrder + 1,
       })),
     );
@@ -299,8 +549,15 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
       await Promise.all(deletedImageIds.map((imageId) => deleteCarouselImage.mutateAsync(imageId)));
 
       const persistedImages = [];
+      const originalImagesById = new Map(
+        homepageContent?.carouselImages.map((image) => [image.id, image]) ?? [],
+      );
+      const imagesToPersist = normalizeCarouselOrder(orderedImages).map((image, index) => ({
+        image,
+        index,
+      }));
 
-      for (const [index, image] of normalizeCarouselOrder(orderedImages).entries()) {
+      for (const { image, index } of imagesToPersist) {
         if (image.isNew && image.localFile) {
           const createdImage = await createCarouselImage.mutateAsync({
             image: image.localFile,
@@ -308,26 +565,46 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
             sortOrder: index,
             isHidden: image.isHidden,
           });
+
+          await updateCarouselImage.mutateAsync({
+            id: createdImage.id,
+            altText: image.altText || image.fileName,
+            isHidden: image.isHidden,
+            showGreetingMessage: image.showGreetingMessage,
+          });
+
           persistedImages.push({ id: createdImage.id, sortOrder: index });
           continue;
         }
+
+        const originalImage = originalImagesById.get(image.id);
+        const hasMetadataChanges =
+          !originalImage ||
+          getImageAltText(image) !==
+            getImageAltText({ altText: originalImage.altText, fileName: originalImage.fileName }) ||
+          image.isHidden !== originalImage.isHidden ||
+          image.showGreetingMessage !== originalImage.showGreetingMessage;
 
         if (image.replacementFile) {
           const updatedImage = await updateCarouselImage.mutateAsync({
             id: image.id,
             image: image.replacementFile,
-            altText: image.altText || image.fileName,
+            altText: getImageAltText(image),
             isHidden: image.isHidden,
+            showGreetingMessage: image.showGreetingMessage,
           });
           persistedImages.push({ id: updatedImage.id || image.id, sortOrder: index });
           continue;
         }
 
-        await updateCarouselImage.mutateAsync({
-          id: image.id,
-          altText: image.altText || image.fileName,
-          isHidden: image.isHidden,
-        });
+        if (hasMetadataChanges) {
+          await updateCarouselImage.mutateAsync({
+            id: image.id,
+            altText: getImageAltText(image),
+            isHidden: image.isHidden,
+            showGreetingMessage: image.showGreetingMessage,
+          });
+        }
         persistedImages.push({ id: image.id, sortOrder: index });
       }
 
@@ -360,15 +637,45 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
               Upload and organise the carousel images displayed on the homepage.
             </p>
 
-            <button
-              type="button"
-              disabled={isSaving}
-              onClick={() => openImagePicker({ type: 'add' })}
-              className="inline-flex w-fit items-center gap-2 rounded-full border-2 border-primary-500 px-4 py-[5px] text-base font-semibold text-primary-500 transition-all duration-200 hover:bg-primary-50 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              <Plus className="h-5 w-5" />
-              Add new image
-            </button>
+            <div className="flex flex-wrap items-center gap-3">
+              <div
+                className="inline-flex rounded-full border border-cms-tab-active/20 bg-cms-surface p-1"
+                aria-label="Carousel view"
+              >
+                {(['grid', 'list'] as const).map((mode) => {
+                  const isActive = carouselViewMode === mode;
+                  const Icon = mode === 'grid' ? Grid2X2 : List;
+
+                  return (
+                    <button
+                      key={mode}
+                      type="button"
+                      onClick={() => setCarouselViewMode(mode)}
+                      className={[
+                        'inline-flex h-9 items-center gap-2 rounded-full px-3 text-sm font-semibold transition-colors',
+                        isActive
+                          ? 'bg-white text-cms-tab-active shadow-sm'
+                          : 'text-gray-500 hover:text-cms-tab-active',
+                      ].join(' ')}
+                      aria-pressed={isActive}
+                    >
+                      <Icon className="h-4 w-4" />
+                      {mode === 'grid' ? 'Grid' : 'List'}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <button
+                type="button"
+                disabled={isSaving}
+                onClick={() => openImagePicker({ type: 'add' })}
+                className="inline-flex w-fit items-center gap-2 rounded-full border-2 border-primary-500 px-4 py-[5px] text-base font-semibold text-primary-500 transition-all duration-200 hover:bg-primary-50 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                <Plus className="h-5 w-5" />
+                Add new image
+              </button>
+            </div>
           </div>
 
           {isLoading ? (
@@ -390,50 +697,40 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
             onChange={handleImageFileChange}
           />
 
-          <div className="scrollbar-hide flex snap-x gap-4 overflow-x-auto scroll-smooth pb-3 [-webkit-overflow-scrolling:touch]">
+          <div
+            ref={carouselScrollRef}
+            onDragOver={updateAutoScroll}
+            onDragLeave={stopAutoScroll}
+            className={[
+              'scrollbar-hide overflow-x-auto scroll-smooth pb-3 [-webkit-overflow-scrolling:touch]',
+              carouselViewMode === 'grid' ? 'flex snap-x gap-4' : 'space-y-3',
+            ].join(' ')}
+          >
             {!isLoading && orderedImages.length === 0 ? (
               <div className="flex min-h-[12rem] w-full items-center justify-center rounded-xl border border-dashed border-cms-tab-active/35 bg-white text-sm font-medium text-gray-500">
                 No carousel images yet. Add an image to start building the homepage carousel.
               </div>
             ) : null}
 
-            {orderedImages.map((image, index) => {
+            {orderedImages.map((image) => {
               const isDragging = draggedImageId === image.id;
               const isDropTarget = dropTargetImageId === image.id && draggedImageId !== image.id;
 
-              return (
+              return carouselViewMode === 'grid' ? (
                 <article
                   key={image.id}
                   draggable
-                  onDragStart={(event) => {
-                    event.dataTransfer.effectAllowed = 'move';
-                    event.dataTransfer.setData('text/plain', image.id);
-                    setDraggedImageId(image.id);
-                  }}
-                  onDragOver={(event) => {
-                    event.preventDefault();
-                    event.dataTransfer.dropEffect = 'move';
-                    setDropTargetImageId(image.id);
-                  }}
+                  onDragStart={(event) => startDrag(event, image.id)}
+                  onDragOver={(event) => dragOverImage(event, image.id)}
                   onDragLeave={() => {
                     setDropTargetImageId((currentId) =>
                       currentId === image.id ? null : currentId,
                     );
                   }}
-                  onDrop={(event) => {
-                    event.preventDefault();
-                    const sourceImageId =
-                      event.dataTransfer.getData('text/plain') || draggedImageId;
-                    if (sourceImageId) moveImage(sourceImageId, image.id);
-                    setDraggedImageId(null);
-                    setDropTargetImageId(null);
-                  }}
-                  onDragEnd={() => {
-                    setDraggedImageId(null);
-                    setDropTargetImageId(null);
-                  }}
+                  onDrop={(event) => dropOnImage(event, image.id)}
+                  onDragEnd={endDrag}
                   className={[
-                    'relative flex min-h-[24rem] w-full shrink-0 snap-start flex-col rounded-xl border border-cms-tab-active/25 bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg sm:max-w-[38rem] lg:h-[488px] lg:w-[608px] lg:max-w-none lg:p-0',
+                    'relative flex min-h-[21.6rem] w-full shrink-0 snap-start flex-col rounded-xl border border-cms-tab-active/25 bg-white p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg sm:max-w-[34.2rem] lg:h-[439px] lg:w-[547px] lg:max-w-none lg:p-0',
                     isDragging ? 'scale-[0.98] opacity-60' : '',
                     isDropTarget
                       ? 'border-cms-tab-active shadow-lg ring-2 ring-cms-tab-active/20'
@@ -443,23 +740,120 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
                   <div className="mx-auto lg:absolute lg:left-1/2 lg:top-2.5 lg:-translate-x-1/2">
                     <DragHandle />
                   </div>
-                  <p className="mt-6 text-xl font-medium leading-none text-gray-950 lg:absolute lg:left-6 lg:top-[43px] lg:mt-0">
-                    {index + 1}
-                  </p>
+                  <div className="mt-5 lg:absolute lg:left-[22px] lg:top-[32px] lg:mt-0">
+                    <PositionInput
+                      imageId={image.id}
+                      position={image.sortOrder}
+                      total={orderedImages.length}
+                      onCommit={moveImageToPosition}
+                    />
+                  </div>
                   <img
                     src={image.src}
                     alt=""
                     className={[
-                      'mt-8 aspect-[7/4] w-full rounded-[6px] object-cover transition-opacity lg:absolute lg:left-6 lg:top-[88px] lg:mt-0 lg:h-[320px] lg:w-[560px]',
+                      'mt-7 aspect-[7/4] w-full rounded-[6px] object-cover transition-opacity lg:absolute lg:left-[22px] lg:top-[79px] lg:mt-0 lg:h-[288px] lg:w-[504px]',
                       image.isHidden ? 'opacity-45 grayscale' : '',
                     ].join(' ')}
+                  />
+                  <GreetingVisibilityCheckbox
+                    checked={image.showGreetingMessage}
+                    onChange={(checked) => setImageGreetingMessageVisibility(image.id, checked)}
+                    className="mt-5 lg:absolute lg:left-[22px] lg:top-[403px] lg:mt-0 lg:max-w-[20rem]"
                   />
                   <ImageCardActions
                     isHidden={image.isHidden}
                     onDelete={() => setPendingDeleteImage(image)}
                     onEdit={() => openImagePicker({ type: 'replace', imageId: image.id })}
                     onToggleHidden={() => toggleImageHidden(image.id)}
+                    className="lg:left-[370px] lg:top-[403px] lg:w-[156px]"
                   />
+                </article>
+              ) : (
+                <article
+                  key={image.id}
+                  draggable
+                  onDragStart={(event) => startDrag(event, image.id)}
+                  onDragOver={(event) => dragOverImage(event, image.id)}
+                  onDragLeave={() => {
+                    setDropTargetImageId((currentId) =>
+                      currentId === image.id ? null : currentId,
+                    );
+                  }}
+                  onDrop={(event) => dropOnImage(event, image.id)}
+                  onDragEnd={endDrag}
+                  className={[
+                    'grid min-w-[66rem] grid-cols-[2.5rem_4.5rem_5rem_minmax(12rem,1fr)_17rem_7rem_8rem] items-center gap-3 rounded-xl border border-cms-tab-active/20 bg-white px-4 py-3 transition-all',
+                    isDragging ? 'opacity-60' : '',
+                    isDropTarget
+                      ? 'border-cms-tab-active shadow-md ring-2 ring-cms-tab-active/20'
+                      : 'hover:border-primary-200 hover:shadow-sm',
+                  ].join(' ')}
+                >
+                  <DragHandle />
+                  <PositionInput
+                    imageId={image.id}
+                    position={image.sortOrder}
+                    total={orderedImages.length}
+                    onCommit={moveImageToPosition}
+                  />
+                  <div className="h-14 w-20 overflow-hidden rounded-md border border-gray-100 bg-cms-surface">
+                    {image.src ? (
+                      <img
+                        src={image.src}
+                        alt=""
+                        className={[
+                          'h-full w-full object-cover',
+                          image.isHidden ? 'opacity-45 grayscale' : '',
+                        ].join(' ')}
+                      />
+                    ) : null}
+                  </div>
+                  <p
+                    className={[
+                      'truncate text-sm font-semibold text-gray-800',
+                      image.src ? '' : 'text-gray-400',
+                    ].join(' ')}
+                    title={image.fileName || image.altText || `Carousel image ${image.sortOrder}`}
+                  >
+                    {image.fileName || image.altText || `Carousel image ${image.sortOrder}`}
+                  </p>
+                  <GreetingVisibilityCheckbox
+                    checked={image.showGreetingMessage}
+                    onChange={(checked) => setImageGreetingMessageVisibility(image.id, checked)}
+                    className="text-xs"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => toggleImageHidden(image.id)}
+                    className={[
+                      'w-fit rounded-full px-3 py-1 text-xs font-semibold',
+                      image.isHidden
+                        ? 'bg-gray-100 text-gray-500'
+                        : 'bg-primary-50 text-cms-tab-active',
+                    ].join(' ')}
+                    aria-pressed={image.isHidden}
+                  >
+                    {image.isHidden ? 'Hidden' : 'Visible'}
+                  </button>
+                  <div className="flex items-center justify-end gap-4">
+                    <button
+                      type="button"
+                      onClick={() => openImagePicker({ type: 'replace', imageId: image.id })}
+                      className="text-gray-500 transition-colors hover:text-cms-tab-active"
+                      aria-label="Edit carousel image"
+                    >
+                      <Pencil className="h-5 w-5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPendingDeleteImage(image)}
+                      className="text-gray-500 transition-colors hover:text-red-500"
+                      aria-label="Delete carousel image"
+                    >
+                      <Trash2 className="h-5 w-5" />
+                    </button>
+                  </div>
                 </article>
               );
             })}
@@ -502,18 +896,16 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
             textareaClassName="!min-h-24 !resize-none !rounded-[1.5rem] !border-0 !bg-cms-surface !px-4 !py-4 !text-base !font-normal !leading-snug !text-gray-900 !shadow-none placeholder:!text-[#858585] placeholder:!opacity-100 focus:!border-transparent focus:!outline focus:!outline-3 focus:!outline-primary-500/20"
           />
 
-          {hasHomepageChanges ? (
-            <div className="flex justify-center pt-8">
-              <button
-                type="button"
-                disabled={isSaving}
-                onClick={saveHomepageContent}
-                className="rounded-full bg-primary-500 tracking-[3%] px-8 py-2 text-base font-bold text-white shadow-sm transition-all duration-200 hover:bg-primary-600 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {isSaving ? 'Updating...' : 'Update Homepage'}
-              </button>
-            </div>
-          ) : null}
+          <div className="flex justify-center pt-8">
+            <button
+              type="button"
+              disabled={isSaving || !hasHomepageChanges}
+              onClick={saveHomepageContent}
+              className="rounded-full bg-primary-500 tracking-[3%] px-8 py-2 text-base font-bold text-white shadow-sm transition-all duration-200 hover:bg-primary-600 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isSaving ? 'Updating...' : 'Update Homepage'}
+            </button>
+          </div>
           {saveStatus ? (
             <p className="text-center text-sm font-medium text-success-700">{saveStatus}</p>
           ) : null}
