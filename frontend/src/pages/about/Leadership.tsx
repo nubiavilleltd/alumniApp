@@ -76,7 +76,7 @@ export function MessageFromPresident() {
   }
 
   return (
-    <section className="section bg-white">
+    <section className="section">
       <div className="container-custom">
         {isLoading ? (
           <div className="grid grid-cols-1 gap-8 md:grid-cols-[260px_1fr] animate-pulse">

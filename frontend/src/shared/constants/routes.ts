@@ -28,6 +28,7 @@ export const ROUTES = {
   MESSAGES: '/messages',
   PRIVACY: '/privacy',
   TERMS: '/terms',
+  SOCIAL_MEDIA_FEED: '/social-media-feed',
   LEADERSHIP: '/leadership',
   PROJECTS: PROJECT_ROUTES,
   JOIN_PROJECTS: JOIN_PROJECT_ROUTES,

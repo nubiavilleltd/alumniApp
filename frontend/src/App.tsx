@@ -72,6 +72,7 @@ import { LogoutGate } from './shared/components/routing/LogoutGate';
 import { LIVE_NEWS_ROUTES } from './features/liveNews/routes';
 import LiveNewsPage from './features/liveNews/pages/LiveNewsPage';
 import LiveNewsDetailPage from './features/liveNews/pages/LiveNewsDetailPage';
+import SocialMediaFeedPage from './features/socialMedia/pages/SocialMediaFeedPage';
 import { StorePage } from './features/store/pages/StorePage';
 import { CartPage } from './features/store/pages/CartPage';
 import { CheckoutPage } from './features/store/pages/CheckoutPage';
@@ -178,6 +179,7 @@ export default function App() {
             <Route path={ROUTES.WELFARE} element={<WelfarePage />} />
             <Route path={ROUTES.WELFARE_ZONES} element={<WelfareZonesPage />} />
             <Route path={ROUTES.DONATION} element={<DonationPage />} />
+            <Route path={ROUTES.SOCIAL_MEDIA_FEED} element={<SocialMediaFeedPage />} />
             <Route path={ROUTES.LIVE_NEWS.ROOT} element={<LiveNewsPage />} />
             <Route path={ROUTES.LIVE_NEWS.DETAIL_PATH} element={<LiveNewsDetailPage />} />
             <Route

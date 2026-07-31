@@ -253,7 +253,7 @@ function ExpandedNavItem({ item, onNavigate }: { item: NavItem; onNavigate: () =
           <Icon icon={open ? 'mdi:chevron-up' : 'mdi:chevron-down'} className="h-5 w-5 flex-none" />
         </button>
 
-        <div className={cn('grid gap-2 overflow-hidden', open ? 'block' : 'hidden')}>
+        <div className={cn('grid gap-4 overflow-hidden', !open && 'hidden')}>
           {item.children.map((child) => (
             <AppLink
               key={child.url}
@@ -266,7 +266,7 @@ function ExpandedNavItem({ item, onNavigate }: { item: NavItem; onNavigate: () =
             >
               <span className="block text-white">{child.label}</span>
               {child.description ? (
-                <span className="block pt-1 text-xs font-semibold text-[#BDBDBD] lg:text-[0.78rem]">
+                <span className="block pt-0.5 text-xs font-semibold leading-snug text-[#BDBDBD] lg:text-[0.78rem]">
                   {child.description}
                 </span>
               ) : null}

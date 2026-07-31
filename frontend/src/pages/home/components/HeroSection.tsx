@@ -45,7 +45,7 @@ function renderHeroHeading(text?: string) {
   return (
     <>
       {homeMatch[1]}
-      <span className="bg-[linear-gradient(95deg,#ffffff_10%,#1b7dc2_129%)] bg-clip-text text-transparent">
+      <span className="bg-[linear-gradient(95deg,#ffffff_0%,#d9eefb_45%,#7bbbe8_100%)] bg-clip-text text-transparent">
         {homeMatch[2]}
       </span>
     </>

@@ -40,7 +40,7 @@ export function AdminPagesContentPage() {
       <SEO title="Pages Content" description="Manage page content" />
       <AdminBanner activeTab="pages_content" title="Pages Content" headingLevel="h1" />
 
-      <section className="bg-cms-surface py-8">
+      <section className="py-8">
         <div className="mx-auto w-full max-w-[1312px] px-4 sm:px-6 lg:px-0">
           <PagesContentTabs activeTab={activeTab} onChange={setActiveTab} />
           <div key={activeTab}>{activePanel}</div>

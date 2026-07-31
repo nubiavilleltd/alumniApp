@@ -6,6 +6,8 @@
 
 :root {
   --app-page-inline-padding: 16px;
+  --app-page-bg-rgb: 248 248 247;
+  --app-page-bg-color: rgb(var(--app-page-bg-rgb));
 
   /* Primary - #021E44 */
   /* --color-primary-50: 242 246 252;
@@ -85,7 +87,7 @@
 }
 
 .alumni-page-background {
-  background-color: #f8f8f7;
+  background-color: var(--app-page-bg-color);
   background-image:
     linear-gradient(rgba(248, 248, 247, 0.95), rgba(248, 248, 247, 0.95)),
     url('/bg/alumni_bg.gif');
@@ -94,8 +96,15 @@
   background-size: cover;
 }
 
+.app-root-surface {
+  background-color: var(--app-page-bg-color);
+}
+
 .alumni-page-background .app-main .bg-\[\#F8F8F7\],
 .alumni-page-background .app-main .bg-\[\#f8f8f7\],
+.alumni-page-background .app-main .bg-\[\#fbfbfa\],
+.alumni-page-background .app-main .bg-\[\#f8f7f4\],
+.alumni-page-background .app-main .bg-\[\#f8f7f3\],
 .alumni-page-background .home-feature-section,
 .alumni-page-background .announcements-page {
   background: transparent;

@@ -166,14 +166,21 @@ function ImageCardActions({
   onDelete,
   onEdit,
   onToggleHidden,
+  className = '',
 }: {
   isHidden: boolean;
   onDelete: () => void;
   onEdit: () => void;
   onToggleHidden: () => void;
+  className?: string;
 }) {
   return (
-    <div className="flex items-center justify-end gap-5 border-t border-gray-200 pt-4 text-gray-500 lg:absolute lg:left-[411px] lg:top-[448px] lg:h-6 lg:w-[173px] lg:gap-6 lg:border-t-0 lg:pt-0">
+    <div
+      className={[
+        'flex items-center justify-end gap-5 border-t border-gray-200 pt-4 text-gray-500 lg:absolute lg:left-[411px] lg:top-[448px] lg:h-6 lg:w-[173px] lg:gap-6 lg:border-t-0 lg:pt-0',
+        className,
+      ].join(' ')}
+    >
       <button
         type="button"
         onClick={onToggleHidden}
@@ -267,8 +274,8 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
   const [deletedImageIds, setDeletedImageIds] = useState<string[]>([]);
   const [pendingDeleteImage, setPendingDeleteImage] = useState<HomepageImage | null>(null);
   const [carouselViewMode, setCarouselViewMode] = useState<CarouselViewMode>(() => {
-    if (typeof window === 'undefined') return 'grid';
-    return window.sessionStorage.getItem('home-carousel-view') === 'list' ? 'list' : 'grid';
+    if (typeof window === 'undefined') return 'list';
+    return window.sessionStorage.getItem('home-carousel-view') === 'grid' ? 'grid' : 'list';
   });
 
   const stopAutoScroll = () => {
@@ -460,11 +467,27 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
   };
 
   const setImageGreetingMessageVisibility = (imageId: string, showGreetingMessage: boolean) => {
-    setOrderedImages((currentImages) =>
-      currentImages.map((image) =>
+    let preventedLastVisibleGreeting = false;
+
+    setOrderedImages((currentImages) => {
+      const visibleGreetingCount = currentImages.filter(
+        (image) => image.showGreetingMessage,
+      ).length;
+
+      if (!showGreetingMessage && visibleGreetingCount <= 1) {
+        preventedLastVisibleGreeting = true;
+        return currentImages;
+      }
+
+      return currentImages.map((image) =>
         image.id === imageId ? { ...image, showGreetingMessage } : image,
-      ),
-    );
+      );
+    });
+
+    if (preventedLastVisibleGreeting) {
+      toast.error('At least one carousel image must show the greeting message.');
+      return;
+    }
 
     setSaveStatus('');
   };
@@ -529,8 +552,12 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
       const originalImagesById = new Map(
         homepageContent?.carouselImages.map((image) => [image.id, image]) ?? [],
       );
+      const imagesToPersist = normalizeCarouselOrder(orderedImages).map((image, index) => ({
+        image,
+        index,
+      }));
 
-      for (const [index, image] of normalizeCarouselOrder(orderedImages).entries()) {
+      for (const { image, index } of imagesToPersist) {
         if (image.isNew && image.localFile) {
           const createdImage = await createCarouselImage.mutateAsync({
             image: image.localFile,
@@ -703,7 +730,7 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
                   onDrop={(event) => dropOnImage(event, image.id)}
                   onDragEnd={endDrag}
                   className={[
-                    'relative flex min-h-[24rem] w-full shrink-0 snap-start flex-col rounded-xl border border-cms-tab-active/25 bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg sm:max-w-[38rem] lg:h-[488px] lg:w-[608px] lg:max-w-none lg:p-0',
+                    'relative flex min-h-[21.6rem] w-full shrink-0 snap-start flex-col rounded-xl border border-cms-tab-active/25 bg-white p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg sm:max-w-[34.2rem] lg:h-[439px] lg:w-[547px] lg:max-w-none lg:p-0',
                     isDragging ? 'scale-[0.98] opacity-60' : '',
                     isDropTarget
                       ? 'border-cms-tab-active shadow-lg ring-2 ring-cms-tab-active/20'
@@ -713,7 +740,7 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
                   <div className="mx-auto lg:absolute lg:left-1/2 lg:top-2.5 lg:-translate-x-1/2">
                     <DragHandle />
                   </div>
-                  <div className="mt-6 lg:absolute lg:left-6 lg:top-[35px] lg:mt-0">
+                  <div className="mt-5 lg:absolute lg:left-[22px] lg:top-[32px] lg:mt-0">
                     <PositionInput
                       imageId={image.id}
                       position={image.sortOrder}
@@ -725,20 +752,21 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
                     src={image.src}
                     alt=""
                     className={[
-                      'mt-8 aspect-[7/4] w-full rounded-[6px] object-cover transition-opacity lg:absolute lg:left-6 lg:top-[88px] lg:mt-0 lg:h-[320px] lg:w-[560px]',
+                      'mt-7 aspect-[7/4] w-full rounded-[6px] object-cover transition-opacity lg:absolute lg:left-[22px] lg:top-[79px] lg:mt-0 lg:h-[288px] lg:w-[504px]',
                       image.isHidden ? 'opacity-45 grayscale' : '',
                     ].join(' ')}
                   />
                   <GreetingVisibilityCheckbox
                     checked={image.showGreetingMessage}
                     onChange={(checked) => setImageGreetingMessageVisibility(image.id, checked)}
-                    className="mt-5 lg:absolute lg:left-6 lg:top-[448px] lg:mt-0 lg:max-w-[22rem]"
+                    className="mt-5 lg:absolute lg:left-[22px] lg:top-[403px] lg:mt-0 lg:max-w-[20rem]"
                   />
                   <ImageCardActions
                     isHidden={image.isHidden}
                     onDelete={() => setPendingDeleteImage(image)}
                     onEdit={() => openImagePicker({ type: 'replace', imageId: image.id })}
                     onToggleHidden={() => toggleImageHidden(image.id)}
+                    className="lg:left-[370px] lg:top-[403px] lg:w-[156px]"
                   />
                 </article>
               ) : (
