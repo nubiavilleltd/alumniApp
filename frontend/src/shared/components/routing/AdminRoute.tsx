@@ -31,6 +31,8 @@ export function AdminRoute({ children }: AdminRouteProps) {
 
   const { isAdmin, isAuthenticated, user } = useAuth();
 
+  console.log("isAdmin 1", isAdmin)
+
   const isLoggingOut = useTokenStore((state) => state._isLoggingOut);
 
   // Background profile fetch — enriches data but never blocks the initial check

@@ -67,7 +67,7 @@ function OpportunityCard({ opportunity }: { opportunity: VolunteerOpportunity })
         />
       </div>
 
-      <div className="flex flex-col py-1 pr-2">
+      <div className="flex flex-col p-2">
         <h3 className="text-gray-900 font-bold text-xl leading-snug">{opportunity.title}</h3>
 
         <p className="text-gray-500 text-sm leading-relaxed mt-2">{opportunity.description}</p>
@@ -104,7 +104,7 @@ export default function VolunteerPage() {
       />
 
       {/* Hero */}
-      <section className="relative h-[520px] sm:h-[700px] overflow-hidden p-12">
+      <section className="relative h-[520px] sm:h-[700px] overflow-hidden container-custom">
         <img
           src={"/bg-volunteer.png"}
           alt="Volunteers"
@@ -112,18 +112,18 @@ export default function VolunteerPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent" />
 
-        <div className="relative h-full container-custom mx-auto flex flex-col justify-center px-4 sm:px-0">
+        <div className="relative h-full mx-auto flex flex-col justify-center sm:px-0">
           <span className="inline-flex w-fit items-center px-4 py-1.5 rounded-full border border-white/40 text-white text-xs font-semibold mb-4">
             A Spirit of Service
           </span>
 
           <p className="text-white text-lg sm:text-xl font-medium mb-1">Volunteer Opportunities</p>
 
-          <h1 className="text-white font-extrabold text-5xl sm:text-6xl leading-tight mb-4">
+          <h1 className="text-white font-extrabold text-4xl sm:text-6xl md:text-7xl leading-tight mb-4">
             Step Into Impact
           </h1>
 
-          <p className="text-white/90 text-base sm:text-lg max-w-xl leading-relaxed">
+          <p className="text-white text-base sm:text-lg md:text-xl max-w-2xl leading-relaxed">
             Join our volunteer network to organise events and drive initiatives that strengthen
             the alumnae association and the community around us.
           </p>

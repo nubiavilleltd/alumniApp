@@ -126,7 +126,7 @@ const expandedNavColumns: NavItem[][] = [
     { label: 'Welfare', url: ROUTES.WELFARE },
   ],
   [
-    { label: 'Volunteer', url: ALUMNI_ROUTES.PROFILES },
+    { label: 'Volunteer', url: ROUTES.JOIN_PROJECTS.VOLUNTEER },
     { label: 'Contact Us', url: ROUTES.CONTACT },
   ],
 ];

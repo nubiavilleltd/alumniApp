@@ -112,6 +112,9 @@ function MemberStatCard({ label, value, icon: Icon, gradient }: MemberStatCardPr
 // ═══════════════════════════════════════════════════════════════════════════
 
 function mapAlumniToDisplayUser(alumni: Alumni, currentUserMemberId?: string, leadership?: LeadershipMember): DisplayUser {
+  if(currentUserMemberId == "39"){
+console.log("bnnn", ['alumni', 'member'].includes(alumni.role ?? 'alumni') ? 'member' : 'admin',)
+  }
   return {
     id: alumni.memberId,
     fullName: alumni.name,

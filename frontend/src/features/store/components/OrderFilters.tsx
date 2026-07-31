@@ -60,8 +60,8 @@ export function OrderFilters({
 return (
     <div className={`flex w-full flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between ${className}`}>
       {/* Top row: Search + Tabs (desktop) / Search + Dropdown (mobile) */}
-      <div className="flex flex-1 items-center gap-2 min-w-0 sm:flex-wrap">
-        <div className="flex-1 min-w-0 sm:min-w-[200px]">
+      <div className="flex flex-col sm:flex-row flex-1 items-center gap-2 min-w-0 sm:flex-wrap">
+        <div className="w-full flex-1 min-w-0 sm:min-w-[200px]">
           <SearchInput
             value={search}
             onValueChange={onSearch}
@@ -70,7 +70,7 @@ return (
         </div>
 
         {/* Mobile: tabs collapse into a dropdown */}
-        <div className="flex-1 min-w-0 sm:hidden">
+        <div className="w-full flex-1 min-w-0 sm:hidden">
           <FilterSheet
             value={activeTab}
             onChange={onTabChange}
