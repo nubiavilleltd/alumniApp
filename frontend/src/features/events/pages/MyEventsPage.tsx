@@ -342,7 +342,6 @@ export function MyEventsPage() {
   // TODO: myEvents empty until backend implements POST /get_events { user_id }
   const { events: myEvents = [], isLoading } = useMyEvents();
 
-  console.log('myEvents', { myEvents });
   const cancelMutation = useCancelRegistration();
   const [unregisterEvent, setUnregisterEvent] = useState<Event | null>(null);
   const [upcomingPage, setUpcomingPage] = useState(1);

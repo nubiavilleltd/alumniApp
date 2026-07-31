@@ -196,14 +196,12 @@ export function EventDetailPage() {
   const { data: event, isLoading, error } = useEvent(slug);
   const { isUpcoming, isOngoing, isPast } = useEventStatus(event);
 
-  console.log('status event', { isUpcoming, isOngoing, isPast, event });
   const navigate = useNavigate();
 
   const currentUser = useIdentityStore((state) => state.user);
   const isLoggedIn = !!currentUser;
   const isAdmin = currentUser?.role === 'admin';
 
-  console.log('data', { event });
   const deleteEvent = useDeleteEvent();
   const cancelMutation = useCancelRegistration();
 

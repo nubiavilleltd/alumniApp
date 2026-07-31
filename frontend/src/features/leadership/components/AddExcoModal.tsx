@@ -13,6 +13,8 @@ import {
 } from '@/features/leadership/hooks/useLeadership';
 import type { Alumni } from '@/features/alumni/types/alumni.types';
 import { MemberPicker } from '@/shared/components/ui/MemberPicker';
+import { eventFormFieldLabelClassName, eventFormSelectClassName, eventFormSelectControlClassName, eventFormUploadDropzoneClassName } from '@/features/events/constants/eventFormStyles';
+import { Cloud, CloudUpload } from 'lucide-react';
 
 const addExcoSchema = z.object({
   memberId: z.string().min(1, 'Please select a member'),
@@ -68,11 +70,11 @@ export function AddExcoModal({ isOpen, onClose, excludeMemberIds = [] }: AddExco
     // if (!selectedAlumni) return; // guarded by memberId validation above
 
     try {
-    await createLeadershipMember.mutateAsync({
-    memberId: values.memberId,
-    role: values.role,
-    photoFile: imageFiles[0],
-  });
+      await createLeadershipMember.mutateAsync({
+        memberId: values.memberId,
+        role: values.role,
+        photoFile: imageFiles[0],
+      });
       onClose();
     } catch (error) {
       // Error toast shown by the mutation's onError
@@ -109,6 +111,9 @@ export function AddExcoModal({ isOpen, onClose, excludeMemberIds = [] }: AddExco
               value={field.value}
               onChange={(e) => field.onChange(e.target.value)}
               disabled={isLoadingPositions}
+              labelClassName={eventFormFieldLabelClassName}
+              className={eventFormSelectClassName}
+              controlClassName={eventFormSelectControlClassName}
               error={errors.role?.message}
             />
           )}
@@ -117,13 +122,15 @@ export function AddExcoModal({ isOpen, onClose, excludeMemberIds = [] }: AddExco
         <ImageUpload
           label="Upload an Image of the Member"
           previews={imagePreviews}
-           onChange={(files, previews) => {
-    setImageFiles(files);
-    setImagePreviews(previews);
-    setImageError(null);
-  }}
+          idleIcon={<CloudUpload/>}
+          onChange={(files, previews) => {
+            setImageFiles(files);
+            setImagePreviews(previews);
+            setImageError(null);
+          }}
           multiple={false}
           error={imageError ?? undefined}
+          dropzoneClassName={eventFormUploadDropzoneClassName}
         />
 
         <div className="flex justify-center pt-2">

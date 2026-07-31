@@ -136,13 +136,22 @@ export function mapBackendAlumniToFrontend(raw: unknown): Alumni {
     isEmailVerified: stringToBoolean(d.email_verified) ?? false,
     isActive: stringToBoolean(d.active) ?? false,
     isVisible: profile.is_visible !== false,
-    role: d.user_role === 'admin' ? 'admin' : 'member',
+    // role: d.user_role === 'admin' ? 'admin' : 'member',
+    role: mapActualUserRole(d.user_role),
 
     // ═══════════════════════════════════════════════════════════════════════
     // ✅ NEW: Privacy settings
     // ═══════════════════════════════════════════════════════════════════════
     privacy: mapBackendPrivacyToFrontend(profile),
   };
+}
+
+function mapActualUserRole(userRole:string){
+  if(!userRole || typeof userRole !== "string") return "member";
+  const memberRoles = ["alumni", "member"];
+  const userRoleInLowerCase = userRole?.toLowerCase()
+  if(memberRoles.includes(userRoleInLowerCase)) return "member"
+  return userRoleInLowerCase
 }
 
 export function mapBackendAlumniList(raw: unknown): Alumni[] {

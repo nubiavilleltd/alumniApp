@@ -68,7 +68,7 @@ export interface AuthSessionUser {
   createdAt: string;
   chapterId?: string;
 
-  role: 'member' | 'admin';
+  role: string;
 
   isEmailVerified: boolean;
   emailVerifiedAt?: string;

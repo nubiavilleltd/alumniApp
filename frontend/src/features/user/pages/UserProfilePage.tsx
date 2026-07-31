@@ -21,7 +21,6 @@ const breadcrumbItems = [
 export default function UserProfilePage() {
   const { data: currentUser, isLoading } = useCurrentUser();
 
-  console.log('curr data', { currentUser });
 
   if (isLoading) {
     return (

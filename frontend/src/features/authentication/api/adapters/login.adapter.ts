@@ -64,7 +64,8 @@ export function mapCurrentUserResponse(res: any): AuthSessionUser {
     createdAt: new Date().toISOString(),
 
     chapterId: res.chapter_id ? String(res.chapter_id) : undefined,
-    role: res.user_role === 'admin' ? 'admin' : 'member',
+    // role: res.user_role === 'admin' ? 'admin' : 'member',
+    role: mapActualUserRole(res.user_role),
     isEmailVerified: stringToBoolean(res.email_verified) ?? false,
     approvalStatus: res.is_approved ? 'approved' : 'pending',
     accountStatus: res.active ? 'active' : 'deactivated',
@@ -114,6 +115,15 @@ export function mapCurrentUserResponse(res: any): AuthSessionUser {
     privacy: mapBackendPrivacyToFrontend(res.profile),
   };
 }
+
+function mapActualUserRole(userRole:string){
+  if(!userRole || typeof userRole !== "string") return "member";
+  const memberRoles = ["alumni", "member"];
+  const userRoleInLowerCase = userRole?.toLowerCase()
+  if(memberRoles.includes(userRoleInLowerCase)) return "member"
+  return userRoleInLowerCase
+}
+
 
 export function mapLoginError(error: any): string {
   const status = error.response?.status;

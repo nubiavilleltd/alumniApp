@@ -112,7 +112,7 @@ export function mapBackendResponseToFrontendUser(raw: unknown): Partial<AuthSess
 
     whatsappPhone: user.phone || undefined,
     alternativePhone: user.alternative_phone || undefined,
-    role: user.user_role === 'admin' ? 'admin' : 'member',
+    role: mapActualUserRole(user.user_role),
 
     // ✅ Photo: undefined preserves existing
     photo: hasRealPhoto ? String(avatarField) : undefined,
@@ -146,6 +146,14 @@ export function mapBackendResponseToFrontendUser(raw: unknown): Partial<AuthSess
     isClassCoordinator: stringToBoolean(user.is_coordinator),
     isVolunteer: stringToBoolean(user.is_volunteer),
   };
+}
+
+function mapActualUserRole(userRole:string){
+  if(!userRole || typeof userRole !== "string") return "member";
+  const memberRoles = ["alumni", "member"];
+  const userRoleInLowerCase = userRole?.toLowerCase()
+  if(memberRoles.includes(userRoleInLowerCase)) return "member"
+  return userRoleInLowerCase
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

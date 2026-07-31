@@ -574,7 +574,6 @@ export default function EditProfilePage() {
       tiktok: form.tiktok.trim() || '',
     };
 
-    console.log('updates', { updates });
 
     try {
       const saved = await userService.updateProfile({

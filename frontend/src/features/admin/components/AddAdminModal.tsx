@@ -9,6 +9,7 @@ import Button from '@/shared/components/ui/Button';
 import { useChangeUserRole, useAdminCategoryOptions } from '@/features/admin/hooks/useRoleManagement';
 import type { Alumni } from '@/features/alumni/types/alumni.types';
 import { MemberPicker } from '@/shared/components/ui/MemberPicker';
+import { eventFormFieldLabelClassName, eventFormSelectClassName, eventFormSelectControlClassName } from '@/features/events/constants/eventFormStyles';
 
 const addAdminSchema = z.object({
   memberId: z.string().min(1, 'Please select a member'),
@@ -93,6 +94,9 @@ export function AddAdminModal({ isOpen, onClose, excludeMemberIds = [] }: AddAdm
               onChange={(e) => field.onChange(e.target.value)}
               disabled={isLoadingCategories}
               error={errors.category?.message}
+              labelClassName={eventFormFieldLabelClassName}
+              className={eventFormSelectClassName}
+              controlClassName={eventFormSelectControlClassName}
             />
           )}
         />

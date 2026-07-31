@@ -48,11 +48,12 @@ export const roleManagementApi = {
     await new Promise((resolve) => setTimeout(resolve, 200));
 
     return [
-      { value: 'Approval Admin', label: 'Approval Admin' },
-      { value: 'Content Admin', label: 'Content Admin' },
-      { value: 'Storekeeper Admin', label: 'Storekeeper Admin' },
-      { value: 'Events Admin', label: 'Events Admin' },
-      { value: 'Finances Admin', label: 'Finances Admin' },
+      { value: 'admin', label: 'Admin' },
+      { value: 'approval admin', label: 'Approval Admin' },
+      { value: 'content admin', label: 'Content Admin' },
+      { value: 'storekeeper admin', label: 'Storekeeper Admin' },
+      { value: 'events admin', label: 'Events Admin' },
+      { value: 'finances admin', label: 'Finances Admin' },
     ];
   },
 };

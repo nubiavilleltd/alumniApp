@@ -39,7 +39,6 @@ export const cartService = {
       const { data } = await apiClient.get('/product/fetch_cart');
       const cart: ServerCart = data?.data;
 
-      console.log("my cart", {items:cart})
       return {
         cartId: cart?.cart_id ?? 0,
         items: (cart?.items ?? []).map(adaptServerCartItem),

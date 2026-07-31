@@ -18,8 +18,6 @@ import { LiveNewsSkeleton } from '../components/LiveNewsSkeleton';
 export default function LiveNewsPage() {
     const { data: liveNewsData = [], isLoading } = useLiveNews();
 
-    console.log("data", { liveNewsData })
-
     const [currentPage, setCurrentPage] = useState(1);
 
     const ITEMS_PER_PAGE = useItemsPerPage();

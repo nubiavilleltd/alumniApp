@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from 'react';
 import { useAlumni } from '@/features/alumni/hooks/useAlumni';
 import type { Alumni } from '@/features/alumni/types/alumni.types';
 import { Avatar } from '@/shared/components/ui/Avatar';
+import clsx from 'clsx';
 
 interface MemberPickerProps {
   value: string | null; // selected memberId, or null if nothing chosen yet
@@ -10,6 +11,7 @@ interface MemberPickerProps {
   label?: string;
   placeholder?: string;
   error?: string;
+  inputClassName?:string
 }
 
 export function MemberPicker({
@@ -19,6 +21,7 @@ export function MemberPicker({
   label = 'Member',
   placeholder = "Enter the member's name or email",
   error,
+  inputClassName = "bg-[#F8F7F4] rounded-3xl"
 }: MemberPickerProps) {
   const { data: alumniList = [] } = useAlumni();
   const [query, setQuery] = useState('');
@@ -90,9 +93,9 @@ export function MemberPicker({
             }}
             onFocus={() => setIsOpen(true)}
             placeholder={placeholder}
-            className={`w-full rounded-xl border px-4 py-2.5 text-sm outline-none transition-colors focus:border-primary-400 ${
+            className={clsx(`w-full border px-4 py-2.5 text-sm outline-none transition-colors focus:border-primary-400 ${
               error ? 'border-red-400' : 'border-gray-200'
-            }`}
+            }`, inputClassName)}
           />
 
           {isOpen && results.length > 0 && (

@@ -70,7 +70,7 @@ type DisplayUser = {
   fullName: string;
   email: string;
   phone: string;
-  role: 'admin' | 'member';
+  role: string;
   accountStatus: AccountStatus;
   photo?: string;
   leadership?: LeadershipMember;
@@ -112,15 +112,16 @@ function MemberStatCard({ label, value, icon: Icon, gradient }: MemberStatCardPr
 // ═══════════════════════════════════════════════════════════════════════════
 
 function mapAlumniToDisplayUser(alumni: Alumni, currentUserMemberId?: string, leadership?: LeadershipMember): DisplayUser {
-  if(currentUserMemberId == "39"){
-console.log("bnnn", ['alumni', 'member'].includes(alumni.role ?? 'alumni') ? 'member' : 'admin',)
-  }
+//   if(currentUserMemberId == "39"){
+// console.log("bnnn", ['alumni', 'member'].includes(alumni.role ?? 'alumni') ? 'member' : 'admin',)
+//   }
   return {
     id: alumni.memberId,
     fullName: alumni.name,
     email: alumni.email,
     phone: alumni.whatsappPhone,
-    role: ['alumni', 'member'].includes(alumni.role ?? 'alumni') ? 'member' : 'admin',
+    // role: ['alumni', 'member'].includes(alumni.role ?? 'alumni') ? 'member' : 'admin',
+    role: alumni.role ?? "alumni",
     accountStatus: alumni.isActive ? 'active' : 'inactive',
     photo: resolveProfilePhoto({
       photoUrl: alumni.photo,
@@ -176,6 +177,18 @@ function AdminMembersPageSkeleton() {
 // ═══════════════════════════════════════════════════════════════════════════
 
 
+
+// function toTitleCase(text: string) {
+//   if (!text) return "";
+
+//   return text
+//     .toLowerCase()
+//     .trim()
+//     .replace(/\s+/g, " ")
+//     .split(" ")
+//     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+//     .join(" ");
+// }
 
 
 function UserRow({
@@ -240,22 +253,32 @@ function UserRow({
           <div className="min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <p className="font-semibold text-gray-900">{user.fullName}</p>
-              {user.role === 'admin' && (
-                <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-[10px] font-bold rounded-full flex-shrink-0">
-                  ADMIN
-                </span>
-              )}
-              {user.leadership && (
-                <span className="px-2 py-0.5 bg-purple-100 text-purple-700 text-[10px] font-bold rounded-full flex-shrink-0">
-                  {user.leadership.role.toUpperCase()}
-                </span>
-              )}
-              <span
+              {/* {user.role === 'admin' && (
+               
+              )} */}
+               <span
                 className={`px-2 py-0.5 text-[10px] font-bold rounded-full flex-shrink-0 ${isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
                   }`}
               >
                 {isActive ? 'ACTIVE' : 'INACTIVE'}
               </span>
+              
+              {user.leadership && (
+                <span className="px-2 py-0.5 bg-purple-100 text-purple-700 text-[10px] font-bold rounded-full flex-shrink-0">
+                  {user.leadership.role.toUpperCase()}
+                </span>
+              )}
+
+                 {user.role.includes('admin') && (
+                <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-[10px] font-bold rounded-full flex-shrink-0">
+                  {user.role.toUpperCase()}
+                </span>
+              )}
+
+
+
+              
+             
             </div>
 
             <div className="flex items-center gap-1 mt-1 text-xs text-gray-500 min-w-0">
@@ -441,7 +464,6 @@ export function AdminMembersPage() {
     );
   }, [alumniList, currentUser?.memberId, leadershipByMemberId]);
 
-  console.log("user ==>", users)
 
   const filteredUsers = useMemo(() => {
     let filtered = users;
@@ -449,7 +471,7 @@ export function AdminMembersPage() {
     if (statusFilter === 'active' || statusFilter === 'inactive') {
       filtered = filtered.filter((u) => u.accountStatus === statusFilter);
     } else if (statusFilter === 'admin') {
-      filtered = filtered.filter((u) => u.role === 'admin');
+      filtered = filtered.filter((u) => u.role.includes('admin'));
     } else if (statusFilter === 'exco') {
       filtered = filtered.filter((u) => Boolean(u.leadership));
     }
