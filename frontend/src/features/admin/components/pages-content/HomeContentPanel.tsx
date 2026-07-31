@@ -896,18 +896,16 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
             textareaClassName="!min-h-24 !resize-none !rounded-[1.5rem] !border-0 !bg-cms-surface !px-4 !py-4 !text-base !font-normal !leading-snug !text-gray-900 !shadow-none placeholder:!text-[#858585] placeholder:!opacity-100 focus:!border-transparent focus:!outline focus:!outline-3 focus:!outline-primary-500/20"
           />
 
-          {hasHomepageChanges ? (
-            <div className="flex justify-center pt-8">
-              <button
-                type="button"
-                disabled={isSaving}
-                onClick={saveHomepageContent}
-                className="rounded-full bg-primary-500 tracking-[3%] px-8 py-2 text-base font-bold text-white shadow-sm transition-all duration-200 hover:bg-primary-600 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {isSaving ? 'Updating...' : 'Update Homepage'}
-              </button>
-            </div>
-          ) : null}
+          <div className="flex justify-center pt-8">
+            <button
+              type="button"
+              disabled={isSaving || !hasHomepageChanges}
+              onClick={saveHomepageContent}
+              className="rounded-full bg-primary-500 tracking-[3%] px-8 py-2 text-base font-bold text-white shadow-sm transition-all duration-200 hover:bg-primary-600 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isSaving ? 'Updating...' : 'Update Homepage'}
+            </button>
+          </div>
           {saveStatus ? (
             <p className="text-center text-sm font-medium text-success-700">{saveStatus}</p>
           ) : null}
