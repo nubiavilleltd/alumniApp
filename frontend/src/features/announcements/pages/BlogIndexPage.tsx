@@ -134,6 +134,8 @@ export default function BlogIndexPage() {
   );
 
    const { data: birthdays, isLoading:isLoadingBirthdays } = useBirthdayAnnouncements();
+
+   console.log('birthdays', birthdays)
   
 
 
