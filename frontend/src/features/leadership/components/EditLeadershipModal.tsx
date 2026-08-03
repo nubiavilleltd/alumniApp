@@ -14,6 +14,7 @@ import {
 import type { LeadershipMember } from '@/features/leadership/types/leadership.types';
 import { CloudUpload } from 'lucide-react';
 import { eventFormFieldLabelClassName, eventFormSelectClassName, eventFormSelectControlClassName, eventFormUploadDropzoneClassName } from '@/features/events/constants/eventFormStyles';
+import { toast } from '@/shared/components/ui/Toast';
 
 const editLeadershipSchema = z.object({
   role: z.string().min(1, 'Please select a position'),
@@ -91,8 +92,11 @@ export function EditLeadershipModal({ leader, isOpen, onClose }: EditLeadershipM
         payload: { memberId: leader.memberId, role: values.role, photoFile: newPhotoFile },
         photoRemoved,
       });
+      toast.success(`User's leadership role updated to ${values.role.toUpperCase()}`);
       onClose();
     } catch (error) {
+      toast.error('Failed to update user\'s leadership role. Please try again.');
+      console.error('Error updating leadership member:', error);
       // Error toast shown by the mutation's onError
     }
   };
@@ -103,7 +107,7 @@ export function EditLeadershipModal({ leader, isOpen, onClose }: EditLeadershipM
             remove-and-re-add, not an edit, so this field is read-only. */}
         <div className="flex flex-col gap-1">
           <label className="block text-sm font-medium text-gray-700">Member</label>
-          <div className="w-full rounded-3xl bg-[#F8F7F4] border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-700">
+          <div className="w-full rounded-3xl bg-[#F8F7F4] border border-gray-200 px-4 py-2.5 text-sm text-gray-700">
             {leader.name}
           </div>
         </div>

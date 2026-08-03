@@ -54,6 +54,7 @@ import { LeadershipMember } from '@/features/leadership/types/leadership.types';
 import { EditLeadershipModal } from '@/features/leadership/components/EditLeadershipModal';
 import { AddAdminModal } from '@/features/admin/components/AddAdminModal';
 import { EditAdminModal } from '@/features/admin/components/EditAdminModal';
+import { toast } from '@/shared/components/ui/Toast';
 
 function generateInitialsAvatar(name: string): string {
   return `https://ui-avatars.com/api/?name=${encodeURIComponent(
@@ -215,21 +216,33 @@ function UserRow({
   const isActive = user.accountStatus === 'active';
   const isBusy =
     deactivate.isPending || activate.isPending || changeRole.isPending || removeLeadershipMember.isPending;
+    let errorMessage = '';
+    let successMessage = '';
 
   const handleAction = async () => {
     try {
       if (actionType === 'deactivate') {
         await deactivate.mutateAsync(user.id);
+        successMessage = `User successfully deactivated`;
+        errorMessage = `Failed to deactivate user. Please try again.`;
       } else if (actionType === 'activate') {
         await activate.mutateAsync(user.id);
+        successMessage = `User successfully activated`;
+        errorMessage = `Failed to activate user. Please try again.`;
       } else if (actionType === 'removeAdmin') {
         await changeRole.mutateAsync({ userId: user.id, newRole: 'alumni' });
+        successMessage = `User successfully removed as ADMIN`;
+        errorMessage = `Failed to remove user as ADMIN. Please try again.`;
       } else if (actionType === 'removeExco' && user.leadership) {
         await removeLeadershipMember.mutateAsync(user.leadership.id);
+        successMessage = `User successfully removed as EXCO`;
+        errorMessage = `Failed to remove user as EXCO. Please try again.`;
       }
+      toast.success(successMessage || 'Action completed successfully');
       setShowConfirm(false);
       setActionType(null);
     } catch (error) {
+      toast.error(errorMessage || 'An error occurred. Please try again.');
       // Error toast shown by mutation
     }
   };

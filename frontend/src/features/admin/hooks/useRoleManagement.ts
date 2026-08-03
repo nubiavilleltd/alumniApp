@@ -33,11 +33,7 @@ export function useChangeUserRole() {
     mutationFn: ({ userId, newRole }: { userId: string; newRole: UserRole }) =>
       roleManagementApi.changeUserRole(userId, newRole),
 
-    onSuccess: (_data, variables) => {
-      const roleLabel = variables.newRole === 'admin' ? 'Admin' : 'Member';
-
-      // Show success message
-      toast.success(`User role changed to ${roleLabel} successfully`);
+    onSuccess: (_data, _variables) => {
 
       // Invalidate queries to refresh data
       queryClient.invalidateQueries({ queryKey: ['alumni'] });
@@ -46,7 +42,7 @@ export function useChangeUserRole() {
 
     onError: (error: any) => {
       // Error message already sanitized in service
-      toast.error(error.message || 'Failed to change user role');
+      console.error(error.message);
     },
   });
 }

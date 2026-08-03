@@ -15,6 +15,7 @@ import type { Alumni } from '@/features/alumni/types/alumni.types';
 import { MemberPicker } from '@/shared/components/ui/MemberPicker';
 import { eventFormFieldLabelClassName, eventFormSelectClassName, eventFormSelectControlClassName, eventFormUploadDropzoneClassName } from '@/features/events/constants/eventFormStyles';
 import { Cloud, CloudUpload } from 'lucide-react';
+import { toast } from '@/shared/components/ui/Toast';
 
 const addExcoSchema = z.object({
   memberId: z.string().min(1, 'Please select a member'),
@@ -75,8 +76,11 @@ export function AddExcoModal({ isOpen, onClose, excludeMemberIds = [] }: AddExco
         role: values.role,
         photoFile: imageFiles[0],
       });
+      toast.success(`User added as ${values.role.toUpperCase()}`);
       onClose();
     } catch (error) {
+      console.error('Error adding Exco:', error);
+      toast.error('Failed to add Exco. Please try again.');
       // Error toast shown by the mutation's onError
     }
   };

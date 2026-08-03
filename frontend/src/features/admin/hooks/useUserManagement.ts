@@ -76,11 +76,11 @@ export function useAdminDeactivateUser() {
       queryClient.invalidateQueries({ queryKey: userManagementKeys.all });
       queryClient.invalidateQueries({ queryKey: ['alumni'] });
 
-      toast.success('User account deactivated');
+      // toast.success('User account deactivated');
     },
 
     onError: (error: any) => {
-      toast.error(error.message || 'Failed to deactivate user');
+      console.error(error.message || 'Failed to deactivate user');
     },
   });
 }
@@ -104,11 +104,11 @@ export function useAdminActivateUser() {
       queryClient.invalidateQueries({ queryKey: userManagementKeys.all });
       queryClient.invalidateQueries({ queryKey: ['alumni'] });
 
-      toast.success('User account activated');
+
     },
 
     onError: (error: any) => {
-      toast.error(error.message || 'Failed to activate user');
+      console.error(error.message || 'Failed to activate user');
     },
   });
 }

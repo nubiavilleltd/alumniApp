@@ -9,6 +9,7 @@ import Button from '@/shared/components/ui/Button';
 import { useChangeUserRole, useAdminCategoryOptions } from '@/features/admin/hooks/useRoleManagement';
 import type { Alumni } from '@/features/alumni/types/alumni.types';
 import { eventFormFieldLabelClassName, eventFormSelectClassName, eventFormSelectControlClassName } from '@/features/events/constants/eventFormStyles';
+import { toast } from '@/shared/components/ui/Toast';
 
 const editAdminSchema = z.object({
   category: z.string().min(1, 'Please select an admin category'),
@@ -53,8 +54,11 @@ export function EditAdminModal({ admin, isOpen, onClose }: EditAdminModalProps) 
         userId: admin.memberId,
         newRole: values.category,
       });
+      toast.success(`User role changed to ${values.category.toUpperCase()}`);
       onClose();
     } catch (error) {
+      console.error('Error changing user role:', error);
+      toast.error('Failed to change user role. Please try again.');
       // Error toast shown by the mutation's onError
     }
   };
@@ -65,7 +69,7 @@ export function EditAdminModal({ admin, isOpen, onClose }: EditAdminModalProps) 
         {/* Member is fixed here — same reasoning as EditLeadershipModal */}
         <div className="flex flex-col gap-1">
           <label className="block text-sm font-medium text-gray-700">Member</label>
-          <div className="w-full rounded-3xl bg-[#F8F7F4] border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-700">
+          <div className="w-full rounded-3xl bg-[#F8F7F4] border border-gray-200 px-4 py-2.5 text-sm text-gray-700">
             {admin.name}
           </div>
         </div>
