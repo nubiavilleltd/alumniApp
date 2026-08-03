@@ -11,6 +11,8 @@ import type { Address } from '../types/address.types';
 import { useDeliveryZones } from '../hooks/useDeliveryZones';
 import { useAddresses } from '../hooks/useAddresses';
 import { eventFormFieldLabelClassName, eventFormSelectClassName, eventFormSelectControlClassName } from '@/features/events/constants/eventFormStyles';
+import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
+import { useAuth } from '@/features/authentication/hooks/useAuth';
 
 
 
@@ -53,6 +55,8 @@ const {
 } = useAddresses();
 
   const { data: deliveryZones = [] } = useDeliveryZones();
+
+  const {user} = useAuth()
 
 const stateOptions = deliveryZones.map((zone) => ({
   label: zone.state,
@@ -97,10 +101,10 @@ useEffect(() => {
     }, 0);
   } else if (isOpen) {
     reset({
-      firstName: '',
-      lastName: '',
-      phone: '',
-      additionalPhone: '',
+      firstName: user?.otherNames ?? '',
+      lastName: user?.surname ?? '',
+      phone: user?.alternativePhone ?? '',
+      additionalPhone: user?.whatsappPhone,
       address: '',
       landmark: '',
       state: '',
