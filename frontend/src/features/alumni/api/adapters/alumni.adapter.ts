@@ -1,6 +1,7 @@
 import type { Alumni } from '../../types/alumni.types';
 import { generateSlug, safeParseInt, stringToBoolean, safeParseDate } from '@/lib/utils/adapters';
 import { mapBackendPrivacyToFrontend } from '@/features/user/api/adapters/privacy.adapter';
+import { mapActualUserRole } from '@/features/user/api/adapters/user.adapter';
 
 // ─── Helpers (local, minimal) ───────────────────────────────────────────────
 
@@ -146,13 +147,7 @@ export function mapBackendAlumniToFrontend(raw: unknown): Alumni {
   };
 }
 
-function mapActualUserRole(userRole:string){
-  if(!userRole || typeof userRole !== "string") return "member";
-  const memberRoles = ["alumni", "member"];
-  const userRoleInLowerCase = userRole?.toLowerCase()
-  if(memberRoles.includes(userRoleInLowerCase)) return "member"
-  return userRoleInLowerCase
-}
+
 
 export function mapBackendAlumniList(raw: unknown): Alumni[] {
   if (!Array.isArray(raw)) return [];

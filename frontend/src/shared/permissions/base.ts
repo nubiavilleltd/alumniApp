@@ -1,10 +1,10 @@
 import { AuthSessionUser } from "@/features/authentication/types/auth.types";
 
 export function isSuperAdmin(user:AuthSessionUser){
-    return user.role == "admin"
+    return user.role == "super admin"
 }
 export function isFinanceAdmin(user:AuthSessionUser){
-    return user.role == "finances admin"
+    return user.role == "finance admin"
 }
 export function isContentAdmin(user:AuthSessionUser){
     return user.role == "content admin"

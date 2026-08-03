@@ -23,7 +23,7 @@ export const useAuth = () => {
   return {
     user,
     isAuthenticated: !!user && !!accessToken,
-    isAdmin: user?.role === 'admin',
+    isAdmin: user?.role === 'super admin',
     isHydrated: identityHydrated && tokenHydrated,
   };
 };

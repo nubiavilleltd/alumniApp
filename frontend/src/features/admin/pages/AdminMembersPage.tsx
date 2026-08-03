@@ -36,7 +36,6 @@ import {
 import { useChangeUserRole } from '@/features/admin/hooks/useRoleManagement';
 import type { AccountStatus } from '@/features/admin/api/adapters/user-management.adapter';
 import {
-  getRoleOptions,
   type UserRole,
 } from '@/features/admin/api/adapters/role-management.adapter';
 import { useAlumni } from '@/features/alumni/hooks/useAlumni';
@@ -55,6 +54,7 @@ import { EditLeadershipModal } from '@/features/leadership/components/EditLeader
 import { AddAdminModal } from '@/features/admin/components/AddAdminModal';
 import { EditAdminModal } from '@/features/admin/components/EditAdminModal';
 import { toast } from '@/shared/components/ui/Toast';
+import { alumni } from '@/data/site-data';
 
 function generateInitialsAvatar(name: string): string {
   return `https://ui-avatars.com/api/?name=${encodeURIComponent(
@@ -108,6 +108,14 @@ function MemberStatCard({ label, value, icon: Icon, gradient }: MemberStatCardPr
   );
 }
 
+function mapUserRole(role:string){
+  if(!role) return "alumni"
+  if(role === "admin"){
+    return "super admin"
+  }
+  return role
+}
+
 // ═══════════════════════════════════════════════════════════════════════════
 // HELPER: MAP ALUMNI TO DISPLAY USER
 // ═══════════════════════════════════════════════════════════════════════════
@@ -122,7 +130,8 @@ function mapAlumniToDisplayUser(alumni: Alumni, currentUserMemberId?: string, le
     email: alumni.email,
     phone: alumni.whatsappPhone,
     // role: ['alumni', 'member'].includes(alumni.role ?? 'alumni') ? 'member' : 'admin',
-    role: alumni.role ?? "alumni",
+    // role: alumni.role ?? "alumni",
+    role: mapUserRole(alumni.role ?? "alumni"),
     accountStatus: alumni.isActive ? 'active' : 'inactive',
     photo: resolveProfilePhoto({
       photoUrl: alumni.photo,
@@ -288,10 +297,6 @@ function UserRow({
                 </span>
               )}
 
-
-
-              
-             
             </div>
 
             <div className="flex items-center gap-1 mt-1 text-xs text-gray-500 min-w-0">
@@ -454,17 +459,6 @@ export function AdminMembersPage() {
     [alumniList],
   );
 
-  // const alumniByMemberId = useMemo(() => {
-  //   const map = new Map<string, Alumni>();
-  //   alumniList.forEach((alumni) => {
-  //     map.set(alumni.memberId, alumni);
-  //   });
-  //   return map;
-  // }, [alumniList]);
-
-  // const users = useMemo(() => {
-  //   return alumniList.map((alumni) => mapAlumniToDisplayUser(alumni, currentUser?.memberId, excoRoleByMemberId.get(alumni.memberId)));
-  // }, [alumniList, currentUser?.memberId, excoRoleByMemberId, leadershipList]);
 
 
   const users = useMemo(() => {

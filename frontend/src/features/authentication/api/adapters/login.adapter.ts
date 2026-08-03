@@ -7,6 +7,7 @@ import {
   LoginResponse,
 } from '../../types/auth.types';
 import { generateSlug, safeParseInt, stringToBoolean } from '@/lib/utils/adapters';
+import { mapActualUserRole } from '@/features/user/api/adapters/user.adapter';
 
 export type DuesStatus = 'paid' | 'owing' | 'overdue' | 'exempt' | 'unknown';
 
@@ -116,13 +117,7 @@ export function mapCurrentUserResponse(res: any): AuthSessionUser {
   };
 }
 
-function mapActualUserRole(userRole:string){
-  if(!userRole || typeof userRole !== "string") return "member";
-  const memberRoles = ["alumni", "member"];
-  const userRoleInLowerCase = userRole?.toLowerCase()
-  if(memberRoles.includes(userRoleInLowerCase)) return "member"
-  return userRoleInLowerCase
-}
+
 
 
 export function mapLoginError(error: any): string {

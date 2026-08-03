@@ -328,7 +328,7 @@ function UserDropdown({
 }) {
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
-  const isAdmin = currentUser.role === 'admin';
+  const isAdmin = currentUser.role === 'super admin';
   const displayName = getDisplayName(currentUser);
 
   const baseMenuItems = authenticatedMenuItems.map((item) => {
@@ -529,34 +529,7 @@ export function Navigation() {
     previousThreadStatesRef.current = nextThreadStates;
   }, [activeMessagesThreadId, authenticatedUser, inboxQuery.data, pathname]);
 
-  // const handleLogout = () => {
-  //   const setLoggingOut = useTokenStore.getState().setLoggingOut;
 
-  //   setMobileOpen(false);
-  //   setIsLoggingOut(true);
-  //   setLoggingOut(true);
-
-  //   requestAnimationFrame(() => {
-  //     // if (authenticatedUser) {
-  //     //   authApi.logout().catch(() => {});
-  //     // }
-
-  //     if (authenticatedUser) {
-  //       console.log('Starting logout request');
-
-  //       authApi.logout().then(() => {
-  //         console.log('Logout request finished');
-  //       });
-  //     }
-
-  //     clearTokens();
-  //     clearIdentity();
-
-  //     requestAnimationFrame(() => {
-  //       window.location.replace(window.location.origin + ROUTES.HOME);
-  //     });
-  //   });
-  // };
 
   const handleLogout = async () => {
     const setLoggingOut = useTokenStore.getState().setLoggingOut;

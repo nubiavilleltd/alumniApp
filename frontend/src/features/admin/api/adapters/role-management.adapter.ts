@@ -43,19 +43,4 @@ export function createChangeRolePayload(userId: string, newRole: UserRole): Role
   };
 }
 
-/**
- * Get user-friendly role label
- */
-export function getRoleLabel(role: UserRole): string {
-  return role === 'admin' ? 'Admin' : 'Member';
-}
 
-/**
- * Get role options for dropdown
- */
-export function getRoleOptions(): Array<{ value: UserRole; label: string }> {
-  return [
-    { value: 'admin', label: 'Admin' },
-    { value: 'alumni', label: 'Member' },
-  ];
-}
