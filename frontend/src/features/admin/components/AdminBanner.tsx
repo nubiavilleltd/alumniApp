@@ -3,6 +3,8 @@ import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 import { PROJECT_ROUTES } from '@/features/projects/routes';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { ADMIN_ROUTES, ADMIN_STORE_ROUTES } from '../routes';
+import { AuthSessionUser } from '@/features/authentication/types/auth.types';
+import { canManageStore } from '@/shared/permissions/store.permission';
 
 type AdminBannerTab =
   | 'dashboard'
@@ -19,19 +21,25 @@ type AdminBannerProps = {
   headingLevel?: 'h1' | 'p';
 };
 
-const adminBannerTabs: Array<{ id: AdminBannerTab; label: string; href: string }> = [
-  { id: 'dashboard', label: 'Admin Dashboard', href: ADMIN_ROUTES.DASHBOARD },
-  { id: 'members', label: 'Members', href: ADMIN_ROUTES.MEMBERS },
-  { id: 'events', label: 'Events', href: ADMIN_ROUTES.EVENTS },
-  { id: 'announcements', label: 'Announcements', href: ADMIN_ROUTES.ANNOUNCEMENTS },
-  { id: 'projects', label: 'Projects', href: ADMIN_ROUTES.PROJECTS },
-  { id: 'pages_content', label: 'Pages Content', href: ADMIN_ROUTES.PAGES_CONTENT },
-  { id: 'store', label: 'Store', href: ADMIN_STORE_ROUTES.ROOT },
-];
+const adminBannerTabs: Array<{
+  id: AdminBannerTab; label: string; href: string; permission?: (user: AuthSessionUser) => boolean;
+}> = [
+    { id: 'dashboard', label: 'Admin Dashboard', href: ADMIN_ROUTES.DASHBOARD },
+    { id: 'members', label: 'Members', href: ADMIN_ROUTES.MEMBERS },
+    { id: 'events', label: 'Events', href: ADMIN_ROUTES.EVENTS },
+    { id: 'announcements', label: 'Announcements', href: ADMIN_ROUTES.ANNOUNCEMENTS },
+    { id: 'projects', label: 'Projects', href: ADMIN_ROUTES.PROJECTS },
+    { id: 'pages_content', label: 'Pages Content', href: ADMIN_ROUTES.PAGES_CONTENT },
+    { id: 'store', label: 'Store', href: ADMIN_STORE_ROUTES.ROOT, permission: canManageStore },
+  ];
 
 export function AdminBanner({ activeTab, title, headingLevel = 'p' }: AdminBannerProps) {
   const { data: currentUser } = useCurrentUser();
   const TitleTag = headingLevel;
+
+   const visibleTabs = adminBannerTabs.filter(
+    (tab) => !tab.permission || (currentUser && tab.permission(currentUser))
+  );
 
   return (
     <div className="bg-[#F8F8F7]">
@@ -59,7 +67,7 @@ export function AdminBanner({ activeTab, title, headingLevel = 'p' }: AdminBanne
             {/* Right: Nav tabs */}
             <div className="scrollbar-hide -mx-4 min-w-0 overflow-x-auto px-4 scroll-smooth sm:mx-0 sm:px-0 lg:flex-1 [-webkit-overflow-scrolling:touch]">
               <div className="flex w-max gap-2 sm:gap-3 lg:ml-auto">
-                {adminBannerTabs.map((tab) => (
+                {visibleTabs.map((tab) => (
                   <AppLink
                     key={tab.id}
                     href={tab.href}

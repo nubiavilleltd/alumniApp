@@ -64,7 +64,7 @@ export function AdminRoute({ children }: AdminRouteProps) {
   // ④ Fresh profile loaded — use it for the definitive role check
   const effectiveUser = freshUser ?? user;
 
-  if (!effectiveUser || effectiveUser.role !== 'admin') {
+  if (!effectiveUser || !effectiveUser.role.includes('admin')) {
     // Logged in but not admin — go to user dashboard, not login
     return <Navigate to={USER_ROUTES.DASHBOARD} replace />;
   }
