@@ -10,6 +10,8 @@ import { useChangeUserRole, useAdminCategoryOptions } from '@/features/admin/hoo
 import type { Alumni } from '@/features/alumni/types/alumni.types';
 import { eventFormFieldLabelClassName, eventFormSelectClassName, eventFormSelectControlClassName } from '@/features/events/constants/eventFormStyles';
 import { toast } from '@/shared/components/ui/Toast';
+import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
+import { isSuperAdmin } from '@/shared/permissions/base';
 
 const editAdminSchema = z.object({
   category: z.string().min(1, 'Please select an admin category'),
@@ -24,7 +26,15 @@ interface EditAdminModalProps {
 }
 
 export function EditAdminModal({ admin, isOpen, onClose }: EditAdminModalProps) {
-  const { data: categoryOptions = [], isLoading: isLoadingCategories } = useAdminCategoryOptions();
+
+
+  const { data: currentUser } = useCurrentUser();
+
+const { data: categoryOptions = [], isLoading: isLoadingCategories } = useAdminCategoryOptions();
+
+const visibleCategoryOptions = currentUser && isSuperAdmin(currentUser)
+  ? categoryOptions
+  : categoryOptions.filter((opt) => opt.value !== 'super admin');
   const changeUserRole = useChangeUserRole();
 
   const {
@@ -81,7 +91,7 @@ export function EditAdminModal({ admin, isOpen, onClose }: EditAdminModalProps) 
             <SelectInput
               label="Admin Category"
               placeholder={isLoadingCategories ? 'Loading categories...' : 'Select the admin category'}
-              options={categoryOptions}
+              options={visibleCategoryOptions}
               value={field.value}
               onChange={(e) => field.onChange(e.target.value)}
               disabled={isLoadingCategories}

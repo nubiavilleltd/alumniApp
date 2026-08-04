@@ -55,6 +55,7 @@ import { AddAdminModal } from '@/features/admin/components/AddAdminModal';
 import { EditAdminModal } from '@/features/admin/components/EditAdminModal';
 import { toast } from '@/shared/components/ui/Toast';
 import { alumni } from '@/data/site-data';
+import { isSuperAdmin } from '@/shared/permissions/base';
 
 function generateInitialsAvatar(name: string): string {
   return `https://ui-avatars.com/api/?name=${encodeURIComponent(
@@ -478,7 +479,9 @@ export function AdminMembersPage() {
     if (statusFilter === 'active' || statusFilter === 'inactive') {
       filtered = filtered.filter((u) => u.accountStatus === statusFilter);
     } else if (statusFilter === 'admin') {
-      filtered = filtered.filter((u) => u.role.includes('admin'));
+      const allAdmins = filtered.filter((u) => u.role.includes('admin'));
+      const nonSuperAdmin = allAdmins.filter(admin => admin.role !== "super admin");
+      filtered = isSuperAdmin(currentUser) ? allAdmins : nonSuperAdmin
     } else if (statusFilter === 'exco') {
       filtered = filtered.filter((u) => Boolean(u.leadership));
     }

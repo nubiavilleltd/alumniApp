@@ -60,28 +60,6 @@ export function EditLeadershipModal({ leader, isOpen, onClose }: EditLeadershipM
 
   const isBusy = updateLeadershipMember.isPending;
 
-  //   const onSubmit = async (values: EditLeadershipFormValues) => {
-  //     if (imagePreviews.length === 0) {
-  //       setImageError("Please keep or upload a photo for this member");
-  //       return;
-  //     }
-
-  //     try {
-  //       await updateLeadershipMember.mutateAsync({
-  //         id: leader.id,
-  //         payload: {
-  //           memberId: leader.memberId,
-  //           name: leader.name,
-  //           role: values.role,
-  //           image: imagePreviews[0],
-  //         },
-  //       });
-  //       onClose();
-  //     } catch (error) {
-  //       // Error toast shown by the mutation's onError
-  //     }
-  //   };
-
   const onSubmit = async (values: EditLeadershipFormValues) => {
     const newPhotoFile = imageFiles[0];
     const photoRemoved = !newPhotoFile && imagePreviews.length === 0 && Boolean(leader.image);
@@ -124,9 +102,9 @@ export function EditLeadershipModal({ leader, isOpen, onClose }: EditLeadershipM
               onChange={(e) => field.onChange(e.target.value)}
               disabled={isLoadingPositions}
               error={errors.role?.message}
-                  labelClassName={eventFormFieldLabelClassName}
-                            className={eventFormSelectClassName}
-                            controlClassName={eventFormSelectControlClassName}
+              labelClassName={eventFormFieldLabelClassName}
+              className={eventFormSelectClassName}
+              controlClassName={eventFormSelectControlClassName}
             />
           )}
         />
@@ -134,7 +112,7 @@ export function EditLeadershipModal({ leader, isOpen, onClose }: EditLeadershipM
         <ImageUpload
           label="Upload an Image of the Member"
           previews={imagePreviews}
-          idleIcon={<CloudUpload/>}
+          idleIcon={<CloudUpload />}
           onChange={(files, previews) => {
             setImageFiles(files);
             setImagePreviews(previews);

@@ -5,6 +5,11 @@ import { AppLink } from '@/shared/components/ui/AppLink';
 import { ADMIN_ROUTES, ADMIN_STORE_ROUTES } from '../routes';
 import { AuthSessionUser } from '@/features/authentication/types/auth.types';
 import { canManageStore } from '@/shared/permissions/store.permission';
+import { canManageEvents } from '@/shared/permissions/event.permission';
+import { canManageAnnouncements } from '@/shared/permissions/announcement.permission';
+import { canManageProjects } from '@/shared/permissions/project.permission';
+import { canManageMembers } from '@/shared/permissions/approval.permission';
+import { canManageContent } from '@/shared/permissions/content.permission';
 
 type AdminBannerTab =
   | 'dashboard'
@@ -25,11 +30,11 @@ const adminBannerTabs: Array<{
   id: AdminBannerTab; label: string; href: string; permission?: (user: AuthSessionUser) => boolean;
 }> = [
     { id: 'dashboard', label: 'Admin Dashboard', href: ADMIN_ROUTES.DASHBOARD },
-    { id: 'members', label: 'Members', href: ADMIN_ROUTES.MEMBERS },
-    { id: 'events', label: 'Events', href: ADMIN_ROUTES.EVENTS },
-    { id: 'announcements', label: 'Announcements', href: ADMIN_ROUTES.ANNOUNCEMENTS },
-    { id: 'projects', label: 'Projects', href: ADMIN_ROUTES.PROJECTS },
-    { id: 'pages_content', label: 'Pages Content', href: ADMIN_ROUTES.PAGES_CONTENT },
+    { id: 'members', label: 'Members', href: ADMIN_ROUTES.MEMBERS, permission:canManageMembers },
+    { id: 'events', label: 'Events', href: ADMIN_ROUTES.EVENTS, permission:canManageEvents },
+    { id: 'announcements', label: 'Announcements', href: ADMIN_ROUTES.ANNOUNCEMENTS, permission:canManageAnnouncements },
+    { id: 'projects', label: 'Projects', href: ADMIN_ROUTES.PROJECTS, permission:canManageProjects },
+    { id: 'pages_content', label: 'Pages Content', href: ADMIN_ROUTES.PAGES_CONTENT, permission:canManageContent },
     { id: 'store', label: 'Store', href: ADMIN_STORE_ROUTES.ROOT, permission: canManageStore },
   ];
 

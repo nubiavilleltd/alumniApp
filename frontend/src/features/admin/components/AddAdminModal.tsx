@@ -11,6 +11,8 @@ import type { Alumni } from '@/features/alumni/types/alumni.types';
 import { MemberPicker } from '@/shared/components/ui/MemberPicker';
 import { eventFormFieldLabelClassName, eventFormSelectClassName, eventFormSelectControlClassName } from '@/features/events/constants/eventFormStyles';
 import { toast } from '@/shared/components/ui/Toast';
+import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
+import { isSuperAdmin } from '@/shared/permissions/base';
 
 const addAdminSchema = z.object({
   memberId: z.string().min(1, 'Please select a member'),
@@ -26,9 +28,14 @@ interface AddAdminModalProps {
 }
 
 export function AddAdminModal({ isOpen, onClose, excludeMemberIds = [] }: AddAdminModalProps) {
-  const [selectedAlumni, setSelectedAlumni] = useState<Alumni | null>(null);
+  // const [selectedAlumni, setSelectedAlumni] = useState<Alumni | null>(null);
+
+  const { data: currentUser } = useCurrentUser();
 
   const { data: categoryOptions = [], isLoading: isLoadingCategories } = useAdminCategoryOptions();
+  const visibleCategoryOptions = currentUser && isSuperAdmin(currentUser)
+  ? categoryOptions
+  : categoryOptions.filter((opt) => opt.value !== 'super admin');
   const changeUserRole = useChangeUserRole();
 
   const {
@@ -46,7 +53,7 @@ export function AddAdminModal({ isOpen, onClose, excludeMemberIds = [] }: AddAdm
   useEffect(() => {
     if (isOpen) {
       reset({ memberId: '', category: '' });
-      setSelectedAlumni(null);
+      // setSelectedAlumni(null);
     }
   }, [isOpen, reset]);
 
@@ -76,9 +83,9 @@ export function AddAdminModal({ isOpen, onClose, excludeMemberIds = [] }: AddAdm
           render={({ field }) => (
             <MemberPicker
               value={field.value || null}
-              onChange={(memberId, alumni) => {
+              onChange={(memberId, _alumni) => {
                 field.onChange(memberId);
-                setSelectedAlumni(memberId ? alumni : null);
+                // setSelectedAlumni(memberId ? alumni : null);
               }}
               excludeIds={excludeMemberIds}
               error={errors.memberId?.message}
@@ -93,7 +100,7 @@ export function AddAdminModal({ isOpen, onClose, excludeMemberIds = [] }: AddAdm
             <SelectInput
               label="Admin Category"
               placeholder={isLoadingCategories ? 'Loading categories...' : 'Select the admin category'}
-              options={categoryOptions}
+              options={visibleCategoryOptions}
               value={field.value}
               onChange={(e) => field.onChange(e.target.value)}
               disabled={isLoadingCategories}

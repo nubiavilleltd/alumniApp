@@ -2,7 +2,6 @@ import { AuthSessionUser } from "@/features/authentication/types/auth.types";
 import { isFinanceAdmin, isStoreKeeperAdmin, isSuperAdmin } from "./base";
 
 export function canManageStore(user:AuthSessionUser){
-    console.log("user role", user.role)
     if(!user) return false
     if(isSuperAdmin(user)) return true
     if(isStoreKeeperAdmin(user)) return true

@@ -27,8 +27,7 @@ import { AppLink } from '../ui/AppLink';
 import { useToastStore } from '../ui/Toast';
 import HeaderLogo from '../ui/HeaderLogo';
 import { useCartStore } from '@/features/store/stores/useCartStore';
-import { isSuperAdmin } from '@/shared/permissions/base';
-import { AuthSessionUser } from '@/features/authentication/types/auth.types';
+
 
 type NavChild = {
   label: string;

@@ -31,7 +31,7 @@ interface AddExcoModalProps {
 }
 
 export function AddExcoModal({ isOpen, onClose, excludeMemberIds = [] }: AddExcoModalProps) {
-  const [selectedAlumni, setSelectedAlumni] = useState<Alumni | null>(null);
+  // const [selectedAlumni, setSelectedAlumni] = useState<Alumni | null>(null);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [imageError, setImageError] = useState<string | null>(null);
@@ -54,7 +54,7 @@ export function AddExcoModal({ isOpen, onClose, excludeMemberIds = [] }: AddExco
   useEffect(() => {
     if (isOpen) {
       reset({ memberId: '', role: '' });
-      setSelectedAlumni(null);
+      // setSelectedAlumni(null);
       setImagePreviews([]);
       setImageError(null);
     }
@@ -94,9 +94,9 @@ export function AddExcoModal({ isOpen, onClose, excludeMemberIds = [] }: AddExco
           render={({ field }) => (
             <MemberPicker
               value={field.value || null}
-              onChange={(memberId, alumni) => {
+              onChange={(memberId, _alumni) => {
                 field.onChange(memberId);
-                setSelectedAlumni(memberId ? alumni : null);
+                // setSelectedAlumni(memberId ? alumni : null);
               }}
               excludeIds={excludeMemberIds}
               error={errors.memberId?.message}
