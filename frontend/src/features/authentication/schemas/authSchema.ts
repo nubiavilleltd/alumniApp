@@ -47,9 +47,11 @@ export const registerDetailsSchema = z
     nameInSchool: z
       .string()
       .trim()
-      .min(3, 'Maiden name must be at least 3 characters')
       .max(80, 'Maiden name must be 80 characters or less')
-      .regex(/^[A-Za-z][A-Za-z\s'.-]*$/, 'Please enter a valid maiden name'),
+      .refine(
+        (value) => value === '' || /^[A-Za-z][A-Za-z\s'.-]*$/.test(value),
+        'Please enter a valid maiden name',
+      ),
 
     email: z.string().trim().email('Please enter a valid email address'),
     area: z.string().trim().min(2, 'Area must be at least 2 characters'),
