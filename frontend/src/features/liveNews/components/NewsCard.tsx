@@ -2,7 +2,6 @@ import { LiveNewsItem } from '../types/livenews.types';
 import { formatNewsDate } from "../utils"
 import { Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { LIVE_NEWS_ROUTES } from '../routes';
 import { ROUTES } from '@/shared/constants/routes';
 
 import placeholderImg from '/placeholder-image.png';
@@ -20,7 +19,12 @@ export function NewsCard({
         <Link to={ROUTES.LIVE_NEWS.DETAIL(item.id, item.slug)} className="block">
             <article className="flex flex-col sm:flex-row gap-4 rounded-3xl bg-white p-3 shadow-sm">
                 <img
-                    src={item.imageUrl || placeholderImg}
+                    src={item.imageUrl}
+                    referrerPolicy="no-referrer"
+
+                    onError={(e) => {
+                        e.currentTarget.src = placeholderImg
+                    }}
                     alt={item.title}
                     className="h-[140px] sm:h-[200px] md:h-[140px] w-full sm:w-[160px] rounded-2xl object-cover flex-shrink-0"
                 />
