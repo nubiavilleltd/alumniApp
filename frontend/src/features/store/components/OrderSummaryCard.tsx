@@ -1,13 +1,16 @@
+import clsx from "clsx";
+
 // /feature/store/components/orders/OrderSummaryCard.tsx
 interface OrderSummaryCardProps {
   subtotal: number;
   shippingFee: number;
   total: number;
+  className?:string;
 }
 
-export default function OrderSummaryCard({ subtotal, shippingFee, total }: OrderSummaryCardProps) {
+export default function OrderSummaryCard({ subtotal, shippingFee, total, className }: OrderSummaryCardProps) {
   return (
-    <div className="bg-white rounded-2xl p-6 flex flex-col gap-3 max-w-md">
+    <div className={clsx("bg-white rounded-2xl p-6 flex flex-col gap-3", className)}>
       <div className="flex justify-between text-sm">
         <span className="font-semibold text-gray-900">Subtotal</span>
         <span className="text-gray-900">₦{subtotal.toLocaleString()}</span>
