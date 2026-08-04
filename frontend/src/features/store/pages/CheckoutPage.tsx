@@ -15,8 +15,8 @@ import { AUTH_ROUTES } from '@/features/authentication/routes';
 import { toast } from '@/shared/components/ui/Toast';
 
 // ─── Pickup address (static for now) ─────────────────────────────────────────
-const PICKUP_ADDRESS =
-  'Shop B6, Lotto Plaza, Opposite Farapark and besides Manbilla Hotel, Majek, Eti-Osa, Manbilla Hotel | Lagos - LEKKI-AJAH (ABIJO)';
+// const PICKUP_ADDRESS =
+//   'Shop B6, Lotto Plaza, Opposite Farapark and besides Manbilla Hotel, Majek, Eti-Osa, Manbilla Hotel | Lagos - LEKKI-AJAH (ABIJO)';
 
 export function CheckoutPage() {
   const { items } = useCartStore();
@@ -30,8 +30,16 @@ export function CheckoutPage() {
 
   const { data: addresses = [], isLoading: addressesLoading, deleteAddress } = useAddresses();
 
+  
   const { data: zones = [] } = useDeliveryZones();
   const { checkout, isLoading: checkoutLoading } = useCheckout();
+
+  const filteredZones = zones.filter(zone => zone.state !== "pickup")
+  const pickUp = zones.find(zone => zone.state.toLowerCase() === "pickup")
+
+  console.log("pick up", pickUp)
+  const PICKUP_ADDRESS = pickUp?.areas[0].area ?? ""
+
 
   const groupedOrderItems = useMemo(() => {
     const map = new Map<string, { image: string; price: number; qty: number }>();
@@ -60,7 +68,7 @@ export function CheckoutPage() {
   // Compute shipping fee from zones
   const shippingFee =
     deliveryMethod === 'delivery' && selectedAddress
-      ? (zones
+      ? (filteredZones
           .find((z) => z.state === selectedAddress.state)
           ?.areas.find((a) => a.area === selectedAddress.area)?.fee ?? 0)
       : 0;
