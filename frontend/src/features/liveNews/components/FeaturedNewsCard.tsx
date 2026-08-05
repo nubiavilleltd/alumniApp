@@ -4,10 +4,12 @@ import { formatNewsDate } from '../utils';
 import { Link } from 'react-router-dom';
 import { LIVE_NEWS_ROUTES } from '../routes';
 import { ROUTES } from '@/shared/constants/routes';
+import placeholderImg from '/placeholder-image.png';
 
 
 
-const EXCERPT_LIMIT = 120; // characters
+
+// const EXCERPT_LIMIT = 120; // characters
 
 export function FeaturedNewsCard({ item }: { item: LiveNewsItem }) {
   // const isTruncated = item.excerpt.length > EXCERPT_LIMIT;
@@ -21,6 +23,10 @@ export function FeaturedNewsCard({ item }: { item: LiveNewsItem }) {
         <img
           src={item.imageUrl}
           alt={item.title}
+          onError={(e) => {
+            e.currentTarget.src = placeholderImg
+          }}
+          referrerPolicy="no-referrer"
           className="h-[240px] w-full object-cover rounded-3xl"
         />
         <div className="flex items-center gap-2 text-gray-800">
@@ -36,17 +42,7 @@ export function FeaturedNewsCard({ item }: { item: LiveNewsItem }) {
           <h2 className="mb-3 text-2xl font-bold text-gray-900">{item.title}</h2>
           <p className="text-gray-600 leading-relaxed">
             {item.excerpt}
-            {/* {isTruncated && (
-              <>
-                {'... '}
-                <Link
-                  to={ROUTES.LIVE_NEWS.DETAIL(item.id, item.slug)}
-                  className="text-primary-500 font-semibold hover:underline"
-                >
-                  Read more
-                </Link>
-              </>
-            )} */}
+
           </p>
         </div>
       </article>

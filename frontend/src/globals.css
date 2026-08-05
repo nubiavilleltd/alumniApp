@@ -91,9 +91,9 @@
   background-image:
     linear-gradient(rgba(248, 248, 247, 0.95), rgba(248, 248, 247, 0.95)),
     url('/bg/alumni_bg.gif');
-  background-position: center top;
+  background-position: center center;
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: contain;
 }
 
 .app-root-surface {

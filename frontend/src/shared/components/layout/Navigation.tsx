@@ -28,6 +28,7 @@ import { useToastStore } from '../ui/Toast';
 import HeaderLogo from '../ui/HeaderLogo';
 import { useCartStore } from '@/features/store/stores/useCartStore';
 
+
 type NavChild = {
   label: string;
   url: string;
@@ -134,9 +135,9 @@ const expandedNavColumns: NavItem[][] = [
 const userAccountTriggerClassName =
   'inline-flex min-h-[3.35rem] w-full items-center rounded-full border border-white/25 bg-transparent text-white no-underline shadow-none transition-colors duration-200 hover:border-white/40 hover:bg-white/5';
 const expandedNavHeadingClassName =
-  'text-left text-[1.05rem] font-semibold leading-normal tracking-[0.03em] text-white no-underline transition-colors duration-150 hover:text-white/85 focus-visible:text-white lg:text-[1.125rem]';
+  'text-left text-[1.05rem] font-semibold leading-normal tracking-[0.03em] text-white no-underline transition-colors duration-150 hover:text-blue-200 focus-visible:text-white lg:text-[1.125rem]';
 const expandedNavChildClassName =
-  'text-left text-sm font-semibold leading-normal text-white no-underline transition-colors duration-150 hover:text-white/90 focus-visible:text-white';
+  'text-left text-sm font-semibold leading-normal text-white no-underline transition-colors duration-150 hover:text-blue-200 focus-visible:text-white';
 
 function cn(...inputs: Array<string | false | null | undefined>) {
   return twMerge(clsx(inputs));
@@ -328,7 +329,7 @@ function UserDropdown({
 }) {
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
-  const isAdmin = currentUser.role === 'admin';
+  const isAdmin = currentUser.role?.includes("admin");
   const displayName = getDisplayName(currentUser);
 
   const baseMenuItems = authenticatedMenuItems.map((item) => {
@@ -529,34 +530,7 @@ export function Navigation() {
     previousThreadStatesRef.current = nextThreadStates;
   }, [activeMessagesThreadId, authenticatedUser, inboxQuery.data, pathname]);
 
-  // const handleLogout = () => {
-  //   const setLoggingOut = useTokenStore.getState().setLoggingOut;
 
-  //   setMobileOpen(false);
-  //   setIsLoggingOut(true);
-  //   setLoggingOut(true);
-
-  //   requestAnimationFrame(() => {
-  //     // if (authenticatedUser) {
-  //     //   authApi.logout().catch(() => {});
-  //     // }
-
-  //     if (authenticatedUser) {
-  //       console.log('Starting logout request');
-
-  //       authApi.logout().then(() => {
-  //         console.log('Logout request finished');
-  //       });
-  //     }
-
-  //     clearTokens();
-  //     clearIdentity();
-
-  //     requestAnimationFrame(() => {
-  //       window.location.replace(window.location.origin + ROUTES.HOME);
-  //     });
-  //   });
-  // };
 
   const handleLogout = async () => {
     const setLoggingOut = useTokenStore.getState().setLoggingOut;

@@ -11,6 +11,7 @@
  * ============================================================================
  */
 
+import { mapActualUserRole } from "@/features/user/api/adapters/user.adapter";
 import { UserRole } from "./role-management.adapter";
 
 export type AccountStatus = 'active' | 'inactive';
@@ -24,7 +25,7 @@ export type UserAccount = {
   email: string;
   phone: string;
   graduationYear?: number;
-  role: 'admin' | 'member';
+  role: string;
   accountStatus: AccountStatus;
   profileStatus: string;
 };
@@ -43,7 +44,8 @@ export function mapBackendUserAccount(raw: any): UserAccount {
     email: raw.email || '',
     phone: raw.phone || '',
     graduationYear: safeParseInt(raw.graduation_year ?? raw.graduationYear),
-    role: raw.user_role === 'admin' ? 'admin' : 'member',
+    // role: raw.user_role === 'admin' ? 'admin' : 'member',
+    role: mapActualUserRole(raw.user_role),
     accountStatus:
       raw.active === '1' || raw.active === 1 || raw.active === true ? 'active' : 'inactive',
     profileStatus: raw.profile_status || 'active',

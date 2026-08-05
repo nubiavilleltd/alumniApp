@@ -29,22 +29,3 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
 
   return <>{children}</>;
 }
-
-// export function ProtectedRoute({ children }: ProtectedRouteProps) {
-//   const { isAuthenticated, isHydrated } = useAuth();
-//   const isLoggingOut = useTokenStore((state) => state._isLoggingOut);
-//   const location = useLocation();
-
-//   // Wait for Zustand to rehydrate from storage
-//   if (!isHydrated) return null;
-
-//   // ✅ NEW: Don't redirect if logout is in progress
-//   // if (isLoggingOut) return null;
-
-//   if (!isAuthenticated) {
-//     console.log('redirecting to login in Protected Route ... not authenticated');
-//     return <Navigate to={AUTH_ROUTES.LOGIN} state={{ from: location.pathname }} replace />;
-//   }
-
-//   return <>{children}</>;
-// }

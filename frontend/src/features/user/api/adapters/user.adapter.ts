@@ -148,10 +148,13 @@ export function mapBackendResponseToFrontendUser(raw: unknown): Partial<AuthSess
   };
 }
 
-function mapActualUserRole(userRole:string){
+
+
+export function mapActualUserRole(userRole:string){
   if(!userRole || typeof userRole !== "string") return "member";
   const memberRoles = ["alumni", "member"];
   const userRoleInLowerCase = userRole?.toLowerCase()
+  if(userRoleInLowerCase === "admin") return "super admin"
   if(memberRoles.includes(userRoleInLowerCase)) return "member"
   return userRoleInLowerCase
 }

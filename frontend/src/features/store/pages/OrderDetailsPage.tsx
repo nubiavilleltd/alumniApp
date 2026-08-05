@@ -80,6 +80,7 @@ export default function OrderDetailsPage() {
                     subtotal={order.subtotal}
                     shippingFee={order.shippingFee}
                     total={order.total}
+                    className='max-w-md'
                 />
             </ContainerBackground>
 

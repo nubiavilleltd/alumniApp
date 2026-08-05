@@ -14,300 +14,340 @@ import type { Address } from '../types/address.types';
 import { AUTH_ROUTES } from '@/features/authentication/routes';
 import { toast } from '@/shared/components/ui/Toast';
 
-// ─── Pickup address (static for now) ─────────────────────────────────────────
-const PICKUP_ADDRESS =
-    'Shop B6, Lotto Plaza, Opposite Farapark and besides Manbilla Hotel, Majek, Eti-Osa, Manbilla Hotel | Lagos - LEKKI-AJAH (ABIJO)';
 
 export function CheckoutPage() {
-    const { items } = useCartStore();
-    const navigate = useNavigate();
-    const [deliveryMethod, setDeliveryMethod] = useState<
-        'pickup' | 'delivery'
-    >('pickup');
+  const { items } = useCartStore();
+  const navigate = useNavigate();
+  const [deliveryMethod, setDeliveryMethod] = useState<'pickup' | 'delivery'>('pickup');
 
-    const { user } = useAuth();
-    const [editingAddress, setEditingAddress] = useState<Address | null>(null);
-    const [addressModalOpen, setAddressModalOpen] = useState(false);
-    const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
+  const { user } = useAuth();
+  const [editingAddress, setEditingAddress] = useState<Address | null>(null);
+  const [addressModalOpen, setAddressModalOpen] = useState(false);
+  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
 
-    const { data: addresses = [], isLoading: addressesLoading, deleteAddress } = useAddresses();
-
-    const { data: zones = [] } = useDeliveryZones();
-    const { checkout, isLoading: checkoutLoading } = useCheckout();
+  const { data: addresses = [], isLoading: addressesLoading, deleteAddress } = useAddresses();
 
 
+  const { data: zones = [] } = useDeliveryZones();
+  const { checkout, isLoading: checkoutLoading } = useCheckout();
 
-    const groupedOrderItems = useMemo(() => {
-        const map = new Map<string, { image: string; price: number; qty: number }>();
-        for (const item of items) {
-            const existing = map.get(item.productId);
-            if (existing) {
-                existing.qty += item.quantity;
-            } else {
-                map.set(item.productId, { image: item.image, price: item.price, qty: item.quantity });
-            }
+  const filteredZones = zones.filter(zone => zone.state !== "pickup")
+  const pickUp = zones.find(zone => zone.state.toLowerCase() === "pickup")
+
+  const PICKUP_ADDRESS = pickUp?.areas[0].area ?? ""
+
+
+  const groupedOrderItems = useMemo(() => {
+    const map = new Map<string, { image: string; price: number; qty: number }>();
+    for (const item of items) {
+      const existing = map.get(item.productId);
+      if (existing) {
+        existing.qty += item.quantity;
+      } else {
+        map.set(item.productId, { image: item.image, price: item.price, qty: item.quantity });
+      }
+    }
+    return [...map.values()];
+  }, [items]);
+
+  // Auto-select first address when addresses load
+  useEffect(() => {
+    if (addresses.length > 0 && !selectedAddressId) {
+      setSelectedAddressId(addresses[0].id);
+    }
+  }, [addresses, selectedAddressId]);
+
+  const selectedAddress = addresses.find((a) => a.id === selectedAddressId) ?? null;
+
+  const hasAddress = selectedAddress !== null;
+
+  // Compute shipping fee from zones
+  const shippingFee =
+    deliveryMethod === 'delivery' && selectedAddress
+      ? (filteredZones
+        .find((z) => z.state === selectedAddress.state)
+        ?.areas.find((a) => a.area === selectedAddress.area)?.fee ?? 0)
+      : 0;
+
+  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  const total = subtotal + (deliveryMethod === 'delivery' ? shippingFee : 0);
+
+  // on Pay Now button click:
+  const handlePayNow = async () => {
+    if (!user) {
+      navigate(AUTH_ROUTES.LOGIN, { state: { from: STORE_ROUTES.CHECKOUT } });
+      return;
+    }
+    if (deliveryMethod === 'delivery' && !selectedAddressId) {
+      toast.error('Please select a delivery address.');
+      return;
+    }
+
+    const payload =
+      deliveryMethod === 'pickup'
+        ? {
+          deliveryType: 'self_pickup' as const,
         }
-        return [...map.values()];
-    }, [items]);
+        : {
+          deliveryType: 'door_delivery' as const,
+          addressId: Number(selectedAddressId),
+        };
 
-    // Auto-select first address when addresses load
-    useEffect(() => {
-        if (addresses.length > 0 && !selectedAddressId) {
-            setSelectedAddressId(addresses[0].id);
-        }
-    }, [addresses, selectedAddressId]);
+    try {
+      await checkout(payload, user.email);
+      navigate(STORE_ROUTES.ROOT);
+    } catch (error) {
+      toast.error('Checkout failed. Please try again.');
+    }
+  };
+  return (
+    <>
+      <SEO title="Checkout" />
 
-    const selectedAddress = addresses.find((a) => a.id === selectedAddressId) ?? null;
+      <div className="min-h-screen bg-[#F8F8F7]">
+        <div className="container-custom py-8 sm:py-10">
+          <h1 className="text-2xl font-bold text-gray-900 mb-6">Checkout</h1>
 
-    const hasAddress = selectedAddress !== null;
+          <div className="grid lg:grid-cols-3 gap-6">
+            {/* ── LEFT COLUMN ─────────────────────────────────────────────── */}
+            <div className="lg:col-span-2 flex flex-col gap-4">
+              {/* ── Delivery method cards ────────────────────────────────── */}
 
-
-
-
-    // Compute shipping fee from zones
-    const shippingFee =
-        deliveryMethod === 'delivery' && selectedAddress
-            ? zones
-                .find((z) => z.state === selectedAddress.state)
-                ?.areas.find((a) => a.area === selectedAddress.area)
-                ?.fee ?? 0
-            : 0;
-
-
-    const subtotal = items.reduce(
-        (sum, item) => sum + item.price * item.quantity,
-        0,
-    );
-
-    const total =
-        subtotal +
-        (deliveryMethod === 'delivery' ? shippingFee : 0);
-
-
-
-    // on Pay Now button click:
-    const handlePayNow = async () => {
-        if (!user) {
-            navigate(AUTH_ROUTES.LOGIN, { state: { from: '/store/checkout' } });
-            return;
-        }
-        if (deliveryMethod === 'delivery' && !selectedAddressId) {
-            toast.error('Please select a delivery address.');
-            return;
-        }
-
-        const payload =
-            deliveryMethod === 'pickup'
-                ? {
-                    deliveryType: 'self_pickup' as const,
-                }
-                : {
-                    deliveryType: 'door_delivery' as const,
-                    addressId: Number(selectedAddressId),
-                };
-
-        await checkout(payload, user.email);
-    };
-    return (
-        <>
-            <SEO title="Checkout" />
-
-            <div className="min-h-screen bg-[#F8F8F7]">
-                <div className="container-custom py-8 sm:py-10">
-                    <h1 className="text-2xl font-bold text-gray-900 mb-6">Checkout</h1>
-
-                    <div className="grid lg:grid-cols-3 gap-6">
-                        {/* ── LEFT COLUMN ─────────────────────────────────────────────── */}
-                        <div className="lg:col-span-2 flex flex-col gap-4">
-
-                            {/* ── Delivery method cards ────────────────────────────────── */}
-
-                            {/* Self Pickup */}
-                            <button
-                                onClick={() => setDeliveryMethod('pickup')}
-                                className={`w-full text-left p-4 rounded-3xl border-2 bg-white transition-all`}
-                            >
-                                <div className="flex items-start gap-3">
-                                    <span
-                                        className={`mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${deliveryMethod === 'pickup' ? 'border-primary-500' : 'border-gray-400'
-                                            }`}
-                                    >
-                                        {deliveryMethod === 'pickup' && (
-                                            <span className="w-2.5 h-2.5 rounded-full bg-primary-500" />
-                                        )}
-                                    </span>
-                                    <div className='flex flex-col sm:flex-row gap-2'>
-                                        <p className="font-bold text-gray-900 text-sm whitespace-nowrap">Self Pickup</p>
-                                        <p className="text-sm text-gray-500 leading-snug mt-0.5">{PICKUP_ADDRESS}</p>
-                                    </div>
-                                </div>
-                            </button>
-
-
-                            <div className="bg-white rounded-3xl p-4 border-2 border-gray-100">
-                                {/* Door Delivery */}
-                                <div
-                                    onClick={() => setDeliveryMethod('delivery')}
-                                    className={`w-full text-left rounded-3xl bg-white transition-all`}
-                                    role="button"
-                                    tabIndex={0}
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter' || e.key === ' ') {
-                                            e.preventDefault();
-                                            setDeliveryMethod('delivery');
-                                        }
-                                    }}
-                                >
-                                    <div className="flex items-start justify-between gap-4">
-                                        <div className="flex items-start gap-3">
-                                            {/* Radio circle */}
-                                            <span
-                                                className={`mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${deliveryMethod === 'delivery'
-                                                    ? 'border-primary-500'
-                                                    : 'border-gray-400'
-                                                    }`}
-                                            >
-                                                {deliveryMethod === 'delivery' && (
-                                                    <span className="w-2.5 h-2.5 rounded-full bg-primary-500" />
-                                                )}
-                                            </span>
-
-                                            <div className='flex flex-col sm:flex-row gap-2'>
-                                                <p className="font-bold text-gray-900 text-sm">Door Delivery</p>
-                                                <p className="text-xs text-gray-400 mt-0.5">
-                                                    Order will be delivered in 3 to 5 working days
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        {deliveryMethod === 'delivery' && (
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setEditingAddress(null);
-                                                    setAddressModalOpen(true);
-                                                }}
-                                                className="shrink-0 text-sm font-semibold text-primary-500 border border-primary-500 rounded-full px-2 py-1 sm:px-4 sm:py-1.5 hover:bg-primary-50 transition-colors"
-                                            >
-                                                <Plus className='block sm:hidden' /> <span className='hidden sm:block'> Add Shipping Address</span>
-                                            </button>
-                                        )}
-                                    </div>
-                                </div>
-
-                                {/* Address list */}
-                                {deliveryMethod === 'delivery' && (
-                                    <div className="mt-3 flex flex-col gap-2">
-                                        {addressesLoading ? (
-                                            <p className="text-xs text-gray-400 animate-pulse">Loading addresses...</p>
-                                        ) : (
-                                            addresses.map((addr) => (
-                                                <AddressCard
-                                                    key={addr.id}
-                                                    address={addr}
-                                                    isSelected={selectedAddressId === addr.id}
-                                                    onSelect={() => setSelectedAddressId(addr.id)}
-                                                    onEdit={() => { setEditingAddress(addr); setAddressModalOpen(true); }}
-                                                    onDelete={() => deleteAddress.mutate(addr.id)}
-                                                    isDeleting={deleteAddress.isPending}
-                                                />
-                                            ))
-                                        )}
-
-                                    </div>
-                                )}
-
-
-                            </div>
-
-
-
-
-                            {/* ── Order Summary tiles ──────────────────────────────────── */}
-                            {items.length > 0 && (
-                                <div className="bg-white rounded-2xl p-5 border border-gray-100">
-                                    <h3 className="font-semibold text-gray-800 mb-4 text-sm">Order Summary</h3>
-                                    <div className="flex flex-wrap gap-3">
-                                        {groupedOrderItems.map((g, i) => (
-                                            <div key={i} className="border border-gray-200 rounded-xl p-2 flex flex-col items-center gap-1 w-[110px]">
-                                                <img src={g.image} alt="" className="w-full h-[80px] object-cover rounded-lg bg-gray-50" />
-                                                <p className="text-xs font-bold text-gray-800">₦{g.price.toLocaleString()}</p>
-                                                <p className="text-xs text-gray-400">×{g.qty}</p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* ── RIGHT COLUMN: sticky summary ────────────────────────────── */}
-                        <div className="lg:sticky lg:top-20 h-fit">
-                            <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-                                <h2 className="font-bold text-gray-900 text-lg mb-5">Summary</h2>
-
-                                <div className="flex flex-col gap-3 text-sm">
-                                    <div className="flex justify-between text-gray-600">
-                                        <span>Subtotal</span>
-                                        <span className="font-medium text-gray-900">
-                                            ₦{subtotal.toLocaleString()}
-                                        </span>
-                                    </div>
-
-                                    <div className="flex justify-between text-gray-600">
-                                        <span>Shipping Fee</span>
-                                        <span className="font-medium text-gray-900">
-                                            {deliveryMethod === 'pickup'
-                                                ? '—'
-                                                : shippingFee > 0
-                                                    ? `₦${shippingFee.toLocaleString()}`
-                                                    : hasAddress
-                                                        ? '₦0'
-                                                        : '—'}
-                                        </span>
-                                    </div>
-
-                                    <hr className="border-gray-100 my-1" />
-
-                                    <div className="flex justify-between">
-                                        <span className="font-bold text-gray-900">Total Amount</span>
-                                        <span className="font-bold text-gray-900 text-lg">
-                                            ₦{total.toLocaleString()}
-                                        </span>
-                                    </div>
-                                </div>
-
-                                {/* Pay Now */}
-                                <button
-                                    onClick={() => void handlePayNow()}
-                                    disabled={
-                                        items.length === 0 ||
-                                        checkoutLoading ||
-                                        (deliveryMethod === 'delivery' && !selectedAddressId)
-                                    }
-                                    className="mt-5 w-full py-3.5 rounded-full bg-primary-500 text-white font-semibold hover:bg-primary-600 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    {checkoutLoading ? 'Processing...' : 'Pay Now'}
-                                </button>
-
-                                <p className='mt-3 text-xs flex items-center text-gray-600 gap-1'><Info size={15} /> There are no refunds on purchases</p>
-
-                                {deliveryMethod === 'delivery' && !hasAddress && (
-                                    <p className="text-xs text-gray-400 text-center mt-2">
-                                        Please add a shipping address to continue
-                                    </p>
-                                )}
-                            </div>
-                        </div>
-                    </div>
+              {/* Self Pickup */}
+              <button
+                onClick={() => setDeliveryMethod('pickup')}
+                className={`w-full text-left p-4 rounded-3xl border-2 bg-white transition-all`}
+              >
+                <div className="flex items-start gap-3">
+                  <span
+                    className={`mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${deliveryMethod === 'pickup' ? 'border-primary-500' : 'border-gray-400'
+                      }`}
+                  >
+                    {deliveryMethod === 'pickup' && (
+                      <span className="w-2.5 h-2.5 rounded-full bg-primary-500" />
+                    )}
+                  </span>
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <p className="font-bold text-gray-900 text-sm whitespace-nowrap">Self Pickup</p>
+                    <p className="text-sm text-gray-500 leading-snug mt-0.5">{PICKUP_ADDRESS}</p>
+                  </div>
                 </div>
+              </button>
+
+              <div className="bg-white rounded-3xl p-4 border-2 border-gray-100">
+                {/* Door Delivery */}
+                <div
+                  onClick={() => setDeliveryMethod('delivery')}
+                  className={`w-full text-left rounded-3xl bg-white transition-all`}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setDeliveryMethod('delivery');
+                    }
+                  }}
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex items-start gap-3">
+                      {/* Radio circle */}
+                      <span
+                        className={`mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${deliveryMethod === 'delivery' ? 'border-primary-500' : 'border-gray-400'
+                          }`}
+                      >
+                        {deliveryMethod === 'delivery' && (
+                          <span className="w-2.5 h-2.5 rounded-full bg-primary-500" />
+                        )}
+                      </span>
+
+                      <div className="flex flex-col sm:flex-row gap-2">
+                        <p className="font-bold text-gray-900 text-sm">Door Delivery</p>
+                        <p className="text-xs text-gray-400 mt-0.5">
+                          Order will be delivered in 3 to 5 working days
+                        </p>
+                      </div>
+                    </div>
+
+                    {deliveryMethod === 'delivery' && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setEditingAddress(null);
+                          setAddressModalOpen(true);
+                        }}
+                        className="shrink-0 text-sm font-semibold text-primary-500 border border-primary-500 rounded-full px-2 py-1 sm:px-4 sm:py-1.5 hover:bg-primary-50 transition-colors"
+                      >
+
+                        <span className="flex items-center gap-1">
+                          <Plus size={16} />
+                          <span className="hidden sm:inline">Add Shipping Address</span>
+                          <span className="sm:hidden">Add Address</span>
+                        </span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Address list */}
+                {/* {deliveryMethod === 'delivery' && (
+                  <div className="mt-3 flex flex-col gap-2">
+                    {addressesLoading ? (
+                      <p className="text-xs text-gray-400 animate-pulse">Loading addresses...</p>
+                    ) : (
+                      addresses.map((addr) => (
+                        <AddressCard
+                          key={addr.id}
+                          address={addr}
+                          isSelected={selectedAddressId === addr.id}
+                          onSelect={() => setSelectedAddressId(addr.id)}
+                          onEdit={() => {
+                            setEditingAddress(addr);
+                            setAddressModalOpen(true);
+                          }}
+                          onDelete={() => deleteAddress.mutate(addr.id)}
+                          isDeleting={deleteAddress.isPending}
+                        />
+                      ))
+                    )}
+                  </div>
+                )} */}
+
+                {/* Address list */}
+                {deliveryMethod === 'delivery' && (
+                  <div className="mt-3 flex flex-col gap-2">
+                    {addressesLoading ? (
+                      <p className="text-xs text-gray-400 animate-pulse">Loading addresses...</p>
+                    ) : addresses.length === 0 ? (
+                      <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-2xl px-4 py-3">
+                        <Info size={16} className="text-amber-500 shrink-0 mt-0.5" />
+
+
+                        <p className="text-sm text-amber-700">
+                          You haven't added a shipping address yet. Tap the{' '}
+                          <span className="font-semibold">+ button</span> above to add one.
+                        </p>
+                      </div>
+                    ) : (
+                      addresses.map((addr) => (
+                        <AddressCard
+                          key={addr.id}
+                          address={addr}
+                          isSelected={selectedAddressId === addr.id}
+                          onSelect={() => setSelectedAddressId(addr.id)}
+                          onEdit={() => {
+                            setEditingAddress(addr);
+                            setAddressModalOpen(true);
+                          }}
+                          onDelete={() => deleteAddress.mutate(addr.id)}
+                          isDeleting={deleteAddress.isPending}
+                        />
+                      ))
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* ── Order Summary tiles ──────────────────────────────────── */}
+              {items.length > 0 && (
+                <div className="bg-white rounded-2xl p-5 border border-gray-100">
+                  <h3 className="font-semibold text-gray-800 mb-4 text-sm">Order Summary</h3>
+                  <div className="flex flex-wrap gap-3">
+                    {groupedOrderItems.map((g, i) => (
+                      <div
+                        key={i}
+                        className="border border-gray-200 rounded-xl p-2 flex flex-col items-center gap-1 w-[110px]"
+                      >
+                        <img
+                          src={g.image}
+                          alt=""
+                          className="w-full h-[80px] object-cover rounded-lg bg-gray-50"
+                        />
+                        <p className="text-xs font-bold text-gray-800">
+                          ₦{g.price.toLocaleString()}
+                        </p>
+                        <p className="text-xs text-gray-400">×{g.qty}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* Address modal */}
-            <AddressModal
-                isOpen={addressModalOpen}
-                onClose={() => { setAddressModalOpen(false); setEditingAddress(null); }}
-                editAddress={editingAddress}
-            />
-        </>
-    );
+            {/* ── RIGHT COLUMN: sticky summary ────────────────────────────── */}
+            <div className="lg:sticky lg:top-20 h-fit">
+              <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+                <h2 className="font-bold text-gray-900 text-lg mb-5">Summary</h2>
+
+                <div className="flex flex-col gap-3 text-sm">
+                  <div className="flex justify-between text-gray-600">
+                    <span>Subtotal</span>
+                    <span className="font-medium text-gray-900">₦{subtotal.toLocaleString()}</span>
+                  </div>
+
+                  <div className="flex justify-between text-gray-600">
+                    <span>Shipping Fee</span>
+                    <span className="font-medium text-gray-900">
+                      {deliveryMethod === 'pickup'
+                        ? '—'
+                        : shippingFee > 0
+                          ? `₦${shippingFee.toLocaleString()}`
+                          : hasAddress
+                            ? '₦0'
+                            : '—'}
+                    </span>
+                  </div>
+
+                  <hr className="border-gray-100 my-1" />
+
+                  <div className="flex justify-between">
+                    <span className="font-bold text-gray-900">Total Amount</span>
+                    <span className="font-bold text-gray-900 text-lg">
+                      ₦{total.toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Pay Now */}
+                <button
+                  onClick={() => void handlePayNow()}
+                  disabled={
+                    items.length === 0 ||
+                    checkoutLoading ||
+                    (deliveryMethod === 'delivery' && !selectedAddressId)
+                  }
+                  className="mt-5 w-full py-3.5 rounded-full bg-primary-500 text-white font-semibold hover:bg-primary-600 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {checkoutLoading ? 'Processing...' : 'Pay Now'}
+                </button>
+
+                <p className="mt-3 text-xs flex items-center text-gray-600 gap-1">
+                  <Info size={15} /> There are no refunds on purchases
+                </p>
+
+                {deliveryMethod === 'delivery' && !hasAddress && (
+                  <div className="mt-3 flex items-start gap-1.5 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">
+                    <Info size={14} className="text-amber-500 shrink-0 mt-0.5" />
+                    <p className="text-xs text-amber-700">
+                      Please add and select a shipping address to continue.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Address modal */}
+      <AddressModal
+        isOpen={addressModalOpen}
+        onClose={() => {
+          setAddressModalOpen(false);
+          setEditingAddress(null);
+        }}
+        editAddress={editingAddress}
+      />
+    </>
+  );
 }

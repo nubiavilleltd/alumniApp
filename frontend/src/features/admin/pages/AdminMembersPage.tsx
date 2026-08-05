@@ -36,7 +36,6 @@ import {
 import { useChangeUserRole } from '@/features/admin/hooks/useRoleManagement';
 import type { AccountStatus } from '@/features/admin/api/adapters/user-management.adapter';
 import {
-  getRoleOptions,
   type UserRole,
 } from '@/features/admin/api/adapters/role-management.adapter';
 import { useAlumni } from '@/features/alumni/hooks/useAlumni';
@@ -54,6 +53,9 @@ import { LeadershipMember } from '@/features/leadership/types/leadership.types';
 import { EditLeadershipModal } from '@/features/leadership/components/EditLeadershipModal';
 import { AddAdminModal } from '@/features/admin/components/AddAdminModal';
 import { EditAdminModal } from '@/features/admin/components/EditAdminModal';
+import { toast } from '@/shared/components/ui/Toast';
+import { alumni } from '@/data/site-data';
+import { isSuperAdmin } from '@/shared/permissions/base';
 
 function generateInitialsAvatar(name: string): string {
   return `https://ui-avatars.com/api/?name=${encodeURIComponent(
@@ -107,6 +109,14 @@ function MemberStatCard({ label, value, icon: Icon, gradient }: MemberStatCardPr
   );
 }
 
+function mapUserRole(role:string){
+  if(!role) return "alumni"
+  if(role === "admin"){
+    return "super admin"
+  }
+  return role
+}
+
 // ═══════════════════════════════════════════════════════════════════════════
 // HELPER: MAP ALUMNI TO DISPLAY USER
 // ═══════════════════════════════════════════════════════════════════════════
@@ -121,7 +131,8 @@ function mapAlumniToDisplayUser(alumni: Alumni, currentUserMemberId?: string, le
     email: alumni.email,
     phone: alumni.whatsappPhone,
     // role: ['alumni', 'member'].includes(alumni.role ?? 'alumni') ? 'member' : 'admin',
-    role: alumni.role ?? "alumni",
+    // role: alumni.role ?? "alumni",
+    role: mapUserRole(alumni.role ?? "alumni"),
     accountStatus: alumni.isActive ? 'active' : 'inactive',
     photo: resolveProfilePhoto({
       photoUrl: alumni.photo,
@@ -215,21 +226,33 @@ function UserRow({
   const isActive = user.accountStatus === 'active';
   const isBusy =
     deactivate.isPending || activate.isPending || changeRole.isPending || removeLeadershipMember.isPending;
+    let errorMessage = '';
+    let successMessage = '';
 
   const handleAction = async () => {
     try {
       if (actionType === 'deactivate') {
         await deactivate.mutateAsync(user.id);
+        successMessage = `User successfully deactivated`;
+        errorMessage = `Failed to deactivate user. Please try again.`;
       } else if (actionType === 'activate') {
         await activate.mutateAsync(user.id);
+        successMessage = `User successfully activated`;
+        errorMessage = `Failed to activate user. Please try again.`;
       } else if (actionType === 'removeAdmin') {
         await changeRole.mutateAsync({ userId: user.id, newRole: 'alumni' });
+        successMessage = `User successfully removed as ADMIN`;
+        errorMessage = `Failed to remove user as ADMIN. Please try again.`;
       } else if (actionType === 'removeExco' && user.leadership) {
         await removeLeadershipMember.mutateAsync(user.leadership.id);
+        successMessage = `User successfully removed as EXCO`;
+        errorMessage = `Failed to remove user as EXCO. Please try again.`;
       }
+      toast.success(successMessage || 'Action completed successfully');
       setShowConfirm(false);
       setActionType(null);
     } catch (error) {
+      toast.error(errorMessage || 'An error occurred. Please try again.');
       // Error toast shown by mutation
     }
   };
@@ -275,10 +298,6 @@ function UserRow({
                 </span>
               )}
 
-
-
-              
-             
             </div>
 
             <div className="flex items-center gap-1 mt-1 text-xs text-gray-500 min-w-0">
@@ -441,17 +460,6 @@ export function AdminMembersPage() {
     [alumniList],
   );
 
-  // const alumniByMemberId = useMemo(() => {
-  //   const map = new Map<string, Alumni>();
-  //   alumniList.forEach((alumni) => {
-  //     map.set(alumni.memberId, alumni);
-  //   });
-  //   return map;
-  // }, [alumniList]);
-
-  // const users = useMemo(() => {
-  //   return alumniList.map((alumni) => mapAlumniToDisplayUser(alumni, currentUser?.memberId, excoRoleByMemberId.get(alumni.memberId)));
-  // }, [alumniList, currentUser?.memberId, excoRoleByMemberId, leadershipList]);
 
 
   const users = useMemo(() => {
@@ -471,7 +479,9 @@ export function AdminMembersPage() {
     if (statusFilter === 'active' || statusFilter === 'inactive') {
       filtered = filtered.filter((u) => u.accountStatus === statusFilter);
     } else if (statusFilter === 'admin') {
-      filtered = filtered.filter((u) => u.role.includes('admin'));
+      const allAdmins = filtered.filter((u) => u.role.includes('admin'));
+      const nonSuperAdmin = allAdmins.filter(admin => admin.role !== "super admin");
+      filtered = isSuperAdmin(currentUser) ? allAdmins : nonSuperAdmin
     } else if (statusFilter === 'exco') {
       filtered = filtered.filter((u) => Boolean(u.leadership));
     }

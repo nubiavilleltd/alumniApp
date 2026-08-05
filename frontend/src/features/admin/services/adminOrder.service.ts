@@ -17,16 +17,33 @@ export const AdminOrderService = {
         }
     },
 
-    async updateOrderStatus(orderId: string, status: RawOrderStatus): Promise<void> {
-    try {
-        await apiClient.post(API_ENDPOINTS.ORDER.UPDATE_ORDER_STATUS, {
-            order_id: orderId,
-            status,
-        });
-    } catch (error) {
-        throw handleApiError(error, 'Failed to update order status.', 'updateOrderStatus');
-    }
-},
+    async updateOrderStatus(
+        orderId: string,
+        status: RawOrderStatus,
+        extra?: { rider_details?: string; note?: string }
+    ): Promise<void> {
+        try {
+            await apiClient.post(API_ENDPOINTS.ORDER.UPDATE_ORDER_STATUS, {
+                order_id: orderId,
+                status,
+                ...(extra?.rider_details ? { rider_details: extra.rider_details } : {}),
+                ...(extra?.note ? { note: extra.note } : {}),
+            });
+        } catch (error) {
+            throw handleApiError(error, 'Failed to update order status.', 'updateOrderStatus');
+        }
+    },
+
+    //     async updateOrderStatus(orderId: string, status: RawOrderStatus): Promise<void> {
+    //     try {
+    //         await apiClient.post(API_ENDPOINTS.ORDER.UPDATE_ORDER_STATUS, {
+    //             order_id: orderId,
+    //             status,
+    //         });
+    //     } catch (error) {
+    //         throw handleApiError(error, 'Failed to update order status.', 'updateOrderStatus');
+    //     }
+    // },
 }
 
 

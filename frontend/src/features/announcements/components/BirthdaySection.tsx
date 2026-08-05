@@ -3,6 +3,7 @@ import { BirthdayCard } from './BirtthdayCard';
 import { Birthday } from '../types/announcement.types';
 import { useDismissedBirthdays } from '../hooks/useDismissedBirthdays';
 import { BirthdayCardSkeleton } from './BirthdayCardSkeleton';
+import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 
 interface BirthdaySectionProps {
   people: Birthday[];
@@ -12,10 +13,12 @@ interface BirthdaySectionProps {
 const SKELETON_COUNT = 3;
 
 export function BirthdaySection({ people, isLoading = false }: BirthdaySectionProps) {
+  const currentUser = useIdentityStore((state) => state.user);
   // While loading, pass `undefined` (not `people`, which may just be `[]`
   // at this point) so the hook doesn't seed today's localStorage key with
   // an empty list before the real data has even arrived.
-  const { visiblePeople, dismiss } = useDismissedBirthdays(isLoading ? undefined : people);
+
+  const { visiblePeople, dismiss } = useDismissedBirthdays(isLoading ? undefined : people, currentUser?.memberId,);
 
   if (isLoading) {
     

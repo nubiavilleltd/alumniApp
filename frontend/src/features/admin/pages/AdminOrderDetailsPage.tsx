@@ -10,14 +10,22 @@ import OrderInfoCard from '@/features/store/components/OrderInfoCard';
 import OrderItemDetailRow from '@/features/store/components/OrderItemDetailRow';
 import OrderSummaryCard from '@/features/store/components/OrderSummaryCard';
 import OrderAddressCard from '@/features/store/components/OrderAddressCard';
+import { useState } from 'react';
+import OrderRiderNoteCard from '@/features/store/components/OrderRiderNoteCard';
+import { toast } from '@/shared/components/ui/Toast';
 
 
 export default function AdminOrderDetailsPage() {
     const { id } = useParams<{ id: string }>();
     const { orders, isLoading, isError, error } = useAdminOrders();
-    const { mutate: updateStatus, isPending } = useUpdateOrderStatus();
+    const { mutateAsync: updateStatus, isPending } = useUpdateOrderStatus();
+    const [riderDetails, setRiderDetails] = useState('');
+    const [note, setNote] = useState('');
+    const [riderDetailsError, setRiderDetailsError] = useState<string | undefined>();
 
     const order = orders.find((o) => o.orderNumber === id);
+
+
 
     if (isLoading) {
         return <ContainerBackground><p>Loading order...</p></ContainerBackground>;
@@ -36,6 +44,35 @@ export default function AdminOrderDetailsPage() {
     }
 
     const transition = getNextStatusTransition(order.status as AdminOrderStatus, order.deliveryType);
+const requiresRiderDetails = order.deliveryType === 'delivery' && transition?.nextRawStatus === 'shipped';
+
+    const handleStatusUpdate = async () => {
+        if (!transition) return;
+
+        if (requiresRiderDetails && !riderDetails.trim()) {
+            setRiderDetailsError('Rider details are required before updating this order.');
+            return;
+        }
+
+        try {
+            await updateStatus({
+                orderId: order.id,
+                status: transition.nextRawStatus,
+                riderDetails: order.deliveryType === 'delivery' ? riderDetails.trim() : undefined,
+                note: note.trim() || undefined,
+            });
+
+            toast.success("Order successfully updated")
+
+        } catch (error) {
+            toast.error("An error occurred while updating order status")
+            console.error("error", error)
+        }
+
+
+
+
+    };
 
     return (
         <>
@@ -50,16 +87,7 @@ export default function AdminOrderDetailsPage() {
                         <OrderStatusBadge status={order.status} />
                     </div>
 
-                    {transition && (
-                        <button
-                            type="button"
-                            disabled={isPending}
-                            onClick={() => updateStatus({ orderId: order.id, status: transition.nextRawStatus })}
-                            className="w-full sm:w-auto bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-full font-semibold text-sm transition-colors disabled:opacity-50 whitespace-nowrap"
-                        >
-                            {isPending ? 'Updating...' : transition.buttonLabel}
-                        </button>
-                    )}
+               
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
@@ -73,11 +101,41 @@ export default function AdminOrderDetailsPage() {
                     ))}
                 </div>
 
-                <OrderSummaryCard
-                    subtotal={order.subtotal}
-                    shippingFee={order.shippingFee}
-                    total={order.total}
-                />
+
+
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-start mb-5">
+                    <OrderSummaryCard
+                        subtotal={order.subtotal}
+                        shippingFee={order.shippingFee}
+                        total={order.total}
+                    />
+                    {transition && (
+                        <div className="flex flex-col gap-4">
+                            <OrderRiderNoteCard
+                                showRiderDetails={requiresRiderDetails}
+                                riderDetails={riderDetails}
+                                onRiderDetailsChange={(value) => {
+                                    setRiderDetails(value);
+                                    if (riderDetailsError) setRiderDetailsError(undefined);
+                                }}
+                                note={note}
+                                onNoteChange={setNote}
+                                riderDetailsError={riderDetailsError}
+                            />
+
+                            <button
+                                type="button"
+                                disabled={isPending}
+                                onClick={handleStatusUpdate}
+                                className="w-full sm:w-auto sm:self-end bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-full font-semibold text-sm transition-colors disabled:opacity-50 whitespace-nowrap"
+                            >
+                                {isPending ? 'Updating...' : transition.buttonLabel}
+                            </button>
+                        </div>
+                    )}
+                </div>
+
             </ContainerBackground>
         </>
     );
