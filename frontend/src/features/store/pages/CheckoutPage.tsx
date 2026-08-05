@@ -14,9 +14,6 @@ import type { Address } from '../types/address.types';
 import { AUTH_ROUTES } from '@/features/authentication/routes';
 import { toast } from '@/shared/components/ui/Toast';
 
-// ─── Pickup address (static for now) ─────────────────────────────────────────
-// const PICKUP_ADDRESS =
-//   'Shop B6, Lotto Plaza, Opposite Farapark and besides Manbilla Hotel, Majek, Eti-Osa, Manbilla Hotel | Lagos - LEKKI-AJAH (ABIJO)';
 
 export function CheckoutPage() {
   const { items } = useCartStore();
@@ -30,14 +27,13 @@ export function CheckoutPage() {
 
   const { data: addresses = [], isLoading: addressesLoading, deleteAddress } = useAddresses();
 
-  
+
   const { data: zones = [] } = useDeliveryZones();
   const { checkout, isLoading: checkoutLoading } = useCheckout();
 
   const filteredZones = zones.filter(zone => zone.state !== "pickup")
   const pickUp = zones.find(zone => zone.state.toLowerCase() === "pickup")
 
-  console.log("pick up", pickUp)
   const PICKUP_ADDRESS = pickUp?.areas[0].area ?? ""
 
 
@@ -69,8 +65,8 @@ export function CheckoutPage() {
   const shippingFee =
     deliveryMethod === 'delivery' && selectedAddress
       ? (filteredZones
-          .find((z) => z.state === selectedAddress.state)
-          ?.areas.find((a) => a.area === selectedAddress.area)?.fee ?? 0)
+        .find((z) => z.state === selectedAddress.state)
+        ?.areas.find((a) => a.area === selectedAddress.area)?.fee ?? 0)
       : 0;
 
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -91,12 +87,12 @@ export function CheckoutPage() {
     const payload =
       deliveryMethod === 'pickup'
         ? {
-            deliveryType: 'self_pickup' as const,
-          }
+          deliveryType: 'self_pickup' as const,
+        }
         : {
-            deliveryType: 'door_delivery' as const,
-            addressId: Number(selectedAddressId),
-          };
+          deliveryType: 'door_delivery' as const,
+          addressId: Number(selectedAddressId),
+        };
 
     try {
       await checkout(payload, user.email);
@@ -125,9 +121,8 @@ export function CheckoutPage() {
               >
                 <div className="flex items-start gap-3">
                   <span
-                    className={`mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${
-                      deliveryMethod === 'pickup' ? 'border-primary-500' : 'border-gray-400'
-                    }`}
+                    className={`mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${deliveryMethod === 'pickup' ? 'border-primary-500' : 'border-gray-400'
+                      }`}
                   >
                     {deliveryMethod === 'pickup' && (
                       <span className="w-2.5 h-2.5 rounded-full bg-primary-500" />
@@ -158,9 +153,8 @@ export function CheckoutPage() {
                     <div className="flex items-start gap-3">
                       {/* Radio circle */}
                       <span
-                        className={`mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${
-                          deliveryMethod === 'delivery' ? 'border-primary-500' : 'border-gray-400'
-                        }`}
+                        className={`mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${deliveryMethod === 'delivery' ? 'border-primary-500' : 'border-gray-400'
+                          }`}
                       >
                         {deliveryMethod === 'delivery' && (
                           <span className="w-2.5 h-2.5 rounded-full bg-primary-500" />
@@ -184,18 +178,56 @@ export function CheckoutPage() {
                         }}
                         className="shrink-0 text-sm font-semibold text-primary-500 border border-primary-500 rounded-full px-2 py-1 sm:px-4 sm:py-1.5 hover:bg-primary-50 transition-colors"
                       >
-                        <Plus className="block sm:hidden" />{' '}
-                        <span className="hidden sm:block"> Add Shipping Address</span>
+
+                        <span className="flex items-center gap-1">
+                          <Plus size={16} />
+                          <span className="hidden sm:inline">Add Shipping Address</span>
+                          <span className="sm:hidden">Add Address</span>
+                        </span>
                       </button>
                     )}
                   </div>
                 </div>
 
                 {/* Address list */}
+                {/* {deliveryMethod === 'delivery' && (
+                  <div className="mt-3 flex flex-col gap-2">
+                    {addressesLoading ? (
+                      <p className="text-xs text-gray-400 animate-pulse">Loading addresses...</p>
+                    ) : (
+                      addresses.map((addr) => (
+                        <AddressCard
+                          key={addr.id}
+                          address={addr}
+                          isSelected={selectedAddressId === addr.id}
+                          onSelect={() => setSelectedAddressId(addr.id)}
+                          onEdit={() => {
+                            setEditingAddress(addr);
+                            setAddressModalOpen(true);
+                          }}
+                          onDelete={() => deleteAddress.mutate(addr.id)}
+                          isDeleting={deleteAddress.isPending}
+                        />
+                      ))
+                    )}
+                  </div>
+                )} */}
+
+                {/* Address list */}
                 {deliveryMethod === 'delivery' && (
                   <div className="mt-3 flex flex-col gap-2">
                     {addressesLoading ? (
                       <p className="text-xs text-gray-400 animate-pulse">Loading addresses...</p>
+                    ) : addresses.length === 0 ? (
+                      <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-2xl px-4 py-3">
+                        <Info size={16} className="text-amber-500 shrink-0 mt-0.5" />
+
+
+                        <p className="text-sm text-amber-700">
+                          You haven't added a shipping address yet. Tap the{' '}
+                          <span className="font-semibold">+ button</span> above to add one.
+                        </p>
+                      </div>
                     ) : (
                       addresses.map((addr) => (
                         <AddressCard
@@ -294,9 +326,12 @@ export function CheckoutPage() {
                 </p>
 
                 {deliveryMethod === 'delivery' && !hasAddress && (
-                  <p className="text-xs text-gray-400 text-center mt-2">
-                    Please add a shipping address to continue
-                  </p>
+                  <div className="mt-3 flex items-start gap-1.5 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">
+                    <Info size={14} className="text-amber-500 shrink-0 mt-0.5" />
+                    <p className="text-xs text-amber-700">
+                      Please add and select a shipping address to continue.
+                    </p>
+                  </div>
                 )}
               </div>
             </div>
