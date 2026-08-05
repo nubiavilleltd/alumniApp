@@ -135,9 +135,9 @@ const expandedNavColumns: NavItem[][] = [
 const userAccountTriggerClassName =
   'inline-flex min-h-[3.35rem] w-full items-center rounded-full border border-white/25 bg-transparent text-white no-underline shadow-none transition-colors duration-200 hover:border-white/40 hover:bg-white/5';
 const expandedNavHeadingClassName =
-  'text-left text-[1.05rem] font-semibold leading-normal tracking-[0.03em] text-white no-underline transition-colors duration-150 hover:text-white/85 focus-visible:text-white lg:text-[1.125rem]';
+  'text-left text-[1.05rem] font-semibold leading-normal tracking-[0.03em] text-white no-underline transition-colors duration-150 hover:text-blue-200 focus-visible:text-white lg:text-[1.125rem]';
 const expandedNavChildClassName =
-  'text-left text-sm font-semibold leading-normal text-white no-underline transition-colors duration-150 hover:text-white/90 focus-visible:text-white';
+  'text-left text-sm font-semibold leading-normal text-white no-underline transition-colors duration-150 hover:text-blue-200 focus-visible:text-white';
 
 function cn(...inputs: Array<string | false | null | undefined>) {
   return twMerge(clsx(inputs));

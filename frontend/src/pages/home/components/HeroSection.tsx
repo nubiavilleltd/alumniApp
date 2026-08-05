@@ -143,7 +143,7 @@ export default function HeroSection() {
               <AppLink href={ROUTES.DONATION}>
                 <Button
                   size="lg"
-                  className="type-button min-w-[18.5rem] justify-center rounded-full border-0 bg-[#7c3aed] px-6 py-5 text-white shadow-none hover:bg-[#6d28d9]"
+                  className="type-button min-w-[18.5rem] justify-center rounded-full border-0 bg-[#0077CC] px-6 py-5 text-white shadow-none hover:bg-[#6d28d9]"
                 >
                   Make a Donation
                   <img
