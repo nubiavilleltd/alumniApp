@@ -1,6 +1,6 @@
-import { Crown } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Crown } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
-import { PROJECT_ROUTES } from '@/features/projects/routes';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { ADMIN_ROUTES, ADMIN_STORE_ROUTES } from '../routes';
 import { AuthSessionUser } from '@/features/authentication/types/auth.types';
@@ -41,10 +41,50 @@ const adminBannerTabs: Array<{
 export function AdminBanner({ activeTab, title, headingLevel = 'p' }: AdminBannerProps) {
   const { data: currentUser } = useCurrentUser();
   const TitleTag = headingLevel;
+  const tabsScrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollTabsLeft, setCanScrollTabsLeft] = useState(false);
+  const [canScrollTabsRight, setCanScrollTabsRight] = useState(false);
 
    const visibleTabs = adminBannerTabs.filter(
     (tab) => !tab.permission || (currentUser && tab.permission(currentUser))
   );
+
+  const updateTabsScrollState = () => {
+    const container = tabsScrollRef.current;
+    if (!container) return;
+
+    const maxScrollLeft = container.scrollWidth - container.clientWidth;
+    setCanScrollTabsLeft(container.scrollLeft > 1);
+    setCanScrollTabsRight(container.scrollLeft < maxScrollLeft - 1);
+  };
+
+  const scrollTabs = (direction: 'left' | 'right') => {
+    const container = tabsScrollRef.current;
+    if (!container) return;
+
+    container.scrollBy({
+      left: direction === 'left' ? -260 : 260,
+      behavior: 'smooth',
+    });
+  };
+
+  useEffect(() => {
+    const container = tabsScrollRef.current;
+    if (!container) return undefined;
+
+    updateTabsScrollState();
+
+    const handleScroll = () => updateTabsScrollState();
+    const handleResize = () => updateTabsScrollState();
+
+    container.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      container.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [visibleTabs.length]);
 
   return (
     <div className="bg-[#F8F8F7]">
@@ -70,23 +110,48 @@ export function AdminBanner({ activeTab, title, headingLevel = 'p' }: AdminBanne
             </div>
 
             {/* Right: Nav tabs */}
-            <div className="scrollbar-hide -mx-4 min-w-0 overflow-x-auto px-4 scroll-smooth sm:mx-0 sm:px-0 lg:flex-1 [-webkit-overflow-scrolling:touch]">
-              <div className="flex w-max gap-2 sm:gap-3 lg:ml-auto">
-                {visibleTabs.map((tab) => (
-                  <AppLink
-                    key={tab.id}
-                    href={tab.href}
-                    className={[
-                      'whitespace-nowrap rounded-[14px] px-4 py-2 text-base font-semibold transition-all',
-                      tab.id === activeTab
-                        ? 'border border-white/30 bg-white/20 text-white shadow-lg'
-                        : 'border border-white/10 bg-white/5 text-white/80 hover:bg-white/10 hover:text-white',
-                    ].join(' ')}
-                  >
-                    {tab.label}
-                  </AppLink>
-                ))}
+            <div className="flex min-w-0 items-center gap-2 lg:flex-1">
+              <button
+                type="button"
+                onClick={() => scrollTabs('left')}
+                disabled={!canScrollTabsLeft}
+                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition-colors hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:bg-white/10"
+                aria-label="Scroll admin tabs left"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+
+              <div
+                ref={tabsScrollRef}
+                className="scrollbar-hide -mx-1 min-w-0 flex-1 overflow-x-auto px-1 scroll-smooth [-webkit-overflow-scrolling:touch]"
+              >
+                <div className="flex w-max gap-2 sm:gap-3 lg:ml-auto">
+                  {visibleTabs.map((tab) => (
+                    <AppLink
+                      key={tab.id}
+                      href={tab.href}
+                      className={[
+                        'whitespace-nowrap rounded-[14px] px-4 py-2 text-base font-semibold transition-all',
+                        tab.id === activeTab
+                          ? 'border border-white/30 bg-white/20 text-white shadow-lg'
+                          : 'border border-white/10 bg-white/5 text-white/80 hover:bg-white/10 hover:text-white',
+                      ].join(' ')}
+                    >
+                      {tab.label}
+                    </AppLink>
+                  ))}
+                </div>
               </div>
+
+              <button
+                type="button"
+                onClick={() => scrollTabs('right')}
+                disabled={!canScrollTabsRight}
+                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition-colors hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:bg-white/10"
+                aria-label="Scroll admin tabs right"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </button>
             </div>
           </div>
         </div>
