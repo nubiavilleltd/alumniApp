@@ -61,7 +61,7 @@ function ValueCard({ value }: { value: CoreValue }) {
 
 export default function CoreValues() {
   return (
-    <section className="section bg-gray-50">
+    <section className="section">
       <div className="container-custom">
         {/* Header */}
         <div className="text-center mb-12">

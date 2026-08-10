@@ -4,7 +4,7 @@ import { ROUTES } from '@/shared/constants/routes';
 export default function OurStory() {
   return (
     <section
-      className="relative bg-[#f8f7f4] px-[var(--app-page-inline-padding)] py-12 md:py-[50px]"
+      className="px-[var(--app-page-inline-padding)] py-12 md:py-[50px]"
       aria-labelledby="home-about-title"
     >
       <div className="mx-auto flex max-w-[82rem] flex-col items-center text-center">

@@ -53,12 +53,13 @@ export function AboutPage() {
       />
 
       <main className="text-[#061015]">
-        <section className="relative isolate overflow-hidden bg-[linear-gradient(135deg,#ffffff_0%,#fbfdff_43%,#acd5ef_100%)]">
-          <div className="grid gap-10 px-[var(--app-page-inline-padding)] pb-[3.75rem] pt-11 sm:pt-16 min-[1200px]:min-h-[min(760px,calc(100svh-7rem))] min-[1200px]:grid-cols-[minmax(0,1fr)_clamp(360px,21vw,430px)] min-[1200px]:gap-[clamp(1.75rem,2.6vw,3rem)] min-[1200px]:py-[clamp(3rem,5.2vh,4.25rem)]">
+        <section className="relative isolate overflow-hidden">
+          <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(135deg,rgba(255,255,255,0.38)_0%,rgba(251,253,255,0.38)_43%,rgba(172,213,239,0.38)_100%)]" />
+          <div className="relative z-10 grid gap-10 px-[var(--app-page-inline-padding)] pb-[3.75rem] pt-11 sm:pt-16 min-[1200px]:min-h-[min(760px,calc(100svh-7rem))] min-[1200px]:grid-cols-[minmax(0,1fr)_clamp(360px,21vw,430px)] min-[1200px]:gap-[clamp(1.75rem,2.6vw,3rem)] min-[1200px]:py-[clamp(3rem,5.2vh,4.25rem)]">
             <div className="flex min-w-0 flex-col">
               <SectionEyebrow>Who We Are</SectionEyebrow>
 
-              <h1 className="mt-6 max-w-[1340px] font-sans text-[clamp(2rem,4.8vw,3.2rem)] font-semibold leading-[1.05] tracking-[0.01em] text-[#020c12] min-[1200px]:text-[clamp(2.8rem,3.68vw,3.6rem)]">
+              <h1 className="mt-6 max-w-[1340px] fonxt-sans text-[clamp(2rem,4.8vw,3.2rem)] font-semibold leading-[1.05] tracking-[0.01em] text-[#020c12] min-[1200px]:text-[clamp(2.8rem,3.68vw,3.6rem)]">
                 <span className="block">We are a platform designed</span>
                 <span className="block">to keep our sisters</span>
                 <span className="block">connected across</span>
@@ -123,7 +124,7 @@ export function AboutPage() {
                   key={feature.title}
                   className="flex h-full w-full max-w-72 flex-col items-start text-left"
                 >
-                  <div className="flex h-[3.25rem] w-[3.25rem] items-center justify-center rounded-xl bg-[#e5e5e5] min-[1200px]:h-[3.9rem] min-[1200px]:w-[3.9rem]">
+                  <div className="flex h-[3.25rem] w-[3.25rem] items-center justify-center rounded-xl min-[1200px]:h-[3.9rem] min-[1200px]:w-[3.9rem]">
                     <img
                       src={feature.icon}
                       alt=""
