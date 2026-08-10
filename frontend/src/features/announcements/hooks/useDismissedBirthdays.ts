@@ -1,89 +1,9 @@
-// import { useCallback, useEffect, useState } from 'react';
-// import { Birthday } from '../types/announcement.types';
 
-// /**
-//  * Local (not UTC) date, formatted as YYYY-MM-DD, used as part of the
-//  * localStorage key so each day gets its own isolated bucket.
-//  */
-// function getTodayKey(): string {
-//   const now = new Date();
-//   const year = now.getFullYear();
-//   const month = String(now.getMonth() + 1).padStart(2, '0');
-//   const day = String(now.getDate()).padStart(2, '0');
-//   return `birthday-widget-${year}-${month}-${day}`;
-// }
-
-// export function useDismissedBirthdays(serverPeople: Birthday[] | undefined) {
-//   // null = "we haven't reconciled with localStorage yet" (distinct from "[]",
-//   // which means "reconciled, and everyone's been dismissed")
-//   const [visibleIds, setVisibleIds] = useState<string[] | null>(null);
-
-//   useEffect(() => {
-//     // Nothing to reconcile against yet (still loading from the server)
-//     if (!serverPeople) return;
-
-//     const key = getTodayKey();
-
-//     try {
-//       const stored = localStorage.getItem(key);
-//       if (stored) {
-//         setVisibleIds(JSON.parse(stored));
-//         return;
-//       }
-//     } catch {
-//       // Corrupted value under this key — fall through and reseed below
-//     }
-
-//     // Nothing stored for today yet: seed today's key with everyone the
-//     // server sent, and show all of them.
-//     const freshIds = serverPeople.map((person) => person.userId);
-
-//     try {
-//       localStorage.setItem(key, JSON.stringify(freshIds));
-//     } catch {
-//       // localStorage unavailable (private browsing, quota exceeded, etc.)
-//       // Degrade gracefully: dismissal still works for this session via
-//       // React state, it just won't survive a reload.
-//     }
-
-//     setVisibleIds(freshIds);
-//   }, [serverPeople]);
-
-//   const dismiss = useCallback((userId: string) => {
-//     setVisibleIds((prev) => {
-//       const next = (prev ?? []).filter((id) => id !== userId);
-
-//       try {
-//         localStorage.setItem(getTodayKey(), JSON.stringify(next));
-//       } catch {
-//         // ignore write failure, state still updates for this session
-//       }
-
-//       return next;
-//     });
-//   }, []);
-
-//   const visiblePeople =
-//     serverPeople && visibleIds
-//       ? serverPeople.filter((person) => visibleIds.includes(person.userId))
-//       : (serverPeople ?? []);
-
-//   return { visiblePeople, dismiss };
-// }
-
-
-
-
-
-
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Birthday } from '../types/announcement.types';
 
 const KEY_PREFIX = 'birthday-widget';
 
-/**
- * Local (not UTC) date, formatted as YYYY-MM-DD.
- */
 function getTodayDateString(): string {
   const now = new Date();
   const year = now.getFullYear();
@@ -92,21 +12,10 @@ function getTodayDateString(): string {
   return `${year}-${month}-${day}`;
 }
 
-/**
- * Per-user, per-day localStorage key. Keying on memberId (not email) keeps
- * it stable even if a user's email changes, and avoids storing an email
- * address in plaintext browser storage.
- */
 function getTodayKey(memberId: string): string {
-  return `${KEY_PREFIX}-${memberId}-${getTodayDateString()}`;
+  return `${KEY_PREFIX}-dismissed-${memberId}-${getTodayDateString()}`;
 }
 
-/**
- * Removes every birthday-widget-* key that isn't for today — regardless of
- * which user it belongs to. Safe to run unconditionally: any key not
- * matching today's date string is guaranteed stale, since the widget only
- * ever reads/writes today's key for anyone.
- */
 function pruneStaleKeys() {
   const todaySuffix = `-${getTodayDateString()}`;
 
@@ -122,7 +31,7 @@ function pruneStaleKeys() {
 
     staleKeys.forEach((key) => localStorage.removeItem(key));
   } catch {
-    // localStorage unavailable — nothing to prune, nothing to break
+    // localStorage unavailable — nothing to prune
   }
 }
 
@@ -130,55 +39,66 @@ export function useDismissedBirthdays(
   serverPeople: Birthday[] | undefined,
   memberId: string | undefined,
 ) {
-  // null = "we haven't reconciled with localStorage yet" (distinct from "[]",
-  // which means "reconciled, and everyone's been dismissed")
   const [visibleIds, setVisibleIds] = useState<string[] | null>(null);
 
   useEffect(() => {
-    // Nothing to reconcile against yet (still loading from the server, or
-    // we don't know who's logged in yet)
     if (!serverPeople || !memberId) return;
 
     pruneStaleKeys();
 
     const key = getTodayKey(memberId);
+    const serverIds = serverPeople.map((person) => person.userId);
 
     try {
       const stored = localStorage.getItem(key);
+      let dismissedIds: string[] = [];
+
       if (stored) {
-        setVisibleIds(JSON.parse(stored));
-        return;
+        dismissedIds = JSON.parse(stored);
+        // Ensure dismissedIds is an array (handle corrupted data)
+        if (!Array.isArray(dismissedIds)) {
+          dismissedIds = [];
+        }
       }
+
+      // ✅ Show all server people EXCEPT those dismissed
+      const visible = serverIds.filter((id) => !dismissedIds.includes(id));
+
+      // Save empty array if nothing dismissed (so we know the key exists)
+      if (!stored) {
+        localStorage.setItem(key, JSON.stringify(dismissedIds));
+      }
+
+      setVisibleIds(visible);
     } catch {
-      // Corrupted value under this key — fall through and reseed below
+      // On error: show everyone
+      setVisibleIds(serverIds);
     }
-
-    // Nothing stored for this user today yet: seed with everyone the
-    // server sent, and show all of them.
-    const freshIds = serverPeople.map((person) => person.userId);
-
-    try {
-      localStorage.setItem(key, JSON.stringify(freshIds));
-    } catch {
-      // localStorage unavailable (private browsing, quota exceeded, etc.)
-      // Degrade gracefully: dismissal still works for this session via
-      // React state, it just won't survive a reload.
-    }
-
-    setVisibleIds(freshIds);
   }, [serverPeople, memberId]);
 
   const dismiss = useCallback(
     (userId: string) => {
       if (!memberId) return;
 
-      setVisibleIds((prev) => {
-        const next = (prev ?? []).filter((id) => id !== userId);
+      const key = getTodayKey(memberId);
 
+      setVisibleIds((prev) => {
+        if (!prev) return prev;
+
+        // Remove from visible
+        const next = prev.filter((id) => id !== userId);
+
+        // Add to dismissed in localStorage
         try {
-          localStorage.setItem(getTodayKey(memberId), JSON.stringify(next));
+          const stored = localStorage.getItem(key);
+          const dismissedIds: string[] = stored ? JSON.parse(stored) : [];
+          
+          if (!dismissedIds.includes(userId)) {
+            dismissedIds.push(userId);
+            localStorage.setItem(key, JSON.stringify(dismissedIds));
+          }
         } catch {
-          // ignore write failure, state still updates for this session
+          // ignore write failure
         }
 
         return next;
@@ -187,10 +107,10 @@ export function useDismissedBirthdays(
     [memberId],
   );
 
-  const visiblePeople =
-    serverPeople && visibleIds
-      ? serverPeople.filter((person) => visibleIds.includes(person.userId))
-      : (serverPeople ?? []);
+  const visiblePeople = useMemo(() => {
+    if (!serverPeople || !visibleIds) return serverPeople ?? [];
+    return serverPeople.filter((person) => visibleIds.includes(person.userId));
+  }, [serverPeople, visibleIds]);
 
   return { visiblePeople, dismiss };
 }
