@@ -17,14 +17,14 @@ function MemberCard({ member }: { member: LeadershipMember }) {
   return (
     <div className="rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex flex-col">
       {/* <div className="h-57 w-full overflow-hidden bg-gray-100"> */}
-      <div className="aspect-square w-full overflow-hidden bg-gray-100 rounded-2xl">
+      <div className="aspect-square w-full overflow-hidden rounded-2xl">
         <img
           src={member.image}
           alt={member.name}
           className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-300"
         />
       </div>
-      <div className="py-3 px-3 bg-white">
+      <div className="py-3 px-3">
         <h4 className="text-gray-900 font-bold text-sm">{member.name}</h4>
         <p className="text-gray-400 text-xs mt-0.5">{member.role}</p>
       </div>
@@ -35,7 +35,7 @@ function MemberCard({ member }: { member: LeadershipMember }) {
 function MemberCardSkeleton() {
   return (
     <div className="rounded-2xl overflow-hidden shadow-sm border border-gray-100 animate-pulse flex flex-col">
-      <div className="h-57 bg-gray-200" />
+      <div className="h-57" />
       <div className="py-3 px-3 flex flex-col items-center gap-2">
         <div className="h-4 bg-gray-200 rounded w-32" />
         <div className="h-3 bg-gray-200 rounded w-20" />

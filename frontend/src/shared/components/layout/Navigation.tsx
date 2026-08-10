@@ -255,24 +255,36 @@ function ExpandedNavItem({ item, onNavigate }: { item: NavItem; onNavigate: () =
         </button>
 
         <div className={cn('grid gap-4 overflow-hidden', !open && 'hidden')}>
-          {item.children.map((child) => (
-            <AppLink
-              key={child.url}
-              href={child.url}
-              onClick={onNavigate}
-              className={cn(
-                expandedNavChildClassName,
-                isPathActive(pathname, child.url) && 'text-white',
-              )}
-            >
-              <span className="block text-white">{child.label}</span>
-              {child.description ? (
-                <span className="block pt-0.5 text-xs font-semibold leading-snug text-[#BDBDBD] lg:text-[0.78rem]">
-                  {child.description}
+          {item.children.map((child) => {
+            const childActive = isPathActive(pathname, child.url);
+
+            return (
+              <AppLink
+                key={child.url}
+                href={child.url}
+                onClick={onNavigate}
+                className={cn(
+                  expandedNavChildClassName,
+                  'group -mx-2 rounded-lg px-2 py-1 transition-colors hover:bg-white/10 focus-visible:bg-white/10',
+                  childActive && 'bg-white/15 text-white',
+                )}
+              >
+                <span className="block text-white transition-colors group-hover:text-blue-200">
+                  {child.label}
                 </span>
-              ) : null}
-            </AppLink>
-          ))}
+                {child.description ? (
+                  <span
+                    className={cn(
+                      'block pt-0.5 text-xs font-semibold leading-snug text-[#BDBDBD] transition-colors group-hover:text-blue-100 lg:text-[0.78rem]',
+                      childActive && 'text-white/80',
+                    )}
+                  >
+                    {child.description}
+                  </span>
+                ) : null}
+              </AppLink>
+            );
+          })}
         </div>
       </div>
     );
