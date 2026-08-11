@@ -79,11 +79,11 @@ export function MessageFromPresident() {
     <section className="section">
       <div className="container-custom">
         {isLoading ? (
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-[260px_1fr] animate-pulse">
+          <div className="grid grid-cols-1 gap-8 animate-pulse md:grid-cols-[minmax(240px,311px)_1fr] md:gap-10 lg:gap-[clamp(2.5rem,5vw,5rem)]">
             <div className="flex flex-col gap-3">
               <div className="h-8 w-48 rounded bg-gray-200" />
               <div className="h-5 w-56 rounded bg-gray-200" />
-              <div className="aspect-square w-full max-w-[260px] rounded-2xl bg-gray-200" />
+              <div className="aspect-[311/403] w-full max-w-[311px] rounded-[24px] bg-gray-200" />
             </div>
 
             <div className="flex flex-col gap-4 pt-14">
@@ -98,19 +98,19 @@ export function MessageFromPresident() {
           president && (
             <div>
               <div className="mb-6">
-                <h2 className="text-xl font-bold leading-tight text-gray-700 md:text-2xl">
+                <h2 className="text-2xl font-semibold leading-tight text-[#061015] md:text-[32px]">
                   From the President
                 </h2>
-                <h3 className="text-lg font-semibold text-gray-600">-{president.name}</h3>
+                <h3 className="mt-1 text-lg font-semibold text-[#4B5563] md:text-[24px]">-{president.name}</h3>
               </div>
 
-              <div className="grid grid-cols-1 items-start gap-8 md:grid-cols-[260px_1fr]">
-                <div className="mx-auto w-full max-w-[260px] md:mx-0">
-                  <div className="aspect-square w-full overflow-hidden rounded-2xl bg-gray-100 shadow-md">
+              <div className="grid grid-cols-1 items-start gap-8 md:grid-cols-[minmax(240px,311px)_1fr] md:gap-10 lg:gap-[clamp(2.5rem,5vw,5rem)]">
+                <div className="mx-auto w-full max-w-[311px] md:mx-0">
+                  <div className="aspect-[311/403] w-full overflow-hidden rounded-[24px] bg-gray-100 shadow-md">
                     <img
                       src={president.image}
                       alt={president.name}
-                      className="h-full w-full object-cover"
+                      className="h-full w-full object-cover object-top"
                     />
                   </div>
                 </div>

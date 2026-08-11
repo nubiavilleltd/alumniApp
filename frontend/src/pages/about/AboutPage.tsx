@@ -124,7 +124,7 @@ export function AboutPage() {
                   key={feature.title}
                   className="flex h-full w-full max-w-72 flex-col items-start text-left"
                 >
-                  <div className="flex h-[3.25rem] w-[3.25rem] items-center justify-center rounded-xl min-[1200px]:h-[3.9rem] min-[1200px]:w-[3.9rem]">
+                  <div className="flex h-[3.25rem] w-[3.25rem] items-center justify-center rounded-xl bg-[#E0E0E0] min-[1200px]:h-[4rem] min-[1200px]:w-[4rem]">
                     <img
                       src={feature.icon}
                       alt=""
