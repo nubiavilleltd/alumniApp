@@ -135,9 +135,9 @@ const expandedNavColumns: NavItem[][] = [
 const userAccountTriggerClassName =
   'inline-flex min-h-[3.35rem] w-full items-center rounded-full border border-white/25 bg-transparent text-white no-underline shadow-none transition-colors duration-200 hover:border-white/40 hover:bg-white/5';
 const expandedNavHeadingClassName =
-  'text-left text-[1.05rem] font-semibold leading-normal tracking-[0.03em] text-white no-underline transition-colors duration-150 hover:text-blue-200 focus-visible:text-white lg:text-[1.125rem]';
+  'text-left text-[1.05rem] font-semibold leading-normal tracking-[0.03em] text-white no-underline transition-colors duration-150 hover:text-[#0077CC] focus-visible:text-white lg:text-[1.125rem]';
 const expandedNavChildClassName =
-  'text-left text-sm font-semibold leading-normal text-white no-underline transition-colors duration-150 hover:text-blue-200 focus-visible:text-white';
+  'text-left text-sm font-semibold leading-normal text-white no-underline transition-colors duration-150 hover:text-[#0077CC] focus-visible:text-white';
 
 function cn(...inputs: Array<string | false | null | undefined>) {
   return twMerge(clsx(inputs));
@@ -245,7 +245,7 @@ function ExpandedNavItem({ item, onNavigate }: { item: NavItem; onNavigate: () =
           className={cn(
             expandedNavHeadingClassName,
             'flex w-full cursor-pointer items-center justify-between gap-4 border-0 bg-transparent p-0',
-            active && 'text-white',
+            active && 'text-[#0077CC] underline decoration-4 underline-offset-8',
           )}
           aria-expanded={open}
           onClick={() => setOpen((prev) => !prev)}
@@ -266,10 +266,15 @@ function ExpandedNavItem({ item, onNavigate }: { item: NavItem; onNavigate: () =
                 className={cn(
                   expandedNavChildClassName,
                   'group -mx-2 rounded-lg px-2 py-1 transition-colors hover:bg-white/10 focus-visible:bg-white/10',
-                  childActive && 'bg-white/15 text-white',
+                  childActive && 'text-[#0077CC]',
                 )}
               >
-                <span className="block text-white transition-colors group-hover:text-blue-200">
+                <span
+                  className={cn(
+                    'block text-white transition-colors group-hover:text-[#0077CC]',
+                    childActive && 'text-[#0077CC] underline decoration-2 underline-offset-8',
+                  )}
+                >
                   {child.label}
                 </span>
                 {child.description ? (
@@ -295,7 +300,10 @@ function ExpandedNavItem({ item, onNavigate }: { item: NavItem; onNavigate: () =
       <AppLink
         href={item.url}
         onClick={onNavigate}
-        className={cn(expandedNavHeadingClassName, active && 'text-white')}
+        className={cn(
+          expandedNavHeadingClassName,
+          active && 'text-[#0077CC] underline decoration-2 underline-offset-8',
+        )}
       >
         {item.label}
       </AppLink>
@@ -390,7 +398,8 @@ function UserDropdown({
               className={cn(
                 expandedNavChildClassName,
                 'flex items-center justify-between text-white/90',
-                isPathActive(pathname, item.url) && 'text-white',
+                isPathActive(pathname, item.url) &&
+                  'text-[#0077CC] underline decoration-2 underline-offset-8',
               )}
               onClick={() => {
                 setOpen(false);

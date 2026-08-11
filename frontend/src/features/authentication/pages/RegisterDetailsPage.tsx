@@ -110,10 +110,6 @@ function getRegistrationErrorDetails(error: unknown) {
   };
 }
 
-function getObjectKeys(value: unknown) {
-  return value && typeof value === 'object' ? Object.keys(value as Record<string, unknown>) : null;
-}
-
 function asRecord(value: unknown) {
   return value && typeof value === 'object' ? (value as Record<string, unknown>) : null;
 }
@@ -144,7 +140,6 @@ export function RegisterDetailsPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const locationState = (location.state as RegisterLocationState | null) ?? null;
-  const isSocialDebugEnabled = new URLSearchParams(location.search).get('debugSocial') === '1';
   const currentYear = new Date().getFullYear();
   const savedFlow = useMemo(() => loadRegistrationFlow(), []);
 
@@ -207,23 +202,7 @@ export function RegisterDetailsPage() {
     null,
   );
   const [socialAuthStatus, setSocialAuthStatus] = useState<string | null>(null);
-  const [socialDebugLogs, setSocialDebugLogs] = useState<string[]>([]);
   const todayDate = new Date().toISOString().split('T')[0];
-
-  const appendSocialDebugLog = useCallback(
-    (label: string, payload?: Record<string, unknown>) => {
-      if (!isSocialDebugEnabled) {
-        return;
-      }
-
-      const line = `${new Date().toLocaleTimeString()} ${label}${
-        payload ? ` ${JSON.stringify(payload)}` : ''
-      }`;
-      setSocialDebugLogs((current) => [...current.slice(-24), line]);
-      console.log(`[social-debug] ${label}`, payload ?? '');
-    },
-    [isSocialDebugEnabled],
-  );
 
   const detailForm = useForm<RegisterDetailsFormValues, unknown, RegisterDetailsSubmitValues>({
     resolver: zodResolver(registerDetailsSchema),
@@ -338,13 +317,6 @@ export function RegisterDetailsPage() {
   const applySocialProfile = useCallback(
     (profile: SocialSignupResponse) => {
       const providerLabel = getProviderLabel(profile.provider);
-      appendSocialDebugLog('apply social profile', {
-        provider: profile.provider,
-        userId: profile.userId,
-        hasAccessToken: Boolean(profile.accessToken),
-        accessTokenLength: profile.accessToken?.length ?? 0,
-        rawKeys: getObjectKeys(profile.raw),
-      });
 
       detailForm.setValue('otherNames', profile.firstName ?? '', {
         shouldDirty: true,
@@ -392,7 +364,7 @@ export function RegisterDetailsPage() {
       });
       setSocialAuthStatus(`${providerLabel} connected. Complete the remaining fields.`);
     },
-    [appendSocialDebugLog, detailForm],
+    [detailForm],
   );
 
   const hydrateSocialSignupAccessToken = useCallback(
@@ -404,27 +376,11 @@ export function RegisterDetailsPage() {
         return profile;
       }
 
-      appendSocialDebugLog('fallback social login request', {
-        provider: profile.provider,
-        userId: profile.userId,
-        hasIdToken: Boolean(credentials.idToken),
-        idTokenLength: credentials.idToken?.length ?? 0,
-        hasProviderAccessToken: Boolean(credentials.accessToken),
-        providerAccessTokenLength: credentials.accessToken?.length ?? 0,
-      });
-
       try {
         const loginResponse = await authApi.socialLogin({
           provider: profile.provider,
           idToken: credentials.idToken,
           accessToken: credentials.accessToken,
-        });
-
-        appendSocialDebugLog('fallback social login success', {
-          provider: profile.provider,
-          userId: loginResponse.user?.id,
-          hasAccessToken: Boolean(loginResponse.accessToken),
-          accessTokenLength: loginResponse.accessToken?.length ?? 0,
         });
 
         return {
@@ -440,14 +396,6 @@ export function RegisterDetailsPage() {
         const userId = readResponseString(response, 'user_id', 'userId', 'id');
         const email = readResponseString(response, 'email');
         const fullName = readResponseString(response, 'fullname', 'fullName', 'full_name', 'name');
-
-        appendSocialDebugLog('fallback social login error response', {
-          provider: profile.provider,
-          status: error instanceof Error ? (error as Error & { status?: number }).status : undefined,
-          responseKeys: getObjectKeys(response),
-          hasAccessToken: Boolean(accessToken),
-          accessTokenLength: accessToken?.length ?? 0,
-        });
 
         if (!accessToken) {
           return profile;
@@ -466,7 +414,7 @@ export function RegisterDetailsPage() {
         };
       }
     },
-    [appendSocialDebugLog],
+    [],
   );
 
   const handleGoogleSignupCredential = useCallback(
@@ -474,44 +422,12 @@ export function RegisterDetailsPage() {
       try {
         setSelectedSocialProvider('google');
         setSocialAuthStatus('Checking your Google account...');
-        appendSocialDebugLog('google signup request', {
-          hasIdToken: Boolean(idToken),
-          idTokenLength: idToken?.length ?? 0,
-        });
         const signupResponse = await authApi.socialSignup({ provider: 'google', idToken });
         const hydratedSignupResponse = await hydrateSocialSignupAccessToken(signupResponse, {
           idToken,
         });
-        appendSocialDebugLog('google signup response', {
-          userId: hydratedSignupResponse.userId,
-          hadSignupAccessToken: Boolean(signupResponse.accessToken),
-          hasAccessToken: Boolean(hydratedSignupResponse.accessToken),
-          accessTokenLength: hydratedSignupResponse.accessToken?.length ?? 0,
-          rawKeys: getObjectKeys(signupResponse.raw),
-        });
-        console.log('Google signup response:', hydratedSignupResponse);
         applySocialProfile(hydratedSignupResponse);
       } catch (error) {
-        console.log('Google signup error:', {
-          message: error instanceof Error ? error.message : 'Google sign up failed.',
-          status:
-            error instanceof Error ? (error as Error & { status?: number }).status : undefined,
-          response:
-            error instanceof Error
-              ? (error as Error & { details?: { response?: unknown } }).details?.response
-              : undefined,
-        });
-        appendSocialDebugLog('google signup error', {
-          message: error instanceof Error ? error.message : 'Google sign up failed.',
-          status:
-            error instanceof Error ? (error as Error & { status?: number }).status : undefined,
-          responseKeys:
-            error instanceof Error
-              ? getObjectKeys(
-                  (error as Error & { details?: { response?: unknown } }).details?.response,
-                )
-              : null,
-        });
         setSocialAuthStatus(null);
         const { message, status } = getRegistrationErrorDetails(error);
 
@@ -524,7 +440,7 @@ export function RegisterDetailsPage() {
         toast.error(message);
       }
     },
-    [appendSocialDebugLog, applySocialProfile, detailForm, hydrateSocialSignupAccessToken],
+    [applySocialProfile, detailForm, hydrateSocialSignupAccessToken],
   );
 
   const handleFacebookSignupAccessToken = useCallback(
@@ -532,44 +448,12 @@ export function RegisterDetailsPage() {
       try {
         setSelectedSocialProvider('facebook');
         setSocialAuthStatus('Checking your Facebook account...');
-        appendSocialDebugLog('facebook signup request', {
-          hasProviderAccessToken: Boolean(accessToken),
-          providerAccessTokenLength: accessToken?.length ?? 0,
-        });
         const signupResponse = await authApi.socialSignup({ provider: 'facebook', accessToken });
         const hydratedSignupResponse = await hydrateSocialSignupAccessToken(signupResponse, {
           accessToken,
         });
-        appendSocialDebugLog('facebook signup response', {
-          userId: hydratedSignupResponse.userId,
-          hadSignupAccessToken: Boolean(signupResponse.accessToken),
-          hasAccessToken: Boolean(hydratedSignupResponse.accessToken),
-          accessTokenLength: hydratedSignupResponse.accessToken?.length ?? 0,
-          rawKeys: getObjectKeys(signupResponse.raw),
-        });
-        console.log('Facebook signup response:', hydratedSignupResponse);
         applySocialProfile(hydratedSignupResponse);
       } catch (error) {
-        console.log('Facebook signup error:', {
-          message: error instanceof Error ? error.message : 'Facebook sign up failed.',
-          status:
-            error instanceof Error ? (error as Error & { status?: number }).status : undefined,
-          response:
-            error instanceof Error
-              ? (error as Error & { details?: { response?: unknown } }).details?.response
-              : undefined,
-        });
-        appendSocialDebugLog('facebook signup error', {
-          message: error instanceof Error ? error.message : 'Facebook sign up failed.',
-          status:
-            error instanceof Error ? (error as Error & { status?: number }).status : undefined,
-          responseKeys:
-            error instanceof Error
-              ? getObjectKeys(
-                  (error as Error & { details?: { response?: unknown } }).details?.response,
-                )
-              : null,
-        });
         setSocialAuthStatus(null);
         const { message, status } = getRegistrationErrorDetails(error);
 
@@ -582,24 +466,14 @@ export function RegisterDetailsPage() {
         toast.error(message);
       }
     },
-    [appendSocialDebugLog, applySocialProfile, detailForm, hydrateSocialSignupAccessToken],
+    [applySocialProfile, detailForm, hydrateSocialSignupAccessToken],
   );
 
   const submitDetails = detailForm.handleSubmit(async (values) => {
     try {
       if (values.isSocialSignup) {
-        appendSocialDebugLog('submit social details', {
-          hasSocialAuthResponse: Boolean(socialAuthResponse),
-          userId: socialAuthResponse?.userId,
-          provider: socialAuthResponse?.provider,
-          hasAccessToken: Boolean(socialAuthResponse?.accessToken),
-          accessTokenLength: socialAuthResponse?.accessToken?.length ?? 0,
-          rawKeys: getObjectKeys(socialAuthResponse?.raw),
-        });
-
         if (!socialAuthResponse?.userId) {
           console.error('Social signup missing user ID:', socialAuthResponse);
-          appendSocialDebugLog('blocked submit: missing user id');
           detailForm.setError('root', {
             message: 'We could not complete social registration. Please try again.',
           });
@@ -610,10 +484,6 @@ export function RegisterDetailsPage() {
           console.error('Social onboarding update requires an app access token:', {
             userId: socialAuthResponse.userId,
             response: socialAuthResponse.raw,
-          });
-          appendSocialDebugLog('blocked submit: missing app access token', {
-            userId: socialAuthResponse.userId,
-            rawKeys: getObjectKeys(socialAuthResponse.raw),
           });
           detailForm.setError('root', {
             message: 'We could not complete your profile. Please try again.',
@@ -643,7 +513,6 @@ export function RegisterDetailsPage() {
           },
         });
 
-        console.log('Social onboarding update response:', saved);
         navigate(AUTH_ROUTES.LOGIN, {
           replace: true,
           state: {
@@ -991,40 +860,6 @@ export function RegisterDetailsPage() {
             Login
           </AppLink>
         </p>
-
-        {isSocialDebugEnabled ? (
-          <div
-            style={{
-              position: 'fixed',
-              right: 12,
-              bottom: 12,
-              zIndex: 9999,
-              width: 'min(92vw, 420px)',
-              maxHeight: '45vh',
-              overflow: 'auto',
-              borderRadius: 8,
-              border: '1px solid rgba(255,255,255,0.24)',
-              background: 'rgba(7, 17, 22, 0.94)',
-              color: '#ffffff',
-              padding: 12,
-              fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
-              fontSize: 11,
-              lineHeight: 1.45,
-              boxShadow: '0 16px 40px rgba(0,0,0,0.32)',
-            }}
-          >
-            <div style={{ marginBottom: 8, fontWeight: 700 }}>Social signup debug</div>
-            {socialDebugLogs.length > 0 ? (
-              socialDebugLogs.map((line, index) => (
-                <div key={`${line}-${index}`} style={{ marginBottom: 6, whiteSpace: 'pre-wrap' }}>
-                  {line}
-                </div>
-              ))
-            ) : (
-              <div>No social signup events yet.</div>
-            )}
-          </div>
-        ) : null}
       </form>
     </RegistrationShell>
   );
