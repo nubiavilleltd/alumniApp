@@ -96,11 +96,11 @@ function ServiceCard({
       {/* Header: icon + title inline */}
       <div className={`flex items-center gap-4 ${horizontal ? '' : ''}`}>
         <div
-          className={`flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-4xl ${service.iconBg}`}
+          className={`flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl ${service.iconBg}`}
         >
           <service.icon
             aria-hidden="true"
-            className={`h-7 w-7 ${service.iconColor}`}
+            className={`h-7 w-7 rounded-2xl ${service.iconColor}`}
             strokeWidth={2.25}
           />
         </div>
