@@ -27,6 +27,7 @@ export function RootLayout() {
 
 
   const showDonationButton = !isHomePage && !isDonationPage;
+  const showBackgroundVideo = !isEcommerceRoute;
 
   useEffect(() => {
     const onScroll = (): void => {
@@ -45,7 +46,20 @@ export function RootLayout() {
   };
 
   return (
-    <div className={`app-root-surface min-h-screen flex flex-col text-gray-900 font-sans antialiased ${isEcommerceRoute ? '' : 'alumni-page-background'}`}>
+    <div className={`app-root-surface min-h-screen flex flex-col text-gray-900 font-sans antialiased ${showBackgroundVideo ? 'alumni-page-background' : ''}`}>
+      {showBackgroundVideo && (
+        <video
+          className="alumni-background-video"
+          src="/bg/alumni-bg-video.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          aria-hidden="true"
+        />
+      )}
+
       <Navigation />
 
       <main className="app-main flex-grow">

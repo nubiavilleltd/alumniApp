@@ -67,7 +67,19 @@ export function mapSocialSignupResponse(
       user.picture,
       user.photo,
     ),
-    accessToken: readString(data.access_token, data.accessToken),
-    refreshToken: readString(data.refresh_token, data.refreshToken),
+    accessToken: readString(
+      data.access_token,
+      data.accessToken,
+      data.token,
+      user.access_token,
+      user.accessToken,
+      user.token,
+    ),
+    refreshToken: readString(
+      data.refresh_token,
+      data.refreshToken,
+      user.refresh_token,
+      user.refreshToken,
+    ),
   };
 }

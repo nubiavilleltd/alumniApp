@@ -169,9 +169,6 @@ export const announcementService = {
 
     try {
       const { data } = await apiClient.post(API_ENDPOINTS.ANNOUNCEMENTS.BIRTHDAYS);
-
-      console.log("bdays", data)
-
       return data.birthdays.map(adaptBirthday)
 
     } catch (error) {

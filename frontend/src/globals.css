@@ -87,13 +87,39 @@
 }
 
 .alumni-page-background {
+  position: relative;
+  isolation: isolate;
   background-color: var(--app-page-bg-color);
-  background-image:
-    linear-gradient(rgba(248, 248, 247, 0.95), rgba(248, 248, 247, 0.95)),
-    url('/bg/alumni_bg.gif');
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: contain;
+  background-image: url('/bg/alumni_bg.gif');
+  background-position: center top;
+  background-repeat: repeat-y;
+  background-size: max(100vw, 1440px) auto;
+}
+
+.alumni-page-background::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: rgba(248, 248, 247, 0.94);
+}
+
+.alumni-background-video {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  object-fit: cover;
+  object-position: center top;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .alumni-background-video {
+    display: none;
+  }
 }
 
 .app-root-surface {
@@ -189,6 +215,7 @@
 
 .container-custom {
   padding-inline: var(--app-page-inline-padding);
+  background-color: transparent;
 }
 
 .type-hero {
