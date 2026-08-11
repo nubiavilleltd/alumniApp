@@ -110,10 +110,15 @@ function getRegistrationErrorDetails(error: unknown) {
   };
 }
 
+function getObjectKeys(value: unknown) {
+  return value && typeof value === 'object' ? Object.keys(value as Record<string, unknown>) : null;
+}
+
 export function RegisterDetailsPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const locationState = (location.state as RegisterLocationState | null) ?? null;
+  const isSocialDebugEnabled = new URLSearchParams(location.search).get('debugSocial') === '1';
   const currentYear = new Date().getFullYear();
   const savedFlow = useMemo(() => loadRegistrationFlow(), []);
 
@@ -176,7 +181,23 @@ export function RegisterDetailsPage() {
     null,
   );
   const [socialAuthStatus, setSocialAuthStatus] = useState<string | null>(null);
+  const [socialDebugLogs, setSocialDebugLogs] = useState<string[]>([]);
   const todayDate = new Date().toISOString().split('T')[0];
+
+  const appendSocialDebugLog = useCallback(
+    (label: string, payload?: Record<string, unknown>) => {
+      if (!isSocialDebugEnabled) {
+        return;
+      }
+
+      const line = `${new Date().toLocaleTimeString()} ${label}${
+        payload ? ` ${JSON.stringify(payload)}` : ''
+      }`;
+      setSocialDebugLogs((current) => [...current.slice(-24), line]);
+      console.log(`[social-debug] ${label}`, payload ?? '');
+    },
+    [isSocialDebugEnabled],
+  );
 
   const detailForm = useForm<RegisterDetailsFormValues, unknown, RegisterDetailsSubmitValues>({
     resolver: zodResolver(registerDetailsSchema),
@@ -291,6 +312,13 @@ export function RegisterDetailsPage() {
   const applySocialProfile = useCallback(
     (profile: SocialSignupResponse) => {
       const providerLabel = getProviderLabel(profile.provider);
+      appendSocialDebugLog('apply social profile', {
+        provider: profile.provider,
+        userId: profile.userId,
+        hasAccessToken: Boolean(profile.accessToken),
+        accessTokenLength: profile.accessToken?.length ?? 0,
+        rawKeys: getObjectKeys(profile.raw),
+      });
 
       detailForm.setValue('otherNames', profile.firstName ?? '', {
         shouldDirty: true,
@@ -338,7 +366,7 @@ export function RegisterDetailsPage() {
       });
       setSocialAuthStatus(`${providerLabel} connected. Complete the remaining fields.`);
     },
-    [detailForm],
+    [appendSocialDebugLog, detailForm],
   );
 
   const handleGoogleSignupCredential = useCallback(
@@ -346,7 +374,17 @@ export function RegisterDetailsPage() {
       try {
         setSelectedSocialProvider('google');
         setSocialAuthStatus('Checking your Google account...');
+        appendSocialDebugLog('google signup request', {
+          hasIdToken: Boolean(idToken),
+          idTokenLength: idToken?.length ?? 0,
+        });
         const signupResponse = await authApi.socialSignup({ provider: 'google', idToken });
+        appendSocialDebugLog('google signup response', {
+          userId: signupResponse.userId,
+          hasAccessToken: Boolean(signupResponse.accessToken),
+          accessTokenLength: signupResponse.accessToken?.length ?? 0,
+          rawKeys: getObjectKeys(signupResponse.raw),
+        });
         console.log('Google signup response:', signupResponse);
         applySocialProfile(signupResponse);
       } catch (error) {
@@ -359,38 +397,16 @@ export function RegisterDetailsPage() {
               ? (error as Error & { details?: { response?: unknown } }).details?.response
               : undefined,
         });
-        setSocialAuthStatus(null);
-        const { message, status } = getRegistrationErrorDetails(error);
-
-        if (status === 409 && detailForm.getValues('email')) {
-          detailForm.setError('email', { type: 'server', message }, { shouldFocus: true });
-        } else {
-          detailForm.setError('root', { type: 'server', message });
-        }
-
-        toast.error(message);
-      }
-    },
-    [applySocialProfile, detailForm],
-  );
-
-  const handleFacebookSignupAccessToken = useCallback(
-    async (accessToken: string) => {
-      try {
-        setSelectedSocialProvider('facebook');
-        setSocialAuthStatus('Checking your Facebook account...');
-        const signupResponse = await authApi.socialSignup({ provider: 'facebook', accessToken });
-        console.log('Facebook signup response:', signupResponse);
-        applySocialProfile(signupResponse);
-      } catch (error) {
-        console.log('Facebook signup error:', {
-          message: error instanceof Error ? error.message : 'Facebook sign up failed.',
+        appendSocialDebugLog('google signup error', {
+          message: error instanceof Error ? error.message : 'Google sign up failed.',
           status:
             error instanceof Error ? (error as Error & { status?: number }).status : undefined,
-          response:
+          responseKeys:
             error instanceof Error
-              ? (error as Error & { details?: { response?: unknown } }).details?.response
-              : undefined,
+              ? getObjectKeys(
+                  (error as Error & { details?: { response?: unknown } }).details?.response,
+                )
+              : null,
         });
         setSocialAuthStatus(null);
         const { message, status } = getRegistrationErrorDetails(error);
@@ -404,14 +420,78 @@ export function RegisterDetailsPage() {
         toast.error(message);
       }
     },
-    [applySocialProfile, detailForm],
+    [appendSocialDebugLog, applySocialProfile, detailForm],
+  );
+
+  const handleFacebookSignupAccessToken = useCallback(
+    async (accessToken: string) => {
+      try {
+        setSelectedSocialProvider('facebook');
+        setSocialAuthStatus('Checking your Facebook account...');
+        appendSocialDebugLog('facebook signup request', {
+          hasProviderAccessToken: Boolean(accessToken),
+          providerAccessTokenLength: accessToken?.length ?? 0,
+        });
+        const signupResponse = await authApi.socialSignup({ provider: 'facebook', accessToken });
+        appendSocialDebugLog('facebook signup response', {
+          userId: signupResponse.userId,
+          hasAccessToken: Boolean(signupResponse.accessToken),
+          accessTokenLength: signupResponse.accessToken?.length ?? 0,
+          rawKeys: getObjectKeys(signupResponse.raw),
+        });
+        console.log('Facebook signup response:', signupResponse);
+        applySocialProfile(signupResponse);
+      } catch (error) {
+        console.log('Facebook signup error:', {
+          message: error instanceof Error ? error.message : 'Facebook sign up failed.',
+          status:
+            error instanceof Error ? (error as Error & { status?: number }).status : undefined,
+          response:
+            error instanceof Error
+              ? (error as Error & { details?: { response?: unknown } }).details?.response
+              : undefined,
+        });
+        appendSocialDebugLog('facebook signup error', {
+          message: error instanceof Error ? error.message : 'Facebook sign up failed.',
+          status:
+            error instanceof Error ? (error as Error & { status?: number }).status : undefined,
+          responseKeys:
+            error instanceof Error
+              ? getObjectKeys(
+                  (error as Error & { details?: { response?: unknown } }).details?.response,
+                )
+              : null,
+        });
+        setSocialAuthStatus(null);
+        const { message, status } = getRegistrationErrorDetails(error);
+
+        if (status === 409 && detailForm.getValues('email')) {
+          detailForm.setError('email', { type: 'server', message }, { shouldFocus: true });
+        } else {
+          detailForm.setError('root', { type: 'server', message });
+        }
+
+        toast.error(message);
+      }
+    },
+    [appendSocialDebugLog, applySocialProfile, detailForm],
   );
 
   const submitDetails = detailForm.handleSubmit(async (values) => {
     try {
       if (values.isSocialSignup) {
+        appendSocialDebugLog('submit social details', {
+          hasSocialAuthResponse: Boolean(socialAuthResponse),
+          userId: socialAuthResponse?.userId,
+          provider: socialAuthResponse?.provider,
+          hasAccessToken: Boolean(socialAuthResponse?.accessToken),
+          accessTokenLength: socialAuthResponse?.accessToken?.length ?? 0,
+          rawKeys: getObjectKeys(socialAuthResponse?.raw),
+        });
+
         if (!socialAuthResponse?.userId) {
           console.error('Social signup missing user ID:', socialAuthResponse);
+          appendSocialDebugLog('blocked submit: missing user id');
           detailForm.setError('root', {
             message: 'We could not complete social registration. Please try again.',
           });
@@ -422,6 +502,10 @@ export function RegisterDetailsPage() {
           console.error('Social onboarding update requires an app access token:', {
             userId: socialAuthResponse.userId,
             response: socialAuthResponse.raw,
+          });
+          appendSocialDebugLog('blocked submit: missing app access token', {
+            userId: socialAuthResponse.userId,
+            rawKeys: getObjectKeys(socialAuthResponse.raw),
           });
           detailForm.setError('root', {
             message: 'We could not complete your profile. Please try again.',
@@ -799,6 +883,40 @@ export function RegisterDetailsPage() {
             Login
           </AppLink>
         </p>
+
+        {isSocialDebugEnabled ? (
+          <div
+            style={{
+              position: 'fixed',
+              right: 12,
+              bottom: 12,
+              zIndex: 9999,
+              width: 'min(92vw, 420px)',
+              maxHeight: '45vh',
+              overflow: 'auto',
+              borderRadius: 8,
+              border: '1px solid rgba(255,255,255,0.24)',
+              background: 'rgba(7, 17, 22, 0.94)',
+              color: '#ffffff',
+              padding: 12,
+              fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+              fontSize: 11,
+              lineHeight: 1.45,
+              boxShadow: '0 16px 40px rgba(0,0,0,0.32)',
+            }}
+          >
+            <div style={{ marginBottom: 8, fontWeight: 700 }}>Social signup debug</div>
+            {socialDebugLogs.length > 0 ? (
+              socialDebugLogs.map((line, index) => (
+                <div key={`${line}-${index}`} style={{ marginBottom: 6, whiteSpace: 'pre-wrap' }}>
+                  {line}
+                </div>
+              ))
+            ) : (
+              <div>No social signup events yet.</div>
+            )}
+          </div>
+        ) : null}
       </form>
     </RegistrationShell>
   );
