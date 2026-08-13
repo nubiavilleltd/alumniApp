@@ -57,7 +57,7 @@ export function LoginForm() {
   const locationState = (location.state as LoginLocationState | null) ?? null;
   const setIdentity = useIdentityStore((state) => state.setIdentity);
   const setTokens = useTokenStore((state) => state.setTokens);
-  const setRememberMe = useTokenStore((state) => state.setRememberMe);
+  // const setRememberMe = useTokenStore((state) => state.setRememberMe);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -97,7 +97,7 @@ export function LoginForm() {
       setTokens(loginResponse.accessToken, loginResponse.refreshToken);
 
       const fallbackDestination =
-        fullProfile?.role === 'admin' ? ADMIN_ROUTES.DASHBOARD : USER_ROUTES.DASHBOARD;
+        fullProfile?.role.includes("admin") ? ADMIN_ROUTES.DASHBOARD : USER_ROUTES.DASHBOARD;
 
       navigate(from ?? fallbackDestination, { replace: true });
     },
@@ -145,7 +145,7 @@ export function LoginForm() {
     async (idToken: string) => {
       try {
         const loginResponse = await authApi.socialLogin({ provider: 'google', idToken });
-        setRememberMe(true);
+        // setRememberMe(true);
         completeLogin(loginResponse);
       } catch (error) {
         handleSocialLoginError(error, 'google');
@@ -158,7 +158,7 @@ export function LoginForm() {
     async (accessToken: string) => {
       try {
         const loginResponse = await authApi.socialLogin({ provider: 'facebook', accessToken });
-        setRememberMe(true);
+        // setRememberMe(true);
         completeLogin(loginResponse);
       } catch (error) {
         handleSocialLoginError(error, 'facebook');
@@ -206,7 +206,7 @@ export function LoginForm() {
       // Step 3: Persist full profile to localStorage — nav renders synchronously
       // setSession(fullProfile, loginResponse.accessToken, loginResponse.refreshToken, values.rememberMe);
 
-      setRememberMe(values.rememberMe as boolean);
+      // setRememberMe(values.rememberMe as boolean);
       completeLogin(loginResponse);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Login failed. Please try again.';
