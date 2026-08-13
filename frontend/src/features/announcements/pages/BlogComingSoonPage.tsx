@@ -41,7 +41,7 @@ function BlogCard({ post }: { post: BlogPostSummary }) {
           className="h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-[1.03]"
           loading="lazy"
         />
-        <span className="absolute left-3 top-3 max-w-[calc(100%-1.5rem)] truncate rounded-full bg-primary-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm">
+        <span className="absolute left-3 top-3 max-w-[calc(100%-1.5rem)] truncate rounded-full bg-primary-600 bg-opacity-60 px-3 py-1.5 text-xs font-semibold text-white shadow-sm">
           {post.categoryName || 'Uncategorized'}
         </span>
       </div>

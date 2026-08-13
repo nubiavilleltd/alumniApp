@@ -35,13 +35,13 @@ const QUICK_LINKS = [
   { label: 'Announcements', href: ROUTES.NEWS },
   { label: 'Events', href: ROUTES.EVENTS.ROOT },
   { label: 'Our Projects', href: ROUTES.PROJECTS.ROOT },
-  { label: 'Volunteer', href: '/alumni/profiles' },
+  { label: 'Volunteer', href: ROUTES.JOIN_PROJECTS.VOLUNTEER },
   { label: 'FAQs', href: ROUTES.FAQS },
   { label: 'Contact Us', href: ROUTES.CONTACT },
 ];
 
 const COMMUNITY_LINKS = [
-  { label: 'Check on your Sisters', href: '/alumni/profiles' },
+  { label: 'Check on your Sisters', href: ROUTES.ALUMNI.ROOT },
   { label: 'Marketplace', href: ROUTES.MARKETPLACE.ROOT },
   { label: 'Resources', href: ROUTES.RESOURCES },
   { label: 'Welfare', href: ROUTES.WELFARE },
