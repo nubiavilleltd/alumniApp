@@ -460,11 +460,12 @@ export default function MarketPlacePage() {
           </div>
 
           <div className="mb-10 flex flex-col gap-4 lg:mb-[2.15rem] lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex h-[3.1rem] w-full items-center gap-2 rounded-full bg-white px-[0.95rem] text-[#858585] lg:h-12 lg:max-w-[28rem]">
+            {/* <div className="flex h-[3.1rem] w-full items-center gap-2 rounded-full bg-white px-[0.95rem] text-[#858585] lg:h-12 lg:max-w-[28rem]"> */}
+            <div className="flex h-[3.1rem] w-full items-center gap-2 rounded-full text-[#858585] lg:h-12 lg:max-w-[28rem]">
               <label htmlFor="marketplace-search" className="sr-only">
                 Search marketplace businesses
               </label>
-              <SearchInput
+              {/* <SearchInput
                 id="marketplace-search"
                 value={searchTerm}
                 onValueChange={handleFilterChange(setSearchTerm)}
@@ -477,6 +478,16 @@ export default function MarketPlacePage() {
                 searchIcon={Search}
                 clearIcon={CircleX}
                 errorIcon={CircleAlert}
+              /> */}
+              <SearchInput
+                id="marketplace-search"
+                value={searchTerm}
+                onValueChange={handleFilterChange(setSearchTerm)}
+                placeholder="Search here"
+                showClearButton={true}
+                className="w-full"
+                containerClassName="h-full"
+                inputClassName="!h-10 !py-0"
               />
             </div>
 

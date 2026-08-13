@@ -27,6 +27,7 @@ export function StoreFilters({
                     value={search}
                     onValueChange={onSearch}
                     placeholder="Search products"
+                    inputClassName="!h-10 !py-0"
                 />
             </div>
 
