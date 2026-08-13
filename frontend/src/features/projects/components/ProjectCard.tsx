@@ -153,21 +153,21 @@ export function ProjectCard({ project, showAdminActions = false, onEdit }: Proje
           </p>
 
           {/* Description */}
-          <p className="text-white/95 text-[11px] sm:text-xs leading-relaxed mt-1 line-clamp-2">
+          <p className="text-white text-[13px] leading-relaxed mt-1 line-clamp-2">
             {project.description}
           </p>
 
           {/* Metadata */}
           <div className="flex flex-col gap-1 mt-2 flex-1">
             {project.location && (
-              <span className="flex items-center gap-1 text-white/95 text-[10px] sm:text-[11px]">
+              <span className="flex items-center gap-1 text-white/95 text-[11px] sm:text-[12px]">
                 <MapPin className="w-3 h-3 flex-shrink-0" />
                 {project.location}
               </span>
             )}
 
             {dateRange && (
-              <span className="flex items-center gap-1 text-white/95 text-[10px] sm:text-[11px]">
+              <span className="flex items-center gap-1 text-white/95 text-[11px] sm:text-[12px]">
                 <Clock className="w-3 h-3 flex-shrink-0" />
                 {dateRange}
               </span>
