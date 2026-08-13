@@ -139,7 +139,7 @@ export default function WelfarePage() {
             </div>
 
             {/* Right: action buttons (stacked) */}
-            <div className="flex flex-shrink-0 flex-col gap-3 sm:w-[17.5rem]">
+            <div className="flex flex-shrink-0 flex-col gap-5 sm:w-[17.5rem]">
               <Link
                 to={ROUTES.WELFARE_COMMITTEE_CONTACT}
                 className="flex min-h-10 items-center justify-center whitespace-nowrap rounded-full border-2 border-primary-500 px-5 text-center text-sm font-bold text-primary-500 transition-colors hover:bg-primary-500 hover:text-white"

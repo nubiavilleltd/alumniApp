@@ -23,7 +23,7 @@ export function RootLayout() {
   const isRouteOrChild = (route: string): boolean =>
   pathname === route || pathname.startsWith(`${route}/`);
 
-  const isEcommerceRoute = isRouteOrChild(ROUTES.ORDER.ROOT) || isRouteOrChild(ROUTES.STORE.ROOT) || pathname.includes('admin/store') || pathname.includes('admin/orders');
+  const isEcommerceRoute = isRouteOrChild(ROUTES.ORDER.ROOT) || isRouteOrChild(ROUTES.STORE.ROOT) || pathname.includes('admin/orders');
 
 
   const showDonationButton = !isHomePage && !isDonationPage;
