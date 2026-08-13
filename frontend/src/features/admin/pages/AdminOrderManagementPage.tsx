@@ -8,6 +8,8 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
 import { useAdminOrders } from '../hooks/useAdminOrders';
 import { ADMIN_ORDER_ROUTES } from '../routes'; // adjust to wherever this actually lives
+import { Download } from 'lucide-react';
+import { ExportButton } from '@/shared/components/ui/ExportButton';
 
 export default function AdminOrderManagementPage() {
 
@@ -56,11 +58,30 @@ export default function AdminOrderManagementPage() {
         );
     }
 
+    const handleExport = () => {
+        // TODO: wire up actual export logic (CSV/Excel generation or API call)
+        console.log('Exporting orders...', { search, activeTab, dateFrom, dateTo });
+    };
+
     return (
         <>
             <SEO title="Order Management" />
 
             <ContainerBackground>
+                {/* HEADER */}
+                {/* <div className="flex justify-between items-start mb-8">
+                    <div>
+                        <h1 className="type-section-title">
+                            Order Management
+                        </h1>
+
+                        <p className="text-gray-600 max-w-xl">
+                            Track, process, and manage merchandise orders.
+                        </p>
+                    </div>
+
+                </div> */}
+
                 {/* HEADER */}
                 <div className="flex justify-between items-start mb-8">
                     <div>
@@ -73,6 +94,16 @@ export default function AdminOrderManagementPage() {
                         </p>
                     </div>
 
+                    {/* <button
+                        type="button"
+                        onClick={handleExport}
+                        className="flex items-center gap-2 rounded-full border-2 border-primary-500 px-4 py-2 text-sm font-semibold text-primary-500 transition-colors hover:bg-primary-500 hover:text-white whitespace-nowrap"
+                    >
+                        <Download className="w-4 h-4" strokeWidth={2.4} />
+                        Export
+                    </button> */}
+
+                    <ExportButton onExport={handleExport} />
                 </div>
 
                 <OrderFilters

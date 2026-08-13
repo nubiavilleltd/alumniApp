@@ -3,14 +3,12 @@ import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
-import { AppLink } from '@/shared/components/ui/AppLink';
 import { Modal } from '@/shared/components/ui/Modal';
 import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { useEvent } from '../hooks/useEvents';
 import { useEventAttendees } from '../hooks/useEventAttendees';
 import { useEventSurveySubmissionDetail, useEventSurveySubmissions } from '../hooks/useEventSurvey';
 import { eventSurveyFunctionsApi } from '../api/firebase/survey.functions';
-import { EVENT_ROUTES } from '../routes';
 import type { EventAttendee } from '../api/adapters/event-attendees.adapter';
 import { ROUTES } from '@/shared/constants/routes';
 import { ADMIN_ROUTES } from '@/features/admin/routes';
@@ -607,7 +605,7 @@ export default function AttendeesPage() {
     { label: 'Home', href: ROUTES.HOME },
     { label: 'Admin Dashboard', href: ADMIN_ROUTES.DASHBOARD },
     { label: 'Events', href: ADMIN_ROUTES.EVENTS },
-    ...(id ? [{ label: pageTitle, href: EVENT_ROUTES.DETAIL(id) }] : []),
+    ...(id ? [{ label: pageTitle, href: ADMIN_ROUTES.EVENT_DETAIL(id) }] : []),
     { label: 'Attendees' },
   ];
 
