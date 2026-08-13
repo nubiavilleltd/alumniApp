@@ -46,7 +46,8 @@ export function FilterDropdown({
           placeholder={placeholder}
           sortOptionsAlphabetically={sortOptionsAlphabetically}
           className={`w-full ${selectClassName}`}
-          controlClassName={shouldShowClear ? '!pr-16' : ''}
+          // controlClassName={shouldShowClear ? '!pr-16' : ''}
+          controlClassName={`!h-10 !py-0 flex items-center ${shouldShowClear ? '!pr-16' : ''}`}
           chevronDownIcon={chevronDownIcon}
           chevronUpIcon={chevronUpIcon}
         />

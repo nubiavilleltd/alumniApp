@@ -18,10 +18,11 @@ import { useProjects } from '../hooks/useProjects';
 import { ProjectCard, ProjectCardSkeleton } from '../components/ProjectCard';
 import { ProjectFormModal } from '../components/ProjectFormModal';
 import type { Project } from '../types/project.types';
-import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '@/shared/constants/routes';
 import { AdminBanner } from '@/features/admin/components/AdminBanner';
+import { canManageProjects } from '@/shared/permissions/project.permission';
+import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 
 // ─── Responsive items per page (mirrors AlumniDirectoryPage) ─────────────────
 
@@ -47,8 +48,11 @@ function useItemsPerPage() {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function AdminProjectsPage() {
-  const currentUser = useIdentityStore((state) => state.user);
-  const isAdmin = currentUser?.role === 'admin';
+ 
+
+  const { data: currentUser } = useCurrentUser();
+
+  const canUserManageProjects = canManageProjects(currentUser)
 
   const [searchTerm, setSearchTerm] = useState('');
   const [yearFilter, setYearFilter] = useState('');
@@ -161,7 +165,8 @@ export default function AdminProjectsPage() {
                   value={searchTerm}
                   onValueChange={resetFilters(setSearchTerm)}
                   placeholder="Search here..."
-                  inputClassName="!h-[56px] !border-0 !shadow-none focus:!ring-0"
+                  // inputClassName="!h-[56px] !border-0 !shadow-none focus:!ring-0"
+                  inputClassName="!h-10 !py-0"
                 />
               </div>
               <div className="w-full sm:w-auto">
@@ -173,11 +178,11 @@ export default function AdminProjectsPage() {
                     { label: 'All', value: '' },
                     ...years.map((y) => ({ label: String(y), value: String(y) })),
                   ]}
-                  selectClassName="[&_.select-input__control-wrap>button]:!h-[56px] [&_.select-input__control-wrap>button]:!border-0 [&_.select-input__control-wrap>button]:!shadow-none [&_.select-input__control-wrap>button]:focus:!ring-0"
+                  // selectClassName="[&_.select-input__control-wrap>button]:!h-[56px] [&_.select-input__control-wrap>button]:!border-0 [&_.select-input__control-wrap>button]:!shadow-none [&_.select-input__control-wrap>button]:focus:!ring-0"
                 />
               </div>
             </div>
-            {isAdmin && visible.length > 0 && (
+            {canUserManageProjects && visible.length > 0 && (
               <button
                 type="button"
                 onClick={openCreate}
@@ -202,8 +207,8 @@ export default function AdminProjectsPage() {
                 <ProjectCard
                   key={project.id}
                   project={project}
-                  showAdminActions={isAdmin}
-                  onEdit={isAdmin ? openEdit : undefined}
+                  showAdminActions={true}
+                  onEdit={canUserManageProjects ? openEdit : undefined}
                 />
               ))}
             </div>
@@ -216,11 +221,11 @@ export default function AdminProjectsPage() {
               <p className="max-w-xs text-sm leading-relaxed text-gray-400">
                 {searchTerm || yearFilter
                   ? 'Try adjusting your search or filter.'
-                  : isAdmin
+                  : canUserManageProjects
                     ? 'No projects yet. Create the first one!'
                     : 'Check back later for updates.'}
               </p>
-              {isAdmin && !searchTerm && !yearFilter ? (
+              {canUserManageProjects && !searchTerm && !yearFilter ? (
                 <button
                   type="button"
                   onClick={openCreate}

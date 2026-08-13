@@ -17,9 +17,6 @@ import { Pagination } from '@/shared/components/ui/Pagination';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import { useProjects } from '../hooks/useProjects';
 import { ProjectCard, ProjectCardSkeleton } from '../components/ProjectCard';
-import { ProjectFormModal } from '../components/ProjectFormModal';
-import type { Project } from '../types/project.types';
-import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '@/shared/constants/routes';
 
@@ -47,14 +44,10 @@ function useItemsPerPage() {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function ProjectsPage() {
-  const currentUser = useIdentityStore((state) => state.user);
-  const isAdmin = currentUser?.role === 'admin';
 
   const [searchTerm, setSearchTerm] = useState('');
   const [yearFilter, setYearFilter] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [showFormModal, setShowFormModal] = useState(false);
-  const [editProject, setEditProject] = useState<Project | null>(null);
 
   const ITEMS_PER_PAGE = useItemsPerPage();
 
@@ -105,18 +98,8 @@ export default function ProjectsPage() {
     setCurrentPage(1);
   };
 
-  const openCreate = () => {
-    setEditProject(null);
-    setShowFormModal(true);
-  };
-  const openEdit = (p: Project) => {
-    setEditProject(p);
-    setShowFormModal(true);
-  };
-  const closeModal = () => {
-    setShowFormModal(false);
-    setEditProject(null);
-  };
+
+
 
   return (
     <>
@@ -161,6 +144,7 @@ export default function ProjectsPage() {
                   value={searchTerm}
                   onValueChange={resetFilters(setSearchTerm)}
                   placeholder="Search here..."
+                  inputClassName="!h-10 !py-0"
                 />
               </div>
               <div className="w-full sm:w-auto">
@@ -175,16 +159,7 @@ export default function ProjectsPage() {
                 />
               </div>
             </div>
-            {isAdmin && visible.length > 0 && (
-              <button
-                type="button"
-                onClick={openCreate}
-                className="flex flex-shrink-0 items-center justify-center gap-1.5 rounded-full bg-primary-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-primary-600"
-              >
-                <Plus className="w-4 h-4" strokeWidth={2.4} />
-                <span className="sm:inline">Create Project</span>
-              </button>
-            )}
+    
           </div>
 
           {/* Grid */}
@@ -200,8 +175,7 @@ export default function ProjectsPage() {
                 <ProjectCard
                   key={project.id}
                   project={project}
-                  showAdminActions={isAdmin}
-                  onEdit={isAdmin ? openEdit : undefined}
+                  showAdminActions={false}
                 />
               ))}
             </div>
@@ -212,12 +186,8 @@ export default function ProjectsPage() {
               description={
                 searchTerm || yearFilter
                   ? 'Try adjusting your search or filter.'
-                  : isAdmin
-                    ? 'No projects yet. Create the first one!'
-                    : 'Check back later for updates.'
+                  : 'Check back later for updates.'
               }
-              actionLabel={isAdmin && !searchTerm && !yearFilter ? 'Create Project' : undefined}
-              onAction={isAdmin && !searchTerm && !yearFilter ? openCreate : undefined}
             />
           )}
 
@@ -234,7 +204,6 @@ export default function ProjectsPage() {
         </div>
       </section>
 
-      <ProjectFormModal isOpen={showFormModal} onClose={closeModal} editData={editProject} />
     </>
   );
 }

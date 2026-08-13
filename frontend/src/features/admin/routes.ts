@@ -5,6 +5,8 @@ export const ADMIN_ROUTES = {
   EVENT_REGISTRATIONS: '/admin/event-registrations',
   ANNOUNCEMENTS: '/admin/announcements',
   PROJECTS: '/admin/projects',
+  PROJECT_DETAIL: (slug: string) => `/admin/projects/${slug}`,
+  PROJECT_DETAIL_PATH: '/admin/projects/:id',
   PAGES_CONTENT: '/admin/pages-content',
 } as const;
 

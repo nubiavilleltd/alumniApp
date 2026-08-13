@@ -86,6 +86,7 @@ import OrderDetailsPage from './features/store/pages/OrderDetailsPage';
 import AdminOrderDetailsPage from './features/admin/pages/AdminOrderDetailsPage';
 import JoinProjectsPage from './features/joinProject/pages/JoinProjectsPage';
 import VolunteerPage from './features/joinProject/pages/VolunteerPage';
+import AdminProjectDetailsPage from './features/projects/pages/AdminProjectDetail';
 
 export default function App() {
   return (
@@ -523,6 +524,18 @@ export default function App() {
                 <AdminRoute>
                   <ErrorBoundary>
                     <AdminProjectsPage />
+                  </ErrorBoundary>
+                </AdminRoute>
+              }
+            />
+
+            <Route
+              path={ADMIN_ROUTES.PROJECT_DETAIL_PATH}
+              element={
+
+                <AdminRoute>
+                  <ErrorBoundary>
+                    <AdminProjectDetailsPage />
                   </ErrorBoundary>
                 </AdminRoute>
               }

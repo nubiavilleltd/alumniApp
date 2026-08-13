@@ -23,6 +23,7 @@ import { formatDateRange } from '@/shared/utils/dateHelpers';
 
 import placeholderImg from '/placeholder-image.png';
 import placeholderImg2 from '/placeholder.png';
+import { ADMIN_ROUTES } from '@/features/admin/routes';
 
 // const PLACEHOLDER = 'https://placehold.co/80x80/E5E7EB/6B7280?text=No+Image';
 
@@ -176,7 +177,7 @@ export function ProjectCard({ project, showAdminActions = false, onEdit }: Proje
 
           {/* View details link */}
           <AppLink
-            href={ROUTES.PROJECTS.DETAIL(project.id)}
+            href={showAdminActions ? ADMIN_ROUTES.PROJECT_DETAIL(project.id): ROUTES.PROJECTS.DETAIL(project.id)}
             className="mt-auto inline-flex items-center gap-0.5 text-white font-semibold text-[13px] hover:text-white/80 transition-colors"
           >
             View Details

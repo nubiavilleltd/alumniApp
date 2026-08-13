@@ -274,7 +274,9 @@ export function AlumniDirectoryPage() {
                   setCurrentPage(1);
                 }}
                 placeholder="Search by name"
+                inputClassName="!h-10 !py-0"
               />
+
             </div>
 
             <div className="w-full sm:w-auto">
