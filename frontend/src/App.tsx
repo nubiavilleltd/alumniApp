@@ -87,6 +87,7 @@ import AdminOrderDetailsPage from './features/admin/pages/AdminOrderDetailsPage'
 import JoinProjectsPage from './features/joinProject/pages/JoinProjectsPage';
 import VolunteerPage from './features/joinProject/pages/VolunteerPage';
 import AdminProjectDetailsPage from './features/projects/pages/AdminProjectDetail';
+import { AdminEventDetailPage } from './features/events/pages/AdminEventDetailPage';
 
 export default function App() {
   return (
@@ -491,6 +492,18 @@ export default function App() {
                 <AdminRoute>
                   <ErrorBoundary>
                     <AdminEventsPage />
+                  </ErrorBoundary>
+                </AdminRoute>
+              }
+            />
+
+                 <Route
+              path={ADMIN_ROUTES.EVENT_DETAIL_PATH}
+              element={
+
+                <AdminRoute>
+                  <ErrorBoundary>
+                    <AdminEventDetailPage />
                   </ErrorBoundary>
                 </AdminRoute>
               }

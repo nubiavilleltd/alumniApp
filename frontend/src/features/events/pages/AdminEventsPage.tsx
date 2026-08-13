@@ -12,6 +12,7 @@ import { useAllEvents } from '../hooks/useEvents';
 import { EVENT_ROUTES } from '../routes';
 import type { Event } from '../types/event.types';
 import { MapPin } from 'lucide-react';
+import { ADMIN_ROUTES } from '@/features/admin/routes';
 
 const monthOptions = [
   { label: 'Month', value: 'all' },
@@ -65,7 +66,7 @@ function sortEventsForAdmin(events: Event[]) {
 function AdminEventsCard({ event }: { event: Event }) {
   return (
     <AppLink
-      href={EVENT_ROUTES.DETAIL(event.id)}
+      href={ADMIN_ROUTES.EVENT_DETAIL(event.id)}
       className="group block h-full rounded-[1.75rem] bg-white p-4 text-inherit no-underline shadow-[0_10px_28px_rgba(15,23,42,0.06)] ring-1 ring-black/5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_16px_36px_rgba(15,23,42,0.1)] sm:p-3.5"
     >
       <article className="flex h-full flex-col gap-3 sm:flex-row sm:items-center sm:gap-3.5">
@@ -202,6 +203,7 @@ export default function AdminEventsPage() {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
 
   return (
     <>
