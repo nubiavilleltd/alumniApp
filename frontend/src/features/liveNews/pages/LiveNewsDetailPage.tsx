@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { Clock } from 'lucide-react';
+import { Clock, Dot } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { SEO } from '@/shared/common/SEO';
 import { formatNewsDate } from '../utils';
@@ -66,15 +66,26 @@ export default function LiveNewsDetailPage() {
                 className="h-full w-full object-contain rounded-2xl"
               /></div>
             <div className="py-8">
-              <div className="mb-4 flex items-center gap-2 text-gray-800">
+              {/* <div className="mb-4 flex items-center gap-2 text-gray-800">
                 <Clock size={15} />
                 <span className="text-sm">{formatNewsDate(item.publishedAt)}</span>
-              </div>
-              {item.source && (
+                   {item.source && (
                 <p className="mb-4 text-sm text-gray-500">
-                  Source: <span className="font-semibold text-primary-500">{item.source}</span>
+                  <span className="font-semibold text-primary-500">{item.source}</span>
                 </p>
               )}
+              </div> */}
+
+               <div className="my-4 flex items-center gap-1 text-gray-800">
+                                      <Clock size={15} />
+                                      <span className="text-sm">{formatNewsDate(item.publishedAt)}</span>
+                                         {item.source && (
+                                          <span className="flex items-center text-sm">
+                                              <Dot /> {item.source}
+                                          </span>
+                                      )}
+                                  </div>
+           
               <h1 className="mb-6 text-3xl sm:text-4xl font-bold text-gray-900 leading-tight">
                 {item.title}
               </h1>
