@@ -144,41 +144,30 @@ export function ProjectCard({ project, showAdminActions = false, onEdit }: Proje
           </div>
         )}
 
-        {/* Status badge — top-left */}
-        {/* <div className="absolute top-3 left-3 z-10">
-          <span
-            className={`text-[10px] font-semibold px-2.5 py-1 rounded-full ${
-              isCompleted ? 'bg-green-500/90 text-white' : 'bg-primary-500/90 text-white'
-            }`}
-          >
-            {isCompleted ? 'Completed' : 'Ongoing'}
-          </span>
-        </div> */}
-
+     
         {/* Blue overlay panel */}
-        {/* <div className="absolute bottom-0 left-0 right-0 bg-primary-600/80 backdrop-blur-[2px] rounded-2xl px-4 pt-3.5 pb-4"> */}
-        <div className="absolute bottom-0 left-0 right-0 h-40 sm:h-36 md:h-40 bg-primary-600/80 backdrop-blur-[2px] rounded-2xl px-4 pt-3 pb-3 flex flex-col">
+        <div className="absolute bottom-4 left-4 right-4 h-40 bg-primary-600/80 backdrop-blur-[2px] rounded-2xl px-4 pt-3 pb-3 flex flex-col">
           {/* Title */}
-          <p className="text-white font-bold text-[14px] sm:text-[15px] leading-snug line-clamp-1">
+          <p className="text-white font-bold text-sm sm:text-[md] leading-snug line-clamp-1">
             {project.title}
           </p>
 
           {/* Description */}
-          <p className="text-white/85 text-[11px] sm:text-xs leading-relaxed mt-1 line-clamp-2">
+          <p className="text-white/95 text-[11px] sm:text-xs leading-relaxed mt-1 line-clamp-2">
             {project.description}
           </p>
 
           {/* Metadata */}
           <div className="flex flex-col gap-1 mt-2 flex-1">
             {project.location && (
-              <span className="flex items-center gap-1 text-white/80 text-[10px] sm:text-[11px]">
+              <span className="flex items-center gap-1 text-white/95 text-[10px] sm:text-[11px]">
                 <MapPin className="w-3 h-3 flex-shrink-0" />
                 {project.location}
               </span>
             )}
 
             {dateRange && (
-              <span className="flex items-center gap-1 text-white/80 text-[10px] sm:text-[11px]">
+              <span className="flex items-center gap-1 text-white/95 text-[10px] sm:text-[11px]">
                 <Clock className="w-3 h-3 flex-shrink-0" />
                 {dateRange}
               </span>
@@ -188,10 +177,10 @@ export function ProjectCard({ project, showAdminActions = false, onEdit }: Proje
           {/* View details link */}
           <AppLink
             href={ROUTES.PROJECTS.DETAIL(project.id)}
-            className="mt-auto inline-flex items-center gap-0.5 text-white font-semibold text-sm hover:text-white/80 transition-colors"
+            className="mt-auto inline-flex items-center gap-0.5 text-white font-semibold text-[13px] hover:text-white/80 transition-colors"
           >
             View Details
-            <ChevronRight className="w-5 h-5" />
+            <ChevronRight className="w-4 h-4" />
           </AppLink>
         </div>
       </div>
