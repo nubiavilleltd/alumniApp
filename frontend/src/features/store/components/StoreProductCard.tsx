@@ -15,7 +15,7 @@ export function StoreProductCard({ product }: Props) {
     >
       {/* Image */}
       <div className="relative h-[200px] sm:h-[240px] lg:h-[280px]">
-        <span className="absolute top-3 left-3 z-10 bg-primary-500 text-white text-xs font-medium px-3 py-1 rounded-full">
+        <span className="absolute top-3 left-3 z-10 bg-primary-500 text-white text-xs font-medium px-3 py-1.5 rounded-xl">
           {product.category}
         </span>
 

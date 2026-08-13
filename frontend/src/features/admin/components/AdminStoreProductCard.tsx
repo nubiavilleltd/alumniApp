@@ -24,7 +24,8 @@ export function AdminStoreProductCard({ product, onEdit, onDelete, onPin, isDele
     <div className="bg-white rounded-[20px] overflow-hidden shadow-sm hover:shadow-md transition-shadow">
       {/* Image */}
       <div className="relative h-[200px] sm:h-[240px] lg:h-[280px]">
-        <span className="absolute top-3 left-3 z-10 bg-[#3393E6] text-white text-xs font-medium px-3 py-1 rounded-full">
+        {/* <span className="absolute top-3 left-3 z-10 bg-[#3393E6] text-white text-xs font-medium px-3 py-1.5 rounded-xl"> */}
+        <span className="absolute top-3 left-3 z-10 bg-primary-500 text-white text-xs font-medium px-3 py-1.5 rounded-xl">
           {product.category}
         </span>
         <div className="absolute top-3 right-3 z-10 flex gap-1.5">
