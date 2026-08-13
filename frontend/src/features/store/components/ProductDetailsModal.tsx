@@ -229,7 +229,7 @@ export function ProductDetailsModal() {
             className="absolute top-3 right-3 z-20 w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-200 text-gray-600 transition-colors"
             aria-label="Close"
           >
-            <X size={20} />
+            <X size={25}  className='text-primary-500'/>
           </button>
 
           {/* Desktop: three-column */}
