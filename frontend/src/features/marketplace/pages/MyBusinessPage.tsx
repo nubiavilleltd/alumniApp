@@ -110,7 +110,8 @@ function MyBusinessCard({
   };
 
   return (
-    <article className="overflow-hidden rounded-[1.35rem] border border-[#e7edf5] bg-white p-2 shadow-[0_12px_26px_rgba(7,17,22,0.08)] transition-shadow hover:shadow-[0_16px_32px_rgba(7,17,22,0.12)]">
+    // <article className="overflow-hidden rounded-[1.35rem] border border-[#e7edf5] bg-white shadow-[0_12px_26px_rgba(7,17,22,0.08)] transition-shadow hover:shadow-[0_16px_32px_rgba(7,17,22,0.12)]">
+    <article className="flex h-full flex-col overflow-hidden rounded-[1.35rem] border border-[#e7edf5] bg-white shadow-[0_12px_26px_rgba(7,17,22,0.08)] transition-shadow hover:shadow-[0_16px_32px_rgba(7,17,22,0.12)]">
       <div className="group relative h-44 w-full overflow-hidden rounded-[1.05rem] bg-gray-100">
         {business.images.length > 0 ? (
           <img
@@ -161,7 +162,8 @@ function MyBusinessCard({
         </span>
       </div>
 
-      <div className="flex flex-1 flex-col gap-3 px-2 pb-2 pt-3.5">
+      {/* <div className="flex flex-1 flex-col gap-3 pb-2 pt-3.5"> */}
+      <div className="flex flex-1 flex-col gap-3 p-4">
         <div className="flex items-center gap-3">
           <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center overflow-hidden rounded-[0.95rem] bg-primary-50 text-base font-bold text-primary-500">
             {showOwnerPhoto ? (
