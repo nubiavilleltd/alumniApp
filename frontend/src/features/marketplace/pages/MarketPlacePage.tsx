@@ -1,6 +1,6 @@
 // features/marketplace/pages/MarketPlacePage.tsx
 
-import { useEffect, useMemo, useState } from 'react';
+import { ComponentType, useEffect, useMemo, useState } from 'react';
 import {
   ChevronDown,
   ChevronLeft,
@@ -65,6 +65,13 @@ const marketplaceFilterSelectClassName = [
 const marketplaceGridClassName =
   'grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8 xl:grid-cols-[repeat(auto-fit,minmax(min(100%,19.25rem),1fr))] xl:gap-x-[1.5rem] xl:gap-y-[2.75rem]';
 
+  type SocialLinkEntry = {
+  key: string;
+  href: string;
+  label: string;
+  Icon: ComponentType<{ className?: string }>;
+};
+
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 function BusinessCardSkeleton() {
   return (
@@ -120,6 +127,30 @@ function isRealProfilePhoto(photo?: string | null) {
   return Boolean(photo && !photo.includes('ui-avatars.com') && !photo.includes('default-avatar'));
 }
 
+function WhatsAppIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.39 1.26 4.81L2 22l5.41-1.42a9.87 9.87 0 0 0 4.63 1.18h.01c5.46 0 9.9-4.45 9.9-9.91C21.95 6.45 17.5 2 12.04 2zm5.8 14.02c-.24.68-1.4 1.3-1.93 1.38-.5.08-1.13.11-1.82-.12-.42-.14-.96-.32-1.65-.63-2.9-1.25-4.8-4.17-4.94-4.36-.14-.19-1.18-1.57-1.18-3 0-1.42.75-2.12 1.01-2.41.27-.29.58-.36.78-.36.19 0 .39 0 .56.01.18.01.42-.07.66.5.24.58.83 1.99.9 2.14.07.14.12.31.02.5-.1.19-.15.31-.3.48-.15.17-.31.38-.44.51-.15.15-.3.31-.13.61.17.29.75 1.24 1.61 2 .86.76 1.58 1 1.87 1.11.29.11.46.09.63-.05.17-.15.72-.68.91-.92.19-.24.38-.2.64-.12.26.09 1.66.79 1.94.93.28.14.47.21.54.33.07.12.07.68-.17 1.36z" />
+    </svg>
+  );
+}
+
+function XIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M18.244 2H21l-6.51 7.44L22.5 22h-6.62l-5.18-6.78L4.7 22H2l6.99-7.99L1.5 2h6.78l4.68 6.19L18.24 2Zm-1.16 18h1.83L7.03 3.9H5.08L17.08 20Z" />
+    </svg>
+  );
+}
+
+function TikTokIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M16.6 5.82c-1-.9-1.6-2.19-1.6-3.62h-3.15v13.44c0 1.55-1.26 2.81-2.81 2.81a2.81 2.81 0 0 1-2.81-2.81 2.81 2.81 0 0 1 2.81-2.81c.3 0 .58.05.85.13V9.7a6 6 0 0 0-.85-.06 6 6 0 0 0-6 6 6 6 0 0 0 6 6 6 6 0 0 0 6-6V9.02a8.6 8.6 0 0 0 5.01 1.6V7.47c-1.28 0-2.46-.42-3.41-1.13a5.9 5.9 0 0 1-1.04-.52Z" />
+    </svg>
+  );
+}
+
 // ─── Business Card ────────────────────────────────────────────────────────────
 function BusinessCard({
   business,
@@ -142,6 +173,43 @@ function BusinessCard({
   const hasPhone = Boolean(business.phone.trim());
   const hasEmail = Boolean(business.email?.trim());
   const hasWebsite = Boolean(business.website?.trim());
+  const hasWhatsapp = Boolean(business.whatsapp?.trim());
+
+
+  const socialLinks: SocialLinkEntry[] = (
+    [
+      business.socials?.instagram && {
+        key: 'instagram',
+        href: business.socials.instagram,
+        label: `${business.name} on Instagram`,
+        Icon: XIcon,
+      },
+      business.socials?.facebook && {
+        key: 'facebook',
+        href: business.socials.facebook,
+        label: `${business.name} on Facebook`,
+        Icon: XIcon,
+      },
+      business.socials?.linkedin && {
+        key: 'linkedin',
+        href: business.socials.linkedin,
+        label: `${business.name} on LinkedIn`,
+        Icon: XIcon,
+      },
+      business.socials?.x && {
+        key: 'x',
+        href: business.socials.x,
+        label: `${business.name} on X`,
+        Icon: XIcon,
+      },
+      business.socials?.tiktok && {
+        key: 'tiktok',
+        href: business.socials.tiktok,
+        label: `${business.name} on TikTok`,
+        Icon: TikTokIcon,
+      },
+    ] as Array<SocialLinkEntry | false | undefined>
+  ).filter((entry): entry is SocialLinkEntry => Boolean(entry));
 
   useEffect(() => {
     setOwnerPhotoFailed(false);
@@ -287,7 +355,28 @@ function BusinessCard({
               <span className="min-w-0 break-all">{business.website}</span>
             </a>
           )}
+
         </div>
+
+        {socialLinks.length > 0 && (
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            {socialLinks.map(({ key, href, label, Icon }) => (
+
+              <a key={key}
+                href={getWebsiteHref(href)}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                onClick={(event) => event.stopPropagation()}
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-[#f1f3f5] text-[#5f6873] transition-colors hover:bg-primary-50 hover:text-primary-600"
+              >
+                <Icon className="h-4 w-4" />
+              </a>
+            ))}
+          </div>
+        )}
+
+
 
         <div
           className="mt-auto flex items-center gap-3 pt-3 max-sm:flex-wrap"
@@ -306,6 +395,20 @@ function BusinessCard({
           >
             <span>{isMessagePending ? 'Opening...' : 'Send Message'}</span>
           </Button>
+
+
+          {hasWhatsapp && (
+
+            <a href={`https://wa.me/${business.whatsapp!.replace(/\D/g, '')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Message ${business.name} on WhatsApp`}
+              onClick={(event) => event.stopPropagation()}
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#25D366] text-white transition-transform hover:brightness-95 active:translate-y-px focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-200"
+            >
+              <WhatsAppIcon className="h-5 w-5" />
+            </a>
+          )}
         </div>
       </div>
     </article>
