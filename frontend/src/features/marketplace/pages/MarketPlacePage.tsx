@@ -345,12 +345,13 @@ function BusinessCard({
         </div>
 
         {(socialLinks.length > 0 || business.socials?.instagramHashtag) && (
-          <div className="mt-3 flex flex-wrap items-center gap-2" style={{ marginLeft: "-5px" }}>
+          // <div className="mt-3 flex flex-wrap items-center gap-2" style={{ marginLeft: "-5px" }}>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
 
             {business.socials?.instagramHashtag && (
               <a
-                href={`https://www.instagram.com/explore/tags/${encodeURIComponent(
-                  business.socials.instagramHashtag,
+               href={`https://www.instagram.com/explore/tags/${encodeURIComponent(
+                  business.socials.instagramHashtag.replace(/^#+/, ''),
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -399,7 +400,7 @@ function BusinessCard({
           </Button>
 
 
-          {hasWhatsapp && (
+          {hasWhatsapp && !isOwnBusiness && (
 
             <a href={`https://wa.me/${business.whatsapp!.replace(/\D/g, '')}`}
               target="_blank"

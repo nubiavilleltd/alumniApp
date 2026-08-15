@@ -1,6 +1,6 @@
 // features/marketplace/pages/MyBusinessPage.tsx
 
-import { useEffect, useState } from 'react';
+import { ComponentType, useEffect, useState } from 'react';
 import {
   Check,
   ChevronLeft,
@@ -12,6 +12,16 @@ import {
   Plus,
   Store,
 } from 'lucide-react';
+
+import {
+  IconBrandFacebook,
+  IconBrandInstagram,
+  IconBrandLinkedin,
+  IconBrandTiktok,
+  IconBrandWhatsapp,
+  IconBrandX,
+} from '@tabler/icons-react';
+
 import { SEO } from '@/shared/common/SEO';
 import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import EmptyState from '@/shared/components/ui/EmptyState';
@@ -74,6 +84,13 @@ function isRealProfilePhoto(photo?: string | null) {
   return Boolean(photo && !photo.includes('ui-avatars.com') && !photo.includes('default-avatar'));
 }
 
+type SocialLinkEntry = {
+  key: string;
+  href: string;
+  label: string;
+  Icon: ComponentType<{ size?: number; stroke?: number }>;
+};
+
 function MyBusinessCard({
   business,
   ownerPhoto,
@@ -94,6 +111,44 @@ function MyBusinessCard({
   const showOwnerPhoto = isRealProfilePhoto(ownerPhoto) && !ownerPhotoFailed;
   const hasPhone = Boolean(business.phone.trim());
   const hasWebsite = Boolean(business.website?.trim());
+
+
+    const hasWhatsapp = Boolean(business.whatsapp?.trim());
+
+  const socialLinks: SocialLinkEntry[] = (
+    [
+      business.socials?.instagram && {
+        key: 'instagram',
+        href: business.socials.instagram,
+        label: `${business.name} on Instagram`,
+        Icon: IconBrandInstagram,
+      },
+      business.socials?.facebook && {
+        key: 'facebook',
+        href: business.socials.facebook,
+        label: `${business.name} on Facebook`,
+        Icon: IconBrandFacebook,
+      },
+      business.socials?.linkedin && {
+        key: 'linkedin',
+        href: business.socials.linkedin,
+        label: `${business.name} on LinkedIn`,
+        Icon: IconBrandLinkedin,
+      },
+      business.socials?.x && {
+        key: 'x',
+        href: business.socials.x,
+        label: `${business.name} on X`,
+        Icon: IconBrandX,
+      },
+      business.socials?.tiktok && {
+        key: 'tiktok',
+        href: business.socials.tiktok,
+        label: `${business.name} on TikTok`,
+        Icon: IconBrandTiktok,
+      },
+    ] as Array<SocialLinkEntry | false | undefined>
+  ).filter((entry): entry is SocialLinkEntry => Boolean(entry));
 
   useEffect(() => {
     setOwnerPhotoFailed(false);
@@ -201,6 +256,13 @@ function MyBusinessCard({
             </a>
           )}
 
+               {hasWhatsapp && (
+            <div className="flex items-start gap-3">
+              <IconBrandWhatsapp size={20} stroke={2.6} className="mt-0.5 flex-shrink-0" />
+              <span className="min-w-0 break-words">{business.whatsapp}</span>
+            </div>
+          )}
+
           <div className="flex items-start gap-3">
             <MapPin strokeWidth={2.6} className="mt-0.5 h-5 w-5 flex-shrink-0" />
             <span className="min-w-0 break-words">{business.location}</span>
@@ -219,12 +281,43 @@ function MyBusinessCard({
           )}
         </div>
 
-        <div className="mt-auto grid grid-cols-2 gap-2.5 pt-2">
+            {(socialLinks.length > 0 || business.socials?.instagramHashtag) && (
+          <div className="flex flex-wrap items-center gap-2">
+            {business.socials?.instagramHashtag && (
+              
+                <a href={`https://www.instagram.com/explore/tags/${encodeURIComponent(
+                  business.socials.instagramHashtag.replace(/^#+/, ''),
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full px-2.5 py-1 text-[0.72rem] font-bold leading-none text-white shadow-sm"
+                style={{ background: 'linear-gradient(45deg, #f9ce34, #ee2a7b, #6228d7)' }}
+              >
+                #{business.socials.instagramHashtag.replace(/^#+/, '')}
+              </a>
+            )}
+            {socialLinks.map(({ key, href, label, Icon }) => (
+              
+                <a key={key}
+                href={getWebsiteHref(href)}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-50 text-accent-500 transition-colors hover:bg-primary-50 hover:text-primary-600"
+              >
+                <Icon size={22} stroke={2} />
+              </a>
+            ))}
+          </div>
+        )}
+
+
+          <div className="mt-auto grid grid-cols-2 items-start gap-2.5 pt-2">
           <button
             type="button"
             onClick={() => onEdit(business)}
             disabled={isDeleting}
-            className="flex min-h-10 items-center justify-center rounded-full bg-primary-500 px-4 text-sm font-semibold text-white transition-colors hover:bg-primary-600 disabled:opacity-50"
+            className="flex h-10 items-center justify-center rounded-full bg-primary-500 px-4 text-sm font-semibold text-white transition-colors hover:bg-primary-600 disabled:opacity-50"
           >
             Edit
           </button>
