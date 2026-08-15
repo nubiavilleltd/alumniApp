@@ -98,6 +98,11 @@ const postBusinessSchema = z
     socials: z
       .object({
         instagram: z.string().optional(),
+        instagramHashtag: z
+          .string()
+          .max(50, 'Hashtag is too long. Max characters allowed: 50')
+          .regex(/^[A-Za-z0-9_]*$/, 'Only letters, numbers, and underscores allowed')
+          .optional(),
         facebook: z.string().optional(),
         linkedin: z.string().optional(),
         x: z.string().optional(),
@@ -130,6 +135,13 @@ interface PostBusinessModalProps {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
+
+function normalizeHashtag(value?: string): string | undefined {
+  if (!value) return undefined;
+  const cleaned = value.trim().replace(/^#+/, '').replace(/\s+/g, '');
+  return cleaned || undefined;
+}
+
 function toFormState(data: Business | null | undefined): PostBusinessFormValues {
   if (!data) {
     return {
@@ -140,7 +152,7 @@ function toFormState(data: Business | null | undefined): PostBusinessFormValues 
       phone: '',
       website: '',
       whatsapp: '',
-      socials: { instagram: '', facebook: '', linkedin: '', x: '', tiktok: '' },
+      socials: { instagram: '', instagramHashtag: '', facebook: '', linkedin: '', x: '', tiktok: '' },
       messagePrompt: '',
     };
   }
@@ -155,6 +167,7 @@ function toFormState(data: Business | null | undefined): PostBusinessFormValues 
     whatsapp: data.whatsapp ? parseStoredNigerianPhoneNumber(data.whatsapp) : '',
     socials: {
       instagram: data.socials?.instagram ?? '',
+      instagramHashtag: data.socials?.instagramHashtag ?? '',
       facebook: data.socials?.facebook ?? '',
       linkedin: data.socials?.linkedin ?? '',
       x: data.socials?.x ?? '',
@@ -181,6 +194,7 @@ function toCreateListingFormData(
         Object.values(form.socials).some((v) => v?.trim())
         ? {
           instagram: form.socials.instagram?.trim() || undefined,
+          instagramHashtag: normalizeHashtag(form.socials.instagramHashtag),
           facebook: form.socials.facebook?.trim() || undefined,
           linkedin: form.socials.linkedin?.trim() || undefined,
           x: form.socials.x?.trim() || undefined,
@@ -252,7 +266,7 @@ export function PostBusinessModal({ isOpen, onClose, editData }: PostBusinessMod
         phone: '',
         website: '',
         whatsapp: '',
-        socials: { instagram: '', facebook: '', linkedin: '', x: '', tiktok: '' },
+        socials: { instagram: '', instagramHashtag: '', facebook: '', linkedin: '', x: '', tiktok: '' },
         messagePrompt: '',
       });
       resetImages();
@@ -435,7 +449,7 @@ export function PostBusinessModal({ isOpen, onClose, editData }: PostBusinessMod
                 />
 
 
-                  <div className="md:col-span-2">
+                <div className="md:col-span-2">
                   <p className="font-medium text-gray-500 mb-3">Socials</p>
                   <div className="grid gap-x-6 gap-y-5 md:grid-cols-2 md:gap-x-8 md:gap-y-6">
                     <FormInput
@@ -448,6 +462,19 @@ export function PostBusinessModal({ isOpen, onClose, editData }: PostBusinessMod
                       placeholder="https://instagram.com/yourbusiness"
                       error={errors.socials?.instagram?.message}
                       {...register('socials.instagram')}
+                    />
+
+                    <FormInput
+                      label="Instagram Hashtag"
+                      labelClassName={fieldLabelClassName}
+                      controlClassName={fieldControlClassName}
+                      inputClassName={fieldInputClassName}
+                      id="instagramHashtag"
+                      type="text"
+                      placeholder="yourbusiness"
+                      icon={<span className="select-none text-gray-400">#</span>}
+                      error={errors.socials?.instagramHashtag?.message}
+                      {...register('socials.instagramHashtag')}
                     />
                     <FormInput
                       label="Facebook"

@@ -131,6 +131,9 @@ function socialsToPayloadFields(socials?: Socials): Record<string, string> {
 
   const fields: Record<string, string> = {};
   if (socials.instagram?.trim()) fields.social_instagram = socials.instagram.trim();
+  if (socials.instagramHashtag?.trim()) {
+    fields.social_instagram_hashtag = socials.instagramHashtag.trim().replace(/^#+/, '');
+  }
   if (socials.facebook?.trim()) fields.social_facebook = socials.facebook.trim();
   if (socials.linkedin?.trim()) fields.social_linkedin = socials.linkedin.trim();
   if (socials.x?.trim()) fields.social_x = socials.x.trim();
@@ -138,18 +141,24 @@ function socialsToPayloadFields(socials?: Socials): Record<string, string> {
   return fields;
 }
 
-// Mirror of socialsToPayloadFields — reads the flat backend fields back into Socials
 function payloadFieldsToSocials(raw: Record<string, unknown>): Socials | undefined {
+  const socialMedia = getNestedRecord(raw.social_media);
+
   const socials: Socials = {
-    instagram: raw.social_instagram ? String(raw.social_instagram) : undefined,
-    facebook: raw.social_facebook ? String(raw.social_facebook) : undefined,
-    linkedin: raw.social_linkedin ? String(raw.social_linkedin) : undefined,
-    x: raw.social_x ? String(raw.social_x) : undefined,
-    tiktok: raw.social_tiktok ? String(raw.social_tiktok) : undefined,
+    instagram: socialMedia.instagram_url ? String(socialMedia.instagram_url).trim() : undefined,
+    instagramHashtag: socialMedia.instagram_hashtag
+      ? String(socialMedia.instagram_hashtag).trim().replace(/^#+/, '')
+      : undefined,
+    facebook: socialMedia.facebook_url ? String(socialMedia.facebook_url).trim() : undefined,
+    linkedin: socialMedia.linkedin_url ? String(socialMedia.linkedin_url).trim() : undefined,
+    x: socialMedia.twitter_url ? String(socialMedia.twitter_url).trim() : undefined,
+    tiktok: socialMedia.tiktok_url ? String(socialMedia.tiktok_url).trim() : undefined,
   };
 
   return Object.values(socials).some(Boolean) ? socials : undefined;
 }
+
+
 export function mapBackendListingToBusiness(raw: unknown): Business {
   const d = raw as Record<string, unknown>;
 

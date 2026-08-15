@@ -6,6 +6,7 @@
 // ─── Socials ──────────────────────────────────────────────────────────────────
 export interface Socials {
   instagram?: string;
+  instagramHashtag?: string;
   facebook?: string;
   linkedin?: string;
   x?: string;
