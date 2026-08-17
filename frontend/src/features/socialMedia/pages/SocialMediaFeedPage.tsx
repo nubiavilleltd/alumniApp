@@ -87,7 +87,7 @@ export default function SocialMediaFeedPage() {
 
             <section
               aria-label="Instagram profile preview"
-              className="overflow-hidden rounded-[24px] bg-white/88 shadow-[0_24px_80px_rgba(2,30,68,0.08)] backdrop-blur-sm"
+              className="overflow-hidden rounded-[24px] bg-white shadow-[0_24px_80px_rgba(2,30,68,0.08)]"
             >
               <div className="grid gap-8 px-5 py-6 sm:px-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:px-10 lg:py-8">
                 <div className="flex min-w-0 flex-col gap-6 sm:flex-row sm:items-center">
