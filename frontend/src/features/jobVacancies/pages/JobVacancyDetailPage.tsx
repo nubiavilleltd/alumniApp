@@ -132,24 +132,25 @@ export default function JobVacancyDetailPage() {
         description={`View details for ${job.title} at ${job.companyName}.`}
       />
 
-      <main className="bg-[#F8F8F7] px-[var(--app-page-inline-padding)] py-4 text-[#071116] lg:flex lg:h-[calc(100dvh-10rem)] lg:flex-col lg:overflow-hidden">
+      <main className="bg-[#F8F8F7] px-[var(--app-page-inline-padding)] py-10 text-[#071116] lg:flex lg:min-h-[calc(100dvh-10rem)] lg:flex-col">
         <div className="mx-auto w-full space-y-4 lg:flex lg:flex-col lg:flex-1 lg:space-y-4 lg:min-h-0">
           {/* Top card — fixed height on desktop, scrolls internally */}
           <section className="rounded-[1.5rem] bg-white p-5 shadow-sm ring-1 ring-black/5 sm:p-6 lg:shrink-0 lg:overflow-y-auto">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-3">
-                  <h1 className="text-xl font-extrabold tracking-tight text-[#071116] sm:text-2xl">
+                  <h1 className="text-xl font-bold tracking-tight text-[#071116] sm:text-[32px]">
                     {job.title}
                   </h1>
-                  <span className="inline-flex rounded-xl bg-green-100 px-3 py-1 text-sm font-semibold text-green-700">
-                    Deadline: {formatJobDate(job.postedAt)}
+                  <span className="inline-flex rounded-xl bg-[#078e00]/25 px-3 py-2 text-sm">
+                    <span className="text-[#4B5563]">Deadline: </span>
+                    <span className="text-[#078E00] font-semibold ml-1">{formatJobDate(job.postedAt)}</span>
                   </span>
                 </div>
 
                 <div className="mt-2 space-y-1 text-slate-600">
-                  <p className="text-base font-semibold">{job.companyName}</p>
-                  <p className="text-lg font-extrabold text-slate-700 sm:text-xl">
+                  <p className="text-[20px] font-[500]">{job.companyName}</p>
+                  <p className="text-[24px] font-[600] text-[#4B5563] sm:text-xl">
                     {getSalaryDisplay(job)}
                   </p>
                   <p className="inline-flex items-center gap-1.5 text-sm font-semibold">
@@ -197,8 +198,8 @@ export default function JobVacancyDetailPage() {
             ) : null}
           </section>
 
-          {/* Bottom card — fills remaining height and scrolls internally on desktop */}
-          <section className="space-y-6 rounded-[1.5rem] bg-white p-5 shadow-sm ring-1 ring-black/5 sm:p-6 lg:flex-1 lg:overflow-y-auto lg:min-h-0">
+          {/* Bottom card — fixed height with internal scrolling for longer job details */}
+          <section className="h-[30rem] space-y-6 overflow-y-auto rounded-[1.5rem] bg-white p-5 shadow-sm ring-1 ring-black/5 sm:p-6 lg:flex-none">
             {job.flyer ? (
               <section className="space-y-3">
                 <h2 className="text-base font-bold text-[#071116] sm:text-lg">Job Flyer</h2>

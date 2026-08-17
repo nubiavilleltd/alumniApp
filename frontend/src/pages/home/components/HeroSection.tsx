@@ -13,7 +13,7 @@ function HeroSectionSkeleton() {
       className="relative flex min-h-[72vh] items-center overflow-hidden bg-primary-700 px-0 lg:min-h-[78vh]"
       aria-hidden="true"
     >
-      <div className="absolute inset-0 animate-pulse bg-[linear-gradient(90deg,#021E4480_0%,#021E4480_52%,rgba(2,30,68,0.18)_100%)]" />
+      <div className="absolute inset-0 animate-pulse bg-[linear-gradient(90deg,rgba(2,30,68,0.64)_0%,rgba(2,30,68,0.58)_50%,rgba(0,119,204,0.46)_78%,rgba(2,30,68,0.42)_100%)]" />
       <div className="absolute inset-0 bg-[#021E4480]" />
 
       <div className="relative z-10 w-full px-[var(--app-page-inline-padding)]">
@@ -116,7 +116,7 @@ export default function HeroSection() {
       )}
 
       {shouldShowHeroContent ? (
-        <div className="absolute inset-0 z-[1] bg-[linear-gradient(90deg,#021E4480_0%,#021E4480_52%,rgba(2,30,68,0.18)_100%)]" />
+        <div className="absolute inset-0 z-[1] bg-[linear-gradient(90deg,rgba(2,30,68,0.72)_0%,rgba(2,30,68,0.64)_48%,rgba(0,119,204,0.44)_78%,rgba(2,30,68,0.38)_100%)]" />
       ) : null}
 
       {shouldShowHeroContent ? (

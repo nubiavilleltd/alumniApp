@@ -1,6 +1,6 @@
 import { useEffect, useState, type DragEvent } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { Pencil, Plus, Trash2 } from 'lucide-react';
+import { Link2, Pencil, Plus, Trash2, X } from 'lucide-react';
 import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
 import { eventFormTextareaClassName } from '@/features/events/constants/eventFormStyles';
 import {
@@ -11,12 +11,23 @@ import {
   useReorderFaqs,
   useUpdateFaq,
 } from '@/features/faqs/hooks/useFaqs';
+import {
+  buildFaqAnswerWithLinks,
+  parseFaqAnswerWithLinks,
+  validateFaqLinkUrl,
+  type FaqLink,
+} from '@/features/faqs/utils/faqLinks';
 import { toast } from '@/shared/components/ui/Toast';
 import { DragHandle } from './DragHandle';
 import type { DropPosition, FaqItem, PagesContentTab } from './types';
 
+type AdminFaqLink = FaqLink & {
+  id: string;
+};
+
 type AdminFaqItem = FaqItem & {
   isNew?: boolean;
+  links: AdminFaqLink[];
 };
 
 const initialFaqs: AdminFaqItem[] = [
@@ -24,6 +35,7 @@ const initialFaqs: AdminFaqItem[] = [
     id: 'faq-1',
     question: '',
     answer: '',
+    links: [],
     isPublished: true,
     isNew: true,
   },
@@ -31,6 +43,10 @@ const initialFaqs: AdminFaqItem[] = [
 
 function createFaqId() {
   return `faq-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function createFaqLinkId() {
+  return `faq-link-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
 function isLocalFaqId(faqId: string) {
@@ -42,9 +58,17 @@ function createEmptyFaq(): AdminFaqItem {
     id: createFaqId(),
     question: '',
     answer: '',
+    links: [],
     isPublished: true,
     isNew: true,
   };
+}
+
+function toAdminFaqLinks(links: FaqLink[]): AdminFaqLink[] {
+  return links.map((link) => ({
+    ...link,
+    id: createFaqLinkId(),
+  }));
 }
 
 function reorderFaqs<T extends FaqItem>(
@@ -98,12 +122,17 @@ export function FaqContentPanel({ activeTab }: { activeTab: PagesContentTab }) {
       return;
     }
 
-    const nextFaqs = backendFaqs.map((faq) => ({
-      id: faq.id,
-      question: faq.question,
-      answer: faq.answer,
-      isPublished: faq.isPublished,
-    }));
+    const nextFaqs = backendFaqs.map((faq) => {
+      const parsedAnswer = parseFaqAnswerWithLinks(faq.answer);
+
+      return {
+        id: faq.id,
+        question: faq.question,
+        answer: parsedAnswer.answerText,
+        links: toAdminFaqLinks(parsedAnswer.links),
+        isPublished: faq.isPublished,
+      };
+    });
 
     setFaqs(nextFaqs);
     setActiveFaqId(null);
@@ -114,6 +143,50 @@ export function FaqContentPanel({ activeTab }: { activeTab: PagesContentTab }) {
   const updateFaq = (faqId: string, updates: Partial<FaqItem>) => {
     setFaqs((currentFaqs) =>
       currentFaqs.map((faq) => (faq.id === faqId ? { ...faq, ...updates } : faq)),
+    );
+    setSaveStatus('');
+  };
+
+  const addFaqLink = (faqId: string) => {
+    setFaqs((currentFaqs) =>
+      currentFaqs.map((faq) =>
+        faq.id === faqId
+          ? {
+              ...faq,
+              links: [...faq.links, { id: createFaqLinkId(), label: '', url: '' }],
+            }
+          : faq,
+      ),
+    );
+    setSaveStatus('');
+  };
+
+  const updateFaqLink = (faqId: string, linkId: string, updates: Partial<FaqLink>) => {
+    setFaqs((currentFaqs) =>
+      currentFaqs.map((faq) =>
+        faq.id === faqId
+          ? {
+              ...faq,
+              links: faq.links.map((link) =>
+                link.id === linkId ? { ...link, ...updates } : link,
+              ),
+            }
+          : faq,
+      ),
+    );
+    setSaveStatus('');
+  };
+
+  const removeFaqLink = (faqId: string, linkId: string) => {
+    setFaqs((currentFaqs) =>
+      currentFaqs.map((faq) =>
+        faq.id === faqId
+          ? {
+              ...faq,
+              links: faq.links.filter((link) => link.id !== linkId),
+            }
+          : faq,
+      ),
     );
     setSaveStatus('');
   };
@@ -233,6 +306,13 @@ export function FaqContentPanel({ activeTab }: { activeTab: PagesContentTab }) {
           ...faq,
           question: faq.question.trim(),
           answer: faq.answer.trim(),
+          links: faq.links
+            .map((link) => ({
+              ...link,
+              label: link.label.trim(),
+              url: link.url.trim(),
+            }))
+            .filter((link) => link.label || link.url),
         }))
         .filter((faq) => faq.question && faq.answer);
 
@@ -246,6 +326,21 @@ export function FaqContentPanel({ activeTab }: { activeTab: PagesContentTab }) {
         return;
       }
 
+      for (const [faqIndex, faq] of cleanFaqs.entries()) {
+        for (const link of faq.links) {
+          if (!link.label) {
+            toast.error(`Add a label for FAQ ${faqIndex + 1} link.`);
+            return;
+          }
+
+          const urlError = validateFaqLinkUrl(link.url);
+          if (urlError) {
+            toast.error(`FAQ ${faqIndex + 1}: ${urlError}`);
+            return;
+          }
+        }
+      }
+
       await Promise.all(deletedFaqIds.map((faqId) => deleteFaqMutation.mutateAsync(faqId)));
 
       const persistedFaqs = [];
@@ -254,7 +349,7 @@ export function FaqContentPanel({ activeTab }: { activeTab: PagesContentTab }) {
         if (faq.isNew || isLocalFaqId(faq.id)) {
           const createdFaq = await createFaq.mutateAsync({
             question: faq.question,
-            answer: faq.answer,
+            answer: buildFaqAnswerWithLinks(faq.answer, faq.links),
             sortOrder: index,
             isPublished: faq.isPublished,
           });
@@ -265,7 +360,7 @@ export function FaqContentPanel({ activeTab }: { activeTab: PagesContentTab }) {
         await updateFaqMutation.mutateAsync({
           id: faq.id,
           question: faq.question,
-          answer: faq.answer,
+          answer: buildFaqAnswerWithLinks(faq.answer, faq.links),
           sortOrder: index,
           isPublished: faq.isPublished,
         });
@@ -393,6 +488,75 @@ export function FaqContentPanel({ activeTab }: { activeTab: PagesContentTab }) {
                         textareaClassName={`${eventFormTextareaClassName} !min-h-[8.5rem] !rounded-lg !px-4 !py-4 !text-base lg:!h-[136px]`}
                       />
                     </div>
+                    <div className="mt-6 rounded-2xl bg-cms-surface px-4 py-4">
+                      <div className="flex flex-wrap items-center justify-between gap-3">
+                        <div>
+                          <h4 className="text-sm font-bold text-[#071116]">Links</h4>
+                          <p className="mt-1 text-xs font-medium text-[#858585]">
+                            Add optional buttons that appear below this answer.
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => addFaqLink(faq.id)}
+                          className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-2 text-xs font-bold text-cms-tab-active shadow-sm transition-colors hover:bg-primary-50"
+                        >
+                          <Plus className="h-3.5 w-3.5" />
+                          Add link
+                        </button>
+                      </div>
+
+                      {faq.links.length > 0 ? (
+                        <div className="mt-4 space-y-3">
+                          {faq.links.map((link) => (
+                            <div
+                              key={link.id}
+                              className="grid gap-3 rounded-xl bg-white p-3 shadow-sm lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)_2.5rem]"
+                            >
+                              <label className="space-y-1">
+                                <span className="text-xs font-semibold text-[#858585]">
+                                  Link label
+                                </span>
+                                <input
+                                  type="text"
+                                  value={link.label}
+                                  onChange={(event) =>
+                                    updateFaqLink(faq.id, link.id, { label: event.target.value })
+                                  }
+                                  placeholder="Membership form"
+                                  className="h-10 w-full rounded-lg border border-transparent bg-cms-surface px-3 text-sm font-medium text-gray-900 outline-none transition focus:border-primary-300 focus:ring-4 focus:ring-primary-100"
+                                />
+                              </label>
+                              <label className="space-y-1">
+                                <span className="text-xs font-semibold text-[#858585]">URL</span>
+                                <input
+                                  type="text"
+                                  value={link.url}
+                                  onChange={(event) =>
+                                    updateFaqLink(faq.id, link.id, { url: event.target.value })
+                                  }
+                                  placeholder="/contact or https://example.com"
+                                  className="h-10 w-full rounded-lg border border-transparent bg-cms-surface px-3 text-sm font-medium text-gray-900 outline-none transition focus:border-primary-300 focus:ring-4 focus:ring-primary-100"
+                                />
+                              </label>
+                              <button
+                                type="button"
+                                onClick={() => removeFaqLink(faq.id, link.id)}
+                                className="inline-flex h-10 w-10 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500 lg:self-end"
+                                aria-label="Remove FAQ link"
+                              >
+                                <X className="h-4 w-4" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="mt-4 flex items-center gap-2 rounded-xl bg-white px-3 py-3 text-xs font-medium text-[#858585]">
+                          <Link2 className="h-4 w-4 text-cms-tab-active" />
+                          No links added.
+                        </div>
+                      )}
+                    </div>
                     <label className="mt-5 inline-flex items-center gap-3 text-sm font-semibold text-[#858585]">
                       <input
                         type="checkbox"
@@ -417,6 +581,19 @@ export function FaqContentPanel({ activeTab }: { activeTab: PagesContentTab }) {
                     <p className="mt-3 text-lg font-medium leading-snug text-[#858585]">
                       {faq.answer.trim() || (hasContent ? '' : 'Answer preview')}
                     </p>
+                    {faq.links.length > 0 ? (
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {faq.links.map((link) => (
+                          <span
+                            key={link.id}
+                            className="inline-flex items-center gap-1.5 rounded-full bg-primary-50 px-3 py-1 text-xs font-bold text-cms-tab-active"
+                          >
+                            <Link2 className="h-3.5 w-3.5" />
+                            {link.label.trim() || 'Untitled link'}
+                          </span>
+                        ))}
+                      </div>
+                    ) : null}
                     {!faq.isPublished ? (
                       <span className="mt-4 inline-flex rounded-full bg-gray-100 px-3 py-1 text-xs font-bold text-gray-500">
                         Draft

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ChangeEvent, type DragEvent } from 'react';
-import { Grid2X2, List, Pencil, Plus, Trash2 } from 'lucide-react';
+import { Grid2X2, Image as ImageIcon, Info, List, Pencil, Plus, Trash2 } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
 import { BaseInput } from '@/shared/components/ui/input/BaseInput';
@@ -20,6 +20,39 @@ import type { HomepageImage, PagesContentTab } from './types';
 type ImageUploadIntent = { type: 'add' } | { type: 'replace'; imageId: string };
 type CarouselViewMode = 'grid' | 'list';
 
+const HERO_CAROUSEL_IMAGE_ACCEPT = 'image/png,image/jpeg,image/jpg,image/webp';
+const HERO_CAROUSEL_ALLOWED_MIME_TYPES = new Set(['image/png', 'image/jpeg', 'image/jpg', 'image/webp']);
+const HERO_CAROUSEL_RECOMMENDED_WIDTH = 1920;
+const HERO_CAROUSEL_RECOMMENDED_HEIGHT = 900;
+const HERO_CAROUSEL_MIN_WIDTH = 1440;
+const HERO_CAROUSEL_MIN_HEIGHT = 675;
+const HERO_CAROUSEL_TARGET_SIZE_MB = 2;
+const HERO_CAROUSEL_MAX_SIZE_MB = 5;
+const HERO_CAROUSEL_MAX_SIZE_BYTES = HERO_CAROUSEL_MAX_SIZE_MB * 1024 * 1024;
+
+const heroCarouselImageSpecs = [
+  {
+    label: 'Recommended',
+    value: `${HERO_CAROUSEL_RECOMMENDED_WIDTH} x ${HERO_CAROUSEL_RECOMMENDED_HEIGHT} px`,
+    detail: `Minimum upload: ${HERO_CAROUSEL_MIN_WIDTH} x ${HERO_CAROUSEL_MIN_HEIGHT} px.`,
+  },
+  {
+    label: 'Aspect ratio',
+    value: 'Wide landscape',
+    detail: 'Keep faces, logos, and key detail near the center.',
+  },
+  {
+    label: 'File type',
+    value: 'JPG or WebP',
+    detail: 'PNG is also accepted for artwork that needs it.',
+  },
+  {
+    label: 'File size',
+    value: `${HERO_CAROUSEL_TARGET_SIZE_MB} MB target`,
+    detail: `${HERO_CAROUSEL_MAX_SIZE_MB} MB maximum upload size.`,
+  },
+];
+
 type AdminHomepageImage = HomepageImage & {
   isNew?: boolean;
   localFile?: File;
@@ -39,6 +72,25 @@ function fileToDataUrl(file: File) {
     reader.onload = () => resolve(String(reader.result ?? ''));
     reader.onerror = () => reject(reader.error ?? new Error('Unable to read selected image.'));
     reader.readAsDataURL(file);
+  });
+}
+
+function getImageDimensions(file: File) {
+  return new Promise<{ width: number; height: number }>((resolve, reject) => {
+    const objectUrl = URL.createObjectURL(file);
+    const image = new Image();
+
+    image.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      resolve({ width: image.naturalWidth, height: image.naturalHeight });
+    };
+
+    image.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error('Unable to read selected image dimensions.'));
+    };
+
+    image.src = objectUrl;
   });
 }
 
@@ -411,6 +463,38 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
 
     if (!file || !imageUploadIntent) return;
 
+    if (!HERO_CAROUSEL_ALLOWED_MIME_TYPES.has(file.type.toLowerCase())) {
+      toast.error('Use a JPG, PNG, or WebP image for the homepage carousel.');
+      setImageUploadIntent(null);
+      return;
+    }
+
+    if (file.size > HERO_CAROUSEL_MAX_SIZE_BYTES) {
+      toast.error(`Homepage carousel images must be ${HERO_CAROUSEL_MAX_SIZE_MB} MB or smaller.`);
+      setImageUploadIntent(null);
+      return;
+    }
+
+    let dimensions;
+    try {
+      dimensions = await getImageDimensions(file);
+    } catch {
+      toast.error('We could not read this image. Please choose a different file.');
+      setImageUploadIntent(null);
+      return;
+    }
+
+    if (
+      dimensions.width < HERO_CAROUSEL_MIN_WIDTH ||
+      dimensions.height < HERO_CAROUSEL_MIN_HEIGHT
+    ) {
+      toast.error(
+        `Homepage carousel images must be at least ${HERO_CAROUSEL_MIN_WIDTH} x ${HERO_CAROUSEL_MIN_HEIGHT} px. Selected image is ${dimensions.width} x ${dimensions.height} px.`,
+      );
+      setImageUploadIntent(null);
+      return;
+    }
+
     const src = await fileToDataUrl(file);
 
     if (imageUploadIntent.type === 'add') {
@@ -692,10 +776,45 @@ export function HomeContentPanel({ activeTab }: { activeTab: PagesContentTab }) 
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/png,image/jpeg,image/jpg,image/webp"
+            accept={HERO_CAROUSEL_IMAGE_ACCEPT}
             className="hidden"
             onChange={handleImageFileChange}
           />
+
+          <aside className="mb-6 rounded-[1.25rem] border border-cms-tab-active/10 bg-cms-surface px-4 py-4 sm:px-5">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+              <div className="flex gap-3">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-cms-tab-active shadow-sm">
+                  <ImageIcon className="h-5 w-5" aria-hidden="true" />
+                </span>
+                <div>
+                  <h3 className="text-base font-semibold text-cms-tab-active">
+                    Hero carousel image specs
+                  </h3>
+                  <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500">
+                    These images fill the homepage hero on desktop and mobile, so upload a clean
+                    landscape image with important detail away from the edges.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                {heroCarouselImageSpecs.map((spec) => (
+                  <div
+                    key={spec.label}
+                    className="rounded-2xl bg-white px-4 py-3 shadow-sm ring-1 ring-cms-tab-active/5"
+                  >
+                    <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.08em] text-gray-400">
+                      <Info className="h-3.5 w-3.5" aria-hidden="true" />
+                      {spec.label}
+                    </p>
+                    <p className="mt-1 text-sm font-bold text-gray-900">{spec.value}</p>
+                    <p className="mt-1 text-xs leading-5 text-gray-500">{spec.detail}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </aside>
 
           <div
             ref={carouselScrollRef}
