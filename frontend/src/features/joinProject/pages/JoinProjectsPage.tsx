@@ -121,6 +121,7 @@ export default function JoinProjectsPage() {
                   value={searchTerm}
                   onValueChange={resetFilters(setSearchTerm)}
                   placeholder="Search here..."
+                  inputClassName="!h-10 !py-0"
                 />
               </div>
               <div className="w-full sm:w-auto">

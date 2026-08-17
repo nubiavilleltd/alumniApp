@@ -57,7 +57,7 @@ function OpportunityCard({ opportunity }: { opportunity: VolunteerOpportunity })
   };
 
   return (
-    <div className="bg-white border border-primary-200 rounded-2xl shadow-md overflow-hidden flex gap-5">
+    <div className="bg-white border border-primary-200 rounded-2xl shadow-sm overflow-hidden flex gap-5">
       <div className="w-32 sm:w-36 flex-shrink-0  overflow-hidden">
         <img
           src={opportunity.image}
@@ -139,7 +139,6 @@ export default function VolunteerPage() {
             ))}
           </div>
         </div>
-      {/* </ContainerBackground> */}
     </>
   );
 }

@@ -17,6 +17,7 @@ import { Calendar, MapPin, User } from 'lucide-react';
 import placeholderImg from '/placeholder-image.png';
 import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 import { canManageProjects } from '@/shared/permissions/project.permission';
+import { ADMIN_ROUTES } from '@/features/admin/routes';
 
 // const PLACEHOLDER = 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=700&q=80';
 
@@ -45,18 +46,72 @@ function ProjectDetailsSkeleton() {
 
 // ─── Delete confirmation ──────────────────────────────────────────────────────
 
+function DeleteConfirmModal({
+  title,
+  onConfirm,
+  onCancel,
+  isDeleting,
+}: {
+  title: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+  isDeleting: boolean;
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+      <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-5 sm:p-6">
+        <div className="flex items-start gap-3 mb-4">
+          <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+            <Icon icon="mdi:alert-circle-outline" className="w-5 h-5 text-red-600" />
+          </div>
+          <div>
+            <h3 className="text-gray-900 font-bold text-base sm:text-lg mb-1">Delete Project?</h3>
+            <p className="text-gray-600 text-sm">
+              Are you sure you want to delete <span className="font-semibold">{title}</span>? This
+              action cannot be undone.
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 justify-end mt-6">
+          <button
+            type="button"
+            onClick={onCancel}
+            disabled={isDeleting}
+            className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 disabled:opacity-50"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={onConfirm}
+            disabled={isDeleting}
+            className="px-5 sm:px-6 py-2 text-sm font-semibold bg-red-500 hover:bg-red-600 text-white rounded-lg flex items-center gap-2 disabled:opacity-50"
+          >
+            {isDeleting && <Icon icon="mdi:loading" className="w-4 h-4 animate-spin" />}
+            Yes, Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-export default function ProjectDetailsPage() {
+export default function AdminProjectDetailsPage() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
 
-
+    const { data: currentUser } = useCurrentUser();
+  
+    const canUserManageProjects = canManageProjects(currentUser)
 
   const { data: projects = [], isLoading } = useProjects();
+  const deleteMutation = useDeleteProject();
 
   const [activeImage, setActiveImage] = useState(0);
-
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   // const placeholderImages = ['https://placehold.co/80x80/E5E7EB/6B7280?text=No+Image'];
   const placeholderImages = [placeholderImg];
@@ -79,11 +134,15 @@ export default function ProjectDetailsPage() {
 
   const breadcrumbItems = [
     { label: 'Home', href: ROUTES.HOME },
-    { label: 'Projects', href: ROUTES.PROJECTS.ROOT },
+    { label: 'Projects', href: ADMIN_ROUTES.PROJECTS },
     { label: project.title },
   ];
 
-
+  const handleDelete = () => {
+    deleteMutation.mutate(project.id, {
+      onSuccess: () => navigate(ADMIN_ROUTES.PROJECTS),
+    });
+  };
 
   return (
     <>
@@ -94,6 +153,27 @@ export default function ProjectDetailsPage() {
         <div className="container-custom">
           {/* Image gallery */}
           <div className="flex flex-col gap-3 mb-6 sm:mb-8">
+            {/* Main image */}
+            {canUserManageProjects && (
+              <div className="flex items-center justify-end gap-2 flex-wrap sm:flex-nowrap">
+                <button
+                  type="button"
+                  onClick={() => setShowEditModal(true)}
+                  className="flex items-center gap-1.5 border border-primary-200 text-primary-500 hover:bg-primary-50 text-xs font-semibold px-3 py-2 rounded-lg transition-colors"
+                >
+                  {/* <Icon icon="mdi:pencil-outline" className="w-3.5 h-3.5" /> */}
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowDeleteModal(true)}
+                  className="flex items-center gap-1.5 border border-red-200 text-red-500 hover:bg-red-50 text-xs font-semibold px-3 py-2 rounded-lg transition-colors"
+                >
+                  {/* <Icon icon="mdi:trash-can-outline" className="w-3.5 h-3.5" /> */}
+                  Delete
+                </button>
+              </div>
+            )}
 
             <div className="w-full aspect-[16/10] sm:aspect-[16/9] lg:aspect-auto lg:h-[420px] bg-gray-100 rounded-3xl overflow-hidden">
               <img
@@ -111,10 +191,11 @@ export default function ProjectDetailsPage() {
                     key={index}
                     type="button"
                     onClick={() => setActiveImage(index)}
-                    className={`h-14 w-14 sm:h-16 sm:w-16 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all ${activeImage === index
+                    className={`h-14 w-14 sm:h-16 sm:w-16 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all ${
+                      activeImage === index
                         ? 'border-primary-500 ring-2 ring-primary-200'
                         : 'border-transparent hover:border-gray-300'
-                      }`}
+                    }`}
                   >
                     <img src={img} alt="" className="w-full h-full object-cover" />
                   </button>
@@ -128,14 +209,19 @@ export default function ProjectDetailsPage() {
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2">
                 <span
-                  className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${project.status === 'completed'
+                  className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${
+                    project.status === 'completed'
                       ? 'bg-green-100 text-green-700'
                       : 'bg-primary-100 text-primary-700'
-                    }`}
+                  }`}
                 >
                   {project.status === 'completed' ? 'Completed' : 'Ongoing'}
                 </span>
-
+                {/* {Boolean(project.isFeatured) && (
+                  <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-700">
+                    Featured
+                  </span>
+                )} */}
               </div>
 
               <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
@@ -164,8 +250,10 @@ export default function ProjectDetailsPage() {
               )}
             </div>
 
+            {/* Admin actions */}
           </div>
 
+      
 
           {/* Description */}
           <div className="mt-6 sm:mt-8">
@@ -177,13 +265,35 @@ export default function ProjectDetailsPage() {
             </p>
           </div>
 
-
+          {/* Back link */}
+          {/* <div className="mt-8 sm:mt-10">
+            <AppLink
+              href={ROUTES.PROJECTS.ROOT}
+              className="inline-flex items-center gap-1 text-primary-500 hover:text-primary-600 text-sm font-semibold"
+            >
+              <Icon icon="mdi:arrow-left" className="w-4 h-4" />
+              Back to all projects
+            </AppLink>
+          </div> */}
         </div>
       </section>
 
+      {/* Edit modal */}
+      <ProjectFormModal
+        isOpen={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        editData={project}
+      />
 
-
-
+      {/* Delete confirmation */}
+      {showDeleteModal && (
+        <DeleteConfirmModal
+          title={project.title}
+          onConfirm={handleDelete}
+          onCancel={() => setShowDeleteModal(false)}
+          isDeleting={deleteMutation.isPending}
+        />
+      )}
     </>
   );
 }

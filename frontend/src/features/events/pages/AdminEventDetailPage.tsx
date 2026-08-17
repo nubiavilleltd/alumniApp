@@ -12,7 +12,6 @@ import { toast } from '@/shared/components/ui/Toast';
 import { EVENT_ROUTES } from '../routes';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 import { renderMarkdown } from '@/data/content';
-import { AUTH_ROUTES } from '@/features/authentication/routes';
 import { useEventStatus } from '../hooks/useEventStatus';
 import { formatDateRange } from '@/shared/utils/dateHelpers';
 import { useRequireSignIn } from '@/features/authentication/hooks/useRequireSignIn';
@@ -164,6 +163,12 @@ function UnregisterConfirmModal({
 function EventDetailSkeleton() {
   return (
     <div className="container-custom py-6 animate-pulse">
+      {/* Admin bar placeholder */}
+      <div className="flex justify-end gap-3 mb-4">
+        <div className="h-9 w-36 bg-gray-200 rounded-full" />
+        <div className="h-9 w-28 bg-gray-200 rounded-full" />
+        <div className="h-9 w-28 bg-gray-200 rounded-full" />
+      </div>
       {/* Hero */}
       <div className="w-full h-64 sm:h-80 bg-gray-200 rounded-2xl mb-6" />
       {/* Title */}
@@ -184,22 +189,25 @@ function EventDetailSkeleton() {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-export function EventDetailPage() {
-  const { slug = '' } = useParams();
+export function AdminEventDetailPage() {
+  const { id = '' } = useParams();
   const requireSignIn = useRequireSignIn();
-  const { data: event, isLoading, error } = useEvent(slug);
+  const { data: event, isLoading, error } = useEvent(id);
   const { isUpcoming, isOngoing, isPast } = useEventStatus(event);
 
+  const navigate = useNavigate();
 
   const currentUser = useIdentityStore((state) => state.user);
   const isLoggedIn = !!currentUser;
 
+  const deleteEvent = useDeleteEvent();
   const cancelMutation = useCancelRegistration();
 
   const { isRegistered } = useEventRegistration(event?.id ?? '');
   const { attendeeCount, capacity, isFull, spotsLeft } = useEventAttendeeCount(event ?? null);
 
   const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showUnregisterModal, setShowUnregisterModal] = useState(false);
 
   const markdown = useMemo(() => {
@@ -247,6 +255,15 @@ export function EventDetailPage() {
 
   // ── Handlers ──────────────────────────────────────────────────────────────
 
+  const handleDelete = () => {
+    deleteEvent.mutate(event.id, {
+      onSuccess: () => navigate(EVENT_ROUTES.ROOT),
+      onError: (err: any) => {
+        setShowDeleteModal(false);
+        toast.fromError(err);
+      },
+    });
+  };
 
   const handleUnregister = async () => {
     try {
@@ -288,8 +305,40 @@ export function EventDetailPage() {
 
       <div className="min-h-screen bg-[#F8F8F7]">
         <div className="container-custom py-6">
-  
+          {/* ════════════════════════════════════════════════════
+              ADMIN ACTION BAR
+              Sits above the hero image, right-aligned.
+              Visible only to admins, always as buttons (no menu).
+              ════════════════════════════════════════════════════ */}
+         <div className="flex items-center justify-end gap-2 sm:gap-3 mb-4 flex-wrap">
+              {/* View Registrations */}
+              <AppLink
+                href={EVENT_ROUTES.ATTENDEES(event.id)}
+                className="inline-flex items-center gap-1.5 border-2 border-primary-500 bg-white hover:bg-primary-600 hover:text-white text-primary-500 text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 rounded-full transition-colors shadow-sm whitespace-nowrap"
+              >
+                {/* <Icon icon="mdi:account-group-outline" className="w-4 h-4" /> */}
+                View Registrations
+              </AppLink>
 
+              {/* Edit Event */}
+              <AppLink
+                href={EVENT_ROUTES.EDIT(event.id)}
+                className="inline-flex items-center gap-1.5 border-2 border-primary-500 bg-white hover:bg-primary-600 hover:text-white text-primary-500 text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 rounded-full transition-colors shadow-sm whitespace-nowrap"
+              >
+                {/* <Icon icon="mdi:pencil-outline" className="w-4 h-4" /> */}
+                Edit Event
+              </AppLink>
+
+              {/* Delete Event */}
+              <button
+                type="button"
+                onClick={() => setShowDeleteModal(true)}
+                className="inline-flex items-center gap-1.5 border-2 border-red-500 bg-white hover:bg-red-50 text-red-600 text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 rounded-full transition-colors shadow-sm whitespace-nowrap"
+              >
+                {/* <Icon icon="mdi:trash-can-outline" className="w-4 h-4" /> */}
+                Delete Event
+              </button>
+            </div>
           {/* ════════════════════════════════════════════════════
               HERO IMAGE
               ════════════════════════════════════════════════════ */}
@@ -490,7 +539,14 @@ export function EventDetailPage() {
         onClose={() => setShowRegisterModal(false)}
       />
 
-
+      {showDeleteModal && (
+        <DeleteConfirmModal
+          title={event.title}
+          isDeleting={deleteEvent.isPending}
+          onConfirm={handleDelete}
+          onCancel={() => setShowDeleteModal(false)}
+        />
+      )}
 
       {showUnregisterModal && (
         <UnregisterConfirmModal

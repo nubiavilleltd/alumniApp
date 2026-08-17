@@ -3,8 +3,12 @@ export const ADMIN_ROUTES = {
   MEMBERS: '/admin/members',
   EVENTS: '/admin/events',
   EVENT_REGISTRATIONS: '/admin/event-registrations',
+  EVENT_DETAIL: (id: string) => `/admin/events/${id}`,
+  EVENT_DETAIL_PATH: '/admin/events/:id',
   ANNOUNCEMENTS: '/admin/announcements',
   PROJECTS: '/admin/projects',
+  PROJECT_DETAIL: (slug: string) => `/admin/projects/${slug}`,
+  PROJECT_DETAIL_PATH: '/admin/projects/:id',
   PAGES_CONTENT: '/admin/pages-content',
 } as const;
 

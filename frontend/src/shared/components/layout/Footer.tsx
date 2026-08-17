@@ -35,13 +35,13 @@ const QUICK_LINKS = [
   { label: 'Announcements', href: ROUTES.NEWS },
   { label: 'Events', href: ROUTES.EVENTS.ROOT },
   { label: 'Our Projects', href: ROUTES.PROJECTS.ROOT },
-  { label: 'Volunteer', href: '/alumni/profiles' },
+  { label: 'Volunteer', href: ROUTES.JOIN_PROJECTS.VOLUNTEER },
   { label: 'FAQs', href: ROUTES.FAQS },
   { label: 'Contact Us', href: ROUTES.CONTACT },
 ];
 
 const COMMUNITY_LINKS = [
-  { label: 'Check on your Sisters', href: '/alumni/profiles' },
+  { label: 'Check on your Sisters', href: ROUTES.ALUMNI.ROOT },
   { label: 'Marketplace', href: ROUTES.MARKETPLACE.ROOT },
   { label: 'Resources', href: ROUTES.RESOURCES },
   { label: 'Welfare', href: ROUTES.WELFARE },
@@ -104,14 +104,14 @@ export function Footer() {
         <div className="container-custom flex min-h-[626px] flex-col justify-end pt-48 sm:pt-60 lg:pt-72 xl:pt-80">
           <div className="grid grid-cols-1 gap-10 pb-9 sm:pb-11 lg:grid-cols-[minmax(17rem,0.95fr)_auto_minmax(27rem,1fr)_auto_auto] lg:items-start lg:gap-0">
             <div className="lg:pr-10 xl:pr-14">
-              <p className="max-w-[340px] text-sm leading-relaxed text-white">
+              <div className="mt-6 mb-6">
+                <FooterLogo />
+              </div>
+
+               <p className="max-w-[340px] text-sm leading-relaxed text-white">
                 Connecting generations of extraordinary women since 1973. A global sisterhood built
                 on excellence, integrity, and service to Nigeria and beyond.
               </p>
-
-              <div className="mt-6">
-                <FooterLogo />
-              </div>
 
               <div className="mt-6 space-y-3">
                 <div className="flex items-start gap-3">

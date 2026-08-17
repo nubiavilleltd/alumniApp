@@ -1,5 +1,18 @@
 // features/marketplace/types/marketplace.types.ts
 
+
+
+
+// ─── Socials ──────────────────────────────────────────────────────────────────
+export interface Socials {
+  instagram?: string;
+  instagramHashtag?: string;
+  facebook?: string;
+  linkedin?: string;
+  x?: string;
+  tiktok?: string;
+}
+
 // ─── Business entity ──────────────────────────────────────────────────────────
 export interface Business {
   // ── Relational keys ──────────────────────────────────────────────────────
@@ -19,6 +32,8 @@ export interface Business {
   phone: string;
   email?: string;
   website?: string;
+  whatsapp?: string;
+  socials?: Socials;
   messagePrompt?: string;
   images: string[];
 }
@@ -37,6 +52,8 @@ export interface PostBusinessPayload {
   location: string;
   phone: string;
   website?: string;
+  whatsapp?: string;
+  socials?: Socials;
   messagePrompt?: string;
   images: File[];
 }
@@ -48,6 +65,8 @@ export interface CreateListingFormData {
   location: string;
   phone: string;
   website?: string;
+  whatsapp?: string;
+  socials?: Socials;
   messagePrompt?: string;
   images: File[];
 }

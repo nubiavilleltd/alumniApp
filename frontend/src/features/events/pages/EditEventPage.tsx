@@ -61,6 +61,7 @@ import {
   eventFormUploadDropzoneClassName,
 } from '../constants/eventFormStyles';
 import { Pencil } from 'lucide-react';
+import { canManageEvents } from '@/shared/permissions/event.permission';
 
 type LocalRegistrationFormDraft = {
   localId: string;
@@ -390,11 +391,12 @@ export default function EditEventPage() {
     });
   };
 
-  const isAdmin = currentUser?.role === 'admin';
+
+  const canUserManageEvents = canManageEvents(currentUser)
 
   // ── Access guard ──────────────────────────────────────────────────────────
 
-  if (!isAdmin) {
+  if (!canUserManageEvents) {
     return (
       <>
         <SEO title="Access Denied" />
@@ -455,7 +457,7 @@ export default function EditEventPage() {
     { label: 'Home', href: ROUTES.HOME },
     { label: 'Admin Dashboard', href: ADMIN_ROUTES.DASHBOARD },
     { label: 'Events', href: ADMIN_ROUTES.EVENTS },
-    { label: event.title, href: EVENT_ROUTES.DETAIL(event.id) },
+    { label: event.title, href: ADMIN_ROUTES.EVENT_DETAIL(event.id) },
     { label: 'Edit' },
   ];
 

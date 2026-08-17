@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Minus, Plus } from 'lucide-react';
+import { ExternalLink, Link2, Minus, Plus } from 'lucide-react';
 import { SEO } from '@/shared/common/SEO';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { ROUTES } from '@/shared/constants/routes';
 import { usePublishedFaqs } from '../hooks/useFaqs';
 import type { Faq } from '../types/faq.types';
+import { isExternalFaqLink, parseFaqAnswerWithLinks } from '../utils/faqLinks';
 
 function FaqPageSkeleton() {
   return (
@@ -31,6 +32,7 @@ function FaqPageSkeleton() {
 
 function FaqCard({ faq, isOpen, onToggle }: { faq: Faq; isOpen: boolean; onToggle: () => void }) {
   const answerId = `faq-answer-${faq.id}`;
+  const { answerText, links } = parseFaqAnswerWithLinks(faq.answer);
 
   return (
     <article className="rounded-[0.85rem] border border-primary-100 bg-white shadow-[0_1px_2px_rgb(var(--color-primary-500)/0.03)]">
@@ -58,7 +60,33 @@ function FaqCard({ faq, isOpen, onToggle }: { faq: Faq; isOpen: boolean; onToggl
 
       {isOpen ? (
         <div id={answerId} className="px-6 pb-7 pt-0 sm:px-8">
-          <p className="max-w-3xl text-base font-medium leading-7 text-[#556070]">{faq.answer}</p>
+          <div className="max-w-3xl space-y-4">
+            <p className="whitespace-pre-line text-base font-medium leading-7 text-[#556070]">
+              {answerText}
+            </p>
+
+            {links.length > 0 ? (
+              <div className="flex flex-wrap gap-2 pt-1">
+                {links.map((link) => {
+                  const isExternal = isExternalFaqLink(link.url);
+                  const Icon = isExternal ? ExternalLink : Link2;
+
+                  return (
+                    <a
+                      key={`${link.label}-${link.url}`}
+                      href={link.url}
+                      target={isExternal ? '_blank' : undefined}
+                      rel={isExternal ? 'noopener noreferrer' : undefined}
+                      className="inline-flex max-w-full items-center gap-2 rounded-full bg-primary-50 px-4 py-2 text-sm font-bold text-primary-600 transition-colors hover:bg-primary-100"
+                    >
+                      <span className="truncate">{link.label}</span>
+                      <Icon className="h-4 w-4 shrink-0" strokeWidth={2.35} />
+                    </a>
+                  );
+                })}
+              </div>
+            ) : null}
+          </div>
         </div>
       ) : null}
     </article>

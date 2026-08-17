@@ -6,6 +6,12 @@ import { useState } from 'react';
 import DonationImage from '/donation-image.png';
 import { useLocation } from 'react-router-dom';
 
+export const BANK_DETAILS = {
+  bankName: 'Access Bank',
+  accountNumber: '0722817496',
+  accountName: 'Fed. Govt. Girls Coll. Owerri Old Girls Association',
+};
+
 export function DonationPage() {
   const copyToClipboard = async (value: string, field: string) => {
     try {
@@ -16,6 +22,8 @@ export function DonationPage() {
       console.error('Copy failed', err);
     }
   };
+
+
 
   return (
     <section className="page-inline-padding mx-auto flex flex-col bg-[#F8F8F7] py-6">
@@ -36,7 +44,7 @@ export function DonationPage() {
           <div className="mb-8">
             <p className="text-sm text-gray-600 font-normal mb-1.5">Bank Name</p>
             <p className="text-lg sm:text-2xl font-semibold text-gray-700 tracking-tight">
-              Guarantee Trust Bank
+              {BANK_DETAILS.bankName}
             </p>
           </div>
 
@@ -45,10 +53,10 @@ export function DonationPage() {
             <p className="text-sm text-gray-600 font-normal mb-1.5">Account Number</p>
             <div className="flex items-center gap-4">
               <p className="text-lg sm:text-2xl font-semibold text-gray-900 tracking-tight">
-                0250037225
+                {BANK_DETAILS.accountNumber}
               </p>
               <button
-                onClick={() => copyToClipboard('0250037225', 'account')}
+                onClick={() => copyToClipboard(BANK_DETAILS.accountNumber, 'account')}
                 className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors flex-shrink-0"
                 aria-label="Copy account number"
               >
@@ -61,7 +69,7 @@ export function DonationPage() {
           <div>
             <p className="text-sm text-gray-600 font-normal mb-1.5">Account Name</p>
             <p className="text-lg sm:text-2xl font-semibold text-gray-900 tracking-tight">
-              FGGC Alumnae Lagos
+              {BANK_DETAILS.accountName}
             </p>
           </div>
         </div>

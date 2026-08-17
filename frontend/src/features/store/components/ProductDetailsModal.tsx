@@ -50,11 +50,10 @@ function VerticalStrip({ images, activeIndex, onSelect }: StripProps) {
               itemRefs.current[i] = el;
             }}
             onClick={() => onSelect(i)}
-            className={`w-[72px] h-[72px] shrink-0 rounded-xl overflow-hidden border transition-all ${
-              i === activeIndex
+            className={`w-[72px] h-[72px] shrink-0 rounded-xl overflow-hidden border transition-all ${i === activeIndex
                 ? 'border-primary-900 opacity-100'
                 : 'border-gray-200 opacity-60 hover:opacity-90'
-            }`}
+              }`}
           >
             <img src={img} alt={`View ${i + 1}`} className="w-full h-full object-cover" />
           </button>
@@ -113,11 +112,10 @@ function HorizontalStrip({ images, activeIndex, onSelect }: StripProps) {
               itemRefs.current[i] = el;
             }}
             onClick={() => onSelect(i)}
-            className={`w-[64px] h-[64px] shrink-0 rounded-xl overflow-hidden border transition-all ${
-              i === activeIndex
+            className={`w-[64px] h-[64px] shrink-0 rounded-xl overflow-hidden border transition-all ${i === activeIndex
                 ? 'border-primary-900 opacity-100'
                 : 'border-gray-200 opacity-60 hover:opacity-90'
-            }`}
+              }`}
           >
             <img src={img} alt={`View ${i + 1}`} className="w-full h-full object-cover" />
           </button>
@@ -223,7 +221,7 @@ export function ProductDetailsModal() {
     >
       <div className="flex min-h-full items-start sm:items-center justify-center p-3 sm:p-4">
         <div
-          className="relative w-full max-w-3xl bg-white rounded-2xl shadow-2xl"
+          className="relative w-full max-w-5xl bg-white rounded-2xl shadow-2xl"
           onClick={(e) => e.stopPropagation()}
         >
           <button
@@ -231,21 +229,22 @@ export function ProductDetailsModal() {
             className="absolute top-3 right-3 z-20 w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-200 text-gray-600 transition-colors"
             aria-label="Close"
           >
-            <X size={20} />
+            <X size={25}  className='text-primary-500'/>
           </button>
 
           {/* Desktop: three-column */}
-          <div className="hidden sm:flex flex-row p-5 gap-5">
+          <div className="hidden sm:flex flex-row items-start p-5 gap-5">
             <VerticalStrip images={allImages} activeIndex={imageIndex} onSelect={setImageIndex} />
-            <div className="flex-1 min-w-0 flex items-center justify-center rounded-xl min-h-[320px]">
+
+            <div className="flex-1 min-w-0 max-w-[380px] h-[320px] flex items-center justify-center rounded-xl">
               <img
                 src={mainImage}
                 alt={product.name}
-                className="w-full h-full max-h-[320px] object-contain rounded-xl p-2"
+                className="w-full h-full object-contain rounded-xl p-2"
               />
             </div>
-            <div className="w-[42%] shrink-0 flex flex-col gap-3">
-              <span className="inline-flex w-fit bg-primary-100 text-primary-600 text-xs font-semibold px-3 py-1 rounded-full">
+            <div className="w-[60%] shrink-0 flex flex-col gap-3">
+              <span className="inline-flex w-fit bg-primary-100 text-primary-600 text-xs font-semibold px-3 py-1.5 rounded-xl">
                 {product.category}
               </span>
               <h2 className="text-xl font-bold text-gray-900 leading-snug">{product.name}</h2>
@@ -253,14 +252,9 @@ export function ProductDetailsModal() {
                 <p className="text-sm text-gray-600 leading-snug">{product.description}</p>
               )}
               <p className="text-2xl font-bold text-gray-900">₦{product.price.toLocaleString()}</p>
-              {/* {product.supportNote && (
-                <p className="text-xs text-gray-400 italic leading-relaxed">{product.supportNote}</p>
-              )} */}
-
               <p className="text-xs text-gray-400 italic leading-relaxed">{DEFAULT_NOTE}</p>
             </div>
           </div>
-
           {/* Mobile: product info */}
           {/* ── MOBILE: stacked layout ────────────────────────────────── */}
           <div className="sm:hidden mt-7">
@@ -286,7 +280,7 @@ export function ProductDetailsModal() {
 
             {/* Product info below strip */}
             <div className="px-4 pt-3 pb-2 flex flex-col gap-2">
-              <span className="inline-flex w-fit bg-primary-100 text-primary-600 text-xs font-semibold px-3 py-1 rounded-full">
+              <span className="inline-flex w-fit bg-primary-100 text-primary-600 text-xs font-semibold px-3 py-1.5 rounded-xl">
                 {product.category}
               </span>
               <h2 className="text-lg text-gray-900 leading-snug">{product.name}</h2>

@@ -1267,10 +1267,10 @@ export function MessagesPage() {
         <Breadcrumbs items={breadcrumbItems} />
       </div> */}
 
-      {/* Page background matching Figma off-white */}
+      {/* Keep the page shell transparent so the shared animated background remains visible. */}
       <section
         {...pullToRefresh.bind}
-        className={`relative bg-[#f0ede8] ${
+        className={`relative bg-transparent ${
           isMobileThreadOpen
             ? 'h-[calc(100dvh-5.25rem)] overflow-hidden sm:h-[calc(100dvh-5.5rem)]'
             : ''

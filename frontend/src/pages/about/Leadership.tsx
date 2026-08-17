@@ -2,6 +2,8 @@ import { AppLink } from '@/shared/components/ui/AppLink';
 
 import { useLeadership } from '@/features/leadership/hooks/useLeadership';
 import { LeadershipMember } from '@/features/leadership/types/leadership.types';
+import { Link } from 'react-router-dom';
+import { ALUMNI_ROUTES } from '@/features/alumni/routes';
 
 function SectionEyebrow({ children }: { children: string }) {
   return (
@@ -15,6 +17,7 @@ function SectionEyebrow({ children }: { children: string }) {
 
 function MemberCard({ member }: { member: LeadershipMember }) {
   return (
+   <Link to={ALUMNI_ROUTES.PROFILE(member.memberId)}>
     <div className="rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex flex-col">
       {/* <div className="h-57 w-full overflow-hidden bg-gray-100"> */}
       <div className="aspect-square w-full overflow-hidden rounded-2xl">
@@ -29,6 +32,7 @@ function MemberCard({ member }: { member: LeadershipMember }) {
         <p className="text-gray-400 text-xs mt-0.5">{member.role}</p>
       </div>
     </div>
+   </Link>
   );
 }
 
@@ -48,6 +52,7 @@ export default function Leadership() {
   const { data: members = [], isLoading } = useLeadership();
 
   const board = members.filter((m) => !m.featured);
+
 
   return (
     <section className="section">
@@ -96,7 +101,7 @@ export function MessageFromPresident() {
           </div>
         ) : (
           president && (
-            <div>
+            <Link to={ALUMNI_ROUTES.PROFILE(president.memberId)}>
               <div className="mb-6">
                 <h2 className="text-2xl font-semibold leading-tight text-[#061015] md:text-[32px]">
                   From the President
@@ -123,7 +128,7 @@ export function MessageFromPresident() {
                   ))}
                 </div>
               </div>
-            </div>
+            </Link>
           )
         )}
       </div>

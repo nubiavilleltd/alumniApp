@@ -1,6 +1,6 @@
 // features/marketplace/pages/MarketPlacePage.tsx
 
-import { useEffect, useMemo, useState } from 'react';
+import { ComponentType, useEffect, useMemo, useState } from 'react';
 import {
   ChevronDown,
   ChevronLeft,
@@ -16,6 +16,15 @@ import {
   Search,
   Store,
 } from 'lucide-react';
+
+import {
+  IconBrandFacebook,
+  IconBrandInstagram,
+  IconBrandLinkedin,
+  IconBrandTiktok,
+  IconBrandWhatsapp,
+  IconBrandX,
+} from '@tabler/icons-react';
 import { SEO } from '@/shared/common/SEO';
 import { Button } from '@/shared/components/ui/Button';
 import { FilterDropdown } from '@/shared/components/ui/FilterDropdown';
@@ -64,6 +73,13 @@ const marketplaceFilterSelectClassName = [
 
 const marketplaceGridClassName =
   'grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8 xl:grid-cols-[repeat(auto-fit,minmax(min(100%,19.25rem),1fr))] xl:gap-x-[1.5rem] xl:gap-y-[2.75rem]';
+
+type SocialLinkEntry = {
+  key: string;
+  href: string;
+  label: string;
+  Icon: ComponentType<{ className?: string; size?: number; stroke?: number }>;
+};
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 function BusinessCardSkeleton() {
@@ -120,6 +136,7 @@ function isRealProfilePhoto(photo?: string | null) {
   return Boolean(photo && !photo.includes('ui-avatars.com') && !photo.includes('default-avatar'));
 }
 
+
 // ─── Business Card ────────────────────────────────────────────────────────────
 function BusinessCard({
   business,
@@ -142,6 +159,43 @@ function BusinessCard({
   const hasPhone = Boolean(business.phone.trim());
   const hasEmail = Boolean(business.email?.trim());
   const hasWebsite = Boolean(business.website?.trim());
+  const hasWhatsapp = Boolean(business.whatsapp?.trim());
+
+
+  const socialLinks: SocialLinkEntry[] = (
+    [
+      business.socials?.instagram && {
+        key: 'instagram',
+        href: business.socials.instagram,
+        label: `${business.name} on Instagram`,
+        Icon: IconBrandInstagram,
+      },
+      business.socials?.facebook && {
+        key: 'facebook',
+        href: business.socials.facebook,
+        label: `${business.name} on Facebook`,
+        Icon: IconBrandFacebook,
+      },
+      business.socials?.linkedin && {
+        key: 'linkedin',
+        href: business.socials.linkedin,
+        label: `${business.name} on LinkedIn`,
+        Icon: IconBrandLinkedin,
+      },
+      business.socials?.x && {
+        key: 'x',
+        href: business.socials.x,
+        label: `${business.name} on X`,
+        Icon: IconBrandX,
+      },
+      business.socials?.tiktok && {
+        key: 'tiktok',
+        href: business.socials.tiktok,
+        label: `${business.name} on TikTok`,
+        Icon: IconBrandTiktok,
+      },
+    ] as Array<SocialLinkEntry | false | undefined>
+  ).filter((entry): entry is SocialLinkEntry => Boolean(entry));
 
   useEffect(() => {
     setOwnerPhotoFailed(false);
@@ -287,7 +341,45 @@ function BusinessCard({
               <span className="min-w-0 break-all">{business.website}</span>
             </a>
           )}
+
         </div>
+
+        {(socialLinks.length > 0 || business.socials?.instagramHashtag) && (
+          // <div className="mt-3 flex flex-wrap items-center gap-2" style={{ marginLeft: "-5px" }}>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+
+            {business.socials?.instagramHashtag && (
+              <a
+               href={`https://www.instagram.com/explore/tags/${encodeURIComponent(
+                  business.socials.instagramHashtag.replace(/^#+/, ''),
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(event) => event.stopPropagation()}
+                className="rounded-full px-2.5 py-1 text-[0.72rem] font-bold leading-none text-white shadow-sm"
+                style={{ background: 'linear-gradient(45deg, #f9ce34, #ee2a7b, #6228d7)' }}
+              >
+                #{business.socials.instagramHashtag.replace(/^#+/, '')}
+              </a>
+            )}
+            {socialLinks.map(({ key, href, label, Icon }) => (
+
+              <a key={key}
+                href={getWebsiteHref(href)}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                onClick={(event) => event.stopPropagation()}
+                // className="flex h-8 w-8 items-center justify-center rounded-full bg-[#f1f3f5] text-[#5f6873] transition-colors hover:bg-primary-50 hover:text-primary-600"
+                className="flex h-8 w-8 items-center justify-center rounded-full text-[#5f6873] transition-colors hover:bg-primary-50 hover:text-primary-600"
+              >
+                <Icon size={22} stroke={2} />
+              </a>
+            ))}
+          </div>
+        )}
+
+
 
         <div
           className="mt-auto flex items-center gap-3 pt-3 max-sm:flex-wrap"
@@ -306,6 +398,20 @@ function BusinessCard({
           >
             <span>{isMessagePending ? 'Opening...' : 'Send Message'}</span>
           </Button>
+
+
+          {hasWhatsapp && !isOwnBusiness && (
+
+            <a href={`https://wa.me/${business.whatsapp!.replace(/\D/g, '')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Message ${business.name} on WhatsApp`}
+              onClick={(event) => event.stopPropagation()}
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#25D366] text-white transition-transform hover:brightness-95 active:translate-y-px focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary-200"
+            >
+              <IconBrandWhatsapp size={20} stroke={2} />
+            </a>
+          )}
         </div>
       </div>
     </article>
@@ -460,11 +566,12 @@ export default function MarketPlacePage() {
           </div>
 
           <div className="mb-10 flex flex-col gap-4 lg:mb-[2.15rem] lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex h-[3.1rem] w-full items-center gap-2 rounded-full bg-white px-[0.95rem] text-[#858585] lg:h-12 lg:max-w-[28rem]">
+            {/* <div className="flex h-[3.1rem] w-full items-center gap-2 rounded-full bg-white px-[0.95rem] text-[#858585] lg:h-12 lg:max-w-[28rem]"> */}
+            <div className="flex h-[3.1rem] w-full items-center gap-2 rounded-full text-[#858585] lg:h-12 lg:max-w-[28rem]">
               <label htmlFor="marketplace-search" className="sr-only">
                 Search marketplace businesses
               </label>
-              <SearchInput
+              {/* <SearchInput
                 id="marketplace-search"
                 value={searchTerm}
                 onValueChange={handleFilterChange(setSearchTerm)}
@@ -477,6 +584,16 @@ export default function MarketPlacePage() {
                 searchIcon={Search}
                 clearIcon={CircleX}
                 errorIcon={CircleAlert}
+              /> */}
+              <SearchInput
+                id="marketplace-search"
+                value={searchTerm}
+                onValueChange={handleFilterChange(setSearchTerm)}
+                placeholder="Search here"
+                showClearButton={true}
+                className="w-full"
+                containerClassName="h-full"
+                inputClassName="!h-10 !py-0"
               />
             </div>
 

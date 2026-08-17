@@ -578,7 +578,7 @@ export function Navigation() {
 
   return (
     <nav
-      className={cn(navSurfaceClassName, 'relative z-50 text-white')}
+      className={cn(navSurfaceClassName, 'sticky top-0 z-50 text-white')}
       aria-label="Primary navigation"
     >
       <div className="container-custom">

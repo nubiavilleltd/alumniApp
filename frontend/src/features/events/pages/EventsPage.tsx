@@ -323,7 +323,6 @@ function EventListSkeleton() {
 export function EventsPage() {
   const navigate = useNavigate();
   const currentUser = useIdentityStore((state) => state.user);
-  const isAdmin = currentUser?.role === 'admin';
 
   const [calendarDate, setCalendarDate] = useState(new Date());
   const [activeEventId, setActiveEventId] = useState<string | null>(null);
@@ -503,16 +502,7 @@ export function EventsPage() {
                 }}
                 placeholder="Search events"
               />
-              {isAdmin && (
-                <button
-                  type="button"
-                  onClick={() => navigate(EVENT_ROUTES.CREATE)}
-                  className="flex-shrink-0 flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 text-white text-sm font-semibold px-4 py-2 rounded-full transition-colors shadow-sm"
-                >
-                  <Plus size={16} strokeWidth={EVENTS_ICON_STROKE} />
-                  <span className="hidden sm:inline">Create Event</span>
-                </button>
-              )}
+      
             </div>
           </div>
 

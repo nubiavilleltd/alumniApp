@@ -37,14 +37,39 @@ import {
 
 // ─── Zod Schema ────────────────────────────────────────────────────────────────
 
-// const postBusinessSchema = z.object({
-//   name: z.string().min(1, 'Business name is required'),
-//   category: z.string().min(1, 'Please select a category'),
-//   description: z.string().min(1, 'Description is required'),
-//   location: z.string().min(1, 'Location is required'),
-//   phone: z.string().min(1, 'Phone number is required'),
-//   website: z.string().optional(),
-// });
+
+// const postBusinessSchema = z
+//   .object({
+//     name: z
+//       .string()
+//       .min(1, 'Business name is required')
+//       .min(2, 'Business name must be at least 2 characters')
+//       .max(100, 'Business name is too long'),
+
+//     category: z.string().min(1, 'Please select a category'),
+
+//     description: z
+//       .string()
+//       .min(1, 'Description is required')
+//       .min(20, 'Please provide at least 20 characters')
+//       .max(5000, 'Description is too long'),
+
+//     location: z.string().min(1, 'Location is required').min(2, 'Please provide a valid location'),
+
+//     phone: z.string().trim().min(1, 'Phone number is required'),
+//     website: z.string().optional(),
+//     messagePrompt: z.string().max(750, 'Message prompt must be 750 characters or fewer').optional(),
+//   })
+//   .superRefine((data, ctx) => {
+//     const phoneError = validateNigerianPhoneNumber(data.phone);
+//     if (phoneError) {
+//       ctx.addIssue({ code: 'custom', path: ['phone'], message: phoneError });
+//     }
+//   });
+
+
+
+
 
 const postBusinessSchema = z
   .object({
@@ -68,21 +93,33 @@ const postBusinessSchema = z
     website: z.string().optional(),
     messagePrompt: z.string().max(750, 'Message prompt must be 750 characters or fewer').optional(),
 
-    // website: z
-    //   .string()
-    //   .optional()
-    //   .refine(
-    //     (val) => {
-    //       if (!val) return true;
-    //       return /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/.test(val);
-    //     },
-    //     { message: 'Enter a valid URL (e.g., example.com)' },
-    //   ),
+    whatsapp: z.string().trim().optional(),
+
+    socials: z
+      .object({
+        instagram: z.string().optional(),
+        instagramHashtag: z
+          .string()
+          .max(50, 'Hashtag is too long. Max characters allowed: 50')
+          .regex(/^[A-Za-z0-9_]*$/, 'Only letters, numbers, and underscores allowed')
+          .optional(),
+        facebook: z.string().optional(),
+        linkedin: z.string().optional(),
+        x: z.string().optional(),
+        tiktok: z.string().optional(),
+      })
+      .optional(),
   })
   .superRefine((data, ctx) => {
     const phoneError = validateNigerianPhoneNumber(data.phone);
     if (phoneError) {
       ctx.addIssue({ code: 'custom', path: ['phone'], message: phoneError });
+    }
+    if (data.whatsapp) {
+      const whatsappError = validateNigerianPhoneNumber(data.whatsapp);
+      if (whatsappError) {
+        ctx.addIssue({ code: 'custom', path: ['whatsapp'], message: whatsappError });
+      }
     }
   });
 
@@ -98,6 +135,13 @@ interface PostBusinessModalProps {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
+
+function normalizeHashtag(value?: string): string | undefined {
+  if (!value) return undefined;
+  const cleaned = value.trim().replace(/^#+/, '').replace(/\s+/g, '');
+  return cleaned || undefined;
+}
+
 function toFormState(data: Business | null | undefined): PostBusinessFormValues {
   if (!data) {
     return {
@@ -107,6 +151,8 @@ function toFormState(data: Business | null | undefined): PostBusinessFormValues 
       location: '',
       phone: '',
       website: '',
+      whatsapp: '',
+      socials: { instagram: '', instagramHashtag: '', facebook: '', linkedin: '', x: '', tiktok: '' },
       messagePrompt: '',
     };
   }
@@ -118,6 +164,15 @@ function toFormState(data: Business | null | undefined): PostBusinessFormValues 
     location: data.location,
     phone: parseStoredNigerianPhoneNumber(data.phone),
     website: data.website ?? '',
+    whatsapp: data.whatsapp ? parseStoredNigerianPhoneNumber(data.whatsapp) : '',
+    socials: {
+      instagram: data.socials?.instagram ?? '',
+      instagramHashtag: data.socials?.instagramHashtag ?? '',
+      facebook: data.socials?.facebook ?? '',
+      linkedin: data.socials?.linkedin ?? '',
+      x: data.socials?.x ?? '',
+      tiktok: data.socials?.tiktok ?? '',
+    },
     messagePrompt: data.messagePrompt ?? '',
   };
 }
@@ -133,6 +188,19 @@ function toCreateListingFormData(
     location: form.location,
     phone: formatOptionalNigerianPhoneNumber(form.phone),
     website: form.website || undefined,
+    whatsapp: form.whatsapp ? formatOptionalNigerianPhoneNumber(form.whatsapp) : undefined,
+    socials:
+      form.socials &&
+        Object.values(form.socials).some((v) => v?.trim())
+        ? {
+          instagram: form.socials.instagram?.trim() || undefined,
+          instagramHashtag: normalizeHashtag(form.socials.instagramHashtag),
+          facebook: form.socials.facebook?.trim() || undefined,
+          linkedin: form.socials.linkedin?.trim() || undefined,
+          x: form.socials.x?.trim() || undefined,
+          tiktok: form.socials.tiktok?.trim() || undefined,
+        }
+        : undefined,
     messagePrompt: form.messagePrompt?.trim() || undefined,
     images,
   };
@@ -197,6 +265,8 @@ export function PostBusinessModal({ isOpen, onClose, editData }: PostBusinessMod
         location: '',
         phone: '',
         website: '',
+        whatsapp: '',
+        socials: { instagram: '', instagramHashtag: '', facebook: '', linkedin: '', x: '', tiktok: '' },
         messagePrompt: '',
       });
       resetImages();
@@ -360,13 +430,98 @@ export function PostBusinessModal({ isOpen, onClose, editData }: PostBusinessMod
                   labelClassName={fieldLabelClassName}
                   controlClassName={fieldControlClassName}
                   inputClassName={fieldInputClassName}
-                  className="md:col-span-2"
                   id="website"
                   type="url"
                   placeholder="Enter the web address of your business"
                   error={errors.website?.message}
                   {...register('website')}
                 />
+
+                <PhoneNumberInput
+                  label="WhatsApp Number"
+                  labelClassName={fieldLabelClassName}
+                  controlClassName={fieldControlClassName}
+                  inputClassName={fieldInputClassName}
+                  id="whatsapp"
+                  placeholder={NIGERIAN_PHONE_PLACEHOLDER}
+                  error={errors.whatsapp?.message}
+                  {...register('whatsapp')}
+                />
+
+
+                <div className="md:col-span-2">
+                  <p className="font-medium text-gray-500 mb-3">Socials</p>
+                  <div className="grid gap-x-6 gap-y-5 md:grid-cols-2 md:gap-x-8 md:gap-y-6">
+                    <FormInput
+                      label="Instagram"
+                      labelClassName={fieldLabelClassName}
+                      controlClassName={fieldControlClassName}
+                      inputClassName={fieldInputClassName}
+                      id="instagram"
+                      type="url"
+                      placeholder="https://instagram.com/yourbusiness"
+                      error={errors.socials?.instagram?.message}
+                      {...register('socials.instagram')}
+                    />
+
+                    <FormInput
+                      label="Instagram Hashtag"
+                      labelClassName={fieldLabelClassName}
+                      controlClassName={fieldControlClassName}
+                      inputClassName={fieldInputClassName}
+                      id="instagramHashtag"
+                      type="text"
+                      placeholder="yourbusiness"
+                      icon={<span className="select-none text-gray-400">#</span>}
+                      error={errors.socials?.instagramHashtag?.message}
+                      {...register('socials.instagramHashtag')}
+                    />
+                    <FormInput
+                      label="Facebook"
+                      labelClassName={fieldLabelClassName}
+                      controlClassName={fieldControlClassName}
+                      inputClassName={fieldInputClassName}
+                      id="facebook"
+                      type="url"
+                      placeholder="https://facebook.com/yourbusiness"
+                      error={errors.socials?.facebook?.message}
+                      {...register('socials.facebook')}
+                    />
+                    <FormInput
+                      label="LinkedIn"
+                      labelClassName={fieldLabelClassName}
+                      controlClassName={fieldControlClassName}
+                      inputClassName={fieldInputClassName}
+                      id="linkedin"
+                      type="url"
+                      placeholder="https://linkedin.com/company/yourbusiness"
+                      error={errors.socials?.linkedin?.message}
+                      {...register('socials.linkedin')}
+                    />
+                    <FormInput
+                      label="X"
+                      labelClassName={fieldLabelClassName}
+                      controlClassName={fieldControlClassName}
+                      inputClassName={fieldInputClassName}
+                      id="x"
+                      type="url"
+                      placeholder="https://x.com/yourbusiness"
+                      error={errors.socials?.x?.message}
+                      {...register('socials.x')}
+                    />
+                    <FormInput
+                      label="TikTok"
+                      labelClassName={fieldLabelClassName}
+                      controlClassName={fieldControlClassName}
+                      inputClassName={fieldInputClassName}
+                      id="tiktok"
+                      type="url"
+                      placeholder="https://tiktok.com/@yourbusiness"
+                      error={errors.socials?.tiktok?.message}
+                      {...register('socials.tiktok')}
+                    />
+                  </div>
+                </div>
 
                 <TextareaInput
                   label="Message Prompt"

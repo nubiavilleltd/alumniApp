@@ -12,6 +12,7 @@
 import type {
   Business,
   CreateListingFormData,
+  Socials,
   UpdateListingFormData,
 } from '../../types/marketplace.types';
 import { generateSlug, parseImages, extractList } from '@/lib/utils/adapters';
@@ -55,22 +56,22 @@ function resolveOwnerPhoto(raw: Record<string, unknown>): string | undefined {
 
   return resolvePhotoUrl(
     raw.seller_avatar ??
-      raw.seller_photo ??
-      raw.owner_avatar ??
-      raw.owner_photo ??
-      raw.user_avatar ??
-      raw.user_photo ??
-      raw.profile_photo ??
-      raw.avatar ??
-      raw.photo ??
-      seller.avatar ??
-      seller.photo ??
-      owner.avatar ??
-      owner.photo ??
-      user.avatar ??
-      user.photo ??
-      profile.avatar ??
-      profile.photo,
+    raw.seller_photo ??
+    raw.owner_avatar ??
+    raw.owner_photo ??
+    raw.user_avatar ??
+    raw.user_photo ??
+    raw.profile_photo ??
+    raw.avatar ??
+    raw.photo ??
+    seller.avatar ??
+    seller.photo ??
+    owner.avatar ??
+    owner.photo ??
+    user.avatar ??
+    user.photo ??
+    profile.avatar ??
+    profile.photo,
   );
 }
 
@@ -122,6 +123,42 @@ function resolveListingMessagePrompt(raw: Record<string, unknown>): string | und
   return undefined;
 }
 
+
+
+// One place to change if the backend contract turns out different
+function socialsToPayloadFields(socials?: Socials): Record<string, string> {
+  if (!socials) return {};
+
+  const fields: Record<string, string> = {};
+  if (socials.instagram?.trim()) fields.social_instagram = socials.instagram.trim();
+  if (socials.instagramHashtag?.trim()) {
+    fields.social_instagram_hashtag = socials.instagramHashtag.trim().replace(/^#+/, '');
+  }
+  if (socials.facebook?.trim()) fields.social_facebook = socials.facebook.trim();
+  if (socials.linkedin?.trim()) fields.social_linkedin = socials.linkedin.trim();
+  if (socials.x?.trim()) fields.social_x = socials.x.trim();
+  if (socials.tiktok?.trim()) fields.social_tiktok = socials.tiktok.trim();
+  return fields;
+}
+
+function payloadFieldsToSocials(raw: Record<string, unknown>): Socials | undefined {
+  const socialMedia = getNestedRecord(raw.social_media);
+
+  const socials: Socials = {
+    instagram: socialMedia.instagram_url ? String(socialMedia.instagram_url).trim() : undefined,
+    instagramHashtag: socialMedia.instagram_hashtag
+      ? String(socialMedia.instagram_hashtag).trim().replace(/^#+/, '')
+      : undefined,
+    facebook: socialMedia.facebook_url ? String(socialMedia.facebook_url).trim() : undefined,
+    linkedin: socialMedia.linkedin_url ? String(socialMedia.linkedin_url).trim() : undefined,
+    x: socialMedia.twitter_url ? String(socialMedia.twitter_url).trim() : undefined,
+    tiktok: socialMedia.tiktok_url ? String(socialMedia.tiktok_url).trim() : undefined,
+  };
+
+  return Object.values(socials).some(Boolean) ? socials : undefined;
+}
+
+
 export function mapBackendListingToBusiness(raw: unknown): Business {
   const d = raw as Record<string, unknown>;
 
@@ -138,6 +175,8 @@ export function mapBackendListingToBusiness(raw: unknown): Business {
     phone: String(d.phone ?? ''),
     email: resolveListingEmail(d),
     website: d.website ? String(d.website) : undefined,
+    whatsapp: d.whatsapp ? String(d.whatsapp) : undefined,
+    socials: payloadFieldsToSocials(d),
     messagePrompt: resolveListingMessagePrompt(d),
     images: parseImages(d.images),
   };
@@ -187,6 +226,9 @@ export function mapBusinessToCreatePayload(
   };
 
   if (chapterId) base.chapter_id = chapterId;
+  Object.assign(base, socialsToPayloadFields(formData.socials));
+  if (formData.whatsapp?.trim()) base.whatsapp = formData.whatsapp.trim();
+
   if (formData.website?.trim()) base.website = formData.website.trim();
 
   if (formData.images.length > 0) {
@@ -215,6 +257,9 @@ export function mapBusinessToUpdatePayload(
     status: 'active',
     message_prompt: formData.messagePrompt?.trim() ?? '',
   };
+
+  Object.assign(base, socialsToPayloadFields(formData.socials));
+  if (formData.whatsapp?.trim()) base.whatsapp = formData.whatsapp.trim();
 
   if (formData.website?.trim()) {
     base.website = formData.website.trim();

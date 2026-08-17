@@ -15,6 +15,7 @@ export function mapLoginPayload(values: LoginFormValues) {
   return {
     identity: values.email,
     password: values.password,
+    // remember_me: values.rememberMe,
   };
 }
 

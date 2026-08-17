@@ -292,18 +292,19 @@
   width: min(82rem, calc(100% - 8rem));
   transform: translateX(-50%);
   align-items: center;
-  border-radius: 1.5rem;
-  background: #021e4480;
+  overflow: hidden;
+  border-radius: 24px;
+  background: rgba(2, 30, 68, 0.4);
   padding: 0 clamp(1rem, 1.7vw, 1.5rem);
-  box-shadow: 0 1.5rem 3rem rgba(0, 12, 31, 0.22);
-  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
 }
 
 .home-stats-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   width: 100%;
-  gap: 0;
+  gap: 20px;
 }
 
 .home-stats-card {
@@ -312,7 +313,7 @@
   min-height: 7.5rem;
   align-items: center;
   justify-content: flex-start;
-  gap: clamp(0.75rem, 1.12vw, 1rem);
+  gap: 20px;
   color: #ffffff;
   padding: 1.5rem clamp(0.9rem, 1.7vw, 1.5rem);
 }
@@ -332,6 +333,7 @@
   width: clamp(2.3rem, 3.05vw, 2.75rem);
   height: clamp(2.3rem, 2.78vw, 2.5rem);
   flex: 0 0 auto;
+  opacity: 0.96;
   filter: brightness(0) invert(1);
 }
 
@@ -354,7 +356,7 @@
   font-weight: 700;
   letter-spacing: 0;
   line-height: 1.15;
-  color: rgba(255, 255, 255, 0.74);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 @media (max-width: 1024px) {
@@ -366,6 +368,7 @@
     bottom: 1.25rem;
     min-height: auto;
     width: calc(100% - 2rem);
+    padding: 0.75rem;
   }
 
   .home-stats-grid {
@@ -386,12 +389,19 @@
   .home-stats-section {
     bottom: 1rem;
     width: min(100% - 1rem, 26rem);
-    border-radius: 1.1rem;
+    border-radius: 24px;
     padding: 0.75rem;
+  }
+
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .home-stats-section {
+      background: rgba(2, 30, 68, 0.72);
+    }
   }
 
   .home-stats-grid {
     grid-template-columns: 1fr;
+    gap: 0;
   }
 
   .home-stats-card {
@@ -1306,7 +1316,6 @@ input[type='password']::-webkit-caps-lock-indicator {
   justify-content: center;
   overflow-x: hidden;
   padding: clamp(1.5rem, 4vh, 2.75rem) var(--app-page-inline-padding);
-  background: #f8f8f7;
   color: #071116;
   /* font-family: Poppins, system-ui, sans-serif; */
 }

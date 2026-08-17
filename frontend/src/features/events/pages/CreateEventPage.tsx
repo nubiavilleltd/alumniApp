@@ -51,6 +51,7 @@ import {
   eventFormTimePickerClassName,
   eventFormUploadDropzoneClassName,
 } from '../constants/eventFormStyles';
+import { canManageEvents } from '@/shared/permissions/event.permission';
 
 type LocalRegistrationFormDraft = {
   localId: string;
@@ -94,7 +95,6 @@ const statusOptions = [
 export default function CreateEventPage() {
   const requireSignIn = useRequireSignIn();
   const navigate = useNavigate();
-  //   const currentUser = useAuthStore((state) => state.user);
   const { data: currentUser, isLoading } = useCurrentUser();
   const createEvent = useCreateEvent();
   const upsertSurveyForm = useUpsertEventSurveyForm();
@@ -265,9 +265,10 @@ export default function CreateEventPage() {
     }
   };
 
-  const isAdmin = currentUser?.role === 'admin';
 
-  if (!isAdmin) {
+  const canUserManageEvents = canManageEvents(currentUser)
+
+  if (!canUserManageEvents) {
     return (
       <>
         <SEO title="Access Denied" />

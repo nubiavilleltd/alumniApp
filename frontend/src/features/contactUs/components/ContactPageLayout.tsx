@@ -117,7 +117,7 @@ export function ContactPageLayout({
   };
 
   return (
-    <main className="min-h-[calc(100vh-5rem)] overflow-hidden bg-[#f8f6f2] font-sans text-[#071116]">
+    <main className="min-h-[calc(100vh-5rem)] overflow-hidden font-sans text-[#071116]">
       <div className="relative mx-auto grid gap-10 px-[var(--app-page-inline-padding)] pb-16 pt-10 min-[761px]:pt-11 min-[1180px]:grid-cols-[minmax(18rem,0.92fr)_minmax(0,1.38fr)] min-[1180px]:gap-[clamp(2.5rem,4vw,4.5rem)] min-[1180px]:pb-24 min-[1180px]:pt-[clamp(2.75rem,5vw,4.75rem)]">
         <section className="relative z-[2] pt-0" aria-labelledby="contact-title">
           <h1 id="contact-title" className="type-contact-hero m-0 max-w-[33rem] text-[#071116]">
