@@ -1,34 +1,37 @@
-import { AUTH_ROUTES } from '@/features/authentication/routes';
-import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
-import { SEO } from '@/shared/common/SEO';
-import { ButtonLink } from '@/shared/components/ui/Button';
-import Leadership, { MessageFromPresident } from './Leadership';
+import { AUTH_ROUTES } from "@/features/authentication/routes";
+import { useIdentityStore } from "@/features/authentication/stores/useIdentityStore";
+import { SEO } from "@/shared/common/SEO";
+import { ButtonLink } from "@/shared/components/ui/Button";
+import Leadership, { MessageFromPresident } from "./Leadership";
 
 const missionFeatures = [
   {
-    title: 'Connect with Alumnae',
-    description: 'Find and network with fellow graduates across different sets and industries.',
-    icon: '/about_people.png',
+    title: "Connect with Alumnae",
+    description:
+      "Find and network with fellow graduates across different sets and industries.",
+    icon: "/about_people.png",
   },
   {
-    title: 'Stay Updated',
-    description: 'Get the latest announcements, news, and important updates.',
-    icon: '/about_speaker.png',
+    title: "Stay Updated",
+    description: "Get the latest announcements, news, and important updates.",
+    icon: "/about_speaker.png",
   },
   {
-    title: 'Attend Events',
-    description: 'Discover and participate in reunions meetups, and annual gatherings.',
-    icon: '/about-balloon.png',
+    title: "Attend Events",
+    description:
+      "Discover and participate in reunions meetups, and annual gatherings.",
+    icon: "/about-balloon.png",
   },
   {
-    title: 'Explore Opportunities',
-    description: 'Browse the marketplace and organise collaborations.',
-    icon: '/about-magnifying_glass.png',
+    title: "Explore Opportunities",
+    description: "Browse the marketplace and organise collaborations.",
+    icon: "/about-magnifying_glass.png",
   },
   {
-    title: 'Engage with the Community',
-    description: 'Join discussions, share ideas, and contribute to initiatives.',
-    icon: '/about_message_bubble.png',
+    title: "Engage with the Community",
+    description:
+      "Join discussions, share ideas, and contribute to initiatives.",
+    icon: "/about_message_bubble.png",
   },
 ];
 
@@ -54,7 +57,7 @@ export function AboutPage() {
 
       <main className="text-[#061015]">
         <section className="relative isolate overflow-hidden">
-          <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(135deg,rgba(255,255,255,0.38)_0%,rgba(251,253,255,0.38)_43%,rgba(172,213,239,0.38)_100%)]" />
+          <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_88%_78%,rgba(0,119,204,0.34)_0%,rgba(0,119,204,0.24)_30%,rgba(0,119,204,0.10)_48%,transparent_68%),linear-gradient(145deg,rgba(255,255,255,0.42)_0%,rgba(250,253,255,0.42)_38%,rgba(213,236,250,0.44)_60%,rgba(148,207,244,0.58)_82%,rgba(94,184,239,0.50)_100%)]" />
           <div className="relative z-10 grid gap-10 px-[var(--app-page-inline-padding)] pb-[3.75rem] pt-11 sm:pt-16 min-[1200px]:min-h-[min(760px,calc(100svh-7rem))] min-[1200px]:grid-cols-[minmax(0,1fr)_clamp(360px,21vw,430px)] min-[1200px]:gap-[clamp(1.75rem,2.6vw,3rem)] min-[1200px]:py-[clamp(3rem,5.2vh,4.25rem)]">
             <div className="flex min-w-0 flex-col">
               <SectionEyebrow>Who We Are</SectionEyebrow>
@@ -107,14 +110,15 @@ export function AboutPage() {
 
             <div className="mt-8 max-w-[1770px]">
               <h2 className="type-section-title text-[#061015]">
-                To foster a strong and supportive alumni network by enabling meaningful connections,
-                encouraging collaboration, and providing access to valuable opportunities.
+                To foster a strong and supportive alumni network by enabling
+                meaningful connections, encouraging collaboration, and providing
+                access to valuable opportunities.
               </h2>
 
               <p className="type-card-body mt-7 max-w-[1850px] text-[#101820]">
-                This platform is for all alumnae; recent graduates, long-standing members, and
-                everyone in between who want to stay connected, grow professionally, and give back
-                to the community.
+                This platform is for all alumnae; recent graduates,
+                long-standing members, and everyone in between who want to stay
+                connected, grow professionally, and give back to the community.
               </p>
             </div>
 
