@@ -1,5 +1,5 @@
 import { LiveNewsItem } from '../types/livenews.types';
-import { Clock } from 'lucide-react';
+import { Clock, Dot } from 'lucide-react';
 import { formatNewsDate } from '../utils';
 import { Link } from 'react-router-dom';
 import { LIVE_NEWS_ROUTES } from '../routes';
@@ -29,15 +29,18 @@ export function FeaturedNewsCard({ item }: { item: LiveNewsItem }) {
           referrerPolicy="no-referrer"
           className="h-[240px] w-full object-cover rounded-3xl"
         />
-        <div className="flex items-center gap-2 text-gray-800">
+
+
+        <div className="mt-3 flex items-center gap-1 text-gray-800">
           <Clock size={15} />
-          <span className="text-sm">{formatNewsDate(item.publishedAt)}</span>
+          <span className="text-xs">{formatNewsDate(item.publishedAt)}</span>
+          {item.source && (
+            <span className="flex items-center text-xs">
+              <Dot /> {item.source}
+            </span>
+          )}
         </div>
-        {item.source && (
-          <span className="text-xs font-medium text-primary-500">
-            {item.source}
-          </span>
-        )}
+
         <div className="pt-3">
           <h2 className="mb-3 text-2xl font-bold text-gray-900">{item.title}</h2>
           <p className="text-gray-600 leading-relaxed">
