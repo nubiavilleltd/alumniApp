@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100;200;300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@100;200;300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -90,14 +90,14 @@
   position: relative;
   isolation: isolate;
   background-color: var(--app-page-bg-color);
-  background-image: url('/bg/alumni_bg.gif');
+  background-image: url("/bg/alumni_bg.gif");
   background-position: center top;
   background-repeat: repeat-y;
   background-size: max(100vw, 1440px) auto;
 }
 
 .alumni-page-background::before {
-  content: '';
+  content: "";
   position: fixed;
   inset: 0;
   z-index: -1;
@@ -282,6 +282,56 @@
   letter-spacing: 0;
 }
 
+.hero-word-rotator {
+  display: inline-block;
+  height: 1.08em;
+  width: max-content;
+  max-width: 100%;
+  overflow: hidden;
+  text-align: left;
+  vertical-align: bottom;
+}
+
+.hero-word-rotator__stack {
+  display: flex;
+  flex-direction: column;
+  animation: hero-word-slide 4s cubic-bezier(0.76, 0, 0.24, 1) infinite;
+}
+
+.hero-word-rotator__stack span {
+  display: block;
+  height: 1.08em;
+  line-height: 1.08em;
+  white-space: nowrap;
+  color: #ffffff;
+  background: linear-gradient(95deg, #ffffff 0%, #d9eefb 45%, #7bbbe8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@keyframes hero-word-slide {
+  0%,
+  38% {
+    transform: translateY(0);
+  }
+
+  50%,
+  88% {
+    transform: translateY(-1.08em);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-word-rotator__stack {
+    animation: none;
+  }
+}
+
 .home-stats-section {
   position: absolute;
   left: 50%;
@@ -324,7 +374,7 @@
   right: 0;
   width: 1px;
   height: 4.25rem;
-  content: '';
+  content: "";
   transform: translateY(-50%);
   background: rgba(255, 255, 255, 0.62);
 }
@@ -393,7 +443,9 @@
     padding: 0.75rem;
   }
 
-  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  @supports not (
+    (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))
+  ) {
     .home-stats-section {
       background: rgba(2, 30, 68, 0.72);
     }
@@ -453,7 +505,7 @@
 
 .home-section-kicker::before,
 .home-section-kicker::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 1.35rem;
   height: 1.35rem;
@@ -970,16 +1022,16 @@
   animation: slideIn 0.3s ease-out;
 }
 
-input[type='password']::-ms-reveal,
-input[type='password']::-ms-clear {
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
   display: none !important;
   width: 0;
   height: 0;
 }
 
-input[type='password']::-webkit-credentials-auto-fill-button,
-input[type='password']::-webkit-strong-password-auto-fill-button,
-input[type='password']::-webkit-caps-lock-indicator {
+input[type="password"]::-webkit-credentials-auto-fill-button,
+input[type="password"]::-webkit-strong-password-auto-fill-button,
+input[type="password"]::-webkit-caps-lock-indicator {
   display: none !important;
   visibility: hidden;
   pointer-events: none;
@@ -1002,7 +1054,7 @@ input[type='password']::-webkit-caps-lock-indicator {
 
 /* Contact page */
 .contact-page {
-  font-family: 'Geist', 'Inter', system-ui, sans-serif;
+  font-family: "Geist", "Inter", system-ui, sans-serif;
   min-height: calc(100vh - 5rem);
   overflow: hidden;
   background: #f8f6f2;
@@ -1025,7 +1077,8 @@ input[type='password']::-webkit-caps-lock-indicator {
   gap: clamp(2.5rem, 4vw, 4.5rem);
   /* width: min(100%, 87.5rem); */
   margin: 0 auto;
-  padding: clamp(2.75rem, 5vw, 4.75rem) var(--app-page-inline-padding) clamp(4rem, 7vw, 6rem);
+  padding: clamp(2.75rem, 5vw, 4.75rem) var(--app-page-inline-padding)
+    clamp(4rem, 7vw, 6rem);
 }
 
 .contact-intro {
@@ -1136,7 +1189,8 @@ input[type='password']::-webkit-caps-lock-indicator {
   width: 100%;
   border-radius: clamp(1.55rem, 2.5vw, 2rem);
   background: #ffffff;
-  padding: clamp(1.8rem, 3vw, 2.4rem) clamp(1.45rem, 2.7vw, 2rem) clamp(1.55rem, 2.75vw, 1.95rem);
+  padding: clamp(1.8rem, 3vw, 2.4rem) clamp(1.45rem, 2.7vw, 2rem)
+    clamp(1.55rem, 2.75vw, 1.95rem);
   box-shadow: 0 0 0 1px rgba(7, 17, 22, 0.02);
 }
 

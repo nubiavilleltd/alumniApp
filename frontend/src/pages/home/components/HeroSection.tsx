@@ -1,11 +1,12 @@
-import { useState, useEffect } from 'react';
-import { AppLink } from '@/shared/components/ui/AppLink';
-import Button from '@/shared/components/ui/Button';
-import { AUTH_ROUTES } from '@/features/authentication/routes';
-import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
-import { useHomepageContent } from '@/features/homepage/hooks/useHomepageContent';
-import { ROUTES } from '@/shared/constants/routes';
-import HomeStats from './HomeStats';
+import { useState, useEffect } from "react";
+import { AppLink } from "@/shared/components/ui/AppLink";
+import Button from "@/shared/components/ui/Button";
+import { AUTH_ROUTES } from "@/features/authentication/routes";
+import { useIdentityStore } from "@/features/authentication/stores/useIdentityStore";
+import { useHomepageContent } from "@/features/homepage/hooks/useHomepageContent";
+import { parseHeroTitleAnimation } from "@/features/homepage/utils/heroTitleAnimation";
+import { ROUTES } from "@/shared/constants/routes";
+import HomeStats from "./HomeStats";
 
 function HeroSectionSkeleton() {
   return (
@@ -35,18 +36,27 @@ function HeroSectionSkeleton() {
 function renderHeroHeading(text?: string) {
   if (!text) return null;
 
-  const trimmedText = text.trim();
-  const homeMatch = trimmedText.match(/^(.*?)(\s+home)$/i);
+  const { animatedWords, displayTitle, shouldAnimate } =
+    parseHeroTitleAnimation(text);
 
-  if (!homeMatch) {
-    return trimmedText;
+  if (!shouldAnimate) {
+    return displayTitle;
   }
+
+  const titleParts = displayTitle.match(/^(.*?)(\S+)$/);
+  if (!titleParts) return displayTitle;
+
+  const prefix = titleParts[1].trimEnd();
 
   return (
     <>
-      {homeMatch[1]}
-      <span className="bg-[linear-gradient(95deg,#ffffff_0%,#d9eefb_45%,#7bbbe8_100%)] bg-clip-text text-transparent">
-        {homeMatch[2]}
+      {prefix ? `${prefix} ` : ""}
+      <span className="hero-word-rotator" aria-label={animatedWords.join(" ")}>
+        <span className="hero-word-rotator__stack" aria-hidden="true">
+          {animatedWords.map((word) => (
+            <span key={word}>{word}</span>
+          ))}
+        </span>
       </span>
     </>
   );
@@ -59,14 +69,15 @@ export default function HeroSection() {
   const heroImages = homepageContent?.carouselImages ?? [];
   const hasHeroImages = heroImages.length > 0;
   const currentHeroImage = heroImages[current];
-  const shouldShowHeroContent = !hasHeroImages || currentHeroImage?.showGreetingMessage !== false;
+  const shouldShowHeroContent =
+    !hasHeroImages || currentHeroImage?.showGreetingMessage !== false;
   const headingText = isLoading
-    ? 'Loading homepage...'
+    ? "Loading homepage..."
     : isError
-      ? 'Homepage unavailable'
+      ? "Homepage unavailable"
       : homepageContent?.greetingTitle;
   const messageText = isError
-    ? 'Homepage content could not be loaded right now.'
+    ? "Homepage content could not be loaded right now."
     : homepageContent?.greetingMessage;
 
   useEffect(() => {
@@ -101,7 +112,7 @@ export default function HeroSection() {
           <div
             key={image.id || image.imageUrl}
             className={`absolute inset-0 z-0 transition-opacity duration-1000 ${
-              i === current ? 'opacity-100' : 'opacity-0'
+              i === current ? "opacity-100" : "opacity-0"
             }`}
           >
             <img
@@ -121,8 +132,8 @@ export default function HeroSection() {
 
       {shouldShowHeroContent ? (
         <div className="relative z-10 flex w-full justify-center px-[var(--app-page-inline-padding)]">
-          <div className="mx-auto flex max-w-[43.125rem] flex-col items-center text-center">
-            <h1 className="type-hero mb-4 text-4xl font-bold text-white md:text-[80px]">
+          <div className="mx-auto flex w-full max-w-[64rem] flex-col items-center text-center">
+            <h1 className="type-hero mb-4 whitespace-nowrap text-4xl font-bold text-white md:text-[80px]">
               {renderHeroHeading(headingText)}
             </h1>
             <p className="mb-[38px] max-w-[43.125rem] text-lg font-[500] text-white md:text-[24px]">
