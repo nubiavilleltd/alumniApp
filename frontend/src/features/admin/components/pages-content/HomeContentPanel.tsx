@@ -1168,6 +1168,7 @@ export function HomeContentPanel({
             label="Greeting Title"
             placeholder="Welcome home"
             value={greetingTitle}
+            required
             onValueChange={(value) => {
               setGreetingTitle(value);
               setSaveStatus("");
@@ -1212,6 +1213,7 @@ export function HomeContentPanel({
             id="greeting-message"
             label="Greeting Message"
             placeholder="Enter the greeting message"
+            required
             value={greetingMessage}
             onChange={(event) => {
               setGreetingMessage(event.target.value);
