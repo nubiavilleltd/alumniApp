@@ -29,6 +29,13 @@ import {
 import { useImageManager } from '@/shared/hooks/useImageManager';
 import type { Business, CreateListingFormData } from '../types/marketplace.types';
 import {
+  MAX_INSTAGRAM_HASHTAGS,
+  normalizeLegacyHashtags,
+  parseHashtags,
+  serializeHashtags,
+  validateHashtags,
+} from '../utils/hashtags';
+import {
   formatOptionalNigerianPhoneNumber,
   NIGERIAN_PHONE_PLACEHOLDER,
   parseStoredNigerianPhoneNumber,
@@ -36,40 +43,6 @@ import {
 } from '@/shared/utils/nigerianPhoneNumber';
 
 // ─── Zod Schema ────────────────────────────────────────────────────────────────
-
-
-// const postBusinessSchema = z
-//   .object({
-//     name: z
-//       .string()
-//       .min(1, 'Business name is required')
-//       .min(2, 'Business name must be at least 2 characters')
-//       .max(100, 'Business name is too long'),
-
-//     category: z.string().min(1, 'Please select a category'),
-
-//     description: z
-//       .string()
-//       .min(1, 'Description is required')
-//       .min(20, 'Please provide at least 20 characters')
-//       .max(5000, 'Description is too long'),
-
-//     location: z.string().min(1, 'Location is required').min(2, 'Please provide a valid location'),
-
-//     phone: z.string().trim().min(1, 'Phone number is required'),
-//     website: z.string().optional(),
-//     messagePrompt: z.string().max(750, 'Message prompt must be 750 characters or fewer').optional(),
-//   })
-//   .superRefine((data, ctx) => {
-//     const phoneError = validateNigerianPhoneNumber(data.phone);
-//     if (phoneError) {
-//       ctx.addIssue({ code: 'custom', path: ['phone'], message: phoneError });
-//     }
-//   });
-
-
-
-
 
 const postBusinessSchema = z
   .object({
@@ -98,11 +71,12 @@ const postBusinessSchema = z
     socials: z
       .object({
         instagram: z.string().optional(),
-        instagramHashtag: z
-          .string()
-          .max(50, 'Hashtag is too long. Max characters allowed: 50')
-          .regex(/^[A-Za-z0-9_]*$/, 'Only letters, numbers, and underscores allowed')
-          .optional(),
+        // instagramHashtag: z
+        //   .string()
+        //   .max(50, 'Hashtag is too long. Max characters allowed: 50')
+        //   .regex(/^[A-Za-z0-9_]*$/, 'Only letters, numbers, and underscores allowed')
+        //   .optional(),
+        instagramHashtag: z.string().optional(),
         facebook: z.string().optional(),
         linkedin: z.string().optional(),
         x: z.string().optional(),
@@ -121,6 +95,10 @@ const postBusinessSchema = z
         ctx.addIssue({ code: 'custom', path: ['whatsapp'], message: whatsappError });
       }
     }
+      const hashtagError = validateHashtags(data.socials?.instagramHashtag);
+    if (hashtagError) {
+      ctx.addIssue({ code: 'custom', path: ['socials', 'instagramHashtag'], message: hashtagError });
+    }
   });
 
 type PostBusinessFormValues = z.infer<typeof postBusinessSchema>;
@@ -136,11 +114,11 @@ interface PostBusinessModalProps {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 
-function normalizeHashtag(value?: string): string | undefined {
-  if (!value) return undefined;
-  const cleaned = value.trim().replace(/^#+/, '').replace(/\s+/g, '');
-  return cleaned || undefined;
-}
+// function normalizeHashtag(value?: string): string | undefined {
+//   if (!value) return undefined;
+//   const cleaned = value.trim().replace(/^#+/, '').replace(/\s+/g, '');
+//   return cleaned || undefined;
+// }
 
 function toFormState(data: Business | null | undefined): PostBusinessFormValues {
   if (!data) {
@@ -167,7 +145,8 @@ function toFormState(data: Business | null | undefined): PostBusinessFormValues 
     whatsapp: data.whatsapp ? parseStoredNigerianPhoneNumber(data.whatsapp) : '',
     socials: {
       instagram: data.socials?.instagram ?? '',
-      instagramHashtag: data.socials?.instagramHashtag ?? '',
+      // instagramHashtag: data.socials?.instagramHashtag ?? '',
+      instagramHashtag: normalizeLegacyHashtags(data.socials?.instagramHashtag) ?? '',
       facebook: data.socials?.facebook ?? '',
       linkedin: data.socials?.linkedin ?? '',
       x: data.socials?.x ?? '',
@@ -194,7 +173,9 @@ function toCreateListingFormData(
         Object.values(form.socials).some((v) => v?.trim())
         ? {
           instagram: form.socials.instagram?.trim() || undefined,
-          instagramHashtag: normalizeHashtag(form.socials.instagramHashtag),
+          // instagramHashtag: normalizeHashtag(form.socials.instagramHashtag),
+          instagramHashtag: serializeHashtags(parseHashtags(form.socials.instagramHashtag)),
+          // instagramHashtag: form.socials.instagramHashtag,
           facebook: form.socials.facebook?.trim() || undefined,
           linkedin: form.socials.linkedin?.trim() || undefined,
           x: form.socials.x?.trim() || undefined,
@@ -312,6 +293,7 @@ export function PostBusinessModal({ isOpen, onClose, editData }: PostBusinessMod
   const isLoading = createMutation.isPending || updateMutation.isPending || isSubmitting;
   const categoryOptions = categoriesList.map((cat) => ({ label: toTitleCase(cat), value: cat }));
   const categoryValue = watch('category') ?? '';
+  const hashtagCount = parseHashtags(watch('socials.instagramHashtag')).length;
 
   if (!isOpen) return null;
 
@@ -464,7 +446,7 @@ export function PostBusinessModal({ isOpen, onClose, editData }: PostBusinessMod
                       {...register('socials.instagram')}
                     />
 
-                    <FormInput
+                    {/* <FormInput
                       label="Instagram Hashtag"
                       labelClassName={fieldLabelClassName}
                       controlClassName={fieldControlClassName}
@@ -472,7 +454,18 @@ export function PostBusinessModal({ isOpen, onClose, editData }: PostBusinessMod
                       id="instagramHashtag"
                       type="text"
                       placeholder="yourbusiness"
-                      icon={<span className="select-none text-gray-400">#</span>}
+                      error={errors.socials?.instagramHashtag?.message}
+                      {...register('socials.instagramHashtag')}
+                    /> */}
+                            <FormInput
+                      label="Instagram Hashtag(s)"
+                      labelClassName={fieldLabelClassName}
+                      controlClassName={fieldControlClassName}
+                      inputClassName={fieldInputClassName}
+                      id="instagramHashtag"
+                      type="text"
+                      placeholder="urbanroots, ecofriendly, gardening"
+                      hint={`Separate with commas. ${hashtagCount}/${MAX_INSTAGRAM_HASHTAGS} used.`}
                       error={errors.socials?.instagramHashtag?.message}
                       {...register('socials.instagramHashtag')}
                     />

@@ -25,6 +25,7 @@ import {
   IconBrandWhatsapp,
   IconBrandX,
 } from '@tabler/icons-react';
+import { normalizeLegacyHashtags, parseHashtags } from '../utils/hashtags';
 import { SEO } from '@/shared/common/SEO';
 import { Button } from '@/shared/components/ui/Button';
 import { FilterDropdown } from '@/shared/components/ui/FilterDropdown';
@@ -162,14 +163,29 @@ function BusinessCard({
   const hasWhatsapp = Boolean(business.whatsapp?.trim());
 
 
+  const instagramHref = business.socials?.instagram?.trim();
+  // const hashtags = parseHashtags(business.socials?.instagramHashtag);
+    const hashtags = parseHashtags(normalizeLegacyHashtags(business.socials?.instagramHashtag));
+
+  const hasHashtagRow = hashtags.length > 0;
+
+
   const socialLinks: SocialLinkEntry[] = (
     [
-      business.socials?.instagram && {
-        key: 'instagram',
-        href: business.socials.instagram,
-        label: `${business.name} on Instagram`,
-        Icon: IconBrandInstagram,
-      },
+      // business.socials?.instagram && {
+      //   key: 'instagram',
+      //   href: business.socials.instagram,
+      //   label: `${business.name} on Instagram`,
+      //   Icon: IconBrandInstagram,
+      // },
+
+          !hasHashtagRow &&
+        instagramHref && {
+          key: 'instagram',
+          href: instagramHref,
+          label: `${business.name} on Instagram`,
+          Icon: IconBrandInstagram,
+        },
       business.socials?.facebook && {
         key: 'facebook',
         href: business.socials.facebook,
@@ -344,7 +360,7 @@ function BusinessCard({
 
         </div>
 
-        {(socialLinks.length > 0 || business.socials?.instagramHashtag) && (
+        {/* {(socialLinks.length > 0 || business.socials?.instagramHashtag) && (
           // <div className="mt-3 flex flex-wrap items-center gap-2" style={{ marginLeft: "-5px" }}>
           <div className="mt-3 flex flex-wrap items-center gap-2">
 
@@ -377,6 +393,59 @@ function BusinessCard({
               </a>
             ))}
           </div>
+        )} */}
+
+
+                {(hasHashtagRow || socialLinks.length > 0) && (
+          <div className="mt-3 flex flex-col gap-2">
+            {hasHashtagRow && (
+              <div className="flex flex-wrap items-center gap-2">
+                {instagramHref && (
+                  
+                    <a href={getWebsiteHref(instagramHref)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${business.name} on Instagram`}
+                    onClick={(event) => event.stopPropagation()}
+                    className="flex h-8 w-8 items-center justify-center rounded-full text-[#5f6873] transition-colors hover:bg-primary-50 hover:text-primary-600"
+                  >
+                    <IconBrandInstagram size={22} stroke={2} />
+                  </a>
+                )}
+                {hashtags.map((tag) => (
+                  
+                    <a key={tag}
+                    href={`https://www.instagram.com/explore/tags/${encodeURIComponent(tag)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(event) => event.stopPropagation()}
+                    className="rounded-full px-2.5 py-1 text-[0.72rem] font-bold leading-none text-white shadow-sm"
+                    style={{ background: 'linear-gradient(45deg, #f9ce34, #ee2a7b, #6228d7)' }}
+                  >
+                    #{tag}
+                  </a>
+                ))}
+              </div>
+            )}
+
+            {socialLinks.length > 0 && (
+              <div className="flex flex-wrap items-center gap-2">
+                {socialLinks.map(({ key, href, label, Icon }) => (
+                  
+                    <a key={key}
+                    href={getWebsiteHref(href)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    onClick={(event) => event.stopPropagation()}
+                    className="flex h-8 w-8 items-center justify-center rounded-full text-[#5f6873] transition-colors hover:bg-primary-50 hover:text-primary-600"
+                  >
+                    <Icon size={22} stroke={2} />
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
         )}
 
 
@@ -400,7 +469,7 @@ function BusinessCard({
           </Button>
 
 
-          {hasWhatsapp && !isOwnBusiness && (
+          {hasWhatsapp && (
 
             <a href={`https://wa.me/${business.whatsapp!.replace(/\D/g, '')}`}
               target="_blank"
