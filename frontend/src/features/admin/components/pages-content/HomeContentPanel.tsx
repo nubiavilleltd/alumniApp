@@ -4,6 +4,7 @@ import {
   useRef,
   useState,
   type ChangeEvent,
+  type ClipboardEvent,
   type DragEvent,
 } from "react";
 import {
@@ -58,6 +59,10 @@ const DEFAULT_HERO_GREETING_TITLE = "Welcome home";
 const DEFAULT_HERO_GREETING_ALTERNATE_WORD = "sisters";
 const DEFAULT_HERO_GREETING_MESSAGE =
   "A global sisterhood of Federal Government Girls' College alumnae connected by shared memories, driven by purpose, and committed to lifting the next generation.";
+
+function normalizeAlternateLastWord(value: string) {
+  return value.trim().split(/\s+/)[0] ?? "";
+}
 
 const heroCarouselImageSpecs = [
   {
@@ -676,6 +681,16 @@ export function HomeContentPanel({
     setSaveStatus("");
   };
 
+  const handleAlternateWordPaste = (
+    event: ClipboardEvent<HTMLInputElement>,
+  ) => {
+    event.preventDefault();
+    setGreetingTitleAlternateWord(
+      normalizeAlternateLastWord(event.clipboardData.getData("text")),
+    );
+    setSaveStatus("");
+  };
+
   const isSaving =
     updateHomepageText.isPending ||
     createCarouselImage.isPending ||
@@ -1171,10 +1186,16 @@ export function HomeContentPanel({
               value={greetingTitleAlternateWord}
               onValueChange={(value) => {
                 setGreetingTitleAlternateWord(
-                  value.trim().split(/\s+/)[0] ?? "",
+                  normalizeAlternateLastWord(value),
                 );
                 setSaveStatus("");
               }}
+              onKeyDown={(event) => {
+                if (/\s/.test(event.key)) {
+                  event.preventDefault();
+                }
+              }}
+              onPaste={handleAlternateWordPaste}
               className="gap-3"
               labelClassName="!text-base !font-medium !leading-none !text-[#858585]"
               controlClassName="!min-h-12 !rounded-full !border-0 !bg-cms-surface !shadow-none focus-within:!border-transparent focus-within:!outline focus-within:!outline-3 focus-within:!outline-primary-500/20"
@@ -1182,7 +1203,8 @@ export function HomeContentPanel({
             />
             <p className="px-1 text-sm font-medium leading-relaxed text-[#858585]">
               Optional: the title's last word rotates with this word. Leave
-              blank for no animation; Welcome home defaults to sisters.
+              blank for no animation; use one word only. Welcome home defaults
+              to sisters.
             </p>
           </div>
 
