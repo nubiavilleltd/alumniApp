@@ -215,6 +215,9 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
 
 export default function WelfareZonesPage() {
   const { data: zones, isLoading, isError, refetch } = useZones();
+
+  const sortedData = zones?.sort((a, b) => a.zone.localeCompare(b.zone))
+  
   const {
     data: currentUser,
     isLoading: isLoadingProfile,
@@ -275,7 +278,7 @@ export default function WelfareZonesPage() {
 
             {/* 📦 Data */}
             {showZones &&
-              zones.map((zone) => (
+              sortedData?.map((zone) => (
                 <ZoneCard key={zone.zoneId} zone={zone} currentUserEmail={currentUser?.email} />
               ))}
           </div>
