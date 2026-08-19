@@ -32,6 +32,8 @@ export type JobVacancy = {
   userId?: number | string;
   posted_by?: number | string;
   postedBy?: number | string;
+  posted_by_name?: string;
+  postedByName?: string;
   member_id?: number | string;
   flyer?: string;
   created_at?: string;
