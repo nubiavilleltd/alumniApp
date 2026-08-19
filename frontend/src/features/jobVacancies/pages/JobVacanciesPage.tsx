@@ -391,6 +391,11 @@ export function JobCard({
         <h2 className="mt-[0.7rem] text-[clamp(1.35rem,1.5vw,1.75rem)] font-semibold leading-[1.18] text-[#071116]">
           {job.title}
         </h2>
+        {job.postedByName ? (
+          <p className="mt-2 text-[0.82rem] font-semibold leading-[1.25] text-[#59626c]">
+            Posted by {job.postedByName}
+          </p>
+        ) : null}
 
         <div className="mt-[1.45rem] flex flex-wrap gap-[0.6rem]">
           {pillLabels.map((label) => (

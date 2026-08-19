@@ -10,6 +10,7 @@ import {
 export type JobVacancyViewModel = {
   id: string;
   ownerId?: string;
+  postedByName?: string;
   title: string;
   companyName: string;
   jobType: JobType;
@@ -30,15 +31,32 @@ export type JobVacancyViewModel = {
   flyer?: string;
 };
 
+function isNumericIdentifier(value: unknown) {
+  return typeof value === 'number' || (typeof value === 'string' && /^\d+$/.test(value.trim()));
+}
+
+function toOptionalString(value: unknown) {
+  return value !== null && value !== undefined && value !== '' ? String(value) : undefined;
+}
+
 export function vacancyToViewModel(vacancy: JobVacancy): JobVacancyViewModel {
-  const ownerId =
+  const directOwnerId =
     vacancy.created_by ??
     vacancy.createdBy ??
     vacancy.user_id ??
     vacancy.userId ??
-    vacancy.posted_by ??
-    vacancy.postedBy ??
     vacancy.member_id;
+  const legacyPostedById = isNumericIdentifier(vacancy.posted_by)
+    ? vacancy.posted_by
+    : isNumericIdentifier(vacancy.postedBy)
+      ? vacancy.postedBy
+      : undefined;
+  const ownerId = directOwnerId ?? legacyPostedById;
+  const postedByName =
+    vacancy.posted_by_name ??
+    vacancy.postedByName ??
+    (!isNumericIdentifier(vacancy.posted_by) ? vacancy.posted_by : undefined) ??
+    (!isNumericIdentifier(vacancy.postedBy) ? vacancy.postedBy : undefined);
   const createdAt =
     vacancy.created_at ??
     vacancy.createdAt ??
@@ -48,8 +66,8 @@ export function vacancyToViewModel(vacancy: JobVacancy): JobVacancyViewModel {
 
   return {
     id: String(vacancy.id),
-    ownerId:
-      ownerId !== null && ownerId !== undefined && ownerId !== '' ? String(ownerId) : undefined,
+    ownerId: toOptionalString(ownerId),
+    postedByName: toOptionalString(postedByName),
     title: vacancy.job_title,
     companyName: vacancy.company_name,
     jobType: vacancy.job_type,

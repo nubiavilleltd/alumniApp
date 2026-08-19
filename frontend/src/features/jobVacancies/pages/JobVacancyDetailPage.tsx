@@ -1,5 +1,13 @@
-import { BriefcaseBusiness, ExternalLink, Mail, MapPin, SearchX, Share2 } from 'lucide-react';
-import { useMemo } from 'react';
+import {
+  BriefcaseBusiness,
+  ExternalLink,
+  Mail,
+  MapPin,
+  MessageCircle,
+  SearchX,
+  Share2,
+} from 'lucide-react';
+import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { SEO } from '@/shared/common/SEO';
 import EmptyState from '@/shared/components/ui/EmptyState';
@@ -8,6 +16,10 @@ import { ROUTES } from '@/shared/constants/routes';
 import { useJobVacancies } from '../hooks/useJobVacancies';
 import type { JobVacancyViewModel } from '../api/adapters';
 import { formatJobDate, getJobPillLabels, getSalaryDisplay } from '../utils/jobVacancyDisplay';
+import { useStartDirectConversation } from '@/features/messages/hooks/useStartDirectConversation';
+
+const DEFAULT_JOB_DRAFT_MESSAGE = (job: JobVacancyViewModel) =>
+  `Hi, I'm interested in the ${job.title} vacancy at ${job.companyName}.`;
 
 function getApplicationDetails(job: JobVacancyViewModel) {
   if (job.applicationMode === 'email') {
@@ -71,6 +83,9 @@ function JobDetailSkeleton() {
 export default function JobVacancyDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { data: vacancies = [], isLoading, isError, error, refetch } = useJobVacancies();
+  const { startDirectConversation, isPending: isStartingConversation } =
+    useStartDirectConversation();
+  const [isMessagePending, setIsMessagePending] = useState(false);
 
   const job = useMemo(() => vacancies.find((vacancy) => vacancy.id === id), [id, vacancies]);
 
@@ -89,6 +104,24 @@ export default function JobVacancyDetailPage() {
     } catch {
       toast.info('Copy this page link from your browser address bar.');
     }
+  };
+
+  const handleMessagePoster = async () => {
+    if (!job?.ownerId) return;
+
+    setIsMessagePending(true);
+    await startDirectConversation({
+      participantMemberId: job.ownerId,
+      topic: `Job vacancy enquiry about ${job.title}`,
+      draftMessage: DEFAULT_JOB_DRAFT_MESSAGE(job),
+      recipientProfile: {
+        fullName: job.postedByName ?? 'Job poster',
+        headline: `${job.companyName} vacancy poster`,
+        location: job.location,
+        profileHref: `/alumni/profiles/${job.ownerId}`,
+      },
+    });
+    setIsMessagePending(false);
   };
 
   if (isLoading) return <JobDetailSkeleton />;
@@ -158,10 +191,15 @@ export default function JobVacancyDetailPage() {
                     {job.location}
                   </p>
                   <p className="text-sm font-medium text-slate-500">{postedLabel}</p>
+                  {job.postedByName ? (
+                    <p className="text-sm font-semibold text-slate-600">
+                      Posted by {job.postedByName}
+                    </p>
+                  ) : null}
                 </div>
               </div>
 
-              <div className="flex shrink-0 items-center gap-3">
+              <div className="flex shrink-0 flex-wrap items-center justify-end gap-3">
                 {application?.label ? (
                   <a
                     href={application.href}
@@ -172,6 +210,19 @@ export default function JobVacancyDetailPage() {
                     Apply
                     <application.icon className="h-4 w-4" strokeWidth={2.35} />
                   </a>
+                ) : null}
+                {job.ownerId ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      void handleMessagePoster();
+                    }}
+                    disabled={isStartingConversation || isMessagePending}
+                    className="inline-flex items-center justify-center gap-2 rounded-full border border-primary-200 px-5 py-2 text-sm font-bold text-primary-600 transition-colors hover:bg-primary-50 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    <MessageCircle className="h-4 w-4" strokeWidth={2.35} />
+                    {isStartingConversation || isMessagePending ? 'Opening' : 'Message poster'}
+                  </button>
                 ) : null}
                 <button
                   type="button"
