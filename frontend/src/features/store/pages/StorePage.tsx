@@ -45,6 +45,8 @@ export function StorePage() {
         return products.filter((product) => {
             const searchMatch = product.name
                 .toLowerCase()
+                .includes(search.toLowerCase()) || product.category.toLowerCase()
+                .includes(search.toLowerCase()) || product.price?.toString().toLowerCase()
                 .includes(search.toLowerCase());
 
             const categoryMatch =
