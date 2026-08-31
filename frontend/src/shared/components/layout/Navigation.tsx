@@ -138,6 +138,9 @@ const expandedNavHeadingClassName =
   'text-left text-[1.05rem] font-semibold leading-normal tracking-[0.03em] text-white no-underline transition-colors duration-150 hover:text-[#0077CC] focus-visible:text-white lg:text-[1.125rem]';
 const expandedNavChildClassName =
   'text-left text-sm font-semibold leading-normal text-white no-underline transition-colors duration-150 hover:text-[#0077CC] focus-visible:text-white';
+const navUnderlineClassName =
+  "relative inline-block after:pointer-events-none after:absolute after:left-0 after:-bottom-3 after:h-[4px] after:w-full after:origin-left after:scale-x-0 after:rounded-full after:bg-[#0077CC] after:content-[''] after:transition-transform after:duration-300 after:ease-out group-hover/nav-link:after:scale-x-100 group-focus-visible/nav-link:after:scale-x-100";
+const navUnderlineActiveClassName = 'after:scale-x-100';
 
 function cn(...inputs: Array<string | false | null | undefined>) {
   return twMerge(clsx(inputs));
@@ -244,13 +247,15 @@ function ExpandedNavItem({ item, onNavigate }: { item: NavItem; onNavigate: () =
           type="button"
           className={cn(
             expandedNavHeadingClassName,
-            'flex w-full cursor-pointer items-center justify-between gap-4 border-0 bg-transparent p-0',
-            active && 'text-[#0077CC] underline decoration-4 underline-offset-8',
+            'group/nav-link flex w-full cursor-pointer items-center justify-between gap-4 border-0 bg-transparent p-0',
+            active && 'text-[#0077CC]',
           )}
           aria-expanded={open}
           onClick={() => setOpen((prev) => !prev)}
         >
-          <span>{item.label}</span>
+          <span className={cn(navUnderlineClassName, active && navUnderlineActiveClassName)}>
+            {item.label}
+          </span>
           <Icon icon={open ? 'mdi:chevron-up' : 'mdi:chevron-down'} className="h-5 w-5 flex-none" />
         </button>
 
@@ -265,14 +270,16 @@ function ExpandedNavItem({ item, onNavigate }: { item: NavItem; onNavigate: () =
                 onClick={onNavigate}
                 className={cn(
                   expandedNavChildClassName,
-                  'group -mx-2 rounded-lg px-2 py-1 transition-colors hover:bg-white/10 focus-visible:bg-white/10',
+                  'group/nav-link -mx-2 rounded-lg px-2 py-1 transition-colors hover:bg-white/10 focus-visible:bg-white/10',
                   childActive && 'text-[#0077CC]',
                 )}
               >
                 <span
                   className={cn(
-                    'block text-white transition-colors group-hover:text-[#0077CC]',
-                    childActive && 'text-[#0077CC] underline decoration-2 underline-offset-8',
+                    navUnderlineClassName,
+                    'text-white transition-colors group-hover/nav-link:text-[#0077CC]',
+                    childActive && 'text-[#0077CC]',
+                    childActive && navUnderlineActiveClassName,
                   )}
                 >
                   {child.label}
@@ -302,10 +309,13 @@ function ExpandedNavItem({ item, onNavigate }: { item: NavItem; onNavigate: () =
         onClick={onNavigate}
         className={cn(
           expandedNavHeadingClassName,
-          active && 'text-[#0077CC] underline decoration-2 underline-offset-8',
+          'group/nav-link',
+          active && 'text-[#0077CC]',
         )}
       >
-        {item.label}
+        <span className={cn(navUnderlineClassName, active && navUnderlineActiveClassName)}>
+          {item.label}
+        </span>
       </AppLink>
     </div>
   );
