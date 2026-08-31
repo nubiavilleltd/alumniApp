@@ -139,7 +139,7 @@ const expandedNavHeadingClassName =
 const expandedNavChildClassName =
   'text-left text-sm font-semibold leading-normal text-white no-underline transition-colors duration-150 hover:text-[#0077CC] focus-visible:text-white';
 const navUnderlineClassName =
-  "relative inline-block after:pointer-events-none after:absolute after:left-0 after:-bottom-3 after:h-[4px] after:w-full after:origin-left after:scale-x-0 after:rounded-full after:bg-[#0077CC] after:content-[''] after:transition-transform after:duration-300 after:ease-out group-hover/nav-link:after:scale-x-100 group-focus-visible/nav-link:after:scale-x-100";
+  "relative inline-block after:pointer-events-none after:absolute after:left-0 after:-bottom-5 after:h-[4px] after:w-full after:origin-left after:scale-x-0 after:rounded-full after:bg-[#0077CC] after:content-[''] after:transition-transform after:duration-300 after:ease-out group-hover/nav-link:after:scale-x-100 group-focus-visible/nav-link:after:scale-x-100";
 const navUnderlineActiveClassName = 'after:scale-x-100';
 
 function cn(...inputs: Array<string | false | null | undefined>) {
@@ -270,7 +270,7 @@ function ExpandedNavItem({ item, onNavigate }: { item: NavItem; onNavigate: () =
                 onClick={onNavigate}
                 className={cn(
                   expandedNavChildClassName,
-                  'group/nav-link -mx-2 rounded-lg px-2 py-1 transition-colors hover:bg-white/10 focus-visible:bg-white/10',
+                  'group/nav-link -mx-2 rounded-lg px-2 py-1 transition-colors',
                   childActive && 'text-[#0077CC]',
                 )}
               >
@@ -287,8 +287,8 @@ function ExpandedNavItem({ item, onNavigate }: { item: NavItem; onNavigate: () =
                 {child.description ? (
                   <span
                     className={cn(
-                      'mt-0.5 block text-xs font-semibold leading-snug text-[#BDBDBD] transition-[color,margin] duration-200 group-hover/nav-link:mt-3 group-hover/nav-link:text-blue-100 group-focus-visible/nav-link:mt-3 lg:text-[0.78rem]',
-                      childActive && 'mt-3 text-white/80',
+                      'mt-0.5 block text-xs font-semibold leading-snug text-[#BDBDBD] transition-[color,margin] duration-200 group-hover/nav-link:mt-5 group-hover/nav-link:text-blue-100 group-focus-visible/nav-link:mt-5 lg:text-[0.78rem]',
+                      childActive && 'mt-5 text-white/80',
                     )}
                   >
                     {child.description}
