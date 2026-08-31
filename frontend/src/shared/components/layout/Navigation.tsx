@@ -287,8 +287,8 @@ function ExpandedNavItem({ item, onNavigate }: { item: NavItem; onNavigate: () =
                 {child.description ? (
                   <span
                     className={cn(
-                      'block pt-0.5 text-xs font-semibold leading-snug text-[#BDBDBD] transition-colors group-hover:text-blue-100 lg:text-[0.78rem]',
-                      childActive && 'text-white/80',
+                      'mt-0.5 block text-xs font-semibold leading-snug text-[#BDBDBD] transition-[color,margin] duration-200 group-hover/nav-link:mt-3 group-hover/nav-link:text-blue-100 group-focus-visible/nav-link:mt-3 lg:text-[0.78rem]',
+                      childActive && 'mt-3 text-white/80',
                     )}
                   >
                     {child.description}
