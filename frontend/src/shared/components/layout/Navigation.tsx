@@ -140,6 +140,8 @@ const expandedNavChildClassName =
   'text-left text-sm font-semibold leading-normal text-white no-underline transition-colors duration-150 hover:text-[#0077CC] focus-visible:text-white';
 const navUnderlineClassName =
   "relative inline-block after:pointer-events-none after:absolute after:left-0 after:-bottom-5 after:h-[4px] after:w-full after:origin-left after:scale-x-0 after:rounded-full after:bg-[#0077CC] after:content-[''] after:transition-transform after:duration-300 after:ease-out group-hover/nav-link:after:scale-x-100 group-focus-visible/nav-link:after:scale-x-100";
+const navChildBlockUnderlineClassName =
+  "relative block after:pointer-events-none after:absolute after:left-0 after:-bottom-3 after:h-[4px] after:w-[52%] after:origin-left after:scale-x-0 after:rounded-full after:bg-[#0077CC] after:content-[''] after:transition-transform after:duration-300 after:ease-out group-hover/nav-link:after:scale-x-100 group-focus-visible/nav-link:after:scale-x-100";
 const navUnderlineActiveClassName = 'after:scale-x-100';
 
 function cn(...inputs: Array<string | false | null | undefined>) {
@@ -248,18 +250,15 @@ function ExpandedNavItem({ item, onNavigate }: { item: NavItem; onNavigate: () =
           className={cn(
             expandedNavHeadingClassName,
             'group/nav-link flex w-full cursor-pointer items-center justify-between gap-4 border-0 bg-transparent p-0',
-            active && 'text-[#0077CC]',
           )}
           aria-expanded={open}
           onClick={() => setOpen((prev) => !prev)}
         >
-          <span className={cn(navUnderlineClassName, active && navUnderlineActiveClassName)}>
-            {item.label}
-          </span>
+          <span className={cn(active && 'text-[#0077CC]')}>{item.label}</span>
           <Icon icon={open ? 'mdi:chevron-up' : 'mdi:chevron-down'} className="h-5 w-5 flex-none" />
         </button>
 
-        <div className={cn('grid gap-4 overflow-hidden', !open && 'hidden')}>
+        <div className={cn('grid gap-4 overflow-hidden pb-3', !open && 'hidden')}>
           {item.children.map((child) => {
             const childActive = isPathActive(pathname, child.url);
 
@@ -276,24 +275,29 @@ function ExpandedNavItem({ item, onNavigate }: { item: NavItem; onNavigate: () =
               >
                 <span
                   className={cn(
-                    navUnderlineClassName,
-                    'text-white transition-colors group-hover/nav-link:text-[#0077CC]',
-                    childActive && 'text-[#0077CC]',
+                    child.description ? navChildBlockUnderlineClassName : navUnderlineClassName,
                     childActive && navUnderlineActiveClassName,
                   )}
                 >
-                  {child.label}
-                </span>
-                {child.description ? (
                   <span
                     className={cn(
-                      'mt-0.5 block text-xs font-semibold leading-snug text-[#BDBDBD] transition-[color,margin] duration-200 group-hover/nav-link:mt-5 group-hover/nav-link:text-blue-100 group-focus-visible/nav-link:mt-5 lg:text-[0.78rem]',
-                      childActive && 'mt-5 text-white/80',
+                      'text-white transition-colors group-hover/nav-link:text-[#0077CC]',
+                      childActive && 'text-[#0077CC]',
                     )}
                   >
-                    {child.description}
+                    {child.label}
                   </span>
-                ) : null}
+                  {child.description ? (
+                    <span
+                      className={cn(
+                        'mt-0.5 block text-xs font-semibold leading-snug text-[#BDBDBD] transition-colors duration-200 group-hover/nav-link:text-blue-100 lg:text-[0.78rem]',
+                        childActive && 'text-white/80',
+                      )}
+                    >
+                      {child.description}
+                    </span>
+                  ) : null}
+                </span>
               </AppLink>
             );
           })}
