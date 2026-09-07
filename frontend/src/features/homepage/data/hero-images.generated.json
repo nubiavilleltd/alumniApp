@@ -1,0 +1,92 @@
+{
+  "https://alumniportal.nubiaville.com/uploads/homepage/carousel/1787929606_4384.png": {
+    "updatedAt": "2026-08-31 14:41:29",
+    "originalBytes": 1691135,
+    "variants": [
+      {
+        "width": 640,
+        "height": 385,
+        "src": "/hero-optimized/1fc70eff22e8ab1e-640.webp",
+        "bytes": 25520
+      },
+      {
+        "width": 960,
+        "height": 577,
+        "src": "/hero-optimized/1fc70eff22e8ab1e-960.webp",
+        "bytes": 50560
+      },
+      {
+        "width": 1280,
+        "height": 770,
+        "src": "/hero-optimized/1fc70eff22e8ab1e-1280.webp",
+        "bytes": 84784
+      },
+      {
+        "width": 1440,
+        "height": 866,
+        "src": "/hero-optimized/1fc70eff22e8ab1e-1440.webp",
+        "bytes": 109044
+      }
+    ]
+  },
+  "https://alumniportal.nubiaville.com/uploads/homepage/carousel/1785485033_2808.png": {
+    "updatedAt": "2026-08-31 14:41:15",
+    "originalBytes": 1333838,
+    "variants": [
+      {
+        "width": 640,
+        "height": 385,
+        "src": "/hero-optimized/690d759221528ecf-640.webp",
+        "bytes": 14534
+      },
+      {
+        "width": 960,
+        "height": 577,
+        "src": "/hero-optimized/690d759221528ecf-960.webp",
+        "bytes": 29014
+      },
+      {
+        "width": 1280,
+        "height": 770,
+        "src": "/hero-optimized/690d759221528ecf-1280.webp",
+        "bytes": 46022
+      },
+      {
+        "width": 1440,
+        "height": 866,
+        "src": "/hero-optimized/690d759221528ecf-1440.webp",
+        "bytes": 55744
+      }
+    ]
+  },
+  "https://alumniportal.nubiaville.com/uploads/homepage/carousel/1785485035_6438.png": {
+    "updatedAt": "2026-08-31 14:41:29",
+    "originalBytes": 1103909,
+    "variants": [
+      {
+        "width": 640,
+        "height": 385,
+        "src": "/hero-optimized/375a46f510a416ef-640.webp",
+        "bytes": 20528
+      },
+      {
+        "width": 960,
+        "height": 577,
+        "src": "/hero-optimized/375a46f510a416ef-960.webp",
+        "bytes": 36692
+      },
+      {
+        "width": 1280,
+        "height": 770,
+        "src": "/hero-optimized/375a46f510a416ef-1280.webp",
+        "bytes": 54094
+      },
+      {
+        "width": 1440,
+        "height": 866,
+        "src": "/hero-optimized/375a46f510a416ef-1440.webp",
+        "bytes": 63490
+      }
+    ]
+  }
+}

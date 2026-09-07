@@ -2,7 +2,8 @@
 
 import { Outlet, useLocation } from 'react-router-dom';
 import { Icon } from '@iconify/react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { HeroReadinessContext } from '@/features/homepage/components/HeroReadinessContext';
 import { Navigation } from './Navigation';
 import { Footer } from './Footer';
 import { ToastContainer } from '@/shared/components/ui/Toast';
@@ -13,22 +14,26 @@ import { useAuth } from '@/features/authentication/hooks/useAuth';
 
 export function RootLayout() {
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const [homeHeroReady, setHomeHeroReady] = useState(false);
+  const markHeroReady = useCallback(() => setHomeHeroReady(true), []);
   const { pathname } = useLocation();
   const { isAuthenticated } = useAuth();
-  useCartLoader(isAuthenticated);  
+  useCartLoader(isAuthenticated);
 
   const isHomePage = pathname === ROUTES.HOME;
   const isDonationPage = pathname.includes(ROUTES.DONATION);
 
   const isRouteOrChild = (route: string): boolean =>
-  pathname === route || pathname.startsWith(`${route}/`);
+    pathname === route || pathname.startsWith(`${route}/`);
 
-
-  const isEcommerceRoute = isRouteOrChild(ROUTES.ORDER.ROOT) || isRouteOrChild(ROUTES.STORE.ROOT) || isRouteOrChild('admin/orders');
-
+  const isEcommerceRoute =
+    isRouteOrChild(ROUTES.ORDER.ROOT) ||
+    isRouteOrChild(ROUTES.STORE.ROOT) ||
+    isRouteOrChild('admin/orders');
 
   const showDonationButton = !isHomePage && !isDonationPage;
-  const showBackgroundVideo = !isEcommerceRoute;
+  const showBackgroundDecorations = !isHomePage || homeHeroReady;
+  const showBackgroundVideo = !isEcommerceRoute && showBackgroundDecorations;
 
   useEffect(() => {
     const onScroll = (): void => {
@@ -47,7 +52,9 @@ export function RootLayout() {
   };
 
   return (
-    <div className={`app-root-surface min-h-screen flex flex-col text-gray-900 font-sans antialiased ${showBackgroundVideo ? 'alumni-page-background' : ''}`}>
+    <div
+      className={`app-root-surface min-h-screen flex flex-col text-gray-900 font-sans antialiased ${showBackgroundVideo ? 'alumni-page-background' : ''}`}
+    >
       {showBackgroundVideo && (
         <video
           className="alumni-background-video"
@@ -64,7 +71,9 @@ export function RootLayout() {
       <Navigation />
 
       <main className="app-main flex-grow">
-        <Outlet />
+        <HeroReadinessContext.Provider value={markHeroReady}>
+          <Outlet />
+        </HeroReadinessContext.Provider>
       </main>
 
       <Footer />
