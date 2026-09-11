@@ -298,6 +298,7 @@ export default function WelfareZonesPage() {
 
   const sortedData = zones?.sort((a, b) => a.zone.localeCompare(b.zone))
 
+
   const {
     data: currentUser,
     isLoading: isLoadingProfile,
