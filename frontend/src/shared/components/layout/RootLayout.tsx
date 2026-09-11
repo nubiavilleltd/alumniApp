@@ -1,6 +1,6 @@
 // shared/components/layout/RootLayout.tsx
 
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import { useCallback, useEffect, useState } from 'react';
 import { HeroReadinessContext } from '@/features/homepage/components/HeroReadinessContext';
@@ -17,11 +17,14 @@ export function RootLayout() {
   const [homeHeroReady, setHomeHeroReady] = useState(false);
   const markHeroReady = useCallback(() => setHomeHeroReady(true), []);
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   useCartLoader(isAuthenticated);
 
   const isHomePage = pathname === ROUTES.HOME;
   const isDonationPage = pathname.includes(ROUTES.DONATION);
+
+  const showBackToHomeButton = !isHomePage;
 
   const isRouteOrChild = (route: string): boolean =>
     pathname === route || pathname.startsWith(`${route}/`);
@@ -51,6 +54,10 @@ export function RootLayout() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const goToHomePage = () => {
+    navigate(ROUTES.HOME);
+  };
+
   return (
     <div
       className={`app-root-surface min-h-screen flex flex-col text-gray-900 font-sans antialiased ${showBackgroundVideo ? 'alumni-page-background' : ''}`}
@@ -78,21 +85,33 @@ export function RootLayout() {
 
       <Footer />
 
-      {/* Toast notifications — rendered above everything else */}
       <ToastContainer />
 
-      {/* Back to Top */}
+      {showBackToHomeButton && (
+        <button
+          type="button"
+          onClick={goToHomePage}
+          className="fixed bottom-8 left-8 z-50 inline-flex items-center justify-center gap-2 rounded-full bg-primary-600 hover:bg-primary-700 text-white p-3 sm:px-5 sm:py-3 shadow-lg transition-all duration-300 hover:scale-105 active:scale-95"
+          aria-label="Back to home page"
+          title="Back to Home"
+        >
+          <Icon icon="mdi:home" className="w-5 h-5 sm:w-6 sm:h-6" />
+          <span className="hidden sm:inline text-sm font-semibold">
+            Back to Home
+          </span>
+        </button>
+      )}
 
+      {/* Floating Action Buttons (Bottom Right) */}
       <div className="fixed bottom-8 right-8 flex flex-col items-end gap-3 z-50">
         {showDonationButton && <DonationButton />}
 
         <button
           type="button"
-          className={`bg-primary-600 hover:bg-primary-700 text-white p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 ${
-            showBackToTop
+          className={`bg-primary-600 hover:bg-primary-700 text-white p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 ${showBackToTop
               ? 'opacity-100 translate-y-0'
               : 'opacity-0 translate-y-4 pointer-events-none'
-          }`}
+            }`}
           aria-label="Back to top"
           onClick={scrollToTop}
         >

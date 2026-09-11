@@ -139,9 +139,11 @@ export default function App() {
             <Route
               path={ROUTES.NEWS}
               element={
+                <ProtectedRoute>
                 <ErrorBoundary>
                   <AnnouncementsPage />
                 </ErrorBoundary>
+                </ProtectedRoute>
               }
             />
             <Route
