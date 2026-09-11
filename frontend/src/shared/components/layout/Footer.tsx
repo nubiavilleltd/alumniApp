@@ -194,7 +194,7 @@ export function Footer() {
 
           <div className="py-5">
             <p className="text-left text-xs font-[500] text-[#BDBDBD]">
-              © {currentYear} FGGC Owerri Alumni Association, Lagos Chapter. All rights reserved.
+              © {currentYear} FGGC Owerri Old Girls Association, Lagos Chapter. All rights reserved.
             </p>
           </div>
         </div>
