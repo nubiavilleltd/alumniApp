@@ -7,11 +7,11 @@
 import { useState } from 'react';
 import { Icon } from '@iconify/react';
 import { SEO } from '@/shared/common/SEO';
-import { DonationButton } from '@/shared/components/ui/DonationButton';
 import { useStartDirectConversation } from '@/features/messages/hooks/useStartDirectConversation';
 import { useZones } from '../hooks/useZones';
 import { WelfareZone } from '../types/welfare.type';
 import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
+import { Modal } from '@/shared/components/ui/Modal';
 
 // ─── Zone accent colours ──────────────────────────────────────────────────────
 // Matched to the Figma side-strip colours by zone label.
@@ -74,8 +74,10 @@ function ZoneCardSkeleton() {
 
 // ─── Zone card ────────────────────────────────────────────────────────────────
 function ZoneCard({ zone, currentUserEmail, zoneOfCurrentUser }: { zone: WelfareZone; currentUserEmail?: string, zoneOfCurrentUser: string }) {
+  const [showZoneWarning, setShowZoneWarning] = useState(false);
   const isTheSameUserAsCoordinator = currentUserEmail === zone?.coordinator?.email;
   const isCurrentUserZone = zoneOfCurrentUser === zone.zone
+
 
   const hasCoordinator = zone.coordinator !== null;
   const coordinatorMemberId =
@@ -88,6 +90,7 @@ function ZoneCard({ zone, currentUserEmail, zoneOfCurrentUser }: { zone: Welfare
     if (!zone.coordinator || !coordinatorMemberId) return;
 
     setIsStartingConversation(true);
+    setShowZoneWarning(false); 
 
     try {
       await startDirectConversation({
@@ -106,8 +109,21 @@ function ZoneCard({ zone, currentUserEmail, zoneOfCurrentUser }: { zone: Welfare
     }
   }
 
+    // 2. NEW HANDLER: Decide whether to warn or message directly
+  function handleSendMessageClick() {
+    if (isCurrentUserZone) {
+      // Same zone? Just message them.
+      void handleMessageCoordinator();
+    } else {
+      // Outside zone? Show the warning modal.
+      setShowZoneWarning(true);
+    }
+  }
+
   return (
-    <div className={`relative flex min-h-[179px] w-full max-w-[636px] overflow-hidden rounded-[24px] bg-white shadow-sm md:h-[179px] transition-all ${isCurrentUserZone
+
+    <>
+       <div className={`relative flex min-h-[179px] w-full max-w-[636px] overflow-hidden rounded-[24px] bg-white shadow-sm md:h-[179px] transition-all ${isCurrentUserZone
         ? 'border-2 border-green-500 shadow-md ring-2 ring-green-500/20'
         : 'border border-gray-100'
       }`}>
@@ -188,9 +204,7 @@ function ZoneCard({ zone, currentUserEmail, zoneOfCurrentUser }: { zone: Welfare
             <div className="flex flex-shrink-0 justify-end">
               <button
                 type="button"
-                onClick={() => {
-                  void handleMessageCoordinator();
-                }}
+              onClick={handleSendMessageClick} 
                 disabled={isStartingConversation || isTheSameUserAsCoordinator}
                 title={isTheSameUserAsCoordinator ? 'You cannot message yourself' : ''}
                 className="inline-flex min-h-9 min-w-[7.5rem] items-center justify-center gap-1.5 rounded-full border-2 border-primary-500 px-4 text-sm font-semibold text-primary-500 transition-colors hover:bg-primary-50 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-transparent"
@@ -213,6 +227,44 @@ function ZoneCard({ zone, currentUserEmail, zoneOfCurrentUser }: { zone: Welfare
         </div>
       </div>
     </div>
+
+      <Modal
+        isOpen={showZoneWarning}
+        onClose={() => setShowZoneWarning(false)}
+        title="You are messaging outside your zone"
+      >
+        <div className="space-y-4">
+          <div className="text-sm text-gray-600 space-y-3">
+            <p>
+              You are currently assigned to <strong className="text-gray-900">{zoneOfCurrentUser || 'no zone'}</strong>. 
+              You are about to message the coordinator for <strong className="text-gray-900">{zone.zone}</strong>.
+            </p>
+            <p className="bg-yellow-50 text-yellow-800 p-3 rounded-lg border border-yellow-100 text-xs font-medium">
+              Please confirm that your message is related to welfare in this specific area before proceeding.
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row justify-end gap-3 pt-2">
+            <button
+              type="button"
+              onClick={() => setShowZoneWarning(false)}
+              className="inline-flex min-h-9 items-center justify-center rounded-full border border-gray-300 px-4 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50"
+            >
+              Go Back
+            </button>
+            <button
+              type="button"
+              onClick={() => void handleMessageCoordinator()}
+              disabled={isStartingConversation}
+              className="inline-flex min-h-9 items-center justify-center rounded-full border-2 border-primary-500 bg-primary-500 px-4 text-sm font-semibold text-white transition-colors hover:bg-primary-600 disabled:opacity-50"
+            >
+              {isStartingConversation ? 'Opening chat...' : 'Yes, it\'s welfare-related'}
+            </button>
+          </div>
+        </div>
+      </Modal>
+    </>
+ 
   );
 }
 
