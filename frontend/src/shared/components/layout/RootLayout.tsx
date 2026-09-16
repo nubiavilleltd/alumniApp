@@ -80,7 +80,7 @@ const ROUTE_LABELS: Record<string, string> = {
   profiles: 'Profiles',
 
   // Admin
-  admin: 'Admin Dashboard',
+  admin: 'Admin',
   members: 'Members',
   items: 'Items',
   new: 'Add Item',
@@ -96,6 +96,16 @@ const ROUTE_LABELS: Record<string, string> = {
 
 // Routes with full-bleed heroes — no breadcrumbs at all
 const HERO_ROUTES = ['/volunteer', '/about', '/join-projects'];
+
+// Routes that are pure redirect stubs — visiting them immediately
+// forwards the user to a real page. These should not appear as
+// clickable crumbs when the destination is the next segment in
+// the trail, otherwise the crumb would link to the current page.
+const REDIRECT_ALIASES: Record<string, string> = {
+  '/admin': '/admin/dashboard',
+  '/user': '/user/dashboard',
+  '/alumni': '/alumni/profiles',
+};
 
 // Routes where the page will provide a dynamic breadcrumb override.
 // While we wait for the override, we show a skeleton instead of the
@@ -139,11 +149,21 @@ function buildBreadcrumbsFromPath(pathname: string): Crumb[] {
     const isId = /^\d+$/.test(segment) || /^[0-9a-f-]{8,}$/i.test(segment);
     if (isId) return;
 
+    const href = '/' + segments.slice(0, index + 1).join('/');
+
+    // Skip the segment if it's a redirect stub pointing at the
+    // immediately following segment (e.g. /admin -> /admin/dashboard).
+    // Otherwise the crumb would link to the page the user is on.
+    const redirectTarget = REDIRECT_ALIASES[href];
+    if (redirectTarget) {
+      const nextHref = '/' + segments.slice(0, index + 2).join('/');
+      if (redirectTarget === nextHref) return;
+    }
+
     const label =
       ROUTE_LABELS[segment.toLowerCase()] ??
       segment.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 
-    const href = '/' + segments.slice(0, index + 1).join('/');
     crumbs.push({ label, href });
   });
 
