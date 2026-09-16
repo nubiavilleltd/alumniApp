@@ -11,7 +11,70 @@ import { DonationButton } from '../ui/DonationButton';
 import { ROUTES } from '@/shared/constants/routes';
 import { useCartLoader } from '@/features/store/hooks/useCartLoader';
 import { useAuth } from '@/features/authentication/hooks/useAuth';
+import { Breadcrumbs } from '../ui/Breadcrumbs';
 
+// ─── Route label config ──────────────────────────────────────────────────────
+const ROUTE_LABELS: Record<string, string> = {
+  about: 'About Us',
+  contact: 'Contact Us',
+  faqs: 'FAQs',
+  welfare: 'Welfare',
+  'welfare-zones': 'Welfare Zones',
+  marketplace: 'Marketplace',
+  resources: 'Resources',
+  donation: 'Donation',
+  volunteer: 'Volunteer',
+  announcements: 'Announcements',
+  messages: 'Messages',
+  profile: 'Profile',
+  store: 'Store',
+  admin: 'Admin Dashboard',
+  orders: 'Orders',
+  items: 'Items',
+  create: 'Add Item',
+  edit: 'Edit',
+  alumni: 'Alumni',
+  profiles: 'Profiles',
+  auth: 'Authentication',
+  login: 'Login',
+  register: 'Register',
+};
+
+// 👇 Routes that have full-bleed heroes and should NOT show breadcrumbs
+const HERO_ROUTES = ['/volunteer', '/about'];
+
+// ─── Breadcrumb builder (pure, module-scope) ─────────────────────────────────
+function buildBreadcrumbsFromPath(pathname: string) {
+  const crumbs: { label: string; href?: string }[] = [
+    { label: 'Home', href: ROUTES.HOME },
+  ];
+
+  const segments = pathname.split('/').filter(Boolean);
+
+  segments.forEach((segment, index) => {
+    // Skip dynamic IDs
+    const isId = /^\d+$/.test(segment) || /^[0-9a-f-]{8,}$/i.test(segment);
+    if (isId) return;
+
+    const label =
+      ROUTE_LABELS[segment.toLowerCase()] ??
+      segment
+        .replace(/-/g, ' ')
+        .replace(/\b\w/g, (c) => c.toUpperCase());
+
+    const href = '/' + segments.slice(0, index + 1).join('/');
+    crumbs.push({ label, href });
+  });
+
+  // The last crumb is the current page — no link
+  if (crumbs.length > 1) {
+    delete crumbs[crumbs.length - 1].href;
+  }
+
+  return crumbs;
+}
+
+// ─── Component ────────────────────────────────────────────────────────────────
 export function RootLayout() {
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [homeHeroReady, setHomeHeroReady] = useState(false);
@@ -25,6 +88,11 @@ export function RootLayout() {
   const isDonationPage = pathname.includes(ROUTES.DONATION);
 
   const showBackToHomeButton = !isHomePage;
+
+  // 👇 Hide breadcrumbs on routes with full-bleed heroes
+  const hideBreadcrumbs = HERO_ROUTES.some((r) => pathname.startsWith(r));
+  const breadcrumbs =
+    !isHomePage && !hideBreadcrumbs ? buildBreadcrumbsFromPath(pathname) : [];
 
   const isRouteOrChild = (route: string): boolean =>
     pathname === route || pathname.startsWith(`${route}/`);
@@ -78,6 +146,14 @@ export function RootLayout() {
       <Navigation />
 
       <main className="app-main flex-grow">
+        {/* 👇 Auto-generated breadcrumbs */}
+        {breadcrumbs.length > 0 && (
+            <Breadcrumbs items={breadcrumbs} />
+          // <div className="container-custom pt-6">
+          //   <Breadcrumbs items={breadcrumbs} />
+          // </div>
+        )}
+
         <HeroReadinessContext.Provider value={markHeroReady}>
           <Outlet />
         </HeroReadinessContext.Provider>
@@ -91,14 +167,11 @@ export function RootLayout() {
         <button
           type="button"
           onClick={goToHomePage}
-          className="fixed bottom-8 left-8 z-50 inline-flex items-center justify-center gap-2 rounded-full bg-primary-600 hover:bg-primary-700 text-white p-3 sm:px-5 sm:py-3 shadow-lg transition-all duration-300 hover:scale-105 active:scale-95"
+          className="fixed bottom-8 left-8 z-50 inline-flex items-center justify-center gap-2 rounded-full bg-primary-600 hover:bg-primary-700 text-white p-3 shadow-lg transition-all duration-300 hover:scale-105 active:scale-95"
           aria-label="Back to home page"
           title="Back to Home"
         >
           <Icon icon="mdi:home" className="w-5 h-5 sm:w-6 sm:h-6" />
-          <span className="hidden sm:inline text-sm font-semibold">
-            Back to Home
-          </span>
         </button>
       )}
 
@@ -108,10 +181,11 @@ export function RootLayout() {
 
         <button
           type="button"
-          className={`bg-primary-600 hover:bg-primary-700 text-white p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 ${showBackToTop
+          className={`bg-primary-600 hover:bg-primary-700 text-white p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 ${
+            showBackToTop
               ? 'opacity-100 translate-y-0'
               : 'opacity-0 translate-y-4 pointer-events-none'
-            }`}
+          }`}
           aria-label="Back to top"
           onClick={scrollToTop}
         >

@@ -2,7 +2,6 @@ import { AtSign, BriefcaseBusiness, Camera, CircleAlert, Music2, UserX, Users } 
 import { useParams } from 'react-router-dom';
 import { useAlumnus } from '@/features/alumni/hooks/useAlumni';
 import { AppLink } from '@/shared/components/ui/AppLink';
-import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { SEO } from '@/shared/common/SEO';
 import { useStartDirectConversation } from '@/features/messages/hooks/useStartDirectConversation';
 import { occupationOptions } from '@/features/authentication/constants/profileOptions';
@@ -133,11 +132,7 @@ export function AlumniProfilePage() {
       ].filter(Boolean) as SocialLink[])
     : [];
 
-  const breadcrumbItems = [
-    { label: 'Home', href: ROUTES.HOME },
-    { label: 'Profiles', href: ALUMNI_ROUTES.PROFILES },
-    { label: alumnus.name || 'Profile' },
-  ];
+
 
   const handleShare = () => {
     const url = window.location.href;
@@ -175,7 +170,6 @@ export function AlumniProfilePage() {
   return (
     <>
       <SEO title={alumnus.name || 'Alumni Profile'} description={alumnus.bio} />
-      {/* <Breadcrumbs items={breadcrumbItems} /> */}
 
       <section className="section bg-[#F8F8F7] py-8">
         <div className="container-custom">
