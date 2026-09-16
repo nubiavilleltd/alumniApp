@@ -8,7 +8,6 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { SEO } from '@/shared/common/SEO';
-import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { Pagination } from '@/shared/components/ui/Pagination';
 import { useMyEvents } from '../hooks/useEventRegistration';
 import { useCancelRegistration } from '../hooks/useEvents';
@@ -72,96 +71,7 @@ function UnregisterModal({
   );
 }
 
-// ─── Event card ───────────────────────────────────────────────────────────────
 
-// function MyEventCard({
-//   event,
-//   isPast,
-//   onUnregisterClick,
-// }: {
-//   event: Event;
-//   isPast: boolean;
-//   onUnregisterClick: (e: React.MouseEvent) => void;
-// }) {
-//   const navigate = useNavigate();
-//   const isCancelled = event.status === 'cancelled';
-
-//   const dateDisplay = (() => {
-//     const d = new Date(event.startDate);
-//     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-//   })();
-
-//   return (
-//     <div
-//       onClick={() => navigate(EVENT_ROUTES.DETAIL(event.id))}
-//       className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-all cursor-pointer group"
-//     >
-//       {/* Image */}
-//       <div className="aspect-[16/9] overflow-hidden bg-gray-100 relative">
-//         {event.image ? (
-//           <img
-//             src={event.image}
-//             alt={event.title}
-//             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-//             loading="lazy"
-//           />
-//         ) : (
-//           <div className="w-full h-full flex items-center justify-center bg-primary-50">
-//             <Icon icon="mdi:calendar-month-outline" className="w-10 h-10 text-primary-200" />
-//           </div>
-//         )}
-
-//         {/* Badges overlay */}
-//         <div className="absolute top-2.5 left-2.5 flex gap-1.5 flex-wrap">
-//           {isCancelled && (
-//             <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-gray-700/90 text-white">
-//               Cancelled
-//             </span>
-//           )}
-//           {isPast && !isCancelled && (
-//             <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-600/90 text-white flex items-center gap-1">
-//               <Icon icon="mdi:check-circle" className="w-3 h-3" /> Attended
-//             </span>
-//           )}
-//         </div>
-//       </div>
-
-//       {/* Content */}
-//       <div className="p-4">
-//         <h3 className="font-bold text-gray-900 text-sm leading-snug mb-1 line-clamp-2">
-//           {event.title}
-//         </h3>
-//         <p className="text-gray-500 text-xs leading-relaxed line-clamp-2 mb-3">
-//           {event.description}
-//         </p>
-
-//         {event.location && (
-//           <p className="text-gray-400 text-xs flex items-center gap-1 mb-1 truncate">
-//             <Icon icon="mdi:map-marker-outline" className="w-3.5 h-3.5 flex-shrink-0" />
-//             <span className="truncate">{event.location}</span>
-//           </p>
-//         )}
-
-//         <p className="text-gray-400 text-xs flex items-center gap-1">
-//           <Icon icon="mdi:clock-outline" className="w-3.5 h-3.5 flex-shrink-0" />
-//           {dateDisplay}
-//         </p>
-
-//         {/* Unregister — upcoming + not cancelled only, stops propagation */}
-//         {!isPast && !isCancelled && (
-//           <button
-//             type="button"
-//             onClick={onUnregisterClick}
-//             className="mt-3 flex items-center gap-1 text-red-500 hover:text-red-600 text-xs font-medium transition-colors"
-//           >
-//             <Icon icon="mdi:close-circle-outline" className="w-3.5 h-3.5" />
-//             Unregister
-//           </button>
-//         )}
-//       </div>
-//     </div>
-//   );
-// }
 
 // ─── Event card ───────────────────────────────────────────────────────────────
 
@@ -176,20 +86,6 @@ function MyEventCard({
 }) {
   const navigate = useNavigate();
   const isCancelled = event.status === 'cancelled';
-
-  // Date range: show "startDate - endDate" or just startDate
-  // const formatEventDate = (iso: string) =>
-  //   new Date(iso).toLocaleDateString('en-US', {
-  //     month: 'short',
-  //     day: 'numeric',
-  //     year: 'numeric',
-  //   });
-
-  // const startLabel = event.startDate ? formatEventDate(event.startDate) : null;
-  // const endLabel   = event.endDate   ? formatEventDate(event.endDate)   : null;
-  // const dateRange  = startLabel && endLabel
-  //   ? `${startLabel} - ${endLabel}`
-  //   : startLabel ?? null;
 
   const dateRange = formatDateRange(event.startDate, event.endDate);
 
@@ -393,16 +289,10 @@ export function MyEventsPage() {
     }
   };
 
-  const breadcrumbItems = [
-    { label: 'Home', href: '/' },
-    { label: 'Events', href: EVENT_ROUTES.ROOT },
-    { label: 'My Registered Events' },
-  ];
 
   return (
     <>
       <SEO title="My Registered Events" description="View and manage your event registrations" />
-      {/* <Breadcrumbs items={breadcrumbItems} /> */}
 
       <div className="min-h-screen bg-[#F8F8F7]">
         <div className="container-custom py-7">

@@ -1,4 +1,3 @@
-// features/events/pages/CreateEventPage.tsx
 // MODIFIED: Added status field, improved validation, uses EVENT_ROUTES,
 // uses currentUser.id (not memberId) for backend payload.
 
@@ -6,10 +5,8 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { Icon } from '@iconify/react';
 import { SEO } from '@/shared/common/SEO';
-import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { FormInput } from '@/shared/components/ui/input/FormInput';
 import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
@@ -23,8 +20,6 @@ import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 import { useRequireSignIn } from '@/features/authentication/hooks/useRequireSignIn';
 import { DatePicker } from '@/shared/components/ui/input/DatePicker';
 import { TimePicker } from '@/shared/components/ui/input/TimePicker';
-import { ROUTES } from '@/shared/constants/routes';
-import { ADMIN_ROUTES } from '@/features/admin/routes';
 import { useUpsertEventSurveyForm } from '../hooks/useEventSurvey';
 import { eventsService } from '../services/event.service';
 import {
@@ -38,7 +33,6 @@ import {
   type EventRegistrationQuestionDraft,
 } from '../components/EventRegistrationFormBuilderModal';
 import { EventRegistrationQuestionField } from '../components/EventRegistrationQuestionField';
-import { AUTH_ROUTES } from '@/features/authentication/routes';
 import { CreateEventFormData, createEventSchema } from '../schemas/event.schema';
 import {
   eventFormDateInputClassName,
@@ -284,12 +278,7 @@ export default function CreateEventPage() {
     );
   }
 
-  const breadcrumbItems = [
-    { label: 'Home', href: ROUTES.HOME },
-    { label: 'Admin Dashboard', href: ADMIN_ROUTES.DASHBOARD },
-    { label: 'Events', href: ADMIN_ROUTES.EVENTS },
-    { label: 'Create Event' },
-  ];
+
 
   const activeRegistrationFormDraft =
     activeRegistrationFormId === null
@@ -300,7 +289,6 @@ export default function CreateEventPage() {
   return (
     <>
       <SEO title="Create Event" description="Create a new event" />
-      <Breadcrumbs items={breadcrumbItems} />
 
       <section className="section bg-[#F8F8F7]">
         <div className="container-custom">

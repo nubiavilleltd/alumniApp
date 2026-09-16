@@ -32,7 +32,6 @@ import {
 } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { SEO } from '@/shared/common/SEO';
-import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import { toast } from '@/shared/components/ui/Toast';
 import {
@@ -99,7 +98,6 @@ import {
 } from './messagesPage.utils';
 import { renderIcon } from '@/shared/utils/renderIcon';
 
-const breadcrumbItems = [{ label: 'Home', href: '/' }, { label: 'Messages' }];
 const MIN_VOICE_NOTE_DURATION_MS = 600;
 const RECORDING_TIMER_INTERVAL_MS = 200;
 
@@ -1263,9 +1261,7 @@ export function MessagesPage() {
         title="Messages"
         description="Stay in touch with alumnae conversations and follow-ups."
       />
-      {/* <div className={isMobileThreadOpen ? 'hidden' : 'lg:hidden'}>
-        <Breadcrumbs items={breadcrumbItems} />
-      </div> */}
+
 
       {/* Keep the page shell transparent so the shared animated background remains visible. */}
       <section

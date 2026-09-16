@@ -11,57 +11,137 @@ import { DonationButton } from '../ui/DonationButton';
 import { ROUTES } from '@/shared/constants/routes';
 import { useCartLoader } from '@/features/store/hooks/useCartLoader';
 import { useAuth } from '@/features/authentication/hooks/useAuth';
-import { Breadcrumbs } from '../ui/Breadcrumbs';
+import { Breadcrumbs, type Crumb } from '../ui/Breadcrumbs';
 import { useBreakpoint } from '@/shared/hooks/useBreakpoint';
+import {
+  BreadcrumbProvider,
+  useBreadcrumbContext,
+} from '@/shared/contexts/BreadcrumbContext';
 
-// ─── Route label config ──────────────────────────────────────────────────────
+// ─── Route label config ───────────────────────────────────────────────────────
+
 const ROUTE_LABELS: Record<string, string> = {
+  // Top-level / public
   about: 'About Us',
   contact: 'Contact Us',
   faqs: 'FAQs',
   welfare: 'Welfare',
   'welfare-zones': 'Welfare Zones',
+  'welfare-committee-contact': 'Welfare Committee Contact',
   marketplace: 'Marketplace',
+  'my-business': 'My Business',
   resources: 'Resources',
   donation: 'Donation',
   volunteer: 'Volunteer',
+  'join-projects': 'Join Projects',
+  'social-media-feed': 'Social Media Feed',
+  leadership: 'Leadership',
   announcements: 'Announcements',
   messages: 'Messages',
   profile: 'Profile',
   store: 'Store',
-  admin: 'Admin Dashboard',
-  orders: 'Orders',
-  items: 'Items',
-  create: 'Add Item',
+
+  // News / content
+  news: 'News',
+  'live-news': 'Live News',
+  blog: 'Blog',
+  blogs: 'Blogs',
+  'blog-coming-soon': 'Blog',
+
+  // Events
+  events: 'Events',
+  'my-events': 'My Events',
+  create: 'Create Event',
   edit: 'Edit',
+  attendees: 'Attendees',
+
+  // Projects
+  projects: 'Projects',
+
+  // Jobs
+  'job-vacancies': 'Job Vacancies',
+  'my-job-posts': 'My Posts',
+
+  // Store / orders
+  product: 'Product',
+  cart: 'Cart',
+  checkout: 'Checkout',
+  orders: 'Orders',
+  order: 'Order',
+
+  // User
+  user: 'My Account',
+  dashboard: 'Dashboard',
+  'edit-profile': 'Edit Profile',
+  settings: 'Settings',
+
+  // Alumni
   alumni: 'Alumni',
   profiles: 'Profiles',
+
+  // Admin
+  admin: 'Admin Dashboard',
+  members: 'Members',
+  items: 'Items',
+  new: 'Add Item',
+  registrations: 'Registrations',
+  'pages-content': 'Pages Content',
+  'event-registrations': 'Registrations',
+
+  // Auth
   auth: 'Authentication',
   login: 'Login',
   register: 'Register',
 };
 
-// 👇 Routes that have full-bleed heroes and should NOT show breadcrumbs
-const HERO_ROUTES = ['/volunteer', '/about'];
+// Routes with full-bleed heroes — no breadcrumbs at all
+const HERO_ROUTES = ['/volunteer', '/about', '/join-projects'];
 
-// ─── Breadcrumb builder (pure, module-scope) ─────────────────────────────────
-function buildBreadcrumbsFromPath(pathname: string) {
-  const crumbs: { label: string; href?: string }[] = [
-    { label: 'Home', href: ROUTES.HOME },
-  ];
+// Routes where the page will provide a dynamic breadcrumb override.
+// While we wait for the override, we show a skeleton instead of the
+// auto trail, to avoid a flash of incorrect breadcrumb.
+// const DYNAMIC_BREADCRUMB_ROUTES: RegExp[] = [
+//   /^\/admin\/events\/[^/]+$/,
+//   /^\/admin\/orders\/[^/]+$/,
+//   /^\/admin\/projects\/[^/]+$/,
+//   /^\/events\/[^/]+\/attendees$/,
+//   /^\/events\/[^/]+\/edit$/,
+//   /^\/projects\/[^/]+$/,
+//   /^\/news\/blog\/[^/]+$/,
+//   /^\/news\/[^/]+$/,
+//   /^\/live-news\/[^/]+$/,
+//   /^\/job-vacancies\/[^/]+$/,
+//   /^\/alumni\/profiles\/[^/]+$/,
+//   /^\/orders\/[^/]+$/,
+// ];
 
+// Routes that should show a loading skeleton while waiting for their
+// dynamic breadcrumb override. Optional — when empty, dynamic routes
+// briefly show the auto-generated trail before the override kicks in.
+// Empty is safe: the worst case is a subtle text swap on slow
+// connections. Populate only if that swap becomes a visible problem
+// in production, and keep it in sync with useBreadcrumbOverride
+// callers — a missing pattern here means the skeleton spins forever.
+const DYNAMIC_BREADCRUMB_ROUTES: RegExp[] = [];
+
+function isDynamicBreadcrumbRoute(pathname: string): boolean {
+  return DYNAMIC_BREADCRUMB_ROUTES.some((pattern) => pattern.test(pathname));
+}
+
+// ─── Auto breadcrumb builder (pure, module-scope) ─────────────────────────────
+
+function buildBreadcrumbsFromPath(pathname: string): Crumb[] {
+  const crumbs: Crumb[] = [{ label: 'Home', href: ROUTES.HOME }];
   const segments = pathname.split('/').filter(Boolean);
 
   segments.forEach((segment, index) => {
-    // Skip dynamic IDs
+    // Skip dynamic IDs (numeric or UUID-like)
     const isId = /^\d+$/.test(segment) || /^[0-9a-f-]{8,}$/i.test(segment);
     if (isId) return;
 
     const label =
       ROUTE_LABELS[segment.toLowerCase()] ??
-      segment
-        .replace(/-/g, ' ')
-        .replace(/\b\w/g, (c) => c.toUpperCase());
+      segment.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 
     const href = '/' + segments.slice(0, index + 1).join('/');
     crumbs.push({ label, href });
@@ -75,17 +155,55 @@ function buildBreadcrumbsFromPath(pathname: string) {
   return crumbs;
 }
 
-function collapseBreadcrumbsForMobile(
-  crumbs: { label: string; href?: string }[]
-) {
-  if (crumbs.length <= 2) return crumbs; // Nothing to collapse
+function collapseBreadcrumbsForMobile(crumbs: Crumb[]): Crumb[] {
+  if (crumbs.length <= 2) return crumbs;
 
   const first = crumbs[0];
   const last = crumbs[crumbs.length - 1];
   return [first, { label: '…' }, last];
 }
 
-// ─── Component ────────────────────────────────────────────────────────────────
+// ─── Breadcrumb display (consumer of the override context) ────────────────────
+
+function BreadcrumbDisplay({ autoItems }: { autoItems: Crumb[] }) {
+  const { state } = useBreadcrumbContext();
+  const { isMobile } = useBreakpoint();
+  const { pathname } = useLocation();
+
+  const expectsDynamic = isDynamicBreadcrumbRoute(pathname);
+  const hasItems = state.pathname === pathname && state.items !== null;
+
+  // Waiting for the dynamic page to provide real items → skeleton
+  if (expectsDynamic && !hasItems) {
+    return <BreadcrumbsSkeleton />;
+  }
+
+  const raw = hasItems ? state.items! : autoItems;
+  const items = isMobile ? collapseBreadcrumbsForMobile(raw) : raw;
+
+  if (items.length === 0) return null;
+
+  return <Breadcrumbs items={items} />;
+}
+
+// ─── Breadcrumb skeleton (shown while waiting for a dynamic override) ─────────
+
+function BreadcrumbsSkeleton() {
+  return (
+    <nav className="bg-gray-50 py-3" aria-hidden="true">
+      <div className="container-custom">
+        <div className="flex items-center gap-2">
+          <span className="h-4 w-12 bg-gray-200 rounded animate-pulse" />
+          <span className="text-gray-300">›</span>
+          <span className="h-4 w-20 bg-gray-200 rounded animate-pulse" />
+        </div>
+      </div>
+    </nav>
+  );
+}
+
+// ─── RootLayout ───────────────────────────────────────────────────────────────
+
 export function RootLayout() {
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [homeHeroReady, setHomeHeroReady] = useState(false);
@@ -93,7 +211,6 @@ export function RootLayout() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
-  const { isMobile } = useBreakpoint();
   useCartLoader(isAuthenticated);
 
   const isHomePage = pathname === ROUTES.HOME;
@@ -101,17 +218,9 @@ export function RootLayout() {
 
   const showBackToHomeButton = !isHomePage;
 
-  // 👇 Hide breadcrumbs on routes with full-bleed heroes
   const hideBreadcrumbs = HERO_ROUTES.some((r) => pathname.startsWith(r));
-  // const breadcrumbs =
-  //   !isHomePage && !hideBreadcrumbs ? buildBreadcrumbsFromPath(pathname) : [];
-
-   const rawBreadcrumbs =
+  const autoBreadcrumbs =
     !isHomePage && !hideBreadcrumbs ? buildBreadcrumbsFromPath(pathname) : [];
-
-  const breadcrumbs = isMobile
-    ? collapseBreadcrumbsForMobile(rawBreadcrumbs)
-    : rawBreadcrumbs;
 
   const isRouteOrChild = (route: string): boolean =>
     pathname === route || pathname.startsWith(`${route}/`);
@@ -164,19 +273,15 @@ export function RootLayout() {
 
       <Navigation />
 
-      <main className="app-main flex-grow">
-        {/* 👇 Auto-generated breadcrumbs */}
-        {breadcrumbs.length > 0 && (
-            <Breadcrumbs items={breadcrumbs} />
-          // <div className="container-custom pt-6">
-          //   <Breadcrumbs items={breadcrumbs} />
-          // </div>
-        )}
+      <BreadcrumbProvider>
+        <main className="app-main flex-grow">
+          <BreadcrumbDisplay autoItems={autoBreadcrumbs} />
 
-        <HeroReadinessContext.Provider value={markHeroReady}>
-          <Outlet />
-        </HeroReadinessContext.Provider>
-      </main>
+          <HeroReadinessContext.Provider value={markHeroReady}>
+            <Outlet />
+          </HeroReadinessContext.Provider>
+        </main>
+      </BreadcrumbProvider>
 
       <Footer />
 

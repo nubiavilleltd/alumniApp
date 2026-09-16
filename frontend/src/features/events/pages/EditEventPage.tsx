@@ -6,11 +6,9 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { Icon } from '@iconify/react';
 import { Trash2 } from 'lucide-react';
 import { SEO } from '@/shared/common/SEO';
-import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { FormInput } from '@/shared/components/ui/input/FormInput';
 import { TextareaInput } from '@/shared/components/ui/TextAreaInput';
 import { SelectInput } from '@/shared/components/ui/SelectInput';
@@ -24,8 +22,6 @@ import { EVENT_ROUTES } from '../routes';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 import { TimePicker } from '@/shared/components/ui/input/TimePicker';
 import { DatePicker } from '@/shared/components/ui/input/DatePicker';
-import { ROUTES } from '@/shared/constants/routes';
-import { ADMIN_ROUTES } from '@/features/admin/routes';
 import {
   UpdateEventFormData,
   updateEventSchema,
@@ -43,7 +39,6 @@ import {
 } from '../components/EventRegistrationFormBuilderModal';
 import { EventRegistrationQuestionField } from '../components/EventRegistrationQuestionField';
 import {
-  clearStoredEventSurveyAvailability,
   EVENT_SURVEY_TAG,
   setStoredEventSurveyAvailability,
 } from '../lib/eventSurveyAvailability';
@@ -62,6 +57,9 @@ import {
 } from '../constants/eventFormStyles';
 import { Pencil } from 'lucide-react';
 import { canManageEvents } from '@/shared/permissions/event.permission';
+import { useBreadcrumbOverride } from '@/shared/contexts/BreadcrumbContext';
+import { ROUTES } from '@/shared/constants/routes';
+import { ADMIN_ROUTES } from '@/features/admin/routes';
 
 type LocalRegistrationFormDraft = {
   localId: string;
@@ -134,16 +132,6 @@ export default function EditEventPage() {
 
   const schema = isPast ? updatePastEventSchema : updateEventSchema;
 
-  // const {
-  //   register,
-  //   handleSubmit,
-  //   setValue,
-  //   watch,
-  //   reset,
-  //   trigger,
-  //   formState: { errors },
-  // } = useForm<UpdateEventFormData>({
-  //   resolver: zodResolver(updateEventSchema) as any,
   const {
     register,
     handleSubmit,
@@ -394,6 +382,21 @@ export default function EditEventPage() {
 
   const canUserManageEvents = canManageEvents(currentUser)
 
+    useBreadcrumbOverride(
+    id && event
+      ? [
+          { label: 'Home', href: ROUTES.HOME },
+          { label: 'Admin Dashboard', href: ADMIN_ROUTES.DASHBOARD },
+          { label: 'Events', href: ADMIN_ROUTES.EVENTS },
+          {
+            label: event.title,
+            href: EVENT_ROUTES.DETAIL(id),
+          },
+          { label: 'Edit' },
+        ]
+      : null
+  );
+
   // ── Access guard ──────────────────────────────────────────────────────────
 
   if (!canUserManageEvents) {
@@ -415,16 +418,10 @@ export default function EditEventPage() {
   // ── Loading ───────────────────────────────────────────────────────────────
 
   if (isLoading) {
-    const breadcrumbItems = [
-      { label: 'Home', href: ROUTES.HOME },
-      { label: 'Admin Dashboard', href: ADMIN_ROUTES.DASHBOARD },
-      { label: 'Events', href: ADMIN_ROUTES.EVENTS },
-      { label: 'Edit Event' },
-    ];
+
     return (
       <>
         <SEO title="Loading..." />
-        <Breadcrumbs items={breadcrumbItems} />
         <section className="section">
           <div className="container-custom max-w-3xl">
             <div className="card p-6 animate-pulse space-y-4">
@@ -453,18 +450,11 @@ export default function EditEventPage() {
     );
   }
 
-  const breadcrumbItems = [
-    { label: 'Home', href: ROUTES.HOME },
-    { label: 'Admin Dashboard', href: ADMIN_ROUTES.DASHBOARD },
-    { label: 'Events', href: ADMIN_ROUTES.EVENTS },
-    { label: event.title, href: ADMIN_ROUTES.EVENT_DETAIL(event.id) },
-    { label: 'Edit' },
-  ];
+
 
   return (
     <>
       <SEO title={`Edit — ${event.title}`} description="Edit event details" />
-      <Breadcrumbs items={breadcrumbItems} />
 
       <section className="section bg-[#F8F8F7]">
         <div className="container-custom ">

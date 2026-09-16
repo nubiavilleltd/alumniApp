@@ -23,14 +23,11 @@ import {
 } from '@tabler/icons-react';
 
 import { SEO } from '@/shared/common/SEO';
-import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import { Pagination } from '@/shared/components/ui/Pagination';
 import { PostBusinessModal } from '../components/PostYourBusinessModal';
 import { useMyBusinesses, useDeleteListing } from '../hooks/useMarketplace';
 import type { Business } from '../types/marketplace.types';
-import { MARKETPLACE_ROUTES } from '../routes';
-import { ROUTES } from '@/shared/constants/routes';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 import { toTitleCase } from '@/shared/utils/textHelpers';
 import { normalizeLegacyHashtags, parseHashtags } from '../utils/hashtags';
@@ -114,14 +111,14 @@ function MyBusinessCard({
   const hasWebsite = Boolean(business.website?.trim());
 
 
-    const hasWhatsapp = Boolean(business.whatsapp?.trim());
+  const hasWhatsapp = Boolean(business.whatsapp?.trim());
 
-    
-      const instagramHref = business.socials?.instagram?.trim();
-      // const hashtags = parseHashtags(business.socials?.instagramHashtag);
-        const hashtags = parseHashtags(normalizeLegacyHashtags(business.socials?.instagramHashtag));
-    
-      const hasHashtagRow = hashtags.length > 0;
+
+  const instagramHref = business.socials?.instagram?.trim();
+  // const hashtags = parseHashtags(business.socials?.instagramHashtag);
+  const hashtags = parseHashtags(normalizeLegacyHashtags(business.socials?.instagramHashtag));
+
+  const hasHashtagRow = hashtags.length > 0;
 
   const socialLinks: SocialLinkEntry[] = (
     [
@@ -132,14 +129,14 @@ function MyBusinessCard({
       //   Icon: IconBrandInstagram,
       // },
 
-      
-          !hasHashtagRow &&
-        instagramHref && {
-          key: 'instagram',
-          href: instagramHref,
-          label: `${business.name} on Instagram`,
-          Icon: IconBrandInstagram,
-        },
+
+      !hasHashtagRow &&
+      instagramHref && {
+        key: 'instagram',
+        href: instagramHref,
+        label: `${business.name} on Instagram`,
+        Icon: IconBrandInstagram,
+      },
       business.socials?.facebook && {
         key: 'facebook',
         href: business.socials.facebook,
@@ -222,9 +219,8 @@ function MyBusinessCard({
             {business.images.map((_, i) => (
               <span
                 key={i}
-                className={`block rounded-full transition-all duration-200 ${
-                  i === imgIndex ? 'h-1.5 w-3 bg-white' : 'h-1.5 w-1.5 bg-white/55'
-                }`}
+                className={`block rounded-full transition-all duration-200 ${i === imgIndex ? 'h-1.5 w-3 bg-white' : 'h-1.5 w-1.5 bg-white/55'
+                  }`}
               />
             ))}
           </div>
@@ -273,7 +269,7 @@ function MyBusinessCard({
             </a>
           )}
 
-               {hasWhatsapp && (
+          {hasWhatsapp && (
             <div className="flex items-start gap-3">
               <IconBrandWhatsapp size={20} stroke={2.6} className="mt-0.5 flex-shrink-0" />
               <span className="min-w-0 break-words">{business.whatsapp}</span>
@@ -298,93 +294,64 @@ function MyBusinessCard({
           )}
         </div>
 
-            {/* {(socialLinks.length > 0 || business.socials?.instagramHashtag) && (
-          <div className="flex flex-wrap items-center gap-2">
-            {business.socials?.instagramHashtag && (
-              
-                <a href={`https://www.instagram.com/explore/tags/${encodeURIComponent(
-                  business.socials.instagramHashtag.replace(/^#+/, ''),
-                )}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-full px-2.5 py-1 text-[0.72rem] font-bold leading-none text-white shadow-sm"
-                style={{ background: 'linear-gradient(45deg, #f9ce34, #ee2a7b, #6228d7)' }}
-              >
-                #{business.socials.instagramHashtag.replace(/^#+/, '')}
-              </a>
-            )}
-            {socialLinks.map(({ key, href, label, Icon }) => (
-              
-                <a key={key}
-                href={getWebsiteHref(href)}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={label}
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-50 text-accent-500 transition-colors hover:bg-primary-50 hover:text-primary-600"
-              >
-                <Icon size={22} stroke={2} />
-              </a>
-            ))}
-          </div>
-        )} */}
 
 
 
-                  {(hasHashtagRow || socialLinks.length > 0) && (
-                  <div className="mt-3 flex flex-col gap-2">
-                    {hasHashtagRow && (
-                      <div className="flex flex-wrap items-center gap-2">
-                        {instagramHref && (
-                          
-                            <a href={getWebsiteHref(instagramHref)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label={`${business.name} on Instagram`}
-                            onClick={(event) => event.stopPropagation()}
-                            className="flex h-8 w-8 items-center justify-center rounded-full text-[#5f6873] transition-colors hover:bg-primary-50 hover:text-primary-600"
-                          >
-                            <IconBrandInstagram size={22} stroke={2} />
-                          </a>
-                        )}
-                        {hashtags.map((tag) => (
-                          
-                            <a key={tag}
-                            href={`https://www.instagram.com/explore/tags/${encodeURIComponent(tag)}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={(event) => event.stopPropagation()}
-                            className="rounded-full px-2.5 py-1 text-[0.72rem] font-bold leading-none text-white shadow-sm"
-                            style={{ background: 'linear-gradient(45deg, #f9ce34, #ee2a7b, #6228d7)' }}
-                          >
-                            #{tag}
-                          </a>
-                        ))}
-                      </div>
-                    )}
-        
-                    {socialLinks.length > 0 && (
-                      <div className="flex flex-wrap items-center gap-2">
-                        {socialLinks.map(({ key, href, label, Icon }) => (
-                          
-                            <a key={key}
-                            href={getWebsiteHref(href)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label={label}
-                            onClick={(event) => event.stopPropagation()}
-                            className="flex h-8 w-8 items-center justify-center rounded-full text-[#5f6873] transition-colors hover:bg-primary-50 hover:text-primary-600"
-                          >
-                            <Icon size={22} stroke={2} />
-                          </a>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+        {(hasHashtagRow || socialLinks.length > 0) && (
+          <div className="mt-3 flex flex-col gap-2">
+            {hasHashtagRow && (
+              <div className="flex flex-wrap items-center gap-2">
+                {instagramHref && (
+
+                  <a href={getWebsiteHref(instagramHref)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${business.name} on Instagram`}
+                    onClick={(event) => event.stopPropagation()}
+                    className="flex h-8 w-8 items-center justify-center rounded-full text-[#5f6873] transition-colors hover:bg-primary-50 hover:text-primary-600"
+                  >
+                    <IconBrandInstagram size={22} stroke={2} />
+                  </a>
                 )}
-        
+                {hashtags.map((tag) => (
+
+                  <a key={tag}
+                    href={`https://www.instagram.com/explore/tags/${encodeURIComponent(tag)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(event) => event.stopPropagation()}
+                    className="rounded-full px-2.5 py-1 text-[0.72rem] font-bold leading-none text-white shadow-sm"
+                    style={{ background: 'linear-gradient(45deg, #f9ce34, #ee2a7b, #6228d7)' }}
+                  >
+                    #{tag}
+                  </a>
+                ))}
+              </div>
+            )}
+
+            {socialLinks.length > 0 && (
+              <div className="flex flex-wrap items-center gap-2">
+                {socialLinks.map(({ key, href, label, Icon }) => (
+
+                  <a key={key}
+                    href={getWebsiteHref(href)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    onClick={(event) => event.stopPropagation()}
+                    className="flex h-8 w-8 items-center justify-center rounded-full text-[#5f6873] transition-colors hover:bg-primary-50 hover:text-primary-600"
+                  >
+                    <Icon size={22} stroke={2} />
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
 
-          <div className="mt-auto grid grid-cols-2 items-start gap-2.5 pt-2">
+
+        <div className="mt-auto grid grid-cols-2 items-start gap-2.5 pt-2">
           <button
             type="button"
             onClick={() => onEdit(business)}
@@ -482,11 +449,7 @@ export default function MyBusinessPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const breadcrumbItems = [
-    { label: 'Home', href: ROUTES.HOME },
-    { label: 'Marketplace', href: MARKETPLACE_ROUTES.ROOT },
-    { label: 'My Marketplace' },
-  ];
+
 
   return (
     <>
@@ -494,7 +457,6 @@ export default function MyBusinessPage() {
         title="My Market"
         description="Manage your business listings on the Alumnae Marketplace."
       />
-      <Breadcrumbs items={breadcrumbItems} />
 
       <section className="section bg-[#F8F8F7]">
         <div className="container-custom">

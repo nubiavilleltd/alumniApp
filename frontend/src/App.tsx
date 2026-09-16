@@ -411,6 +411,8 @@ export default function App() {
             />
 
             {/* User */}
+
+            <Route path="/user" element={<Navigate to={ROUTES.USER.DASHBOARD} replace />} />
             <Route
               path={ROUTES.USER.DASHBOARD}
               element={

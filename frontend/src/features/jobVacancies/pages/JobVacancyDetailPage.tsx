@@ -13,6 +13,7 @@ import { SEO } from '@/shared/common/SEO';
 import EmptyState from '@/shared/components/ui/EmptyState';
 import { toast } from '@/shared/components/ui/Toast';
 import { ROUTES } from '@/shared/constants/routes';
+import { useBreadcrumbOverride } from '@/shared/contexts/BreadcrumbContext';
 import { useJobVacancies } from '../hooks/useJobVacancies';
 import type { JobVacancyViewModel } from '../api/adapters';
 import { formatJobDate, getJobPillLabels, getSalaryDisplay } from '../utils/jobVacancyDisplay';
@@ -88,6 +89,15 @@ export default function JobVacancyDetailPage() {
   const [isMessagePending, setIsMessagePending] = useState(false);
 
   const job = useMemo(() => vacancies.find((vacancy) => vacancy.id === id), [id, vacancies]);
+    useBreadcrumbOverride(
+    job
+      ? [
+          { label: 'Home', href: ROUTES.HOME },
+          { label: 'Job Vacancies', href: ROUTES.JOB_VACANCIES },
+          { label: job.title },
+        ]
+      : null
+  );
 
   const pillLabels = job ? getJobPillLabels(job) : [];
   const application = job ? getApplicationDetails(job) : null;

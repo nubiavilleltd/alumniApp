@@ -7,6 +7,7 @@ import { useStartDirectConversation } from '@/features/messages/hooks/useStartDi
 import { occupationOptions } from '@/features/authentication/constants/profileOptions';
 import { ALUMNI_ROUTES } from '../routes';
 import { ROUTES } from '@/shared/constants/routes';
+import { useBreadcrumbOverride } from '@/shared/contexts/BreadcrumbContext';
 import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 import { ProfileCard, type SocialLink } from '@/features/user/components/ui/ProfileCard';
 import { ProfileInfoPanel } from '@/features/user/components/ui/ProfileInfoPanel';
@@ -65,6 +66,16 @@ export function AlumniProfilePage() {
   const { startDirectConversation, isPending: isStartingConversation } =
     useStartDirectConversation();
   const { data: alumnus, isLoading, error } = useAlumnus(slug);
+
+    useBreadcrumbOverride(
+    alumnus
+      ? [
+          { label: 'Home', href: ROUTES.HOME },
+          { label: 'Alumni', href: ALUMNI_ROUTES.PROFILES },
+          { label: alumnus.name },
+        ]
+      : null
+  );
 
   if (isLoading || isLoadingProfile) {
     return (

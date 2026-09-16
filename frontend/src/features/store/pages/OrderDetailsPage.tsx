@@ -1,5 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { SEO } from '@/shared/common/SEO';
+import { useBreadcrumbOverride } from '@/shared/contexts/BreadcrumbContext';
+import { ROUTES } from '@/shared/constants/routes';
 import ContainerBackground from '@/shared/containers/ContainerBackground';
 import { useOrders } from '../hooks/useOrders';
 import { useProducts } from '../hooks/useProducts';
@@ -20,6 +22,16 @@ export default function OrderDetailsPage() {
     const openForAdd = useProductModalStore((s) => s.openForAdd);
 
     const order = orders.find((o) => o.orderNumber === id);
+
+       useBreadcrumbOverride(
+        order
+            ? [
+                  { label: 'Home', href: ROUTES.HOME },
+                  { label: 'Orders', href: ROUTES.ORDER.ROOT },
+                  { label: `Order ${order.orderNumber}` },
+              ]
+            : null
+    );
 
     const handleAddToCart = (item: OrderItem) => {
         const product = products.find((p) => p.id === item.productId);
