@@ -468,6 +468,7 @@ export default function App() {
             />
 
             {/* Admin */}
+            <Route path="/admin" element={<Navigate to={ADMIN_ROUTES.DASHBOARD} replace />} />
             <Route
               path={ROUTES.ADMIN.DASHBOARD}
               element={
