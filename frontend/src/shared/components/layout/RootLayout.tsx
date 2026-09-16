@@ -12,6 +12,7 @@ import { ROUTES } from '@/shared/constants/routes';
 import { useCartLoader } from '@/features/store/hooks/useCartLoader';
 import { useAuth } from '@/features/authentication/hooks/useAuth';
 import { Breadcrumbs } from '../ui/Breadcrumbs';
+import { useBreakpoint } from '@/shared/hooks/useBreakpoint';
 
 // ─── Route label config ──────────────────────────────────────────────────────
 const ROUTE_LABELS: Record<string, string> = {
@@ -74,6 +75,16 @@ function buildBreadcrumbsFromPath(pathname: string) {
   return crumbs;
 }
 
+function collapseBreadcrumbsForMobile(
+  crumbs: { label: string; href?: string }[]
+) {
+  if (crumbs.length <= 2) return crumbs; // Nothing to collapse
+
+  const first = crumbs[0];
+  const last = crumbs[crumbs.length - 1];
+  return [first, { label: '…' }, last];
+}
+
 // ─── Component ────────────────────────────────────────────────────────────────
 export function RootLayout() {
   const [showBackToTop, setShowBackToTop] = useState(false);
@@ -82,6 +93,7 @@ export function RootLayout() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const { isMobile } = useBreakpoint();
   useCartLoader(isAuthenticated);
 
   const isHomePage = pathname === ROUTES.HOME;
@@ -91,8 +103,15 @@ export function RootLayout() {
 
   // 👇 Hide breadcrumbs on routes with full-bleed heroes
   const hideBreadcrumbs = HERO_ROUTES.some((r) => pathname.startsWith(r));
-  const breadcrumbs =
+  // const breadcrumbs =
+  //   !isHomePage && !hideBreadcrumbs ? buildBreadcrumbsFromPath(pathname) : [];
+
+   const rawBreadcrumbs =
     !isHomePage && !hideBreadcrumbs ? buildBreadcrumbsFromPath(pathname) : [];
+
+  const breadcrumbs = isMobile
+    ? collapseBreadcrumbsForMobile(rawBreadcrumbs)
+    : rawBreadcrumbs;
 
   const isRouteOrChild = (route: string): boolean =>
     pathname === route || pathname.startsWith(`${route}/`);
