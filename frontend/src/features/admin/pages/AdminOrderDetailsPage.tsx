@@ -1,5 +1,8 @@
 import { useParams } from 'react-router-dom';
 import { SEO } from '@/shared/common/SEO';
+import { useBreadcrumbOverride } from '@/shared/contexts/BreadcrumbContext';
+import { ROUTES } from '@/shared/constants/routes';
+import { ADMIN_ORDER_ROUTES } from '../routes';
 import ContainerBackground from '@/shared/containers/ContainerBackground';
 import { useAdminOrders } from '../hooks/useAdminOrders';
 import { useUpdateOrderStatus } from '../hooks/useUpdateOrderStatus';
@@ -24,6 +27,17 @@ export default function AdminOrderDetailsPage() {
     const [riderDetailsError, setRiderDetailsError] = useState<string | undefined>();
 
     const order = orders.find((o) => o.orderNumber === id);
+
+        useBreadcrumbOverride(
+        order
+            ? [
+                  { label: 'Home', href: ROUTES.HOME },
+                  { label: 'Admin Dashboard', href: '/admin' },
+                  { label: 'Orders', href: ADMIN_ORDER_ROUTES.ROOT },
+                  { label: `Order ${order.orderNumber}` },
+              ]
+            : null
+    );
 
 
 

@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom';
 import { Clock, Dot } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { SEO } from '@/shared/common/SEO';
+import { useBreadcrumbOverride } from '@/shared/contexts/BreadcrumbContext';
 import { formatNewsDate } from '../utils';
 import { useLiveNews } from '../hooks/useLiveNews';
 import { ROUTES } from '@/shared/constants/routes';
@@ -13,6 +14,16 @@ export default function LiveNewsDetailPage() {
 
   const { data: liveNewsData = [], isLoading } = useLiveNews();
   const item = liveNewsData.find((n) => n.id === id);
+
+    useBreadcrumbOverride(
+    item
+      ? [
+          { label: 'Home', href: ROUTES.HOME },
+          { label: 'Live News', href: ROUTES.LIVE_NEWS.ROOT },
+          { label: item.title },
+        ]
+      : null
+  );
 
   if (isLoading) {
     return (

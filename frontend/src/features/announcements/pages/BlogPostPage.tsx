@@ -12,6 +12,9 @@ import {
 import { ANNOUNCEMENT_ROUTES } from '@/features/announcements/routes';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 
+import { useBreadcrumbOverride } from '@/shared/contexts/BreadcrumbContext';
+import { ROUTES } from '@/shared/constants/routes';
+
 const FALLBACK_IMAGE = '/news-1.png';
 const pageShellClassName = 'container-custom pb-16 pt-4 sm:pb-14 sm:pt-5';
 
@@ -60,6 +63,17 @@ export default function BlogPostPage() {
 
   const bodyParagraphs = splitAnnouncementContent(announcement?.content, announcement?.excerpt);
   const isAdmin = user?.role === 'admin';
+
+    // 👇 Breadcrumb override — MUST be before any early returns
+  useBreadcrumbOverride(
+    announcement
+      ? [
+          { label: 'Home', href: ROUTES.HOME },
+          { label: 'News', href: ANNOUNCEMENT_ROUTES.ROOT },
+          { label: announcement.title },
+        ]
+      : null
+  );
 
   async function handleDeleteAnnouncement() {
     if (!announcement || deleteAnnouncement.isPending) {

@@ -5,6 +5,8 @@ import { SEO } from '@/shared/common/SEO';
 import { AppLink } from '@/shared/components/ui/AppLink';
 import { useBlogPostDetail } from '../hooks/useBlogs';
 import { ANNOUNCEMENT_ROUTES } from '@/features/announcements/routes';
+import { useBreadcrumbOverride } from '@/shared/contexts/BreadcrumbContext';
+import { ROUTES } from '@/shared/constants/routes';
 
 const FALLBACK_IMAGE = '/news-1.png';
 
@@ -40,6 +42,17 @@ function createSectionId(heading: string, index: number) {
 export function BlogDetailPage() {
   const { slug = '' } = useParams();
   const { data: post, isLoading } = useBlogPostDetail(slug);
+
+    useBreadcrumbOverride(
+    post
+      ? [
+          { label: 'Home', href: ROUTES.HOME },
+          { label: 'News', href: ANNOUNCEMENT_ROUTES.ROOT },
+          { label: 'Blog', href: ANNOUNCEMENT_ROUTES.BLOG },
+          { label: post.title },
+        ]
+      : null
+  );
   const galleryImages = useMemo(() => {
     if (!post) return [];
 

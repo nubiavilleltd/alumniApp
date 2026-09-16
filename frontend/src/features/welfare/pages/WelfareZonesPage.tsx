@@ -7,11 +7,11 @@
 import { useState } from 'react';
 import { Icon } from '@iconify/react';
 import { SEO } from '@/shared/common/SEO';
-import { DonationButton } from '@/shared/components/ui/DonationButton';
 import { useStartDirectConversation } from '@/features/messages/hooks/useStartDirectConversation';
 import { useZones } from '../hooks/useZones';
 import { WelfareZone } from '../types/welfare.type';
 import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
+import { Modal } from '@/shared/components/ui/Modal';
 
 // ─── Zone accent colours ──────────────────────────────────────────────────────
 // Matched to the Figma side-strip colours by zone label.
@@ -19,12 +19,14 @@ import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 const ZONE_CARD_COLORS: Record<string, string> = {
   zone1: '#078E0040',
   zone2: '#E2CDFC',
-  zone3: '#FCDDC2',
+  zone3a: '#FCDDC2',
+  zone3b: '#FCDDC2',
   zone4: '#BFDDF2',
   zone5a: '#F1BFBF',
   zone5b: '#FFF0BF',
   zone5c: '#C5B4B0',
-  zone6: '#BFBFBF',
+  zone6a: '#BFBFBF',
+  zone6b: '#BFBFBF',
   zone7: '#DAEED9',
 };
 
@@ -33,7 +35,7 @@ function normalizeZoneKey(zone: string): string {
 }
 
 function accentColorFor(zone: string): string {
-  return ZONE_CARD_COLORS[normalizeZoneKey(zone)] ?? '#ffffff';
+  return ZONE_CARD_COLORS[normalizeZoneKey(zone)] ?? '#DAEED9';
 }
 
 // ─── Skeleton card ────────────────────────────────────────────────────────────
@@ -71,8 +73,11 @@ function ZoneCardSkeleton() {
 }
 
 // ─── Zone card ────────────────────────────────────────────────────────────────
-function ZoneCard({ zone, currentUserEmail }: { zone: WelfareZone; currentUserEmail?: string }) {
+function ZoneCard({ zone, currentUserEmail, zoneOfCurrentUser }: { zone: WelfareZone; currentUserEmail?: string, zoneOfCurrentUser: string }) {
+  const [showZoneWarning, setShowZoneWarning] = useState(false);
   const isTheSameUserAsCoordinator = currentUserEmail === zone?.coordinator?.email;
+  const isCurrentUserZone = zoneOfCurrentUser === zone.zone
+
 
   const hasCoordinator = zone.coordinator !== null;
   const coordinatorMemberId =
@@ -85,6 +90,7 @@ function ZoneCard({ zone, currentUserEmail }: { zone: WelfareZone; currentUserEm
     if (!zone.coordinator || !coordinatorMemberId) return;
 
     setIsStartingConversation(true);
+    setShowZoneWarning(false); 
 
     try {
       await startDirectConversation({
@@ -103,8 +109,24 @@ function ZoneCard({ zone, currentUserEmail }: { zone: WelfareZone; currentUserEm
     }
   }
 
+    // 2. NEW HANDLER: Decide whether to warn or message directly
+  function handleSendMessageClick() {
+    if (isCurrentUserZone) {
+      // Same zone? Just message them.
+      void handleMessageCoordinator();
+    } else {
+      // Outside zone? Show the warning modal.
+      setShowZoneWarning(true);
+    }
+  }
+
   return (
-    <div className="flex min-h-[179px] w-full max-w-[636px] overflow-hidden rounded-[24px] border border-gray-100 bg-white shadow-sm md:h-[179px]">
+
+    <>
+       <div className={`relative flex min-h-[179px] w-full max-w-[636px] overflow-hidden rounded-[24px] bg-white shadow-sm md:h-[179px] transition-all ${isCurrentUserZone
+        ? 'border-2 border-green-500 shadow-md ring-2 ring-green-500/20'
+        : 'border border-gray-100'
+      }`}>
       {/* Coloured left accent strip */}
       <div
         className="w-4 flex-shrink-0 self-stretch"
@@ -112,16 +134,38 @@ function ZoneCard({ zone, currentUserEmail }: { zone: WelfareZone; currentUserEm
       />
 
       {/* Content */}
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className={`flex min-w-0 flex-1 flex-col ${isCurrentUserZone ? 'bg-green-50/30' : 'bg-white'}`}>
         {/* Zone name */}
         <div className="flex min-w-0 flex-col gap-2 px-6 py-6 sm:flex-row sm:items-start sm:gap-8 md:h-[104px]">
-          <span className="flex-shrink-0 whitespace-nowrap text-2xl font-semibold leading-[1.2] text-gray-900 sm:w-[7.2rem]">
-            {zone.zone}
-          </span>
 
-          <span className="min-w-0 text-base font-semibold leading-[1.3] text-gray-600">
+          {/* On mobile: This row holds Zone Name + Badge together */}
+          <div className="flex items-center justify-between gap-2 sm:justify-start sm:w-[7.2rem] flex-shrink-0">
+            <span className="whitespace-nowrap text-2xl font-semibold leading-[1.2] text-gray-900">
+              {zone.zone}
+            </span>
+
+            {/* Badge: Shown here on mobile, hidden on desktop (sm:hidden) */}
+            {isCurrentUserZone && (
+              <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-bold text-green-800 sm:hidden">
+                Your Zone
+              </span>
+            )}
+          </div>
+
+          {/* Cities */}
+          <span className="min-w-0 flex-1 text-base font-semibold leading-[1.3] text-gray-600">
             {zone.cities}
           </span>
+
+          {/* Badge: Shown here on desktop, hidden on mobile (hidden sm:inline-flex) */}
+          {isCurrentUserZone && (
+            <div className="hidden sm:flex flex-shrink-0 items-start pt-1">
+              <span className="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-800">
+                Your Zone
+              </span>
+            </div>
+          )}
+
         </div>
 
         {/* Divider */}
@@ -160,9 +204,7 @@ function ZoneCard({ zone, currentUserEmail }: { zone: WelfareZone; currentUserEm
             <div className="flex flex-shrink-0 justify-end">
               <button
                 type="button"
-                onClick={() => {
-                  void handleMessageCoordinator();
-                }}
+              onClick={handleSendMessageClick} 
                 disabled={isStartingConversation || isTheSameUserAsCoordinator}
                 title={isTheSameUserAsCoordinator ? 'You cannot message yourself' : ''}
                 className="inline-flex min-h-9 min-w-[7.5rem] items-center justify-center gap-1.5 rounded-full border-2 border-primary-500 px-4 text-sm font-semibold text-primary-500 transition-colors hover:bg-primary-50 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-transparent"
@@ -185,6 +227,44 @@ function ZoneCard({ zone, currentUserEmail }: { zone: WelfareZone; currentUserEm
         </div>
       </div>
     </div>
+
+      <Modal
+        isOpen={showZoneWarning}
+        onClose={() => setShowZoneWarning(false)}
+        title="You are messaging outside your zone"
+      >
+        <div className="space-y-4">
+          <div className="text-sm text-gray-600 space-y-3">
+            <p>
+              You are currently assigned to <strong className="text-gray-900">{zoneOfCurrentUser || 'no zone'}</strong>. 
+              You are about to message the coordinator for <strong className="text-gray-900">{zone.zone}</strong>.
+            </p>
+            <p className="bg-yellow-50 text-yellow-800 p-3 rounded-lg border border-yellow-100 text-xs font-medium">
+              Please confirm that your message is related to welfare in this specific area before proceeding.
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row justify-end gap-3 pt-2">
+            <button
+              type="button"
+              onClick={() => setShowZoneWarning(false)}
+              className="inline-flex min-h-9 items-center justify-center rounded-full border border-gray-300 px-4 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50"
+            >
+              Go Back
+            </button>
+            <button
+              type="button"
+              onClick={() => void handleMessageCoordinator()}
+              disabled={isStartingConversation}
+              className="inline-flex min-h-9 items-center justify-center rounded-full border-2 border-primary-500 bg-primary-500 px-4 text-sm font-semibold text-white transition-colors hover:bg-primary-600 disabled:opacity-50"
+            >
+              {isStartingConversation ? 'Opening chat...' : 'Yes, it\'s welfare-related'}
+            </button>
+          </div>
+        </div>
+      </Modal>
+    </>
+ 
   );
 }
 
@@ -217,7 +297,8 @@ export default function WelfareZonesPage() {
   const { data: zones, isLoading, isError, refetch } = useZones();
 
   const sortedData = zones?.sort((a, b) => a.zone.localeCompare(b.zone))
-  
+
+
   const {
     data: currentUser,
     isLoading: isLoadingProfile,
@@ -225,6 +306,7 @@ export default function WelfareZonesPage() {
   } = useCurrentUser();
 
   const skeletonCount = 6;
+
 
   // ── Derived state (clean + readable) ───────────────────────────────
   const isZonesLoading = isLoading;
@@ -238,6 +320,8 @@ export default function WelfareZonesPage() {
   const showEmptyState = !isZonesLoading && !hasZonesError && zones && zones.length === 0;
 
   const showZones = !isZonesLoading && !hasZonesError && zones && zones.length > 0;
+
+  const zoneOfCurrentUser = currentUser?.zone || "";
 
   return (
     <>
@@ -279,7 +363,7 @@ export default function WelfareZonesPage() {
             {/* 📦 Data */}
             {showZones &&
               sortedData?.map((zone) => (
-                <ZoneCard key={zone.zoneId} zone={zone} currentUserEmail={currentUser?.email} />
+                <ZoneCard key={zone.zoneId} zone={zone} currentUserEmail={currentUser?.email} zoneOfCurrentUser={zoneOfCurrentUser} />
               ))}
           </div>
         </div>

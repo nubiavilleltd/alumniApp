@@ -1,9 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { LoaderCircle } from 'lucide-react';
 import { SEO } from '@/shared/common/SEO';
-import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
-import { ROUTES } from '@/shared/constants/routes';
-import { ADMIN_ROUTES } from '@/features/admin/routes';
 import { ADMIN_STORE_ROUTES } from '../routes';
 import { useAdminProducts, useUpdateProduct } from '../hooks/useAdminStore';
 import type { UpdateProductFormData } from '../types/adminStore.types';
@@ -18,12 +15,7 @@ const products = response?.data ?? [];
 
   const product = products.find((p) => p.id === id);
 
-  const breadcrumbs = [
-    { label: 'Home', href: ROUTES.HOME },
-    { label: 'Admin Dashboard', href: ADMIN_ROUTES.DASHBOARD },
-    { label: 'Store', href: ADMIN_STORE_ROUTES.ROOT },
-    { label: product ? `Edit: ${product.product_name}` : 'Edit Item' },
-  ];
+
 
   const handleSubmit = (data: any) => {
     updateProduct.mutate(data as UpdateProductFormData, {
@@ -57,7 +49,6 @@ const products = response?.data ?? [];
   return (
     <>
       <SEO title={`Edit: ${product.product_name}`} />
-      <Breadcrumbs items={breadcrumbs} />
 
       <section className="section bg-[#F8F8F7]">
         <div className="container-custom">

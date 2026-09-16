@@ -32,21 +32,21 @@ const footerContactIconClassName = 'flex-shrink-0 opacity-80';
 
 const QUICK_LINKS = [
   { label: 'About Us', href: ROUTES.ABOUT },
-  { label: 'Announcements', href: ROUTES.NEWS },
-  { label: 'Events', href: ROUTES.EVENTS.ROOT },
-  { label: 'Our Projects', href: ROUTES.PROJECTS.ROOT },
-  { label: 'Volunteer', href: ROUTES.JOIN_PROJECTS.VOLUNTEER },
+  // { label: 'Announcements', href: ROUTES.NEWS },
+  // { label: 'Events', href: ROUTES.EVENTS.ROOT },
+  // { label: 'Our Projects', href: ROUTES.PROJECTS.ROOT },
+  // { label: 'Volunteer', href: ROUTES.JOIN_PROJECTS.VOLUNTEER },
   { label: 'FAQs', href: ROUTES.FAQS },
   { label: 'Contact Us', href: ROUTES.CONTACT },
 ];
 
 const COMMUNITY_LINKS = [
-  { label: 'Check on your Sisters', href: ROUTES.ALUMNI.ROOT },
+  // { label: 'Check on your Sisters', href: ROUTES.ALUMNI.ROOT },
+  { label: 'Welfare', href: ROUTES.WELFARE },
   { label: 'Marketplace', href: ROUTES.MARKETPLACE.ROOT },
   { label: 'Resources', href: ROUTES.RESOURCES },
-  { label: 'Welfare', href: ROUTES.WELFARE },
   { label: 'Social Media Feed', href: ROUTES.SOCIAL_MEDIA_FEED },
-  { label: 'Polls', href: '/polls' },
+  // { label: 'Polls', href: '/polls' },
 ];
 
 const LEGAL_LINKS = [
@@ -194,7 +194,7 @@ export function Footer() {
 
           <div className="py-5">
             <p className="text-left text-xs font-[500] text-[#BDBDBD]">
-              © {currentYear} FGGC Owerri Alumni Association, Lagos Chapter. All rights reserved.
+              © {currentYear} FGGC Owerri Old Girls Association, Lagos Chapter. All rights reserved.
             </p>
           </div>
         </div>

@@ -150,7 +150,7 @@ export default function WelfarePage() {
                 to={ROUTES.WELFARE_ZONES}
                 className="flex min-h-10 items-center justify-center whitespace-nowrap rounded-full border-2 border-primary-500 px-5 text-center text-sm font-bold text-primary-500 transition-colors hover:bg-primary-500 hover:text-white"
               >
-                Welfare Zones
+                Lagos Chapter Welfare Zones
               </Link>
             </div>
           </div>

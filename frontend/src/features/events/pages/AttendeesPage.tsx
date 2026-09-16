@@ -2,7 +2,7 @@ import { Icon } from '@iconify/react';
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { SEO } from '@/shared/common/SEO';
-import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
+import { useBreadcrumbOverride } from '@/shared/contexts/BreadcrumbContext';
 import { Modal } from '@/shared/components/ui/Modal';
 import { SearchInput } from '@/shared/components/ui/input/SearchInput';
 import { useEvent } from '../hooks/useEvents';
@@ -420,6 +420,7 @@ export default function AttendeesPage() {
   } | null>(null);
   const [isExporting, setIsExporting] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  
 
   const { data: event } = useEvent(id);
   const cachedSurveyAvailability = useMemo(() => getStoredEventSurveyAvailability(id), [id]);
@@ -528,14 +529,7 @@ export default function AttendeesPage() {
   };
 
   useEffect(() => {
-    console.log('[AttendeesPage] survey lookup gate', {
-      eventId: id,
-      eventHasRegistrationQuestions: event?.hasRegistrationQuestions ?? null,
-      cachedSurveyAvailability,
-      attendeeCount: attendees.length,
-      profileLookupEnabled: shouldLoadUserProfiles,
-      shouldAttemptSurveyLookup,
-    });
+ 
   }, [
     attendees.length,
     cachedSurveyAvailability,
@@ -601,13 +595,22 @@ export default function AttendeesPage() {
       : event?.title) || 'Event attendees';
   const eventDate = formatDateRange(event?.startDate ?? attendeeData?.eventDate, event?.endDate);
   const totalCount = attendeeData?.goingCount ?? attendees.length;
-  const breadcrumbItems = [
-    { label: 'Home', href: ROUTES.HOME },
-    { label: 'Admin Dashboard', href: ADMIN_ROUTES.DASHBOARD },
-    { label: 'Events', href: ADMIN_ROUTES.EVENTS },
-    ...(id ? [{ label: pageTitle, href: ADMIN_ROUTES.EVENT_DETAIL(id) }] : []),
-    { label: 'Attendees' },
-  ];
+
+  useBreadcrumbOverride(
+    id
+      ? [
+          { label: 'Home', href: ROUTES.HOME },
+          { label: 'Admin Dashboard', href: ADMIN_ROUTES.DASHBOARD },
+          { label: 'Events', href: ADMIN_ROUTES.EVENTS },
+          {
+            label: pageTitle,
+            href: ADMIN_ROUTES.EVENT_DETAIL(id),
+          },
+          { label: 'Attendees' },
+        ]
+      : null
+  );
+
 
   async function handleExportAttendees() {
     if (!attendees.length || !id || isExporting) {
@@ -721,8 +724,6 @@ export default function AttendeesPage() {
   return (
     <>
       <SEO title={`${pageTitle} Attendees`} description={`View attendees for ${pageTitle}.`} />
-      <Breadcrumbs items={breadcrumbItems} />
-
       <main className="min-h-screen bg-[#F8F8F7]">
         <div className="container-custom py-8">
           <header className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between pb-6">

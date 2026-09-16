@@ -139,9 +139,11 @@ export default function App() {
             <Route
               path={ROUTES.NEWS}
               element={
+                <ProtectedRoute>
                 <ErrorBoundary>
                   <AnnouncementsPage />
                 </ErrorBoundary>
+                </ProtectedRoute>
               }
             />
             <Route
@@ -409,6 +411,8 @@ export default function App() {
             />
 
             {/* User */}
+
+            <Route path="/user" element={<Navigate to={ROUTES.USER.DASHBOARD} replace />} />
             <Route
               path={ROUTES.USER.DASHBOARD}
               element={

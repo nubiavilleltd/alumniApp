@@ -1,9 +1,6 @@
 // features/user/pages/UserProfilePage.tsx
 
-import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
 import { SEO } from '@/shared/common/SEO';
-import { ROUTES } from '@/shared/constants/routes';
-import { USER_ROUTES } from '../routes';
 import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 import { ProfileSkeleton } from '../components/ProfileSkeleton';
 import { ProfileCard, type SocialLink } from '../components/ui/ProfileCard';
@@ -12,11 +9,7 @@ import { buildProfileData, isGroupVisible } from '../utils/profileUtils';
 import { toast } from '@/shared/components/ui/Toast';
 import { ProfileAddressCard } from '../components/ui/ProfileAddressCard';
 
-const breadcrumbItems = [
-  { label: 'Home', href: ROUTES.HOME },
-  { label: 'Dashboard', href: USER_ROUTES.DASHBOARD },
-  { label: 'My Profile' },
-];
+
 
 export default function UserProfilePage() {
   const { data: currentUser, isLoading } = useCurrentUser();
@@ -26,7 +19,6 @@ export default function UserProfilePage() {
     return (
       <>
         <SEO title="My Profile" />
-        <Breadcrumbs items={breadcrumbItems} />
         <section className="section py-8">
           <div className="container-custom">
             <ProfileSkeleton />
@@ -80,7 +72,6 @@ export default function UserProfilePage() {
   return (
     <>
       <SEO title="My Profile" description="View and manage your alumni profile." />
-      <Breadcrumbs items={breadcrumbItems} />
 
       <section className="section bg-[#F8F8F7] py-8">
         <div className="container-custom">

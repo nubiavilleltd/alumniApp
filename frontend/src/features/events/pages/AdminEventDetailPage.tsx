@@ -10,6 +10,7 @@ import { useEvent, useDeleteEvent, useCancelRegistration } from '../hooks/useEve
 import { useEventRegistration, useEventAttendeeCount } from '../hooks/useEventRegistration';
 import { toast } from '@/shared/components/ui/Toast';
 import { EVENT_ROUTES } from '../routes';
+import { ROUTES } from '@/shared/constants/routes';
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 import { renderMarkdown } from '@/data/content';
 import { useEventStatus } from '../hooks/useEventStatus';
@@ -25,6 +26,7 @@ import {
   Share2,
   Users,
 } from 'lucide-react';
+import { useBreadcrumbOverride } from '@/shared/contexts/BreadcrumbContext';
 
 // ─── Countdown ────────────────────────────────────────────────────────────────
 
@@ -194,6 +196,17 @@ export function AdminEventDetailPage() {
   const requireSignIn = useRequireSignIn();
   const { data: event, isLoading, error } = useEvent(id);
   const { isUpcoming, isOngoing, isPast } = useEventStatus(event);
+
+    useBreadcrumbOverride(
+    event
+      ? [
+          { label: 'Home', href: ROUTES.HOME },
+          { label: 'Admin Dashboard', href: '/admin' },
+          { label: 'Events', href: '/admin/events' },
+          { label: event.title },
+        ]
+      : null
+  );
 
   const navigate = useNavigate();
 

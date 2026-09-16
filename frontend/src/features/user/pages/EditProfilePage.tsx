@@ -8,8 +8,6 @@ import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { Icon } from '@iconify/react';
 import { SEO } from '@/shared/common/SEO';
-import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
-import { ROUTES } from '@/shared/constants/routes';
 import { USER_ROUTES } from '../routes';
 import { useCurrentUser, currentUserKeys } from '@/features/authentication/hooks/useCurrentUser';
 import { userService } from '../services/user.service';
@@ -43,12 +41,7 @@ import {
 } from '@/shared/utils/fileValidation';
 import { useBreakpoint } from '@/shared/hooks/useBreakpoint';
 
-const breadcrumbItems = [
-  { label: 'Home', href: ROUTES.HOME },
-  { label: 'Dashboard', href: USER_ROUTES.DASHBOARD },
-  { label: 'My Profile', href: USER_ROUTES.PROFILE },
-  { label: 'Edit' },
-];
+
 
 // ─── Form state ───────────────────────────────────────────────────────────────
 
@@ -526,7 +519,6 @@ export default function EditProfilePage() {
     return (
       <>
         <SEO title="Edit Profile" />
-        <Breadcrumbs items={breadcrumbItems} />
         <section className="section py-8">
           <div className="container-custom max-w-3xl animate-pulse space-y-4">
             <div className="h-24 bg-white rounded-2xl" />
@@ -543,8 +535,6 @@ export default function EditProfilePage() {
   return (
     <>
       <SEO title="Edit Profile" description="Edit your alumni profile." />
-      <Breadcrumbs items={breadcrumbItems} />
-
       <section className="section bg-[#F8F8F7] py-8">
         <div className="container-custom">
           <div className="space-y-5">

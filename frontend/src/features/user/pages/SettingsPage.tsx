@@ -11,9 +11,6 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import { SEO } from '@/shared/common/SEO';
-import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
-import { ROUTES } from '@/shared/constants/routes';
-import { USER_ROUTES } from '../routes';
 import { userService } from '../services/user.service';
 import { AUTH_ROUTES } from '@/features/authentication/routes';
 import { toast } from '@/shared/components/ui/Toast';
@@ -24,11 +21,7 @@ import type { PrivacySettings } from '@/features/authentication/types/auth.types
 import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 import { PasswordInput } from '@/shared/components/ui/input/PasswordInput';
 
-const breadcrumbItems = [
-  { label: 'Home', href: ROUTES.HOME },
-  { label: 'Dashboard', href: USER_ROUTES.DASHBOARD },
-  { label: 'Settings' },
-];
+
 
 // ─── Schema ───────────────────────────────────────────────────────────────────
 
@@ -131,38 +124,6 @@ function ChangePasswordSection() {
     mode: 'onChange',
   });
 
-  //   const onSubmit = handleSubmit(async (values) => {
-  //     try {
-  //       await userService.changePassword({
-  //         currentPassword: values.currentPassword,
-  //         newPassword: values.newPassword,
-  //         confirmPassword: values.confirmPassword,
-  //       });
-  //       reset();
-  //       toast.success('Password updated. Please sign in again.');
-  //       setTimeout(() => {
-  //         clearTokens();
-  //         clearIdentity();
-  //         navigate(AUTH_ROUTES.LOGIN, { replace: true });
-  //       }, 1500);
-  //     } catch (error: any) {
-  //       // if (error.message?.toLowerCase().includes('incorrect') || error.response?.status === 400) {
-  //       if (
-  //   error.message?.toLowerCase().includes('incorrect') ||
-  //   error.message?.toLowerCase().includes('current password') ||
-  //   error.message?.toLowerCase().includes('invalid entry') ||
-  //   error.response?.status === 400 ||
-  //   error.status === 400
-  // ) {
-  //         setError('currentPassword', { type: 'manual', message: error.message });
-  //       } else {
-  //         setError('newPassword', {
-  //           type: 'manual',
-  //           message: error.message ?? 'Failed to update password.',
-  //         });
-  //       }
-  //     }
-  //   });
 
   const onSubmit = handleSubmit(async (values) => {
     try {
@@ -388,7 +349,6 @@ export default function SettingsPage() {
   return (
     <>
       <SEO title="Settings" description="Manage your account settings." />
-      <Breadcrumbs items={breadcrumbItems} />
 
       <section className="section py-8">
         <div className="container-custom">

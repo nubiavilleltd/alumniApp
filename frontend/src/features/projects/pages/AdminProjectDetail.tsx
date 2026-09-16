@@ -4,20 +4,17 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import { SEO } from '@/shared/common/SEO';
-import { Breadcrumbs } from '@/shared/components/ui/Breadcrumbs';
-import { AppLink } from '@/shared/components/ui/AppLink';
 import { useProjects, useDeleteProject } from '../hooks/useProjects';
 import { ProjectFormModal } from '../components/ProjectFormModal';
 import { ProjectNotFoundPage } from '../components/ProjectNotFoundPage';
-import type { Project } from '../types/project.types';
 import { ROUTES } from '@/shared/constants/routes';
-import { useIdentityStore } from '@/features/authentication/stores/useIdentityStore';
 import { formatDateRange } from '@/shared/utils/dateHelpers';
 import { Calendar, MapPin, User } from 'lucide-react';
 import placeholderImg from '/placeholder-image.png';
 import { useCurrentUser } from '@/features/authentication/hooks/useCurrentUser';
 import { canManageProjects } from '@/shared/permissions/project.permission';
 import { ADMIN_ROUTES } from '@/features/admin/routes';
+import { useBreadcrumbOverride } from '@/shared/contexts/BreadcrumbContext';
 
 // const PLACEHOLDER = 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=700&q=80';
 
@@ -113,12 +110,27 @@ export default function AdminProjectDetailsPage() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  // const placeholderImages = ['https://placehold.co/80x80/E5E7EB/6B7280?text=No+Image'];
   const placeholderImages = [placeholderImg];
+  // const placeholderImages = ['https://placehold.co/80x80/E5E7EB/6B7280?text=No+Image'];
 
+
+  
+  const project = projects.find((p) => String(p.id) === id);
+
+
+    useBreadcrumbOverride(
+    project
+      ? [
+          { label: 'Home', href: ROUTES.HOME },
+          { label: 'Admin Dashboard', href: ADMIN_ROUTES.DASHBOARD },
+          { label: 'Projects', href: ADMIN_ROUTES.PROJECTS },
+          { label: project.title },
+        ]
+      : null
+  );
+  
   if (isLoading) return <ProjectDetailsSkeleton />;
 
-  const project = projects.find((p) => String(p.id) === id);
   if (!project) return <ProjectNotFoundPage />;
 
   const images = project.images?.length ? project.images : placeholderImages;
@@ -132,12 +144,6 @@ export default function AdminProjectDetailsPage() {
     },
   });
 
-  const breadcrumbItems = [
-    { label: 'Home', href: ROUTES.HOME },
-    { label: 'Projects', href: ADMIN_ROUTES.PROJECTS },
-    { label: project.title },
-  ];
-
   const handleDelete = () => {
     deleteMutation.mutate(project.id, {
       onSuccess: () => navigate(ADMIN_ROUTES.PROJECTS),
@@ -147,7 +153,6 @@ export default function AdminProjectDetailsPage() {
   return (
     <>
       <SEO title={project.title} description={project.description} />
-      <Breadcrumbs items={breadcrumbItems} />
 
       <section className="section">
         <div className="container-custom">
