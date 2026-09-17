@@ -231,7 +231,7 @@ function ZoneCard({ zone, currentUserEmail, zoneOfCurrentUser }: { zone: Welfare
       <Modal
         isOpen={showZoneWarning}
         onClose={() => setShowZoneWarning(false)}
-        title="You are messaging outside your zone"
+        title="You're sending a message outside your zone"
       >
         <div className="space-y-4">
           <div className="text-sm text-gray-600 space-y-3">
@@ -326,7 +326,7 @@ export default function WelfareZonesPage() {
   return (
     <>
       <SEO
-        title="Welfare Zones"
+        title="Lagos Chapter Welfare Zones"
         description="Find your welfare zone coordinator and get support in your area."
       />
 
@@ -334,7 +334,7 @@ export default function WelfareZonesPage() {
         <div className="container-custom py-8 sm:py-10">
           {/* ── Header ─────────────────────────────────────────────── */}
           <div className="flex items-start justify-between mb-7 gap-4">
-            <h1 className="type-section-title text-gray-900">Welfare Zones</h1>
+            <h1 className="type-section-title text-gray-900">Lagos Chapter Welfare Zones</h1>
           </div>
 
           {/* ── Grid ───────────────────────────────────────────────── */}
