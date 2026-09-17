@@ -7,6 +7,7 @@ import { useHomepageContent } from '@/features/homepage/hooks/useHomepageContent
 import { parseHeroTitleAnimation } from '@/features/homepage/utils/heroTitleAnimation';
 import { HeroCarousel } from '@/features/homepage/components/HeroCarousel';
 import { HeroReadinessContext } from '@/features/homepage/components/HeroReadinessContext';
+import { useHeroTimeOfDay } from '@/features/homepage/utils/heroTimeOfDay';
 import { ROUTES } from '@/shared/constants/routes';
 import HomeStats from './HomeStats';
 
@@ -41,7 +42,11 @@ function renderHeroHeading(text?: string) {
 export default function HeroSection() {
   const currentUser = useIdentityStore((state) => state.user);
   const { data: homepageContent, isLoading, isError } = useHomepageContent();
+  const timeOfDay = useHeroTimeOfDay();
   const onHeroReady = useContext(HeroReadinessContext);
+  const allCarouselImages = homepageContent?.carouselImages ?? [];
+  const timeOfDayImages = allCarouselImages.filter((image) => image.timeOfDay === timeOfDay);
+  const carouselImages = timeOfDayImages.length > 0 ? timeOfDayImages : allCarouselImages;
   const headingText = isError ? 'Homepage unavailable' : homepageContent?.greetingTitle;
   const messageText = isError
     ? 'Homepage content could not be loaded right now.'
@@ -49,7 +54,7 @@ export default function HeroSection() {
 
   return (
     <HeroCarousel
-      images={homepageContent?.carouselImages}
+      images={carouselImages}
       pending={isLoading}
       onReady={onHeroReady}
     >

@@ -1,3 +1,5 @@
+export type HomepageTimeOfDay = 'day' | 'night';
+
 export interface HomepageCarouselImage {
   id: string;
   imageUrl: string;
@@ -6,6 +8,7 @@ export interface HomepageCarouselImage {
   sortOrder: number;
   isHidden: boolean;
   showGreetingMessage: boolean;
+  timeOfDay: HomepageTimeOfDay;
   createdAt?: string;
   updatedAt?: string;
 }

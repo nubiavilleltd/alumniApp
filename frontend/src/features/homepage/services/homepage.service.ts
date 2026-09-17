@@ -1,7 +1,11 @@
 import { contentApiClient } from '@/lib/api/contentClient';
 import { API_ENDPOINTS } from '@/lib/api/endpoints';
 import { mapCarouselImage, mapHomepageContent } from '../api/adapters/homepage.adapter';
-import type { HomepageCarouselImage, HomepageContent } from '../types/homepage.types';
+import type {
+  HomepageCarouselImage,
+  HomepageContent,
+  HomepageTimeOfDay,
+} from '../types/homepage.types';
 
 export type UpdateHomepageTextInput = {
   greetingTitle: string;
@@ -13,6 +17,7 @@ export type CreateCarouselImageInput = {
   altText?: string;
   sortOrder?: number;
   isHidden?: boolean;
+  timeOfDay?: HomepageTimeOfDay;
 };
 
 export type UpdateCarouselImageInput = {
@@ -21,6 +26,7 @@ export type UpdateCarouselImageInput = {
   altText?: string;
   isHidden?: boolean;
   showGreetingMessage?: boolean;
+  timeOfDay?: HomepageTimeOfDay;
 };
 
 export type ReorderCarouselImageInput = {
@@ -80,6 +86,7 @@ export const homepageService = {
     if (input.altText !== undefined) formData.append('alt_text', input.altText);
     if (input.sortOrder !== undefined) formData.append('sort_order', String(input.sortOrder));
     if (input.isHidden !== undefined) formData.append('is_hidden', visibilityValue(input.isHidden));
+    if (input.timeOfDay !== undefined) formData.append('time_of_day', input.timeOfDay);
 
     const { data } = await contentApiClient.post(
       API_ENDPOINTS.CONTENT.CREATE_CAROUSEL_IMAGE,
@@ -105,6 +112,7 @@ export const homepageService = {
       if (input.showGreetingMessage !== undefined) {
         formData.append('show_greeting', greetingVisibilityValue(input.showGreetingMessage));
       }
+      if (input.timeOfDay !== undefined) formData.append('time_of_day', input.timeOfDay);
 
       console.log('updateCarouselImage multipart payload:', Object.fromEntries(formData.entries()));
       const { data } = await contentApiClient.post(
@@ -122,6 +130,7 @@ export const homepageService = {
       ...(input.showGreetingMessage !== undefined
         ? { show_greeting: greetingVisibilityValue(input.showGreetingMessage) }
         : {}),
+      ...(input.timeOfDay !== undefined ? { time_of_day: input.timeOfDay } : {}),
     };
     console.log('updateCarouselImage JSON payload:', payload);
     const { data } = await contentApiClient.post(API_ENDPOINTS.CONTENT.UPDATE_CAROUSEL_IMAGE, payload);

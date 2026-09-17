@@ -66,6 +66,34 @@ const navSurfaceClassName = 'bg-[#05245B]';
 const expandedNavColumns: NavItem[][] = [
   [
     { label: 'About Us', url: ROUTES.ABOUT },
+    { label: 'Volunteer', url: ROUTES.JOIN_PROJECTS.VOLUNTEER },
+  ],
+  [
+    { label: 'Welfare', url: ROUTES.WELFARE },
+    {
+      label: 'Marketplace',
+      url: MARKETPLACE_ROUTES.ROOT,
+      children: [
+        {
+          label: 'Marketplace',
+          url: MARKETPLACE_ROUTES.ROOT,
+          description: 'Discover alumnae-owned businesses',
+        },
+        {
+          label: 'Job Vacancies',
+          url: ROUTES.JOB_VACANCIES,
+          description: 'Explore career opportunities',
+        },
+        {
+          label: 'Alumnae Store',
+          url: ROUTES.STORE.ROOT,
+          description: 'Official alumnae merchandise',
+        },
+      ],
+    },
+  ],
+  [
+    { label: 'Resources', url: ROUTES.RESOURCES },
     {
       label: 'News & Events',
       url: ROUTES.NEWS,
@@ -99,35 +127,7 @@ const expandedNavColumns: NavItem[][] = [
     },
   ],
   [
-    {
-      label: 'Marketplace',
-      url: MARKETPLACE_ROUTES.ROOT,
-      children: [
-        {
-          label: 'Marketplace',
-          url: MARKETPLACE_ROUTES.ROOT,
-          description: 'Discover alumnae-owned businesses',
-        },
-        {
-          label: 'Job Vacancies',
-          url: ROUTES.JOB_VACANCIES,
-          description: 'Explore career opportunities',
-        },
-        {
-          label: 'Alumnae Store',
-          url: ROUTES.STORE.ROOT,
-          description: 'Official alumnae merchandise',
-        },
-      ],
-    },
     { label: 'OGA Directory', url: ALUMNI_ROUTES.PROFILES },
-  ],
-  [
-    { label: 'Resources', url: ROUTES.RESOURCES },
-    { label: 'Welfare', url: ROUTES.WELFARE },
-  ],
-  [
-    { label: 'Volunteer', url: ROUTES.JOIN_PROJECTS.VOLUNTEER },
     { label: 'Contact Us', url: ROUTES.CONTACT },
   ],
 ];
@@ -235,12 +235,24 @@ function BrandMark({ mobile = false }: { mobile?: boolean }) {
   );
 }
 
-function ExpandedNavItem({ item, onNavigate }: { item: NavItem; onNavigate: () => void }) {
+function ExpandedNavItem({
+  item,
+  onNavigate,
+  resetKey,
+}: {
+  item: NavItem;
+  onNavigate: () => void;
+  resetKey: number;
+}) {
   const { pathname } = useLocation();
   const active =
     isPathActive(pathname, item.url) ||
     Boolean(item.children?.some((child) => isPathActive(pathname, child.url)));
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [resetKey]);
 
   if (item.children) {
     return (
@@ -354,17 +366,23 @@ function UserDropdown({
   isLoggingOut,
   unreadThreadCount,
   onNavigate,
+  resetKey,
 }: {
   currentUser: CurrentUser;
   onLogout: () => void;
   isLoggingOut: boolean;
   unreadThreadCount: number;
   onNavigate: () => void;
+  resetKey: number;
 }) {
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
   const isAdmin = currentUser.role?.includes("admin");
   const displayName = getDisplayName(currentUser);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [resetKey]);
 
   const baseMenuItems = authenticatedMenuItems.map((item) => {
     if (item.url === USER_ROUTES.PROFILE) return { ...item, label: 'My Profile' };
@@ -455,10 +473,22 @@ export function Navigation() {
   const authenticatedUser = isAuthenticated && currentUser ? currentUser : null;
   const unreadThreadCount = authenticatedUser ? (inboxQuery.data?.unreadThreadCount ?? 0) : 0;
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileMenuResetKey, setMobileMenuResetKey] = useState(0);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const mobileButtonRef = useRef<HTMLButtonElement>(null);
-  const closeMobileMenu = () => setMobileOpen(false);
+  const closeMobileMenu = () => {
+    setMobileOpen(false);
+    setMobileMenuResetKey((current) => current + 1);
+  };
+  const toggleMobileMenu = () => {
+    if (mobileOpen) {
+      closeMobileMenu();
+      return;
+    }
+
+    setMobileOpen(true);
+  };
   const previousThreadStatesRef = useRef<
     Map<string, { unreadCount: number; lastActivityAt: string }>
   >(new Map());
@@ -467,7 +497,7 @@ export function Navigation() {
     pathname === ROUTES.MESSAGES ? new URLSearchParams(search).get('threadId') : null;
 
   useEffect(() => {
-    setMobileOpen(false);
+    closeMobileMenu();
   }, [pathname]);
 
   useEffect(() => {
@@ -476,13 +506,13 @@ export function Navigation() {
         !mobileMenuRef.current?.contains(event.target as Node) &&
         !mobileButtonRef.current?.contains(event.target as Node)
       ) {
-        setMobileOpen(false);
+        closeMobileMenu();
       }
     };
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        setMobileOpen(false);
+        closeMobileMenu();
       }
     };
 
@@ -570,7 +600,7 @@ export function Navigation() {
   const handleLogout = async () => {
     const setLoggingOut = useTokenStore.getState().setLoggingOut;
 
-    setMobileOpen(false);
+    closeMobileMenu();
     setIsLoggingOut(true);
     setLoggingOut(true);
 
@@ -606,7 +636,7 @@ export function Navigation() {
             aria-label="Toggle navigation menu"
             aria-expanded={mobileOpen}
             aria-controls="primary-navigation-menu"
-            onClick={() => setMobileOpen((prev) => !prev)}
+            onClick={toggleMobileMenu}
           >
             <Icon
               icon={mobileOpen ? 'mdi:close' : 'mdi:menu'}
@@ -632,7 +662,12 @@ export function Navigation() {
             {expandedNavColumns.map((column, index) => (
               <div key={index} className="grid content-start gap-8">
                 {column.map((item) => (
-                  <ExpandedNavItem key={item.label} item={item} onNavigate={closeMobileMenu} />
+                  <ExpandedNavItem
+                    key={item.label}
+                    item={item}
+                    onNavigate={closeMobileMenu}
+                    resetKey={mobileMenuResetKey}
+                  />
                 ))}
               </div>
             ))}
@@ -645,6 +680,7 @@ export function Navigation() {
                   isLoggingOut={isLoggingOut}
                   unreadThreadCount={unreadThreadCount}
                   onNavigate={closeMobileMenu}
+                  resetKey={mobileMenuResetKey}
                 />
               ) : (
                 <AppLink
