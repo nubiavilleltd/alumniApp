@@ -52,7 +52,7 @@ const COMMUNITY_LINKS = [
 const LEGAL_LINKS = [
   { label: 'Privacy Policy', href: ROUTES.PRIVACY },
   { label: 'Terms of Use', href: ROUTES.TERMS },
-  { label: 'Code of Conduct', href: '/code-of-conduct' },
+  { label: 'Code of Conduct', href: ROUTES.CODE_OF_CONDUCT },
 ];
 
 function LinkColumn({

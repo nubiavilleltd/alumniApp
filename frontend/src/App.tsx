@@ -14,6 +14,7 @@ import { AboutPage } from './pages/about/AboutPage';
 import { ContactUsPage } from './features/contactUs/pages/ContactUsPage';
 import { PrivacyPage } from './pages/legal/PrivacyPage';
 import { TermsPage } from './pages/legal/TermsPage';
+import { CodeOfConductPage } from './pages/legal/CodeOfConductPage';
 import { NotFoundPage } from './pages/errors/NotFoundPage';
 import ProjectsPage from './features/projects/pages/ProjectsPage';
 import LeadershipPage from './features/leadership/pages/LeadershipPage';
@@ -217,6 +218,14 @@ export default function App() {
               element={
                 <ErrorBoundary>
                   <TermsPage />
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path={ROUTES.CODE_OF_CONDUCT}
+              element={
+                <ErrorBoundary>
+                  <CodeOfConductPage />
                 </ErrorBoundary>
               }
             />
