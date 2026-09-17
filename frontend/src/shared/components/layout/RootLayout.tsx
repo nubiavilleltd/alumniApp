@@ -94,8 +94,16 @@ const ROUTE_LABELS: Record<string, string> = {
   register: 'Register',
 };
 
-// Routes with full-bleed heroes — no breadcrumbs at all
-const HERO_ROUTES = ['/volunteer', '/about', '/join-projects'];
+// Routes where breadcrumbs should be hidden entirely.
+// Includes full-bleed hero pages (which don't look right with a
+// breadcrumb strip above them) and auth pages (which are task-
+// focused flows that don't benefit from a nav trail).
+const NO_BREADCRUMB_ROUTES = [
+  '/volunteer',
+  '/about',
+  '/join-projects',
+  '/auth',
+];
 
 // Routes that are pure redirect stubs — visiting them immediately
 // forwards the user to a real page. These should not appear as
@@ -238,7 +246,7 @@ export function RootLayout() {
 
   const showBackToHomeButton = !isHomePage;
 
-  const hideBreadcrumbs = HERO_ROUTES.some((r) => pathname.startsWith(r));
+  const hideBreadcrumbs = NO_BREADCRUMB_ROUTES.some((r) => pathname.startsWith(r));
   const autoBreadcrumbs =
     !isHomePage && !hideBreadcrumbs ? buildBreadcrumbsFromPath(pathname) : [];
 

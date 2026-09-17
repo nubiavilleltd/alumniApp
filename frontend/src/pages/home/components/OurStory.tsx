@@ -5,15 +5,11 @@ export default function OurStory() {
       aria-labelledby="home-about-title"
     >
       <div className="mx-auto flex max-w-[82rem] flex-col items-center text-center">
-        <p className="mb-2 text-base font-semibold leading-normal tracking-[0.03em] text-[#0077cc]">
-          Who we are
-        </p>
-
         <h2
           id="home-about-title"
           className="m-0 text-[clamp(1.75rem,2.25vw,2rem)] font-semibold leading-normal tracking-[0.03em] text-[#000e17]"
         >
-          About Us
+          Who we are
         </h2>
 
         <div className="mt-2 max-w-[82rem] text-base font-normal leading-normal tracking-[0.03em] text-[#000e17] md:text-[20px]">
