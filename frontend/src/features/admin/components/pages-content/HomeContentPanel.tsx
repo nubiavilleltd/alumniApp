@@ -37,6 +37,7 @@ import {
 } from "@/features/homepage/utils/heroTitleAnimation";
 import { DragHandle } from "./DragHandle";
 import type { HomepageImage, PagesContentTab } from "./types";
+import type { HomepageTimeOfDay } from "@/features/homepage/types/homepage.types";
 
 type ImageUploadIntent = { type: "add" } | { type: "replace"; imageId: string };
 type CarouselViewMode = "grid" | "list";
@@ -141,6 +142,7 @@ function createLocalCarouselImage(
     altText: file.name,
     isHidden: false,
     showGreetingMessage: true,
+    timeOfDay: "day",
     isNew: true,
     localFile: file,
     sortOrder,
@@ -152,6 +154,7 @@ function getComparableHomepageImages(images: AdminHomepageImage[]) {
     id: image.id,
     isHidden: image.isHidden,
     showGreetingMessage: image.showGreetingMessage,
+    timeOfDay: image.timeOfDay,
     sortOrder: image.sortOrder,
     hasLocalChange: Boolean(
       image.isNew || image.localFile || image.replacementFile,
@@ -347,6 +350,31 @@ function GreetingVisibilityCheckbox({
   );
 }
 
+function TimeOfDaySelect({
+  value,
+  onChange,
+  className = "",
+}: {
+  value: HomepageTimeOfDay;
+  onChange: (value: HomepageTimeOfDay) => void;
+  className?: string;
+}) {
+  return (
+    <label className={["inline-flex items-center gap-2 text-xs font-semibold text-gray-500", className].join(" ")}>
+      <span className="sr-only">Hero image time of day</span>
+      <select
+        value={value}
+        onChange={(event) => onChange(event.target.value as HomepageTimeOfDay)}
+        aria-label="Hero image time of day"
+        className="h-10 rounded-full border border-cms-tab-active/25 bg-white px-3 text-sm font-semibold text-gray-700 shadow-sm outline-none transition focus:border-cms-tab-active focus:ring-4 focus:ring-primary-500/15"
+      >
+        <option value="day">Day</option>
+        <option value="night">Night</option>
+      </select>
+    </label>
+  );
+}
+
 export function HomeContentPanel({
   activeTab,
 }: {
@@ -457,6 +485,7 @@ export function HomeContentPanel({
           altText: image.altText,
           isHidden: image.isHidden,
           showGreetingMessage: image.showGreetingMessage,
+          timeOfDay: image.timeOfDay,
           sortOrder: image.sortOrder + 1,
         })),
       ),
@@ -674,6 +703,18 @@ export function HomeContentPanel({
     setSaveStatus("");
   };
 
+  const setImageTimeOfDay = (
+    imageId: string,
+    timeOfDay: HomepageTimeOfDay,
+  ) => {
+    setOrderedImages((currentImages) =>
+      currentImages.map((image) =>
+        image.id === imageId ? { ...image, timeOfDay } : image,
+      ),
+    );
+    setSaveStatus("");
+  };
+
   const applyDefaultHeroGreeting = () => {
     setGreetingTitle(DEFAULT_HERO_GREETING_TITLE);
     setGreetingTitleAlternateWord(DEFAULT_HERO_GREETING_ALTERNATE_WORD);
@@ -784,6 +825,7 @@ export function HomeContentPanel({
             altText: image.altText || image.fileName,
             sortOrder: index,
             isHidden: image.isHidden,
+            timeOfDay: image.timeOfDay,
           });
 
           await updateCarouselImage.mutateAsync({
@@ -791,6 +833,7 @@ export function HomeContentPanel({
             altText: image.altText || image.fileName,
             isHidden: image.isHidden,
             showGreetingMessage: image.showGreetingMessage,
+            timeOfDay: image.timeOfDay,
           });
 
           persistedImages.push({ id: createdImage.id, sortOrder: index });
@@ -806,7 +849,8 @@ export function HomeContentPanel({
               fileName: originalImage.fileName,
             }) ||
           image.isHidden !== originalImage.isHidden ||
-          image.showGreetingMessage !== originalImage.showGreetingMessage;
+          image.showGreetingMessage !== originalImage.showGreetingMessage ||
+          image.timeOfDay !== originalImage.timeOfDay;
 
         if (image.replacementFile) {
           const updatedImage = await updateCarouselImage.mutateAsync({
@@ -815,6 +859,7 @@ export function HomeContentPanel({
             altText: getImageAltText(image),
             isHidden: image.isHidden,
             showGreetingMessage: image.showGreetingMessage,
+            timeOfDay: image.timeOfDay,
           });
           persistedImages.push({
             id: updatedImage.id || image.id,
@@ -829,6 +874,7 @@ export function HomeContentPanel({
             altText: getImageAltText(image),
             isHidden: image.isHidden,
             showGreetingMessage: image.showGreetingMessage,
+            timeOfDay: image.timeOfDay,
           });
         }
         persistedImages.push({ id: image.id, sortOrder: index });
@@ -1021,6 +1067,11 @@ export function HomeContentPanel({
                       onCommit={moveImageToPosition}
                     />
                   </div>
+                  <TimeOfDaySelect
+                    value={image.timeOfDay}
+                    onChange={(timeOfDay) => setImageTimeOfDay(image.id, timeOfDay)}
+                    className="mt-5 lg:absolute lg:left-[102px] lg:top-[32px] lg:mt-0"
+                  />
                   <img
                     src={image.src}
                     alt=""
@@ -1060,7 +1111,7 @@ export function HomeContentPanel({
                   onDrop={(event) => dropOnImage(event, image.id)}
                   onDragEnd={endDrag}
                   className={[
-                    "grid min-w-[66rem] grid-cols-[2.5rem_4.5rem_5rem_minmax(12rem,1fr)_17rem_7rem_8rem] items-center gap-3 rounded-xl border border-cms-tab-active/20 bg-white px-4 py-3 transition-all",
+                    "grid min-w-[74rem] grid-cols-[2.5rem_4.5rem_5rem_7rem_minmax(12rem,1fr)_17rem_7rem_8rem] items-center gap-3 rounded-xl border border-cms-tab-active/20 bg-white px-4 py-3 transition-all",
                     isDragging ? "opacity-60" : "",
                     isDropTarget
                       ? "border-cms-tab-active shadow-md ring-2 ring-cms-tab-active/20"
@@ -1086,6 +1137,10 @@ export function HomeContentPanel({
                       />
                     ) : null}
                   </div>
+                  <TimeOfDaySelect
+                    value={image.timeOfDay}
+                    onChange={(timeOfDay) => setImageTimeOfDay(image.id, timeOfDay)}
+                  />
                   <p
                     className={[
                       "truncate text-sm font-semibold text-gray-800",

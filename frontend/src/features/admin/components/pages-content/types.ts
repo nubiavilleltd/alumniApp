@@ -1,3 +1,5 @@
+import type { HomepageTimeOfDay } from '@/features/homepage/types/homepage.types';
+
 export type PagesContentTab = 'home' | 'blog' | 'faqs';
 
 export type HomepageImage = {
@@ -7,6 +9,7 @@ export type HomepageImage = {
   altText?: string;
   isHidden: boolean;
   showGreetingMessage: boolean;
+  timeOfDay: HomepageTimeOfDay;
   sortOrder: number;
 };
 

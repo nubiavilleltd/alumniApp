@@ -1,4 +1,8 @@
-import type { HomepageCarouselImage, HomepageContent } from '../../types/homepage.types';
+import type {
+  HomepageCarouselImage,
+  HomepageContent,
+  HomepageTimeOfDay,
+} from '../../types/homepage.types';
 
 function readString(...values: unknown[]) {
   const value = values.find((item) => typeof item === 'string' && item.trim().length > 0);
@@ -36,6 +40,10 @@ function readOptionalBoolean(...values: unknown[]) {
   return readBoolean(value);
 }
 
+function readTimeOfDay(...values: unknown[]): HomepageTimeOfDay {
+  return readString(...values).toLowerCase() === 'night' ? 'night' : 'day';
+}
+
 export function mapCarouselImage(raw: unknown): HomepageCarouselImage {
   const image = (raw ?? {}) as Record<string, unknown>;
   const imageUrl = readString(image.image_url, image.imageUrl, image.url, image.src);
@@ -47,6 +55,7 @@ export function mapCarouselImage(raw: unknown): HomepageCarouselImage {
     altText: readString(image.alt_text, image.altText),
     sortOrder: readNumber(image.sort_order, image.sortOrder),
     isHidden: readBoolean(image.is_hidden, image.isHidden),
+    timeOfDay: readTimeOfDay(image.time_of_day, image.timeOfDay),
     showGreetingMessage:
       readOptionalBoolean(
         image.show_greeting,
